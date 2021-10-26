@@ -11,6 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
@@ -40,35 +41,33 @@ import org.junit.Test
  */
 class OfficialStoreAnalyticsTest {
 
-    companion object{
+    companion object {
         private const val TAG = "OfficialStoreAnalyticsTest"
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/official_store/official_store_page.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME =
+            "tracker/official_store/official_store_page.json"
     }
 
     @get:Rule
     var activityRule = ActivityTestRule(OfficialStoreActivity::class.java, false, false)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse(OfficialStoreMockResponseConfig())
-        activityRule.launchActivity(Intent(InstrumentationRegistry.getInstrumentation().targetContext, OfficialStoreActivity::class.java))
+        activityRule.launchActivity(
+            Intent(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                OfficialStoreActivity::class.java
+            )
+        )
     }
 
     @After
-    fun dispose(){
-        gtmLogDBSource.deleteAll().subscribe()
-    }
-
-    @Test
-    fun testOfficialStore() {
-        initTest()
-        doActivityTest()
-        assertCassava()
-//        addDebugEnd()
+    fun dispose() {
     }
 
     private fun initTest() {
@@ -90,7 +89,8 @@ class OfficialStoreAnalyticsTest {
         onView(withId(R.id.tablayout)).perform(selectTabAtPosition(0))
         // 2. scroll and click item at OS
         // Scroll to bottom first and then back to top for load all data (recom case)
-        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
+        val recyclerView =
+            activityRule.activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
         onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
         Thread.sleep(2500)
         recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, 0)
@@ -103,13 +103,6 @@ class OfficialStoreAnalyticsTest {
         }
         activityRule.activity.moveTaskToBack(true)
         logTestMessage("Done UI Test")
-    }
-
-    private fun assertCassava() {
-        waitForData()
-        //worked
-        MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
-                hasAllSuccess())
     }
 
     private fun scrollRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
@@ -140,7 +133,7 @@ class OfficialStoreAnalyticsTest {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.viewpager_banner_category,0)
             }
             is DynamicLegoBannerViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_lego_rv,0)
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
             }
             is DynamicChannelSprintSaleViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_sprintsale_rv,0)
@@ -149,13 +142,27 @@ class OfficialStoreAnalyticsTest {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_lego_rv,0)
             }
             is DynamicChannelThematicViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.carouselProductCardRecyclerView,0)
+                CommonActions.clickOnEachItemRecyclerView(
+                    viewHolder.itemView,
+                    R.id.carouselProductCardRecyclerView,
+                    0
+                )
             }
             is OfficialProductRecommendationViewHolder -> {
                 activityRule.runOnUiThread {
                     viewHolder.itemView.performClick()
                 }
             }
+        }
+    }
+    @Test
+    fun checkOSAnalyticsWithCassava2() {
+        OSCassavaTest {
+            initTest()
+            doActivityTest()
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
     }
 }

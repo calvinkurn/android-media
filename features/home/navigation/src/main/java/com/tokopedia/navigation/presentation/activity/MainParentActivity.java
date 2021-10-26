@@ -57,8 +57,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment;
-import com.tokopedia.cart.bundle.view.CartFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker;
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
@@ -195,6 +193,8 @@ public class MainParentActivity extends BaseActivity implements
     public static final int RANK_DIGITAL_SHORTCUT = 2;
     public static final int RANK_WISHLIST_SHORTCUT = 1;
     public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
+    public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
+    public static final String PARAM_HOME = "home";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -764,10 +764,14 @@ public class MainParentActivity extends BaseActivity implements
         bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
         fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
 
-        Bundle bundle = new Bundle();
-        bundle.putString(UOH_SOURCE_FILTER_KEY, "");
-        bundle.putString(UohListFragment.PARAM_ACTIVITY_ORDER_HISTORY, UohListFragment.PARAM_HOME);
-        fragmentList.add(UohListFragment.newInstance(bundle));
+        Bundle bundleUoh = getIntent().getExtras();
+        if (bundleUoh == null) {
+            bundleUoh = new Bundle();
+        }
+        bundleUoh.putString(UOH_SOURCE_FILTER_KEY, "");
+        bundleUoh.putString(PARAM_ACTIVITY_ORDER_HISTORY, PARAM_HOME);
+        bundleUoh.putString("UohListFragment", MainParentActivity.class.getSimpleName());
+        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.UOH_LIST_FRAGMENT, bundleUoh));
 
         return fragmentList;
     }

@@ -4,172 +4,755 @@
       "dynamicHomeChannel": {
         "channels": [
           {
-            "id": 137973,
-            "name": "OS HOME FEATURE BRAND",
-            "layout": "featured_brand",
-            "pageName": "",
-            "type": "home",
-            "campaignID": 0,
-            "widgetParam": "",
-            "contextualInfo": 1,
-            "campaignCode": "",
+            "id": 67859,
+            "name": "Kejar Diskon Tokopedia Dibawah 99rb 19 Januari 2021 - Slot 2",
+            "layout": "top_carousel",
+            "type": "inspiration",
+            "campaignID": 57023,
+            "campaignCode": "PG_19 January 21_Kejar Diskon Tokopedia Dibawah 99rb 19 Januari 2021 - Slot 2_57023",
             "header": {
-              "id": 157088,
-              "name": "Brand Pilihan",
-              "url": "https://www.tokopedia.com/official-store/brand/",
-              "applink": "tokopedia://webview?url\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fofficial-store%2Fbrand%2F",
-              "serverTime": 0,
-              "expiredTime": "",
+              "id": 68100,
+              "name": "Kejar Diskon",
+              "url": "https://m.tokopedia.com/discovery/kejar-diskon",
+              "applink": "tokopedia://discovery/kejar-diskon",
+              "serverTime": 1611029545,
+              "expiredTime": "2999-01-19T11:59:00+07:00",
               "backColor": "",
-              "backImage": "",
-              "subtitle": "",
-              "textColor": "#31353b"
+              "backImage": ""
             },
             "hero": null,
             "grids": [
               {
-                "id": 369528,
+                "id": 1264091967,
                 "name": "",
-                "url": "https://www.tokopedia.com/elshe-skin",
-                "applink": "tokopedia://shop/1368702",
-                "price": "",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/ikRAny/2021/10/7/12fd6130-fb88-4cc6-ade2-45a403e1d5ba.png",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "OS HOME FEATURE BRAND",
+                "url": "https://m.tokopedia.com/norvusindonesia/norvus-air-disinfectant-spray-aerosol-550ml-promo-bundling-2-gt-le?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D1022",
+                "applink": "tokopedia://product/1264091967",
+                "price": "Rp 80.000",
+                "slashedPrice": "Rp 130.000",
+                "discount": "38%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/attachment/2020/12/28/-1/-1_a66b25b8-f6d5-4221-9d7a-79354055015f.jpg",
+                "label": "Segera Habis",
+                "soldPercentage": 97,
+                "attribution": "",
                 "productClickUrl": "",
                 "impression": "",
                 "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 0,
-                "discountPercentage": 0,
+                "discountPercentage": 38,
                 "freeOngkir": {
-                  "isActive": false,
-                  "imageUrl": ""
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
-                "shop": {
-                  "shopID": 0
-                },
-                "campaignCode": "",
                 "labelGroup": [],
-                "back_color": "#bf463b",
-                "productImageUrl": "https://images.tokopedia.net/img/wTyqEz/2021/10/7/632eb336-d39c-467d-845e-748c63fcbbfc.png",
                 "benefit": {
                   "type": "Diskon Hingga",
                   "value": "50%"
-                }
+                },
+                "back_color": "",
+                "productImageUrl": ""
               },
               {
-                "id": 369529,
+                "id": 1494344873,
                 "name": "",
-                "url": "https://www.tokopedia.com/mondelez",
-                "applink": "tokopedia://shop/2068287",
-                "price": "",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/ikRAny/2021/10/6/69667d00-4caf-44ae-8c57-8ad285ce702d.png",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "OS HOME FEATURE BRAND",
+                "url": "https://m.tokopedia.com/live4toys/mainan-anak-bump-go-tayo-the-little-bus?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D505",
+                "applink": "tokopedia://product/1494344873",
+                "price": "Rp 57.000",
+                "slashedPrice": "Rp 75.000",
+                "discount": "24%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/7/7277e752-7e01-49d5-add4-1be76b2850f0.jpg",
+                "label": "Segera Habis",
+                "soldPercentage": 95,
+                "attribution": "",
                 "productClickUrl": "",
                 "impression": "",
                 "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 0,
-                "discountPercentage": 0,
+                "discountPercentage": 24,
                 "freeOngkir": {
-                  "isActive": false,
-                  "imageUrl": ""
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
-                "shop": {
-                  "shopID": 0
-                },
-                "campaignCode": "",
                 "labelGroup": [],
-                "back_color": "#afc035",
-                "productImageUrl": "https://images.tokopedia.net/img/wTyqEz/2021/10/6/35116333-cff7-4fb1-9d70-f91554816c66.png",
                 "benefit": {
                   "type": "Diskon Hingga",
                   "value": "50%"
-                }
+                },
+                "back_color": "",
+                "productImageUrl": ""
               },
               {
-                "id": 369534,
+                "id": 1490682064,
                 "name": "",
-                "url": "https://www.tokopedia.com/philipsmoto",
-                "applink": "tokopedia://shop/9308333",
-                "price": "",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/ikRAny/2021/10/9/f705d3bf-f123-44cc-8ac7-86de16907360.png",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "OS HOME FEATURE BRAND",
+                "url": "https://m.tokopedia.com/bayerhealth/mommies-kit-cdr-rasa-jeruk-10-tab-redoxon-rasa-jeruk-10-tab?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D2512",
+                "applink": "tokopedia://product/1490682064",
+                "price": "Rp 76.000",
+                "slashedPrice": "Rp 93.400",
+                "discount": "19%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/7/13471911-0409-4a95-8bc8-348661f6f729.jpg",
+                "label": "Segera Habis",
+                "soldPercentage": 91,
+                "attribution": "",
                 "productClickUrl": "",
                 "impression": "",
                 "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 0,
+                "discountPercentage": 19,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              }
+            ],
+            "banner": {
+              "id": 9789,
+              "title": "",
+              "description": "",
+              "url": "",
+              "cta": {
+                "type": "",
+                "mode": "",
+                "text": "",
+                "coupon_code": ""
+              },
+              "applink": "",
+              "text_color": "",
+              "image_url": "",
+              "back_color": "#ffffff",
+              "gradient_color": [
+                "#00D916",
+                "#006DAE"
+              ],
+              "attribution": ""
+            },
+            "galaxy_attribution": "",
+            "persona": "",
+            "category_persona": "",
+            "brand_id": ""
+          },
+          {
+            "id": 67859,
+            "name": "Kejar Diskon Tokopedia Dibawah 99rb 19 Januari 2021 - Slot 2",
+            "layout": "banner_carousel",
+            "type": "inspiration",
+            "campaignID": 57023,
+            "campaignCode": "PG_19 January 21_Kejar Diskon Tokopedia Dibawah 99rb 19 Januari 2021 - Slot 2_57023",
+            "header": {
+              "id": 68100,
+              "name": "Kejar Diskon",
+              "url": "https://m.tokopedia.com/discovery/kejar-diskon",
+              "applink": "tokopedia://discovery/kejar-diskon",
+              "serverTime": 1611029545,
+              "expiredTime": "2999-01-19T11:59:00+07:00",
+              "backColor": "",
+              "backImage": ""
+            },
+            "hero": null,
+            "grids": [
+              {
+                "id": 1264091967,
+                "name": "",
+                "url": "https://m.tokopedia.com/norvusindonesia/norvus-air-disinfectant-spray-aerosol-550ml-promo-bundling-2-gt-le?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D1022",
+                "applink": "tokopedia://product/1264091967",
+                "price": "Rp 80.000",
+                "slashedPrice": "Rp 130.000",
+                "discount": "38%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/attachment/2020/12/28/-1/-1_a66b25b8-f6d5-4221-9d7a-79354055015f.jpg",
+                "label": "Segera Habis",
+                "soldPercentage": 97,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 38,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 1494344873,
+                "name": "",
+                "url": "https://m.tokopedia.com/live4toys/mainan-anak-bump-go-tayo-the-little-bus?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D505",
+                "applink": "tokopedia://product/1494344873",
+                "price": "Rp 57.000",
+                "slashedPrice": "Rp 75.000",
+                "discount": "24%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/7/7277e752-7e01-49d5-add4-1be76b2850f0.jpg",
+                "label": "Segera Habis",
+                "soldPercentage": 95,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 24,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              }
+            ],
+            "banner": {
+              "id": 9789,
+              "title": "",
+              "description": "",
+              "url": "",
+              "cta": {
+                "type": "",
+                "mode": "",
+                "text": "",
+                "coupon_code": ""
+              },
+              "applink": "",
+              "text_color": "",
+              "image_url": "",
+              "back_color": "#ffffff",
+              "gradient_color": [
+                "#00D916",
+                "#006DAE"
+              ],
+              "attribution": ""
+            },
+            "galaxy_attribution": "",
+            "persona": "",
+            "category_persona": "",
+            "brand_id": ""
+          },
+          {
+            "id": 67859,
+            "name": "Kejar Diskon Tokopedia Dibawah 99rb 19 Januari 2021 - Slot 2",
+            "layout": "sprint_lego",
+            "type": "inspiration",
+            "campaignID": 57023,
+            "campaignCode": "PG_19 January 21_Kejar Diskon Tokopedia Dibawah 99rb 19 Januari 2021 - Slot 2_57023",
+            "header": {
+              "id": 68100,
+              "name": "Kejar Diskon",
+              "url": "https://m.tokopedia.com/discovery/kejar-diskon",
+              "applink": "tokopedia://discovery/kejar-diskon",
+              "serverTime": 1611029545,
+              "expiredTime": "2999-01-19T11:59:00+07:00",
+              "backColor": "",
+              "backImage": ""
+            },
+            "hero": null,
+            "grids": [
+              {
+                "id": 1264091967,
+                "name": "",
+                "url": "https://m.tokopedia.com/norvusindonesia/norvus-air-disinfectant-spray-aerosol-550ml-promo-bundling-2-gt-le?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D1022",
+                "applink": "tokopedia://product/1264091967",
+                "price": "Rp 80.000",
+                "slashedPrice": "Rp 130.000",
+                "discount": "38%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/attachment/2020/12/28/-1/-1_a66b25b8-f6d5-4221-9d7a-79354055015f.jpg",
+                "label": "Segera Habis",
+                "soldPercentage": 97,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 38,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 1494344873,
+                "name": "",
+                "url": "https://m.tokopedia.com/live4toys/mainan-anak-bump-go-tayo-the-little-bus?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D505",
+                "applink": "tokopedia://product/1494344873",
+                "price": "Rp 57.000",
+                "slashedPrice": "Rp 75.000",
+                "discount": "24%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/7/7277e752-7e01-49d5-add4-1be76b2850f0.jpg",
+                "label": "Segera Habis",
+                "soldPercentage": 95,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 24,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 1490682064,
+                "name": "",
+                "url": "https://m.tokopedia.com/bayerhealth/mommies-kit-cdr-rasa-jeruk-10-tab-redoxon-rasa-jeruk-10-tab?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D2512",
+                "applink": "tokopedia://product/1490682064",
+                "price": "Rp 76.000",
+                "slashedPrice": "Rp 93.400",
+                "discount": "19%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/7/13471911-0409-4a95-8bc8-348661f6f729.jpg",
+                "label": "Segera Habis",
+                "soldPercentage": 91,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 19,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 1000749735,
+                "name": "",
+                "url": "https://m.tokopedia.com/naturefreshid/kikkoman-saus-teriyaki-lada-hitam-teriyaki-blackpepper-sauce-300gr?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D1162",
+                "applink": "tokopedia://product/1000749735",
+                "price": "Rp 22.900",
+                "slashedPrice": "Rp 50.000",
+                "discount": "54%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/7/6/101596605/101596605_f4d6fc8d-09d2-4cbe-b070-2ba3dfaec3d1_1000_1000",
+                "label": "Segera Habis",
+                "soldPercentage": 80,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 54,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 914136483,
+                "name": "",
+                "url": "https://m.tokopedia.com/toko-kasur/bantal-kepala-durante-promo-beli-1-gratis-1?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D997",
+                "applink": "tokopedia://product/914136483",
+                "price": "Rp 80.000",
+                "slashedPrice": "Rp 400.000",
+                "discount": "80%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/12/22325317/22325317_0d0fe2a9-8896-4e2a-9863-4c0df6c6a0df_1103_1103",
+                "label": "Lagi Diminati",
+                "soldPercentage": 76,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 80,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 602643857,
+                "name": "",
+                "url": "https://m.tokopedia.com/selmaindonesia/talenan-cutting-board-golia-set-2pcs-dengan-pegangan?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D29_catid%3D3464",
+                "applink": "tokopedia://product/602643857",
+                "price": "Rp 35.700",
+                "slashedPrice": "Rp 169.000",
+                "discount": "79%",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2019/11/5/78256864/78256864_46e63a96-7f1b-4c1f-bdf0-4a99a8d93b72_1000_1000",
+                "label": "Lagi Diminati",
+                "soldPercentage": 76,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 79,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              }
+            ],
+            "banner": {
+              "id": 9789,
+              "title": "",
+              "description": "",
+              "url": "",
+              "cta": {
+                "type": "",
+                "mode": "",
+                "text": "",
+                "coupon_code": ""
+              },
+              "applink": "",
+              "text_color": "",
+              "image_url": "",
+              "back_color": "#ffffff",
+              "gradient_color": [
+                "#00D916",
+                "#006DAE"
+              ],
+              "attribution": ""
+            },
+            "galaxy_attribution": "",
+            "persona": "",
+            "category_persona": "",
+            "brand_id": ""
+          },
+          {
+            "id": 67870,
+            "name": "All User Campaign #0 ",
+            "layout": "lego_3_image",
+            "type": "inspiration",
+            "campaignID": 0,
+            "campaignCode": "fnb00008256_tokopedia nyam januari_01january21-31january21",
+            "header": {
+              "id": 68111,
+              "name": "Tokopedia Nyam!",
+              "url": "https://m.tokopedia.com/discovery/tokopedia-nyam?source=homepage.lego_3_image.0.36076",
+              "applink": "tokopedia://discovery/tokopedia-nyam?source=homepage.lego_3_image.0.36076",
+              "serverTime": 0,
+              "expiredTime": "",
+              "backColor": "",
+              "backImage": ""
+            },
+            "hero": null,
+            "grids": [
+              {
+                "id": 240163,
+                "name": "",
+                "url": "https://m.tokopedia.com/discovery/tokopedia-nyam?source=homepage.lego_3_image.0.38304",
+                "applink": "tokopedia://discovery/tokopedia-nyam?source=homepage.lego_3_image.0.38304",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/400-square/phZFtb/2021/1/5/4a9678f7-dd0f-4f69-a26d-ce48c20a3e3e.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "X_PG_DC0_All User_Tokopedia Nyam_19 Jan 21",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
                 "discountPercentage": 0,
                 "freeOngkir": {
                   "isActive": false,
                   "imageUrl": ""
                 },
-                "shop": {
-                  "shopID": 0
-                },
-                "campaignCode": "",
                 "labelGroup": [],
-                "back_color": "#a6916b",
-                "productImageUrl": "https://images.tokopedia.net/img/wTyqEz/2021/10/9/088c6f70-3d1a-4efe-8d61-16ab22d88744.png",
                 "benefit": {
                   "type": "Diskon Hingga",
-                  "value": "40%"
-                }
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
               },
               {
-                "id": 369533,
+                "id": 240164,
                 "name": "",
-                "url": "https://www.tokopedia.com/midio",
-                "applink": "tokopedia://shop/867657",
+                "url": "https://m.tokopedia.com/discovery/tokopedia-nyam?source=homepage.lego_3_image.0.38304",
+                "applink": "tokopedia://discovery/tokopedia-nyam?source=homepage.lego_3_image.0.38304",
                 "price": "",
                 "slashedPrice": "",
                 "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/ikRAny/2021/10/8/941d854e-9a81-477f-a995-c02befd2438f.png",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/400-square/phZFtb/2021/1/5/2ea3e3f6-67f0-4484-9074-a9219b13f18f.jpg",
                 "label": "",
                 "soldPercentage": 0,
-                "attribution": "OS HOME FEATURE BRAND",
+                "attribution": "X_PG_DC0_All User_Tokopedia Nyam_19 Jan 21",
                 "productClickUrl": "",
                 "impression": "",
                 "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 0,
                 "discountPercentage": 0,
                 "freeOngkir": {
                   "isActive": false,
                   "imageUrl": ""
                 },
-                "shop": {
-                  "shopID": 0
-                },
-                "campaignCode": "",
                 "labelGroup": [],
-                "back_color": "#89162f",
-                "productImageUrl": "https://images.tokopedia.net/img/wTyqEz/2021/10/8/e6526768-4d16-45b8-b1a6-1e7004e9b7cf.png",
                 "benefit": {
                   "type": "Diskon Hingga",
-                  "value": "60%"
-                }
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 240165,
+                "name": "",
+                "url": "https://m.tokopedia.com/discovery/tokopedia-nyam?source=homepage.lego_3_image.0.38304",
+                "applink": "tokopedia://discovery/tokopedia-nyam?source=homepage.lego_3_image.0.38304",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/400-square/phZFtb/2021/1/5/7fa9cc86-20ce-4b2f-86dc-144b479139e1.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "X_PG_DC0_All User_Tokopedia Nyam_19 Jan 21",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              }
+            ],
+            "banner": {
+              "id": 0,
+              "title": "",
+              "description": "",
+              "url": "",
+              "cta": {
+                "type": "",
+                "mode": "",
+                "text": "",
+                "coupon_code": ""
+              },
+              "applink": "",
+              "text_color": "",
+              "image_url": "",
+              "back_color": "",
+              "gradient_color": [
+                "#FFFFFF"
+              ],
+              "attribution": ""
+            },
+            "galaxy_attribution": "PG",
+            "persona": "Cook",
+            "category_persona": "912,948,949,951,916,952,950,946,953,958",
+            "brand_id": ""
+          },
+          {
+            "id": 67866,
+            "name": "All User Campaign #1",
+            "layout": "left_carousel",
+            "type": "inspiration",
+            "campaignID": 0,
+            "campaignCode": "cen00008474_tahun baru semua baru_01january21-31january21",
+            "header": {
+              "id": 68107,
+              "name": "Tahun Baru Semua Baru",
+              "url": "https://m.tokopedia.com/discovery/tahun-baru",
+              "applink": "tokopedia://discovery/tahun-baru?source=homepage.left_carousel.0.65271",
+              "serverTime": 0,
+              "expiredTime": "",
+              "backColor": "",
+              "backImage": ""
+            },
+            "hero": null,
+            "grids": [
+              {
+                "id": 955215218,
+                "name": "Alat Fitness Treadmill Elektrik Multifunction Murah Twen T600M Black",
+                "url": "https://m.tokopedia.com/tokindoid/alat-fitness-treadmill-elektrik-multifunction-murah-twen-t600m-black",
+                "applink": "tokopedia://product/955215218",
+                "price": "Rp 5.800.000",
+                "slashedPrice": "Rp 9.800.000",
+                "discount": "41% OFF",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/VqbcmM/2021/1/14/dd9f8c01-3eef-4fd1-b39c-27127757c576.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "",
+                "productClickUrl": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEo_KFHAKa6_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosJhHAUNo_eObm-srcHi6sJFHAnDUMVj9RosQR-BUstpH_KXo_yfosHhH_jpoAeOHZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pzE_7zSoJYJgpzvzcr7_7zSoJYJgpz-q9P23_oZ8uKp_Mhg3J2ky1o-ojBke9u6zV1F_jz0o1N11_V6uJVR_jzuHJN_Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq12t_s-VHJNJZ92gq_VW_32V8Jh11_CoqjV73uzDq7N2H3Ogqj2W_uPz81NJQcWoHjO2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq1B2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BE_uzSP1N13_-6qjOd_uz08jNJ1_Vo17BpZ3N6qMUpZMhyH7ND3uxGqMVAZ_g-qjjF_OH7P7NEZ_CozJJF_1z-HJOEypV617tNUiFiP9oBrBY2gmUEUsJfH_UdHseFUiFirfuprfB5QBY2gmUEUSgSgAu1zRzO9fOFqJgyZfYVru-coO2bgRx6H3PZqBxV1jdfyiOGPpodPO1hysCe8j4RqSxe3jxh6uBeqVupPBrO6IPZzsuX1A-6QMuAe9V68IV0o1o58_-j6c-ErJ2__pBWg_Bq8JP78sVMHAehuBxggV2sQBxI_OxBoRuse9CUUiFiy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiQSuWyMua9fYM9fVjraUEHiFiQSuWyMua9fVjrOYag9Ji6sUFbm-sy9zwq3zpUs2QosUDo_efbAHOHsgPbm-X9foxQMz2gcV7guYxgIHi6sUDUSC5rRzwy3hSUstirfh5PIz2QMPwyS-5PRoBUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpyhos1DUMBp9fzNQMVWq3owrfh5PIz2QMri6SzaP3uY?src=recom_widget_manual_injection_discount&keywords=recom&dv=lite-0.0&t=lite-0.0&management_type=1&is_search=1&r=https%3A%2F%2Fwww.tokopedia.com%2Ftokindoid%2Falat-fitness-treadmill-elektrik-multifunction-murah-twen-t600m-black%3Fsrc%3Dtopads&page=0",
+                "impression": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6s1dHAndHsj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yhH_na6_17oZFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsJ5HZ4homYjgABM6cHFHZ7pg3uMb_zMgAJWysHNya7aopJaoprOofHOopyXqSCSUiFiy3zwrfo5rM1i6sHh6mdOosyfHpJh6_H7oA1hbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oI2vzcr7_7zSoJYJgpzvzcr7_7zSoJB2PfBgHO-N3Ao6QVByZM2xe7jfZ32CP1NJu_C6zcDO_BzzH1N1e9P6zV1F_Bo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMx6Hj1F_jz-8BB2H3Ooqjud_VzzHJOke9zguch0_MjhQuBkZMOouOVN_jzDq77a_3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2Z3BHe72E3_UN8u2363BsQ_jpyp-uq1Y2Z92oucPO_BzgHjNk_9xoucWE_jzzH1O_Z9o-QjNkysoGQVKp_Mhg3J2ky1o-ojBkZ_Cv1pzR_S2-HJOJe_CozJjF_92sH1N_Zsjibm-Orfua9fBjUstiH_yhHsKaoAnibm-pg9opq3YX9fBjUstiPMPjouzIPIuwQ9CtzBxbQ7uh1jyR3jWS8JdhgO-k3JuZ_sgib12RHRxRu_ViHVCE_pPk8VCqZIJN3uCtu9ofup1dPO-co3NeHjNXg1oCr1Ndr3DOefYNHMedyS2FZBov63OB6u2dzRzEH3yFoAV33VBj3MoX3JPv3c1RP3oCrJKibm-xQcri6i-pQcY7PcBXgOYirMYRrf1ibm-XP3Oig9-wQfgwy3zpUstabm-XP3Oig9-wy3zp9R-BrZUEHsnDUMNwyfVXgcBjy9zB9fVjraUEHiFircYpPVYxQcri6BDirfh5PIz2QMPwyS-5PRoBUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHfH_yObm-2rOYj83NxQ3Bs9RoDQRz7q3NSUs27rSuBwe?keywords=recom&page=0&t=lite-0.0&management_type=1&dv=lite-0.0&src=recom_widget_manual_injection_discount&is_search=1",
+                "cashback": "",
+                "discountPercentage": 41,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [
+                  {
+                    "position": "promo",
+                    "title": "Cashback",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "integrity",
+                    "title": "Terjual 110",
+                    "type": "textDarkGrey"
+                  }
+                ],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              }
+            ],
+            "banner": {
+              "id": 9792,
+              "title": "",
+              "description": "",
+              "url": "https://m.tokopedia.com/discovery/tahun-baru",
+              "cta": {
+                "type": "",
+                "mode": "",
+                "text": "",
+                "coupon_code": ""
+              },
+              "applink": "tokopedia://discovery/tahun-baru?source=homepage.left_carousel.0.65271",
+              "text_color": "#ffffff",
+              "image_url": "https://ecs7-p.tokopedia.net/img/cache/240/PYbRbC/2021/1/15/556c457a-fb77-4682-a0a8-ba7fed93347b.png",
+              "back_color": "#a4cff2",
+              "gradient_color": [
+                "#a4cff2"
+              ],
+              "attribution": "X_PG_DC1_All User_Tahun Baru Semua Baru_19 Jan 21"
+            },
+            "galaxy_attribution": "PG",
+            "persona": "Others",
+            "category_persona": "69,1517,497,2121,1875,500,744,498,2102,752",
+            "brand_id": ""
+          },
+          {
+            "id": 60221,
+            "name": "[Context] Best Seller - New Widget - Existing User - C1",
+            "layout": "best_selling",
+            "type": "inspiration",
+            "campaignID": 0,
+            "campaignCode": "",
+            "header": {
+              "id": 60462,
+              "name": "Terlaris untukmu",
+              "url": "",
+              "applink": "",
+              "serverTime": 0,
+              "expiredTime": "",
+              "backColor": "",
+              "backImage": ""
+            },
+            "hero": null,
+            "grids": [
+              {
+                "id": 1013388585,
+                "name": "Kartu Ucapan Bruule (EXTRA)",
+                "url": "https://m.tokopedia.com/bruule/kartu-ucapan-bruule-extra",
+                "applink": "tokopedia://product/1013388585",
+                "price": "Rp 10.000",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/9/10/106379706/106379706_02620ee0-70e8-452d-a09f-4710d5f004eb_1280_1280",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "AB_CONTEXTHOME_RUMAHTANGGA_14JAN20",
+                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2369&event=click&experimentVersion=v1.4&page=0&page_name=best_seller_switching_new&pid=1013388585&pos=1&recommendation=best_seller_switching&rectype=best_seller_switching&redirect=https://www.tokopedia.com/bruule/kartu-ucapan-bruule-extra?catid2369=%26ref=best_seller_switching_new_pa0_po1%26src=r3best_seller_switching&tid=ElwijGWBcLGOpFnBL54GzyduhKQ=&uid=16128240&unique_id=&utime=1611029545&widget=r3_widget&xdevice=lite-0.0",
+                "impression": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/9/10/106379706/106379706_02620ee0-70e8-452d-a09f-4710d5f004eb_1280_1280",
+                "cashback": "",
+                "discountPercentage": 78,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "labelGroup": [
+                  {
+                    "position": "promo",
+                    "title": "Gratis Ongkir",
+                    "type": "lightGreen"
+                  },
+                  {
+                    "position": "best_seller",
+                    "title": "#1",
+                    "type": "#E1AA1D"
+                  }
+                ],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 1039203367,
+                "name": "Cetak Mug Custom Satuan Tanpa PO Dan langsung Jadi!",
+                "url": "https://m.tokopedia.com/mugjakartamurah/cetak-mug-custom-satuan-tanpa-po-dan-langsung-jadi",
+                "applink": "tokopedia://product/1039203367",
+                "price": "Rp 13.000",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/9/4/9916328/9916328_fac1e7b9-0984-42bd-a0e3-ac52291063cf_1500_1500",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "AB_CONTEXTHOME_RUMAHTANGGA_14JAN20",
+                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2915&event=click&experimentVersion=v1.4&page=0&page_name=best_seller_switching_new&pid=1039203367&pos=2&recommendation=best_seller_switching&rectype=best_seller_switching&redirect=https://www.tokopedia.com/mugjakartamurah/cetak-mug-custom-satuan-tanpa-po-dan-langsung-jadi?catid2915=%26ref=best_seller_switching_new_pa0_po2%26src=r3best_seller_switching&tid=ElwijGWBcLGOpFnBL54GzyduhKQ=&uid=16128240&unique_id=&utime=1611029545&widget=r3_widget&xdevice=lite-0.0",
+                "impression": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/9/4/9916328/9916328_fac1e7b9-0984-42bd-a0e3-ac52291063cf_1500_1500",
+                "cashback": "",
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": true,
+                  "imageUrl": "https://ecs7-p.tokopedia.net/img/ic_bebas_ongkir.png"
+                },
+                "labelGroup": [
+                  {
+                    "position": "best_seller",
+                    "title": "#2",
+                    "type": "#E1AA1D"
+                  }
+                ],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
               }
             ],
             "banner": {
@@ -198,1881 +781,135 @@
             "brand_id": ""
           },
           {
-            "id": 138582,
-            "name": "HOM2_ELK_BR-2110369_CB-50K_BD-1-SP-PER_211018",
-            "layout": "left_carousel",
-            "pageName": "manual_injection",
-            "type": "home",
+            "id": 38554,
+            "name": "4 Banners Auto - Exp 2 - L3 Discount",
+            "layout": "4_banners_auto",
+            "type": "inspiration",
             "campaignID": 0,
-            "widgetParam": "",
-            "contextualInfo": 1,
-            "campaignCode": "ele00022436_kee indonesia brand deals october_18october21-20october21",
+            "campaignCode": "",
             "header": {
-              "id": 157697,
-              "name": "Brand deals",
+              "id": 38793,
+              "name": "Spesial promo untukmu",
               "url": "",
               "applink": "",
               "serverTime": 0,
               "expiredTime": "",
               "backColor": "",
-              "backImage": "",
-              "subtitle": "",
-              "textColor": "#000000"
+              "backImage": ""
             },
             "hero": null,
             "grids": [
               {
-                "id": 797456153,
-                "name": "KEE Dompet Kulit Pria Dompet Lipat Wallet Vale Edition Black",
-                "url": "https://www.tokopedia.com/keeindonesia/kee-dompet-kulit-pria-dompet-lipat-wallet-vale-edition-black",
-                "applink": "tokopedia://product/797456153",
-                "price": "Rp 179.000",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/4/22/22046722/22046722_40819e01-345c-404f-8b5f-934845306c15_1200_1200",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4385\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d797456153\u0026pos\u003d1\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/keeindonesia/kee-dompet-kulit-pria-dompet-lipat-wallet-vale-edition-black?catid4385\u003d%26ref\u003dmanual_injection_pa0_po1%26src\u003dr3injection\u0026tid\u003dtzSsA9UkDtJOknjCfGepf0jPp4A\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/4/22/22046722/22046722_40819e01-345c-404f-8b5f-934845306c15_1200_1200",
-                "cashback": "",
-                "rating": 4,
-                "ratingAverage": "4.4",
-                "count_review": 19,
-                "warehouseID": 1966367,
-                "discountPercentage": 0,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2433388
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "price",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 27",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 662232232,
-                "name": "KEE Tas Kamera DSLR Mirrorless Larvae Edition 2.0 Navy",
-                "url": "https://www.tokopedia.com/keeindonesia/kee-tas-kamera-dslr-mirrorless-larvae-edition-2-0-navy",
-                "applink": "tokopedia://product/662232232",
-                "price": "Rp 189.000",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/21/baf694e3-de73-4812-bcef-7718b2d95784.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d3798\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d662232232\u0026pos\u003d2\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/keeindonesia/kee-tas-kamera-dslr-mirrorless-larvae-edition-2-0-navy?catid3798\u003d%26ref\u003dmanual_injection_pa0_po2%26src\u003dr3injection\u0026tid\u003dtzSsA9UkDtJOknjCfGepf0jPp4A\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/21/baf694e3-de73-4812-bcef-7718b2d95784.jpg",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.9",
-                "count_review": 16,
-                "warehouseID": 1966367,
-                "discountPercentage": 0,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2433388
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "price",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 20",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1431584949,
-                "name": "[BUNDLING] KEE Tas Ransel Kamera Alvar Backpack Green + Camera Insert",
-                "url": "https://www.tokopedia.com/keeindonesia/bundling-kee-tas-ransel-kamera-alvar-backpack-green-camera-insert",
-                "applink": "tokopedia://product/1431584949",
-                "price": "Rp 299.000",
-                "slashedPrice": "Rp 349.000",
-                "discount": "14%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/9/27/968e8295-4c66-4a11-a49c-afa744ed0651.png",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d3796\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1431584949\u0026pos\u003d3\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/keeindonesia/bundling-kee-tas-ransel-kamera-alvar-backpack-green-camera-insert?catid3796\u003d%26ref\u003dmanual_injection_pa0_po3%26src\u003dr3injection\u0026tid\u003dtzSsA9UkDtJOknjCfGepf0jPp4A\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/9/27/968e8295-4c66-4a11-a49c-afa744ed0651.png",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.9",
-                "count_review": 12,
-                "warehouseID": 1966367,
-                "discountPercentage": 14,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2433388
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 18",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1033140625,
-                "name": "KEE Tas Selempang Pria Sling Bag Waist Bag Waterproof Astro Black",
-                "url": "https://www.tokopedia.com/keeindonesia/kee-tas-selempang-pria-sling-bag-waist-bag-waterproof-astro-black",
-                "applink": "tokopedia://product/1033140625",
-                "price": "Rp 159.000",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/7/17/22046722/22046722_8a3a8ecb-f104-4fa8-aeaf-597115eb903b_1000_1000",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d1855\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1033140625\u0026pos\u003d4\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/keeindonesia/kee-tas-selempang-pria-sling-bag-waist-bag-waterproof-astro-black?catid1855\u003d%26ref\u003dmanual_injection_pa0_po4%26src\u003dr3injection\u0026tid\u003dtzSsA9UkDtJOknjCfGepf0jPp4A\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/7/17/22046722/22046722_8a3a8ecb-f104-4fa8-aeaf-597115eb903b_1000_1000",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.9",
-                "count_review": 194,
-                "warehouseID": 1966367,
-                "discountPercentage": 0,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2433388
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "price",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 264",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1612863334,
-                "name": "KEE Lila 3.0 Totebag Tas Tote Bag fit Laptop 13 inch 15 inch Navy - ToteBag fit 15\"",
-                "url": "https://www.tokopedia.com/keeindonesia/kee-lila-3-0-totebag-tas-tote-bag-fit-laptop-13-inch-15-inch-navy-totebag-fit-15",
-                "applink": "tokopedia://product/1612863334",
-                "price": "Rp 219.000",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/9/25/d6b05e4a-e550-4c08-9132-39dbaddc3225.png",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d1922\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1612863334\u0026pos\u003d5\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/keeindonesia/kee-lila-3-0-totebag-tas-tote-bag-fit-laptop-13-inch-15-inch-navy-totebag-fit-15?catid1922\u003d%26ref\u003dmanual_injection_pa0_po5%26src\u003dr3injection\u0026tid\u003dtzSsA9UkDtJOknjCfGepf0jPp4A\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/9/25/d6b05e4a-e550-4c08-9132-39dbaddc3225.png",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.9",
-                "count_review": 25,
-                "warehouseID": 1966367,
-                "discountPercentage": 0,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2433388
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "price",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 39",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 290125201,
-                "name": "Tas Kamera KEE (FREE RAINCOVER \u0026 DRAWSTRING BAG) (Green) - Hijau Tua",
-                "url": "https://www.tokopedia.com/keeindonesia/tas-kamera-kee-free-raincover-drawstring-bag-green-hijau-tua",
-                "applink": "tokopedia://product/290125201",
-                "price": "Rp 189.000",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2018/6/16/22046722/22046722_2fe63ba0-c57a-4b63-a966-6de05144f007_1997_1997.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d3798\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d290125201\u0026pos\u003d6\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/keeindonesia/tas-kamera-kee-free-raincover-drawstring-bag-green-hijau-tua?catid3798\u003d%26ref\u003dmanual_injection_pa0_po6%26src\u003dr3injection\u0026tid\u003dtzSsA9UkDtJOknjCfGepf0jPp4A\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2018/6/16/22046722/22046722_2fe63ba0-c57a-4b63-a966-6de05144f007_1997_1997.jpg",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.9",
-                "count_review": 104,
-                "warehouseID": 1966367,
-                "discountPercentage": 0,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2433388
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "price",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 180",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              }
-            ],
-            "banner": {
-              "id": 22200,
-              "title": "",
-              "description": "",
-              "url": "https://www.tokopedia.com/keeindonesia",
-              "cta": {
-                "type": "",
-                "mode": "",
-                "text": "",
-                "coupon_code": ""
-              },
-              "applink": "tokopedia://shop/2433388",
-              "text_color": "#ffffff",
-              "image_url": "https://images.tokopedia.net/img/cache/240/PYbRbC/2021/10/15/6797c9bf-9c05-463a-965e-b3f25d442f3b.png",
-              "back_color": "#D1D3CF",
-              "gradient_color": [
-                "#D1D3CF",
-                "#808080"
-              ],
-              "attribution": "HOM2_ELK_BR-2110369_CB-50K_BD-1-SP-PER_211018"
-            },
-            "galaxy_attribution": "PG",
-            "persona": "",
-            "category_persona": "",
-            "brand_id": "2433388"
-          },
-          {
-            "id": 138585,
-            "name": "HOM2_ASH_BR-2110388_DC-70P_BD-2-SP-PER_211018",
-            "layout": "left_carousel",
-            "pageName": "manual_injection",
-            "type": "home",
-            "campaignID": 0,
-            "widgetParam": "",
-            "contextualInfo": 1,
-            "campaignCode": "thco0002106",
-            "header": {
-              "id": 157700,
-              "name": "",
-              "url": "",
-              "applink": "",
-              "serverTime": 0,
-              "expiredTime": "",
-              "backColor": "",
-              "backImage": "",
-              "subtitle": "",
-              "textColor": "#000000"
-            },
-            "hero": null,
-            "grids": [
-              {
-                "id": 2081549756,
-                "name": "CLEAR SALE Raket Badminton Victor Hypernano X 900X / HX 900 X",
-                "url": "https://www.tokopedia.com/sportscenter/clear-sale-raket-badminton-victor-hypernano-x-900x-hx-900-x",
-                "applink": "tokopedia://product/2081549756",
-                "price": "Rp 1.600.000",
-                "slashedPrice": "Rp 3.100.000",
-                "discount": "48%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/17/f7d97b6c-ccd5-4dde-8da4-e4334e505780.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d1395\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d2081549756\u0026pos\u003d1\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/sportscenter/clear-sale-raket-badminton-victor-hypernano-x-900x-hx-900-x?catid1395\u003d%26ref\u003dmanual_injection_pa0_po1%26src\u003dr3injection\u0026tid\u003dFjYBu8jBaDhcPREfJ3AHx6gTAJo\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/17/f7d97b6c-ccd5-4dde-8da4-e4334e505780.jpg",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.8",
-                "count_review": 37,
-                "warehouseID": 237432,
-                "discountPercentage": 48,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 11292
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 46",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "campaign",
-                    "title": "Sportacular",
-                    "type": "",
-                    "url": "https://images.tokopedia.net/img/phOWBv/2021/10/15/68ae951b-2308-4599-aa2a-b91e8e2d9bd8.png"
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 20 - 22 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 2080694007,
-                "name": "CLEAR SALE Raket Badminton Victor Thruster K 9900 / TK 9900 / TK-9900",
-                "url": "https://www.tokopedia.com/sportscenter/clear-sale-raket-badminton-victor-thruster-k-9900-tk-9900-tk-9900",
-                "applink": "tokopedia://product/2080694007",
-                "price": "Rp 1.600.000",
-                "slashedPrice": "Rp 2.990.000",
-                "discount": "46%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/17/33ae463a-1661-48f3-b0ba-f5ec40f49ea7.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d1395\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d2080694007\u0026pos\u003d2\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/sportscenter/clear-sale-raket-badminton-victor-thruster-k-9900-tk-9900-tk-9900?catid1395\u003d%26ref\u003dmanual_injection_pa0_po2%26src\u003dr3injection\u0026tid\u003dFjYBu8jBaDhcPREfJ3AHx6gTAJo\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/17/33ae463a-1661-48f3-b0ba-f5ec40f49ea7.jpg",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.8",
-                "count_review": 13,
-                "warehouseID": 237432,
-                "discountPercentage": 46,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 11292
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 18",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 20 - 22 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1951814993,
-                "name": "NEW !! Sepatu Badminton Victor VG1 / VG-1 / VG 1 Black",
-                "url": "https://www.tokopedia.com/sportscenter/new-sepatu-badminton-victor-vg1-vg-1-vg-1-black",
-                "applink": "tokopedia://product/1951814993",
-                "price": "Rp 1.510.000",
-                "slashedPrice": "Rp 1.897.000",
-                "discount": "20%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/26/8a982a12-bf29-4972-a8dc-eade5f9f1a58.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d1397\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1951814993\u0026pos\u003d3\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/sportscenter/new-sepatu-badminton-victor-vg1-vg-1-vg-1-black?catid1397\u003d%26ref\u003dmanual_injection_pa0_po3%26src\u003dr3injection\u0026tid\u003dFjYBu8jBaDhcPREfJ3AHx6gTAJo\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/6/26/8a982a12-bf29-4972-a8dc-eade5f9f1a58.jpg",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "5.0",
-                "count_review": 4,
-                "warehouseID": 237432,
-                "discountPercentage": 20,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 11292
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 12",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 20 - 22 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 634880740,
-                "name": "PROMO !! Kaos Kaki Victor ASK109 / ASK 109",
-                "url": "https://www.tokopedia.com/sportscenter/promo-kaos-kaki-victor-ask109-ask-109",
-                "applink": "tokopedia://product/634880740",
-                "price": "Rp 52.000",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2019/12/19/11292/11292_896ee7ec-2a83-44cc-82e4-03897ac6eba2_2048_2048.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d1397\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d634880740\u0026pos\u003d4\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/sportscenter/promo-kaos-kaki-victor-ask109-ask-109?catid1397\u003d%26ref\u003dmanual_injection_pa0_po4%26src\u003dr3injection\u0026tid\u003dFjYBu8jBaDhcPREfJ3AHx6gTAJo\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2019/12/19/11292/11292_896ee7ec-2a83-44cc-82e4-03897ac6eba2_2048_2048.jpg",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.9",
-                "count_review": 225,
-                "warehouseID": 237432,
-                "discountPercentage": 0,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 11292
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "price",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 583",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 20 - 22 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 2076206668,
-                "name": "CLEAR SALE Raket Badminton Victor Hypernano X 800 Ltd P / Power",
-                "url": "https://www.tokopedia.com/sportscenter/clear-sale-raket-badminton-victor-hypernano-x-800-ltd-p-power",
-                "applink": "tokopedia://product/2076206668",
-                "price": "Rp 1.600.000",
-                "slashedPrice": "Rp 3.250.000",
-                "discount": "51%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/15/42083855-f0cc-4d0a-9f24-f1378986528c.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d1395\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d2076206668\u0026pos\u003d5\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/sportscenter/clear-sale-raket-badminton-victor-hypernano-x-800-ltd-p-power?catid1395\u003d%26ref\u003dmanual_injection_pa0_po5%26src\u003dr3injection\u0026tid\u003dFjYBu8jBaDhcPREfJ3AHx6gTAJo\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/15/42083855-f0cc-4d0a-9f24-f1378986528c.jpg",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "5.0",
-                "count_review": 10,
-                "warehouseID": 237432,
-                "discountPercentage": 51,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 11292
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 12",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 20 - 22 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 2073480054,
-                "name": "CLEAR SALE Raket Badminton Victor Jetspeed S 11 / JS11 / JS 11 D",
-                "url": "https://www.tokopedia.com/sportscenter/clear-sale-raket-badminton-victor-jetspeed-s-11-js11-js-11-d",
-                "applink": "tokopedia://product/2073480054",
-                "price": "Rp 1.400.000",
-                "slashedPrice": "Rp 2.955.000",
-                "discount": "53%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/14/9d6a84f9-ede6-41ab-a10f-43a909a21e12.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d1395\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d2073480054\u0026pos\u003d6\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/sportscenter/clear-sale-raket-badminton-victor-jetspeed-s-11-js11-js-11-d?catid1395\u003d%26ref\u003dmanual_injection_pa0_po6%26src\u003dr3injection\u0026tid\u003dFjYBu8jBaDhcPREfJ3AHx6gTAJo\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/14/9d6a84f9-ede6-41ab-a10f-43a909a21e12.jpg",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.9",
-                "count_review": 9,
-                "warehouseID": 237432,
-                "discountPercentage": 53,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 11292
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 13",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 20 - 22 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              }
-            ],
-            "banner": {
-              "id": 22203,
-              "title": "",
-              "description": "",
-              "url": "https://www.tokopedia.com/sportscenter",
-              "cta": {
-                "type": "",
-                "mode": "",
-                "text": "",
-                "coupon_code": ""
-              },
-              "applink": "tokopedia://shop/11292",
-              "text_color": "#ffffff",
-              "image_url": "https://images.tokopedia.net/img/cache/240/PYbRbC/2021/10/15/d762e23e-96dd-4d63-8c72-b3bb3164b21a.png",
-              "back_color": "#E35255",
-              "gradient_color": [
-                "#E35255",
-                "#B8393D"
-              ],
-              "attribution": "HOM2_ASH_BR-2110388_DC-70P_BD-2-SP-PER_211018"
-            },
-            "galaxy_attribution": "PG",
-            "persona": "",
-            "category_persona": "",
-            "brand_id": "11292"
-          },
-          {
-            "id": 138586,
-            "name": "HOM2_HL_BR-2110271_DC-50P_BD-2-SP-PER_211018",
-            "layout": "left_carousel",
-            "pageName": "manual_injection",
-            "type": "home",
-            "campaignID": 0,
-            "widgetParam": "",
-            "contextualInfo": 1,
-            "campaignCode": "hml00022418_otten exclusive tumbler tokopedia_18october21-31march22",
-            "header": {
-              "id": 157701,
-              "name": "",
-              "url": "",
-              "applink": "",
-              "serverTime": 0,
-              "expiredTime": "",
-              "backColor": "",
-              "backImage": "",
-              "subtitle": "",
-              "textColor": "#000000"
-            },
-            "hero": null,
-            "grids": [
-              {
-                "id": 2291723035,
-                "name": "Kopi Cold Brew - Arabica Aceh Gayo (Exclusive Tumbler Tokopedia)",
-                "url": "https://www.tokopedia.com/ottenjakarta/kopi-cold-brew-arabica-aceh-gayo-exclusive-tumbler-tokopedia-anaerob-natural",
-                "applink": "tokopedia://product/2291723035",
-                "price": "Rp 93.000",
-                "slashedPrice": "Rp 186.000",
-                "discount": "50%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/fc1f84cd-2f95-40a3-9e6d-835d73581e45.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2788\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d2291723035\u0026pos\u003d1\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/ottenjakarta/kopi-cold-brew-arabica-aceh-gayo-exclusive-tumbler-tokopedia-anaerob-natural?catid2788\u003d%26ref\u003dmanual_injection_pa0_po1%26src\u003dr3injection\u0026tid\u003dr_c99Bii3oskJqS7q1VbT6HFoUg\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/fc1f84cd-2f95-40a3-9e6d-835d73581e45.jpg",
-                "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 114599,
-                "discountPercentage": 50,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 3564604
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "credibility",
-                    "title": "Terbaru",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "gimmick",
-                    "title": "Produk Terbaru",
-                    "type": "textDarkOrange",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 10",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 2292160283,
-                "name": "Kopi Cold Brew - Arabica Bali Kintamani (Exclusive Tumbler Tokopedia)",
-                "url": "https://www.tokopedia.com/ottenjakarta/kopi-cold-brew-arabica-bali-kintamani-exclusive-tumbler-tokopedia-full-washed",
-                "applink": "tokopedia://product/2292160283",
-                "price": "Rp 93.000",
-                "slashedPrice": "Rp 186.000",
-                "discount": "50%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/fbe65c97-1587-43be-b6e3-cee7c58eaa62.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2788\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d2292160283\u0026pos\u003d2\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/ottenjakarta/kopi-cold-brew-arabica-bali-kintamani-exclusive-tumbler-tokopedia-full-washed?catid2788\u003d%26ref\u003dmanual_injection_pa0_po2%26src\u003dr3injection\u0026tid\u003dr_c99Bii3oskJqS7q1VbT6HFoUg\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/fbe65c97-1587-43be-b6e3-cee7c58eaa62.jpg",
-                "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 114599,
-                "discountPercentage": 50,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 3564604
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "credibility",
-                    "title": "Terbaru",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "gimmick",
-                    "title": "Produk Terbaru",
-                    "type": "textDarkOrange",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 8",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 2291786587,
-                "name": "Kopi Cold Brew - Arabica Sidikalang (Exclusive Tumbler Tokopedia)",
-                "url": "https://www.tokopedia.com/ottenjakarta/kopi-cold-brew-arabica-sidikalang-exclusive-tumbler-tokopedia-semi-washed",
-                "applink": "tokopedia://product/2291786587",
-                "price": "Rp 93.000",
-                "slashedPrice": "Rp 186.000",
-                "discount": "50%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/9a093d01-901e-473f-949a-eb4583a3808b.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2788\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d2291786587\u0026pos\u003d3\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/ottenjakarta/kopi-cold-brew-arabica-sidikalang-exclusive-tumbler-tokopedia-semi-washed?catid2788\u003d%26ref\u003dmanual_injection_pa0_po3%26src\u003dr3injection\u0026tid\u003dr_c99Bii3oskJqS7q1VbT6HFoUg\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/9a093d01-901e-473f-949a-eb4583a3808b.jpg",
-                "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 114599,
-                "discountPercentage": 50,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 3564604
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "credibility",
-                    "title": "Terbaru",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "gimmick",
-                    "title": "Produk Terbaru",
-                    "type": "textDarkOrange",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 1",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              }
-            ],
-            "banner": {
-              "id": 22204,
-              "title": "",
-              "description": "",
-              "url": "https://www.tokopedia.com/ottenjakarta",
-              "cta": {
-                "type": "",
-                "mode": "",
-                "text": "",
-                "coupon_code": ""
-              },
-              "applink": "tokopedia://shop/3564604",
-              "text_color": "#ffffff",
-              "image_url": "https://images.tokopedia.net/img/cache/240/PYbRbC/2021/10/15/c24ace36-d584-474c-833e-b31f9177f911.png",
-              "back_color": "#45b448",
-              "gradient_color": [
-                "#45b448",
-                "#74c044"
-              ],
-              "attribution": "HOM2_HL_BR-2110271_DC-50P_BD-2-SP-PER_211018"
-            },
-            "galaxy_attribution": "PG",
-            "persona": "",
-            "category_persona": "",
-            "brand_id": "3564604"
-          },
-          {
-            "id": 138587,
-            "name": "HOM2_CTK_BR-2110291_DC-40P_BD-2-SP-PER_211018",
-            "layout": "left_carousel",
-            "pageName": "manual_injection",
-            "type": "home",
-            "campaignID": 0,
-            "widgetParam": "",
-            "contextualInfo": 1,
-            "campaignCode": "bea00022690_tescom_18october21-20october21",
-            "header": {
-              "id": 157702,
-              "name": "",
-              "url": "",
-              "applink": "",
-              "serverTime": 0,
-              "expiredTime": "",
-              "backColor": "",
-              "backImage": "",
-              "subtitle": "",
-              "textColor": "#31353b"
-            },
-            "hero": null,
-            "grids": [
-              {
-                "id": 1919507631,
-                "name": "TESCOM Pengering Rambut NTID721 Ion Hair Dryer (Low Noise Model) - Regular",
-                "url": "https://www.tokopedia.com/tescom/tescom-pengering-rambut-ntid721-ion-hair-dryer-low-noise-model-regular",
-                "applink": "tokopedia://product/1919507631",
-                "price": "Rp 499.000",
-                "slashedPrice": "Rp 699.000",
-                "discount": "29%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/29/24067173/24067173_b1da5909-9c60-409a-8449-8ad8b3c93013_800_800",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2252\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1919507631\u0026pos\u003d1\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/tescom/tescom-pengering-rambut-ntid721-ion-hair-dryer-low-noise-model-regular?catid2252\u003d%26ref\u003dmanual_injection_pa0_po1%26src\u003dr3injection\u0026tid\u003dIPLqVfqGX_gNi8bTvCXLXNtYHqU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/29/24067173/24067173_b1da5909-9c60-409a-8449-8ad8b3c93013_800_800",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.9",
-                "count_review": 341,
-                "warehouseID": 2150414,
-                "discountPercentage": 29,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2661512
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 673",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1919483376,
-                "name": "TESCOM Pengering Rambut Ion Hair Dryer NTID 292 - Regular",
-                "url": "https://www.tokopedia.com/tescom/tescom-pengering-rambut-ion-hair-dryer-ntid-292-regular",
-                "applink": "tokopedia://product/1919483376",
-                "price": "Rp 399.000",
-                "slashedPrice": "Rp 499.000",
-                "discount": "20%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/8/ecc91718-629d-4962-af5d-1aa7ec2d7d4b.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2252\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1919483376\u0026pos\u003d2\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/tescom/tescom-pengering-rambut-ion-hair-dryer-ntid-292-regular?catid2252\u003d%26ref\u003dmanual_injection_pa0_po2%26src\u003dr3injection\u0026tid\u003dIPLqVfqGX_gNi8bTvCXLXNtYHqU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/3/8/ecc91718-629d-4962-af5d-1aa7ec2d7d4b.jpg",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.9",
-                "count_review": 190,
-                "warehouseID": 2150414,
-                "discountPercentage": 20,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2661512
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 399",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1919533559,
-                "name": "Tescom Catokan Pengeriting Rambut - 3 Ways Hair Iron NTIR1650 - Regular",
-                "url": "https://www.tokopedia.com/tescom/tescom-catokan-pengeriting-rambut-3-ways-hair-iron-ntir1650-regular",
-                "applink": "tokopedia://product/1919533559",
-                "price": "Rp 899.000",
-                "slashedPrice": "Rp 1.199.000",
-                "discount": "25%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/30/24067173/24067173_cf653b42-61f2-43a5-a92d-6cf7b27dbdda_800_800",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2630\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1919533559\u0026pos\u003d3\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/tescom/tescom-catokan-pengeriting-rambut-3-ways-hair-iron-ntir1650-regular?catid2630\u003d%26ref\u003dmanual_injection_pa0_po3%26src\u003dr3injection\u0026tid\u003dIPLqVfqGX_gNi8bTvCXLXNtYHqU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/30/24067173/24067173_cf653b42-61f2-43a5-a92d-6cf7b27dbdda_800_800",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "5.0",
-                "count_review": 52,
-                "warehouseID": 2150414,
-                "discountPercentage": 25,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2661512
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 148",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1919468811,
-                "name": "Tescom Ionic Curl Dryer - NBIC40 - Regular",
-                "url": "https://www.tokopedia.com/tescom/tescom-ionic-curl-dryer-nbic40-regular",
-                "applink": "tokopedia://product/1919468811",
-                "price": "Rp 699.000",
-                "slashedPrice": "Rp 999.000",
-                "discount": "30%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/30/24067173/24067173_0f432037-dbbc-48bb-b1b3-c2acba6f7550_800_800",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2252\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1919468811\u0026pos\u003d4\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/tescom/tescom-ionic-curl-dryer-nbic40-regular?catid2252\u003d%26ref\u003dmanual_injection_pa0_po4%26src\u003dr3injection\u0026tid\u003dIPLqVfqGX_gNi8bTvCXLXNtYHqU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/30/24067173/24067173_0f432037-dbbc-48bb-b1b3-c2acba6f7550_800_800",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.9",
-                "count_review": 66,
-                "warehouseID": 2150414,
-                "discountPercentage": 30,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2661512
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 193",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1919530191,
-                "name": "TESCOM NTIR1832 NEGATIVE IONS 2 WAYS HAIR/Catokan Pengeriting Rambut - Regular",
-                "url": "https://www.tokopedia.com/tescom/tescom-ntir1832-negative-ions-2-ways-hair-catokan-pengeriting-rambut-regular",
-                "applink": "tokopedia://product/1919530191",
-                "price": "Rp 799.000",
-                "slashedPrice": "Rp 1.099.000",
-                "discount": "27%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/25/24067173/24067173_1a4f483b-0455-4cf0-97fc-4206b5c3ab6f_2048_2047",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2253\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1919530191\u0026pos\u003d5\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/tescom/tescom-ntir1832-negative-ions-2-ways-hair-catokan-pengeriting-rambut-regular?catid2253\u003d%26ref\u003dmanual_injection_pa0_po5%26src\u003dr3injection\u0026tid\u003dIPLqVfqGX_gNi8bTvCXLXNtYHqU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/25/24067173/24067173_1a4f483b-0455-4cf0-97fc-4206b5c3ab6f_2048_2047",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "5.0",
-                "count_review": 33,
-                "warehouseID": 2150414,
-                "discountPercentage": 27,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2661512
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 90",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1919471170,
-                "name": "Tescom Professional Protect Curling Iron-NIM3032 / Catokan Pengeriting - Regular",
-                "url": "https://www.tokopedia.com/tescom/tescom-professional-protect-curling-iron-nim3032-catokan-pengeriting-regular",
-                "applink": "tokopedia://product/1919471170",
-                "price": "Rp 1.199.000",
-                "slashedPrice": "Rp 1.599.000",
-                "discount": "25%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/30/24067173/24067173_7d733e8b-7544-4121-bff5-3833bcc8dcc8_800_800",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2630\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1919471170\u0026pos\u003d6\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/tescom/tescom-professional-protect-curling-iron-nim3032-catokan-pengeriting-regular?catid2630\u003d%26ref\u003dmanual_injection_pa0_po6%26src\u003dr3injection\u0026tid\u003dIPLqVfqGX_gNi8bTvCXLXNtYHqU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/30/24067173/24067173_7d733e8b-7544-4121-bff5-3833bcc8dcc8_800_800",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.8",
-                "count_review": 12,
-                "warehouseID": 2150414,
-                "discountPercentage": 25,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2661512
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 40",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1919526648,
-                "name": "TESCOM NTIR1805 - NEGATIVE IONIC HAIR IRON / Catokan Pelurus Rambut - Regular",
-                "url": "https://www.tokopedia.com/tescom/tescom-ntir1805-negative-ionic-hair-iron-catokan-pelurus-rambut-regular",
-                "applink": "tokopedia://product/1919526648",
-                "price": "Rp 999.000",
-                "slashedPrice": "Rp 1.399.000",
-                "discount": "29%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/25/24067173/24067173_1abfdf38-c936-41ff-873c-ad9052ae4d63_2048_2047",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2253\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1919526648\u0026pos\u003d7\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/tescom/tescom-ntir1805-negative-ionic-hair-iron-catokan-pelurus-rambut-regular?catid2253\u003d%26ref\u003dmanual_injection_pa0_po7%26src\u003dr3injection\u0026tid\u003dIPLqVfqGX_gNi8bTvCXLXNtYHqU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/25/24067173/24067173_1abfdf38-c936-41ff-873c-ad9052ae4d63_2048_2047",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "5.0",
-                "count_review": 27,
-                "warehouseID": 2150414,
-                "discountPercentage": 29,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2661512
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 46",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 1919540759,
-                "name": "TESCOM Negative Ion Multi Hair Iron - NTIR 2610 - Regular",
-                "url": "https://www.tokopedia.com/tescom/tescom-negative-ion-multi-hair-iron-ntir-2610-regular",
-                "applink": "tokopedia://product/1919540759",
-                "price": "Rp 899.000",
-                "slashedPrice": "Rp 1.499.000",
-                "discount": "40%",
-                "imageUrl": "https://images.tokopedia.net/img/cache/300-square/product-1/2017/11/1/24067173/24067173_3abc0cd6-3216-442d-93db-774021a38b79_800_800.jpg",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "",
-                "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d2253\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d0\u0026page_name\u003dmanual_injection\u0026pid\u003d1919540759\u0026pos\u003d8\u0026recommendation\u003dinjection\u0026rectype\u003dinjection\u0026redirect\u003dhttps://www.tokopedia.com/tescom/tescom-negative-ion-multi-hair-iron-ntir-2610-regular?catid2253\u003d%26ref\u003dmanual_injection_pa0_po8%26src\u003dr3injection\u0026tid\u003dIPLqVfqGX_gNi8bTvCXLXNtYHqU\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1634563255\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
-                "impression": "https://images.tokopedia.net/img/cache/300-square/product-1/2017/11/1/24067173/24067173_3abc0cd6-3216-442d-93db-774021a38b79_800_800.jpg",
-                "cashback": "",
-                "rating": 5,
-                "ratingAverage": "4.8",
-                "count_review": 34,
-                "warehouseID": 2150414,
-                "discountPercentage": 40,
-                "freeOngkir": {
-                  "isActive": true,
-                  "imageUrl": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
-                },
-                "shop": {
-                  "shopID": 2661512
-                },
-                "campaignCode": "",
-                "labelGroup": [
-                  {
-                    "position": "promo",
-                    "title": "Gratis Ongkir",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "promo",
-                    "title": "Cashback",
-                    "type": "lightGreen",
-                    "url": ""
-                  },
-                  {
-                    "position": "gimmick",
-                    "title": "Sisa 3",
-                    "type": "textDarkRed",
-                    "url": ""
-                  },
-                  {
-                    "position": "integrity",
-                    "title": "Terjual 134",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  },
-                  {
-                    "position": "eta",
-                    "title": "Tiba 19 - 21 Oct",
-                    "type": "textDarkGrey",
-                    "url": ""
-                  }
-                ],
-                "back_color": "",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              }
-            ],
-            "banner": {
-              "id": 22205,
-              "title": "",
-              "description": "",
-              "url": "https://www.tokopedia.com/tescom",
-              "cta": {
-                "type": "",
-                "mode": "",
-                "text": "",
-                "coupon_code": ""
-              },
-              "applink": "tokopedia://shop/2661512",
-              "text_color": "#ffffff",
-              "image_url": "https://images.tokopedia.net/img/cache/240/PYbRbC/2021/10/14/623144c7-432b-445a-a6d2-f279cfa4a6a1.png",
-              "back_color": "#ff4d6b",
-              "gradient_color": [
-                "#ff4d6b",
-                "#E82d55"
-              ],
-              "attribution": "HOM2_CTK_BR-2110291_DC-40P_BD-2-SP-PER_211018"
-            },
-            "galaxy_attribution": "PG",
-            "persona": "",
-            "category_persona": "",
-            "brand_id": "2661512"
-          },
-          {
-            "id": 138581,
-            "name": "HOM2_PG_EL-2110439_PL-NA_EC-1-SP-ALL1_211018",
-            "layout": "6_image",
-            "pageName": "",
-            "type": "home",
-            "campaignID": 0,
-            "widgetParam": "",
-            "contextualInfo": 1,
-            "campaignCode": "thco0002424",
-            "header": {
-              "id": 157696,
-              "name": "Eksklusif di Tokopedia",
-              "url": "",
-              "applink": "",
-              "serverTime": 0,
-              "expiredTime": "",
-              "backColor": "",
-              "backImage": "",
-              "subtitle": "",
-              "textColor": "#31353b"
-            },
-            "hero": null,
-            "grids": [
-              {
-                "id": 371411,
-                "name": "",
-                "url": "https://www.tokopedia.com/blackmores",
-                "applink": "tokopedia://shop/7195967",
+                "id": 2916,
+                "name": "Hampers",
+                "url": "https://m.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_discount=75&category_id=2916&search_ref=homepage.4_banners_auto.1.2916.38554",
+                "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_discount=75&category_id=2916&search_ref=homepage.4_banners_auto.1.2916.38554",
                 "price": "",
                 "slashedPrice": "",
                 "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/400-square/phZFtb/2021/10/17/4fc6f5d9-a8db-43c8-9622-e02e7137ee73.jpg.webp",
+                "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2019/6/27/2916/2916_5ed6face-ad51-4698-8140-568c75611baf.png",
                 "label": "",
                 "soldPercentage": 0,
-                "attribution": "HOM2_PG_EL-2110439_PL-NA_EC-1-SP-ALL1_211018",
+                "attribution": "",
                 "productClickUrl": "",
                 "impression": "",
                 "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 0,
                 "discountPercentage": 0,
                 "freeOngkir": {
                   "isActive": false,
                   "imageUrl": ""
                 },
-                "shop": {
-                  "shopID": 0
-                },
-                "campaignCode": "",
                 "labelGroup": [],
-                "back_color": "#003b6b",
-                "productImageUrl": "",
                 "benefit": {
-                  "type": "",
-                  "value": ""
-                }
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
               },
               {
-                "id": 371412,
-                "name": "",
-                "url": "https://www.tokopedia.com/blackmores",
-                "applink": "tokopedia://shop/7195967",
+                "id": 4182,
+                "name": "Semen",
+                "url": "https://m.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_discount=35&category_id=4182&search_ref=homepage.4_banners_auto.1.4182.38554",
+                "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_discount=35&category_id=4182&search_ref=homepage.4_banners_auto.1.4182.38554",
                 "price": "",
                 "slashedPrice": "",
                 "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/400-square/phZFtb/2021/10/17/fec0140d-56b0-4085-9f5e-d881c7ab344d.jpg.webp",
+                "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2019/2/15/4182/4182_5d460f01-49b5-401d-9fd4-9d594d075f6d.png",
                 "label": "",
                 "soldPercentage": 0,
-                "attribution": "HOM2_PG_EL-2110439_PL-NA_EC-1-SP-ALL1_211018",
+                "attribution": "",
                 "productClickUrl": "",
                 "impression": "",
                 "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 0,
                 "discountPercentage": 0,
                 "freeOngkir": {
                   "isActive": false,
                   "imageUrl": ""
                 },
-                "shop": {
-                  "shopID": 0
-                },
-                "campaignCode": "",
                 "labelGroup": [],
-                "back_color": "#003b6b",
-                "productImageUrl": "",
                 "benefit": {
-                  "type": "",
-                  "value": ""
-                }
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
               },
               {
-                "id": 371413,
-                "name": "",
-                "url": "https://www.tokopedia.com/blackmores/study-buddy-package",
-                "applink": "tokopedia://product/2031636687",
+                "id": 1038,
+                "name": "Kotak",
+                "url": "https://m.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_discount=80&category_id=1038&search_ref=homepage.4_banners_auto.1.1038.38554",
+                "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_discount=80&category_id=1038&search_ref=homepage.4_banners_auto.1.1038.38554",
                 "price": "",
                 "slashedPrice": "",
                 "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/400-square/phZFtb/2021/10/17/f83dd3ad-5564-448e-8bc5-e2f6a5c85ced.jpg.webp",
+                "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2017/10/3/1038/1038_8057e951-77e2-4e33-a89c-3804da5d614d.jpg",
                 "label": "",
                 "soldPercentage": 0,
-                "attribution": "HOM2_PG_EL-2110439_PL-NA_EC-1-SP-ALL1_211018",
+                "attribution": "",
                 "productClickUrl": "",
                 "impression": "",
                 "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 0,
                 "discountPercentage": 0,
                 "freeOngkir": {
                   "isActive": false,
                   "imageUrl": ""
                 },
-                "shop": {
-                  "shopID": 0
-                },
-                "campaignCode": "",
                 "labelGroup": [],
-                "back_color": "#003b6b",
-                "productImageUrl": "",
                 "benefit": {
-                  "type": "",
-                  "value": ""
-                }
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
               },
               {
-                "id": 371414,
-                "name": "",
-                "url": "https://www.tokopedia.com/blackmores",
-                "applink": "tokopedia://shop/7195967",
+                "id": 2164,
+                "name": "Pasta Gigi",
+                "url": "https://m.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_discount=62&category_id=2164&search_ref=homepage.4_banners_auto.1.2164.38554",
+                "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_discount=62&category_id=2164&search_ref=homepage.4_banners_auto.1.2164.38554",
                 "price": "",
                 "slashedPrice": "",
                 "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/400-square/phZFtb/2021/10/17/11eafef6-77dd-465b-bbd2-f5e2535b2fbd.jpg.webp",
+                "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2017/8/30/2164/2164_e2e9a2bc-a4d2-4d45-b1a4-3f49cb904355.jpg",
                 "label": "",
                 "soldPercentage": 0,
-                "attribution": "HOM2_PG_EL-2110439_PL-NA_EC-1-SP-ALL1_211018",
+                "attribution": "",
                 "productClickUrl": "",
                 "impression": "",
                 "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 0,
                 "discountPercentage": 0,
                 "freeOngkir": {
                   "isActive": false,
                   "imageUrl": ""
                 },
-                "shop": {
-                  "shopID": 0
-                },
-                "campaignCode": "",
                 "labelGroup": [],
-                "back_color": "#003b6b",
-                "productImageUrl": "",
                 "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 371415,
-                "name": "",
-                "url": "https://www.tokopedia.com/blackmores",
-                "applink": "tokopedia://shop/7195967",
-                "price": "",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/400-square/phZFtb/2021/10/17/73dfa134-860d-4dee-adac-7918b9a12f2c.jpg.webp",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "HOM2_PG_EL-2110439_PL-NA_EC-1-SP-ALL1_211018",
-                "productClickUrl": "",
-                "impression": "",
-                "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 0,
-                "discountPercentage": 0,
-                "freeOngkir": {
-                  "isActive": false,
-                  "imageUrl": ""
+                  "type": "Diskon Hingga",
+                  "value": "50%"
                 },
-                "shop": {
-                  "shopID": 0
-                },
-                "campaignCode": "",
-                "labelGroup": [],
-                "back_color": "#003b6b",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
-              },
-              {
-                "id": 371416,
-                "name": "",
-                "url": "https://www.tokopedia.com/blackmores/study-buddy-package",
-                "applink": "tokopedia://product/2031636687",
-                "price": "",
-                "slashedPrice": "",
-                "discount": "",
-                "imageUrl": "https://images.tokopedia.net/img/cache/400-square/phZFtb/2021/10/17/7e1c764b-0961-494b-9d5c-fb1085ac2299.jpg.webp",
-                "label": "",
-                "soldPercentage": 0,
-                "attribution": "HOM2_PG_EL-2110439_PL-NA_EC-1-SP-ALL1_211018",
-                "productClickUrl": "",
-                "impression": "",
-                "cashback": "",
-                "rating": 0,
-                "ratingAverage": "",
-                "count_review": 0,
-                "warehouseID": 0,
-                "discountPercentage": 0,
-                "freeOngkir": {
-                  "isActive": false,
-                  "imageUrl": ""
-                },
-                "shop": {
-                  "shopID": 0
-                },
-                "campaignCode": "",
-                "labelGroup": [],
-                "back_color": "#003b6b",
-                "productImageUrl": "",
-                "benefit": {
-                  "type": "",
-                  "value": ""
-                }
+                "back_color": "",
+                "productImageUrl": ""
               }
             ],
             "banner": {
@@ -2098,7 +935,321 @@
             "galaxy_attribution": "PG",
             "persona": "",
             "category_persona": "",
-            "brand_id": "7195967"
+            "brand_id": ""
+          },
+          {
+            "id": 41291,
+            "name": "Category Widget Automation App",
+            "layout": "category_widget",
+            "type": "inspiration",
+            "campaignID": 0,
+            "campaignCode": "",
+            "header": {
+              "id": 41530,
+              "name": "Kategori pilihan",
+              "url": "https://m.tokopedia.com/kategori-belanja",
+              "applink": "tokopedia://category-explore?type=1&source=homepage.category_widget.0.40032",
+              "serverTime": 0,
+              "expiredTime": "",
+              "backColor": "",
+              "backImage": ""
+            },
+            "hero": null,
+            "grids": [
+              {
+                "id": 1759,
+                "name": "Fashion Pria",
+                "url": "https://www.tokopedia.com/p/fashion-pria",
+                "applink": "tokopedia://category/1759?categoryName=Fashion+Pria",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/350/attachment/2020/8/24/40768394/40768394_fd64954a-4e24-4b1a-ac19-be1d7a0fbaf8.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 62,
+                "name": "Olahraga",
+                "url": "https://www.tokopedia.com/p/olahraga",
+                "applink": "tokopedia://category/62?categoryName=Olahraga",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/350/attachment/2020/8/24/40768394/40768394_8d48c23a-3090-4c71-abfa-2c637003c1e2.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              }
+            ],
+            "banner": {
+              "id": 0,
+              "title": "",
+              "description": "",
+              "url": "",
+              "cta": {
+                "type": "",
+                "mode": "",
+                "text": "",
+                "coupon_code": ""
+              },
+              "applink": "",
+              "text_color": "",
+              "image_url": "",
+              "back_color": "",
+              "gradient_color": [
+                "#FFFFFF"
+              ],
+              "attribution": ""
+            },
+            "galaxy_attribution": "PG",
+            "persona": "Others",
+            "category_persona": "69,1517,497,2121,1875,500,744,498,2102,752",
+            "brand_id": ""
+          },
+          {
+            "id": 67891,
+            "name": "Official Store X_PG_OS_Fashion_DC-75P_Lego 6_Perso_19Jan",
+            "layout": "6_image",
+            "type": "inspiration",
+            "campaignID": 0,
+            "campaignCode": "fas00008494_dept store fair os_18january21-20january21",
+            "header": {
+              "id": 68132,
+              "name": "Official Store",
+              "url": "https://m.tokopedia.com/official-store",
+              "applink": "tokopedia://official-store/mobile?source=homepage.6_image.0.61422",
+              "serverTime": 0,
+              "expiredTime": "",
+              "backColor": "",
+              "backImage": ""
+            },
+            "hero": null,
+            "grids": [
+              {
+                "id": 240211,
+                "name": "",
+                "url": "https://m.tokopedia.com/discovery/department-store-fair-female",
+                "applink": "tokopedia://discovery/department-store-fair-female?source=homepage.6_image.0.67891",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/400-square/phZFtb/2021/1/18/8a9c3c56-f783-4604-8041-05036d36c3a1.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "X_PG_OS_Fashion_DC-75P_Lego 6_Perso_19Jan",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 240212,
+                "name": "",
+                "url": "https://m.tokopedia.com/discovery/department-store-fair-female",
+                "applink": "tokopedia://discovery/department-store-fair-female?source=homepage.6_image.0.67891",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/400-square/phZFtb/2021/1/18/c9217051-82bc-4b00-89a6-6e4f85781c76.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "X_PG_OS_Fashion_DC-75P_Lego 6_Perso_19Jan",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 240213,
+                "name": "",
+                "url": "https://m.tokopedia.com/discovery/department-store-fair-female",
+                "applink": "tokopedia://discovery/department-store-fair-female?source=homepage.6_image.0.67891",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/400-square/phZFtb/2021/1/18/858f7d39-317f-4086-8b24-19ca8f89d38e.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "X_PG_OS_Fashion_DC-75P_Lego 6_Perso_19Jan",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 240214,
+                "name": "",
+                "url": "https://m.tokopedia.com/discovery/department-store-fair-female",
+                "applink": "tokopedia://discovery/department-store-fair-female?source=homepage.6_image.0.67891",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/400-square/phZFtb/2021/1/18/d0017595-9cf0-44e7-bac9-5ab62a55990d.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "X_PG_OS_Fashion_DC-75P_Lego 6_Perso_19Jan",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 240215,
+                "name": "",
+                "url": "https://m.tokopedia.com/discovery/department-store-fair-female",
+                "applink": "tokopedia://discovery/department-store-fair-female?source=homepage.6_image.0.67891",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/400-square/phZFtb/2021/1/18/da196141-3d63-4e05-8d38-e317ae4cf090.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "X_PG_OS_Fashion_DC-75P_Lego 6_Perso_19Jan",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              },
+              {
+                "id": 240216,
+                "name": "",
+                "url": "https://m.tokopedia.com/discovery/department-store-fair-female",
+                "applink": "tokopedia://discovery/department-store-fair-female?source=homepage.6_image.0.67891",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/400-square/phZFtb/2021/1/18/41f7e5aa-82d8-4a70-b863-4dcd786aedb1.jpg",
+                "label": "",
+                "soldPercentage": 0,
+                "attribution": "X_PG_OS_Fashion_DC-75P_Lego 6_Perso_19Jan",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "discountPercentage": 0,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "labelGroup": [],
+                "benefit": {
+                  "type": "Diskon Hingga",
+                  "value": "50%"
+                },
+                "back_color": "",
+                "productImageUrl": ""
+              }
+            ],
+            "banner": {
+              "id": 0,
+              "title": "",
+              "description": "",
+              "url": "",
+              "cta": {
+                "type": "",
+                "mode": "",
+                "text": "",
+                "coupon_code": ""
+              },
+              "applink": "",
+              "text_color": "",
+              "image_url": "",
+              "back_color": "",
+              "gradient_color": [
+                "#FFFFFF"
+              ],
+              "attribution": ""
+            },
+            "galaxy_attribution": "PG",
+            "persona": "Fashion Wanita",
+            "category_persona": "1845,1865,1921,1926,1952,1925,1919,1927,1908,1855",
+            "brand_id": ""
           }
         ]
       }
