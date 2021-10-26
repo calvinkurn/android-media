@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.model.AffiliateAnnouncementData
 import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.model.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
+import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -20,10 +22,12 @@ class AffiliateHomeViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
         private val affiliatePerformanceUseCase: AffiliatePerformanceUseCase,
+        private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
+    private var affiliateAnnouncement=MutableLiveData<AffiliateAnnouncementData>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<String>()
@@ -39,7 +43,14 @@ class AffiliateHomeViewModel @Inject constructor(
             errorMessage.value = it.localizedMessage
         })
     }
-
+    fun getAnnouncementInformation() {
+        launchCatchError(block = {
+            affiliateAnnouncement.value=affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(userSessionInterface.userId)
+        },onError = {
+            it.printStackTrace()
+            errorMessage.value=it.localizedMessage
+        })
+    }
     fun getAffiliatePerformance(page : Int) {
         if(page == PAGE_ZERO)
             shimmerVisibility.value = true
@@ -80,7 +91,9 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getErrorMessage(): LiveData<String> = errorMessage
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
+    fun getAffiliateAnnouncement() : LiveData<AffiliateAnnouncementData> = affiliateAnnouncement
     fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
     fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
     fun progressBar(): LiveData<Boolean> = progressBar
+
 }

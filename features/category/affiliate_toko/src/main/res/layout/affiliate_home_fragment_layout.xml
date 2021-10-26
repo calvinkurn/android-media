@@ -56,6 +56,29 @@
         app:typographyWeight="bold"
         tools:text="Ana Putri" />
 
+    <androidx.cardview.widget.CardView
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/dp_16"
+        android:id="@+id/affiliate_announcement_ticker_cv"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="0dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/user_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            app:tickerType="announcement"
+            app:descriptionText="Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!"
+            app:titleText="Saat ini lagi ada pemeliharaan sistem"
+            app:closeButtonVisibility="gone"
+            android:id="@+id/affiliate_announcement_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/affiliate_promoted_products"
@@ -67,7 +90,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:text="@string/affiliate_promoted_products"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_name"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker_cv"
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
@@ -83,7 +106,7 @@
         android:textColor="@color/Unify_NN600"
         app:layout_constraintLeft_toRightOf="@id/affiliate_promoted_products"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_name"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker_cv"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         tools:text="6 Produk" />

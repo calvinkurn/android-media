@@ -22,6 +22,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
+import com.tokopedia.affiliate.model.AffiliateAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
@@ -38,6 +39,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
@@ -88,6 +90,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     AFFILIATE_LOGIN_REQUEST_CODE)
         } else {
             affiliateHomeViewModel.getAffiliateValidateUser()
+            affiliateHomeViewModel.getAnnouncementInformation()
         }
         setAffiliateGreeting()
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -204,6 +207,24 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             affiliate_products_count.text = getString(R.string.affiliate_product_count, itemCount.toString())
             totalDataItemsCount = itemCount
         })
+
+        affiliateHomeViewModel.getAffiliateAnnouncement().observe(this,{ announcementData ->
+            onGetAnnouncementData(announcementData)
+        })
+    }
+
+    private fun onGetAnnouncementData(announcementData: AffiliateAnnouncementData?) {
+        if(announcementData?.data?.status==1) {
+            affiliate_announcement_ticker_cv.visibility = View.VISIBLE
+            affiliate_announcement_ticker.tickerTitle=announcementData.data.announcementTitle
+            announcementData.data.announcementDescri?.let {
+                affiliate_announcement_ticker.setTextDescription(
+                    it
+                )
+            }
+            affiliate_announcement_ticker.tickerType=Ticker.TYPE_ANNOUNCEMENT
+        }
+
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory {
