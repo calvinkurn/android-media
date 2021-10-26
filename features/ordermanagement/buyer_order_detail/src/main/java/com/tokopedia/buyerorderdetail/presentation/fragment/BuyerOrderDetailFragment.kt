@@ -299,7 +299,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupRecyclerView() {
-        rvBuyerOrderDetail?.adapter = adapter
+        if (rvBuyerOrderDetail?.adapter != adapter) {
+            rvBuyerOrderDetail?.adapter = adapter
+        }
     }
 
     private fun setupStickyActionButtons() {
