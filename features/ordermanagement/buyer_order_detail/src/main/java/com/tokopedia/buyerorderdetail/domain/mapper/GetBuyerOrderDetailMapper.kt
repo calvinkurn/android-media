@@ -82,6 +82,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         return ShipmentInfoUiModel(
                 awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum, orderStatusId, orderId),
                 courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
+                driverTippingInfoUiModel = mapDriverTippingInfoUiModel(shipment.driver.name.isNotBlank()),
                 courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
                 dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship),
                 headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
@@ -312,6 +313,22 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 photoUrl = driver.photoUrl,
                 plateNumber = driver.licenseNumber
         )
+    }
+
+    private fun mapDriverTippingInfoUiModel(show: Boolean): ShipmentInfoUiModel.DriverTippingInfoUiModel {
+        return if (show) {
+            ShipmentInfoUiModel.DriverTippingInfoUiModel(
+                imageUrl = "https://cdn.idntimes.com/content-images/community/2021/09/fromandroid-df3d54cc2e2624ca203da0f60b89b4d6.jpg",
+                title = "Yuk, beri tip ke driver",
+                description = "Kamu bisa berikan via halaman Lacak. <a href=\"tokopedia://shipping/tracking/166842788\">Beri Tip</a>"
+            )
+        } else {
+            ShipmentInfoUiModel.DriverTippingInfoUiModel(
+                imageUrl = "",
+                title = "",
+                description = ""
+            )
+        }
     }
 
     private fun mapAwbInfoUiModel(shippingRefNum: String, orderStatusId: String, orderId: String): ShipmentInfoUiModel.AwbInfoUiModel {

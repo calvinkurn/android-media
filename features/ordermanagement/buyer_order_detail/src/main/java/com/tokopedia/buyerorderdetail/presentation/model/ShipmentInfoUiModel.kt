@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 data class ShipmentInfoUiModel(
         val awbInfoUiModel: AwbInfoUiModel,
         val courierDriverInfoUiModel: CourierDriverInfoUiModel,
+        val driverTippingInfoUiModel: DriverTippingInfoUiModel,
         val courierInfoUiModel: CourierInfoUiModel,
         val dropShipperInfoUiModel: CopyableKeyValueUiModel,
         val headerUiModel: PlainHeaderUiModel,
@@ -54,6 +55,20 @@ data class ShipmentInfoUiModel(
 
         override fun shouldShow(): Boolean {
             return name.isNotBlank()
+        }
+    }
+
+    data class DriverTippingInfoUiModel(
+        val imageUrl: String,
+        val title: String,
+        val description: String
+    ): BaseVisitableUiModel {
+        override fun shouldShow(): Boolean {
+            return imageUrl.isNotBlank() && title.isNotBlank() && description.isNotBlank()
+        }
+
+        override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
+            return typeFactory?.type(this).orZero()
         }
     }
 }

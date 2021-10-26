@@ -52,6 +52,7 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         addTickerSection(shipmentInfoUiModel.ticker)
         addCourierInfoSection(shipmentInfoUiModel.courierInfoUiModel)
         addCourierDriverInfoSection(shipmentInfoUiModel.courierDriverInfoUiModel)
+        addDriverTippingInfoSection(shipmentInfoUiModel.driverTippingInfoUiModel)
         addAwbInfoSection(shipmentInfoUiModel.awbInfoUiModel)
         addReceiverAddressInfoSection(shipmentInfoUiModel.receiverAddressInfoUiModel)
         addDropShipperInfoSection(shipmentInfoUiModel.dropShipperInfoUiModel)
@@ -150,6 +151,15 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             addThinDashedDividerSection()
             add(courierDriverInfoUiModel)
             addThinDashedDividerSection()
+        }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addDriverTippingInfoSection(
+        driverTippingInfoUiModel: ShipmentInfoUiModel.DriverTippingInfoUiModel
+    ) {
+        if (driverTippingInfoUiModel.shouldShow()) {
+            add(driverTippingInfoUiModel)
+            addThinDividerSection()
         }
     }
 

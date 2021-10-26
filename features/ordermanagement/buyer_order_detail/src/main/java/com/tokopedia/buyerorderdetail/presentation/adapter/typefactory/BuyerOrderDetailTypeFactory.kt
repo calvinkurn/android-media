@@ -85,6 +85,10 @@ class BuyerOrderDetailTypeFactory(
     fun type(digitalRecommendationUiModel: DigitalRecommendationUiModel): Int =
             DigitalRecommendationViewHolder.LAYOUT
 
+    fun type(driverTippingInfoUiModel: ShipmentInfoUiModel.DriverTippingInfoUiModel): Int {
+        return DriverTippingInfoViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
@@ -104,6 +108,7 @@ class BuyerOrderDetailTypeFactory(
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
             DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
+            DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
             else -> super.createViewHolder(parent, type)
         }
     }

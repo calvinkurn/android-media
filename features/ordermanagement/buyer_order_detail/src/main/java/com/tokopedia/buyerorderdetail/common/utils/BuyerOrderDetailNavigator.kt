@@ -153,18 +153,20 @@ class BuyerOrderDetailNavigator(
         applyTransition()
     }
 
-    fun openAppLink(appLink: String, shouldRefreshWhenBack: Boolean) {
+    fun openAppLink(appLink: String, shouldRefreshWhenBack: Boolean): Boolean {
         val intent: Intent? = RouteManager.getIntentNoFallback(activity, appLink)
-        if (intent == null) {
+        return if (intent == null) {
             if (appLink.startsWith(PREFIX_HTTP)) {
                 openWebView(appLink, shouldRefreshWhenBack)
-            }
+                true
+            } else false
         } else {
             val requestCode = if (shouldRefreshWhenBack) {
                 BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
             } else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
             fragment.startActivityForResult(intent, requestCode)
             applyTransition()
+            true
         }
     }
 
