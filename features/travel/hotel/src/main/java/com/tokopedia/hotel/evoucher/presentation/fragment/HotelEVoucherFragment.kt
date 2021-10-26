@@ -337,23 +337,23 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
             if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) binding?.hotelDetailSeperator?.hide()
 
             if(data.hotelTransportDetails.contactInfo.isNotEmpty() && data.hotelTransportDetails.tickerContactHotel.isNotEmpty()){
-                binding?.hotelContactUs?.root?.visible()
-                binding?.hotelContactUs?.tvOrderDetailNha?.text = data.hotelTransportDetails.tickerContactHotel
+                binding?.hotelEvoucherContactUs?.root?.visible()
+                binding?.hotelEvoucherContactUs?.tvOrderDetailNha?.text = data.hotelTransportDetails.tickerContactHotel
                 val telNum: String = (data.hotelTransportDetails.contactInfo.firstOrNull()?.number ?: 0).toString()
-                binding?.hotelContactUs?.btnNhaPhone?.setDrawable(
+                binding?.hotelEvoucherContactUs?.btnNhaPhone?.setDrawable(
                     getIconUnifyDrawable(requireContext(), IconUnify.CALL, ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 )
-                binding?.hotelContactUs?.btnNhaPhone?.setTextColor(
+                binding?.hotelEvoucherContactUs?.btnNhaPhone?.setTextColor(
                     ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 )
-                binding?.hotelContactUs?.btnNhaPhone?.text = telNum
-                binding?.hotelContactUs?.btnNhaPhone?.setOnClickListener {
+                binding?.hotelEvoucherContactUs?.btnNhaPhone?.text = telNum
+                binding?.hotelEvoucherContactUs?.btnNhaPhone?.setOnClickListener {
                     val callIntent = Intent(Intent.ACTION_DIAL)
                     callIntent.data = Uri.parse("tel:$telNum")
                     startActivity(callIntent)
                 }
             }else{
-                binding?.hotelContactUs?.root?.gone()
+                binding?.hotelEvoucherContactUs?.root?.gone()
             }
         }
 
