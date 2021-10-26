@@ -223,6 +223,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var currIndexNeedUpdate = -1
     private var isFilterClicked = false
     private var isFirstLoad = false
+    private var hasLoadGetCategories = false
     private var gson = Gson()
     private var activityOrderHistory = ""
     private var searchQuery = ""
@@ -709,31 +710,34 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 is Success -> {
                     orderList = it.data
 
-                    if (!isFilterClicked && currPage == 1) {
+                    if (!isFilterClicked && currPage == 1 && !hasLoadGetCategories) {
                         renderChipsFilter()
                         setDefaultDatesForDatePicker()
-                    }
+                        hasLoadGetCategories = true
+                        refreshHandler?.startRefresh()
 
-                    if (orderList.orders.isNotEmpty()) {
-                        if (orderIdNeedUpdated.isEmpty()) {
-                            currPage += 1
-                            renderOrderList()
-                        } else {
-                            if (currIndexNeedUpdate > -1) {
-                                loop@ for (i in orderList.orders.indices) {
-                                    if (orderList.orders[i].orderUUID.equals(orderIdNeedUpdated, true)) {
-                                        uohItemAdapter.updateDataAtIndex(currIndexNeedUpdate, orderList.orders[i])
-                                        orderIdNeedUpdated = ""
-                                        break@loop
+                    } else {
+                        if (orderList.orders.isNotEmpty()) {
+                            if (orderIdNeedUpdated.isEmpty()) {
+                                currPage += 1
+                                renderOrderList()
+                            } else {
+                                if (currIndexNeedUpdate > -1) {
+                                    loop@ for (i in orderList.orders.indices) {
+                                        if (orderList.orders[i].orderUUID.equals(orderIdNeedUpdated, true)) {
+                                            uohItemAdapter.updateDataAtIndex(currIndexNeedUpdate, orderList.orders[i])
+                                            orderIdNeedUpdated = ""
+                                            break@loop
+                                        }
                                     }
                                 }
                             }
-                        }
-                        UohAnalytics.viewOrderListPage()
-                    } else {
-                        if (currPage == 1) {
-                            uohListViewModel.loadTdnBanner()
-                            loadRecommendationList()
+                            UohAnalytics.viewOrderListPage()
+                        } else {
+                            if (currPage == 1) {
+                                uohListViewModel.loadTdnBanner()
+                                loadRecommendationList()
+                            }
                         }
                     }
                 }
