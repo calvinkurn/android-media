@@ -8,7 +8,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
@@ -61,12 +60,11 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     }
 
     private fun renderUI() {
-        if(::cta.isInitialized)
-        {
-            imageDisplayer.setImageUrl(cta.bottomSheet?.imageUrl?:"")
-            tokoToGoPayHeader.text = cta.bottomSheet?.bottomSheetTitle?:""
-            tokoToGoPaySubHeader.text = cta.bottomSheet?.bottomSheetDescription?:""
-            btnRegister.text = cta.bottomSheet?.bottomSheetButtonText?:""
+        if (::cta.isInitialized) {
+            imageDisplayer.setImageUrl(cta.bottomSheet?.imageUrl ?: "")
+            tokoToGoPayHeader.text = cta.bottomSheet?.bottomSheetTitle ?: ""
+            tokoToGoPaySubHeader.text = cta.bottomSheet?.bottomSheetDescription ?: ""
+            btnRegister.text = cta.bottomSheet?.bottomSheetButtonText ?: ""
         }
     }
 
@@ -77,7 +75,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     private fun initListners() {
         btnRegister.setOnClickListener {
             sendClickAnalytics()
-            if(::cta.isInitialized)
+            if (::cta.isInitialized)
                 openWebView(cta.android_url)
 
         }
