@@ -31,12 +31,16 @@ class AffiliateItemOffSetDecoration : RecyclerView.ItemDecoration() {
         val spanIndex = (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).spanIndex
         if (spanIndex.isZero()) {
             //settings for left column
+            var top=0
+            if(position<2) top=parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
             val left = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-            setMargins(view, left = left)
+            setMargins(view, left = left,top = top)
         } else {
             //settings for right column
+            var top=0
+            if(position<2) top = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
             val right = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-            setMargins(view, right = right)
+            setMargins(view, right = right,top = top)
         }
     }
 
