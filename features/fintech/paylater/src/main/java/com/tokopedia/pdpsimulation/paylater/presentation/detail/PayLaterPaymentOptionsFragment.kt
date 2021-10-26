@@ -382,7 +382,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         else data.img_light_url
 
         if (!imageUrl.isNullOrEmpty())
-            ivPaylaterPartner.loadImage(imageUrl)
+            ivPaylaterPartner.setImageUrl(imageUrl)
     }
 
 
