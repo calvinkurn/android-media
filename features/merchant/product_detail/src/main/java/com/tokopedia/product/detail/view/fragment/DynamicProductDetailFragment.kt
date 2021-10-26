@@ -1004,14 +1004,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     }
 
-    override fun onRecomWidgetFailedToLoad(pageName: String) {
-        pdpUiUpdater?.removeComponent(pageName)
-        updateUi()
-    }
-
-    override fun onRecomWidgetAlreadyInit(pageName: String) {
-    }
-
     override fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
         DynamicProductDetailTracking.Click.eventClickSeeFilterAnnotation(annotationChip.recommendationFilterChip.value)
         viewModel.getRecommendation(recommendationDataModel, annotationChip, position, filterPosition)
@@ -3802,10 +3794,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         )
         val intent = ProductDetailActivity.createIntent(requireContext(), bundleProductId)
         startActivity(intent)
-    }
-
-    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
-        viewLifecycleOwner.lifecycle.addObserver(observer)
     }
 
     private fun shouldGoToNewGallery(): Boolean {
