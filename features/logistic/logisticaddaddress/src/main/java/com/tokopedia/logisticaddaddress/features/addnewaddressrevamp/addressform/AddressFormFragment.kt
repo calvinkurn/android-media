@@ -8,20 +8,23 @@ import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.text.Editable
-import android.text.InputFilter
-import android.text.InputType
-import android.text.TextWatcher
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -330,6 +333,25 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 formAddress.etAlamatNew.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etAlamatNew.textFieldWrapper, null))
             }
         }
+
+        val onPrivacyPolicyClicked: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=https://www.go-pay.co.id/appterms")
+            }
+        }
+        val onTermsAndConditionClicked: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=https://www.google.com")
+            }
+        }
+
+        val consentText = SpannableString("Dengan klik \"Simpan\", kamu menyetujui kebijakan privasi dan syarat dan ketentuan.")
+        consentText.setSpan(onPrivacyPolicyClicked, 38,  55, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        consentText.setSpan(onTermsAndConditionClicked, 60,  80, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        binding.userConsent.movementMethod = LinkMovementMethod.getInstance()
+        binding.userConsent.isClickable = true
+        binding.userConsent.setText(consentText, TextView.BufferType.SPANNABLE)
+
 
         binding.btnSaveAddressNew.setOnClickListener {
             if (validateForm()) {
