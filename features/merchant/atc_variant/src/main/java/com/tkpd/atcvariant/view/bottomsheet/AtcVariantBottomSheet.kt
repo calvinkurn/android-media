@@ -43,13 +43,14 @@ import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
-import com.tokopedia.product.detail.common.bottomsheet.TokoMartEducationalInformationBottomSheet
+import com.tokopedia.product.detail.common.bottomsheet.TokoNowEducationalInformationBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -525,6 +526,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ?: ""
         val variantTitle = adapter.getHeaderDataModel()?.listOfVariantTitle?.joinToString(separator = ", ")
                 ?: ""
+
+        val ratesEstimateData = variantAggregatorData?.getP2RatesEstimateByProductId(productId)?.p2RatesData
+        val buyerDistrictId = context?.let { ChooseAddressUtils.getLocalizingAddressData(it)?.district_id ?: "" } ?: ""
+        val sellerDistrictId = viewModel.getSelectedWarehouse(productId)?.districtId ?: ""
+
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,
                 cartId = cartId,
@@ -545,7 +551,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                         ?: "",
                 bebasOngkirType = variantAggregatorData?.getBebasOngkirStringType(productId) ?: "",
                 pageSource = aggregatorParams?.pageSource ?: "",
-                cdListName = aggregatorParams?.trackerCdListName ?: "")
+                cdListName = aggregatorParams?.trackerCdListName ?: "",
+                isCod = variantAggregatorData?.isCod ?: false,
+                ratesEstimateData = ratesEstimateData,
+                buyerDistrictId = buyerDistrictId,
+                sellerDistrictId = sellerDistrictId
+        )
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -911,7 +922,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     ?: ""
 
             val bottomSheet = if (isTokoNow) {
-                TokoMartEducationalInformationBottomSheet()
+                TokoNowEducationalInformationBottomSheet()
             } else {
                 ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, boImageUrl, uspImageUrl)
             }

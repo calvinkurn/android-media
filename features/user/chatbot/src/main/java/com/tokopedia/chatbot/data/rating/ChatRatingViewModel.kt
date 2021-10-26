@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.data.rating
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
 
@@ -20,7 +20,7 @@ class ChatRatingViewModel constructor(msgId: String = "",
                           var ratingStatus: Int = 0,
                           val replyTimeNano: Long = 0,
                           var quickReplies: List<QuickReplyViewModel> = ArrayList(),
-                          source: String = "") : BaseChatViewModel(msgId, fromUid, from,
+                          source: String = "") : BaseChatUiModel(msgId, fromUid, from,
         fromRole, attachmentId, attachmentType, replyTime, message, source)
         , Visitable<ChatbotTypeFactory> {
 
