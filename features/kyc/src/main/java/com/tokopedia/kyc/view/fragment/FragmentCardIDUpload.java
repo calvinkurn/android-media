@@ -376,8 +376,7 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
         if (loaderUiListener != null) {
             loaderUiListener.showProgressDialog();
         }
-        // documentUploadPresenter.makeDocumentUploadRequest(imagePath, docType, kycReqId);
-        goToSelfieIdIntroPage();
+        documentUploadPresenter.makeDocumentUploadRequest(imagePath, docType, kycReqId);
 
     }
 

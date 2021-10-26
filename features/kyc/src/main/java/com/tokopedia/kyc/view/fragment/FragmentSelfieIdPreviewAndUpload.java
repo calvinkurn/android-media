@@ -139,8 +139,6 @@ public class FragmentSelfieIdPreviewAndUpload extends BaseDaggerFragment impleme
         }
         documentUploadPresenter.attachView(this);
         checkFromTncRetakeFlow();
-        showHideProgressBar(false);
-        executeSlfeIntroPrcd();
     }
 
     @Override
