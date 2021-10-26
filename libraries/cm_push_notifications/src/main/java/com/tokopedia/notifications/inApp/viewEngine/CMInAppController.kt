@@ -34,7 +34,7 @@ class CMInAppController(private val listenerOnNewInApp: OnNewInAppDataStoreListe
                 if (application != null) {
                     IrisAnalyticsEvents.trackCmINAppEvent(application, cmInApp,
                             IrisAnalyticsEvents.INAPP_DELIVERED, null)
-                    CMInAppController(listenerOnNewInApp).downloadImagesAndUpdateDB(application, cmInApp)
+                    downloadImagesAndUpdateDB(application, cmInApp)
                 } else {
                     val messageMap: MutableMap<String, String> = HashMap()
                     messageMap["type"] = "validation"
@@ -65,7 +65,7 @@ class CMInAppController(private val listenerOnNewInApp: OnNewInAppDataStoreListe
                     cmInApp.isAmplification = true
                     IrisAnalyticsEvents.trackCmINAppEvent(application, cmInApp,
                             IrisAnalyticsEvents.INAPP_DELIVERED, null)
-                    CMInAppController(listenerOnNewInApp).downloadImagesAndUpdateDB(application, cmInApp)
+                    downloadImagesAndUpdateDB(application, cmInApp)
                 } else {
                     val messageMap: MutableMap<String, String> = HashMap()
                     messageMap["type"] = "validation"
