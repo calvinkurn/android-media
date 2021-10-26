@@ -15,7 +15,8 @@
       "categoryNameMapping": ".+",
       "relatedKeyword": ".+ - .+",
       "sessionIris": ".+",
-      "pageSource": ".*"
+      "pageSource": ".*",
+      "searchFilter": ".*"
     },
     {
       "event": "view_item_list",

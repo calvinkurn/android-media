@@ -157,7 +157,6 @@ class ProductListPresenter @Inject constructor(
 
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
-    private var isFirstTimeLoad = false
     override var isTickerHasDismissed = false
         private set
     override var startFrom = 0
@@ -257,14 +256,12 @@ class ProductListPresenter @Inject constructor(
     override fun onViewCreated() {
         val isFirstActiveTab = view.isFirstActiveTab
 
-        if (isFirstActiveTab && !hasLoadData) {
-            hasLoadData = true
+        if (isFirstActiveTab && !hasLoadData)
             onViewFirstTimeLaunch()
-        }
     }
 
     private fun onViewFirstTimeLaunch() {
-        isFirstTimeLoad = true
+        hasLoadData = true
         view.reloadData()
     }
 
@@ -273,10 +270,8 @@ class ProductListPresenter @Inject constructor(
             view.setupSearchNavigation()
             view.trackScreenAuthenticated()
 
-            if (isViewAdded && !hasLoadData) {
-                hasLoadData = true
+            if (isViewAdded && !hasLoadData)
                 onViewFirstTimeLaunch()
-            }
         }
     }
 
@@ -747,8 +742,7 @@ class ProductListPresenter @Inject constructor(
 
         view.updateScrollListener()
 
-        if (isFirstTimeLoad)
-            getViewToSendTrackingSearchAttempt(productDataView)
+        getViewToSendTrackingSearchAttempt(productDataView)
     }
 
     private fun updateValueEnableGlobalNavWidget() {
@@ -1528,8 +1522,6 @@ class ProductListPresenter @Inject constructor(
 
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {
         if (isViewNotAttached) return
-
-        isFirstTimeLoad = false
 
         doInBackground(productDataView, this::sendGeneralSearchTracking)
     }
