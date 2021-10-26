@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.common.data.TopchatItemMenu
 
@@ -23,7 +24,11 @@ class LongClickMenuViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
     }
 
     private fun bindStartIcon(menu: TopchatItemMenu) {
-        val drawable = ContextCompat.getDrawable(itemView.context, menu.icon) ?: return
+        val drawable = if (menu.unifyIcon != null) {
+            getIconUnifyDrawable(itemView.context, menu.unifyIcon)
+        } else {
+            ContextCompat.getDrawable(itemView.context, menu.icon)
+        } ?: return
         val colorLightEnable = ContextCompat.getColor(
             itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900
         )
