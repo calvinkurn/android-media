@@ -1,17 +1,24 @@
 package com.tokopedia.affiliate.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
+import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
@@ -50,6 +57,8 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(null, null, this))
 
+    private val tabFragments = arrayListOf<Fragment>()
+
     companion object {
         fun getFragmentInstance(): Fragment {
             return AffiliatePromoFragment()
@@ -73,6 +82,9 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         promotion_recycler_view.layoutManager = layoutManager
         promotion_recycler_view.adapter = adapter
         product_link_et.run {
+            clearIconView.setOnClickListener {
+                showDefaultState()
+            }
             setRelatedView(dim_layer)
             setDoneAction {
                 affiliatePromoViewModel.getSearch(editText.text.toString())
@@ -88,26 +100,46 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.affiliate_promo)
         }
-        promo_global_error.run {
-            show()
-            errorIllustration.hide()
-            errorTitle.text = getString(R.string.affiliate_never_bought_product)
-            errorDescription.text = getString(R.string.affiliate_still_buy_products)
-            setButtonFull(true)
-            errorAction.text = getString(R.string.affiliate_paste_link)
-            errorAction.setOnClickListener {
-                product_link_et.editingState(true)
-            }
-            errorSecondaryAction.gone()
-        }
+        setupViewPager()
+        showDefaultState()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.affiliate_promo_fragment_layout, container, false)
     }
 
-    private fun setObservers() {
+    private fun setupViewPager () {
+        val tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_recommended)
+        val viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_recommended)
+        activity?.let {
+            tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance())
+            tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance())
+            val adapter = AffiliateRecommendedAdapter(it, context, tabFragments)
+            viewPager?.adapter = adapter
+            if(tabLayout != null && viewPager != null){
+                TabLayoutMediator(tabLayout, viewPager) { _, _ ->
 
+                }.attach()
+            }
+            tabLayout?.addOnTabSelectedListener(object  : TabLayout.OnTabSelectedListener{
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    tab?.position?.let { adapter.setUnSelectView(tab) }
+                }
+
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    tab?.position?.let {
+                        adapter.setOnSelectView(tab)
+                    }
+                }
+
+            })
+        }
+        setCustomTabText(requireContext(),tabLayout)
+    }
+
+    private fun setObservers() {
         affiliatePromoViewModel.progressBar().observe(this, { visibility ->
             if (visibility != null) {
                 if (visibility) {
@@ -120,13 +152,11 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         })
 
         affiliatePromoViewModel.getErrorMessage().observe(this, { error ->
-            promo_global_error.run {
-                show()
-                errorTitle.text = error
-                setActionClickListener {
-                    affiliatePromoViewModel.getSearch(product_link_et.editText.toString())
-                }
+            view?.rootView?.let {
+                Toaster.build(it, getString(R.string.affiliate_product_link_invalid),
+                        Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
+            product_link_et.editingState(true)
         })
 
         affiliatePromoViewModel.getAffiliateSearchData().observe(this, { affiliateSearchData ->
@@ -183,19 +213,18 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
     private fun showData(isErrorData: Boolean) {
         if (isErrorData) promotion_card_title.hide() else promotion_card_title.show()
-        error_group.hide()
         promotion_recycler_view.show()
     }
 
     private fun showDefaultState(){
         promotion_card_title.hide()
-        error_group.show()
+        recommended_layout.show()
         promotion_recycler_view.hide()
     }
 
     private fun hideAllElements(){
         promotion_card_title.hide()
-        error_group.hide()
+        recommended_layout.hide()
         promotion_recycler_view.hide()
     }
 
@@ -243,5 +272,27 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                 AffiliateAnalytics.ActionKeys.CLICK_SEARCH,
                 AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
                 "",userSessionInterface.userId)
+    }
+
+    private fun setCustomTabText(context : Context?, tabLayout: TabLayout?){
+        if(context != null && tabLayout != null){
+            val tabOne = Typography(context)
+            tabOne.apply {
+                text = context.getString(R.string.pernah_dibeli)
+                setType(Typography.HEADING_5)
+                gravity = Gravity.CENTER
+                setTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            }
+
+            val tabTwo = Typography(context)
+            tabTwo.apply {
+                text = context.getString(R.string.terakhir_dilihat)
+                setType(Typography.HEADING_5)
+                gravity = Gravity.CENTER
+                setTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            }
+            tabLayout.getTabAt(0)?.customView = tabOne
+            tabLayout.getTabAt(1)?.customView = tabTwo
+        }
     }
 }
