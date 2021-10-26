@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginStart="@dimen/unify_space_8"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tvTitle"
         app:layout_constraintEnd_toStartOf="@id/ivChevron"
