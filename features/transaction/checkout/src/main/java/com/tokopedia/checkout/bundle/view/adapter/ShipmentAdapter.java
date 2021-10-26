@@ -14,10 +14,12 @@ import com.tokopedia.checkout.bundle.data.model.request.checkout.old.DataCheckou
 import com.tokopedia.checkout.bundle.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.bundle.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.bundle.view.converter.ShipmentDataRequestConverter;
+import com.tokopedia.checkout.bundle.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.bundle.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentTickerErrorModel;
@@ -25,6 +27,7 @@ import com.tokopedia.checkout.bundle.view.uimodel.ShippingCompletionTickerModel;
 import com.tokopedia.checkout.bundle.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.checkout.bundle.view.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.checkout.bundle.view.viewholder.ShipmentCostViewHolder;
+import com.tokopedia.checkout.bundle.view.viewholder.ShipmentCrossSellViewHolder;
 import com.tokopedia.checkout.bundle.view.viewholder.ShipmentDonationViewHolder;
 import com.tokopedia.checkout.bundle.view.viewholder.ShipmentEmasViewHolder;
 import com.tokopedia.checkout.bundle.view.viewholder.ShipmentInsuranceTncViewHolder;
@@ -84,6 +87,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentInsuranceTncModel shipmentInsuranceTncModel;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private ShipmentDonationModel shipmentDonationModel;
+    private List<ShipmentCrossSellModel> shipmentCrossSellModelList;
     private EgoldAttributeModel egoldAttributeModel;
     private ShippingCompletionTickerModel shippingCompletionTickerModel;
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
@@ -95,6 +99,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean isShowOnboarding;
     private int lastChooseCourierItemPosition;
     private int lastServiceId;
+    private int counterCrossSell;
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -130,6 +135,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
         } else if (item instanceof ShipmentDonationModel) {
             return ShipmentDonationViewHolder.ITEM_VIEW_DONATION;
+        } else if (item instanceof ShipmentCrossSellModel) {
+            return ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL;
         } else if (item instanceof EgoldAttributeModel) {
             return ShipmentEmasViewHolder.ITEM_VIEW_EMAS;
         } else if (item instanceof ShipmentButtonPaymentModel) {
@@ -199,6 +206,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentSellerCashbackViewHolder) holder).bindViewHolder(shipmentSellerCashbackModel);
         } else if (viewType == ShipmentDonationViewHolder.ITEM_VIEW_DONATION) {
             ((ShipmentDonationViewHolder) holder).bindViewHolder(shipmentDonationModel);
+        } else if (viewType == ShipmentCrossSellViewHolder.ITEM_VIEW_CROSS_SELL) {
+            ((ShipmentCrossSellViewHolder) holder).bindViewHolder(shipmentCrossSellModelList.get(getIndexCrossSell()), getIndexCrossSell());
         } else if (viewType == ShipmentEmasViewHolder.ITEM_VIEW_EMAS) {
             ((ShipmentEmasViewHolder) holder).bindViewHolder(egoldAttributeModel);
         } else if (viewType == ShipmentButtonPaymentViewHolder.getITEM_VIEW_PAYMENT_BUTTON()) {
@@ -427,6 +436,36 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             shipmentDonationModel.setChecked(checked);
             updateShipmentCostModel();
             notifyItemChanged(getShipmentCostPosition());
+        }
+    }
+
+    public void addListShipmentCrossSellModel(List<ShipmentCrossSellModel> shipmentCrossSellModelList) {
+        if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {
+            this.shipmentCrossSellModelList = shipmentCrossSellModelList;
+            shipmentDataList.addAll(shipmentCrossSellModelList);
+        }
+    }
+
+    private int getIndexCrossSell() {
+        int existingIndex = counterCrossSell;
+        if (existingIndex < shipmentCrossSellModelList.size()-1) {
+            counterCrossSell += 1;
+        }
+        return existingIndex;
+    }
+
+    public void updateCrossSell(boolean checked, CrossSellModel crossSellModel) {
+        if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {
+            for (ShipmentCrossSellModel shipmentCrossSellModel : shipmentCrossSellModelList) {
+                if (shipmentCrossSellModel != null && crossSellModel != null) {
+                    if (shipmentCrossSellModel.getCrossSellModel().getId().equalsIgnoreCase(crossSellModel.getId())) {
+                        shipmentCrossSellModel.getCrossSellModel().setChecked(checked);
+                        updateShipmentCostModel();
+                        notifyItemChanged(getShipmentCostPosition());
+                        break;
+                    }
+                }
+            }
         }
     }
 

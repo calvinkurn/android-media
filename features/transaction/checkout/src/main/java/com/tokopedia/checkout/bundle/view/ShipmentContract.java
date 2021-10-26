@@ -12,6 +12,7 @@ import com.tokopedia.checkout.bundle.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.bundle.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.bundle.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
@@ -300,6 +301,10 @@ public interface ShipmentContract {
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);
 
         ShipmentDonationModel getShipmentDonationModel();
+
+        void setListShipmentCrossSellModel(ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel);
+
+        ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel();
 
         void setShipmentButtonPaymentModel(ShipmentButtonPaymentModel shipmentButtonPaymentModel);
 

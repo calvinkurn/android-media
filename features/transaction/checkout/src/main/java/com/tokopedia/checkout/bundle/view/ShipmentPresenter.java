@@ -53,6 +53,7 @@ import com.tokopedia.checkout.bundle.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.bundle.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
@@ -163,6 +164,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private ShipmentCostModel shipmentCostModel;
     private EgoldAttributeModel egoldAttributeModel;
     private ShipmentDonationModel shipmentDonationModel;
+    private ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel;
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
     private CodModel codData;
     private CampaignTimerUi campaignTimer;
@@ -370,6 +372,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel) {
         this.shipmentDonationModel = shipmentDonationModel;
+    }
+
+    @Override
+    public ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel() {
+        if (listShipmentCrossSellModel == null) {
+            listShipmentCrossSellModel = new ArrayList<>();
+        }
+        return listShipmentCrossSellModel;
+    }
+
+    @Override
+    public void setListShipmentCrossSellModel(ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel) {
+        this.listShipmentCrossSellModel = listShipmentCrossSellModel;
     }
 
     @Override

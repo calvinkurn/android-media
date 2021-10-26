@@ -14,7 +14,7 @@ data class CrossSellModel(
         var price: Long = 0,
         var info: CrossSellInfoModel = CrossSellInfoModel(),
         var orderSummary: CrossSellOrderSummaryModel = CrossSellOrderSummaryModel(),
-        var bottomSheet: CrossSellBottomSheet = CrossSellBottomSheet(),
+        var bottomSheet: CrossSellBottomSheetModel = CrossSellBottomSheetModel(),
         var additionalVerticalId: Long = 0,
         var transactionType: String = ""
 ) : Parcelable
