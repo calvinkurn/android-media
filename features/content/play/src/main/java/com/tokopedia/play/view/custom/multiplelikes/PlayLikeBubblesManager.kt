@@ -12,8 +12,6 @@ class PlayLikeBubblesManager(
     private var mView: PlayLikeBubblesView? = null
     private val bubbles = mutableListOf<Bubble>()
 
-    private val speedMultiplier = listOf(6, 7, 8)
-
     private var timeInterval = getTimeByFps(60)
 
     private var timerJob: Job? = null
@@ -91,10 +89,9 @@ class PlayLikeBubblesManager(
                 Bubble(
                     icon = icon,
                     color = color,
-                    speed = speedMultiplier.random(),
                     reduceOpacity = reduceOpacity,
-                    startXPos = (0..viewWidth).random().toFloat(),
-                    startYPos = (0..viewHeight).random().toFloat()
+                    parentWidth = viewWidth,
+                    parentHeight = viewHeight,
                 )
             )
         }

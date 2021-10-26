@@ -2,14 +2,16 @@ package com.tokopedia.play.view.custom.multiplelikes
 
 import android.graphics.*
 import androidx.annotation.ColorInt
+import com.tokopedia.play.animation.multiplelikes.PlayLikeBubbleMove
+import kotlin.math.max
+import kotlin.math.min
 
 class Bubble(
     val icon: Bitmap,
     @ColorInt color: Int,
-    private val speed: Int,
     reduceOpacity: Boolean,
-    startXPos: Float,
-    startYPos: Float,
+    parentWidth: Int,
+    parentHeight: Int,
 ) {
     private val startTime = System.currentTimeMillis()
     private val paint = Paint().apply {
@@ -18,13 +20,19 @@ class Bubble(
     }
     private val matrix = Matrix()
 
-    private var xPos = startXPos
-    private var yPos = startYPos
-
-    private var scale = 0.01f
-
     private val circleRadius = icon.width.toFloat()
     private val circleCenter = circleRadius / 2
+
+    private var xPos: Float = (icon.width..parentWidth-icon.width).random().toFloat()
+    private var yPos: Float = parentHeight.toFloat()
+
+    val bouncingLimit = (LOWER_LIMIT_BOUNCING_DISTANCE..UPPER_LIMIT_BOUNCING_DISTANCE).random()
+    val bouncingMultiplier = (LOWER_BOUNCING_MULTIPLIER_X..UPPER_BOUNCING_MULTIPLIER_X).random()
+
+    val xStart = xPos - bouncingLimit
+    val xEnd = xPos + bouncingLimit
+
+    private var scale = 0.01f
 
     private val leftMost: Float
         get() = xPos - circleRadius
@@ -32,7 +40,7 @@ class Bubble(
     private val rightMost: Float
         get() = xPos + circleCenter
 
-    private var direction = Direction.random()
+    private var direction = listOf(Direction.Left, Direction.Right).random()
 
     fun onTimeChanged(time: Long, width: Int, height: Int): Boolean {
         val timePassed = time - startTime
@@ -52,14 +60,26 @@ class Bubble(
 
         yPos = height - (timePassedPercentage * height)
 
-        val prevXPos = xPos
-
-        if (direction == Direction.Left) {
-            if (leftMost + direction.baseMultiplier * speed < 0) direction = Direction.Right
-        } else {
-            if (rightMost + direction.baseMultiplier * speed > width) direction = Direction.Left
+        when(val dir = direction) {
+            is Direction.Center -> {
+                if(dir.counter + 1 == dir.threshold) {
+                    direction = dir.next
+                }
+                else dir.counter++
+            }
+            Direction.Right -> {
+                xPos += bouncingMultiplier
+                if(xPos > xEnd) {
+                    direction = Direction.Center(Direction.Left, 0)
+                }
+            }
+            Direction.Left -> {
+                xPos -= bouncingMultiplier
+                if(xPos < xStart) {
+                    direction = Direction.Center(Direction.Right, 0)
+                }
+            }
         }
-        xPos = prevXPos + direction.baseMultiplier * speed
 
         return false
     }
@@ -86,19 +106,20 @@ class Bubble(
         canvas.restore()
     }
 
-    private enum class Direction(val baseMultiplier: Int) {
-        Left(-1), Right(1);
+    private sealed class Direction {
+        val threshold = 5
 
-        companion object {
-            private val values = values()
-
-            fun random(): Direction {
-                return values.random()
-            }
-        }
+        object Right: Direction()
+        object Left: Direction()
+        data class Center(val next: Direction, var counter: Int = 0): Direction()
     }
 
     companion object {
         private const val DURATION = 2500L
+
+        private const val LOWER_LIMIT_BOUNCING_DISTANCE = 10
+        private const val UPPER_LIMIT_BOUNCING_DISTANCE = 40
+        private const val LOWER_BOUNCING_MULTIPLIER_X = 3
+        private const val UPPER_BOUNCING_MULTIPLIER_X = 8
     }
 }
