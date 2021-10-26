@@ -374,20 +374,17 @@ open class TopChatViewStateImpl constructor(
         val listMenu = ArrayList<TopchatItemMenu>()
 
         if (userChatRoom.isChattingWithSeller()) {
-            val followStatusMenu = createFollowMenu()
-            val promoStatusChanger = createPromoMenu()
-            listMenu.add(followStatusMenu)
-            listMenu.add(promoStatusChanger)
+            listMenu.add(createFollowMenu())
+            listMenu.add(createPromoMenu())
         } else {
             listMenu.add(createChatSettingMenu())
         }
 
         if(!isOfficialAccountTokopedia(userChatRoom)) {
-            val blockChatMenu = createBlockChatMenu()
-            listMenu.add(blockChatMenu)
-            listMenu.add(TopchatItemMenu(view.context.getString(R.string.chat_report_user), R.drawable.ic_topchat_report_bold_grey))
+            listMenu.add(createBlockChatMenu())
+            listMenu.add(createReportUserMenu())
         }
-        listMenu.add(TopchatItemMenu(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
+        listMenu.add(createDeleteChatMenu())
         return listMenu
     }
 
@@ -398,6 +395,20 @@ open class TopChatViewStateImpl constructor(
             unifyIcon = IconUnify.SETTING,
             id = ID_CHAT_SETTING,
             showNewLabel = true
+        )
+    }
+
+    private fun createReportUserMenu(): TopchatItemMenu {
+        return TopchatItemMenu(
+            title = view.context.getString(R.string.chat_report_user),
+            icon = R.drawable.ic_topchat_report_bold_grey
+        )
+    }
+
+    private fun createDeleteChatMenu(): TopchatItemMenu {
+        return TopchatItemMenu(
+            title = view.context.getString(R.string.delete_conversation),
+            icon = R.drawable.ic_trash_filled_grey
         )
     }
 
