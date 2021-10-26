@@ -41,7 +41,9 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryIm
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_BLOCK_CHAT
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_CHAT_SETTING
+import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_UNBLOCK_CHAT
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -414,15 +416,22 @@ open class TopChatViewStateImpl constructor(
 
     private fun createBlockChatMenu(): TopchatItemMenu {
         val blockChatStatusTitle: String
-        @DrawableRes val blockChatStatusDrawable: Int
+        val blockChatStatusDrawable: Int
+        val id: Int
         if (blockStatus.isBlocked) {
             blockChatStatusTitle = view.context.getString(R.string.title_unblock_user_chat)
-            blockChatStatusDrawable = R.drawable.ic_topchat_unblock_user_chat
+            blockChatStatusDrawable = IconUnify.USER_SUCCESS
+            id = ID_UNBLOCK_CHAT
         } else {
             blockChatStatusTitle = view.context.getString(R.string.title_block_user_chat)
-            blockChatStatusDrawable = R.drawable.ic_topchat_block_user_chat
+            blockChatStatusDrawable = IconUnify.USER_BLOCK
+            id = ID_BLOCK_CHAT
         }
-        return TopchatItemMenu(blockChatStatusTitle, blockChatStatusDrawable)
+        return TopchatItemMenu(
+            title = blockChatStatusTitle,
+            iconUnify = blockChatStatusDrawable,
+            id = id
+        )
     }
 
     private fun createFollowMenu(): TopchatItemMenu {
@@ -457,10 +466,10 @@ open class TopChatViewStateImpl constructor(
             headerMenuListener: HeaderMenuListener
     ) {
         when {
-            itemMenus.icon == R.drawable.ic_topchat_unblock_user_chat -> {
+            itemMenus.id == ID_UNBLOCK_CHAT -> {
                 headerMenuListener.unBlockChat()
             }
-            itemMenus.icon == R.drawable.ic_topchat_block_user_chat -> {
+            itemMenus.id == ID_BLOCK_CHAT -> {
                 showConfirmationBlockChat()
             }
             itemMenus.icon == R.drawable.ic_topchat_allow_promo -> {
