@@ -91,7 +91,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/icDescParameterRelief"
                         app:typographyType="body_3"
-                        android:text="@string/desc_new_seller_parameter_relief" />
+                        tools:text="@string/desc_new_seller_parameter_relief" />
 
                     <com.tokopedia.iconunify.IconUnify
                         android:id="@+id/icDescParameterRelief"

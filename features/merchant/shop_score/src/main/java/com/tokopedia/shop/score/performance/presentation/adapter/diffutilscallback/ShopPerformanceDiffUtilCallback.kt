@@ -44,7 +44,7 @@ class ShopPerformanceDiffUtilCallback(
     ): Boolean {
         return oldItem is HeaderShopPerformanceUiModel && newItem is HeaderShopPerformanceUiModel &&
                 oldItem.shopScore == newItem.shopScore && oldItem.shopLevel == newItem.shopLevel &&
-                oldItem.showCardNewSeller == newItem.showCardNewSeller
+                oldItem.showCard == newItem.showCard
     }
 
     private fun isTheSameDetailPerformanceUiModel(
@@ -111,7 +111,7 @@ class ShopPerformanceDiffUtilCallback(
         newItem: Visitable<*>?
     ): Boolean {
         return oldItem is ProtectedParameterSectionUiModel && newItem is ProtectedParameterSectionUiModel &&
-                oldItem.protectedParameterDate == newItem.protectedParameterDate
+                oldItem.descParameterRelief == newItem.descParameterRelief
     }
 
     private fun isTheSameSectionFaqUiModel(

@@ -68,7 +68,7 @@ interface ItemFaqListener {
 }
 
 interface ProtectedParameterListener {
-    fun onProtectedParameterChevronClicked(protectedParameterDate: String)
+    fun onProtectedParameterChevronClicked(descParameterRelief: String)
 }
 
 interface ItemTimerNewSellerListener {
