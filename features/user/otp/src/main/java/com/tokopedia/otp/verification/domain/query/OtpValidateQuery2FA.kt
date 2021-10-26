@@ -12,6 +12,7 @@ object OtpValidateQuery2FA {
     private const val userIdEnc = "\$UserIDEnc"
     private const val mode = "\$mode"
     private const val code = "\$code"
+    private const val msisdn = "\$msisdn"
 
     val query: String = """
         query otp_validate(
@@ -19,14 +20,16 @@ object OtpValidateQuery2FA {
             $validateToken: String,
             $userIdEnc: String,
             $mode: String,
-            $code: String
+            $code: String,
+            $msisdn: String
         ){
             OTPValidate(
                 otpType: $otpType,
                 ValidateToken: $validateToken,
                 UserIDEnc: $userIdEnc,
                 mode: $mode,
-                code: $code
+                code: $code,
+                msisdn: $msisdn
             ) {
                 success
                 message
