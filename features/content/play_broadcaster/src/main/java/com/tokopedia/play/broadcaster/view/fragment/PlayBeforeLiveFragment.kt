@@ -219,8 +219,6 @@ class PlayBeforeLiveFragment @Inject constructor(
             openEditCoverImagePage()
             analytic.clickEditCoverOnFinalSetupPage()
         }
-
-        btnStartLive.setMaxDurationDescription(prepareViewModel.maxDurationDesc)
         ivShareLink.setOnClickListener {
             doCopyShareLink()
             analytic.clickShareIconOnFinalSetupPage()
@@ -228,6 +226,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun setupObserve() {
+        observeConfigInfo()
         observeFollowers()
         observeCreateChannel()
         observeProductList()
@@ -249,6 +248,14 @@ class PlayBeforeLiveFragment @Inject constructor(
     /**
      * Observe
      */
+    private fun observeConfigInfo() {
+        parentViewModel.observableConfigInfo.observe(viewLifecycleOwner) {
+            if (it is NetworkResult.Success) {
+                btnStartLive.setMaxDurationDescription(it.data.durationConfig.maxDurationDesc)
+            }
+        }
+    }
+
     private fun observeFollowers() {
         prepareViewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
             followerView.setFollowersModel(it)

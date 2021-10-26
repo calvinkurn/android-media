@@ -3,6 +3,8 @@ package com.tokopedia.feedcomponent.util.util
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
+import android.content.Context
 import android.transition.AutoTransition
 import android.transition.Transition
 import android.transition.TransitionManager
@@ -13,10 +15,12 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 
 private const val POSITION_TOP = 1
 private const val DOT_HALF_DIMEN = 8
+private const val LIHAT_PRODUK_EXPANDED_WIDTH = 100
 
 
 fun showViewWithAnimation(view: View, duration: Long = 300) {
@@ -155,6 +159,56 @@ fun showViewWithSlideAnimation(view: ViewGroup) {
             view,
             autoTransition
     )
+}
 
+fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
+    val expandedWidthInDp = 100F
+    val anim = ValueAnimator.ofInt(
+        layoutLihatProdukParent.measuredWidth,
+        convertDpToPixel(expandedWidthInDp, context)
+    )
+    anim.addUpdateListener { valueAnimator ->
+        val animatedFinalValue = valueAnimator.animatedValue as Int
+        val layoutParams: ViewGroup.LayoutParams =
+            layoutLihatProdukParent.layoutParams
+        layoutParams.width = animatedFinalValue
+        layoutLihatProdukParent.layoutParams = layoutParams
+    }
+    anim.duration = 300L
+    anim.start()
+}
+
+fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
+    val expandedWidthDp = 100F
+    val shrinkedWidthDp = 24F
+    val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
+    anim.cancel()
+    anim.addUpdateListener { valueAnimator ->
+        val animatedFinalValue = valueAnimator.animatedValue as Int
+        val layoutParams: ViewGroup.LayoutParams =
+            layoutLihatProdukParent.layoutParams
+        layoutParams.width = animatedFinalValue
+        layoutLihatProdukParent.layoutParams = layoutParams
+    }
+    anim.duration = 300
+    anim.start()
+}
+
+fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
+    val expandedWidthDp = 100F
+    val shrinkedWidthDp = 24F
+    if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH) {
+        val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
+        anim.cancel()
+        anim.addUpdateListener { valueAnimator ->
+            val animatedFinalValue = valueAnimator.animatedValue as Int
+            val layoutParams: ViewGroup.LayoutParams =
+                    layoutLihatProdukParent.layoutParams
+            layoutParams.width = animatedFinalValue
+            layoutLihatProdukParent.layoutParams = layoutParams
+        }
+        anim.duration = 0
+        anim.start()
+    }
 }
 

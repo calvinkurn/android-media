@@ -369,7 +369,7 @@ class SingleProductBundleFragment(
 
     private fun updateTotalAmountAtcButtonText(preorderDurationWording: String?) {
         totalAmount?.amountCtaView?.text = if (preorderDurationWording.isNullOrEmpty()) {
-            getString(R.string.action_buy)
+            getString(R.string.action_buy_bundle)
         } else {
             getString(R.string.action_preorder)
         }
