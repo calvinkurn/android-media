@@ -1,75 +1,102 @@
 package com.tokopedia.quest_widget.view
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.quest_widget.R
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.quest_widget.data.Config
-import com.tokopedia.quest_widget.data.QuestWidgetListItem
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.quest_widget.data.WidgetData
+import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.UnifyButton
+import javax.inject.Inject
 
 class QuestWidgetView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-    ): CardUnify(context, attrs) {
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : CardUnify(context, attrs) {
 
-    private var tvBannerTitle: TextView? = null
-    private var tvBannerDesc: TextView? = null
+    private lateinit var viewModel: QuestWidgetViewModel
     private var tvLabel: TextView? = null
-    private var viewSideBar: View? = null
-    private var ivBannerIcon: ImageView? = null
-    private var btnActionButton: UnifyButton? = null
+    private var tvLihat: TextView? = null
+    private var rvQuestWidget: RecyclerView? = null
+    private var shimmerQuestWidget: RecyclerView? = null
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     init {
 
-        View.inflate(context, R.layout.quest_widget_card_item, this)
+        View.inflate(context, R.layout.quest_widget_view, this)
 
-        tvBannerTitle = findViewById(R.id.tv_banner_title)
-        tvBannerDesc = findViewById(R.id.tv_banner_desc)
         tvLabel = findViewById(R.id.tv_label)
-        viewSideBar = findViewById(R.id.view_side_bar)
-        ivBannerIcon = findViewById(R.id.iv_banner_icon)
-        btnActionButton = findViewById(R.id.btn_actionButton)
-    }
+        tvLihat = findViewById(R.id.tv_lihat)
+        rvQuestWidget = findViewById(R.id.rv_quest_widget)
+        shimmerQuestWidget = findViewById(R.id.quest_widget_shimmer)
 
-    fun setData(item: QuestWidgetListItem){
-        val config = convertStringToConfig(item.config)
-        tvLabel?.text = item.label?.title
-        tvBannerTitle?.text = config.banner_title
-        tvBannerDesc?.text = config.banner_description
-        ivBannerIcon?.loadImage(config.banner_icon_url)
-        viewSideBar?.setBackgroundColor(Color.parseColor(config.banner_background_color))
-
-        when(item.questUser?.status){
-            "Idle" -> {
-                btnActionButton?.text = item.actionButton?.shortText
-            }
-            "On Progress" ->{
-                btnActionButton?.text = item.actionButton?.shortText + "${(item.task?.get(0)?.progress?.current?.let {
-                    item.task?.get(0)?.progress?.target?.minus(
-                        it
-                    )
-                })}"
-            }
-            "Completed" ->{
-                btnActionButton?.text = item.actionButton?.shortText
-            }
-            "Claimed" ->{
-                btnActionButton?.text = item.actionButton?.shortText
-            }
+        if (context is AppCompatActivity) {
+            val viewModelProvider = ViewModelProviders.of(context, viewModelFactory)
+            viewModel = viewModelProvider[QuestWidgetViewModel::class.java]
         }
 
+        val viewModelProvider =
+            ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
+        viewModel = viewModelProvider[QuestWidgetViewModel::class.java]
     }
 
-    private fun convertStringToConfig(configString: String?) : Config {
-        val dataClassType = object : TypeToken<Config>() {}.type
-        return Gson().fromJson(configString, dataClassType)
+    fun setData(data: WidgetData?) {
+
+        tvLabel?.text = data?.pageDetail?.title
+        tvLihat?.text = data?.pageDetail?.text
+
+        val list = data?.questWidgetList
+
+        list?.let {
+            rvQuestWidget?.layoutManager = LinearLayoutManager(context)
+            val adapter = data.pageDetail?.isHiddenCta?.let { it1 ->
+                QuestWidgetAdapter(data.questWidgetList.questWidgetList,
+                    it1
+                )
+            }
+            rvQuestWidget?.adapter = adapter
+        }
+    }
+
+    fun getQuestList(channel: Int, channelSlug: String, page: String) {
+        viewModel.getWidgetList(channel, channelSlug, page)
+        viewModel.questWidgetListLiveData.observe(context as AppCompatActivity, Observer {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
+                    showLoading(true)
+                }
+                LiveDataResult.STATUS.SUCCESS -> {
+                    showLoading(false)
+                    setData(it.data)
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    showLoading(false)
+                    handleError(it.error)
+                }
+            }
+        })
+    }
+
+    private fun handleError(error: Throwable?) {
+        visibility = View.GONE
+    }
+
+    fun showLoading(show: Boolean) {
+        if (show)
+            shimmerQuestWidget?.show()
+        else
+            shimmerQuestWidget?.hide()
+
     }
 
 }

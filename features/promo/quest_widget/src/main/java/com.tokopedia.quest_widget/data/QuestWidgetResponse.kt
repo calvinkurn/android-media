@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName
 data class QuestWidgetResponse(
 
 	@SerializedName("data")
-	val data: Data? = null
+	val data: WidgetData? = null
 )
 
-data class Data(
+data class WidgetData(
 
 	@SerializedName("questWidgetList")
-	val questWidgetList: QuestWidgetList? = null,
+	val questWidgetList: QuestWidgetList,
 
 	@SerializedName("isEligible")
 	val isEligible: Boolean? = null,
@@ -26,7 +26,7 @@ data class QuestWidgetList(
 	val resultStatus: ResultStatus? = null,
 
 	@SerializedName("questWidgetList")
-	val questWidgetList: List<QuestWidgetListItem?>? = null
+	val questWidgetList: List<QuestWidgetListItem>
 )
 
 data class QuestWidgetListItem(

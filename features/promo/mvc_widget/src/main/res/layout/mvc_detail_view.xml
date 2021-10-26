@@ -26,20 +26,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_quest_widget"
-                android:layout_marginTop="@dimen/dp_50"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="5"
-                tools:listitem="@layout/quest_widget_card_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <com.tokopedia.quest_widget.view.QuestWidgetView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
