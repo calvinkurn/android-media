@@ -17,25 +17,6 @@ class DynamicOnboardingUseCase @Inject constructor(
         dispatcher: CoroutineDispatcher
 ) : CoroutineUseCase<Unit, DynamicOnboardingResponseDataModel>(dispatcher) {
 
-//    fun getDynamicOnboardingData(onSuccess: (ConfigDataModel) -> Unit, onError: (Throwable) -> Unit) {
-//        rawQueries[OnboardingConstant.Query.QUERY_DYNAMIC_ONBAORDING]?.let { query ->
-//            graphqlUseCase.apply {
-//                setTypeClass(DynamicOnboardingResponseDataModel::class.java)
-//                setGraphqlQuery(query)
-//                execute({ data ->
-//                    if (data.dyanmicOnboarding.isEnable && data.dyanmicOnboarding.config.isNotEmpty()) {
-//                        val config = Gson().fromJson(data.dyanmicOnboarding.config, ConfigDataModel::class.java)
-//                        onSuccess(config)
-//                    } else {
-//                        onError(Throwable(data.dyanmicOnboarding.message))
-//                    }
-//                }, { throwable ->
-//                    onError(throwable)
-//                })
-//            }
-//        }
-//    }
-
     override fun graphqlQuery(): String {
         return "query {\n" +
                 "    GetDynamicOnboarding {\n" +

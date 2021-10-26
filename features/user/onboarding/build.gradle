@@ -13,6 +13,12 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
+    }
 }
 
 kapt {

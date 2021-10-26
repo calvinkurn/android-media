@@ -23,6 +23,8 @@ class DynamicOnboardingViewModel @Inject constructor(
     val configData: LiveData<Result<ConfigDataModel>>
         get() = _dynamicOnboardingData
 
+
+
     fun getData() {
         var isFinished = false
         launchCatchError(block = {
@@ -46,13 +48,13 @@ class DynamicOnboardingViewModel @Inject constructor(
             }
         })
 
-//        startTimer(TIMEOUT) {
-//            if (!isFinished) {
-//                isFinished = true
-//                _dynamicOnboardingData.value = Fail(Throwable(JOB_WAS_CANCELED))
-//                cancel()
-//            }
-//        }
+        startTimer(TIMEOUT) {
+            if (!isFinished) {
+                isFinished = true
+                _dynamicOnboardingData.postValue(Fail(Throwable(JOB_WAS_CANCELED)))
+                cancel()
+            }
+        }
     }
 
     private fun startTimer(delayMillis: Long = 0, action: () -> Unit) = GlobalScope.launch {
@@ -61,7 +63,7 @@ class DynamicOnboardingViewModel @Inject constructor(
     }
 
     companion object {
-        private const val TIMEOUT = 2000L
         const val JOB_WAS_CANCELED = "job was canceled"
+        private const val TIMEOUT = 2000L
     }
 }
