@@ -37,7 +37,6 @@ class ImageListAdapter(private val imageList: ArrayList<String>,
 
     fun updateSelectedPosition(currentSelectedPosition : Int, view: View){
         selectedPosition = currentSelectedPosition
-//        takeViewSS(view, imageSaved)
         saveImageFromURLToStorage(context, imageList[currentSelectedPosition], imageSaved)
         thumbNailUpdater(imageList[currentSelectedPosition])
         notifyDataSetChanged()

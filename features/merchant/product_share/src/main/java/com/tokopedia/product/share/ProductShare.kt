@@ -298,7 +298,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
                     override fun onError(linkerError: LinkerError) {
                         postBuildImage.invoke()
-                        openIntentShareDefaultUniversalSharing(null,productData.productName ?: "",
+                        openIntentShareDefaultUniversalSharing(null, productData.productName ?: "",
                             productData.getTextDescription(activity.applicationContext, linkerShareData.linkerData.renderShareUri()),
                             linkerShareData.linkerData.renderShareUri())
                         if (isLog) {
