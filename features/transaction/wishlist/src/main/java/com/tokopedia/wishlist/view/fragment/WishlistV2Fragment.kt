@@ -143,7 +143,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 is Success -> {
                     currRecommendationListPage += 1
                     recommendationList = it.data
-                    renderEmpty()
+                    renderEmptyState()
                 }
                 is Fail -> {
 
@@ -315,25 +315,30 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         }
     }
 
-    private fun renderEmpty() {
-        val listItem = arrayListOf<WishlistV2TypeLayoutData>()
+    private fun renderEmptyState() {
         if (!onLoadMoreRecommendation) {
+            val listItem = arrayListOf<WishlistV2TypeLayoutData>()
             if (searchQuery.isNotEmpty()) {
                 listItem.add(WishlistV2TypeLayoutData(searchQuery, TYPE_EMPTY_NOT_FOUND))
             } else {
                 listItem.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
             }
-            listItem.add(WishlistV2TypeLayoutData("Rekomendasi", TYPE_RECOMMENDATION_TITLE))
+            wishlistV2Adapter.addList(listItem)
+            scrollRecommendationListener.resetState()
+        }
+        renderRecommendationList()
+    }
+
+    private fun renderRecommendationList() {
+        val listItem = arrayListOf<WishlistV2TypeLayoutData>()
+        if(!onLoadMoreRecommendation) {
+            listItem.add(WishlistV2TypeLayoutData(getString(R.string.recommendation_title), TYPE_RECOMMENDATION_TITLE))
         }
         recommendationList.firstOrNull()?.recommendationItemList?.forEach {
             listItem.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_LIST))
         }
-        if (!onLoadMoreRecommendation) {
-            wishlistV2Adapter.addList(listItem)
-        } else {
-            wishlistV2Adapter.appendList(listItem)
-            scrollRecommendationListener.updateStateAfterGetData()
-        }
+        wishlistV2Adapter.appendList(listItem)
+        scrollRecommendationListener.updateStateAfterGetData()
     }
 
     private fun showLoader() {
@@ -461,13 +466,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             e.printStackTrace()
             false
         }
-    }
-
-    private fun onWishlistSearchNotFound(keyword: String) {
-        val listItem = arrayListOf<WishlistV2TypeLayoutData>().apply {
-            add(WishlistV2TypeLayoutData(keyword, TYPE_EMPTY_NOT_FOUND))
-        }
-        wishlistV2Adapter.addList(listItem)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
