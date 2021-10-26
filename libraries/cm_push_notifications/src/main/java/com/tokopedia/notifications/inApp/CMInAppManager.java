@@ -3,21 +3,15 @@ package com.tokopedia.notifications.inApp;
 import android.app.Activity;
 import android.app.Application;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.iris.Iris;
-import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.FragmentObserver;
-import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.CMRemoteConfigUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
@@ -27,11 +21,9 @@ import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.AmplificationCMInApp;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
-import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -63,8 +55,6 @@ public class CMInAppManager implements CmInAppListener,
 
     private static final CMInAppManager inAppManager;
 
-    public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
-    private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
 
     private Application application;
     private CmInAppListener cmInAppListener;
@@ -241,71 +231,14 @@ public class CMInAppManager implements CmInAppListener,
         sendPushEvent(inAppData, IrisAnalyticsEvents.INAPP_RECEIVED, null);
     }
 
-    public void dataConsumed(long id) {
-        RulesManager.getInstance().dataConsumed(id);
-    }
-
-    public void viewDismissed(long id) {
-        RulesManager.getInstance().viewDismissed(id);
-    }
-
     public void handlePushPayload(RemoteMessage remoteMessage) {
-        try {
-            CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
-            if (null != cmInApp) {
-                if (application != null) {
-                    sendEventInAppDelivered(cmInApp);
-                    new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
-                } else {
-                    Map<String, String> messageMap = new HashMap<>();
-                    messageMap.put("type", "validation");
-                    messageMap.put("reason", "application_null");
-                    messageMap.put("data",  "");
-                    ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-                }
-            }
-        } catch (Exception e) {
-            Map<String, String> data = remoteMessage.getData();
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "exception");
-            messageMap.put("err", Log.getStackTraceString
-                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-            messageMap.put("data", data.toString()
-                    .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
-            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-        }
+        new CMInAppController(this)
+                .processAndSaveRemoteDataCMInApp(application, remoteMessage);
     }
 
     public void handleAmplificationInAppData(String dataString) {
-        try {
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            AmplificationCMInApp amplificationCMInApp = gson.fromJson(dataString, AmplificationCMInApp.class);
-            CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp);
-            if (cmInApp != null) {
-                if (application != null) {
-                    cmInApp.setAmplification(true);
-                    sendEventInAppDelivered(cmInApp);
-                    new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
-                } else {
-                    Map<String, String> messageMap = new HashMap<>();
-                    messageMap.put("type", "validation");
-                    messageMap.put("reason", "application_null");
-                    messageMap.put("data", "");
-                    ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-                }
-            }
-        } catch (Exception e) {
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "exception");
-            messageMap.put("err", Log.getStackTraceString
-                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-            messageMap.put("data", "");
-            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-        }
-    }
-
-    private void sendEventInAppDelivered(CMInApp cmInApp) {
-        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
+        new CMInAppController(this)
+                .processAndSaveAmplificationInAppData(application, dataString);
     }
 
     @Override
@@ -436,22 +369,15 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     @Override
-    public void onFirstScreenOpen(WeakReference<Activity> activity) {
+    public void onFirstScreenOpen(@NonNull WeakReference<Activity> activity) {
         try {
             if(activity.get() != null) {
-                trackIrisEventForAppOpen(activity.get());
+                IrisAnalyticsEvents.INSTANCE.sendFirstScreenEvent(application);
                 if (RulesManager.getInstance() != null)
                     RulesManager.getInstance().updateVisibleStateForAlreadyShown();
                 getAmplificationPushData(activity.get().getApplication());
             }
         }catch (Exception e){}
-    }
-
-    private void trackIrisEventForAppOpen(Activity activity) {
-        Iris instance = IrisAnalytics.Companion.getInstance(activity);
-        Map<String, Object> map = new HashMap<>();
-        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
-        instance.saveEvent(map);
     }
 }
 
