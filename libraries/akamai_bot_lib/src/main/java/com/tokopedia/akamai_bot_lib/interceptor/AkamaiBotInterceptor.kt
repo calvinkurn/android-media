@@ -48,7 +48,7 @@ class AkamaiBotInterceptor(val context: Context) : Interceptor {
         var messageMap: Map<String, String>? = mapOf(
             "request_body" to chain.request().body().toString(),
             "user-agent" to chain.request().header("User-Agent").toString(),
-            "response" to response.body().toString()
+            "response" to response.peekBody(1024).toString()
         )
         if (messageMap != null) {
             ServerLogger.log(Priority.P1, "AKAMAI_403_ERROR", messageMap)
