@@ -44,8 +44,10 @@ import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_BLOCK_CHAT
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_CHAT_SETTING
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_DELETE_CHAT
+import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_FOLLOW
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_REPORT_USER
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_UNBLOCK_CHAT
+import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_UNFOLLOW
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -440,15 +442,22 @@ open class TopChatViewStateImpl constructor(
 
     private fun createFollowMenu(): TopchatItemMenu {
         val followStatusTitle: String
-        @DrawableRes val followStatusDrawable: Int
+        val followStatusDrawable: Int
+        val id: Int
         if (isShopFollowed) {
             followStatusTitle = view.context.getString(R.string.already_follow_store)
-            followStatusDrawable = R.drawable.ic_topchat_check_bold_grey
+            followStatusDrawable = IconUnify.CHECK_BIG
+            id = ID_UNFOLLOW
         } else {
             followStatusTitle = view.context.getString(R.string.follow_store)
-            followStatusDrawable = R.drawable.ic_topchat_add_bold_grey
+            followStatusDrawable = IconUnify.ADD
+            id = ID_FOLLOW
         }
-        return TopchatItemMenu(followStatusTitle, followStatusDrawable)
+        return TopchatItemMenu(
+            title = followStatusTitle,
+            iconUnify = followStatusDrawable,
+            id = id
+        )
     }
 
     private fun createPromoMenu(): TopchatItemMenu {
@@ -485,10 +494,10 @@ open class TopChatViewStateImpl constructor(
             itemMenus.id == ID_DELETE_CHAT -> {
                 showDeleteChatDialog(headerMenuListener)
             }
-            itemMenus.title == view.context.getString(R.string.follow_store) -> {
+            itemMenus.id == ID_FOLLOW -> {
                 headerMenuListener.followUnfollowShop(true)
             }
-            itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
+            itemMenus.id == ID_UNFOLLOW -> {
                 headerMenuListener.followUnfollowShop(false)
             }
             itemMenus.id == ID_REPORT_USER -> {
