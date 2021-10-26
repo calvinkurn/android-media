@@ -59,10 +59,6 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
         clearContentPadding = true
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(ShopHomeFlashSaleTncBottomSheetViewModel::class.java)
-        arguments?.let {
-            val campaignId = it.getString(CAMPAIGN_ID, "")
-            viewModel?.getFlashSaleTermsAndConditions(campaignId)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -74,8 +70,11 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         bottomSheetTitle.text = context?.getString(R.string.shop_page_label_purchase_tnc)
         initView(view)
-        setChild(view)
         observeLiveData()
+        arguments?.let {
+            val campaignId = it.getString(CAMPAIGN_ID, "")
+            viewModel?.getFlashSaleTermsAndConditions(campaignId)
+        }
     }
 
     private fun observeLiveData() {

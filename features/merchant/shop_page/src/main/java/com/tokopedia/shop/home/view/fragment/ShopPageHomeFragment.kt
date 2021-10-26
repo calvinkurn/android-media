@@ -2254,8 +2254,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
         context?.run {
-            if (shopId.isNotBlank() && model.header.etalaseId.isNotBlank()) {
-                RouteManager.route(this, ApplinkConst.SHOP_ETALASE, shopId, model.header.etalaseId)
+            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
+                RouteManager.route(this, model.header.ctaLink)
             }
         }
     }
