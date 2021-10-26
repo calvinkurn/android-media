@@ -29,5 +29,7 @@ class TopchatItemMenu constructor(
         const val ID_DELETE_CHAT = 5
         const val ID_FOLLOW = 6
         const val ID_UNFOLLOW = 7
+        const val ID_BLOCK_PROMO = 8
+        const val ID_ALLOW_PROMO = 9
     }
 }

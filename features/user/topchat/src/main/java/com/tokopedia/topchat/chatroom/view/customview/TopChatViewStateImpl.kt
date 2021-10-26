@@ -41,7 +41,9 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryIm
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_ALLOW_PROMO
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_BLOCK_CHAT
+import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_BLOCK_PROMO
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_CHAT_SETTING
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_DELETE_CHAT
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_FOLLOW
@@ -462,15 +464,22 @@ open class TopChatViewStateImpl constructor(
 
     private fun createPromoMenu(): TopchatItemMenu {
         val promoStatusTitle: String
-        @DrawableRes val promoStatusDrawable: Int
+        val promoStatusDrawable: Int
+        val id: Int
         if (blockStatus.isPromoBlocked) {
             promoStatusTitle = view.context.getString(R.string.title_allow_promo)
-            promoStatusDrawable = R.drawable.ic_topchat_allow_promo
+            promoStatusDrawable = IconUnify.PROMO
+            id = ID_ALLOW_PROMO
         } else {
             promoStatusTitle = view.context.getString(R.string.title_block_promo)
-            promoStatusDrawable = R.drawable.ic_topchat_block_promo
+            promoStatusDrawable = IconUnify.PROMO_BLOCK
+            id = ID_BLOCK_PROMO
         }
-        return TopchatItemMenu(promoStatusTitle, promoStatusDrawable)
+        return TopchatItemMenu(
+            title = promoStatusTitle,
+            iconUnify = promoStatusDrawable,
+            id = id
+        )
     }
 
     private fun handleRoomMenuClick(
@@ -485,10 +494,10 @@ open class TopChatViewStateImpl constructor(
             itemMenus.id == ID_BLOCK_CHAT -> {
                 showConfirmationBlockChat()
             }
-            itemMenus.icon == R.drawable.ic_topchat_allow_promo -> {
+            itemMenus.id == ID_ALLOW_PROMO -> {
                 headerMenuListener.onClickAllowPromo()
             }
-            itemMenus.icon == R.drawable.ic_topchat_block_promo -> {
+            itemMenus.id == ID_BLOCK_PROMO -> {
                 headerMenuListener.onClickBlockPromo()
             }
             itemMenus.id == ID_DELETE_CHAT -> {
