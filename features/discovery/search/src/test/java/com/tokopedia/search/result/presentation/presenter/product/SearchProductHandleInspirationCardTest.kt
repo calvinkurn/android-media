@@ -278,12 +278,12 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         // 2 -> product
         // 3 -> product
         // 4 -> product
-        // 5 -> inspiration card (position 5)
+        // 5 -> inspiration card (position 4)
         // 6 -> product
         // 7 -> product
         // 8 -> product
         // 9 -> product
-        // 10 -> inspiration card (position 10)
+        // 10 -> inspiration card (position 8)
 
         visitableList.size shouldBe 11
         var i = 0
@@ -364,30 +364,36 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
         val inspirationWidgetIndex = listOf(1, 0, 2, 3)
 
-        // 0 -> product
+        // 0 -> search product count data
         // 1 -> product
         // 2 -> product
         // 3 -> product
-        // 4 -> inspiration card (position 4)
+        // 4 -> product
         // 5 -> inspiration card (position 4)
-        // 6 -> product
+        // 6 -> inspiration card (position 4)
         // 7 -> product
         // 8 -> product
         // 9 -> product
-        // 10 -> inspiration card (position 8)
-        // 11 -> product
+        // 10 -> product
+        // 11 -> inspiration card (position 8)
         // 12 -> product
-        // 13 -> inspiration card (position 10)
-        // 14 -> product
+        // 13 -> product
+        // 14 -> inspiration card (position 10)
         // 15 -> product
         // 16 -> product
         // 17 -> product
+        // 18 -> product
 
-        visitableList.size shouldBe 18
+        visitableList.size shouldBe 19
         var i = 0
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 4 || index == 5 || index == 10 || index == 13) {
+            if (index == 0) {
+                visitable.shouldBeInstanceOf<SearchProductCountDataView>(
+                        "visitable list at index $index should be SearchProductCountViewMode"
+                )
+            }
+            else if (index == 5 || index == 6 || index == 11 || index == 14) {
                 visitable.shouldBeInstanceOf<InspirationCardDataView>(
                         "visitable list at index $index should be InspirationCardViewModel"
                 )
