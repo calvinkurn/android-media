@@ -127,7 +127,8 @@ open class RecomWidgetViewModel @Inject constructor(
     private fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget) {
         val recomItemList = mutableListOf<RecommendationItem>()
         recomWidget.recommendationItemList.forEach { item ->
-            miniCartData.value?.let {
+            val minicartcopy = miniCartData.value?.toMutableMap()
+            minicartcopy?.let {
                 if (item.isProductHasParentID()) {
                     var variantTotalItems = 0
                     it.values.forEach { miniCartItem ->
