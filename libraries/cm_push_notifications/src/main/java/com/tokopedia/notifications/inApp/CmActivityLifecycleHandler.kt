@@ -75,8 +75,7 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
 
     private fun clearCurrentActivity(activity: Activity) {
         if (currentWeakActivity != null) {
-            val name = currentWeakActivity?.get()?.javaClass?.simpleName ?: ""
-            if (name.equals(activity.javaClass.simpleName, ignoreCase = true)) {
+            if (activity == currentWeakActivity?.get()) {
                 currentWeakActivity?.clear()
             }
         }
