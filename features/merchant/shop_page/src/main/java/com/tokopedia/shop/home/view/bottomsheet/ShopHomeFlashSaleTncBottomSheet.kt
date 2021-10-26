@@ -74,6 +74,7 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         bottomSheetTitle.text = context?.getString(R.string.shop_page_label_purchase_tnc)
         initView(view)
+        setChild(view)
         observeLiveData()
     }
 

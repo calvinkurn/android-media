@@ -10,10 +10,7 @@ class ShopHomeFlashSaleTncAdapter: RecyclerView.Adapter<ShopHomeFlashSaleTncView
 
     private var tncDescriptions : List<String> = listOf()
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ShopHomeFlashSaleTncViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeFlashSaleTncViewHolder {
         return ShopHomeFlashSaleTncViewHolder(parent.inflateLayout(R.layout.item_shop_flash_sale_tnc))
     }
 

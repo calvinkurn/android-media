@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
@@ -174,9 +175,12 @@ class ShopHomeFlashSaleViewHolder(
     }
 
     private fun setupProductCardCarousel(model: ShopHomeFlashSaleUiModel) {
-        val productList = model.data?.firstOrNull()?.productList ?: listOf()
-        productCarouselView?.adapter = productCarouselAdapter
-        productCarouselAdapter.setProductList(productList)
+        itemView.context?.run {
+            val productList = model.data?.firstOrNull()?.productList ?: listOf()
+            productCarouselView?.adapter = productCarouselAdapter
+            productCarouselView?.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+            productCarouselAdapter.setProductList(productList)
+        }
     }
 
     private fun isStatusCampaignFinished(statusCampaign: String): Boolean {
