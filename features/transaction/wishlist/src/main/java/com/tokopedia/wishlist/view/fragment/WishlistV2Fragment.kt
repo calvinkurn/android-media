@@ -143,20 +143,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 is Success -> {
                     currRecommendationListPage += 1
                     recommendationList = it.data
-                    val listItem = arrayListOf<WishlistV2TypeLayoutData>()
-
-                    if (!isFetchRecommendation) {
-                        listItem.add(WishlistV2TypeLayoutData(WishlistV2TypeLayoutData("Rekomendasi", TYPE_RECOMMENDATION_TITLE)))
-
-                    }
-                    if (recommendationList.isNotEmpty()) {
-                        // do something
-
-                        recommendationList.firstOrNull()?.recommendationItemList?.forEach {
-                            listItem.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_LIST))
-                        }
-                        wishlistV2Adapter.appendList(listItem)
-                    }
+                    renderEmpty()
                 }
                 is Fail -> {
 
@@ -239,7 +226,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             override fun getSpanSize(position: Int): Int {
                 return when (wishlistV2Adapter.getItemViewType(position)) {
                     WishlistV2Adapter.LAYOUT_LIST -> 2
-                    WishlistV2Adapter.LAYOUT_GRID -> 1
+                    WishlistV2Adapter.LAYOUT_GRID, WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST -> 1
                     else -> 2
                 }
             }
@@ -310,12 +297,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                             if (currPage == 1) {
                                 loadRecommendationList()
                             }
-//                            renderEmpty(wishlistV2)
-//                            if (wishlistV2.query.isNotEmpty()) {
-//                                onWishlistSearchNotFound(wishlistV2.query)
-//                            } else {
-//                                renderEmpty()
-//                            }
                         }
                     }
                 }
@@ -334,22 +315,25 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         }
     }
 
-    private fun renderEmpty(wishlistV2: WishlistV2Response.Data.WishlistV2) {
+    private fun renderEmpty() {
         val listItem = arrayListOf<WishlistV2TypeLayoutData>()
         if (!onLoadMoreRecommendation) {
-            if (wishlistV2.query.isNotEmpty()) {
-                listItem.add(WishlistV2TypeLayoutData(wishlistV2.query, TYPE_EMPTY_NOT_FOUND))
+            if (searchQuery.isNotEmpty()) {
+                listItem.add(WishlistV2TypeLayoutData(searchQuery, TYPE_EMPTY_NOT_FOUND))
             } else {
                 listItem.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
             }
-            listItem.add(WishlistV2TypeLayoutData(WishlistV2TypeLayoutData("Rekomendasi", TYPE_RECOMMENDATION_TITLE)))
+            listItem.add(WishlistV2TypeLayoutData("Rekomendasi", TYPE_RECOMMENDATION_TITLE))
         }
-         else {
-            recommendationList.firstOrNull()?.recommendationItemList?.forEach {
-                listItem.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_LIST))
-            }
+        recommendationList.firstOrNull()?.recommendationItemList?.forEach {
+            listItem.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_LIST))
         }
-        wishlistV2Adapter.appendList(listItem)
+        if (!onLoadMoreRecommendation) {
+            wishlistV2Adapter.addList(listItem)
+        } else {
+            wishlistV2Adapter.appendList(listItem)
+            scrollRecommendationListener.updateStateAfterGetData()
+        }
     }
 
     private fun showLoader() {
