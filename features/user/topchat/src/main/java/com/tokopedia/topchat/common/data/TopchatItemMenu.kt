@@ -25,5 +25,6 @@ class TopchatItemMenu constructor(
         const val ID_CHAT_SETTING = 1
         const val ID_BLOCK_CHAT = 2
         const val ID_UNBLOCK_CHAT = 3
+        const val ID_REPORT_USER = 4
     }
 }

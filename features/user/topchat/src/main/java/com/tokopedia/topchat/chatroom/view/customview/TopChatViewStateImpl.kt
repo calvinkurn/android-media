@@ -43,6 +43,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_BLOCK_CHAT
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_CHAT_SETTING
+import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_REPORT_USER
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_UNBLOCK_CHAT
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
@@ -403,7 +404,8 @@ open class TopChatViewStateImpl constructor(
     private fun createReportUserMenu(): TopchatItemMenu {
         return TopchatItemMenu(
             title = view.context.getString(R.string.chat_report_user),
-            icon = R.drawable.ic_topchat_report_bold_grey
+            iconUnify = IconUnify.USER_REPORT,
+            id = ID_REPORT_USER
         )
     }
 
@@ -487,7 +489,7 @@ open class TopChatViewStateImpl constructor(
             itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
                 headerMenuListener.followUnfollowShop(false)
             }
-            itemMenus.title == view.context.getString(R.string.chat_report_user) -> {
+            itemMenus.id == ID_REPORT_USER -> {
                 headerMenuListener.onGoToReportUser()
             }
             itemMenus.id == ID_CHAT_SETTING -> {
