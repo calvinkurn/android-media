@@ -232,13 +232,13 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     public void handlePushPayload(RemoteMessage remoteMessage) {
-        new CMInAppController(this)
-                .processAndSaveRemoteDataCMInApp(application, remoteMessage);
+        new CMInAppController(application, this)
+                .processAndSaveRemoteDataCMInApp(remoteMessage);
     }
 
     public void handleAmplificationInAppData(String dataString) {
-        new CMInAppController(this)
-                .processAndSaveAmplificationInAppData(application, dataString);
+        new CMInAppController(application,this)
+                .processAndSaveAmplificationInAppData(dataString);
     }
 
     @Override
