@@ -58,7 +58,12 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     }
 
     private fun renderUI() {
-        
+        if(::cta.isInitialized)
+        {
+            tokoToGoPayHeader.text = cta.bottomSheet?.bottomSheetTitle?:""
+            tokoToGoPaySubHeader.text = cta.bottomSheet?.bottomSheetDescription?:""
+            btnRegister.text = cta.bottomSheet?.bottomSheetButtonText?:""
+        }
     }
 
     private fun sendImpressionAnalytics() {
