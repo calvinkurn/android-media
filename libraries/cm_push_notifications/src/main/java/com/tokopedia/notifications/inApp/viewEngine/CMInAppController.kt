@@ -69,10 +69,8 @@ class CMInAppController(
             cmInApp?.let {
                 if (application != null) {
                     cmInApp.isAmplification = true
-                    IrisAnalyticsEvents.trackCmINAppEvent(
-                        application, cmInApp,
-                        IrisAnalyticsEvents.INAPP_DELIVERED, null
-                    )
+                    IrisAnalyticsEvents.sendAmplificationInAppEvent(
+                        application, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp)
                     downloadImagesAndUpdateDB(application, cmInApp)
                 } else {
                     val messageMap: MutableMap<String, String> = HashMap()
