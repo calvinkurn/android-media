@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
@@ -18,6 +19,7 @@ class ChatSettingViewHolder constructor(
 
     private val title: Typography? = itemView?.findViewById(R.id.tvTitle)
     private val description: Typography? = itemView?.findViewById(R.id.tvDesc)
+    private val label: NotificationUnify? = itemView?.findViewById(R.id.cs_nu_label)
 
     interface ChatSettingListener {
         fun isSeller(): Boolean
@@ -31,6 +33,15 @@ class ChatSettingViewHolder constructor(
         initDescription(element)
         initClickListener(element)
         initPadding(element)
+        bindLabel(element)
+    }
+
+    private fun bindLabel(element: ItemChatSettingUiModel) {
+        label?.shouldShowWithAction(
+            element.label.isNotEmpty() && element.alias.isNotEmpty()
+        ) {
+            label.text = element.label
+        }
     }
 
     private fun initTitle(element: ItemChatSettingUiModel) {
