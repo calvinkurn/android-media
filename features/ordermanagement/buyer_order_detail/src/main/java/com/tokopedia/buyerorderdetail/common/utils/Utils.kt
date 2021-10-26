@@ -48,7 +48,7 @@ object Utils {
         return drawable
     }
 
-    fun copyText(context: Context, label: String, text: String) {
+    fun copyText(context: Context, label: String, text: CharSequence) {
         val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, text))
     }

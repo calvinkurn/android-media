@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
-import android.text.Spannable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.buyerorderdetail.presentation.coachmark.DriverTippingCoachMarkManager
@@ -21,7 +20,7 @@ data class ShipmentInfoUiModel(
         val orderId: String,
         val orderStatusId: String,
         override val copyMessage: String,
-        override val copyableText: Spannable,
+        override val copyableText: String,
         override val label: String,
         override val copyLabel: String
     ) : CopyableKeyValueUiModel() {
