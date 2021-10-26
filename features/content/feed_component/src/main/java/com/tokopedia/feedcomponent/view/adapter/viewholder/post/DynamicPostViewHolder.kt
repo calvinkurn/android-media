@@ -81,6 +81,7 @@ open class DynamicPostViewHolder(v: View,
         const val PAYLOAD_FOLLOW = 15
         const val PAYLOAD_ANIMATE_FOOTER = 16
         const val PAYLOAD_PLAY_VIDEO = 17
+        const val PAYLOAD_PLAY_VOD = 18
 
         const val MAX_CHAR = 140
         const val CAPTION_END = 90
@@ -126,6 +127,7 @@ open class DynamicPostViewHolder(v: View,
             PAYLOAD_FOLLOW -> bindFollow(element.header.followCta)
             PAYLOAD_ANIMATE_FOOTER -> animateFooter()
             PAYLOAD_PLAY_VIDEO -> bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
+            PAYLOAD_PLAY_VOD -> bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
             else -> bind(element)
         }
     }
@@ -678,6 +680,13 @@ open class DynamicPostViewHolder(v: View,
             redirectUrl: String,
             postTagItem: FeedXProduct,
             itemPosition: Int
+        )
+        fun onFullScreenCLick(
+                positionInFeed: Int,
+                redirectUrl: String,
+        )
+        fun addVODView(
+                playChannelId: String
         )
         fun onPostTagBubbleClick(
                 positionInFeed: Int,

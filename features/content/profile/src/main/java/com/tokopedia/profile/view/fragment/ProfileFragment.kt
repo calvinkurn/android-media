@@ -978,6 +978,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
     }
 
+    override fun onFullScreenCLick(positionInFeed: Int, redirectUrl: String) {
+
+    }
+    override fun addVODView(playChannelId: String) {
+
+    }
+
     override fun onPostTagBubbleClick(
             positionInFeed: Int,
             redirectUrl: String,

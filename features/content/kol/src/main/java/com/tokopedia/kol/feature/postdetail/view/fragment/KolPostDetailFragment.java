@@ -1085,4 +1085,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void userCarouselImpression(@NonNull String activityId, @NonNull FeedXMedia media, int positionInFeed, @NonNull String postType, boolean isFollowed, @NonNull String shopId, int postPosition, @NonNull CpmData cpmData, @NonNull List<? extends Product> products) {
 
     }
+
+    @Override
+    public void onFullScreenCLick(int positionInFeed, @NonNull String redirectUrl) {
+
+    }
+    @Override
+    public void addVODView(@NonNull String playChannelId) {
+
+    }
+
 }

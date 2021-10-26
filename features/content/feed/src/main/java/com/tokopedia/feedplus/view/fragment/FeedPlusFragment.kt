@@ -1839,6 +1839,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
+    override fun onFullScreenCLick(positionInFeed: Int, redirectUrl: String) {
+        onGoToLink(redirectUrl)
+    }
+
+    override fun addVODView(playChannelId: String) {
+        feedViewModel.trackVisitChannel(playChannelId)
+    }
+
     override fun onPostTagBubbleClick(
             positionInFeed: Int,
             redirectUrl: String,

@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
@@ -38,6 +39,7 @@ import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.domain.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -76,7 +78,9 @@ class FeedViewModel @Inject constructor(
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val sendReportUseCase: SendReportUseCase,
-    private val addWishListUseCase: AddWishListUseCase
+    private val addWishListUseCase: AddWishListUseCase,
+    private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase
+
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
@@ -172,6 +176,13 @@ class FeedViewModel @Inject constructor(
         }, {
             submitInterestPickResp.value = Fail(it)
         })
+    }
+    fun trackVisitChannel(channelId: String) {
+        viewModelScope.launchCatchError(baseDispatcher.io, block = {
+            trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
+            trackVisitChannelBroadcasterUseCase.executeOnBackground()
+        }) {
+        }
     }
 
     fun getFeedFirstPage() {
