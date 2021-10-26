@@ -350,16 +350,18 @@ class ProductManageViewModel @Inject constructor(
 
     fun getProductManageAccess() {
         launchCatchError(block = {
-            access = withContext(dispatchers.io) {
-                if (userSessionInterface.isShopOwner) {
-                    ProductManageAccessMapper.mapProductManageOwnerAccess()
-                } else {
-                    val shopId = userSessionInterface.shopId
-                    val response = getProductManageAccessUseCase.execute(shopId)
-                    ProductManageAccessMapper.mapToProductManageAccess(response)
+            val currentAccess =
+                withContext(dispatchers.io) {
+                    if (userSessionInterface.isShopOwner) {
+                        ProductManageAccessMapper.mapProductManageOwnerAccess()
+                    } else {
+                        val shopId = userSessionInterface.shopId
+                        val response = getProductManageAccessUseCase.execute(shopId)
+                        ProductManageAccessMapper.mapToProductManageAccess(response)
+                    }
                 }
-            }
-            access?.let { _productManageAccess.value = Success(it) }
+            access = currentAccess
+            _productManageAccess.value = Success(currentAccess)
         }) {
             _productManageAccess.value = Fail(it)
         }
@@ -484,8 +486,7 @@ class ProductManageViewModel @Inject constructor(
                         _getFreeClaimResult.value = Success(dataDeposit)
                     }
 
-                    override fun onCompleted() {
-                    }
+                    override fun onCompleted() {}
 
                     override fun onError(e: Throwable) {
                         _getFreeClaimResult.value = Fail(e)
@@ -501,8 +502,7 @@ class ProductManageViewModel @Inject constructor(
                         _getPopUpResult.value = Success(GetPopUpResult(productId, isSuccess))
                     }
 
-                    override fun onCompleted() {
-                    }
+                    override fun onCompleted() {}
 
                     override fun onError(e: Throwable) {
                         _getPopUpResult.value = Fail(e)
@@ -688,7 +688,7 @@ class ProductManageViewModel @Inject constructor(
             when {
                 response.isSuccess -> Success(result)
                 response.header.errorMessage.isNotEmpty() -> {
-                    val message = response.header.errorMessage.lastOrNull().orEmpty()
+                    val message = response.header.errorMessage.last()
                     Fail(MessageErrorException(message))
                 }
                 else -> {
@@ -703,7 +703,9 @@ class ProductManageViewModel @Inject constructor(
     private suspend fun editVariantStock(result: EditVariantResult): Result<EditVariantResult> {
         return withContext(dispatchers.io) {
             val warehouseId = getWarehouseId(userSessionInterface.shopId)
-            val productList = result.variants.map { ProductStock(it.id, it.stock.toString()) }
+            val productList = result.variants.map {
+                ProductStock(it.id, it.stock.toString())
+            }
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
                     userSessionInterface.shopId, warehouseId, productList
             )
