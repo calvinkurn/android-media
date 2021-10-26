@@ -483,40 +483,20 @@ open class TopChatViewStateImpl constructor(
     }
 
     private fun handleRoomMenuClick(
-            itemMenus: TopchatItemMenu,
-            chatroomViewModel: ChatroomViewModel,
-            headerMenuListener: HeaderMenuListener
+        itemMenus: TopchatItemMenu,
+        chatroomViewModel: ChatroomViewModel,
+        headerMenuListener: HeaderMenuListener
     ) {
-        when {
-            itemMenus.id == ID_UNBLOCK_CHAT -> {
-                headerMenuListener.unBlockChat()
-            }
-            itemMenus.id == ID_BLOCK_CHAT -> {
-                showConfirmationBlockChat()
-            }
-            itemMenus.id == ID_ALLOW_PROMO -> {
-                headerMenuListener.onClickAllowPromo()
-            }
-            itemMenus.id == ID_BLOCK_PROMO -> {
-                headerMenuListener.onClickBlockPromo()
-            }
-            itemMenus.id == ID_DELETE_CHAT -> {
-                showDeleteChatDialog(headerMenuListener)
-            }
-            itemMenus.id == ID_FOLLOW -> {
-                headerMenuListener.followUnfollowShop(true)
-            }
-            itemMenus.id == ID_UNFOLLOW -> {
-                headerMenuListener.followUnfollowShop(false)
-            }
-            itemMenus.id == ID_REPORT_USER -> {
-                headerMenuListener.onGoToReportUser()
-            }
-            itemMenus.id == ID_CHAT_SETTING -> {
-                headerMenuListener.onGoToChatSetting()
-            }
-            else -> {
-            }
+        when (itemMenus.id) {
+            ID_UNBLOCK_CHAT -> headerMenuListener.unBlockChat()
+            ID_BLOCK_CHAT -> showConfirmationBlockChat()
+            ID_ALLOW_PROMO -> headerMenuListener.onClickAllowPromo()
+            ID_BLOCK_PROMO -> headerMenuListener.onClickBlockPromo()
+            ID_DELETE_CHAT -> showDeleteChatDialog(headerMenuListener)
+            ID_FOLLOW -> headerMenuListener.followUnfollowShop(true)
+            ID_UNFOLLOW -> headerMenuListener.followUnfollowShop(false)
+            ID_REPORT_USER -> headerMenuListener.onGoToReportUser()
+            ID_CHAT_SETTING -> headerMenuListener.onGoToChatSetting()
         }
     }
 
