@@ -188,9 +188,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private boolean initLibraries() {
-        initCMPushNotification();
         initTetraDebugger();
         initCMDependencies();
+        initCMPushNotification();
         return true;
     }
 
