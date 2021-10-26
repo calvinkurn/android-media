@@ -1,14 +1,14 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 class TopChatVoucherUiModel private constructor(
     builder: Builder
-) : SendableViewModel(builder), Visitable<TopChatTypeFactory> {
+) : SendableUiModel(builder), Visitable<TopChatTypeFactory> {
 
     private val voucherModel: MerchantVoucherModel = builder.voucherModel
     private val isPublic: Int = builder.isPublic
@@ -22,7 +22,7 @@ class TopChatVoucherUiModel private constructor(
         return isPublic == 0
     }
 
-    class Builder : SendableViewModel.Builder<Builder, TopChatVoucherUiModel>() {
+    class Builder : SendableUiModel.Builder<Builder, TopChatVoucherUiModel>() {
 
         internal lateinit var voucherModel: MerchantVoucherModel
         internal var isPublic: Int = 1
