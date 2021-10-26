@@ -114,7 +114,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         activity?.let {
             tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance())
             tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance())
-            val adapter = AffiliateRecommendedAdapter(it, context, tabFragments)
+            val adapter = AffiliateRecommendedAdapter(childFragmentManager, lifecycle ,context, tabFragments)
             viewPager?.adapter = adapter
             if(tabLayout != null && viewPager != null){
                 TabLayoutMediator(tabLayout, viewPager) { _, _ ->

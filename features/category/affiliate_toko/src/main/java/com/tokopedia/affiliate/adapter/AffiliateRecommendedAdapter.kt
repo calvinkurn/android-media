@@ -3,16 +3,19 @@ package com.tokopedia.affiliate.adapter
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateRecommendedAdapter(
-        fa: FragmentActivity,
+        fa: FragmentManager,
+        lifecycle: Lifecycle,
         var context: Context?,
         private var fragmentList: ArrayList<Fragment>
-) : FragmentStateAdapter(fa) {
+) : FragmentStateAdapter(fa,lifecycle) {
     override fun getItemCount(): Int {
         return fragmentList.size
     }
