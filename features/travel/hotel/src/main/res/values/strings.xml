@@ -123,7 +123,7 @@
     <string name="hotel_detail_share_link_title">%1$s di %2$s - Tokopedia</string>
     <string name="hotel_detail_share_link_content">"Booking %1$s di %2$s dengan harga termurah serta dapatkan promo menarik lainnya di Tokopedia!</string>
     <string name="hotel_detail_share_applink">tokopedia://hotel/detail/%1$s</string>
-    <string name="hotel_detail_share_weblink">https://www.tokopedia.com/hotel/%1$s/h/%2$s</string>
+    <string name="hotel_detail_share_weblink">hotel/%1$s/h/%2$s</string>
     <string name="hotel_detail_share_bottomsheet_title">Bagikan Produk Ini</string>
     <string name="hotel_detail_share_cta_link">Hai, coba cek %1$s - %2$s yang kutemukan di Tokopedia, deh! %3$s </string>
     <string name="hotel_detail_share_loading">Loading</string>

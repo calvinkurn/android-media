@@ -14,6 +14,11 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 14/06/20.
  */
+/*
+tnc {
+  description
+}
+ */
 class GetConfigurationUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : UseCase<Config>() {
@@ -23,6 +28,9 @@ class GetConfigurationUseCase @Inject constructor(
               broadcasterGetShopConfig(shopID: ${'$'}shopId) {
                 streamAllowed
                 config
+                tnc {
+                  description
+                }
               }
             }
         """
@@ -41,7 +49,10 @@ class GetConfigurationUseCase @Inject constructor(
         ).executeWithRetry()
         val response = gqlResponse.getData<GetBroadcasterShopConfigResponse>(GetBroadcasterShopConfigResponse::class.java)
         return mapConfiguration(response.shopConfig.config)
-                .copy(streamAllowed = response.shopConfig.streamAllowed)
+                .copy(
+                    streamAllowed = response.shopConfig.streamAllowed,
+                    tnc = response.shopConfig.tnc,
+                )
     }
 
     private fun mapConfiguration(config: String): Config {

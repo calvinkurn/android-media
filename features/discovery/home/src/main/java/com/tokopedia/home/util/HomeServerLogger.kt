@@ -22,6 +22,7 @@ object HomeServerLogger {
     const val TYPE_WALLET_POINTS_EMPTY = "wallet_points_empty"
 
     const val TYPE_ERROR_SUBMIT_WALLET = "wallet_app_error_submit"
+    const val TYPE_ERROR_ON_LAYOUT_CHILDREN_BALANCE = "error_on_layout_children_balance_adapter"
 
     fun logWarning(
         type: String?,

@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FragmentConst.REVIEW_SHOP_FRAGMENT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
@@ -98,7 +99,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedVie
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.home.view.fragment.OldShopPageHomeFragment
 import com.tokopedia.shop.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
@@ -114,6 +115,7 @@ import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
 import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -130,7 +132,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderDat
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
-import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import com.tokopedia.stickylogin.common.StickyLoginConstant
@@ -219,6 +220,8 @@ class NewShopPageFragment :
         private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
+        private const val REVIEW_SHOP_FRAGMENT_SHOP_ID = "shop_id"
+        private const val REVIEW_SHOP_FRAGMENT_SHOP_DOMAIN = "shop_domain"
 
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
@@ -1430,7 +1433,7 @@ class NewShopPageFragment :
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val position = tab.position
-                viewPager?.setCurrentItem(position, false)
+                viewPager?.setCurrentItem(position, true)
                 tabLayout?.getTabAt(position)?.let{
                     viewPagerAdapter?.handleSelectedTab(it, true)
                 }
@@ -1457,10 +1460,8 @@ class NewShopPageFragment :
                         hideBottomSheetSellerMigration()
                     }
                 }
-                viewPager?.post {
-                    checkIfShouldShowOrHideScrollToTopButton(position)
-                    checkIfShouldShowOrHideShopPageFab(position)
-                }
+                hideScrollToTopButton()
+                hideShopPageFab()
                 isTabClickByUser = false
             }
         })
@@ -1516,15 +1517,24 @@ class NewShopPageFragment :
         var selectedPosition = viewPager?.currentItem.orZero()
         if (tabLayout?.tabCount == 0) {
             if (shouldOverrideTabToHome) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
+                selectedPosition = if(!isUsingNewShopHomeTab()) {
+                    if (viewPagerAdapter?.isFragmentObjectExists(OldShopPageHomeFragment::class.java) == true) {
+                        viewPagerAdapter?.getFragmentPosition(OldShopPageHomeFragment::class.java).orZero()
+                    } else {
+                        selectedPosition
+                    }
                 } else {
-                    selectedPosition
+                    if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
+                        viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
+                    } else {
+                        selectedPosition
+                    }
                 }
             }
             if (shouldOverrideTabToReview) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ReviewShopFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(ReviewShopFragment::class.java).orZero()
+                val reviewShopClassName = Class.forName(REVIEW_SHOP_FRAGMENT)
+                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(reviewShopClassName) == true) {
+                    viewPagerAdapter?.getFragmentPosition(reviewShopClassName).orZero()
                 } else {
                     selectedPosition
                 }
@@ -1604,9 +1614,13 @@ class NewShopPageFragment :
             ))
         }
         if(!isUsingNewShopReviewPage()) {
-            val shopReviewFragment = ReviewShopFragment.createInstance(
-                    shopId,
-                    shopDomain
+            val shopReviewFragment = RouteManager.instantiateFragmentDF(
+                    activity as AppCompatActivity,
+                    REVIEW_SHOP_FRAGMENT,
+                    Bundle().apply {
+                        putString(REVIEW_SHOP_FRAGMENT_SHOP_ID, shopId)
+                        putString(REVIEW_SHOP_FRAGMENT_SHOP_DOMAIN, shopDomain)
+                    }
             )
             listShopPageTabModel.add(ShopPageTabModel(
                     getString(R.string.shop_info_title_tab_review),
@@ -1624,21 +1638,43 @@ class NewShopPageFragment :
 
     private fun getHomeFragment(): Fragment? {
         return if (isShowHomeTab()) {
-            ShopPageHomeFragment.createInstance(
-                    shopId,
-                    shopPageHeaderDataModel?.isOfficial ?: false,
-                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                    shopPageHeaderDataModel?.shopName.orEmpty(),
-                    shopAttribution ?: "",
-                    shopRef
-            ).apply {
-                shopViewModel?.productListData?.let {
-                    setInitialProductListData(it)
+            if(!isUsingNewShopHomeTab()) {
+                OldShopPageHomeFragment.createInstance(
+                        shopId,
+                        shopPageHeaderDataModel?.isOfficial ?: false,
+                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                        shopPageHeaderDataModel?.shopName.orEmpty(),
+                        shopAttribution ?: "",
+                        shopRef
+                ).apply {
+                    shopViewModel?.productListData?.let {
+                        setInitialProductListData(it)
+                    }
+                }
+            } else{
+                ShopPageHomeFragment.createInstance(
+                        shopId,
+                        shopPageHeaderDataModel?.isOfficial ?: false,
+                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                        shopPageHeaderDataModel?.shopName.orEmpty(),
+                        shopAttribution ?: "",
+                        shopRef
+                ).apply {
+                    shopViewModel?.productListData?.let {
+                        setInitialProductListData(it)
+                    }
+                    shopViewModel?.homeWidgetLayoutData?.let{
+                        setListWidgetLayoutData(it)
+                    }
                 }
             }
         } else {
             null
         }
+    }
+
+    private fun isUsingNewShopHomeTab(): Boolean {
+        return ShopUtil.isUsingNewShopHomeTab()
     }
 
     private fun onErrorGetShopPageTabData(e: Throwable?) {
@@ -1698,6 +1734,9 @@ class NewShopPageFragment :
 
         val shopPageHomeFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(TAB_POSITION_HOME)
         if (shopPageHomeFragment is ShopPageHomeFragment) {
+            shopPageHomeFragment.clearCache()
+        }
+        if (shopPageHomeFragment is OldShopPageHomeFragment) {
             shopPageHomeFragment.clearCache()
         }
         isRefresh = true
@@ -2120,7 +2159,8 @@ class NewShopPageFragment :
         }
 
         if (isShopReviewAppLink(appLink) && !isUsingNewShopReviewPage()) {
-            val reviewTabPosition = viewPagerAdapter?.getFragmentPosition(ReviewShopFragment::class.java).orZero()
+            val reviewShopClassName = Class.forName(REVIEW_SHOP_FRAGMENT)
+            val reviewTabPosition = viewPagerAdapter?.getFragmentPosition(reviewShopClassName).orZero()
             viewPager?.setCurrentItem(reviewTabPosition, false)
             tabLayout?.getTabAt(reviewTabPosition)?.select()
         } else

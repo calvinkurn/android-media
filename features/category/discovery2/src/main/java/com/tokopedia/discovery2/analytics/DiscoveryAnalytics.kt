@@ -426,26 +426,31 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackSearchClick() {
         val map: MutableMap<String, Any> = mutableMapOf(
                 KEY_EVENT to CLICK_TOP_NAV,
-                KEY_EVENT_CATEGORY to eventDiscoveryCategory,
                 KEY_EVENT_ACTION to CLICK_SEARCH_BOX,
+                KEY_EVENT_CATEGORY to TOP_NAV,
                 KEY_EVENT_LABEL to "",
-                PAGE_TYPE to pageType,
-                PAGE_PATH to removedDashPageIdentifier)
+                BUSINESS_UNIT to HOME_BROWSE,
+                CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+                PAGE_PATH to removedDashPageIdentifier,
+                PAGE_SOURCE to PAGE_SOURCE_TOP_NAV,
+                PAGE_TYPE to pageType)
         getTracker().sendGeneralEvent(map)
     }
 
 
     override fun trackGlobalNavBarClick(buttonName: String, userID: String?) {
         val map: MutableMap<String, Any> = mutableMapOf(
-                KEY_EVENT to CLICK_NAV_DRAWER,
-                KEY_EVENT_CATEGORY to eventDiscoveryCategory,
-                KEY_EVENT_ACTION to "click $buttonName nav",
-                KEY_EVENT_LABEL to "",
-                CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
-                USER_ID to (userID ?: ""),
-                BUSINESS_UNIT to HOME_BROWSE,
-                PAGE_TYPE to pageType,
-                PAGE_PATH to removedDashPageIdentifier)
+            KEY_EVENT to CLICK_TOP_NAV,
+            KEY_EVENT_ACTION to "click $buttonName nav",
+            KEY_EVENT_CATEGORY to TOP_NAV,
+            KEY_EVENT_LABEL to "",
+            BUSINESS_UNIT to HOME_BROWSE,
+            CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+            PAGE_PATH to removedDashPageIdentifier,
+            USER_ID to (userID ?: ""),
+            PAGE_SOURCE to PAGE_SOURCE_TOP_NAV,
+            PAGE_TYPE to pageType
+        )
         getTracker().sendGeneralEvent(map)
     }
 
@@ -812,6 +817,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                     map[KEY_POSITION] = componentsItems.indexOf(coupon) + 1
                     map[KEY_PROMO_ID] = it.promoId.toString()
                     map[KEY_PROMO_CODE] = it.slug.toString()
+                    map[KEY_NAME] = CLAIM_COUPON_ITEM_NAME
                 }
                 list.add(map)
             }
@@ -843,7 +849,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                             ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER,
                     KEY_POSITION to (position + 1).toString(),
                     KEY_PROMO_ID to it.promoId.toString(),
-                    KEY_PROMO_CODE to it.slug.toString()
+                    KEY_PROMO_CODE to it.slug.toString(),
+                    KEY_NAME to CLAIM_COUPON_ITEM_NAME
             ))
         }
         val promotions: Map<String, ArrayList<Map<String, Any>>> = mapOf(

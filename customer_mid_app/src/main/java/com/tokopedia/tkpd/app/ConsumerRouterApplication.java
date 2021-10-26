@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.app;
 
+import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
+import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -28,7 +31,6 @@ import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
@@ -64,7 +66,6 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
@@ -108,9 +109,6 @@ import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
-import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
-
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -151,7 +149,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
-        DeeplinkHandlerActivity.createApplinkDelegateInBackground(ConsumerRouterApplication.this);
         initResourceDownloadManager();
     }
 
@@ -397,17 +394,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isSupportApplink(String appLink) {
-        return DeeplinkHandlerActivity.getApplinkDelegateInstance().supportsUri(appLink);
+        return false;
     }
 
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
         return new ApplinkUnsupportedImpl(activity);
-    }
-
-    @Override
-    public ApplinkDelegate applinkDelegate() {
-        return DeeplinkHandlerActivity.getApplinkDelegateInstance();
     }
 
     @Override
@@ -426,28 +418,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
         if (activity != null) {
-            ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-            Intent intent = activity.getIntent();
-            intent.setData(Uri.parse(applink));
-            intent.putExtras(bundle);
-            deepLinkDelegate.dispatchFrom(activity, intent);
+            RouteManager.route(activity, bundle, applink);
         }
     }
 
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
-        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
-        if (context instanceof Activity) {
-            try {
-                return DeeplinkHandlerActivity.getApplinkDelegateInstance().getIntent((Activity) context, applink);
-            } catch (Exception e) {
-
-            }
-        }
-
-        return intent;
+        return RouteManager.getIntent(context, applink);
     }
 
     @Override

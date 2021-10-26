@@ -9,7 +9,7 @@ import com.tokopedia.home_component.model.ChannelModel
 
 interface FeaturedBrandListener {
 
-    fun onSeeAllClicked(channelModel: ChannelModel, position: Int)
+    fun onSeeAllClicked(channelModel: ChannelModel, position: Int, applink: String)
 
     fun onLegoItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
 

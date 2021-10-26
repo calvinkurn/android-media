@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeNplCampaignTncBottomSheetViewModel
+import com.tokopedia.shop.home.view.viewmodel.OldShopHomeViewModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import dagger.Binds
 import dagger.Module
@@ -17,6 +18,11 @@ abstract class ShopPageHomeViewModelModule {
     @ShopPageHomeScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(OldShopHomeViewModel::class)
+    internal abstract fun oldShopPageHomeViewModel(viewModel: OldShopHomeViewModel): ViewModel
 
     @Binds
     @IntoMap

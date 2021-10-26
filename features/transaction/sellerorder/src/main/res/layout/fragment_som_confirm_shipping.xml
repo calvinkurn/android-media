@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16">
+    android:layout_marginLeft="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginEnd="16dp">
 
     <FrameLayout
         android:id="@+id/fl_btn_confirm_shipping"
@@ -24,8 +24,8 @@
             app:unifyButtonVariant="filled"
             app:unifyButtonType="main"
             android:text="@string/btn_konfirmasi"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8" />
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
 
     </FrameLayout>
 
@@ -34,7 +34,7 @@
         android:contentDescription="@string/content_desc_tf_no_resi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/label_change_courier"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:visibility="gone">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             app:typographyWeight="bold"
             app:typographyType="body_2"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:text="@string/title_courier"/>
@@ -106,8 +106,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:background="@color/Unify_N75"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/courier_label"/>
 
@@ -150,8 +150,8 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:background="@color/Unify_N75"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/courier_service_label"/>
 

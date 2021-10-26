@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.model
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
+import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
@@ -15,6 +16,8 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchas
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.data.model.ticker.ProductTicker
+import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
@@ -50,8 +53,16 @@ data class ProductInfoP2UiData(
         var helpfulReviews: List<Review>? = null,
         var miniCart: MutableMap<String, MiniCartItem>? = null,
         var alternateCopy: List<AlternateCopy> = listOf(),
-        var rating: ProductRatingCount = ProductRatingCount()
+        var bundleInfoMap: Map<String, BundleInfo> = emptyMap(),
+        var rating: ProductRatingCount = ProductRatingCount(),
+        var ticker: ProductTicker = ProductTicker()
 ) {
+    fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
+        return ticker.tickerInfo.firstOrNull {
+            productId in it.productIDs
+        }?.tickerDatumResponses
+    }
+
     fun getTotalStockMiniCartByParentId(parentId: String): Int {
         if (parentId == "0" || parentId.isEmpty()) return 0
         return miniCart?.values?.toList()?.filter {

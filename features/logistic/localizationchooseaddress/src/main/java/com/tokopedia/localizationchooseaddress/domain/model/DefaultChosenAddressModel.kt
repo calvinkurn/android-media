@@ -7,7 +7,7 @@ data class DefaultChosenAddressModel(
 )
 
 data class DefaultChosenAddress(
-        var addressId: Int = 0,
+        var addressId: Long = 0,
         var receiverName: String = "",
         var addressName: String = "",
         var address1: String = "",
