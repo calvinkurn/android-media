@@ -25,7 +25,7 @@ class UnsupportedColorDetector : Detector(), SourceCodeScanner, XmlScanner {
             id = "UnsupportedDarkModeColor",
             briefDescription = "Color not supported for dark mode.",
             explanation = "Do not hardcode color, use unify color or " +
-                "add color resource with dms prefix if color is static.",
+                "add color resource with dms prefix.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.WARNING,
@@ -38,7 +38,7 @@ class UnsupportedColorDetector : Detector(), SourceCodeScanner, XmlScanner {
         val XML_ISSUE = Issue.create(
             id = "UnsupportedDarkModeColor",
             briefDescription = "Color not supported for dark mode.",
-            explanation = "Use unify color or add dms prefix if color is static.",
+            explanation = "Color not supported for dark mode. Use unify color or add dms prefix.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.WARNING,
@@ -51,9 +51,9 @@ class UnsupportedColorDetector : Detector(), SourceCodeScanner, XmlScanner {
         private const val UNDERSCORE = "_"
         private const val DMS_PREFIX = "dms"
         private const val XML_ERROR_MESSAGE = "Color not supported for dark mode. " +
-            "Use unify color or add dms prefix if color is static."
+            "Use unify color or add dms prefix."
         private const val JAVA_ERROR_MESSAGE = "Do not hardcode color, use unify color or " +
-            "add color resource with dms prefix if color is static."
+            "add color resource with dms prefix."
     }
 
     override fun appliesTo(folderType: ResourceFolderType): Boolean {
