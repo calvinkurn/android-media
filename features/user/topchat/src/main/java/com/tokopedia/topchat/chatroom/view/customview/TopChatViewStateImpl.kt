@@ -43,6 +43,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_BLOCK_CHAT
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_CHAT_SETTING
+import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_DELETE_CHAT
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_REPORT_USER
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_UNBLOCK_CHAT
 import com.tokopedia.topchat.common.util.ImageUtil
@@ -412,7 +413,8 @@ open class TopChatViewStateImpl constructor(
     private fun createDeleteChatMenu(): TopchatItemMenu {
         return TopchatItemMenu(
             title = view.context.getString(R.string.delete_conversation),
-            icon = R.drawable.ic_trash_filled_grey
+            iconUnify = IconUnify.DELETE,
+            id = ID_DELETE_CHAT
         )
     }
 
@@ -480,7 +482,7 @@ open class TopChatViewStateImpl constructor(
             itemMenus.icon == R.drawable.ic_topchat_block_promo -> {
                 headerMenuListener.onClickBlockPromo()
             }
-            itemMenus.title == view.context.getString(R.string.delete_conversation) -> {
+            itemMenus.id == ID_DELETE_CHAT -> {
                 showDeleteChatDialog(headerMenuListener)
             }
             itemMenus.title == view.context.getString(R.string.follow_store) -> {
