@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
+import com.tokopedia.affiliate.adapter.AffiliateItemOffSetDecoration
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
@@ -95,6 +96,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         val layoutManager = StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
         adapter.setVisitables(ArrayList())
         view?.findViewById<RecyclerView>(R.id.recommended_recycler_view)?.let { recyclerView ->
+            recyclerView.addItemDecoration(AffiliateItemOffSetDecoration())
             recyclerView.layoutManager = layoutManager
             swipe_refresh_layout.setOnRefreshListener {
                 isSwipeRefresh = true
