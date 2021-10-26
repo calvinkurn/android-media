@@ -134,6 +134,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
       }
        ... on FeedXCardPlay {
         id
+        playChannelID
         author {
           id
           type

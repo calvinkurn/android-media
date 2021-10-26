@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.view.widget
 
-import android.animation.LayoutTransition
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
@@ -22,7 +21,6 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -91,6 +89,7 @@ private var productVideoJob: Job? = null
 private const val TIME_THREE_SEC = 3000L
 private const val TIME_THIRTY_SEC = 30000L
 private const val TIME_FOUR_SEC = 4000L
+private const val TIME_FIVE_SEC = 5000L
 private const val TIMER_TO_BE_SHOWN = 3000L
 private const val PRODUCT_DOT_TIMER = 4000L
 private const val TIME_SECOND = 1000L
@@ -106,6 +105,7 @@ private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 private val handlerFeed = Handler(Looper.getMainLooper())
 private var secondCountDownTimer: CountDownTimer? = null
+private var addViewCountDownTImer: CountDownTimer? = null
 
 
 /**
@@ -1100,7 +1100,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         feedMedia.videoView = videoItem
         videoItem?.run {
             videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
-            video_tag_text?.setOnClickListener {
+            video_lihat_product?.setOnClickListener {
                 listener?.let { listener ->
                     listener.onTagClicked(
                             postId.toIntOrZero(),
@@ -1143,18 +1143,22 @@ class PostDynamicViewNew @JvmOverloads constructor(
             tagProducts.add(postProductList[it.tagIndex])
         }
         videoItem?.run {
-            val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_video_parent_layout)
-            layoutLihatProdukParent?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-            findViewById<CardView>(R.id.product_tagging_parent).showWithCondition(tagProducts.isNotEmpty())
-            video_tag_text.gone()
+            val layoutLihatProdukParent = findViewById<Typography>(R.id.video_lihat_product)
+            if (tagProducts.isEmpty()) {
+                layoutLihatProdukParent.gone()
+            } else {
+                layoutLihatProdukParent.visible()
+                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+            }
 
 
             if (handlerAnim == null) {
                 handlerAnim = handlerFeed
             }
             handlerAnim?.postDelayed({
-                showViewWithSlideAnimation(layoutLihatProdukParent)
-                video_tag_text.visible()
+                if (tagProducts.isNotEmpty()) {
+                    showViewWithAnimation(layoutLihatProdukParent, context)
+                }
             }, TIME_SECOND)
             productVideoJob?.cancel()
             productVideoJob = scope.launch {
@@ -1162,19 +1166,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     videoPlayer = FeedExoPlayer(context)
                 layout_video?.player = videoPlayer?.getExoPlayer()
                 layout_video?.videoSurfaceView?.setOnClickListener {
-                    if (feedMedia.mediaUrl.isNotEmpty()) {
-                        val authorType = if (type != 1)
-                            authorId else ""
-                        videoListener?.onVideoPlayerClicked(
-                            positionInFeed,
-                            index,
-                            postId,
-                            feedMedia.appLink,
-                            authorId,
-                            authorType,
-                            feedXCard.followers.isFollowed
-                        )
-                    }
+                    setMuteUnmuteVOD(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true)
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, isMute)
@@ -1253,6 +1245,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun setMuteUnmuteVOD(volumeIcon: ImageView?, postId: String, isFollowed: Boolean, activityId: String, isVideoTap: Boolean) {
+        var countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
+            override fun onTick(millisUntilFinished: Long) {
+
+            }
+
+            override fun onFinish() {
+                volumeIcon?.gone()
+            }
+        }
         isMute = !isMute
         if (isMute)
             listener?.muteUnmuteVideo(postId, isMute, activityId, isFollowed)
@@ -1261,15 +1262,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
         volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
         toggleVolume(videoPlayer?.isMute() != true)
         if (isVideoTap){
-            object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
-                            override fun onTick(millisUntilFinished: Long) {
+            if (countDownTimer != null) {
+                countDownTimer.cancel()
+                countDownTimer.start()
+            } else {
+                countDownTimer.start()
+            }
 
-                            }
-
-                            override fun onFinish() {
-                                vod_volumeIcon?.gone()
-                            }
-                        }.start()
         }
     }
 
@@ -1285,6 +1284,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val tags = feedMedia.tagging
         val postProductList = feedXCard.tags
         secondCountDownTimer = null
+        addViewCountDownTImer = null
         val tagProducts = mutableListOf<FeedXProduct>()
         isVODViewFrozen = false
         var count1 = 0
@@ -1350,7 +1350,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         } else {
                             secondCountDownTimer = object : CountDownTimer(TIME_THIRTY_SEC, TIME_SECOND) {
                                 override fun onTick(millisUntilFinished: Long) {
-                                    Log.v("Thirty","thirty ${count1++}")
 
 
                                 }
@@ -1366,6 +1365,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 }
                             }.start()
                         }
+
+                        if (addViewCountDownTImer != null) {
+                            addViewCountDownTImer?.cancel()
+                            addViewCountDownTImer?.start()
+                        } else {
+                            addViewCountDownTImer = object : CountDownTimer(TIME_FIVE_SEC, TIME_SECOND) {
+                                override fun onTick(millisUntilFinished: Long) {
+
+                                }
+
+                                override fun onFinish() {
+                                    Log.v("Three", "add view id : ${feedXCard.playChannelID}")
+                                    listener?.addVODView(feedXCard.playChannelID)
+                                }
+                            }.start()
+                        }
+
                         object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
                             override fun onTick(millisUntilFinished: Long) {
                                 time -= 1
@@ -1581,10 +1597,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
     fun detach(
         fromSlide: Boolean = false, model: Visitable<*>? = null
     ) {
-        if (secondCountDownTimer != null) {
-            secondCountDownTimer?.cancel()
-            secondCountDownTimer = null
-        }
 
         if (handlerAnim != null) {
             handlerAnim = null
@@ -1604,6 +1616,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
         if (videoPlayer != null) {
+            if (secondCountDownTimer != null) {
+                secondCountDownTimer?.cancel()
+                secondCountDownTimer = null
+            }
+            if (addViewCountDownTImer != null) {
+                addViewCountDownTImer?.cancel()
+                addViewCountDownTImer = null
+            }
             videoPlayer?.pause()
             videoPlayer?.setVideoStateListener(null)
             videoPlayer?.destroy()
