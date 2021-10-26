@@ -56,7 +56,7 @@ class LihatSemuaViewModel(private val application: Application, val component: C
                 } else {
                     timerSetToZero = true
                     timerUnify.targetDate = Calendar.getInstance().apply {
-                        timeInMillis += 1000
+                        timeInMillis += 999
                     }
                 }
             }
