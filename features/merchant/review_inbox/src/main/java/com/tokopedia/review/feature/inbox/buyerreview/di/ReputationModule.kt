@@ -24,13 +24,13 @@ class ReputationModule {
 
     @ReputationScope
     @Provides
-    fun providePersistentCacheManager(@ApplicationContext context: Context?): PersistentCacheManager {
-        return PersistentCacheManager(context!!)
+    fun providePersistentCacheManager(@ApplicationContext context: Context): PersistentCacheManager {
+        return PersistentCacheManager(context)
     }
 
     @ReputationScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context?): NetworkRouter {
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         if (context is NetworkRouter) {
             return context
         }

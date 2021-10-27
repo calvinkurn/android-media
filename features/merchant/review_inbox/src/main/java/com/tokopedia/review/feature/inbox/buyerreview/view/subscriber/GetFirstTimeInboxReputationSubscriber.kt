@@ -1,6 +1,11 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber
 
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.*
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationItemDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationBadgeDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationDataDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeBadgeCustomerDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeBadgeSellerDomain
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputation
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationUiModel

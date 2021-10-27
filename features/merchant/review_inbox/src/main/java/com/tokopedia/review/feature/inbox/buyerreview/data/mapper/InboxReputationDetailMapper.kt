@@ -2,9 +2,35 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.mapper
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
-import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.*
+import com.tokopedia.review.common.util.ReviewBuyerReviewMapperUtil
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.InboxReputationDetailPojo
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ProductData
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ReputationBadge
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ResponseCreateTime
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ReviewCreateTime
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ReviewData
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ReviewImageUrl
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ReviewInboxDatum
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ReviewResponse
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ReviewUpdateTime
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ShopData
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.ShopReputation
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.UserData
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.UserReputation
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationBadgeDomain
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.*
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ImageAttachmentDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ProductDataDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ResponseCreateTimeDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewCreateTimeDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDataDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewItemDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewResponseDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewUpdateTimeDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ShopDataDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ShopReputationDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.UserDataDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.UserReputationDomain
 import com.tokopedia.review.feature.inbox.buyerreview.network.ErrorMessageException
 import retrofit2.Response
 import rx.functions.Func1
@@ -13,38 +39,28 @@ import javax.inject.Inject
 /**
  * @author by nisie on 8/19/17.
  */
-class InboxReputationDetailMapper @Inject constructor() : Func1<Response<TokopediaWsV4Response?>?, ReviewDomain> {
+class InboxReputationDetailMapper @Inject constructor() :
+    Func1<Response<TokopediaWsV4Response?>?, ReviewDomain> {
 
     override fun call(response: Response<TokopediaWsV4Response?>?): ReviewDomain {
         response?.let {
             if (response.isSuccessful) {
-                if ((!response.body()!!.isNullData
-                            && response.body()!!.errorMessageJoined == "")
-                    || !response.body()!!.isNullData && response.body()!!.errorMessages == null
-                ) {
-                    val data = response.body()?.convertDataObj(InboxReputationDetailPojo::class.java)
-                        ?: InboxReputationDetailPojo()
+                if (ReviewBuyerReviewMapperUtil.isResponseValid(it)) {
+                    val data =
+                        response.body()?.convertDataObj(InboxReputationDetailPojo::class.java)
+                            ?: InboxReputationDetailPojo()
                     return mappingToDomain(data)
                 } else {
-                    if (response.body()!!.errorMessages != null
-                        && response.body()!!.errorMessages.isNotEmpty()
-                    ) {
-                        throw ErrorMessageException(
-                            response.body()!!.errorMessageJoined
-                        )
+                    if (ReviewBuyerReviewMapperUtil.isErrorValid(response)) {
+                        throw ErrorMessageException(response.body()?.errorMessageJoined)
                     } else {
                         throw ErrorMessageException("")
                     }
                 }
             } else {
-                var messageError: String? = ""
-                if (response.body() != null) {
-                    messageError = response.body()!!.errorMessageJoined
-                }
+                val messageError = response.body()?.errorMessageJoined ?: ""
                 if (!TextUtils.isEmpty(messageError)) {
-                    throw ErrorMessageException(
-                        messageError
-                    )
+                    throw ErrorMessageException(messageError)
                 } else {
                     throw RuntimeException(response.code().toString())
                 }

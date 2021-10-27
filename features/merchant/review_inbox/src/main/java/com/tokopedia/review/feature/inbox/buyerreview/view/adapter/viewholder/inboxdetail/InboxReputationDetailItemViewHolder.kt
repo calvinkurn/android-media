@@ -47,7 +47,6 @@ class InboxReputationDetailItemViewHolder(
         val LAYOUT = R.layout.inbox_reputation_detail_item
         private const val MAX_CHAR = 50
         private const val BY = "Oleh"
-        private const val MENU_EDIT = 101
         private const val MENU_REPORT = 102
         private const val MENU_DELETE = 103
         private const val MENU_SHARE = 104

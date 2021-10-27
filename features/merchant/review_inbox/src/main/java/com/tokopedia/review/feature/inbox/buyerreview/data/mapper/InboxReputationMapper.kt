@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.mapper
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
+import com.tokopedia.review.common.util.ReviewBuyerReviewMapperUtil
 import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.InboxReputation
 import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.InboxReputationPojo
 import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.OrderData
@@ -28,35 +29,25 @@ import javax.inject.Inject
 /**
  * @author by nisie on 8/14/17.
  */
-class InboxReputationMapper @Inject constructor() : Func1<Response<TokopediaWsV4Response?>?, InboxReputationDomain> {
+class InboxReputationMapper @Inject constructor() :
+    Func1<Response<TokopediaWsV4Response?>?, InboxReputationDomain> {
 
     override fun call(response: Response<TokopediaWsV4Response?>?): InboxReputationDomain {
         response?.let {
             return if (response.isSuccessful) {
-                if ((!response.body()!!.isNullData
-                            && response.body()!!.errorMessageJoined == "")
-                    || !response.body()!!.isNullData && response.body()!!.errorMessages == null
-                ) {
-                    val data = response.body()!!.convertDataObj(
-                        InboxReputationPojo::class.java
-                    )
+                if (ReviewBuyerReviewMapperUtil.isResponseValid(response)) {
+                    val data = response.body()?.convertDataObj(InboxReputationPojo::class.java)
+                        ?: InboxReputationPojo()
                     mappingToDomain(data)
                 } else {
-                    if (response.body()!!.errorMessages != null
-                        && response.body()!!.errorMessages.isNotEmpty()
-                    ) {
-                        throw ErrorMessageException(
-                            response.body()!!.errorMessageJoined
-                        )
+                    if (ReviewBuyerReviewMapperUtil.isErrorValid(response)) {
+                        throw ErrorMessageException(response.body()?.errorMessageJoined)
                     } else {
                         throw ErrorMessageException("")
                     }
                 }
             } else {
-                var messageError: String? = ""
-                if (response.body() != null) {
-                    messageError = response.body()!!.errorMessageJoined
-                }
+                val messageError = response.body()?.errorMessageJoined ?: ""
                 if (!TextUtils.isEmpty(messageError)) {
                     throw ErrorMessageException(messageError)
                 } else {

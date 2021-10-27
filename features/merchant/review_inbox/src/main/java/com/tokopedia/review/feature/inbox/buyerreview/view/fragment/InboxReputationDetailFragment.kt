@@ -423,10 +423,13 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         KeyboardHandler.DropKeyboard(activity, view)
         if (shareReviewDialog == null && callbackManager != null) {
             shareReviewDialog = activity?.let {
-                ShareReviewDialog(
-                    it, callbackManager!!,
-                    this
-                )
+                callbackManager?.let { callbackManager ->
+                    ShareReviewDialog(
+                        it, callbackManager,
+                        this
+                    )
+                }
+
             }
         }
         if (shareReviewDialog != null) {

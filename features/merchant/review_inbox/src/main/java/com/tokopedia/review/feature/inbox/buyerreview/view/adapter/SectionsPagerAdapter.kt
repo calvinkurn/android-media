@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter
 
-import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -24,12 +23,7 @@ class SectionsPagerAdapter constructor(
         return fragmentList.size
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return if ((indicator != null
-                    ) && (indicator.getTabAt(position) != null
-                    ) && !TextUtils.isEmpty(
-                indicator.getTabAt(position)!!.text
-            )
-        ) indicator.getTabAt(position)!!.text else ""
+    override fun getPageTitle(position: Int): CharSequence {
+        return indicator?.getTabAt(position)?.text ?: ""
     }
 }

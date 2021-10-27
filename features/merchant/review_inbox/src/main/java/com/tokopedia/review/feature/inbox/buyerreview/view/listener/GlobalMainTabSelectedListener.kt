@@ -45,8 +45,4 @@ open class GlobalMainTabSelectedListener constructor(
             activity.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         keyboard?.hideSoftInputFromWindow(v.windowToken, 0)
     }
-
-    companion object {
-        private val TAG: String = GlobalMainTabSelectedListener::class.java.simpleName
-    }
 }

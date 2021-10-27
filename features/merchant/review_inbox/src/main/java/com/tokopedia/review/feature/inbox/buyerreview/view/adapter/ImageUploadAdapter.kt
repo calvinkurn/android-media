@@ -146,13 +146,13 @@ class ImageUploadAdapter constructor(var context: Context) :
         this.canUpload = if (canUpload) 1 else 0
     }
 
-    var deletedList: List<ImageUpload>?
+    var deletedList: List<ImageUpload>
         get() {
             return deletedImage
         }
         set(deletedImage) {
             this.deletedImage.clear()
-            this.deletedImage.addAll((deletedImage)!!)
+            this.deletedImage.addAll(deletedImage)
         }
 
     companion object {

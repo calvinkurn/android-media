@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.mapper
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
+import com.tokopedia.review.common.util.ReviewBuyerReviewMapperUtil
 import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail.DeleteReviewResponsePojo
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.DeleteReviewResponseDomain
 import com.tokopedia.review.feature.inbox.buyerreview.network.ErrorMessageException
@@ -18,35 +19,21 @@ class DeleteReviewResponseMapper @Inject constructor() :
     override fun call(response: Response<TokopediaWsV4Response?>?): DeleteReviewResponseDomain {
         response?.let {
             return if (response.isSuccessful) {
-                if ((!response.body()!!.isNullData
-                            && response.body()!!.errorMessageJoined == "")
-                    || !response.body()!!.isNullData && response.body()!!.errorMessages ==
-                    null
-                ) {
-                    val data = response.body()!!.convertDataObj(
-                        DeleteReviewResponsePojo::class.java
-                    )
+                if (ReviewBuyerReviewMapperUtil.isResponseValid(it)) {
+                    val data = response.body()?.convertDataObj(DeleteReviewResponsePojo::class.java)
+                        ?: DeleteReviewResponsePojo()
                     mappingToDomain(data)
                 } else {
-                    if (response.body()!!.errorMessages != null
-                        && !response.body()!!.errorMessages.isEmpty()
-                    ) {
-                        throw ErrorMessageException(
-                            response.body()!!.errorMessageJoined
-                        )
+                    if (ReviewBuyerReviewMapperUtil.isErrorValid(response)) {
+                        throw ErrorMessageException(response.body()?.errorMessageJoined)
                     } else {
                         throw ErrorMessageException("")
                     }
                 }
             } else {
-                var messageError: String? = null
-                if (response.body() != null) {
-                    messageError = response.body()!!.errorMessageJoined
-                }
+                val messageError = response.body()?.errorMessageJoined ?: ""
                 if (!TextUtils.isEmpty(messageError)) {
-                    throw ErrorMessageException(
-                        messageError
-                    )
+                    throw ErrorMessageException(messageError)
                 } else {
                     throw RuntimeException(response.code().toString())
                 }
