@@ -2,111 +2,68 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/dp_120"
-    app:card_background_color="@color/white">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <View
-            android:id="@+id/view_side_bar"
-            android:layout_width="8dp"
-            android:layout_height="0dp"
-            app:layout_constraintHeight_default="percent"
-            app:layout_constraintHeight_percent="0.7"
-            android:background="@color/Unify_TN400"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_72"
-            android:layout_marginStart="10dp"
+            android:layout_width="@dimen/dim_56dp"
+            android:layout_height="@dimen/dim_56dp"
+            android:layout_marginStart="@dimen/dim_12dp"
+            android:layout_marginBottom="@dimen/dim_14dp"
+            android:layout_marginTop="@dimen/dim_14dp"
             android:background="@drawable/quest_widget_circle_shape"
             android:indeterminate="false"
             android:max="100"
             android:progress="75"
             android:progressDrawable="@drawable/quest_widget_circular_progress_bar"
-            app:layout_constraintStart_toEndOf="@id/view_side_bar"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <ImageView
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
             android:id="@+id/iv_banner_icon"
-            app:layout_constraintTop_toTopOf="@id/progressBar"
+            android:layout_width="@dimen/dim_50dp"
+            android:layout_height="@dimen/dim_50dp"
             app:layout_constraintBottom_toBottomOf="@id/progressBar"
-            app:layout_constraintStart_toStartOf="@id/progressBar"
-            app:layout_constraintEnd_toEndOf="@id/progressBar"/>
-
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_Y500"
-            android:drawablePadding="@dimen/dp_5"
-            app:drawableStartCompat="@drawable/quest_widget_iconunify_clock"
-            android:text="3 hari"
             app:layout_constraintEnd_toEndOf="@id/progressBar"
             app:layout_constraintStart_toStartOf="@id/progressBar"
-            app:layout_constraintTop_toBottomOf="@+id/progressBar"
+            app:layout_constraintTop_toTopOf="@id/progressBar" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_banner_title"
+            android:layout_width="@dimen/dim_0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.6"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginStart="@dimen/dim_12dp"
+            android:layout_marginLeft="@dimen/dim_12dp"
+            android:layout_marginTop="@dimen/dim_12dp"
+            android:layout_marginEnd="@dimen/spacing_lvl5"
+            android:layout_marginRight="@dimen/spacing_lvl5"
+            app:layout_constraintStart_toEndOf="@id/progressBar"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_banner_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/dp_10"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/progressBar"
-            app:layout_constraintTop_toTopOf="@id/progressBar">
+            android:layout_marginTop="@dimen/dim_2dp"
+            android:layout_marginEnd="@dimen/dim_12dp"
+            android:textColor="@color/Unify_NN950"
+            app:layout_constraintStart_toStartOf="@id/tv_banner_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_banner_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_banner_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:text="Ada Cashback hingga Rp900.000!"
-                android:textColor="@color/Unify_NN950"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_2"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_banner_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_3"
-                android:text="Belanja 4x di Pet Kingdom Off..."
-                android:textColor="@color/Unify_NN950"
-                app:layout_constraintStart_toStartOf="@id/tv_banner_title"
-                app:layout_constraintTop_toBottomOf="@id/tv_banner_title"
-                app:typographyType="body_3"
-                app:typographyWeight="reguler" />
-
-            <com.tokopedia.unifycomponents.UnifyButton
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_actionButton"
-                android:layout_marginTop="@dimen/dp_5"
-                android:text="Belanja"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@id/tv_banner_title"
-                app:layout_constraintTop_toBottomOf="@id/tv_banner_desc"
-                app:layout_constraintWidth_default="percent"
-                app:layout_constraintWidth_percent="0.9"
-                app:unifyButtonSize="small"
-                app:unifyButtonType="main"
-                app:unifyButtonVariant="filled" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

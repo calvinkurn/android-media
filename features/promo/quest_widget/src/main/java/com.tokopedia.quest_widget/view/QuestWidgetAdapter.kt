@@ -5,16 +5,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quest_widget.R
+import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
 
-class QuestWidgetAdapter(val data: List<QuestWidgetListItem>, val isHiddenCta: Boolean) : RecyclerView.Adapter<QuestWidgetViewHolder>() {
+class QuestWidgetAdapter(val data: List<QuestWidgetListItem>, val configList: ArrayList<Config>) : RecyclerView.Adapter<QuestWidgetViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuestWidgetViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.quest_widget_card, parent, false)
         return QuestWidgetViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: QuestWidgetViewHolder, position: Int) {
-        data[position].let { holder.questWidgetItemView.setData(it) }
+        data[position].let { holder.questWidgetItemView.setData(it, configList[position]) }
     }
 
     override fun getItemCount(): Int {
