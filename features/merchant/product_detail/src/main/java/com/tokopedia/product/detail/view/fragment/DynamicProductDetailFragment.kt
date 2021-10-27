@@ -3699,14 +3699,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     //Will be delete soon
-    override fun isNavOld(): Boolean {
-        return try {
-            GlobalConfig.isSellerApp()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            true
-        }
-    }
+    override fun isNavOld(): Boolean = GlobalConfig.isSellerApp()
 
     override fun getFragmentTrackingQueue(): TrackingQueue? {
         return trackingQueue
