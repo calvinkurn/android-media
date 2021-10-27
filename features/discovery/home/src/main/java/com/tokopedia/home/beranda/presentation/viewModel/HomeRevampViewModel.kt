@@ -102,7 +102,6 @@ open class HomeRevampViewModel @Inject constructor(
     private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
     private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
     private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
-    private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
     private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
     private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
     private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,

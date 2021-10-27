@@ -3,9 +3,6 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-//    const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
-//    const val NAVIGATION_EXP_TOP_NAV2 = "new_glmenu2"
-//    const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
     const val NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
@@ -47,8 +44,6 @@ object RollenceKey {
     // end of home component rollence section
 
     const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
-//    const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
-//    const val NAVIGATION_VARIANT_REVAMP2 = "new_glmenu2"
 
     //TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
