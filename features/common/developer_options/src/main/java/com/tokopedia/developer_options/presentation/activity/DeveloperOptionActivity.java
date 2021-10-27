@@ -73,6 +73,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT;
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT;
 
 public class DeveloperOptionActivity extends BaseActivity {
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
@@ -101,8 +102,6 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
-
-    String EXP_OS_BOTTOM_NAV_EXPERIMENT = NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT;
 
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
@@ -381,7 +380,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         alwaysNewNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().deleteKeyLocally(EXP_OS_BOTTOM_NAV_EXPERIMENT);
+                RemoteConfigInstance.getInstance().getABTestPlatform().deleteKeyLocally(NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT);
                 Toast.makeText(DeveloperOptionActivity.this, "Navigation: Revamped", Toast.LENGTH_SHORT).show();
             }
         });
@@ -389,7 +388,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         alwaysOsExperiment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_OS_BOTTOM_NAV_EXPERIMENT, EXP_OS_BOTTOM_NAV_EXPERIMENT);
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT, NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT);
                 Toast.makeText(DeveloperOptionActivity.this, "Navigation: OS Removed", Toast.LENGTH_SHORT).show();
             }
         });
