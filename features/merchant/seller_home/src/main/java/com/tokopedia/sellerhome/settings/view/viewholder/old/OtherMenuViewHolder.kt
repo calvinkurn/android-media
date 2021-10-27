@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
@@ -598,6 +599,7 @@ class OtherMenuViewHolder(private val itemView: View,
         findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.hide()
         findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)?.hide()
         findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)?.hide()
+        findViewById<View>(com.tokopedia.seller.menu.common.R.id.view_rm_transaction_cta)?.hide()
     }
 
     private fun View.showTransactionSection() {
@@ -605,6 +607,14 @@ class OtherMenuViewHolder(private val itemView: View,
         findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.setBackgroundResource(com.tokopedia.seller.menu.common.R.drawable.ic_divider_stats_rm)
         findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)?.show()
         findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)?.show()
+        findViewById<View>(com.tokopedia.seller.menu.common.R.id.view_rm_transaction_cta)?.run {
+            show()
+            setOnClickListener {
+                context?.let {
+                    RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
+                }
+            }
+        }
     }
 
     private fun showShopStatusHeader(shopType: ShopType?) {

@@ -82,7 +82,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     StatusBarCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
 
     companion object {
-        private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
         private const val TAB_PM_PARAM = "tab"
 
         private const val TOKOPEDIA_SUFFIX = "| Tokopedia"
@@ -231,7 +230,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun goToPrintingPage() {
         val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
-        val applink = String.format(APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
+        val applink = String.format(SellerBaseUrl.APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
         RouteManager.getIntent(context, applink)?.let {
             context?.startActivity(it)
         }
@@ -248,6 +247,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onShopInfoClicked() {
         RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
+    }
+
+    override fun onRmTransactionClicked() {
+        goToNewMembershipScheme()
     }
 
     override fun onShopBadgeClicked() {
@@ -627,6 +630,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                     putExtra(OtherMenuFragment.EXTRA_SHOP_ID, userSession.shopId)
                 }
         startActivity(shopFavouriteListIntent)
+    }
+
+    private fun goToNewMembershipScheme() {
+        context?.let {
+            RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
+        }
     }
 
     private fun isActivityResumed(): Boolean {

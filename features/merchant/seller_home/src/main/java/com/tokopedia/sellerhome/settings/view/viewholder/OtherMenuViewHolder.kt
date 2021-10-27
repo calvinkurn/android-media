@@ -487,6 +487,7 @@ class OtherMenuViewHolder(
         fun getRecyclerView(): RecyclerView?
         fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>?
         fun onShopInfoClicked()
+        fun onRmTransactionClicked()
         fun onShopBadgeClicked()
         fun onFollowersCountClicked()
         fun onSaldoClicked()
