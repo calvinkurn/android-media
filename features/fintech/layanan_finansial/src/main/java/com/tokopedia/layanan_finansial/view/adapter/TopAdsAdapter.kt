@@ -8,6 +8,7 @@ import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
 /**
@@ -54,7 +55,16 @@ class TopAdsViewHolder(itemView: View, val onclick: (appLink: String) -> Unit) :
 
 
     fun bind(topAdsImageViewModel: TopAdsImageViewModel) {
-        imageModel.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
+
+        topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+            override fun onTopAdsImageViewImpression(viewUrl: String) {
+
+            }
+
+        })
+
+
+        topAdsImageView.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
             override fun onTopAdsImageViewClicked(applink: String?) {
                 applink?.let {
                     onclick(it)
@@ -63,10 +73,10 @@ class TopAdsViewHolder(itemView: View, val onclick: (appLink: String) -> Unit) :
             }
 
         })
-        imageModel.loadImage(topAdsImageViewModel, 8)
+        topAdsImageView.loadImage(topAdsImageViewModel, 8)
     }
 
-    private val imageModel = itemView.findViewById<TopAdsImageView>(R.id.topAdsBanner)
+    private val topAdsImageView = itemView.findViewById<TopAdsImageView>(R.id.topAdsBanner)
 
 
 }
