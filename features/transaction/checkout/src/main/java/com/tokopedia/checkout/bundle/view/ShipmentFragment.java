@@ -511,9 +511,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
 
         if (shipmentDonationModel != null) {
-            shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
-            if (shipmentDonationModel.isChecked() && shipmentDonationModel.isEnabled()) {
-                checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(userSessionInterface.getUserId());
+            if (!shipmentDonationModel.getDonation().getTitle().isEmpty() && shipmentDonationModel.getDonation().getNominal() != 0) {
+                shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
+                if (shipmentDonationModel.isChecked() && shipmentDonationModel.isEnabled()) {
+                    checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(userSessionInterface.getUserId());
+                }
             }
         }
 

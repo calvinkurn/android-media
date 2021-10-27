@@ -29,7 +29,9 @@ data class CheckoutRequest(
         @SuppressLint("Invalid Data Type")
         var leasingId: Long = 0,
         @SerializedName("feature_type")
-        var featureType: Int = 0
+        var featureType: Int = 0,
+        @SerializedName("cross_sell")
+        var crossSell: CrossSellRequest? = null
 ) : Parcelable {
 
     val protectionAnalyticsData: ArrayList<String>
