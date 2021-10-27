@@ -342,12 +342,8 @@ public class CMInAppManager implements CmInAppListener,
     public void onNewInAppDataStored() {
         if (isCmInAppManagerInitialized) {
             Activity currentActivity = activityLifecycleHandler.getCurrentActivity();
-            if (currentActivity != null) {
-                if (!pushIntentHandler.isHandledByPush()) {
-                    if (canShowDialog()) {
-                        showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
-                    }
-                }
+            if (currentActivity != null && !pushIntentHandler.isHandledByPush() && canShowDialog()) {
+                showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
             }
         }
     }
