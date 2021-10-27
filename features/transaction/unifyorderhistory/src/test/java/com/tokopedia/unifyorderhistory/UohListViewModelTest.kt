@@ -2,6 +2,7 @@ package com.tokopedia.unifyorderhistory
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -158,44 +159,43 @@ class UohListViewModelTest {
     fun getRecommendation_shouldReturnSuccess() {
         //given
         coEvery {
-            uohListUseCase.executeSuspend(any())
-        } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
+            getRecommendationUseCase.getData(any())
+        } returns emptyList()
 
         //when
-        uohListViewModel.loadOrderList(UohListParam())
+        uohListViewModel.loadRecommendationList(0)
 
         //then
-        assert(uohListViewModel.orderHistoryListResult.value is Success)
-        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders[0].orderUUID.equals("abc", true))
+        assert(uohListViewModel.recommendationListResult.value is Success)
     }
 
     @Test
     fun getRecommendation_shouldReturnFail() {
         //given
         coEvery {
-            uohListUseCase.executeSuspend(any())
-        } returns Fail(Throwable())
+            getRecommendationUseCase.getData(any())
+        } throws Exception()
 
         //when
-        uohListViewModel.loadOrderList(UohListParam())
+        uohListViewModel.loadRecommendationList(0)
 
         //then
-        assert(uohListViewModel.orderHistoryListResult.value is Fail)
+        assert(uohListViewModel.recommendationListResult.value is Fail)
     }
 
     @Test
     fun getRecommendation_shouldNotReturnEmpty() {
         //given
         coEvery {
-            uohListUseCase.executeSuspend(any())
-        } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
+            getRecommendationUseCase.getData(any())
+        } returns listRecommendation
 
         //when
-        uohListViewModel.loadOrderList(UohListParam())
+        uohListViewModel.loadRecommendationList(0)
 
         //then
-        assert(uohListViewModel.orderHistoryListResult.value is Success)
-        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders.isNotEmpty())
+        assert(uohListViewModel.recommendationListResult.value is Success)
+        assert((uohListViewModel.recommendationListResult.value as Success).data == listRecommendation)
     }
 
     // finish order result
@@ -252,7 +252,7 @@ class UohListViewModelTest {
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         //when
-        uohListViewModel.doAtcMulti("", "", arrayListOf(), "")
+        uohListViewModel.doAtcMulti("", "", arrayListOf(AddToCartMultiParam()), "")
 
         //then
         assert(uohListViewModel.atcMultiResult.value is Success)
@@ -518,5 +518,17 @@ class UohListViewModelTest {
 
         //then
         assert(uohListViewModel.tdnBannerResult.value == null)
+    }
+
+    @Test
+    fun tdn_shouldReturnFail() {
+        //given
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws Exception()
+
+        //when
+        uohListViewModel.loadTdnBanner()
+
+        //then
+        assert(uohListViewModel.recommendationListResult.value is Fail)
     }
 }
