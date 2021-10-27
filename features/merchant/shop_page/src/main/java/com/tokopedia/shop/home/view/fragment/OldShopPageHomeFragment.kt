@@ -2498,5 +2498,9 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
         TODO("Not yet implemented")
     }
+
+    override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
+        TODO("Not yet implemented")
+    }
     //endregion
 }

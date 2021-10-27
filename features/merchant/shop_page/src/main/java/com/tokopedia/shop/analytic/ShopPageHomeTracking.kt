@@ -1151,7 +1151,7 @@ class ShopPageHomeTracking(
     }
 
     fun impressionCampaignFlashSaleWidget(
-            campaignId: String
+            campaignId: String,
             statusCampaign: String,
             shopId: String,
             userId: String,
@@ -1184,7 +1184,7 @@ class ShopPageHomeTracking(
     }
 
     fun onClickReminderButtonFlashSaleWidget(
-            campaignId: String
+            campaignId: String,
             shopId: String,
             userId: String,
             isOwner: Boolean,
