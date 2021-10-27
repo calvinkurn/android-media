@@ -77,7 +77,7 @@ data class Parameter(
         val customerEmail: String = "",
         @SerializedName("customer_id")
         @Expose
-        val customerId: String = "",
+        val customerId: String = "0",
         @SerializedName("customer_msisdn")
         @Expose
         val customerMsisdn: String = "",
