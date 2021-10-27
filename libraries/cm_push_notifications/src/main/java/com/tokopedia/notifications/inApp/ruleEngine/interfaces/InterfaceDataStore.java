@@ -8,7 +8,7 @@ import java.util.List;
 import rx.Completable;
 
 public interface InterfaceDataStore {
-    Completable putDataToStore(CMInApp value);
+    Boolean putDataToStore(CMInApp value);
     List<CMInApp> getDataFromStore(String key, boolean isActivity);
     Completable putElapsedTimeToStore(ElapsedTime elapsedTime);
     ElapsedTime getElapsedTimeFromStore();

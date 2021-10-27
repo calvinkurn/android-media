@@ -53,14 +53,19 @@ constructor(
                        queryParam: String = ""): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
-        val newQueryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam) ?: queryParam
+        val newQueryParam = try {
+            ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam)
+                ?: queryParam
+        } catch (e: Exception) {
+            queryParam
+        }
 
         if (userSession.isLoggedIn) {
             params.putInt(USER_ID, userSession.userId.toInt())
         } else {
             params.putInt(USER_ID, 0)
         }
-        if(xSource.isEmpty()) {
+        if (xSource.isEmpty()) {
             params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
         } else {
             params.putString(X_SOURCE, xSource)

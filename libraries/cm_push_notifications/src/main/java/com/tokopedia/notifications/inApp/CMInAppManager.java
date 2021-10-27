@@ -3,7 +3,6 @@ package com.tokopedia.notifications.inApp;
 import android.app.Activity;
 import android.app.Application;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -13,10 +12,10 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.FragmentObserver;
-import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.CMRemoteConfigUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
+import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -27,9 +26,9 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
-import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,9 +52,12 @@ public class CMInAppManager implements CmInAppListener,
         DataProvider,
         CmActivityLifecycleHandler.CmActivityApplicationCallback,
         ShowInAppCallback,
-        SendPushContract, CmDialogVisibilityContract {
+        SendPushContract, CmDialogVisibilityContract,
+        CMInAppController.OnNewInAppDataStoreListener {
 
     private static final CMInAppManager inAppManager;
+
+
     private Application application;
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
@@ -71,6 +73,7 @@ public class CMInAppManager implements CmInAppListener,
     private CmDialogHandler cmDialogHandler;
     public CmDataConsumer cmDataConsumer;
     public DataConsumer dataConsumer;
+    private Boolean isCmInAppManagerInitialized = false;
 
     static {
         inAppManager = new CMInAppManager();
@@ -101,6 +104,7 @@ public class CMInAppManager implements CmInAppListener,
                 this,
                 this);
         initInAppManager();
+        isCmInAppManagerInitialized = true;
     }
 
     public static CmInAppListener getCmInAppListener() {
@@ -174,11 +178,6 @@ public class CMInAppManager implements CmInAppListener,
         }
     }
 
-    @Override
-    public void sendEventInAppDelivered(CMInApp cmInApp) {
-        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
-    }
-
     private void showDialog(CMInApp data) {
         WeakReference<Activity> currentActivity = activityLifecycleHandler.getCurrentWeakActivity();
         String type = data.type;
@@ -243,39 +242,13 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     public void handlePushPayload(RemoteMessage remoteMessage) {
-        try {
-            CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
-            if (null != cmInApp) {
-                if (application != null) {
-                    sendEventInAppDelivered(cmInApp);
-                    new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
-                } else {
-                    Map<String, String> messageMap = new HashMap<>();
-                    messageMap.put("type", "validation");
-                    messageMap.put("reason", "application_null");
-                    messageMap.put("data", "");
-                    ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-                }
-            }
-        } catch (Exception e) {
-            Map<String, String> data = remoteMessage.getData();
-            if (data != null) {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("type", "exception");
-                messageMap.put("err", Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-                messageMap.put("data", data.toString()
-                        .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
-                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-            } else {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("type", "exception");
-                messageMap.put("err", Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-                messageMap.put("data", "");
-                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-            }
-        }
+        new CMInAppController(application, this)
+                .processAndSaveRemoteDataCMInApp(remoteMessage);
+    }
+
+    public void handleAmplificationInAppData(String dataString) {
+        new CMInAppController(application,this)
+                .processAndSaveAmplificationInAppData(dataString);
     }
 
     @Override
@@ -374,4 +347,49 @@ public class CMInAppManager implements CmInAppListener,
     public boolean isDialogVisible(@NotNull Activity activity) {
         return dialogIsShownMap.containsKey(activity) && dialogIsShownMap.get(activity);
     }
+
+    @Override
+    public void onNewInAppDataStored() {
+        if (isCmInAppManagerInitialized) {
+            Activity currentActivity = activityLifecycleHandler.getCurrentActivity();
+            if (currentActivity != null && !pushIntentHandler.isHandledByPush() && canShowDialog()) {
+                showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
+            }
+        }
+    }
+
+    private void getAmplificationPushData(Application application) {
+        if (getAmplificationRemoteConfig()) {
+            try {
+                AmplificationDataSource.invoke(application);
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private Boolean getAmplificationRemoteConfig() {
+        if(cmRemoteConfigUtils == null)
+            return false;
+        return cmRemoteConfigUtils.getBooleanRemoteConfig(RemoteConfigKey.ENABLE_AMPLIFICATION,
+                false);
+    }
+
+    @Override
+    public void onFirstScreenOpen(@NonNull WeakReference<Activity> activity) {
+        try {
+            if(activity.get() != null) {
+                IrisAnalyticsEvents.INSTANCE.sendFirstScreenEvent(application);
+                if (RulesManager.getInstance() != null)
+                    RulesManager.getInstance().updateVisibleStateForAlreadyShown();
+                getAmplificationPushData(activity.get().getApplication());
+            }
+        }catch (Exception e){}
+    }
 }
+
+
+
+
+
+
+
