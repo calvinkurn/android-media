@@ -105,7 +105,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
             when (index) {
                 0 -> {
                     visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewMode"
+                        "visitable list at index $index should be SearchProductCountViewModel"
                     )
                 }
                 9 -> {
@@ -291,7 +291,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0) {
                 visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewMode"
+                        "visitable list at index $index should be SearchProductCountViewModel"
                 )
             }
             else if (index == 5 || index == 10) {
@@ -390,7 +390,7 @@ internal class SearchProductHandleInspirationCardTest: ProductListPresenterTestF
         visitableList.forEachIndexed { index, visitable ->
             if (index == 0) {
                 visitable.shouldBeInstanceOf<SearchProductCountDataView>(
-                        "visitable list at index $index should be SearchProductCountViewMode"
+                        "visitable list at index $index should be SearchProductCountViewModel"
                 )
             }
             else if (index == 5 || index == 6 || index == 11 || index == 14) {
