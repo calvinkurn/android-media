@@ -19,7 +19,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 object LogisticCommonUtil {
 
     const val ANA_REVAMP_ROLLENCE = "revamp_ana"
-    const val TNC_LINK = "https://www.google.com"
+    const val TNC_LINK = "https://www.tokopedia.com/privacy#data-pengguna"
 
     /**
      * Rollence key
