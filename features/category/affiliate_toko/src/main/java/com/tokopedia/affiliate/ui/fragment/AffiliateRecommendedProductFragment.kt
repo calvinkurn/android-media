@@ -135,10 +135,12 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             }
             if (dataList.isNotEmpty()) {
                 error_group.hide()
+                swipe_refresh_layout.show()
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
             } else {
                 error_group.show()
+                swipe_refresh_layout.hide()
             }
         })
 

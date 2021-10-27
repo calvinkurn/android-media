@@ -216,10 +216,10 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     private fun onGetAnnouncementData(announcementData: AffiliateAnnouncementData?) {
-        if(announcementData?.data?.status==1) {
+        if(announcementData?.getAffiliateAnnouncement?.data?.status==1) {
             affiliate_announcement_ticker_cv.visibility = View.VISIBLE
-            affiliate_announcement_ticker.tickerTitle=announcementData.data.announcementTitle
-            announcementData.data.announcementDescri?.let {
+            affiliate_announcement_ticker.tickerTitle=announcementData.getAffiliateAnnouncement.data.announcementTitle
+            announcementData.getAffiliateAnnouncement.data.announcementDescription?.let {
                 affiliate_announcement_ticker.setTextDescription(
                     it
                 )

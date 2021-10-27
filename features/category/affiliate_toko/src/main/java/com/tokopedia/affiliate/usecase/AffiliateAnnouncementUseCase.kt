@@ -24,17 +24,12 @@ class AffiliateAnnouncementUseCase @Inject constructor(
     }
 
     private fun mockData(): AffiliateAnnouncementData {
-        val mockData = AffiliateAnnouncementData.Data(
-            1, "cca", "Tunggu belum dapet wordingnya",
-            "Tunggu belum dapet wordingnya", "Klik Disini",
-            AffiliateAnnouncementData.Data.URL("", "", "", ""),
-            AffiliateAnnouncementData.Data.Error(
-                "",
-                0,
-                "",
-                AffiliateAnnouncementData.Data.URL("", "", "", "")
-            )
-        )
-        return AffiliateAnnouncementData(mockData)
+        val mockData = AffiliateAnnouncementData.GetAffiliateAnnouncement.Data(
+            "Lorem Ipsum Dolor Sit Amet","Lorem Ipsum Dolor Sit Amet",
+            AffiliateAnnouncementData.GetAffiliateAnnouncement.Data.CtaLink("","","",""),
+            "Hello",AffiliateAnnouncementData.GetAffiliateAnnouncement.Data.Error( AffiliateAnnouncementData.GetAffiliateAnnouncement.Data.CtaLink("","","","")
+            ,"Hellp",0,""),1,"cca")
+
+        return AffiliateAnnouncementData(AffiliateAnnouncementData.GetAffiliateAnnouncement(mockData))
     }
 }
