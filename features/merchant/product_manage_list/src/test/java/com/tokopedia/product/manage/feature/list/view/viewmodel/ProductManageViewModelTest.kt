@@ -100,6 +100,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
+import rx.Observable
 import rx.Subscriber
 import java.util.concurrent.TimeUnit
 
@@ -1626,9 +1627,24 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when get popups info success should set live data value success`() {
+    fun `when get popups info success should set live data value success`() = runBlocking {
         val productId = "1"
         val showPopup = true
+
+        onGetPopupsInfo_thenReturn(showPopup)
+
+        viewModel.getPopupsInfo(productId)
+
+        val expectedResult = Success(GetPopUpResult(productId, showPopup))
+
+        viewModel.getPopUpResult
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `when get popups info success but false should set live data value success`() = runBlocking {
+        val productId = "1"
+        val showPopup = false
 
         onGetPopupsInfo_thenReturn(showPopup)
 
@@ -1749,7 +1765,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when get popups info error should set live data value fail`() {
+    fun `when get popups info error should set live data value fail`() = runBlocking {
         val error = NullPointerException()
 
         onGetPopupsInfo_thenReturn(error)
@@ -1769,7 +1785,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         verifyAll {
             gqlGetShopInfoUseCase.cancelJobs()
             topAdsGetShopDepositGraphQLUseCase.unsubscribe()
-            popupManagerAddProductUseCase.unsubscribe()
+            popupManagerAddProductUseCase.cancelJobs()
             getProductListUseCase.cancelJobs()
             setFeaturedProductUseCase.cancelJobs()
         }
@@ -2198,34 +2214,30 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     private fun onGetFreeClaim_thenReturn(deposit: DataDeposit) {
         coEvery {
-            topAdsGetShopDepositGraphQLUseCase.execute(any(), any())
+            topAdsGetShopDepositGraphQLUseCase.createObservable(any())
         } answers {
-            secondArg<Subscriber<DataDeposit>>().onNext(deposit)
+            Observable.just(deposit)
         }
     }
 
     private fun onGetFreeClaim_thenReturn(error: Throwable) {
         coEvery {
-            topAdsGetShopDepositGraphQLUseCase.execute(any(), any())
+            topAdsGetShopDepositGraphQLUseCase.createObservable(any())
         } answers {
-            secondArg<Subscriber<DataDeposit>>().onError(error)
+            Observable.error(error)
         }
     }
 
     private fun onGetPopupsInfo_thenReturn(showPopup: Boolean) {
         coEvery {
-            popupManagerAddProductUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<Boolean>>().onNext(showPopup)
-        }
+            popupManagerAddProductUseCase.execute(any())
+        } returns showPopup
     }
 
     private fun onGetPopupsInfo_thenReturn(error: Throwable) {
         coEvery {
-            popupManagerAddProductUseCase.execute(any(), any())
-        } answers {
-            secondArg<Subscriber<Boolean>>().onError(error)
-        }
+            popupManagerAddProductUseCase.execute(any())
+        } throws error
     }
 
     private fun onGetIsShopOwner_thenReturn(isShopOwner: Boolean) {

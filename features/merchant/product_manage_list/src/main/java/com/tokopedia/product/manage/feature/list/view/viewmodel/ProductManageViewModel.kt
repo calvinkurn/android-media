@@ -480,35 +480,35 @@ class ProductManageViewModel @Inject constructor(
 
     fun getFreeClaim(graphqlQuery: String, shopId: String) {
         val requestParams = TopAdsGetShopDepositGraphQLUseCase.createRequestParams(graphqlQuery, shopId)
-        topAdsGetShopDepositGraphQLUseCase.execute(requestParams,
-                object : Subscriber<DataDeposit>() {
-                    override fun onNext(dataDeposit: DataDeposit) {
-                        _getFreeClaimResult.value = Success(dataDeposit)
-                    }
+        topAdsGetShopDepositGraphQLUseCase
+            .createObservable(requestParams)
+            .subscribe(object : Subscriber<DataDeposit>() {
+                override fun onCompleted() {
 
-                    override fun onCompleted() {}
+                }
 
-                    override fun onError(e: Throwable) {
-                        _getFreeClaimResult.value = Fail(e)
-                    }
-                })
+                override fun onError(e: Throwable) {
+                    _getFreeClaimResult.value = Fail(e)
+                }
+
+                override fun onNext(dataDeposit: DataDeposit) {
+                    _getFreeClaimResult.value = Success(dataDeposit)
+                }
+            })
     }
 
     fun getPopupsInfo(productId: String) {
-        val shopId = productId.toIntOrZero()
-        popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
-                object : Subscriber<Boolean>() {
-                    override fun onNext(isSuccess: Boolean) {
-                        _getPopUpResult.value = Success(GetPopUpResult(productId, isSuccess))
-                    }
-
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {
-                        _getPopUpResult.value = Fail(e)
-                    }
-
-                })
+        launchCatchError(
+            block = {
+                val popupResult = withContext(dispatchers.io) {
+                    val shopId = productId.toLongOrZero()
+                    val isSuccess = popupManagerAddProductUseCase.execute(shopId)
+                    GetPopUpResult(productId, isSuccess)
+                }
+                _getPopUpResult.value = Success(popupResult)},
+            onError = {
+                _getPopUpResult.value = Fail(it)
+            })
     }
 
     fun deleteSingleProduct(productName: String, productId: String) {
@@ -623,7 +623,7 @@ class ProductManageViewModel @Inject constructor(
     fun detachView() {
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetShopDepositGraphQLUseCase.unsubscribe()
-        popupManagerAddProductUseCase.unsubscribe()
+        popupManagerAddProductUseCase.cancelJobs()
         getProductListUseCase.cancelJobs()
         setFeaturedProductUseCase.cancelJobs()
     }
