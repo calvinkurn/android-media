@@ -419,10 +419,10 @@ class ShopPageProductListViewModel @Inject constructor(
         ))
     }
 
-    fun getBottomSheetFilterData() {
+    fun getBottomSheetFilterData(shopId: String) {
         launchCatchError(coroutineContext, block = {
             val filterBottomSheetData = withContext(dispatcherProvider.io) {
-                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
+                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams(shopId)
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
             }
             filterBottomSheetData.data.let {
