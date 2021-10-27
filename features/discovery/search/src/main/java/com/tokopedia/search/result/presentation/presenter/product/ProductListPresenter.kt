@@ -112,7 +112,8 @@ class ProductListPresenter @Inject constructor(
         @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
         private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
         private val topAdsUrlHitter: TopAdsUrlHitter,
-        private val schedulersProvider: SchedulersProvider
+        private val schedulersProvider: SchedulersProvider,
+        remoteConfig: Lazy<RemoteConfig>,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
         ProductListSectionContract.Presenter {
 
