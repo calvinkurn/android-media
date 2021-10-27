@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,7 +33,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -49,6 +50,8 @@ import com.tokopedia.wishlist.di.WishlistV2Module
 import com.tokopedia.wishlist.util.WishlistUtils
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -74,6 +77,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private var searchQuery = ""
     private var activityWishlistV2 = ""
     private var isBulkDeleteShow = false
+    private var recommendationList: List<RecommendationWidget> = listOf()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -130,6 +134,22 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingWishlistV2()
+        observingRecommendationList()
+    }
+
+    private fun observingRecommendationList() {
+        wishlistViewModel.recommendationResult.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    currRecommendationListPage += 1
+                    recommendationList = it.data
+                    renderEmptyState()
+                }
+                is Fail -> {
+
+                }
+            }
+        })
     }
 
     private fun getBaseAppComponent(): BaseAppComponent {
@@ -206,7 +226,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             override fun getSpanSize(position: Int): Int {
                 return when (wishlistV2Adapter.getItemViewType(position)) {
                     WishlistV2Adapter.LAYOUT_LIST -> 2
-                    WishlistV2Adapter.LAYOUT_GRID -> 1
+                    WishlistV2Adapter.LAYOUT_GRID, WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST -> 1
                     else -> 2
                 }
             }
@@ -217,7 +237,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 currentPage += 1
                 if (isFetchRecommendation) {
                     onLoadMoreRecommendation = true
-                    // loadRecommendationList()
+                    loadRecommendationList()
                 } else {
                     onLoadMore = true
                     loadWishlistV2()
@@ -232,6 +252,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 addOnScrollListener(scrollRecommendationListener)
             }
         }
+    }
+
+    private fun loadRecommendationList() {
+        isFetchRecommendation = true
+        wishlistViewModel.loadRecommendationList(currRecommendationListPage)
     }
 
     private fun checkLogin() {
@@ -269,10 +294,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                             renderWishlist(wishlistV2.items)
 
                         } else {
-                            if (wishlistV2.query.isNotEmpty()) {
-                                onWishlistSearchNotFound(wishlistV2.query)
-                            } else {
-                                renderEmpty()
+                            if (currPage == 1) {
+                                loadRecommendationList()
                             }
                         }
                     }
@@ -292,11 +315,30 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         }
     }
 
-    private fun renderEmpty() {
-        val emptyData = arrayListOf<WishlistV2TypeLayoutData>().apply {
-            add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
+    private fun renderEmptyState() {
+        if (!onLoadMoreRecommendation) {
+            val listItem = arrayListOf<WishlistV2TypeLayoutData>()
+            if (searchQuery.isNotEmpty()) {
+                listItem.add(WishlistV2TypeLayoutData(searchQuery, TYPE_EMPTY_NOT_FOUND))
+            } else {
+                listItem.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
+            }
+            wishlistV2Adapter.addList(listItem)
+            scrollRecommendationListener.resetState()
         }
-        wishlistV2Adapter.addList(emptyData)
+        renderRecommendationList()
+    }
+
+    private fun renderRecommendationList() {
+        val listItem = arrayListOf<WishlistV2TypeLayoutData>()
+        if(!onLoadMoreRecommendation) {
+            listItem.add(WishlistV2TypeLayoutData(getString(R.string.recommendation_title), TYPE_RECOMMENDATION_TITLE))
+        }
+        recommendationList.firstOrNull()?.recommendationItemList?.forEach {
+            listItem.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_LIST))
+        }
+        wishlistV2Adapter.appendList(listItem)
+        scrollRecommendationListener.updateStateAfterGetData()
     }
 
     private fun showLoader() {
@@ -426,11 +468,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         }
     }
 
-    private fun onWishlistSearchNotFound(keyword: String) {
-        val listItem = arrayListOf<WishlistV2TypeLayoutData>().apply {
-            add(WishlistV2TypeLayoutData(keyword, TYPE_EMPTY_NOT_FOUND))
+    override fun onCariBarangClicked() {
+
+    }
+
+    override fun onNotFoundButtonClicked(keyword: String) {
+
+    }
+
+    override fun onProductRecommendationClicked(productId: String) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_INFO, productId)
+            startActivity(intent)
         }
-        wishlistV2Adapter.addList(listItem)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

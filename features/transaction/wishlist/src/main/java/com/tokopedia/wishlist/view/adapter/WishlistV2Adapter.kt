@@ -11,6 +11,8 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LOADER_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LOADER_LIST
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.view.adapter.viewholder.*
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 
@@ -34,8 +36,9 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     interface ActionListener {
-//        fun onCariBarangClicked()
-//        fun onNotFoundButtonClicked()
+        fun onCariBarangClicked()
+        fun onNotFoundButtonClicked(keyword: String)
+        fun onProductRecommendationClicked(productId: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -65,6 +68,14 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 val binding = WishlistV2EmptyStateNotFoundItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
                 WishlistV2EmptyStateNotFoundViewHolder(binding, actionListener)
             }
+            LAYOUT_RECOMMENDATION_TITLE -> {
+                val binding = WishlistV2TitleItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                WishlistV2TitleViewHolder(binding)
+            }
+            LAYOUT_RECOMMENDATION_LIST -> {
+                val binding = WishlistV2RecommendationItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                WishlistV2RecommendationItemViewHolder(binding, actionListener)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -84,6 +95,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is WishlistV2EmptyStateNotFoundViewHolder -> {
                 holder.bind(element)
             }
+            is WishlistV2TitleViewHolder -> {
+                holder.bind(element)
+            }
+            is WishlistV2RecommendationItemViewHolder -> {
+                holder.bind(element)
+            }
         }
     }
 
@@ -99,6 +116,8 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_GRID -> LAYOUT_GRID
             TYPE_EMPTY_STATE -> LAYOUT_EMPTY_STATE
             TYPE_EMPTY_NOT_FOUND -> LAYOUT_EMPTY_NOT_FOUND
+            TYPE_RECOMMENDATION_LIST -> LAYOUT_RECOMMENDATION_LIST
+            TYPE_RECOMMENDATION_TITLE -> LAYOUT_RECOMMENDATION_TITLE
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }

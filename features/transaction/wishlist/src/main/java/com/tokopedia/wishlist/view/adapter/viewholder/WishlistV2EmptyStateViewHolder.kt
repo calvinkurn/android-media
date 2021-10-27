@@ -42,7 +42,7 @@ class WishlistV2EmptyStateViewHolder(private val binding: WishlistV2EmptyStateBi
         }
 
         binding.buttonEmptyState.setOnClickListener {
-            // actionListener?.onCariBarangClicked()
+            actionListener?.onCariBarangClicked()
         }
     }
 }
