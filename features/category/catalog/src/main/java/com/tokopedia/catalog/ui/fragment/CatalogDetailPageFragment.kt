@@ -243,6 +243,7 @@ class CatalogDetailPageFragment : Fragment(),
                         CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                         CatalogDetailAnalytics.ActionKeys.CLICK_BACK_BUTTON,
                         catalogId,userSession.userId)
+                activity?.onBackPressed()
             }
             show()
         }
