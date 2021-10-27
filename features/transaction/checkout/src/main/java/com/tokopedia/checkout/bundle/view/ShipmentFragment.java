@@ -1863,7 +1863,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
-        String digitalProductId = crossSellModel.getId();
+        long digitalProductId = crossSellModel.getId();
         String eventLabel = digitalCategoryName + " " + digitalProductId;
         String digitalProductName = crossSellModel.getInfo().getTitle();
 

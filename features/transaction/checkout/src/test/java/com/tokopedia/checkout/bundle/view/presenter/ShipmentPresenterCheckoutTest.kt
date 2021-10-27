@@ -343,7 +343,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.promos?.isNotEmpty() == true)
@@ -357,7 +357,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 1, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 1, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.isDonation == 1)
@@ -376,7 +376,7 @@ class ShipmentPresenterCheckoutTest {
         }
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.egoldData?.isEgold == true)
@@ -397,7 +397,7 @@ class ShipmentPresenterCheckoutTest {
         }
 
         // When
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // Then
         assert(checkoutRequest.cornerData?.isTokopediaCorner == true)
@@ -411,7 +411,7 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         val deviceId = "12345"
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val checkoutParams = presenter.generateCheckoutParams(true, true, false, deviceId, checkoutRequest)
@@ -428,7 +428,7 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         val deviceId = "12345"
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val checkoutParams = presenter.generateCheckoutParams(true, true, true, deviceId, checkoutRequest)
@@ -445,7 +445,7 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         val deviceId = "12345"
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         val mockContext = mockk<Activity>()
         mockkObject(FingerPrintUtil)
@@ -483,7 +483,7 @@ class ShipmentPresenterCheckoutTest {
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         val deviceId = "12345"
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         val mockContext = mockk<Activity>()
         mockkObject(FingerPrintUtil)

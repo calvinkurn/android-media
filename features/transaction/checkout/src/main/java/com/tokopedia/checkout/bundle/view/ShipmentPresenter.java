@@ -1339,11 +1339,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (!listShipmentCrossSellModel.isEmpty()) {
             for (ShipmentCrossSellModel crossSellModel : listShipmentCrossSellModel) {
                 CrossSellModel crossSellItemData = new CrossSellModel();
-                if (!crossSellModel.getCrossSellModel().getId().isEmpty()) {
-                    crossSellItemData.setId(crossSellModel.getCrossSellModel().getId());
-                }
+                crossSellItemData.setId(crossSellModel.getCrossSellModel().getId());
                 crossSellItemData.setTransactionType(crossSellModel.getCrossSellModel().getOrderSummary().getTitle());
-                crossSellItemData.setPrice(crossSellItemData.getPrice());
+                crossSellItemData.setPrice(crossSellModel.getCrossSellModel().getPrice());
                 crossSellItemData.setAdditionalVerticalId(crossSellItemData.getAdditionalVerticalId());
                 listCrossSellItemData.add(crossSellItemData);
             }
@@ -1352,6 +1350,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         CheckoutRequest checkoutRequest = new CheckoutRequest();
         checkoutRequest.setDonation(isDonation);
+        checkoutRequest.setCrossSell(crossSellRequest);
         checkoutRequest.setData(analyticsDataCheckoutRequests != null ? analyticsDataCheckoutRequests : dataCheckoutRequestList);
         checkoutRequest.setEgoldData(egoldData);
 

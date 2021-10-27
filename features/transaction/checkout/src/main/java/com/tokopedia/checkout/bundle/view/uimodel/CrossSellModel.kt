@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class CrossSellModel(
-        var id: String = "",
+        var id: Long = 0,
         var checkboxDisabled: Boolean = false,
         var isChecked: Boolean = false,
         var price: Long = 0,
