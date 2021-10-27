@@ -78,7 +78,6 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -234,7 +233,6 @@ open class HomeRevampViewModel @Inject constructor(
     private var takeTicker = true
     private var homeNotifModel = HomeNotifModel()
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().main)
-    private var navRollanceType: String = ""
     private var useNewBalanceWidget: Boolean = true
     private var useWalletApp: Boolean = false
     private var popularKeywordRefreshCount = 1
@@ -290,14 +288,6 @@ open class HomeRevampViewModel @Inject constructor(
             getHeaderData()
         }
         getSearchHint(isFirstInstall)
-    }
-
-    private fun showBalanceWidgetLoading() {
-        val loadingState = homeDataModel.homeBalanceModel.copy().apply {
-            setWalletBalanceState(state = STATE_LOADING)
-            setTokopointBalanceState(state = STATE_LOADING)
-        }
-        newUpdateHeaderViewModel(loadingState)
     }
 
     fun getRecommendationWidget(){
@@ -973,10 +963,6 @@ open class HomeRevampViewModel @Inject constructor(
         launch(coroutineContext) {
             refreshHomeData()
         }
-    }
-
-    fun setRollanceNavigationType(type: String) {
-        navRollanceType = type
     }
 
     fun setNewBalanceWidget(useNewBalanceWidget: Boolean) {

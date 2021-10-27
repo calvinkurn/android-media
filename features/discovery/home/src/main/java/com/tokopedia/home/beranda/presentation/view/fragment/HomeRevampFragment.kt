@@ -70,7 +70,6 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.helper.Event
-import com.tokopedia.home.beranda.helper.KeyboardHelper
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.ViewHelper
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
@@ -117,7 +116,6 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.loyalty.view.activity.PromoListActivity
 import com.tokopedia.navigation_common.listener.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -227,7 +225,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val ENABLE_ASYNC_HOME_DAGGER = "android_async_home_dagger"
 
         var HIDE_TICKER = false
-        private var HIDE_GEO = false
         private const val SOURCE_ACCOUNT = "account"
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
@@ -241,12 +238,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val BACKGROUND_DARK_1 = BASE_URL + "home/homepage/home_header_dark.png"
 
         private const val DELAY_TOASTER_RESET_PASSWORD = 5000
-        private const val TIME_TO_WAIT = 500L
-        private const val ITEM_MOVE_DURATION = 150L
         private const val ITEM_VIEW_CACHE_SIZE = 20
-        private const val MAX_OFFSET_ALPHA = 255f
-        private const val EMPTY_OFFSET_ALPHA = 0f
-        private const val OFFSET_ALPHA_TRESHOLD = 150
         private const val EMPTY_TIME_MILLIS = 0L
         private const val MONTH_DAY_COUNT = 30
         private const val TIME_MILLIS_MINUTE = 60000
@@ -256,7 +248,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val HOME_HEADER_POSITION = 0
         private const val TOKOPOINTS_ITEM_POSITION = 1
         private const val VIEW_DEFAULT_HEIGHT = 0f
-        private const val SEARCHBAR_DEFAULT_OFFSET = 0
         private const val STATUS_BAR_DEFAULT_ALPHA = 0f
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
         private const val RV_DIRECTION_TOP = 1
@@ -295,7 +286,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private var isGopayActivated: Boolean = false
     private var isNeedToRotateTokopoints: Boolean = true
-    private var tokopointsCoachmarkPosition: Int? = null
     private var errorToaster: Snackbar? = null
     override val eggListener: HomeEggListener
         get() = this
@@ -370,7 +360,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var coachMarkIsShowing = false
     private var gopayCoachmarkIsShowing = false
     private var tokopointsCoachmarkIsShowing = false
-    private var pmProCoachmarkIsShowing = false
     private var useNewInbox = false
     private var coachmark: CoachMark2? = null
     private var coachmarkGopay: CoachMark2? = null
@@ -978,26 +967,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun getLocationWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val locationView = it.itemView.widget_choose_address
-            if (locationView.isVisible)
-                return locationView.findViewById(R.id.text_chosen_address)
-        }
-        return null
-    }
-
-    private fun getTokopointsBalanceWidgetView(): View? {
-        val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
-        (view as? HomeHeaderOvoViewHolder)?.let {
-            val balanceWidgetTokopointsView = getBalanceWidgetViewTokoPointsOnly(it.itemView.view_balance_widget)
-            if (it.itemView.view_balance_widget.isShown && balanceWidgetTokopointsView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
-                return balanceWidgetTokopointsView
-        }
-        return null
-    }
-
     private fun getTokopointsNewBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
@@ -1088,7 +1057,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val offset = recyclerView.computeVerticalScrollOffset()
                 evaluateHomeComponentOnScroll(recyclerView)
             }
         })
@@ -1143,14 +1111,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         context?.let {
             if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
         }
-
-        getHomeViewModel().setRollanceNavigationType(
-                if (isOsExperiment()) {
-                    RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
-                } else {
-                    ""
-                }
-        )
 
         getHomeViewModel().setNewBalanceWidget(remoteConfigIsNewBalanceWidget())
         getHomeViewModel().setWalletAppRollence(isUsingWalletApp())
