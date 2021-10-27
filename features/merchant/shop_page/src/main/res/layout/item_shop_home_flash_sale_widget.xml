@@ -47,7 +47,7 @@
         app:typographyType="body_3" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
         app:layout_constraintLeft_toLeftOf="parent"

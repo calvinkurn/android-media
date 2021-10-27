@@ -62,7 +62,7 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setChild(inflater.inflate(R.layout.fragment_shop_campaign_tnc_bottom_sheet, container, false))
+        setChild(inflater.inflate(R.layout.fragment_shop_flash_sale_tnc_bottom_sheet, container, false))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
