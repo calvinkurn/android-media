@@ -8,14 +8,7 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchProduct
-import com.tokopedia.search.result.presentation.model.DynamicCarouselProduct
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.presentation.model.*
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import io.mockk.*
@@ -492,7 +485,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     private fun `Then verify visitable list does not render unknown carousel layout`() {
         val visitableList = visitableListSlot.captured
 
-        // 0 -> product
+        // 0 -> search product count data
         // 1 -> product
         // 2 -> product
         // 3 -> product
@@ -500,28 +493,36 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
         // 5 -> product
         // 6 -> product
         // 7 -> product
-        // 8 -> inspiration carousel list (position 8)
-        // 9 -> product
+        // 8 -> product
+        // 9 -> inspiration carousel list (position 8)
         // 10 -> product
         // 11 -> product
         // 12 -> product
         // 13 -> product
         // 14 -> product
-        visitableList.size shouldBe 15
+        // 15 -> product
+        visitableList.size shouldBe 16
 
         visitableList.forEachIndexed { index, visitable ->
-            if (index == 8) {
-                visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
-                        "visitable list at index $index should be InspirationCarouselViewModel"
-                )
-                assert((visitable as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
-                    "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO}"
+            when (index) {
+                0 -> {
+                    visitable.shouldBeInstanceOf<SearchProductCountDataView>(
+                        "visitable list at index $index should be SearchProductCountViewMode"
+                    )
                 }
-            }
-            else {
-                visitable.shouldBeInstanceOf<ProductItemDataView>(
+                9 -> {
+                    visitable.shouldBeInstanceOf<InspirationCarouselDataView>(
+                        "visitable list at index $index should be InspirationCarouselViewModel"
+                    )
+                    assert((visitable as InspirationCarouselDataView).layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO) {
+                        "Inspiration Carousel layout should be ${SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO}"
+                    }
+                }
+                else -> {
+                    visitable.shouldBeInstanceOf<ProductItemDataView>(
                         "visitable list at index $index should be ProductItemViewModel"
-                )
+                    )
+                }
             }
         }
     }
