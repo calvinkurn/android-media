@@ -304,6 +304,7 @@
     <string name="action_cancel_replacement">Oh, Jangan</string>
     <string name="action_confirm_exit">Ya</string>
     <string name="action_cancel_exit">Batal</string>
+    <string name="action_variant_custom_add">Buat Tipe Varian</string>
     <string name="label_variant_type">Tipe Varian</string>
     <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian.</string>
     <string name="label_variant_photo">Foto Varian</string>
@@ -343,6 +344,12 @@
     <string name="label_variant_to">ke</string>
     <string name="label_variant_data">Data</string>
     <string name="label_variant_replacement_notice">akan hilang jika kamu ganti ke</string>
+    <string name="label_variant_type_name">Nama tipe varian</string>
+    <string name="label_variant_name_recommendation">Rekomendasi Tokopedia</string>
+    <string name="label_variant_custom_manage">Hapus atau ubah nama tipe varian yang pernah kamu buat.</string>
+    <string name="label_variant_custom_input_bottom_sheet_title">Buat tipe varian</string>
+    <string name="label_variant_custom_manage_bottom_sheet_title">Atur varian</string>
+    <string name="label_variant_value_empty">Belum ada Kapasitas Memory yang bisa dipilih. Tambah pilihan Kapasitas Memory dulu, ya.</string>
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
     

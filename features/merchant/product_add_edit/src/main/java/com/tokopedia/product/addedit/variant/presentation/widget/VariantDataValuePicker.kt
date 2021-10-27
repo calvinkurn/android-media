@@ -6,6 +6,7 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
@@ -91,6 +92,9 @@ class VariantDataValuePicker : LinearLayout {
         val variantUnitValues = variantData.units.find { unit ->
             unit.variantUnitID == selectedVariantUnit.variantUnitID
         }?.unitValues ?: mutableListOf()
+
+        // set empty message visibility
+        typographyEmptyVariantValue.isVisible = variantUnitValues.isEmpty()
 
         // populate the listItemUnifyList with data
         variantUnitValues.forEach {

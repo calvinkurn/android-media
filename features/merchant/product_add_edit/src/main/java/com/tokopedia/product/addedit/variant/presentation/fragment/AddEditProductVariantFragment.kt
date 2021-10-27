@@ -61,6 +61,8 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.AddEditProductVariantSizechartDialogFragment
+import com.tokopedia.product.addedit.variant.presentation.dialog.CustomVariantInputBottomSheet
+import com.tokopedia.product.addedit.variant.presentation.dialog.CustomVariantManageBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantViewModel
@@ -169,6 +171,11 @@ class AddEditProductVariantFragment :
 
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+
+        buttonAddVariantType.setOnClickListener {
+            CustomVariantInputBottomSheet().show(childFragmentManager)
+        }
+        CustomVariantManageBottomSheet().show(childFragmentManager)
 
         variantTypeAdapter = VariantTypeAdapter(this)
         variantValueAdapterLevel1 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_ONE_POSITION)
