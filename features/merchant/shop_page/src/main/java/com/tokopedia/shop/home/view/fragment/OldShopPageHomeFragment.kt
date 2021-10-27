@@ -1955,7 +1955,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
         sortFilterBottomSheet?.setOnDismissListener {
             sortFilterBottomSheet = null
         }
-        viewModel?.getBottomSheetFilterData()
+        viewModel?.getBottomSheetFilterData(shopId)
     }
 
 
