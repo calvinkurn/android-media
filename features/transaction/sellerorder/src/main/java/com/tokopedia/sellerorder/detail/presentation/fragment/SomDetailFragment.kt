@@ -65,6 +65,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ORDER_EXTENSION_REQUEST
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
@@ -702,6 +703,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                             buttonResp.key.equals(KEY_UBAH_NO_RESI, true) -> bottomSheetManager?.showSomOrderEditAwbBottomSheet(this@SomDetailFragment)
                             buttonResp.key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
                             buttonResp.key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
+                            buttonResp.key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
                         }
                     }
                 }
@@ -903,7 +905,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                         key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                         key.equals(KEY_SET_DELIVERED, true) -> bottomSheetManager?.showSomBottomSheetSetDelivered(this)
                         key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
-                        key.equals("KEY_REQUEST_EXTENSION") -> setActionRequestExtension()
+                        key.equals(KEY_ORDER_EXTENSION_REQUEST, true) -> setActionRequestExtension()
                     }
                 }
             }

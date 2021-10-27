@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.orderextension.domain.models.SendOrderExtensionRequestParam
 import com.tokopedia.sellerorder.orderextension.domain.models.SendOrderExtensionRequestResponse
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class SendOrderExtensionRequestUseCase @Inject constructor(
@@ -20,7 +19,6 @@ class SendOrderExtensionRequestUseCase @Inject constructor(
     ): SendOrderExtensionRequestResponse.Data.OrderExtensionRequest {
         val requests = createRequests(userId, orderId, shopId, reasonCode, reasonText)
         val responses = graphQlRepository.response(requests)
-        delay((Math.random() * 2000).toLong())
         return responses.getSuccessData<SendOrderExtensionRequestResponse.Data>().orderExtensionRequest
     }
 

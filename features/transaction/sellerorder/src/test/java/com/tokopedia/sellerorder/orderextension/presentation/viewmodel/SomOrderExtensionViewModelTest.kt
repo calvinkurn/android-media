@@ -72,7 +72,7 @@ class SomOrderExtensionViewModelTest {
         viewModel.getSomRequestExtensionInfo(orderId)
 
         coVerify {
-            somGetOrderExtensionRequestInfoUseCase.execute(any(), any())
+            somGetOrderExtensionRequestInfoUseCase.execute(any(), any(), any())
         }
 
         assert(viewModel.requestExtensionInfo.value is Success)
@@ -81,13 +81,13 @@ class SomOrderExtensionViewModelTest {
     @Test
     fun getSomRequestExtensionInfo_shouldFail() {
         coEvery {
-            somGetOrderExtensionRequestInfoUseCase.execute(any(), any())
+            somGetOrderExtensionRequestInfoUseCase.execute(any(), any(), any())
         } throws Throwable()
 
         viewModel.getSomRequestExtensionInfo(orderId)
 
         coVerify {
-            somGetOrderExtensionRequestInfoUseCase.execute(any(), any())
+            somGetOrderExtensionRequestInfoUseCase.execute(any(), any(), any())
         }
 
         assert(viewModel.requestExtensionInfo.value is Fail)
@@ -236,7 +236,7 @@ class SomOrderExtensionViewModelTest {
         orderRequestInfoUiModel: OrderExtensionRequestInfoUiModel = mockk()
     ) {
         coEvery {
-            somGetOrderExtensionRequestInfoUseCase.execute(any(), any())
+            somGetOrderExtensionRequestInfoUseCase.execute(any(), any(), any())
         } returns orderRequestInfo
         every {
             somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(any())

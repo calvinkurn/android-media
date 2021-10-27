@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.sellerorder.orderextension.domain.models.GetOrderExtensionRequestInfoParam
 import com.tokopedia.sellerorder.orderextension.domain.models.GetOrderExtensionRequestInfoResponse
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class GetOrderExtensionRequestInfoUseCase @Inject constructor(
@@ -13,26 +12,26 @@ class GetOrderExtensionRequestInfoUseCase @Inject constructor(
 ) {
     suspend fun execute(
         orderId: String,
-        shopId: String
+        shopId: String,
+        userId: String
     ): GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo {
-        val requests = createRequests(orderId, shopId)
+        val requests = createRequests(orderId, shopId, userId)
         val responses = graphQlRepository.response(requests)
-        delay((Math.random() * 2000).toLong())
         return responses.getSuccessData<GetOrderExtensionRequestInfoResponse.Data>().orderExtensionRequestInfo
     }
 
-    private fun createRequests(orderId: String, shopId: String): List<GraphqlRequest> {
+    private fun createRequests(orderId: String, shopId: String, userId: String): List<GraphqlRequest> {
         return listOf(
             GraphqlRequest(
                 QUERY,
                 GetOrderExtensionRequestInfoResponse.Data::class.java,
-                generateRequestParams(orderId, shopId)
+                generateRequestParams(orderId, shopId, userId)
             )
         )
     }
 
-    private fun generateRequestParams(orderId: String, shopId: String): Map<String, Any> {
-        return mapOf("input" to GetOrderExtensionRequestInfoParam(orderId, shopId))
+    private fun generateRequestParams(orderId: String, shopId: String, userId: String): Map<String, Any> {
+        return mapOf("input" to GetOrderExtensionRequestInfoParam(orderId, shopId, userId))
     }
 
     companion object {

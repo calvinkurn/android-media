@@ -55,6 +55,7 @@ object SomConsts {
     const val KEY_SET_DELIVERED = "set_delivered"
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
     const val KEY_PRINT_AWB = "print"
+    const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
