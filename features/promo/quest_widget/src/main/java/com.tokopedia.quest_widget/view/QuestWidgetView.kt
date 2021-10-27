@@ -15,6 +15,8 @@ import com.example.quest_widget.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.quest_widget.data.QuestData
+import com.tokopedia.quest_widget.data.WidgetData
+import com.tokopedia.quest_widget.di.DaggerQuestComponent
 import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.user.session.UserSession
@@ -53,12 +55,18 @@ class QuestWidgetView @JvmOverloads constructor(
         shimmerQuestWidget = findViewById(R.id.quest_widget_shimmer)
         quest_widget_view_flipper = findViewById(R.id.quest_widget_view_flipper)
 
+        DaggerQuestComponent.builder()
+            .build().inject(this)
+        if (context is AppCompatActivity) {
+            val viewModelProvider = ViewModelProvider(context, viewModelFactory)
+            viewModel = viewModelProvider[QuestWidgetViewModel::class.java]
+        }
         userSession = UserSession(context)
 
         quest_widget_view_flipper.displayedChild = LOADING
 
         val viewModelProvider =
-            ViewModelProvider(context as AppCompatActivity, viewModelFactory)
+            ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
         viewModel = viewModelProvider[QuestWidgetViewModel::class.java]
 
         viewModel.questWidgetListLiveData.observe(context as AppCompatActivity, Observer {

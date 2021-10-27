@@ -59,6 +59,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.recommendation.SectionRecomVi
 import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVoucherViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.topquest.SectionTopQuestViewBinder
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -442,9 +443,20 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
             }
 
-            if (recommList?.recommendationWrapper?.isNotEmpty() == true) {
+       /*     if (recommList?.recommendationWrapper?.isNotEmpty() == true) {
                 val sectionRecomViewBinder =
                     recommList?.let { SectionRecomViewBinder(it, listener!!) }
+                @Suppress("UNCHECKED_CAST")
+                viewBinders.put(
+                    CommonConstant.SectionLayoutType.RECOMM,
+                    sectionRecomViewBinder as SectionItemBinder
+                )
+                recommList?.let { sectionList.add(it) }
+            }*/
+
+            if (recommList?.recommendationWrapper?.isNotEmpty() == true) {
+                val sectionRecomViewBinder =
+                    recommList?.let { SectionTopQuestViewBinder(it, listener!!) }
                 @Suppress("UNCHECKED_CAST")
                 viewBinders.put(
                     CommonConstant.SectionLayoutType.RECOMM,

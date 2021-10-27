@@ -6,17 +6,19 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.QuestData
+import com.tokopedia.quest_widget.constants.GQLQueryQuestWidget.IO
 import com.tokopedia.quest_widget.data.WidgetData
 import com.tokopedia.quest_widget.domain.QuestWidgetUseCase
 import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import javax.inject.Named
 
 const val ERROR_MSG = "Oops, ada sedikit gangguan. Coba daftar lagi, ya."
 const val ERROR_NULL_RESPONSE = "Response is null"
 
-class QuestWidgetViewModel @Inject constructor( workerDispatcher: CoroutineDispatcher, val questWidgetUseCase: QuestWidgetUseCase): BaseViewModel(workerDispatcher) {
+class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: CoroutineDispatcher, val questWidgetUseCase: QuestWidgetUseCase): BaseViewModel(workerDispatcher) {
 
     val questWidgetListLiveData = SingleLiveEvent<LiveDataResult<QuestData>>()
 
