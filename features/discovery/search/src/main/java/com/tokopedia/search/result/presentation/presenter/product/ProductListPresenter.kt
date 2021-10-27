@@ -25,7 +25,6 @@ import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -113,8 +112,7 @@ class ProductListPresenter @Inject constructor(
         @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
         private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
         private val topAdsUrlHitter: TopAdsUrlHitter,
-        private val schedulersProvider: SchedulersProvider,
-        remoteConfig: Lazy<RemoteConfig>,
+        private val schedulersProvider: SchedulersProvider
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
         ProductListSectionContract.Presenter {
 
@@ -206,10 +204,6 @@ class ProductListPresenter @Inject constructor(
             e.printStackTrace()
             false
         }
-    }
-
-    private fun checkNavigationRollenceValue(rollenceKey: String, expectedValue: String): Boolean {
-        return false
     }
 
     private fun getHasFullThreeDotsOptions(): Boolean {
