@@ -371,18 +371,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
-    private val coachmarkHandler = Handler()
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun isOsExperiment(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isOsExperiment?:false
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
     @Suppress("TooGenericExceptionCaught")
     private fun isUsingWalletApp(): Boolean {
         return isEligibleForWalletApp() && isEligibleForPaymentABC()
@@ -2451,10 +2439,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onDynamicChannelRetryClicked() {
         getHomeViewModel().onDynamicChannelRetryClicked()
-    }
-
-    override fun isBottomNavOsExperiment(): Boolean {
-        return isOsExperiment()
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {

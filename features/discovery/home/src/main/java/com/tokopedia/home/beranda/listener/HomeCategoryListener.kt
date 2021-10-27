@@ -129,8 +129,6 @@ interface HomeCategoryListener {
 
     fun getRechargeBUWidget(source: WidgetSource)
 
-    fun isBottomNavOsExperiment(): Boolean
-
     fun onChooseAddressUpdated()
 
     fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
