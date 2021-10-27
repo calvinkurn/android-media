@@ -92,18 +92,24 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
         activity?.let {
             val userSession: UserSessionInterface = UserSession(it.applicationContext)
             val isRegularMerchant = StatisticPageHelper.getRegularMerchantStatus(userSession)
-            binding?.rvStcDateRage?.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener{
+            binding?.rvStcDateRage?.addOnItemTouchListener(object :
+                RecyclerView.OnItemTouchListener {
                 override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                     return isRegularMerchant
                 }
+
                 override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
 
                 }
+
                 override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
 
                 }
             })
             binding?.stcFilterExclusiveIdentifier?.isVisible = isRegularMerchant
+            binding?.stcFilterExclusiveIdentifier?.setOnCtaClickListener {
+                dismiss()
+            }
             if (isRegularMerchant) {
                 val identifierDescription = arguments
                     ?.getString(KEY_IDENTIFIER_DESCRIPTION).orEmpty()

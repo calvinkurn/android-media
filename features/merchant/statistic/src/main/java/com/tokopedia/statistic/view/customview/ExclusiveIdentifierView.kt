@@ -34,6 +34,7 @@ class ExclusiveIdentifierView : LinearLayout {
         init(context)
     }
 
+    private var onCtaClick: (() -> Unit)? = null
     private var binding: ViewStcExclusiveIdentifierBinding? = null
 
     fun setDescription(text: String) {
@@ -50,11 +51,16 @@ class ExclusiveIdentifierView : LinearLayout {
             imgStcExclusiveIdentifier.loadImage(Const.Image.IMG_EXCLUSIVE_IDENTIFIER)
             btnStcUpgradeShopCta.setOnClickListener {
                 openPowerMerchantPage()
+                onCtaClick?.invoke()
             }
         }
     }
 
     private fun openPowerMerchantPage() {
         RouteManager.route(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
+    }
+
+    fun setOnCtaClickListener(function: () -> Unit) {
+        onCtaClick = function
     }
 }
