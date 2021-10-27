@@ -2408,9 +2408,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onFlashSaleWidgetImpressed(flashSaleUiModel: ShopHomeFlashSaleUiModel, position: Int) {
-        flashSaleUiModel.data?.firstOrNull()?.let { itemFlashSale ->
-            val campaignId = itemFlashSale.campaignId,
+    override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
+        model.data?.firstOrNull()?.let { itemFlashSale ->
+            val campaignId = itemFlashSale.campaignId
             val statusCampaign = itemFlashSale.statusCampaign
             shopPageHomeTracking.impressionCampaignFlashSaleWidget(
                     campaignId = campaignId,
