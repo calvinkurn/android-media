@@ -25,6 +25,7 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
@@ -69,8 +70,12 @@ import java.net.UnknownHostException
 import java.util.HashMap
 import javax.inject.Inject
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener,
-        ProductBundlingViewHolder.Listener, TickerViewHolder.TickerViewHolderListener, RecommendationWidgetListener {
+class BuyerOrderDetailFragment : BaseDaggerFragment(),
+        ProductViewHolder.ProductViewListener,
+        ProductBundlingViewHolder.Listener,
+        TickerViewHolder.TickerViewHolderListener,
+        DigitalRecommendationViewHolder.ActionListener,
+        RecommendationWidgetListener {
 
     companion object {
         @JvmStatic
@@ -231,6 +236,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     override fun onClickShipmentInfoTnC() {
         BuyerOrderDetailTracker.eventClickSeeShipmentInfoTNC(viewModel.getOrderStatusId(), viewModel.getOrderId())
+    }
+
+    override fun hideDigitalRecommendation() {
+        adapter.removeDigitalRecommendation()
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {

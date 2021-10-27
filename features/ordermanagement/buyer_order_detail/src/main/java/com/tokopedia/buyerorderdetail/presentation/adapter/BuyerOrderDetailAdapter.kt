@@ -236,4 +236,18 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             notifyItemChanged(index, oldItem to newItem)
         }
     }
+
+    fun removeDigitalRecommendation() {
+        val dividerIndex = visitables.indexOfLast { it is ThickDividerUiModel }
+        val index = visitables.indexOfLast { it is DigitalRecommendationUiModel }
+
+        if (dividerIndex != -1 && index != -1) {
+            visitables.removeAt(index)
+            visitables.removeAt(dividerIndex)
+            notifyItemRangeRemoved(dividerIndex, 2)
+        } else if (index != -1) {
+            visitables.removeAt(index)
+            notifyItemRemoved(index)
+        }
+    }
 }

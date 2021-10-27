@@ -117,7 +117,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.tokopedianow.recentpurchase.presentation.activity.TokoNowRecentPurchaseActivity"
+            android:name="com.tokopedia.tokopedianow.repurchase.presentation.activity.TokoNowRepurchaseActivity"
             android:exported="true"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"

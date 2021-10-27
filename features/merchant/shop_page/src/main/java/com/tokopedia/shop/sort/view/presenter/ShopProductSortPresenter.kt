@@ -19,7 +19,7 @@ class ShopProductSortPresenter @Inject constructor(private val getShopProductFil
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
-                    view?.showGetListError(e)
+                    view.showGetListError(e)
                 }
             }
 

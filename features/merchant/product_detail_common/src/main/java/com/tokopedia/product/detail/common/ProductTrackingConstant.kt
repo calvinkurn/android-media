@@ -36,6 +36,21 @@ object ProductTrackingConstant {
         const val KEY_GROUP_ID = "productGroupId"
         const val KEY_CATEGORY_ID = "categoryId"
 
+        /**
+         * Tracking Key - Product Level
+         * is using snake_case
+         */
+        const val KEY_PRODUCT_CATEGORY_ID = "category_id"
+        const val KEY_PRODUCT_SHOP_ID = "shop_id"
+        const val KEY_PRODUCT_SHOP_NAME = "shop_name"
+        const val KEY_PRODUCT_SHOP_TYPE = "shop_type"
+
+        /**
+         * Tracking Key - Hit Level
+         * is using camelCase
+         */
+        const val KEY_HIT_USER_ID = "userId"
+
         const val VALUE_BUSINESS_UNIT_SHARING = "sharingexperience"
 
         const val KEY_USER_ID_VARIANT = "userId"
@@ -93,15 +108,20 @@ object ProductTrackingConstant {
         const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
         const val TRADEIN_TRUE_NON_DIAGNOSTIC = "true non diagnostic"
 
-        const val KEY_DIMENSION_81 = "dimension81"
-        const val KEY_DIMENSION_83 = "dimension83"
-        const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_10 = "dimension10"
+        const val KEY_DIMENSION_12 = "dimension12"
+        const val KEY_DIMENSION_14 = "dimension14"
+        const val KEY_DIMENSION_16 = "dimension16"
         const val KEY_DIMENSION_38 = "dimension38"
         const val KEY_DIMENSION_40 = "dimension40"
-        const val KEY_DIMENSION_82 = "dimension82"
-        const val KEY_DIMENSION_80 = "dimension80"
-        const val KEY_DIMENSION_79 = "dimension79"
         const val KEY_DIMENSION_45 = "dimension45"
+        const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_79 = "dimension79"
+        const val KEY_DIMENSION_80 = "dimension80"
+        const val KEY_DIMENSION_81 = "dimension81"
+        const val KEY_DIMENSION_82 = "dimension82"
+        const val KEY_DIMENSION_83 = "dimension83"
+        const val KEY_DIMENSION_120 = "dimension120"
 
         const val CONTENT_TYPE = "product"
         const val BRANCH_QUANTITY ="1"

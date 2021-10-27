@@ -630,7 +630,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-                    showToaster(getString(R.string.fail_cancellation), Toaster.TYPE_ERROR)
+                    showToaster(getString(R.string.buyer_fail_cancellation), Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -683,7 +683,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     renderInstantCancellation()
                 }
                 is Fail -> {
-                    showToaster(getString(R.string.fail_cancellation), Toaster.TYPE_ERROR)
+                    showToaster(getString(R.string.buyer_fail_cancellation), Toaster.TYPE_ERROR)
                 }
             }
         })

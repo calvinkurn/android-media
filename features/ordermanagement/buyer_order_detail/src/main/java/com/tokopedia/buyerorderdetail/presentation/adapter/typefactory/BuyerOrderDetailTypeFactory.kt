@@ -19,6 +19,7 @@ class BuyerOrderDetailTypeFactory(
         private val navigator: BuyerOrderDetailNavigator,
         private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener,
         private val digitalRecommendationData: DigitalRecommendationData,
+        private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
         private val recommendationWidgetListener: RecommendationWidgetListener
 ) : BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
@@ -114,7 +115,7 @@ class BuyerOrderDetailTypeFactory(
             ThinDashedDividerViewHolder.LAYOUT -> ThinDashedDividerViewHolder(parent)
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
-            DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData)
+            DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
             BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(parent, recommendationWidgetListener)
             EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent)
             else -> super.createViewHolder(parent, type)
