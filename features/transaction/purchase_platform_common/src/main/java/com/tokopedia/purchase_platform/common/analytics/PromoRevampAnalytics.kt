@@ -91,8 +91,7 @@ object PromoRevampAnalytics {
 
     fun eventCheckoutClickPromoSection(listPromoCodes: List<String>, isApplied: Boolean, userId: String) {
         var eventAction = CLICK_PROMO_SECTION_WITH_PROMO
-        eventAction += if (isApplied) " $APPLIED"
-        else " $NOT_APPLIED"
+        eventAction += if (isApplied && listPromoCodes.isNotEmpty()) " $APPLIED" else " $NOT_APPLIED"
 
         var promo = ""
         listPromoCodes.forEach {
