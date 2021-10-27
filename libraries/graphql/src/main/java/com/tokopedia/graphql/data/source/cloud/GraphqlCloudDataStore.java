@@ -25,11 +25,16 @@ import com.tokopedia.logger.utils.Priority;
 import java.io.InterruptedIOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLParameters;
 
 import okhttp3.internal.http2.ConnectionShutdownException;
 import retrofit2.Response;
@@ -104,7 +109,23 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
 
         return getResponse(requests)
                 .doOnError(throwable -> {
-                    if (!(throwable instanceof UnknownHostException) &&
+                    if(throwable instanceof SSLHandshakeException) {
+                        SSLParameters sslParameters;
+                        String tls;
+                        String cipherSuites="";
+                        try {
+                            sslParameters = SSLContext.getDefault().getDefaultSSLParameters();
+                            tls = Arrays.toString(sslParameters.getProtocols());
+                            cipherSuites = Arrays.toString(SSLContext.getDefault().getDefaultSSLParameters().getCipherSuites());
+                        } catch (NoSuchAlgorithmException e) {
+                            tls="Failed to get ssl";
+                        } catch (NullPointerException e){
+                            tls="Got null on ssl";
+                        } catch (Exception e) {
+                            tls= e.getLocalizedMessage();
+                        }
+                        LoggingUtils.logGqlErrorSsl("java", requests.toString(), throwable, tls, cipherSuites);
+                    } else if (!(throwable instanceof UnknownHostException) &&
                             !(throwable instanceof SocketException) &&
                             !(throwable instanceof InterruptedIOException) &&
                             !(throwable instanceof ConnectionShutdownException)) {
