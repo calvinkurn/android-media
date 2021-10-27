@@ -19,7 +19,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     private val context: Context
 ) {
     fun mapSuccessResponseToUiModel(
-        response: GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo
+        response: GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.OrderExtensionRequestInfoData
     ): OrderExtensionRequestInfoUiModel = OrderExtensionRequestInfoUiModel(
         items = if (!response.reason.isNullOrEmpty()) {
             mutableListOf<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>().apply {
@@ -71,7 +71,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
 
     private fun MutableList<OrderExtensionRequestInfoUiModel.OptionUiModel>.addOrderExtensionOption(
         index: Int,
-        reason: GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.Reason
+        reason: GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.OrderExtensionRequestInfoData.Reason
     ) {
         add(
             OrderExtensionRequestInfoUiModel.OptionUiModel(
@@ -86,7 +86,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
 
     private fun MutableList<OrderExtensionRequestInfoUiModel.CommentUiModel>.addOrderExtensionOptionComment(
         index: Int,
-        reason: GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.Reason
+        reason: GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.OrderExtensionRequestInfoData.Reason
     ) {
         add(
             OrderExtensionRequestInfoUiModel.CommentUiModel(
@@ -133,7 +133,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     }
 
     private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionOptions(
-        reasons: List<GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.Reason>?
+        reasons: List<GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.OrderExtensionRequestInfoData.Reason>?
     ) {
         val options = mutableListOf<OrderExtensionRequestInfoUiModel.OptionUiModel>()
         val optionsComment = mutableListOf<OrderExtensionRequestInfoUiModel.CommentUiModel>()

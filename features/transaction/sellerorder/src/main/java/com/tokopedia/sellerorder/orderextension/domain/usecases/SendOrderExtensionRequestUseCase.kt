@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.orderextension.domain.usecases
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.orderextension.domain.models.SendOrderExtensionRequestParam
 import com.tokopedia.sellerorder.orderextension.domain.models.SendOrderExtensionRequestResponse
 import javax.inject.Inject
@@ -16,10 +17,10 @@ class SendOrderExtensionRequestUseCase @Inject constructor(
         shopId: String,
         reasonCode: Int,
         reasonText: String
-    ): SendOrderExtensionRequestResponse.Data.OrderExtensionRequest {
+    ): SendOrderExtensionRequestResponse.Data.OrderExtensionRequest.OrderExtensionRequestData {
         val requests = createRequests(userId, orderId, shopId, reasonCode, reasonText)
         val responses = graphQlRepository.response(requests)
-        return responses.getSuccessData<SendOrderExtensionRequestResponse.Data>().orderExtensionRequest
+        return responses.getSuccessData<SendOrderExtensionRequestResponse.Data>().orderExtensionRequest.data
     }
 
     private fun createRequests(
@@ -46,10 +47,10 @@ class SendOrderExtensionRequestUseCase @Inject constructor(
         reasonText: String
     ): Map<String, Any> {
         return mapOf(
-            "input" to SendOrderExtensionRequestParam(
-                userId,
-                orderId,
-                shopId,
+            PARAM_INPUT to SendOrderExtensionRequestParam(
+                userId.toLongOrZero(),
+                orderId.toLongOrZero(),
+                shopId.toLongOrZero(),
                 reasonCode,
                 reasonText
             )
@@ -59,11 +60,15 @@ class SendOrderExtensionRequestUseCase @Inject constructor(
     companion object {
         private val QUERY = """
             mutation SomOrderExtensionRequest(${'$'}input:OrderExtensionRequestRequest!) {
-              order_extension_info(input: ${'$'}input) {
-                message
-                message_code
+              order_extension_request(input: ${'$'}input) {
+                data {
+                  message
+                  message_code
+                }
               }
             }
         """.trimIndent()
+
+        private const val PARAM_INPUT = "input"
     }
 }

@@ -42,8 +42,8 @@ class SomOrderExtensionViewModelTest {
     private val orderId = "1234567890"
     private val sampleInvalidComment = "@$%`~"
     private val sampleValidComment = "Ini adalah contoh valid comment"
-    private val successOrderExtensionRequestResult = SendOrderExtensionRequestResponse.Data.OrderExtensionRequest("", 1)
-    private val failedOrderExtensionRequestResult = SendOrderExtensionRequestResponse.Data.OrderExtensionRequest("", 0)
+    private val successOrderExtensionRequestResult = SendOrderExtensionRequestResponse.Data.OrderExtensionRequest.OrderExtensionRequestData("", 1)
+    private val failedOrderExtensionRequestResult = SendOrderExtensionRequestResponse.Data.OrderExtensionRequest.OrderExtensionRequestData("", 0)
 
     private lateinit var viewModel: SomOrderExtensionViewModel
 
@@ -232,12 +232,12 @@ class SomOrderExtensionViewModelTest {
     }
 
     private fun onGetOrderExtensionRequestInfoSuccess_thenReturn(
-        orderRequestInfo: GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo = mockk(),
+        orderRequestInfoData: GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.OrderExtensionRequestInfoData = mockk(),
         orderRequestInfoUiModel: OrderExtensionRequestInfoUiModel = mockk()
     ) {
         coEvery {
             somGetOrderExtensionRequestInfoUseCase.execute(any(), any(), any())
-        } returns orderRequestInfo
+        } returns orderRequestInfoData
         every {
             somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(any())
         } returns orderRequestInfoUiModel

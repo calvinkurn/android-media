@@ -5,7 +5,7 @@ import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensio
 import javax.inject.Inject
 
 class OrderExtensionRequestResultResponseMapper @Inject constructor() {
-    fun mapResponseToUiModel(response: SendOrderExtensionRequestResponse.Data.OrderExtensionRequest): OrderExtensionRequestResultUiModel {
+    fun mapResponseToUiModel(response: SendOrderExtensionRequestResponse.Data.OrderExtensionRequest.OrderExtensionRequestData): OrderExtensionRequestResultUiModel {
         return OrderExtensionRequestResultUiModel(
             message = response.message.orEmpty(),
             success = response.isSuccess()

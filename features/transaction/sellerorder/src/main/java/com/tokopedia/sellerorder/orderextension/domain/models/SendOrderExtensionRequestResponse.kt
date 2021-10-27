@@ -11,16 +11,22 @@ data class SendOrderExtensionRequestResponse(
         val orderExtensionRequest: OrderExtensionRequest = OrderExtensionRequest()
     ) {
         data class OrderExtensionRequest(
-            @SerializedName("message")
-            val message: String? = "",
-            @SerializedName("message_code")
-            val messageCode: Int? = 0
+            @SerializedName("data")
+            val data: OrderExtensionRequestData = OrderExtensionRequestData()
         ) {
-            companion object {
-                private const val SUCCESS_MESSAGE_CODE = 1
-            }
 
-            fun isSuccess() = messageCode == SUCCESS_MESSAGE_CODE
+            data class OrderExtensionRequestData(
+                @SerializedName("message")
+                val message: String? = "",
+                @SerializedName("message_code")
+                val messageCode: Int? = 0
+            ) {
+                companion object {
+                    private const val SUCCESS_MESSAGE_CODE = 1
+                }
+
+                fun isSuccess() = messageCode == SUCCESS_MESSAGE_CODE
+            }
         }
     }
 }

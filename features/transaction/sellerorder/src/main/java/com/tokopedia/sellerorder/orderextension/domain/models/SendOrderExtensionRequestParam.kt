@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class SendOrderExtensionRequestParam(
     @SerializedName("user_id")
-    val userId: String,
+    val userId: Long,
     @SerializedName("order_id")
-    val orderId: String,
+    val orderId: Long,
     @SerializedName("shop_id")
-    val shopId: String,
+    val shopId: Long,
     @SerializedName("reason_code")
     val reasonCode: Int,
     @SerializedName("reason_text")
