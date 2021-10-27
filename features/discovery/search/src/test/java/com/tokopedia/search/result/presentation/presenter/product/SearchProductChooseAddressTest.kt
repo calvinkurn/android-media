@@ -138,7 +138,6 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     @Test
     fun `Test choose address data with navigation revamp enabled`() {
         `Setup choose address`(dummyChooseAddressData)
-        `Given navigation revamp is enabled`()
         setUp()
 
         `Given search product API will return data`()
@@ -152,10 +151,6 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
 
     private fun `Then verify visitable list does not contain search product count`() {
         visitableList.any { it is SearchProductCountDataView } shouldBe false
-    }
-
-    private fun `Given navigation revamp is enabled`() {
-
     }
 
     @Test
