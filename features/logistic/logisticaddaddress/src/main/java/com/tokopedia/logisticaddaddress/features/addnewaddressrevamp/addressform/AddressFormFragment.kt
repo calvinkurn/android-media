@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressfor
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Typeface
@@ -34,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.response.DistrictItem
+import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
@@ -337,30 +339,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
-        val onTermsAndConditionClicked: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=https://www.google.com")
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
-                )
-            }
-        }
-
-        val boldSpan = StyleSpan(Typeface.BOLD)
-
-        val consentText = SpannableString("Dengan klik \"Simpan\", kamu menyetujui Syarat & Ketentuan.")
-        consentText.setSpan(onTermsAndConditionClicked, 38,  56, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        consentText.setSpan(boldSpan, 38, 56, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        binding.userConsent.movementMethod = LinkMovementMethod.getInstance()
-        binding.userConsent.isClickable = true
-        binding.userConsent.setText(consentText, TextView.BufferType.SPANNABLE)
-
+        LogisticCommonUtil.displayUserConsent(activity as Context, binding.userConsent, getString(R.string.btn_simpan))
 
         binding.btnSaveAddressNew.setOnClickListener {
             if (validateForm()) {
