@@ -71,12 +71,12 @@ class PlayInteractiveWinnerViewHolder(itemView: View, private val listener: List
             ivCrown.hide()
             borderIvWinner.hide()
             lblWinner.hide()
-            val unifyWhite = MethodChecker.getColor(
+            val containerColor = MethodChecker.getColor(
                 container.context,
                 R.color.play_dms_bottom_sheet_background
             )
             container.setCustomContainerColor(
-                Pair(unifyWhite, unifyWhite)
+                Pair(containerColor, containerColor)
             )
         }
     }
