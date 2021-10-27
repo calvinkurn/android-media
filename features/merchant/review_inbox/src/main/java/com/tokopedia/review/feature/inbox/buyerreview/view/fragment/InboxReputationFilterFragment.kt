@@ -170,8 +170,9 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
             list.add(
                 OptionUiModel(
                     getString(R.string.filter_given_reputation),
-                    GetInboxReputationUseCase.PARAM_SCORE_FILTER, FILTER_GIVEN_SCORE, list
-                        .size
+                    GetInboxReputationUseCase.PARAM_SCORE_FILTER,
+                    FILTER_GIVEN_SCORE,
+                    list.size
                 )
             )
             list.add(

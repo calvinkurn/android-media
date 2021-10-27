@@ -7,7 +7,7 @@ open class OptionUiModel(
     var name: String = "",
     var key: String = "",
     var value: String = "",
+    var position: Int = 0,
     var isSelected: Boolean = false,
-    var isActive: Boolean = false,
-    var position: Int = 0
+    var isActive: Boolean = false
 )

@@ -6,7 +6,10 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationBad
  * @author by nisie on 8/23/17.
  */
 class ShopReputationDomain constructor(
-    val tooltip: String?, val reputationScore: String?, val score: Int,
-    val minBadgeScore: Int, val reputationBadgeUrl: String?,
-    val reputationBadge: ReputationBadgeDomain
+    val tooltip: String = "",
+    val reputationScore: String = "",
+    val score: Int = 0,
+    val minBadgeScore: Int = 0 ,
+    val reputationBadgeUrl: String = "",
+    val reputationBadge: ReputationBadgeDomain = ReputationBadgeDomain()
 )

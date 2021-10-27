@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.listener
 
-import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
@@ -13,7 +12,7 @@ interface InboxReputationReport {
         fun onErrorReportReview(errorMessage: String?)
         fun onSuccessReportReview()
         fun removeLoadingProgress()
-        val context: Context
+        fun getErrorMessage(throwable: Throwable): String
     }
 
     interface Presenter : CustomerPresenter<View?> {

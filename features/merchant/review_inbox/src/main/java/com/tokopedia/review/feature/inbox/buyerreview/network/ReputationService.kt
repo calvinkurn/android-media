@@ -1,15 +1,16 @@
 package com.tokopedia.review.feature.inbox.buyerreview.network
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.user.session.UserSession
 import retrofit2.Retrofit
 import javax.inject.Inject
 
 class ReputationService @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val networkRouter: NetworkRouter,
-    private val userSession: UserSession?
+    private val userSession: UserSession
 ) : BaseReputationService() {
 
     companion object {

@@ -9,13 +9,17 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.review.common.util.ReviewErrorHandler
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking
 import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent
@@ -184,6 +188,10 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
         progressDialog?.let {
             if (it.isShowing) it.dismiss()
         }
+    }
+
+    override fun getErrorMessage(throwable: Throwable): String {
+        return context?.let { ReviewErrorHandler.getErrorMessage(it, throwable) } ?: ""
     }
 
     companion object {

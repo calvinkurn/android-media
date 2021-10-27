@@ -92,7 +92,7 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         )
     }
 
-    fun refreshPage(reputationId: String?, tab: Int) {
+    fun refreshPage(reputationId: String, tab: Int) {
         viewListener?.showRefresh()
         getInboxReputationDetailUseCase.execute(
             GetInboxReputationDetailUseCase.getParam(

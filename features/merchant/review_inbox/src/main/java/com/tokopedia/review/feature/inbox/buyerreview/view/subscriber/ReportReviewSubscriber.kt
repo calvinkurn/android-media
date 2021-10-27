@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber
 
-import com.tokopedia.review.common.util.ReviewErrorHandler.getErrorMessage
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.report.ReportReviewDomain
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationReport
 import rx.Subscriber
@@ -15,9 +14,7 @@ class ReportReviewSubscriber constructor(private val viewListener: InboxReputati
 
     override fun onError(e: Throwable) {
         viewListener.removeLoadingProgress()
-        viewListener.onErrorReportReview(
-            getErrorMessage(viewListener.context.applicationContext, e)
-        )
+        viewListener.onErrorReportReview(viewListener.getErrorMessage(e))
     }
 
     override fun onNext(reportReviewDomain: ReportReviewDomain) {

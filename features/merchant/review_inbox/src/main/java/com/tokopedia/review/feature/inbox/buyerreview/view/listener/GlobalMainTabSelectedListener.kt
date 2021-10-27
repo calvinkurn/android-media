@@ -9,11 +9,11 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 
 open class GlobalMainTabSelectedListener constructor(
-    private val viewPager: ViewPager,
+    private val viewPager: ViewPager?,
     private val activity: Activity?
 ) : OnTabSelectedListener {
     override fun onTabSelected(tab: TabLayout.Tab) {
-        viewPager.currentItem = tab.position
+        viewPager?.currentItem = tab.position
         activity?.let {
             val focus: View? = it.currentFocus
             if (focus != null) {
