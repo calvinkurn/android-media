@@ -2,13 +2,28 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.*
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.*
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationItemDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationBadgeDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationDataDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeBadgeCustomerDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeBadgeSellerDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ImageAttachmentDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationDetailDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewItemDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewResponseDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ShopDataDomain
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDataUiModel
-import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.*
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageAttachmentUiModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReputationBadgeUiModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReviewResponseUiModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeCustomerUiModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeSellerUiModel
 import rx.Subscriber
 
 /**
@@ -16,8 +31,7 @@ import rx.Subscriber
  */
 open class GetInboxReputationDetailSubscriber constructor(
     protected val viewListener: InboxReputationDetail.View
-) :
-    Subscriber<InboxReputationDetailDomain>() {
+) : Subscriber<InboxReputationDetailDomain>() {
 
     companion object {
         const val PRODUCT_IS_DELETED: Int = 0

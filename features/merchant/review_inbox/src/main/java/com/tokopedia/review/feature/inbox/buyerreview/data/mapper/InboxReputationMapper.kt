@@ -2,8 +2,24 @@ package com.tokopedia.review.feature.inbox.buyerreview.data.mapper
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
-import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.*
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.*
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.InboxReputation
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.InboxReputationPojo
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.OrderData
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.Paging
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.ReputationBadge
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.ReputationData
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.RevieweeBuyerBadge
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.RevieweeData
+import com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inbox.RevieweeShopBadge
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationItemDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.OrderDataDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.PagingDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationBadgeDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ReputationDataDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeBadgeCustomerDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeBadgeSellerDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.RevieweeDataDomain
 import com.tokopedia.review.feature.inbox.buyerreview.network.ErrorMessageException
 import retrofit2.Response
 import rx.functions.Func1

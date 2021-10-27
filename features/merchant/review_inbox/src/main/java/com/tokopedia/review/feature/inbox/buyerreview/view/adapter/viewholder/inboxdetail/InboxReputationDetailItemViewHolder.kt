@@ -19,6 +19,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.util.TimeConverter
@@ -142,51 +143,14 @@ class InboxReputationDetailItemViewHolder(
 
     override fun bind(element: InboxReputationDetailItemUiModel) {
         when {
-            element.isProductDeleted -> {
-                productName?.text = itemView.context.getString(R.string.product_is_deleted)
-                productAvatar?.loadImageRounded(
-                    R.drawable.ic_product_deleted,
-                    ROUNDED_FIVE
-                )
-            }
-            element.isProductBanned -> {
-                productName?.text = itemView.context.getString(R.string.product_is_banned)
-                productAvatar?.loadImageRounded(
-                    R.drawable.ic_product_deleted,
-                    ROUNDED_FIVE
-                )
-            }
-            else -> {
-                productName?.text = MethodChecker.fromHtml(element.productName)
-                productName?.setOnClickListener {
-                    viewListener.onGoToProductDetail(
-                        element.productId, element
-                            .productAvatar, element.productName
-                    )
-                }
-                productAvatar?.loadImageRounded(
-                    element.productAvatar,
-                    ROUNDED_FIFTEEN
-                )
-                productAvatar?.setOnClickListener {
-                    viewListener.onGoToProductDetail(
-                        element.productId,
-                        element.productAvatar, element.productName
-                    )
-                }
-            }
+            element.isProductDeleted -> setDeletedProduct()
+            element.isProductBanned -> setBannedProduct()
+            else -> setRegularProduct(element)
         }
         if (!element.isReviewHasReviewed) {
-            viewReview?.hide()
-            seeReplyLayout?.hide()
-            emptyReviewText?.show()
-            emptyReviewText?.setText(R.string.not_reviewed)
+            setNoReviewYet()
         } else if (element.isReviewHasReviewed && element.isReviewSkipped) {
-            emptyReviewText?.show()
-            viewReview?.hide()
-            seeReplyLayout?.hide()
-            emptyReviewText?.show()
-            emptyReviewText?.setText(R.string.review_is_skipped)
+            setSkipped()
         } else {
             emptyReviewText?.hide()
             viewReview?.show()
@@ -240,15 +204,65 @@ class InboxReputationDetailItemViewHolder(
         }
     }
 
-    private fun showOrHideGiveReviewLayout(element: InboxReputationDetailItemUiModel) {
-        if (element.tab == ReviewInboxConstants.TAB_BUYER_REVIEW || element.isReviewSkipped
-            || isOwnProduct(element)
-            || element.isReviewHasReviewed
-        ) {
-            giveReview?.hide()
-        } else {
-            giveReview?.show()
+    private fun setDeletedProduct() {
+        productName?.text = itemView.context.getString(R.string.product_is_deleted)
+        productAvatar?.loadImageRounded(
+            R.drawable.ic_product_deleted,
+            ROUNDED_FIVE
+        )
+    }
+
+    private fun setBannedProduct() {
+        productName?.text = itemView.context.getString(R.string.product_is_banned)
+        productAvatar?.loadImageRounded(
+            R.drawable.ic_product_deleted,
+            ROUNDED_FIVE
+        )
+    }
+
+    private fun setRegularProduct(element: InboxReputationDetailItemUiModel) {
+        productName?.text = MethodChecker.fromHtml(element.productName)
+        productName?.setOnClickListener {
+            viewListener.onGoToProductDetail(
+                element.productId, element
+                    .productAvatar, element.productName
+            )
         }
+        productAvatar?.loadImageRounded(
+            element.productAvatar,
+            ROUNDED_FIFTEEN
+        )
+        productAvatar?.setOnClickListener {
+            viewListener.onGoToProductDetail(
+                element.productId,
+                element.productAvatar, element.productName
+            )
+        }
+    }
+
+    private fun setNoReviewYet() {
+        viewReview?.hide()
+        seeReplyLayout?.hide()
+        emptyReviewText?.show()
+        emptyReviewText?.setText(R.string.not_reviewed)
+    }
+
+    private fun setSkipped() {
+        emptyReviewText?.show()
+        viewReview?.hide()
+        seeReplyLayout?.hide()
+        emptyReviewText?.show()
+        emptyReviewText?.setText(R.string.review_is_skipped)
+    }
+
+    private fun showOrHideGiveReviewLayout(element: InboxReputationDetailItemUiModel) {
+        giveReview?.showWithCondition(shouldShowGiveReview(element))
+    }
+
+    private fun shouldShowGiveReview(element: InboxReputationDetailItemUiModel): Boolean {
+        return element.tab == ReviewInboxConstants.TAB_BUYER_REVIEW || element.isReviewSkipped
+                || isOwnProduct(element)
+                || element.isReviewHasReviewed
     }
 
     private fun setSellerReply(element: InboxReputationDetailItemUiModel) {

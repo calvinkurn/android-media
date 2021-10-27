@@ -1,8 +1,21 @@
 package com.tokopedia.review.feature.inbox.buyerreview.data.factory
 
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.*
-import com.tokopedia.review.feature.inbox.buyerreview.data.source.*
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.DeleteReviewResponseMapper
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationDetailMapper
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.InboxReputationMapper
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ReplyReviewMapper
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ReportReviewMapper
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.SendSmileyReputationMapper
+import com.tokopedia.review.feature.inbox.buyerreview.data.mapper.ShopFavoritedMapper
+import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudCheckShopFavoriteDataSource
+import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudDeleteReviewResponseDataSource
+import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudInboxReputationDataSource
+import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudInboxReputationDetailDataSource
+import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudReplyReviewDataSource
+import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudReportReviewDataSource
+import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudSendSmileyReputationDataSource
+import com.tokopedia.review.feature.inbox.buyerreview.data.source.LocalInboxReputationDataSource
 import com.tokopedia.review.feature.inbox.buyerreview.network.ReputationService
 import com.tokopedia.review.feature.inbox.buyerreview.network.tome.TomeService
 import com.tokopedia.user.session.UserSessionInterface

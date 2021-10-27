@@ -6,7 +6,11 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdet
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.SendReplyReviewUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.SendSmileyReputationUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
-import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.*
+import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.DeleteReviewResponseSubscriber
+import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.GetInboxReputationDetailSubscriber
+import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.RefreshInboxReputationDetailSubscriber
+import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.ReplyReviewSubscriber
+import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.SendSmileySubscriber
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

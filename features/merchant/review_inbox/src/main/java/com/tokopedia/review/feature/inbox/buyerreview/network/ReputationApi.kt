@@ -2,7 +2,11 @@ package com.tokopedia.review.feature.inbox.buyerreview.network
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.FieldMap
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.QueryMap
 import rx.Observable
 
 interface ReputationApi {

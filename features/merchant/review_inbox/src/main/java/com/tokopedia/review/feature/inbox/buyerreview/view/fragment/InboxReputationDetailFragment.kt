@@ -44,7 +44,11 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShareRevie
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
 import com.tokopedia.review.feature.inbox.buyerreview.view.presenter.InboxReputationDetailPresenter
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel
-import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.*
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ShareModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
