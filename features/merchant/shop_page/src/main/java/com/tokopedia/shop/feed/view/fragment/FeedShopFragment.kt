@@ -702,7 +702,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
     }
 
-    override fun onFullScreenCLick(positionInFeed: Int, redirectUrl: String) {
+    override fun onFullScreenCLick(positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean) {
 
     }
     override fun addVODView(playChannelId: String, rowNumber: Int) {

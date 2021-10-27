@@ -684,6 +684,8 @@ open class DynamicPostViewHolder(v: View,
         fun onFullScreenCLick(
                 positionInFeed: Int,
                 redirectUrl: String,
+                currentTime: Long,
+                shouldTrack: Boolean
         )
         fun addVODView(
                 playChannelId: String,

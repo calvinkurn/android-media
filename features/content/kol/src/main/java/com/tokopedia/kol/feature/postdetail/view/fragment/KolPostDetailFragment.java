@@ -1087,7 +1087,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onFullScreenCLick(int positionInFeed, @NonNull String redirectUrl) {
+    public void onFullScreenCLick(int positionInFeed, @NonNull String redirectUrl, long currentTime, boolean shouldTrack) {
 
     }
     @Override

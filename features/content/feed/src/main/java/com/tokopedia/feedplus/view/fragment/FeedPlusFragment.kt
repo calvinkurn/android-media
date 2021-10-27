@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -113,6 +114,7 @@ import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
@@ -263,6 +265,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         const val REQUEST_LOGIN = 345
         private const val KOL_COMMENT_CODE = 13
         private const val TYPE = "text/plain"
+        private const val START_TIME = "start_time"
+        private const val SHOULD_TRACK = "should_track"
 
 
         private val TAG = FeedPlusFragment::class.java.simpleName
@@ -1846,8 +1850,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onFullScreenCLick(positionInFeed: Int, redirectUrl: String) {
-        onGoToLink(redirectUrl)
+    override fun onFullScreenCLick(positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean) {
+        val finalApplink = Uri.parse(redirectUrl)
+                .buildUpon()
+                .appendQueryParameter(START_TIME, currentTime.toString())
+                .appendQueryParameter(SHOULD_TRACK, shouldTrack.toString())
+                .build().toString()
+        onGoToLink(finalApplink)
     }
 
     override fun addVODView(playChannelId: String, rowNumber: Int) {
