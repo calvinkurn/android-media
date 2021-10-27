@@ -789,24 +789,6 @@ object DynamicProductDetailTracking {
             TrackApp.getInstance().gtm.sendGeneralEvent(editProductData)
         }
 
-        fun eventClickAffiliate(userId: String, shopID: Int, isRegularPdp: Boolean = false, productInfo: DynamicProductInfoP1?) {
-            val productId = productInfo?.basic?.productID ?: ""
-            val mapEvent: MutableMap<String, Any> = if (isRegularPdp) {
-                mutableMapOf(ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                        ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
-                        ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Action.CLICK_BY_ME,
-                        ProductTrackingConstant.Tracking.KEY_LABEL to "$shopID - $productId")
-            } else {
-                mutableMapOf(ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.Affiliate.CLICK_AFFILIATE,
-                        ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Affiliate.CATEGORY,
-                        ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Affiliate.ACTION,
-                        ProductTrackingConstant.Tracking.KEY_LABEL to productId)
-            }
-            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_BY_ME)
-        }
-
         fun eventPDPAddToWishlist(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
             if (productInfo?.basic?.productID.isNullOrEmpty()) return
             val mapEvent = TrackAppUtils.gtmData(
@@ -978,20 +960,6 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEND_QUESTION)
         }
 
-        fun eventClickByMe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
-            val shopId = productInfo?.basic?.shopID ?: ""
-            val productId = productInfo?.basic?.productID ?: ""
-            val eventLabel = "{$shopId} - {$productId}"
-
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_BY_ME,
-                    eventLabel)
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, "")
-        }
-
         fun eventTopAdsImageViewClicked(trackingQueue: TrackingQueue, userId: String, bannerId: String, position: Int, bannerName: String) {
             val mapEvent = hashMapOf<String, Any>(
                     ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.Tracking.PROMO_CLICK,
@@ -1099,19 +1067,6 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
-            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-        }
-
-        fun eventClickWishlistOnAffiliate(userId: String, productId: String) {
-
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.Affiliate.CLICK_AFFILIATE,
-                    ProductTrackingConstant.Affiliate.CATEGORY,
-                    ProductTrackingConstant.Affiliate.ACTION_CLICK_WISHLIST,
-                    productId
-            )
-            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
-
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
