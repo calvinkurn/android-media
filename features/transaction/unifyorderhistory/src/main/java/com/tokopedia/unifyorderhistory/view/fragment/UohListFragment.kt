@@ -225,6 +225,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var currIndexNeedUpdate = -1
     private var isFilterClicked = false
     private var isFirstLoad = false
+    private var hasLoadGetCategories = false
     private var gson = Gson()
     private var activityOrderHistory = ""
     private var searchQuery = ""
@@ -248,10 +249,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     companion object {
         const val PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history"
         const val PARAM_HOME = "home"
-        private var CATEGORIES_DIGITAL = "streaming,kartu_prakerja,paket_data,invoicing,tagihan_cc,ovo,air_pdam,bridestory_pay,premi_asuransi,m_tix,iuran_properti,penerimaan_negara,properti,pulsa,biaya_pendidikan,angsuran_kredit,listrik_pln,telkom,upgrade_internet_tv,uang_elektronik,belajar,pajak,pasca_bayar,voucher_game,gas_pgn,roaming,internet_tv_kabel,special_promo,retribusi,samsat,bpjs"
-        private var CATEGORIES_MP = "mp_pym,marketplace"
-        private var CATEGORIES_TRAVELENT = "train,flight,hotel,deals,event"
-        private var CATEGORIES_KEUANGAN = "mutual_fund,insr_tec,modal_toko,gold,insurance,gift_card"
+        private var CATEGORIES_DIGITAL = ""
+        private var CATEGORIES_MP = ""
+        private var CATEGORIES_TRAVELENT = ""
+        private var CATEGORIES_KEUANGAN = ""
 
         private val LABEL_MP = "Belanja"
         private val LABEL_DIGITAL = "Top-up & Tagihan"
@@ -711,31 +712,34 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 is Success -> {
                     orderList = it.data
 
-                    if (!isFilterClicked && currPage == 1) {
+                    if (!isFilterClicked && currPage == 1 && !hasLoadGetCategories) {
                         renderChipsFilter()
                         setDefaultDatesForDatePicker()
-                    }
+                        hasLoadGetCategories = true
+                        initialLoad()
 
-                    if (orderList.orders.isNotEmpty()) {
-                        if (orderIdNeedUpdated.isEmpty()) {
-                            currPage += 1
-                            renderOrderList()
-                        } else {
-                            if (currIndexNeedUpdate > -1) {
-                                loop@ for (i in orderList.orders.indices) {
-                                    if (orderList.orders[i].orderUUID.equals(orderIdNeedUpdated, true)) {
-                                        uohItemAdapter.updateDataAtIndex(currIndexNeedUpdate, orderList.orders[i])
-                                        orderIdNeedUpdated = ""
-                                        break@loop
+                    } else {
+                        if (orderList.orders.isNotEmpty()) {
+                            if (orderIdNeedUpdated.isEmpty()) {
+                                currPage += 1
+                                renderOrderList()
+                            } else {
+                                if (currIndexNeedUpdate > -1) {
+                                    loop@ for (i in orderList.orders.indices) {
+                                        if (orderList.orders[i].orderUUID.equals(orderIdNeedUpdated, true)) {
+                                            uohItemAdapter.updateDataAtIndex(currIndexNeedUpdate, orderList.orders[i])
+                                            orderIdNeedUpdated = ""
+                                            break@loop
+                                        }
                                     }
                                 }
                             }
-                        }
-                        UohAnalytics.viewOrderListPage()
-                    } else {
-                        if (currPage == 1) {
-                            uohListViewModel.loadTdnBanner()
-                            loadRecommendationList()
+                            UohAnalytics.viewOrderListPage()
+                        } else {
+                            if (currPage == 1) {
+                                uohListViewModel.loadTdnBanner()
+                                loadRecommendationList()
+                            }
                         }
                     }
                 }
