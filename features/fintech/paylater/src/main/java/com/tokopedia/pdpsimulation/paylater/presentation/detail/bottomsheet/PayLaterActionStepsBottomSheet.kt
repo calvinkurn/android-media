@@ -45,7 +45,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var noteData: String = ""
     private var titleText: String = ""
     private var tenure = 0
-    private var webUrl = true
+    private var isWebUrl = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +73,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
             actionUrl = it.cta?.android_url ?: ""
             tenure = payLaterItemProductData.tenure ?: 0
             if (it.cta?.cta_type == 1) {
-                webUrl = false
+                isWebUrl = false
             } else {
                 if (it.cta?.cta_type == HOWTOUSE) {
                     if (it.gateway_detail?.how_toUse?.notes?.size != 0)
@@ -168,7 +168,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     }
 
     private fun openUrlView(urlString: String) {
-        if (webUrl) {
+        if (isWebUrl) {
             if (urlString.isNotEmpty()) {
                 val webViewAppLink =
                     ApplinkConst.WEBVIEW + "?url=" + URLEncoder.encode(urlString, "UTF-8")

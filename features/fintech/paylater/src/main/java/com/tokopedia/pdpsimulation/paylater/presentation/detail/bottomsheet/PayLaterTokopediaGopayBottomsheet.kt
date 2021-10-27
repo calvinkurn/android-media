@@ -19,6 +19,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private var pdpSimulationCallback: PdpSimulationCallback? = null
     private lateinit var cta: Cta
+    private var isWebLink = true
 
 
     init {
@@ -65,6 +66,8 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
             tokoToGoPayHeader.text = cta.bottomSheet?.bottomSheetTitle ?: ""
             tokoToGoPaySubHeader.text = cta.bottomSheet?.bottomSheetDescription ?: ""
             btnRegister.text = cta.bottomSheet?.bottomSheetButtonText ?: ""
+            if (cta.cta_type == 1)
+                isWebLink = false
         }
     }
 
@@ -76,14 +79,19 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
         btnRegister.setOnClickListener {
             sendClickAnalytics()
             if (::cta.isInitialized)
-                openWebView(cta.android_url)
+                openRouteView(cta.android_url)
 
         }
     }
 
-    private fun openWebView(androidUrl: String?) {
-        val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + androidUrl
-        RouteManager.route(context, webViewAppLink)
+    private fun openRouteView(androidUrl: String?) {
+        if (isWebLink) {
+            val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + androidUrl
+            RouteManager.route(context, webViewAppLink)
+        } else {
+            RouteManager.route(context, androidUrl)
+        }
+
     }
 
     private fun sendClickAnalytics() {
