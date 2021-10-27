@@ -217,12 +217,11 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun setEtaDetail(model: EtaModel) {
-        val formattedEta = formatEta(model)
-        binding?.eta?.text = formattedEta
+        binding?.eta?.text = model.userInfo
         if (model.isChanged) {
             binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.logisticCommon.R.drawable.eta_info, 0)
             binding?.eta?.setOnClickListener {
-                showEtaBottomSheet(formattedEta)
+                showEtaBottomSheet(model.userUpdatedInfo)
             }
         }
     }
@@ -232,17 +231,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         parentFragmentManager?.run {
             delayedEtaBottomSheetFragment.show(this, "")
         }
-    }
-
-    private fun formatEta(eta: EtaModel) : String {
-        if (eta.etaMin.isNotEmpty() && eta.etaMax.isNotEmpty()) {
-            return "${dateUtil.getFormattedDateTime(eta.etaMin, "dd")} - ${dateUtil.getFormattedDateTime(eta.etaMax)}"
-        } else if (eta.etaMax.isEmpty()) {
-            return dateUtil.getFormattedDateTime(eta.etaMin)
-        } else if (eta.etaMin.isEmpty()) {
-            return dateUtil.getFormattedDateTime(eta.etaMax)
-        }
-        return ""
     }
 
     private fun initTimer(remainingSeconds: Long) {

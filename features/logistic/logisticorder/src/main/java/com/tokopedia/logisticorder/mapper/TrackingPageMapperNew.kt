@@ -86,8 +86,6 @@ class TrackingPageMapperNew @Inject constructor() {
             userInfo = eta.userInfo
             userUpdatedInfo = eta.userUpdatedInfo
             isChanged = eta.isUpdated
-            etaMin = eta.etaMin
-            etaMax = eta.etaMax
         }
     }
 }

@@ -64,7 +64,5 @@ data class AdditionalInfoModel(
 data class EtaModel(
         var userInfo: String = "",
         var userUpdatedInfo: String = "",
-        var isChanged: Boolean = false,
-        var etaMin: String = "",
-        var etaMax: String = ""
+        var isChanged: Boolean = false
 )

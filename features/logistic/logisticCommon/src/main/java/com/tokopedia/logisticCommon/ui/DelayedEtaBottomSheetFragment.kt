@@ -8,7 +8,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.logisticCommon.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class DelayedEtaBottomSheetFragment : BottomSheetUnify() {
 
@@ -35,7 +36,7 @@ class DelayedEtaBottomSheetFragment : BottomSheetUnify() {
             setChild(this)
             bindView(this)
         }
-        if (description.isNotEmpty()) emptyState?.emptyStateDescriptionID?.text = MethodChecker.fromHtml(getString(R.string.delayed_eta_bottomsheet_description, description))
+        if (description.isNotEmpty()) emptyState?.emptyStateDescriptionID?.text = MethodChecker.fromHtml(description)
         setViewListener()
     }
 
