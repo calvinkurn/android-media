@@ -32,6 +32,7 @@ class InboxReputationDetailHeaderViewHolder(
         const val SMILEY_BAD = -1
         const val SMILEY_NEUTRAL = 1
         const val SMILEY_GOOD = 2
+        const val SPAN_COUNT = 3
 
         @LayoutRes
         val LAYOUT = R.layout.inbox_reputation_detail_header
@@ -55,7 +56,7 @@ class InboxReputationDetailHeaderViewHolder(
     private var adapter: ReputationAdapter =
         ReputationAdapter.createInstance(itemView.context, reputationListener)
     private var gridLayout: GridLayoutManager =
-        GridLayoutManager(itemView.context, 3, LinearLayoutManager.VERTICAL, false)
+        GridLayoutManager(itemView.context, SPAN_COUNT, LinearLayoutManager.VERTICAL, false)
     private var linearLayoutManager: LinearLayoutManager =
         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
 

@@ -63,10 +63,13 @@ class InboxReputationFilterActivity : BaseSimpleActivity() {
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
-        toolbar.setPadding(0, 0, 20, 0)
+        toolbar.setPadding(PADDING_ZERO, PADDING_ZERO, PADDING_20, PADDING_ZERO)
     }
 
     companion object {
+        const val PADDING_20 = 20
+        const val PADDING_ZERO = 0
+
         fun createIntent(
             context: Context?, timeFilter: String?,
             scoreFilter: String?,

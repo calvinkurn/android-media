@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.RecyclerView
@@ -80,18 +81,18 @@ class ImageUploadAdapter constructor(var context: Context) :
         setBorder(holder, position)
     }
 
-    fun convertDpToPx(context: Context, dp: Float): Float {
+    private fun convertDpToPx(context: Context, dp: Float): Float {
         return dp * context.resources.displayMetrics.density
     }
 
     private fun setBorder(holder: ViewHolder, position: Int) {
         if (list[position].isSelected) {
             holder.image.setBackgroundColor(
-                context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
         } else {
             holder.image.setBackgroundColor(
-                context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
             )
         }
     }
@@ -101,7 +102,7 @@ class ImageUploadAdapter constructor(var context: Context) :
     }
 
     override fun getItemCount(): Int {
-        return if (list.size < 5) {
+        return if (list.size < MAX_IMAGE) {
             list.size + canUpload
         } else {
             list.size
@@ -109,12 +110,12 @@ class ImageUploadAdapter constructor(var context: Context) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (position == list.size && list.size < MAX_IMAGE) {
-            return VIEW_UPLOAD_BUTTON
+        return if (position == list.size && list.size < MAX_IMAGE) {
+            VIEW_UPLOAD_BUTTON
         } else if (isReviewImage) {
-            return VIEW_REVIEW_IMAGE
+            VIEW_REVIEW_IMAGE
         } else {
-            return super.getItemViewType(position)
+            super.getItemViewType(position)
         }
     }
 
@@ -155,10 +156,10 @@ class ImageUploadAdapter constructor(var context: Context) :
         }
 
     companion object {
-        private const val VIEW_UPLOAD_BUTTON: Int = 100
-        private const val VIEW_REVIEW_IMAGE: Int = 97
-        private const val MAX_IMAGE: Int = 5
-        const val RADIUS_CORNER: Int = 4
+        private const val VIEW_UPLOAD_BUTTON = 100
+        private const val VIEW_REVIEW_IMAGE = 97
+        private const val MAX_IMAGE = 5
+        const val RADIUS_CORNER = 4
         fun createAdapter(context: Context): ImageUploadAdapter {
             return ImageUploadAdapter(context)
         }

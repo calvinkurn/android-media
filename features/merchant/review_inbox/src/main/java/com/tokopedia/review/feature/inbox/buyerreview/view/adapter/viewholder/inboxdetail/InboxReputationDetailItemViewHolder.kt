@@ -50,6 +50,12 @@ class InboxReputationDetailItemViewHolder(
         private const val MENU_REPORT = 102
         private const val MENU_DELETE = 103
         private const val MENU_SHARE = 104
+        const val ROUNDED_FIVE = 5.0f
+        const val ROUNDED_FIFTEEN = 15.0f
+        const val ROTATION_180 = 180f
+        const val MENU_1 = 1
+        const val MENU_2 = 2
+        const val MENU_3 = 3
     }
 
     var isReplyOpened = false
@@ -140,14 +146,14 @@ class InboxReputationDetailItemViewHolder(
                 productName?.text = itemView.context.getString(R.string.product_is_deleted)
                 productAvatar?.loadImageRounded(
                     R.drawable.ic_product_deleted,
-                    5.0f
+                    ROUNDED_FIVE
                 )
             }
             element.isProductBanned -> {
                 productName?.text = itemView.context.getString(R.string.product_is_banned)
                 productAvatar?.loadImageRounded(
                     R.drawable.ic_product_deleted,
-                    5.0f
+                    ROUNDED_FIVE
                 )
             }
             else -> {
@@ -160,7 +166,7 @@ class InboxReputationDetailItemViewHolder(
                 }
                 productAvatar?.loadImageRounded(
                     element.productAvatar,
-                    15.0f
+                    ROUNDED_FIFTEEN
                 )
                 productAvatar?.setOnClickListener {
                     viewListener.onGoToProductDetail(
@@ -294,7 +300,7 @@ class InboxReputationDetailItemViewHolder(
         isReplyOpened = !isReplyOpened
         if (isReplyOpened) {
             seeReplyText?.text = itemView.context.getText(R.string.close_reply)
-            replyArrow?.rotation = 180f
+            replyArrow?.rotation = ROTATION_180
             replyReviewLayout?.show()
             viewListener.onSmoothScrollToReplyView(adapterPosition)
         } else {
@@ -372,11 +378,11 @@ class InboxReputationDetailItemViewHolder(
             viewListener.onClickReviewOverflowMenu(element, adapterPosition)
             val popup = PopupMenu(itemView.context, v)
             if (element.tab == ReviewInboxConstants.TAB_BUYER_REVIEW) popup.menu.add(
-                1, MENU_REPORT, 2, itemView.context
+                MENU_1, MENU_REPORT, MENU_2, itemView.context
                     .getString(R.string.menu_report)
             )
             if (!TextUtils.isEmpty(element.productName)) popup.menu.add(
-                1, MENU_SHARE, 3, itemView.context
+                MENU_1, MENU_SHARE, MENU_3, itemView.context
                     .getString(R.string.menu_share)
             )
             popup.setOnMenuItemClickListener { item ->
