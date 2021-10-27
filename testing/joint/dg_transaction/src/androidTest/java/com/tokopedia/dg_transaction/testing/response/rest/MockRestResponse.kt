@@ -1,4 +1,4 @@
-package com.tokopedia.dg_transaction.testing.mock
+package com.tokopedia.dg_transaction.testing.response.rest
 
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.network.data.model.response.DataResponse

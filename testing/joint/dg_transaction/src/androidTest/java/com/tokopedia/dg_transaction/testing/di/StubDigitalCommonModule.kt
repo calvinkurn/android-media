@@ -4,13 +4,15 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.common_digital.common.di.DigitalCommonScope
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
-import com.tokopedia.dg_transaction.testing.mock.RestRepositoryStub
+import com.tokopedia.dg_transaction.testing.response.rest.DigitalAddToCartMockResponse
+import com.tokopedia.dg_transaction.testing.response.rest.RestRepositoryStub
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.user.session.UserSession
@@ -18,6 +20,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
+
+/** Changes from the original:
+ * - add provideRestRepositoryStub() to provide a DigitalAddToCartUseCase mock response
+ * - update provideRestRepository & provideDigitalAtcUseCase with RestRepositoryStub */
 
 @Module
 class StubDigitalCommonModule {
@@ -58,17 +64,21 @@ class StubDigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
-    @DigitalAddToCartQualifier
-    fun provideRestRepositoryStub(@DigitalAddToCartQualifier interceptors: ArrayList<Interceptor>,
-                              @ApplicationContext context: Context
-    ): RestRepository {
-        return RestRepositoryStub()
+    fun provideRestRepositoryStub(): RestRepositoryStub {
+        return RestRepositoryStub().apply {
+            responses = DigitalAddToCartMockResponse().getMockResponse()
+        }
     }
 
-//    @DigitalCommonScope
-//    @Provides
-//    fun provideDigitalAtcUseCaseStub(@DigitalAddToCartQualifier restRepository: RestRepository)
-//            : DigitalAddToCartUseCase = DigitalAddToCartUseCaseStub(restRepository)
+    @Provides
+    @DigitalCommonScope
+    @DigitalAddToCartQualifier
+    fun provideRestRepository(repositoryStub: RestRepositoryStub): RestRepository = repositoryStub
+
+    @DigitalCommonScope
+    @Provides
+    fun provideDigitalAtcUseCase(@DigitalAddToCartQualifier restRepository: RestRepository)
+            : DigitalAddToCartUseCase = DigitalAddToCartUseCase(restRepository)
 
     @Provides
     @DigitalCommonScope

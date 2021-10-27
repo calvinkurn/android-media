@@ -1,4 +1,4 @@
-package com.tokopedia.dg_transaction.testing.mock
+package com.tokopedia.dg_transaction.testing.response.rest
 
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common_digital.cart.data.entity.response.AttributesCheckout

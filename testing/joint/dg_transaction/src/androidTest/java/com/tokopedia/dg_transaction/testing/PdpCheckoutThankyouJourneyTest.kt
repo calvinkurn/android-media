@@ -8,10 +8,10 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.dg_transaction.testing.di.DaggerStubEmoneyPdpComponent
+import com.tokopedia.dg_transaction.testing.di.StubEmoneyPdpComponent
+import com.tokopedia.dg_transaction.testing.di.util.StubCommonTopupBillsComponentInstance
 import com.tokopedia.dg_transaction.testing.digital_checkout.robot.digitalCheckout
-import com.tokopedia.dg_transaction.testing.mock.DigitalAddToCartMockResponse
-import com.tokopedia.dg_transaction.testing.mock.DigitalCheckoutMockResponse
-import com.tokopedia.dg_transaction.testing.mock.RestRepositoryStub
 import com.tokopedia.dg_transaction.testing.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivityStub
 import com.tokopedia.dg_transaction.testing.recharge_pdp_emoney.robot.emoneyPdp
 import com.tokopedia.dg_transaction.testing.recharge_pdp_emoney.utils.PdpCheckoutThankyouResponseConfig
@@ -22,7 +22,6 @@ import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
 class PdpCheckoutThankyouJourneyTest {
     @get:Rule
@@ -33,14 +32,12 @@ class PdpCheckoutThankyouJourneyTest {
     @get:Rule
     var cassavaTestRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
 
-    @Inject
-    lateinit var restRepositoryStub: RestRepositoryStub
+    private lateinit var activity: EmoneyPdpActivityStub
+    private var emoneyPdpComponentStub: StubEmoneyPdpComponent? = null
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private lateinit var localCacheHandler: LocalCacheHandler
 
-    private val digitalAddToCartMockResponse = DigitalAddToCartMockResponse()
-    private val digitalCheckoutMockResponse = DigitalCheckoutMockResponse()
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     @Before
     fun stubAllIntent() {
@@ -50,17 +47,14 @@ class PdpCheckoutThankyouJourneyTest {
     @Test
     fun journeyTest() {
         setUpLaunchActivity()
-        restRepositoryStub.responses = digitalAddToCartMockResponse.getMockResponse()
         emoneyPdp {
             clickOnFavNumberOnInputView()
             clickProduct()
             clickBuy()
         }
-        restRepositoryStub.responses = digitalCheckoutMockResponse.getMockResponse()
         digitalCheckout {
             waitForData()
             clickCheckout()
-            waitForData()
         }
         MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_ID), hasAllSuccess())
     }
@@ -72,6 +66,7 @@ class PdpCheckoutThankyouJourneyTest {
             Uri.parse("tokopedia://digital/form?category_id=34&menu_id=267&template=electronicmoney")
         )
         mActivityRule.launchActivity(intent)
+        activity = mActivityRule.activity
 
         localCacheHandler = LocalCacheHandler(context,
             EmoneyPdpFragment.EMONEY_PDP_PREFERENCES_NAME
@@ -81,7 +76,16 @@ class PdpCheckoutThankyouJourneyTest {
             applyEditor()
         }
 
+        setupComponent()
         Thread.sleep(2000)
+    }
+
+    private fun setupComponent() {
+        emoneyPdpComponentStub = DaggerStubEmoneyPdpComponent.builder()
+            .stubCommonTopupBillsComponent(
+                StubCommonTopupBillsComponentInstance.getCommonTopupBillsComponent(activity.application))
+            .build()
+        emoneyPdpComponentStub?.inject(this)
     }
 
     companion object {
