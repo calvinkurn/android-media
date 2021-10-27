@@ -93,7 +93,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
                                 email = userData.email,
                                 oldPhone = userData.oldPhoneNumber,
                                 newPhone = userData.newPhoneNumber,
-                                userIndex = userData.userIndex.toString(),
+                                userIndex = userData.userIndex,
                                 idCardImage = idCardObj,
                                 selfieImage = selfieObj
                             ))

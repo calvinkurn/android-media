@@ -53,7 +53,7 @@ data class SubmitDataModel(
     var email: String = "",
     var oldPhone: String = "",
     var newPhone: String = "",
-    var userIndex: String = "",
+    var userIndex: Int = 0,
     var idCardImage: String = "",
     var selfieImage: String = ""
 )
