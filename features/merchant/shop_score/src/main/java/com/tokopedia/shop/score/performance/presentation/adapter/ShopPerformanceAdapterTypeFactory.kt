@@ -141,11 +141,11 @@ class ShopPerformanceAdapterTypeFactory(
                 parent,
                 shopPerformanceListener
             )
-            ItemReactivatedComebackViewHolder.LAYOUT -> ItemReactivatedComebackViewHolder(
+            TickerReactivatedViewHolder.LAYOUT -> TickerReactivatedViewHolder(
                 parent,
                 shopPerformanceListener
             )
-            TickerReactivatedViewHolder.LAYOUT -> TickerReactivatedViewHolder(
+            ItemReactivatedComebackViewHolder.LAYOUT -> ItemReactivatedComebackViewHolder(
                 parent,
                 shopPerformanceListener
             )
