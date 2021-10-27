@@ -85,6 +85,7 @@ private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener,PostProgressUpdateView.PostUpdateSwipe {
 
+    private var showOldToolbar: Boolean = false
     private var feedToolbar: Toolbar? = null
     private var authorList: List<Author>? = null
     private var postProgressUpdateView: PostProgressUpdateView? = null
@@ -192,6 +193,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
+        initNavRevampAbTest()
         initInboxAbTest()
         initToolbar()
         initView()
@@ -199,10 +201,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initFab()
     }
 
+    private fun initNavRevampAbTest() {
+        showOldToolbar = false
+    }
+
     private fun initInboxAbTest() {
         useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX && !showOldToolbar
     }
 
     private fun getInboxIcon(): Int {
@@ -266,7 +272,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         icons.apply {
             addIcon(IconList.ID_CART) {}
         }
-        icons.addIcon(IconList.ID_NAV_GLOBAL) {}
+        if(!showOldToolbar){
+            icons.addIcon(IconList.ID_NAV_GLOBAL) {}
+        }
         return icons
     }
 
