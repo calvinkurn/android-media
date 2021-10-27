@@ -9,6 +9,7 @@ import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
 /**
@@ -58,7 +59,9 @@ class TopAdsViewHolder(itemView: View, val onclick: (appLink: String) -> Unit) :
 
         topAdsImageView.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
             override fun onTopAdsImageViewImpression(viewUrl: String) {
-
+                ImpresionTask(this@TopAdsViewHolder.javaClass.canonicalName.javaClass.canonicalName).execute(
+                    viewUrl
+                )
             }
 
         })
