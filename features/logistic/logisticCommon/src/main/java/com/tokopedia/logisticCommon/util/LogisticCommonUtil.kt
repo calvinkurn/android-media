@@ -29,7 +29,7 @@ object LogisticCommonUtil {
         return rollenceValue == ANA_REVAMP_ROLLENCE
     }
 
-    fun displayUserConsent(context: Context, textView: TextView, buttonText: String) {
+    fun displayUserConsent(context: Context, textView: TextView?, buttonText: String) {
         val onTermsAndConditionClicked: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${TNC_LINK}")
@@ -55,7 +55,7 @@ object LogisticCommonUtil {
             setSpan(boldSpan, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
-        textView.run {
+        textView?.run {
             movementMethod = LinkMovementMethod.getInstance()
             isClickable = true
             setText(consentText, TextView.BufferType.SPANNABLE)
