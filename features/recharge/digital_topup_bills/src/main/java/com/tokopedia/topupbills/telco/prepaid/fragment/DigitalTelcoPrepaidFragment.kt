@@ -245,7 +245,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 it.select()
             }
             val tabs = telcoTabViewModel.getAll()
-            if (!tabs.isNullOrEmpty() && tabs.size > 0) {
+            if (!tabs.isNullOrEmpty() && tabs.size > position) {
                 if (showProducts) {
                     sharedModelPrepaid.setPositionScrollToItem(0)
                     categoryId = getIdCategoryCurrentItem()
