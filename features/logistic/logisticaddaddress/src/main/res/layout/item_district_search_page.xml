@@ -13,16 +13,16 @@
         android:layout_marginStart="@dimen/unify_space_16"
         app:icon_name="LOCATION"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/dp_8"/>
+        android:layout_marginTop="8dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginEnd="@dimen/dp_18"
-        android:layout_marginStart="@dimen/dp_14"
+        android:layout_marginStart="14dp"
         android:layout_toEndOf="@id/ic_location"
         android:orientation="vertical">
 
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            android:layout_marginBottom="@dimen/dp_2"
+            android:layout_marginBottom="2dp"
             android:contentDescription="@string/content_desc_place_name"/>
 
         <com.tokopedia.unifyprinciples.Typography

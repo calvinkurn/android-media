@@ -154,6 +154,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.snapshot)
+    implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)

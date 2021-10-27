@@ -14,14 +14,14 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shimmer_view"
         android:layout_width="match_parent"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="16dp"
         android:layout_height="@dimen/dp_120" />
 
     <com.tokopedia.topads.sdk.widget.TopAdsImageView
         android:id="@+id/top_ads_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="16dp"
         android:visibility="gone" />
 
 </LinearLayout>

@@ -22,10 +22,8 @@ class RepurchaseGridItemDecoration : RecyclerView.ItemDecoration() {
     ) {
         super.getItemOffsets(outRect, view, parent, state)
         val resources = view.context.resources
-        val viewHolder = parent.getChildViewHolder(view)
-        val itemView = viewHolder.itemView
 
-        when (viewHolder) {
+        when (parent.getChildViewHolder(view)) {
             is TokoNowChooseAddressWidgetViewHolder -> {
                 val verticalSpacing = resources.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
@@ -35,19 +33,17 @@ class RepurchaseGridItemDecoration : RecyclerView.ItemDecoration() {
             }
             is RepurchaseProductViewHolder -> {
                 val horizontalSpacing = resources.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4
+                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3
                 )
                 val lp = view.layoutParams as? StaggeredGridLayoutManager.LayoutParams
                 val spanIndex = lp?.spanIndex.orZero()
                 val positionLeft = spanIndex == LEFT_SPAN_INDEX
 
                 if (positionLeft) {
-                    lp?.marginStart = horizontalSpacing
+                    outRect.left = horizontalSpacing
                 } else {
-                    lp?.marginEnd = horizontalSpacing
+                    outRect.right = horizontalSpacing
                 }
-
-                itemView.layoutParams = lp
             }
         }
     }

@@ -10,7 +10,7 @@
     <View
         android:id="@+id/product_category_top_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:background="@color/Unify_N50"
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent"

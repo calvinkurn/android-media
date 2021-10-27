@@ -16,9 +16,9 @@
         android:paddingEnd="@dimen/unify_space_8"
         app:nav_lv_image_margin_right="@dimen/unify_space_16"
         app:nav_lv_image_width="@dimen/unify_space_24"
-        app:nav_lv_sub_title_text_size="@dimen/sp_14"
+        app:nav_lv_sub_title_text_size="14sp"
         app:nav_lv_title="@string/app_name"
-        app:nav_lv_title_text_size="@dimen/sp_14" />
+        app:nav_lv_title_text_size="14sp" />
 
     <View
         android:id="@+id/separator"

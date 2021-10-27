@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:cardCornerRadius="@dimen/dp_4">
+    app:cardCornerRadius="4dp">
 
     <FrameLayout
         android:id="@+id/fl_container"
@@ -32,8 +32,8 @@
             <ImageView
                 android:id="@+id/img_shipment_item"
                 android:layout_width="@dimen/dp_64"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/shipment_name"
                 app:layout_constraintBottom_toBottomOf="@id/shipment_category"/>
@@ -42,8 +42,8 @@
                 android:id="@+id/shipment_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="@color/Unify_N700_96"
@@ -77,7 +77,7 @@
             <include
                 android:id="@+id/layout_coupon"
                 layout="@layout/item_coupon"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginEnd="@dimen/unify_space_16"
@@ -91,7 +91,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_12"
-                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginStart="12dp"
                 android:layout_marginBottom="@dimen/dp_18"
                 android:layout_marginEnd="@dimen/dp_18"
                 android:orientation="horizontal"
@@ -104,9 +104,9 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/btn_information"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
                 app:layout_constraintStart_toEndOf="@id/rv_shipment_label"
                 app:layout_constraintTop_toTopOf="@id/rv_shipment_label"
                 app:layout_constraintBottom_toBottomOf="@id/rv_shipment_label"
@@ -129,7 +129,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_1"
                     android:background="@color/Unify_N75"
-                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginTop="14dp"
                     android:layout_marginEnd="@dimen/unify_space_12"
                     android:layout_marginStart="@dimen/unify_space_12" />
 

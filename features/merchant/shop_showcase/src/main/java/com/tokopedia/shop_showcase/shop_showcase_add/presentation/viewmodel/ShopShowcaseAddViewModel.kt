@@ -18,6 +18,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -77,7 +78,7 @@ class ShopShowcaseAddViewModel @Inject constructor (
     }
 
     fun updateShopShowcase(data: UpdateShopShowcaseParam, newAppendedProduct: AppendShowcaseProductParam, removedProduct: RemoveShowcaseProductParam) {
-        launchCatchError(block = {
+        launch(block = {
 
             showLoader()
             val listOfResponse: MutableList<Any> = mutableListOf()
@@ -104,7 +105,7 @@ class ShopShowcaseAddViewModel @Inject constructor (
                         executeAppendNewShowcaseProduct(newAppendedProduct)
                     },
                     onError = {
-                        it.printStackTrace()
+                        _appendNewShowcaseProduct.postValue(Fail(it))
                     }
             ).await().let {
                 listOfResponse.add(appendNewShowcaseProduct.value as Result<AppendShowcaseProductResponse>)
@@ -118,7 +119,7 @@ class ShopShowcaseAddViewModel @Inject constructor (
                         executeRemoveShowcaseProduct(removedProduct)
                     },
                     onError = {
-                        it.printStackTrace()
+                        _removeShowcaseProduct.postValue(Fail(it))
                     }
             ).await().let {
                 listOfResponse.add(removeShowcaseProduct.value as Result<RemoveShowcaseProductResponse>)
@@ -127,8 +128,6 @@ class ShopShowcaseAddViewModel @Inject constructor (
             _listOfResponse.value = listOfResponse
             hideLoader()
 
-        }, onError = {
-            _updateShopShowcase.value = Fail(it)
         })
     }
 
