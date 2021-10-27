@@ -11,4 +11,6 @@ interface ShopHomeFlashSaleWidgetListener {
     fun onClickFlashSaleReminder(model: ShopHomeFlashSaleUiModel)
 
     fun onTimerFinished(model: ShopHomeFlashSaleUiModel)
+
+    fun onFlashSaleWidgetImpressed(model : ShopHomeFlashSaleUiModel, position: Int)
 }
