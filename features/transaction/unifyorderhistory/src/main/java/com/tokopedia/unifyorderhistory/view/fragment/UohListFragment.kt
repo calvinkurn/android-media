@@ -48,73 +48,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
-import com.tokopedia.unifyorderhistory.data.model.CancelOrderQueryParams
-import com.tokopedia.unifyorderhistory.util.UohConsts
-import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_DATE
-import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_PRODUCTS
-import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_STATUS
-import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_STATUS_TRANSACTION
-import com.tokopedia.unifyorderhistory.util.UohConsts.APPLINK_BASE
-import com.tokopedia.unifyorderhistory.util.UohConsts.APP_LINK_TYPE
-import com.tokopedia.unifyorderhistory.util.UohConsts.CTA_ATC
-import com.tokopedia.unifyorderhistory.util.UohConsts.CUSTOMER_ID
-import com.tokopedia.unifyorderhistory.util.UohConsts.DALAM_PROSES
-import com.tokopedia.unifyorderhistory.util.UohConsts.DIKIRIM
-import com.tokopedia.unifyorderhistory.util.UohConsts.DIPROSES
-import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_ID
-import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_PRICE
-import com.tokopedia.unifyorderhistory.util.UohConsts.END_DATE
-import com.tokopedia.unifyorderhistory.util.UohConsts.E_TIKET
-import com.tokopedia.unifyorderhistory.util.UohConsts.FLIGHT_STATUS_OK
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_ATC
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_FINISH_ORDER
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_FLIGHT_EMAIL
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_LS_FINISH
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_LS_LACAK
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_CHAT
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_FINISH
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_RECHARGE_BATALKAN
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_TRACK
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_TRAIN_EMAIL
-import com.tokopedia.unifyorderhistory.util.UohConsts.MENUNGGU_KONFIRMASI
-import com.tokopedia.unifyorderhistory.util.UohConsts.NOTES
-import com.tokopedia.unifyorderhistory.util.UohConsts.PRODUCT_ID
-import com.tokopedia.unifyorderhistory.util.UohConsts.PRODUCT_NAME
-import com.tokopedia.unifyorderhistory.util.UohConsts.PRODUCT_PRICE
-import com.tokopedia.unifyorderhistory.util.UohConsts.QUANTITY
-import com.tokopedia.unifyorderhistory.util.UohConsts.QUERY_PARAM_INVOICE
-import com.tokopedia.unifyorderhistory.util.UohConsts.QUERY_PARAM_INVOICE_URL
-import com.tokopedia.unifyorderhistory.util.UohConsts.REPLACE_ORDER_ID
-import com.tokopedia.unifyorderhistory.util.UohConsts.SHOP_ID
-import com.tokopedia.unifyorderhistory.util.UohConsts.START_DATE
-import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_DIKIRIM
-import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_DIPROSES
-import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_MENUNGGU_KONFIRMASI
-import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_TIBA_DI_TUJUAN
-import com.tokopedia.unifyorderhistory.util.UohConsts.TIBA_DI_TUJUAN
-import com.tokopedia.unifyorderhistory.util.UohConsts.TRANSAKSI_BERLANGSUNG
-import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_ACTION_BUTTON_LINK
-import com.tokopedia.unifyorderhistory.util.UohConsts.URL_RESO
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_DEALS
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_EVENTS
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_FLIGHT
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_GIFTCARD
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_HOTEL
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MP
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
-import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
-import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
-import com.tokopedia.unifyorderhistory.util.UohUtils
-import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
-import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
-import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
-import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
-import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetOptionAdapter
-import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
-import com.tokopedia.unifyorderhistory.view.viewmodel.UohListViewModel
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -141,12 +74,45 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyorderhistory.R
+import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
+import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
+import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
 import com.tokopedia.unifyorderhistory.data.model.*
 import com.tokopedia.unifyorderhistory.databinding.FragmentUohListBinding
 import com.tokopedia.unifyorderhistory.di.DaggerUohListComponent
 import com.tokopedia.unifyorderhistory.di.UohListModule
+import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.ACTION_FINISH_ORDER
+import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_DATE
+import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_PRODUCTS
+import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_STATUS
+import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_STATUS_TRANSACTION
+import com.tokopedia.unifyorderhistory.util.UohConsts.APPLINK_BASE
+import com.tokopedia.unifyorderhistory.util.UohConsts.APP_LINK_TYPE
+import com.tokopedia.unifyorderhistory.util.UohConsts.CTA_ATC
+import com.tokopedia.unifyorderhistory.util.UohConsts.CUSTOMER_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.DALAM_PROSES
 import com.tokopedia.unifyorderhistory.util.UohConsts.DATE_FORMAT_YYYYMMDD
+import com.tokopedia.unifyorderhistory.util.UohConsts.DIKIRIM
+import com.tokopedia.unifyorderhistory.util.UohConsts.DIPROSES
+import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_PRICE
+import com.tokopedia.unifyorderhistory.util.UohConsts.END_DATE
+import com.tokopedia.unifyorderhistory.util.UohConsts.E_TIKET
+import com.tokopedia.unifyorderhistory.util.UohConsts.FLIGHT_STATUS_OK
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_ATC
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_FINISH_ORDER
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_FLIGHT_EMAIL
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_LS_FINISH
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_LS_LACAK
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_CHAT
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_EXTEND
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_FINISH
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_RECHARGE_BATALKAN
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_TRACK
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_TRAIN_EMAIL
+import com.tokopedia.unifyorderhistory.util.UohConsts.MENUNGGU_KONFIRMASI
+import com.tokopedia.unifyorderhistory.util.UohConsts.NOTES
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_BOUGHT_DATE
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_HELP_LINK_URL
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_INVOICE
@@ -157,8 +123,43 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_SHOP_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_SHOP_NAME
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_SOURCE_UOH
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_STATUS_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.PRODUCT_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.PRODUCT_NAME
+import com.tokopedia.unifyorderhistory.util.UohConsts.PRODUCT_PRICE
+import com.tokopedia.unifyorderhistory.util.UohConsts.QUANTITY
+import com.tokopedia.unifyorderhistory.util.UohConsts.QUERY_PARAM_INVOICE
+import com.tokopedia.unifyorderhistory.util.UohConsts.QUERY_PARAM_INVOICE_URL
+import com.tokopedia.unifyorderhistory.util.UohConsts.REPLACE_ORDER_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.SHOP_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.START_DATE
+import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_DIKIRIM
+import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_DIPROSES
+import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_MENUNGGU_KONFIRMASI
+import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_TIBA_DI_TUJUAN
+import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INDEX
+import com.tokopedia.unifyorderhistory.util.UohConsts.TIBA_DI_TUJUAN
+import com.tokopedia.unifyorderhistory.util.UohConsts.TRANSAKSI_BERLANGSUNG
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_ACTION_CANCEL_ORDER
+import com.tokopedia.unifyorderhistory.util.UohConsts.URL_RESO
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_DEALS
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_EVENTS
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_FLIGHT
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_GIFTCARD
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_HOTEL
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MP
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
+import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
+import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
+import com.tokopedia.unifyorderhistory.util.UohUtils
+import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
+import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetOptionAdapter
+import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 import com.tokopedia.unifyorderhistory.view.bottomsheet.*
+import com.tokopedia.unifyorderhistory.view.viewmodel.UohListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -170,8 +171,6 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INDEX
 
 /**
  * Created by fwidjaja on 29/06/20.
@@ -288,6 +287,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
         const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
         const val RESULT_CODE_SUCCESS = 1
+        const val EXTEND_ORDER_REQUEST_CODE = 400
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -416,6 +416,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
             } else {
+                initialLoad()
+            }
+        } else if (requestCode == EXTEND_ORDER_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
                 initialLoad()
             }
         }
@@ -1728,6 +1732,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     button.actionType.equals(GQL_TRACK, true) -> {
                         val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
                         RouteManager.route(context, applinkTrack)
+                    }
+                    button.actionType.equals(GQL_MP_EXTEND, true) -> {
+                        val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
+                        val intent = RouteManager.getIntentNoFallback(context, applinkTrack) ?: return
+                        startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
                     }
                     button.actionType.equals(GQL_LS_FINISH, true) -> {
                         orderIdNeedUpdated = order.orderUUID

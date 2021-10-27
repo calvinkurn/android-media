@@ -6,7 +6,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -25,7 +25,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import rx.Subscriber
 
 /**
  * Created by fwidjaja on 2020-05-07.
@@ -445,14 +444,11 @@ class UohListViewModelTest {
         //given
 
         coEvery {
-            atcUseCase.execute(any(), any()) }.answers {
-            (secondArg() as Subscriber<AddToCartDataModel>).onNext(
-                    AddToCartDataModel(
-                            status = AddToCartDataModel.STATUS_OK,
-                            data = DataModel(success = 1)
-                    )
-            )
-        }
+            atcUseCase.executeOnBackground()
+        } returns AddToCartDataModel(
+                        status = AddToCartDataModel.STATUS_OK,
+                        data = DataModel(success = 1)
+                )
 
         //when
         uohListViewModel.doAtc(AddToCartRequestParams())
@@ -466,9 +462,8 @@ class UohListViewModelTest {
     fun atc_shouldReturnFail() {
         //given
         coEvery {
-            atcUseCase.execute(any(), any()) }.answers {
-            (secondArg() as Subscriber<AddToCartDataModel>).onError(Throwable())
-        }
+            atcUseCase.executeOnBackground()
+        } throws Exception()
 
         //when
         uohListViewModel.doAtc(AddToCartRequestParams())
@@ -481,14 +476,11 @@ class UohListViewModelTest {
     fun atc_shouldNotReturnEmptyMessage() {
         //given
         coEvery {
-            atcUseCase.execute(any(), any()) }.answers {
-            (secondArg() as Subscriber<AddToCartDataModel>).onNext(
-                    AddToCartDataModel(
-                            status = AddToCartDataModel.STATUS_OK,
-                            data = DataModel(success = 1, message = listMsg)
-                    )
-            )
-        }
+            atcUseCase.executeOnBackground()
+        } returns AddToCartDataModel(
+                status = AddToCartDataModel.STATUS_OK,
+                data = DataModel(success = 1, message = listMsg)
+        )
 
         //when
         uohListViewModel.doAtc(AddToCartRequestParams())
