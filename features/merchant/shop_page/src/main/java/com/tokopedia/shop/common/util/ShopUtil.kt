@@ -8,7 +8,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_REVIEW
 import com.tokopedia.remoteconfig.RollenceKey.NEW_REVIEW_SHOP
@@ -76,7 +75,7 @@ object ShopUtil {
     }
 
     fun isUsingNewNavigation(): Boolean {
-        return true
+        return !GlobalConfig.isSellerApp()
     }
 
     fun getShopPageWidgetUserAddressLocalData(context: Context?): LocalCacheModel? {

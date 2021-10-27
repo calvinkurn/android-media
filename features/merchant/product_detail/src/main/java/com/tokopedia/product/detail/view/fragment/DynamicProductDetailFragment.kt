@@ -3701,7 +3701,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     //Will be delete soon
     override fun isNavOld(): Boolean {
         return try {
-            false
+            GlobalConfig.isSellerApp()
         } catch (e: Exception) {
             e.printStackTrace()
             true
