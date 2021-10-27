@@ -231,9 +231,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         val isNewNavigationEnabled = FirebaseRemoteConfigImpl(this).getBoolean(KEY_CONFIG_NEW_NAVIGATION,
                 false)
         if(isNewNavigationEnabled) {
-            getAbTestPlatform()?.let {
-                return true
-            }
+            return true
         }
         return false
     }
