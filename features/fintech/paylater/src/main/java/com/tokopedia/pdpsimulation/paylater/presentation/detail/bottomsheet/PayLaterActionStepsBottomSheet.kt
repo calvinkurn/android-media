@@ -45,6 +45,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var noteData: String = ""
     private var titleText: String = ""
     private var tenure = 0
+    private var webUrl = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,22 +72,26 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
             partnerName = it.gateway_detail?.name ?: ""
             actionUrl = it.cta?.android_url ?: ""
             tenure = payLaterItemProductData.tenure ?: 0
-            if (it.cta?.cta_type == HOWTOUSE) {
-                if (it.gateway_detail?.how_toUse?.notes?.size != 0)
-                    noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
-                it.gateway_detail?.how_toUse?.let { howToUseDetail ->
-                    listOfSteps = howToUseDetail.steps as ArrayList<String>
-                }
-                titleText =
-                    "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
+            if (it.cta?.cta_type == 1) {
+                webUrl = false
             } else {
-                if (it.gateway_detail?.how_toApply?.notes?.size != 0)
-                    noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
-                it.gateway_detail?.how_toApply?.let { howToApplyDetail ->
-                    listOfSteps = howToApplyDetail.steps as ArrayList<String>
+                if (it.cta?.cta_type == HOWTOUSE) {
+                    if (it.gateway_detail?.how_toUse?.notes?.size != 0)
+                        noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
+                    it.gateway_detail?.how_toUse?.let { howToUseDetail ->
+                        listOfSteps = howToUseDetail.steps as ArrayList<String>
+                    }
+                    titleText =
+                        "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
+                } else {
+                    if (it.gateway_detail?.how_toApply?.notes?.size != 0)
+                        noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
+                    it.gateway_detail?.how_toApply?.let { howToApplyDetail ->
+                        listOfSteps = howToApplyDetail.steps as ArrayList<String>
+                    }
+                    titleText =
+                        "${resources.getString(R.string.pay_later_how_to_register)} ${partnerName ?: ""}"
                 }
-                titleText =
-                    "${resources.getString(R.string.pay_later_how_to_register)} ${partnerName ?: ""}"
             }
 
 
@@ -126,7 +131,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         btnRegister.setOnClickListener {
             sendClickEventAnalytics()
             if (actionUrl.isNotEmpty())
-                openUrlWebView(actionUrl)
+                openUrlView(actionUrl)
         }
     }
 
@@ -162,11 +167,15 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     }
 
-    private fun openUrlWebView(urlString: String) {
-        if (urlString.isNotEmpty()) {
-            val webViewAppLink =
-                ApplinkConst.WEBVIEW + "?url=" + URLEncoder.encode(urlString, "UTF-8")
-            RouteManager.route(context, webViewAppLink)
+    private fun openUrlView(urlString: String) {
+        if (webUrl) {
+            if (urlString.isNotEmpty()) {
+                val webViewAppLink =
+                    ApplinkConst.WEBVIEW + "?url=" + URLEncoder.encode(urlString, "UTF-8")
+                RouteManager.route(context, webViewAppLink)
+            }
+        } else {
+            RouteManager.route(context, urlString)
         }
     }
 

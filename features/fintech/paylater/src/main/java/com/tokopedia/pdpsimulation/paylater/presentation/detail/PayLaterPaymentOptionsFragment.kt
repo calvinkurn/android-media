@@ -3,7 +3,6 @@ package com.tokopedia.pdpsimulation.paylater.presentation.detail
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,7 +78,6 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun initListener() {
         btnHowToUse.setOnClickListener {
-            Log.e("hii", buttonStatus.toString())
             buttonStatus?.let {
                 when (it) {
                     RedirectionType.HowToDetail ->
@@ -92,6 +90,12 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                                 ApplinkConstInternalGlobal.WEBVIEW,
                                 urlToRedirect
                             )
+                    }
+
+                    RedirectionType.RedirectionApp -> {
+                        if (urlToRedirect.isNotEmpty()) {
+                            RouteManager.route(activity, urlToRedirect)
+                        }
                     }
                     RedirectionType.NonClickable -> {
                         btnHowToUse.isClickable = false
@@ -301,6 +305,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                 buttonRedirectionWeb.contains(it) && data.cta.bottomSheet?.isShow == false ->
                     RedirectionType.RedirectionWebView
 
+                buttonRedirectApp.contains(it) ->
+                    RedirectionType.RedirectionApp
+
                 buttonRedirectionBottomSheet.contains(it) ->
                     RedirectionType.HowToDetail
 
@@ -391,7 +398,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
         val rejectionList = listOf(2, 10, 9)
         val processiongList = listOf(1)
-        val buttonRedirectionWeb = listOf(1, 2)
+        val buttonRedirectionWeb = listOf(1)
+        val buttonRedirectApp = listOf(2)
         val buttonRedirectionBottomSheet = listOf(3, 4)
 
         fun newInstance(bundle: Bundle): PayLaterPaymentOptionsFragment {
@@ -403,7 +411,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 }
 
 enum class RedirectionType {
-    HowToDetail, GopayBottomSheet, RedirectionWebView, NonClickable
+    HowToDetail, GopayBottomSheet, RedirectionWebView, NonClickable, RedirectionApp
 }
 
 enum class GatewayStatusType {

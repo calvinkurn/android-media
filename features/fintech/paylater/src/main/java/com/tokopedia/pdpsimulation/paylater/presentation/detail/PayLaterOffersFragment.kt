@@ -111,7 +111,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                         onPageSelectedByUser(detail)
                     }
                 } else {
-                    filterData.add(SortFilterItem(name, size =  ChipsUnify.SIZE_SMALL) {
+                    filterData.add(SortFilterItem(name, size = ChipsUnify.SIZE_SMALL) {
                         selectOtherTenure(i, name)
                     })
                 }
