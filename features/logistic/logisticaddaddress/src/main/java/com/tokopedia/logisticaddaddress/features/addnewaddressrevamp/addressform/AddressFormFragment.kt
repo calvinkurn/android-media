@@ -5,12 +5,14 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -22,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -334,20 +337,26 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
-        val onPrivacyPolicyClicked: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=https://www.go-pay.co.id/appterms")
-            }
-        }
         val onTermsAndConditionClicked: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=https://www.google.com")
             }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                )
+            }
         }
 
-        val consentText = SpannableString("Dengan klik \"Simpan\", kamu menyetujui kebijakan privasi dan syarat dan ketentuan.")
-        consentText.setSpan(onPrivacyPolicyClicked, 38,  55, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        consentText.setSpan(onTermsAndConditionClicked, 60,  80, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val boldSpan = StyleSpan(Typeface.BOLD)
+
+        val consentText = SpannableString("Dengan klik \"Simpan\", kamu menyetujui Syarat & Ketentuan.")
+        consentText.setSpan(onTermsAndConditionClicked, 38,  56, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        consentText.setSpan(boldSpan, 38, 56, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         binding.userConsent.movementMethod = LinkMovementMethod.getInstance()
         binding.userConsent.isClickable = true
         binding.userConsent.setText(consentText, TextView.BufferType.SPANNABLE)
