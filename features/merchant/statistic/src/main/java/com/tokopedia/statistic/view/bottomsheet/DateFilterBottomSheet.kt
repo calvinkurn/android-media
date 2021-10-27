@@ -139,7 +139,6 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
         }
     }
 
-
     private fun showFilterItems() {
         binding?.run {
             rvStcDateRage.run {
