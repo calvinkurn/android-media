@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -144,6 +145,9 @@ class PlayParentViewModel constructor(
                 }.executeOnBackground()
 
                 mNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor(response.channelDetails.meta.cursor)
+
+                Log.d("<PARAM>", "startMillis: $mVideoStartMillis")
+                Log.d("<PARAM>", "shouldTrack: $shouldTrack")
 
                 playChannelMapper.map(response, PlayChannelDetailsWithRecomMapper.ExtraParams(
                         channelId = startingChannelId,
