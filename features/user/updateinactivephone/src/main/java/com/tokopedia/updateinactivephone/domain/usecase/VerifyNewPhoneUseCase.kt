@@ -36,8 +36,8 @@ open class VerifyNewPhoneUseCase @Inject constructor(
         var query = """
             mutation verifyNewPhoneInactivePhoneUser(${'$'}msisdn : String!, ${'$'}userIDEnc: String!, ${'$'}validateToken: String!) {
               verifyNewPhoneInactivePhoneUser(msisdn: ${'$'}msisdn, userIDEnc: ${'$'}userIDEnc, validateToken: ${'$'}validateToken) {
-                IsSuccess
-            	ErrorMessage
+                isSuccess
+            	errorMessage
               }
             }
         """.trimIndent()
