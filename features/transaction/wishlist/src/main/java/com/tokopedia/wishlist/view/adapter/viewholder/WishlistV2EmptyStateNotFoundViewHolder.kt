@@ -11,7 +11,7 @@ class WishlistV2EmptyStateNotFoundViewHolder(private val binding: WishlistV2Empt
     fun bind(item: WishlistV2TypeLayoutData) {
         binding.emptyState.emptyStateDescriptionID.text = itemView.context.getString(R.string.empty_state_not_found_description, item.dataObject as String)
         binding.emptyState.setPrimaryCTAClickListener {  
-            // actionListener.onNotFoundButtonClicked()
+            actionListener?.onNotFoundButtonClicked(item.dataObject as String)
         }
     }
 }

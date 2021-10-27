@@ -10,8 +10,6 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    android:paddingTop="24dp"
-    android:paddingBottom="12dp"
     app:typographyType="heading_5"
-    android:textSize="14sp"
-    android:textColor="@color/Unify_N700_68" />
+    android:paddingTop="24dp"
+    android:paddingBottom="12dp" />

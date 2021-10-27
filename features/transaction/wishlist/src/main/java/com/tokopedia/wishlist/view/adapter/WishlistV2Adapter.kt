@@ -36,8 +36,9 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     interface ActionListener {
-//        fun onCariBarangClicked()
-//        fun onNotFoundButtonClicked()
+        fun onCariBarangClicked()
+        fun onNotFoundButtonClicked(keyword: String)
+        fun onProductRecommendationClicked(productId: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -73,7 +74,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             LAYOUT_RECOMMENDATION_LIST -> {
                 val binding = WishlistV2RecommendationItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
-                WishlistV2RecommendationItemViewHolder(binding)
+                WishlistV2RecommendationItemViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }

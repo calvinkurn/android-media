@@ -468,6 +468,21 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         }
     }
 
+    override fun onCariBarangClicked() {
+
+    }
+
+    override fun onNotFoundButtonClicked(keyword: String) {
+
+    }
+
+    override fun onProductRecommendationClicked(productId: String) {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_INFO, productId)
+            startActivity(intent)
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN) {
