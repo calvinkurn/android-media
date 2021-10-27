@@ -19,13 +19,9 @@ class DigitalCartRobot {
     }
 
     fun clickCheckout() {
-        /** Changes this intending to specific class later */
+        /** Change this intending to specific class later when you want to implement thankyou page */
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(
             PAYMENT_FAILED, null))
-//        Intents.intending(
-//            IntentMatchers.hasComponent(
-//            ComponentNameMatchers.hasClassName("com.tokopedia.payment.activity.TopPayActivity")))
-//            .respondWith(Instrumentation.ActivityResult(PAYMENT_FAILED, null))
         onView(withId(R.id.btnCheckout)).perform(click())
     }
 

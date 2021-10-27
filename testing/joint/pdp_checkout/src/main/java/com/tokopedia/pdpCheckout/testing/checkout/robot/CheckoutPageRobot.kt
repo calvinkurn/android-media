@@ -13,6 +13,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.bundle.view.viewholder.ShipmentButtonPaymentViewHolder
@@ -151,7 +152,7 @@ class ResultRobot {
     }
 
     fun hasPassedAnalytics(cassavaTestRule: CassavaTestRule, queryId: String) {
-        assertThat(cassavaTestRule.validate(queryId), com.tokopedia.cassavatest.hasAllSuccess())
+        assertThat(cassavaTestRule.validate(queryId), hasAllSuccess())
     }
 
     fun assertGoToPayment() {
