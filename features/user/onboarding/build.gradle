@@ -14,11 +14,6 @@ android {
         viewBinding true
     }
 
-    buildTypes {
-        debug {
-            testCoverageEnabled true
-        }
-    }
 }
 
 kapt {
