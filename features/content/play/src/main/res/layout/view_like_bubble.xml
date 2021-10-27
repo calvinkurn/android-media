@@ -6,6 +6,7 @@
     android:id="@+id/cl_bubble_like"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
     tools:background="@color/play_dms_N700"
     tools:layout_height="match_parent"
     tools:layout_width="match_parent"

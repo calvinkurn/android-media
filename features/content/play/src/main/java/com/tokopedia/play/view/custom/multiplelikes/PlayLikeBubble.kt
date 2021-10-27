@@ -26,19 +26,13 @@ class Bubble(
     private var xPos: Float = (icon.width..parentWidth-icon.width).random().toFloat()
     private var yPos: Float = parentHeight.toFloat()
 
-    val bouncingLimit = (LOWER_LIMIT_BOUNCING_DISTANCE..UPPER_LIMIT_BOUNCING_DISTANCE).random()
-    val bouncingMultiplier = (LOWER_BOUNCING_MULTIPLIER_X..UPPER_BOUNCING_MULTIPLIER_X).random()
+    private val bouncingLimit = (LOWER_LIMIT_BOUNCING_DISTANCE..UPPER_LIMIT_BOUNCING_DISTANCE).random()
+    private val bouncingMultiplier = (LOWER_BOUNCING_MULTIPLIER_X..UPPER_BOUNCING_MULTIPLIER_X).random()
 
-    val xStart = xPos - bouncingLimit
-    val xEnd = xPos + bouncingLimit
+    private val xStart = xPos - bouncingLimit
+    private val xEnd = xPos + bouncingLimit
 
     private var scale = 0.01f
-
-    private val leftMost: Float
-        get() = xPos - circleRadius
-
-    private val rightMost: Float
-        get() = xPos + circleCenter
 
     private var direction = listOf(Direction.Left, Direction.Right).random()
 
