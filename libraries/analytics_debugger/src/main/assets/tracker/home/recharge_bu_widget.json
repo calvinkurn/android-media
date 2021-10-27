@@ -22,25 +22,23 @@
       "eventLabel": ""
     },
     {
-      "businessUnit": "home & browse",
-      "eventCategory": "homepage - new bu widget",
-      "currentSite": "tokopediamarketplace",
-      "event": "view_item_list",
-      "userId": ".+",
-      "eventAction": "impression on product card dynamic channel bu carousel",
-      "sessionIris": ".+",
-      "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
-      "items": [
+      "promotions": [
         {
-          "index": ".+",
-          "item_brand": ".+",
-          "item_category": ".+",
+          "creative_name": ".+",
+          "creative_slot": ".+",
           "item_id": ".+",
           "item_name": ".+",
-          "item_variant": ".+",
-          "price": ""
+          "creative_url": ""
         }
-      ]
+      ],
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
+      "event": "view_item",
+      "userId": ".+",
+      "eventAction": "impression on banner dynamic channel bu carousel",
+      "sessionIris": ".+",
+      "eventLabel": ""
     },
     {
       "promotions": [
@@ -95,16 +93,6 @@
     },
     {
       "businessUnit": "home & browse",
-      "eventCategory": "homepage",
-      "currentSite": "tokopediamarketplace",
-      "event": "clickHomepage",
-      "userId": ".+",
-      "eventAction": "click view all on dynamic channel bu carousel",
-      "sessionIris": ".+",
-      "eventLabel": ".+"
-    },
-    {
-      "businessUnit": "home & browse",
       "eventCategory": "homepage - new bu widget",
       "currentSite": "tokopediamarketplace",
       "event": "view_item_list",
@@ -112,7 +100,6 @@
       "eventAction": "impression on product card dynamic channel bu carousel",
       "sessionIris": ".+",
       "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
-      "item_list": ".+",
       "items": [
         {
           "index": ".+",
@@ -121,7 +108,8 @@
           "item_id": ".+",
           "item_name": ".+",
           "item_variant": ".+",
-          "price": ""
+          "dimension_40" : ":*",
+          "price": "\\d*"
         }
       ]
     }
