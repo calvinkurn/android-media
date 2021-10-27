@@ -6,7 +6,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
@@ -257,11 +257,11 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     }
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply):
-            ImageUploadViewModel {
+            ImageUploadUiModel {
         val pojoAttribute = gson.fromJson<ChatbotImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ChatbotImageUploadAttributes::class.java)
 
-        return ImageUploadViewModel.Builder()
+        return ImageUploadUiModel.Builder()
                 .withResponseFromGQL(chatItemPojoByDateByTime)
                 .withImageUrl(pojoAttribute.imageUrlSecure)
                 .withImageUrlThumbnail(pojoAttribute.thumbnail)

@@ -12,8 +12,6 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.chat_common.data.BaseChatViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder

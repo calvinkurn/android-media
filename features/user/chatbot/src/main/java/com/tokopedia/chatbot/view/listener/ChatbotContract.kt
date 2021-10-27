@@ -130,10 +130,10 @@ interface ChatbotContract {
         fun checkForSession(messageId: String)
         fun checkUploadSecure(messageId: String, data: Intent)
         fun uploadImageSecureUpload(
-            imageUploadViewModel: ImageUploadViewModel,
+            imageUploadViewModel: ImageUploadUiModel,
             messageId: String,
             opponentId: String,
-            onErrorImageUpload: (Throwable, ImageUploadViewModel) -> Unit,
+            onErrorImageUpload: (Throwable, ImageUploadUiModel) -> Unit,
             path: String?,
             context: Context?
         )

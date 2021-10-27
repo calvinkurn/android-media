@@ -481,10 +481,10 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun uploadImageSecureUpload(
-            imageUploadViewModel: ImageUploadViewModel,
+            imageUploadViewModel: ImageUploadUiModel,
             messageId: String,
             opponentId: String,
-            onErrorImageUpload: (Throwable, ImageUploadViewModel) -> Unit,
+            onErrorImageUpload: (Throwable, ImageUploadUiModel) -> Unit,
             path: String?,
             context: Context?
     ) {

@@ -10,7 +10,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_RATING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
@@ -64,11 +64,11 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     }
 
     private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            ImageUploadViewModel {
+            ImageUploadUiModel {
         val pojoAttribute = GsonBuilder().create().fromJson<ChatbotImageUploadAttributes>(jsonAttribute,
                 ChatbotImageUploadAttributes::class.java)
 
-        return ImageUploadViewModel.Builder()
+        return ImageUploadUiModel.Builder()
                 .withResponseFromWs(pojo)
                 .withImageUrl(pojoAttribute.imageUrlSecure)
                 .withImageUrlThumbnail(pojoAttribute.thumbnail)
