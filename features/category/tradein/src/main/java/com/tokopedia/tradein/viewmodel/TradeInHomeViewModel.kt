@@ -82,7 +82,7 @@ class TradeInHomeViewModel @Inject constructor(
                 result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
                 errorMessage.setValue(response.deviceDiagInputRepsponse.message)
             }
-            homeResultData.postValue(result)
+            homeResultData.value = result
         }
     }
 
@@ -161,7 +161,7 @@ class TradeInHomeViewModel @Inject constructor(
             }
 
             homeResult.isSuccess = false
-            homeResultData.postValue(homeResult)
+            homeResultData.value = homeResult
         }
     }
 
