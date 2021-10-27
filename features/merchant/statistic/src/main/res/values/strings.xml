@@ -46,4 +46,5 @@
     <string name="stc_product_exclusive_identifier_desc"><![CDATA[Kamu bisa merubah rentang waktu menjadi <b>per hari, per minggu, per bulan, 30 hari terakhir,</b> atau <b>atur sendiri.<b>]]></string>
     <string name="stc_shop_exclusive_identifier_desc"><![CDATA[Kamu bisa merubah rentang waktu menjadi <b>7 hari terakhir, 30 hari terakhir, per hari, per minggu, per bulan,</b> atau <b>atur sendiri.<b>]]></string>
     <string name="stc_buyer_and_operational_exclusive_identifier_desc"><![CDATA[Kamu bisa merubah rentang waktu menjadi <b>7 hari, 30 hari, per minggu,</b> atau <b>per bulan.<b>]]></string>
+    <string name="stc_exlusive_feature_title">Fitur Eksklusif Keanggotaan Toko</string>
 </resources>
