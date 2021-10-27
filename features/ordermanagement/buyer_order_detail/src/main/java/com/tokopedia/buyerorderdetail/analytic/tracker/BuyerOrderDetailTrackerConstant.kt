@@ -86,6 +86,6 @@ object BuyerOrderDetailTrackerConstant {
         "order extension request action"
     const val EVENT_LABEL_ACCEPT_EXTENSION = "accept extension -"
     const val EVENT_LABEL_REJECT_EXTENSION = "reject extension -"
-    const val UOH_SOURCE = "uoh"
-    const val BOM_SOURCE = "bom"
+    const val UOH_SOURCE = "UOH"
+    const val BOM_SOURCE = "BOM"
 }

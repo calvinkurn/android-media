@@ -63,11 +63,8 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setDataFromArguments()
-//        observeRespondInfo()
-//        loadRespondInfo()
-        binding?.loaderBuyerOrderExtension?.show()
-        showSubmissionOrderExtension(OrderExtensionRespondInfoUiModel(messageCode = 1))
-//        showOrderHasBeenDialog()
+        observeRespondInfo()
+        loadRespondInfo()
     }
 
     override fun onDestroyView() {
@@ -115,7 +112,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
                 )
             }
             BuyerOrderExtensionConstant.RespondInfoMessageCode.STATUS_CHANGE -> {
-                showOrderHasBeenDialog()
+                showOrderHasBeenSentDialog()
             }
         }
     }
@@ -138,7 +135,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
         bottomSheet.show(childFragmentManager)
     }
 
-    private fun showOrderHasBeenDialog() {
+    private fun showOrderHasBeenSentDialog() {
         val confirmedCancelledOrderDialog = context?.let {
             OrderExtensionDialog(
                 it,
