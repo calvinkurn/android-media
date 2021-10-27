@@ -164,7 +164,9 @@ class ShopScoreMapper @Inject constructor(
                             shopScoreResult?.shopScoreDetail
                         )
                     ) {
-                        add(TickerReactivatedUiModel())
+                        if (shopScorePrefManager.getIsNeedShowTickerReactivated()) {
+                            add(TickerReactivatedUiModel())
+                        }
                     } else {
                         add(ItemReactivatedComebackUiModel())
                     }

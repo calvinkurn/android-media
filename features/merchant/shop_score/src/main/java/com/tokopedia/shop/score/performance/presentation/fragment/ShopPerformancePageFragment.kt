@@ -86,7 +86,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private var shopScorePerformanceMonitoringListener: ShopScorePerformanceMonitoringListener? = null
 
-    private val shopScoreCoachMarkPrefs by lazy { context?.let { ShopScorePrefManager(it) } }
+    private val shopScorePrefManager by lazy { context?.let { ShopScorePrefManager(it) } }
 
     private val coachMark by getInstanceCoachMark()
 
@@ -336,6 +336,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         goToSellerEdu(sellerEduUrl)
     }
 
+    override fun onCloseTickerClicked() {
+        shopPerformanceAdapter.removeTickerReactivated()
+        shopScorePrefManager?.setIsNeedShowTickerReactivated(false)
+    }
+
     /**
      * SectionFaqListener
      */
@@ -573,7 +578,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
             })
             coachMark?.onFinishListener = {
-                shopScoreCoachMarkPrefs?.setFinishCoachMark(true)
+                shopScorePrefManager?.setFinishCoachMark(true)
             }
             coachMark
         }
@@ -824,7 +829,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun processShowCoachMark() {
-        if (shopScoreCoachMarkPrefs?.getFinishCoachMark() == false && !isNewSeller) {
+        if (shopScorePrefManager?.getFinishCoachMark() == false && !isNewSeller) {
             Handler(Looper.getMainLooper()).postDelayed({
                 scrollToItemParameterDetailCoachMark()
                 showCoachMark()
@@ -885,7 +890,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
         bottomSheetPopupEndTenure.setOnDismissListener {
             if (isShowPopupEndTenure) {
-                shopScoreCoachMarkPrefs?.setIsShowPopupEndTenure(false)
+                shopScorePrefManager?.setIsShowPopupEndTenure(false)
             }
         }
         if (isShowPopupEndTenure) {

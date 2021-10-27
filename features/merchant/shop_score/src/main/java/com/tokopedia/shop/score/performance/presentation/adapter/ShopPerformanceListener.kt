@@ -7,7 +7,7 @@ interface ShopPerformanceListener :
     ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
     ItemStatusPowerMerchantListener, ItemStatusPowerMerchantProListener, SectionFaqListener,
     ProtectedParameterListener, ItemTimerNewSellerListener, GlobalErrorListener,
-    ItemReactivatedComebackListener
+    ItemReactivatedComebackListener, TickerReactivatedListener
 
 interface ItemPerformanceHeaderListener {
     fun onTooltipLevelClicked(level: Long)
@@ -83,6 +83,10 @@ interface ItemTimerNewSellerListener {
 interface ItemReactivatedComebackListener {
     fun onBtnLearnNowReactivatedClicked(sellerEduUrl: String)
     fun onWatchVideoReactivatedClicked(videoId: String)
+}
+
+interface TickerReactivatedListener {
+    fun onCloseTickerClicked()
 }
 
 interface GlobalErrorListener {
