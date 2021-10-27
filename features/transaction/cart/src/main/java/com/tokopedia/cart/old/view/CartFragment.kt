@@ -138,6 +138,7 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
+import java.lang.IndexOutOfBoundsException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -529,7 +530,17 @@ open class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     }
 
     private fun initRecyclerView() {
-        val gridLayoutManager = GridLayoutManager(context, 2)
+        val gridLayoutManager = object: GridLayoutManager(context, 2) {
+            override fun supportsPredictiveItemAnimations() = false
+
+            override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+                try {
+                    super.onLayoutChildren(recycler, state)
+                } catch (e: IndexOutOfBoundsException) {
+                    e.printStackTrace()
+                }
+            }
+        }
         binding?.rvCart?.apply {
             layoutManager = gridLayoutManager
             adapter = cartAdapter
