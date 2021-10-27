@@ -398,8 +398,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
         val rejectionList = listOf(2, 10, 9)
         val processiongList = listOf(1)
-        val buttonRedirectionWeb = listOf(1)
-        val buttonRedirectApp = listOf(2)
+        val buttonRedirectionWeb = listOf(2)
+        val buttonRedirectApp = listOf(1)
         val buttonRedirectionBottomSheet = listOf(3, 4)
 
         fun newInstance(bundle: Bundle): PayLaterPaymentOptionsFragment {
