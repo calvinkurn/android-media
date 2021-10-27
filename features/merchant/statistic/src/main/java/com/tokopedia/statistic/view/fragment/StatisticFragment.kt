@@ -46,7 +46,6 @@ import com.tokopedia.statistic.databinding.FragmentStcStatisticBinding
 import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
-import com.tokopedia.statistic.view.bottomsheet.RMDateFilterInfoBottomSheet
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
@@ -613,27 +612,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun selectDateRange() {
         if (!isAdded || context == null) return
-        if (StatisticPageHelper.getRegularMerchantStatus(userSession)) {
-            showRmDateFilterInfoBottomSheet()
-        } else {
-            StatisticTracker.sendDateFilterEvent(userSession)
-            dateFilterBottomSheet?.setFragmentManager(childFragmentManager)?.setOnApplyChanges {
-                setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
-                applyDateRange(it)
-            }?.show()
+        StatisticTracker.sendDateFilterEvent(userSession)
+        dateFilterBottomSheet?.setFragmentManager(childFragmentManager)?.setOnApplyChanges {
+            setHeaderSubTitle(it.getHeaderSubTitle(requireContext()))
+            applyDateRange(it)
+        }?.show()
 
-            val tabName = statisticPage?.pageTitle.orEmpty()
-            StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
-        }
-    }
-
-    private fun showRmDateFilterInfoBottomSheet() {
-        val bottomSheet = RMDateFilterInfoBottomSheet.newInstance()
-        if (bottomSheet.isAdded || childFragmentManager.isStateSaved) {
-            return
-        }
-
-        bottomSheet.show(childFragmentManager)
+        val tabName = statisticPage?.pageTitle.orEmpty()
+        StatisticTracker.sendCalendarClickEvent(userSession.userId, tabName, headerSubTitle)
     }
 
     private fun applyDateRange(item: DateFilterItem) {
@@ -946,7 +932,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private fun initDateFilterBottomSheet() {
         if (dateFilterBottomSheet == null) {
             val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
-            dateFilterBottomSheet = DateFilterBottomSheet.newInstance(dateFilters)
+            val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
+            dateFilterBottomSheet = DateFilterBottomSheet.newInstance(dateFilters, identifierDescription)
         }
     }
 

@@ -149,19 +149,19 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     private fun getWhiteListedPages(): List<StatisticPageUiModel> {
         val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-            StatisticPageHelper.getShopStatistic(this, userSession, remoteConfig),
-            StatisticPageHelper.getProductStatistic(this, userSession, remoteConfig),
-            StatisticPageHelper.getOperationalStatistic(this, userSession),
-            StatisticPageHelper.getBuyerStatistic(this, userSession)
+            StatisticPageHelper.getShopStatistic(this, remoteConfig),
+            StatisticPageHelper.getProductStatistic(this, remoteConfig),
+            StatisticPageHelper.getOperationalStatistic(this),
+            StatisticPageHelper.getBuyerStatistic(this)
         )
     }
 
     private fun getNonWhiteListedPages(): List<StatisticPageUiModel> {
         val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-            StatisticPageHelper.getShopStatistic(this, userSession, remoteConfig),
-            StatisticPageHelper.getProductStatistic(this, userSession, remoteConfig),
-            StatisticPageHelper.getBuyerStatistic(this, userSession)
+            StatisticPageHelper.getShopStatistic(this, remoteConfig),
+            StatisticPageHelper.getProductStatistic(this, remoteConfig),
+            StatisticPageHelper.getBuyerStatistic(this)
         )
     }
 

@@ -2,18 +2,24 @@ package com.tokopedia.statistic.view.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.databinding.BottomsheetStcSelectDateRangeBinding
 import com.tokopedia.statistic.view.adapter.DateFilterAdapter
 import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,12 +34,17 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
     companion object {
         const val TAG = "DateFilterBottomSheet"
         private const val KEY_DATE_FILTERS = "date_filter_items"
+        private const val KEY_IDENTIFIER_DESCRIPTION = "date_filter_identifier_desctiption"
 
-        fun newInstance(dateFilters: List<DateFilterItem>): DateFilterBottomSheet {
+        fun newInstance(
+            dateFilters: List<DateFilterItem>,
+            identifierDescription: String
+        ): DateFilterBottomSheet {
             return DateFilterBottomSheet().apply {
                 clearContentPadding = true
                 arguments = Bundle().apply {
                     putParcelableArrayList(KEY_DATE_FILTERS, ArrayList(dateFilters))
+                    putString(KEY_IDENTIFIER_DESCRIPTION, identifierDescription)
                 }
             }
         }
@@ -73,6 +84,32 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
 
         mAdapter?.clearAllElements()
         mAdapter?.addElement(items)
+
+        showExclusiveIdentifier()
+    }
+
+    private fun showExclusiveIdentifier() {
+        activity?.let {
+            val userSession: UserSessionInterface = UserSession(it.applicationContext)
+            val isRegularMerchant = StatisticPageHelper.getRegularMerchantStatus(userSession)
+            binding?.rvStcDateRage?.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener{
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    return isRegularMerchant
+                }
+                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+
+                }
+                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+
+                }
+            })
+            binding?.stcFilterExclusiveIdentifier?.isVisible = isRegularMerchant
+            if (isRegularMerchant) {
+                val identifierDescription = arguments
+                    ?.getString(KEY_IDENTIFIER_DESCRIPTION).orEmpty()
+                binding?.stcFilterExclusiveIdentifier?.setDescription(identifierDescription)
+            }
+        }
     }
 
     override fun onItemDateRangeClick(model: DateFilterItem) {
