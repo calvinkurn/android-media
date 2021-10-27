@@ -55,7 +55,9 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
         }
     }
 
-    private val ingestUrlObserver = Observer<String> { }
+    private val ingestUrlObserver = object : Observer<String> {
+        override fun onChanged(t: String?) {}
+    }
 
     init {
         _observableFollowers.value = FollowerDataUiModel.init(MAX_FOLLOWERS_PREVIEW)

@@ -93,7 +93,7 @@ class PlayMetricsView : LinearLayout {
 
     private fun getMetricBubbleInstance(): PlayMetricBubble {
         return PlayMetricBubble(context).apply {
-            layoutParams = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
     }
 
