@@ -144,25 +144,21 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
         `When load data`()
 
-//        val expectedSearchProduct = searchProductModel.searchProduct
-//        `Then verify CPM at the top of list`(expectedSearchProduct)`
+        val expectedSearchProduct = searchProductModel.searchProduct.header
+        `Then verify CPM at the top of list`(expectedSearchProduct)
     }
 
     private fun `Then verify CPM at the top of list`(
-        expectedSearchProduct: SearchProductCountDataView
+        expectedSearchProduct: SearchProductModel.SearchProductHeader
     ) {
-//        visitableList.first().assertCpmModel(expectedSearchProduct)
+        visitableList.first().assertSearchProductCount(expectedSearchProduct)
     }
 
-    private fun Visitable<*>.assertSearchProductCount(expectedCpmModel: CpmModel, expectedCpmData: CpmData) {
-        this.shouldBeInstanceOf<CpmDataView>()
+    private fun Visitable<*>.assertSearchProductCount(expectedSearchProductCount: SearchProductModel.SearchProductHeader) {
+        this.shouldBeInstanceOf<SearchProductCountDataView>()
 
-        val cpmDataView = this as CpmDataView
-        val actualCpmModel = cpmDataView.cpmModel
+        val actualSearchProductCountDataView = this as SearchProductCountDataView
 
-        actualCpmModel.header.shouldBe(expectedCpmModel.header)
-        actualCpmModel.status.shouldBe(expectedCpmModel.status)
-        actualCpmModel.error.shouldBe(expectedCpmModel.error)
-        actualCpmModel.data.shouldBe(listOf(expectedCpmData))
+        actualSearchProductCountDataView.productCountString.shouldBe(expectedSearchProductCount.totalDataText)
     }
 }
