@@ -47,7 +47,7 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
                         onSuccessSubmitNewPhoneNumber()
                     } else {
                         val errors = it.data.submit.errorMessage
-                        if (errors.isNullOrEmpty()) {
+                        if (!errors.isNullOrEmpty()) {
                             onFailedSubmitNewPhoneNumber(Throwable(it.data.submit.errorMessage.first()))
                         }
                     }
