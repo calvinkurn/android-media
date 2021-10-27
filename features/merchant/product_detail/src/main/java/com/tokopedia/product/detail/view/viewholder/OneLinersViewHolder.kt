@@ -1,24 +1,23 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.graphics.Color
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Companion.SEPARATOR_BOTH
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Companion.SEPARATOR_BOTTOM
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel.Companion.SEPARATOR_TOP
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.recommendation_widget_common.viewutil.convertDpToPixel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.stringToUnifyColor
 
 class OneLinersViewHolder(
     val view: View,
@@ -63,7 +62,9 @@ class OneLinersViewHolder(
             text = content.linkText
 
             try {
-                setTextColor(Color.parseColor(content.color))
+                val unifyColor = stringToUnifyColor(context, content.color)
+                setTextColor(unifyColor.unifyColorResourceID ?: unifyColor.defaultColor)
+
             } catch (ex: RuntimeException) {
                 ex.printStackTrace()
             }
