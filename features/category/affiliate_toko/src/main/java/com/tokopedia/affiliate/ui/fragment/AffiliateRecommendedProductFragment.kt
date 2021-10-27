@@ -45,13 +45,14 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     private lateinit var affiliateRecommendedProductViewModel: AffiliateRecommendedProductViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(promotionClickInterface = this)
-    )
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(promotionClickInterface = this))
+    private var affiliatePromoInterface : AffiliatePromoInterface? = null
 
     companion object {
         private const val GRID_SPAN_COUNT: Int = 2
-        fun getFragmentInstance(): Fragment {
+        fun getFragmentInstance(promoInterface : AffiliatePromoInterface): Fragment {
             return AffiliateRecommendedProductFragment().apply {
+                affiliatePromoInterface = promoInterface
             }
         }
     }
@@ -85,8 +86,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             setButtonFull(true)
             errorAction.text = getString(R.string.affiliate_paste_link)
             errorAction.setOnClickListener {
-                // TODO Interface parent fragment
-                // product_link_et.editingState(true)
+               affiliatePromoInterface?.enterLinkButtonClicked()
             }
             errorSecondaryAction.gone()
         }

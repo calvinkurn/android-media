@@ -47,13 +47,14 @@ import kotlinx.android.synthetic.main.affiliate_promo_fragment_layout.*
 import java.util.*
 import javax.inject.Inject
 
-class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(), PromotionClickInterface , AffiliateLinkTextFieldInterface {
+class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(), PromotionClickInterface ,
+        AffiliateLinkTextFieldInterface, AffiliatePromoInterface {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
     @Inject
-    lateinit var userSessionInterface : UserSessionInterface
+    lateinit var userSessionInterface: UserSessionInterface
 
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(null, null, this))
@@ -108,8 +109,8 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         showDefaultState()
     }
 
-     fun handleBack() {
-        if(recommended_layout.isVisible) activity?.finish()
+    fun handleBack() {
+        if (recommended_layout.isVisible) activity?.finish()
         else showDefaultState()
     }
 
@@ -117,20 +118,20 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         return inflater.inflate(R.layout.affiliate_promo_fragment_layout, container, false)
     }
 
-    private fun setupViewPager () {
+    private fun setupViewPager() {
         val tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_recommended)
         val viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_recommended)
         activity?.let {
-            tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance())
-            tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance())
-            val adapter = AffiliateRecommendedAdapter(childFragmentManager, lifecycle ,context, tabFragments)
+            tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance(this))
+            tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance(this))
+            val adapter = AffiliateRecommendedAdapter(childFragmentManager, lifecycle, context, tabFragments)
             viewPager?.adapter = adapter
-            if(tabLayout != null && viewPager != null){
+            if (tabLayout != null && viewPager != null) {
                 TabLayoutMediator(tabLayout, viewPager) { _, _ ->
 
                 }.attach()
             }
-            tabLayout?.addOnTabSelectedListener(object  : TabLayout.OnTabSelectedListener{
+            tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -145,7 +146,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
             })
         }
-        setCustomTabText(requireContext(),tabLayout)
+        setCustomTabText(requireContext(), tabLayout)
     }
 
     private fun setObservers() {
@@ -154,8 +155,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                 if (visibility) {
                     hideAllElements()
                     promo_affiliate_progress_view?.show()
-                }
-                else
+                } else
                     promo_affiliate_progress_view?.gone()
             }
         })
@@ -182,25 +182,25 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                             AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
                             AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_LINK_ERROR,
                             AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
-                            "",userSessionInterface.userId)
+                            "", userSessionInterface.userId)
                 } else {
                     affiliateSearchData.searchAffiliate?.data?.error?.let {
                         adapter.addElement(AffiliatePromotionErrorCardModel(it))
                     }
                     var errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_FOUND_ERROR
-                    when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus){
+                    when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
                         AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
-                                errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_FOUND_ERROR
+                            errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_FOUND_ERROR
                         AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
-                                errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_ELIGIBLE
+                            errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_ELIGIBLE
                         AffiliatePromotionErrorCardItemVH.ERROR_NON_PM_OS ->
-                                errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_OS_PM_ERROR
+                            errorAction = AffiliateAnalytics.ActionKeys.IMPRESSION_NOT_OS_PM_ERROR
                     }
                     AffiliateAnalytics.sendEvent(
                             AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
                             errorAction,
                             AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
-                            "",userSessionInterface.userId)
+                            "", userSessionInterface.userId)
                 }
             } else {
                 affiliateSearchData.searchAffiliate?.data?.cards?.firstOrNull()?.items?.let { items ->
@@ -214,7 +214,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                             AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
                             AffiliateAnalytics.ActionKeys.IMPRESSION_PROMOSIKAN_SRP,
                             AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
-                            "",userSessionInterface.userId)
+                            "", userSessionInterface.userId)
                 }
             }
         })
@@ -225,13 +225,13 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         promotion_recycler_view.show()
     }
 
-    private fun showDefaultState(){
+    private fun showDefaultState() {
         promotion_card_title.hide()
         recommended_layout.show()
         promotion_recycler_view.hide()
     }
 
-    private fun hideAllElements(){
+    private fun hideAllElements() {
         promotion_card_title.hide()
         recommended_layout.hide()
         promotion_recycler_view.hide()
@@ -261,15 +261,15 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
     override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String) {
         AffiliatePromotionBottomSheet.newInstance(productId, productName, productImage, productUrl,
-                productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")
+                productIdentifier, AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")
     }
 
     override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) {
-        if(errorCta?.ctaAction == AffiliatePromotionErrorCardItemVH.ACTION_REDIRECT){
+        if (errorCta?.ctaAction == AffiliatePromotionErrorCardItemVH.ACTION_REDIRECT) {
             errorCta.ctaLink?.androidUrl?.let {
                 RouteManager.routeNoFallbackCheck(context, it, it)
             }
-        }else {
+        } else {
             showDefaultState()
             product_link_et.editingState(true)
         }
@@ -280,17 +280,17 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                 AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
                 AffiliateAnalytics.ActionKeys.CLICK_SEARCH,
                 AffiliateAnalytics.CategoryKeys.PROMOSIKAN_SRP,
-                "",userSessionInterface.userId)
+                "", userSessionInterface.userId)
     }
 
-    private fun setCustomTabText(context : Context?, tabLayout: TabLayout?){
-        if(context != null && tabLayout != null){
+    private fun setCustomTabText(context: Context?, tabLayout: TabLayout?) {
+        if (context != null && tabLayout != null) {
             val tabOne = Typography(context)
             tabOne.apply {
                 text = context.getString(R.string.pernah_dibeli)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
-                setTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             }
 
             val tabTwo = Typography(context)
@@ -298,10 +298,20 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                 text = context.getString(R.string.terakhir_dilihat)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
-                setTextColor(MethodChecker.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             }
             tabLayout.getTabAt(0)?.customView = tabOne
             tabLayout.getTabAt(1)?.customView = tabTwo
         }
     }
+
+    override fun enterLinkButtonClicked() {
+        product_link_et.editingState(true)
+    }
+}
+
+interface AffiliatePromoInterface {
+
+    fun enterLinkButtonClicked()
+
 }

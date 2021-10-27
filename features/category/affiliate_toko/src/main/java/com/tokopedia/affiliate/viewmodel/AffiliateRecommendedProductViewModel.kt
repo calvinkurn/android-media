@@ -21,7 +21,7 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<String>()
-    private val pageLimit = 5 // TODO Change to 20
+    private val pageLimit = 20
 
     fun getAffiliateRecommendedProduct(page : Int) {
         if(page == PAGE_ZERO)
