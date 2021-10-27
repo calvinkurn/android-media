@@ -18,7 +18,7 @@ import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-open class DigitalCheckoutUseCase @Inject constructor(@DigitalCartCheckoutQualifier val repository: RestRepository)
+class DigitalCheckoutUseCase @Inject constructor(@DigitalCartCheckoutQualifier val repository: RestRepository)
     : RestRequestUseCase(repository) {
 
     private val url = DigitalUrl.CHECKOUT

@@ -24,7 +24,7 @@ import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-open class DigitalAddToCartUseCase @Inject constructor(@DigitalAddToCartQualifier val repository: RestRepository)
+class DigitalAddToCartUseCase @Inject constructor(@DigitalAddToCartQualifier val repository: RestRepository)
     : RestRequestUseCase(repository) {
 
     private val url = DigitalUrl.CART
