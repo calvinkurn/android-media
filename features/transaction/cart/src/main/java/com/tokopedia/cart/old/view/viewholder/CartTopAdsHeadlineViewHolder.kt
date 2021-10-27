@@ -35,7 +35,7 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
         const val VALUE_PRODUCT = "product"
         const val VALUE_ITEM = "10"
         const val VALUE_TEMPLATE_ID = "2%2C3%2C4"
-        const val PARAM_PRODUCT_IDS = "product_ids"
+        const val PARAM_PRODUCT_IDS = "product_id"
     }
 
     fun bind(data: CartTopAdsHeadlineData) {
