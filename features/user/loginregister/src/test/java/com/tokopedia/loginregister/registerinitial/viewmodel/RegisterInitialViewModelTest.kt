@@ -4,8 +4,6 @@ import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.facebook.AccessToken
-import com.facebook.CallbackManager
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
@@ -20,9 +18,6 @@ import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
@@ -32,7 +27,6 @@ import com.tokopedia.sessioncommon.data.*
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
-import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
@@ -62,7 +56,6 @@ class RegisterInitialViewModelTest {
     val registerRequestUseCase = mockk<GraphqlUseCase<RegisterRequestPojo>>(relaxed = true)
     val activateUserUseCase = mockk<ActivateUserUseCase>(relaxed = true)
     val discoverUseCase = mockk<DiscoverUseCase>(relaxed = true)
-    val getFacebookCredentialUseCase = mockk<GetFacebookCredentialUseCase>(relaxed = true)
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
     val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
@@ -79,11 +72,9 @@ class RegisterInitialViewModelTest {
     private var registerRequestObserver = mockk<Observer<Result<RegisterRequestData>>>(relaxed = true)
     private var activateUserObserver = mockk<Observer<Result<ActivateUserData>>>(relaxed = true)
     private var discoverObserver = mockk<Observer<Result<DiscoverData>>>(relaxed = true)
-    private var getFacebookObserver = mockk<Observer<Result<FacebookCredentialData>>>(relaxed = true)
     private var showPopupErrorObserver = mockk<Observer<PopupError>>(relaxed = true)
     private var goToActivationPageObserver = mockk<Observer<MessageErrorException>>(relaxed = true)
     private var goToSecurityQuestionObserver = mockk<Observer<String>>(relaxed = true)
-    private var loginTokenFacebookPhoneObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
     private var loginTokenGoogleObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
     private var getUserInfoObserver = mockk<Observer<Result<ProfileInfoData>>>(relaxed = true)
     private var getUserInfoAddPinObserver = mockk<Observer<Result<ProfileInfoData>>>(relaxed = true)
@@ -100,9 +91,6 @@ class RegisterInitialViewModelTest {
     val throwable = Throwable(message = "Error")
     val messageException = MessageErrorException("error bro")
 
-    val mockFragment = mockk<Fragment>(relaxed = true)
-    val mockCallbackManager = mockk<CallbackManager>(relaxed = true)
-
     private var generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
     private var registerV2UseCase = mockk<GraphqlUseCase<RegisterRequestV2>>(relaxed = true)
 
@@ -118,7 +106,6 @@ class RegisterInitialViewModelTest {
                 registerV2UseCase,
                 activateUserUseCase,
                 discoverUseCase,
-                getFacebookCredentialUseCase,
                 loginTokenUseCase,
                 getProfileUseCase,
                 tickerInfoUseCase,
@@ -134,11 +121,9 @@ class RegisterInitialViewModelTest {
         viewModel.registerRequestResponse.observeForever(registerRequestObserver)
         viewModel.activateUserResponse.observeForever(activateUserObserver)
         viewModel.getProviderResponse.observeForever(discoverObserver)
-        viewModel.getFacebookCredentialResponse.observeForever(getFacebookObserver)
         viewModel.showPopup.observeForever(showPopupErrorObserver)
         viewModel.goToActivationPage.observeForever(goToActivationPageObserver)
         viewModel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
-        viewModel.loginTokenFacebookPhoneResponse.observeForever(loginTokenFacebookPhoneObserver)
         viewModel.loginTokenGoogleResponse.observeForever(loginTokenGoogleObserver)
         viewModel.getUserInfoResponse.observeForever(getUserInfoObserver)
         viewModel.getUserInfoAfterAddPinResponse.observeForever(getUserInfoAddPinObserver)
@@ -353,199 +338,6 @@ class RegisterInitialViewModelTest {
         /* Then */
         MatcherAssert.assertThat(viewModel.getProviderResponse.value, CoreMatchers.instanceOf(Fail::class.java))
         verify { discoverObserver.onChanged(Fail(throwable)) }
-    }
-
-    @Test
-    fun `on Success Get Credential Facebook`() {
-        /* When */
-        val responseEmail = "yoris.prayogo@tokopedia.com"
-        val responseToken = mockk<AccessToken>(relaxed = true)
-
-        every { userSession.loginMethod } returns "facebook"
-        every { getFacebookCredentialUseCase.execute(any(), any()) } answers {
-            secondArg<GetFacebookCredentialSubscriber>().onSuccessEmail(responseToken, responseEmail)
-        }
-
-        viewModel.getFacebookCredential(mockFragment, mockCallbackManager)
-
-        /* Then */
-        assertThat(viewModel.getFacebookCredentialResponse.value, instanceOf(Success::class.java))
-    }
-
-    @Test
-    fun `on Fail Facebook`() {
-        /* When */
-        val errorResponse = Exception()
-
-        every { userSession.loginMethod } returns "facebook"
-        every { getFacebookCredentialUseCase.execute(any(), any()) } answers {
-            secondArg<GetFacebookCredentialSubscriber>().onError(errorResponse)
-        }
-
-        viewModel.getFacebookCredential(mockFragment, mockCallbackManager)
-
-        /* Then */
-        assertThat(viewModel.getFacebookCredentialResponse.value, instanceOf(Fail::class.java))
-        verify {
-            getFacebookObserver.onChanged(Fail(errorResponse))
-        }
-    }
-
-    @Test
-    fun `on Success Register Facebook`() {
-        /* When */
-        val responseToken = mockk<LoginTokenPojo>(relaxed = true)
-
-        every { userSession.loginMethod } returns "facebook"
-        every { loginTokenUseCase.executeLoginSocialMedia(any(), any()) } answers {
-            secondArg<LoginTokenSubscriber>().onSuccessLoginToken(responseToken)
-        }
-
-        viewModel.registerFacebook("", "")
-
-        /* Then */
-        assertThat(viewModel.loginTokenFacebookResponse.value, instanceOf(Success::class.java))
-    }
-
-    @Test
-    fun `on Failed Login Token Facebook`() {
-        /* When */
-        every { userSession.loginMethod } returns "facebook"
-        every { loginTokenUseCase.executeLoginSocialMedia(any(), any()) } answers {
-            secondArg<LoginTokenSubscriber>().onErrorLoginToken(throwable)
-        }
-
-        viewModel.registerFacebook("", "")
-
-        /* Then */
-        assertThat(viewModel.loginTokenFacebookResponse.value, instanceOf(Fail::class.java))
-    }
-
-    @Test
-    fun `on show popup error Login Token Facebook`() {
-        val popupError = PopupError("header")
-
-        /* When */
-        val loginToken = LoginToken(popupError = popupError)
-        val responseToken = LoginTokenPojo(loginToken)
-
-        every { userSession.loginMethod } returns "facebook"
-        every { loginTokenUseCase.executeLoginSocialMedia(any(), any()) } answers {
-            secondArg<LoginTokenSubscriber>().onShowPopupError(responseToken)
-        }
-
-        viewModel.registerFacebook("", "")
-
-        /* Then */
-        verify {
-            showPopupErrorObserver.onChanged(popupError)
-        }
-    }
-
-    @Test
-    fun `on go to activation page Login Token Facebook`() {
-        /* When */
-        every { userSession.loginMethod } returns "facebook"
-        every { loginTokenUseCase.executeLoginSocialMedia(any(), any()) } answers {
-            secondArg<LoginTokenSubscriber>().onGoToActivationPage(messageException)
-        }
-
-        viewModel.registerFacebook("", "")
-
-        /* Then */
-        verify {
-            goToActivationPageObserver.onChanged(messageException)
-        }
-    }
-
-    @Test
-    fun `on go to security questions Token Facebook`() {
-        val email = "yoris.prayogo@tokopedia.com"
-
-        /* When */
-        every { userSession.loginMethod } returns "facebook"
-        every { loginTokenUseCase.executeLoginSocialMedia(any(), any()) } answers {
-            secondArg<LoginTokenSubscriber>().onGoToSecurityQuestion()
-        }
-
-        viewModel.registerFacebook("", email)
-
-        /* Then */
-        verify {
-            goToSecurityQuestionObserver.onChanged(email)
-        }
-    }
-
-    @Test
-    fun `on Success Register Facebook Phone`() {
-        /* When */
-        val responseToken = mockk<LoginTokenPojo>(relaxed = true)
-
-        every { userSession.loginMethod } returns "facebook"
-        every { loginTokenUseCase.executeLoginSocialMedia(any(), any()) } answers {
-            secondArg<LoginTokenFacebookSubscriber>().onSuccessLoginToken(responseToken)
-        }
-
-        viewModel.registerFacebookPhone("", "")
-
-        /* Then */
-        verify {
-            loginTokenFacebookPhoneObserver.onChanged(Success(responseToken))
-        }
-    }
-
-    @Test
-    fun `on Failed Register Facebook Phone`() {
-        /* When */
-        every { userSession.loginMethod } returns "facebook"
-        every { loginTokenUseCase.executeLoginSocialMedia(any(), any()) } answers {
-            secondArg<LoginTokenFacebookSubscriber>().onErrorLoginToken(throwable)
-        }
-
-        viewModel.registerFacebookPhone("", "")
-
-        /* Then */
-        verify {
-            loginTokenFacebookPhoneObserver.onChanged(Fail(throwable))
-        }
-    }
-
-    @Test
-    fun `on Show Popup Register Facebook Phone`() {
-        val popupError = PopupError("header")
-
-        /* When */
-        val loginToken = LoginToken(popupError = popupError)
-        val responseToken = LoginTokenPojo(loginToken)
-
-        /* When */
-        every { userSession.loginMethod } returns "facebook"
-        every { loginTokenUseCase.executeLoginSocialMedia(any(), any()) } answers {
-            secondArg<LoginTokenFacebookSubscriber>().onShowPopupError(responseToken)
-        }
-
-        viewModel.registerFacebookPhone("", "")
-
-        /* Then */
-        verify {
-            showPopupErrorObserver.onChanged(popupError)
-        }
-    }
-
-    @Test
-    fun `on go to security questions Register Facebook Phone`() {
-        /* When */
-        every { userSession.loginMethod } returns "facebook"
-        every { loginTokenUseCase.executeLoginSocialMedia(any(), any()) } answers {
-            secondArg<LoginTokenFacebookSubscriber>().onGoToSecurityQuestion()
-        }
-
-        viewModel.registerFacebookPhone("", "")
-
-        /* Then */
-        verify {
-            goToSecurityQuestionObserver.onChanged("")
-        }
     }
 
     @Test

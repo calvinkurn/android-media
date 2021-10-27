@@ -37,7 +37,7 @@
                     app:typographyType="body_2"
                     app:typographyWeight="bold"
                     tools:textColor="@color/Unify_N700_68"
-                    tools:textSize="@dimen/sp_14"
+                    tools:textSize="14sp"
                     tools:textStyle="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -151,7 +151,7 @@
                     app:typographyWeight="bold"
                     tools:text="Kamar Deluxe Double"
                     tools:textColor="@color/Unify_N700_68"
-                    tools:textSize="@dimen/sp_14"
+                    tools:textSize="14sp"
                     tools:textStyle="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -269,7 +269,7 @@
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:textColor="@color/Unify_N700_96"
-                tools:textSize="@dimen/sp_14"
+                tools:textSize="14sp"
                 tools:textStyle="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -281,7 +281,7 @@
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintTop_toBottomOf="@+id/guest_detail_hint"
                 app:typographyType="body_2"
-                tools:textSize="@dimen/sp_14" />
+                tools:textSize="14sp" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/guest_detail_name"
@@ -299,7 +299,7 @@
                 app:typographyWeight="bold"
                 tools:text="Stevanus Kurniawan Suharyanto"
                 tools:textColor="@color/Unify_N700_96"
-                tools:textSize="@dimen/sp_14"
+                tools:textSize="14sp"
                 tools:textStyle="bold" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
