@@ -105,7 +105,6 @@ fun createHomeViewModel(
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
             playWidgetTools = Lazy { playWidgetTools },
             bestSellerMapper = Lazy { bestSellerMapper },
-            getHomeTokopointsDataUseCase = Lazy { getHomeTokopointsDataUseCase },
             getWalletAppBalanceUseCase = Lazy { getWalletAppBalanceUseCase },
             getWalletEligibilityUseCase = Lazy { getWalletEligibilityUseCase }
     )
