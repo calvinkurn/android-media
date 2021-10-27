@@ -137,6 +137,9 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (userSession.isLoggedIn) {
             payloads[ID] = userSession.userId
         } else {
+            if(userSession.deviceId == null){
+                return
+            }
             payloads[ID] = userSession.deviceId
         }
         payloads[IRIS_SESSION_ID] = irisSession.getSessionId()
