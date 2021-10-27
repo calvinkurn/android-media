@@ -35,14 +35,16 @@ class ShareAdapter constructor(context: Context?) : BaseAdapter() {
         return shareItems[position].hashCode().toLong()
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var holder: ViewHolder? = convertView?.tag as? ViewHolder
 
-        var view: View? = null
+        val view: View
         if (convertView == null) {
             view = inflater.inflate(R.layout.reputation_sheet_grid_item, parent, false)
             holder = ViewHolder(view)
             view?.tag = holder
+        } else {
+            view = convertView
         }
 
         val info = shareItems.getOrNull(position)
@@ -52,7 +54,7 @@ class ShareAdapter constructor(context: Context?) : BaseAdapter() {
         }
 
         holder?.label?.text = info?.name
-        view?.setOnClickListener(shareItems[position].onClickListener)
+        view.setOnClickListener(shareItems[position].onClickListener)
         return view
     }
 

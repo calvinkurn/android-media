@@ -61,7 +61,7 @@ class InboxReputationFilterActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun setupLayout(savedInstanceState: Bundle) {
+    override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         toolbar.setPadding(0, 0, 20, 0)
     }
