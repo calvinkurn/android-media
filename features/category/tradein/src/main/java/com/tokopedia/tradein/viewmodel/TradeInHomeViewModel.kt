@@ -82,7 +82,7 @@ class TradeInHomeViewModel @Inject constructor(
                 result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
                 errorMessage.setValue(response.deviceDiagInputRepsponse.message)
             }
-            homeResultData.value = result
+            homeResultData.postValue(result)
         }
     }
 
@@ -138,7 +138,7 @@ class TradeInHomeViewModel @Inject constructor(
             result.deviceDisplayName = devicedisplayname
         }
         progBarVisibility.value = false
-        homeResultData.value = result
+        homeResultData.postValue(result)
     }
 
     override fun onError(jsonObject: JSONObject) {
@@ -161,7 +161,7 @@ class TradeInHomeViewModel @Inject constructor(
             }
 
             homeResult.isSuccess = false
-            homeResultData.value = homeResult
+            homeResultData.postValue(homeResult)
         }
     }
 
