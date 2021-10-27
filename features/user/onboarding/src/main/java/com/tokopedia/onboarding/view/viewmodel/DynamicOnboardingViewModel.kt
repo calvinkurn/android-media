@@ -63,7 +63,7 @@ class DynamicOnboardingViewModel @Inject constructor(
     }
 
     companion object {
-        const val JOB_WAS_CANCELED = "job was canceled"
         private const val TIMEOUT = 2000L
+        const val JOB_WAS_CANCELED = "job was canceled"
     }
 }
