@@ -17,9 +17,9 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.ShipmentActivity
-import com.tokopedia.checkout.bundle.view.viewholder.PromoCheckoutViewHolder
-import com.tokopedia.checkout.bundle.view.viewholder.ShipmentButtonPaymentViewHolder
-import com.tokopedia.checkout.bundle.view.viewholder.ShipmentItemViewHolder
+import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.unifyprinciples.Typography

@@ -70,7 +70,7 @@
                 app:loader_type="rect" />
         </LinearLayout>
 
-        <com.tokopedia.checkout.bundle.view.helper.NestedScrollWebview
+        <com.tokopedia.checkout.view.helper.NestedScrollWebview
             android:id="@+id/proteksi_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
