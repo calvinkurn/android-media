@@ -146,7 +146,8 @@ class ShopPerformanceAdapterTypeFactory(
                 shopPerformanceListener
             )
             TickerReactivatedViewHolder.LAYOUT -> TickerReactivatedViewHolder(
-                parent
+                parent,
+                shopPerformanceListener
             )
             else -> return super.createViewHolder(parent, type)
         }
