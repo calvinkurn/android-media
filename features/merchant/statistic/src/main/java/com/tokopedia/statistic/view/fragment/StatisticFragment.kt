@@ -933,7 +933,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         if (dateFilterBottomSheet == null) {
             val dateFilters: List<DateFilterItem> = statisticPage?.dateFilters.orEmpty()
             val identifierDescription = statisticPage?.exclusiveIdentifierDateFilterDesc.orEmpty()
-            dateFilterBottomSheet = DateFilterBottomSheet.newInstance(dateFilters, identifierDescription)
+            dateFilterBottomSheet =
+                DateFilterBottomSheet.newInstance(dateFilters, identifierDescription)
         }
     }
 

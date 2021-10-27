@@ -90,6 +90,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
         checkWhiteListStatus()
         binding = ActivityStcStatisticBinding.inflate(layoutInflater).apply {
+            root.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setContentView(root)
         }
 
@@ -310,7 +311,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
+            setStatusBarColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             setLightStatusBar(true)
         }
     }
