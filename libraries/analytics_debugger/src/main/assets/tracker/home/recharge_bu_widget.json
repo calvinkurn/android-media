@@ -73,6 +73,28 @@
     },
     {
       "businessUnit": "home & browse",
+      "eventCategory": "homepage - new bu widget",
+      "currentSite": "tokopediamarketplace",
+      "event": "select_content",
+      "userId": ".+",
+      "eventAction": "click on product card dynamic channel bu carousel",
+      "sessionIris": ".+",
+      "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
+      "items": [
+        {
+          "index": ".+",
+          "item_brand": "none / other",
+          "item_category": ".+",
+          "item_id": ".+",
+          "dimension_40" : ":*",
+          "item_name": ".+",
+          "item_variant": ".+",
+          "price": "\\d*"
+        }
+      ]
+    },
+    {
+      "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
       "event": "clickHomepage",
@@ -85,16 +107,16 @@
       "businessUnit": "home & browse",
       "eventCategory": "homepage - new bu widget",
       "currentSite": "tokopediamarketplace",
-      "event": "select_content",
+      "event": "view_item_list",
       "userId": ".+",
-      "eventAction": "click on product card dynamic channel bu carousel",
+      "eventAction": "impression on product card dynamic channel bu carousel",
       "sessionIris": ".+",
       "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
       "item_list": ".+",
       "items": [
         {
           "index": ".+",
-          "item_brand": ".+",
+          "item_brand": "none / other",
           "item_category": ".+",
           "item_id": ".+",
           "item_name": ".+",
