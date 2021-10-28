@@ -8,6 +8,7 @@ import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -27,6 +28,7 @@ import kotlinx.coroutines.*
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.mediauploader.MediaUploaderViewModel.Companion.UploadState
 
 class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
@@ -40,6 +42,11 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
     @Inject lateinit var uploaderUseCase: UploaderUseCase
 
+    private val viewModel by lazy {
+        ViewModelProvider(this)
+            .get(MediaUploaderViewModel::class.java)
+    }
+
     private var mediaFilePath = ""
     private var isUploadImage = false
 
@@ -52,19 +59,8 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         initInjector()
 
         initViewComponent()
+        initObservable()
         initView()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_PICKER && resultCode == Activity.RESULT_OK) {
-            val imageList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
-            setPreviewInfo(imageList.first(), true)
-
-        } else if (requestCode == REQUEST_VIDEO_PICKER && resultCode == Activity.RESULT_OK) {
-            val videoList = data?.getStringArrayListExtra(VIDEO_RESULT_CODE) ?: arrayListOf()
-            setPreviewInfo(videoList.first(), false)
-        }
     }
 
     private fun initView() {
@@ -73,17 +69,79 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         }
 
         btnRemove.setOnClickListener {
-            btnUpload.isEnabled = false
-            btnPickUp.show()
-            btnRemove.hide()
-
-            imgPreview.setImageDrawable(null)
-            txtInfo.text = "Tidak ada info file."
+            viewModel.setUploadingStatus(UploadState.Aborted)
         }
 
         btnUpload.setOnClickListener {
             progressBar.setValue(0, true)
+            viewModel.setUploadingStatus(UploadState.Uploading)
             mediaUploader()
+        }
+    }
+
+    private fun initObservable() {
+        viewModel.uploading.observe(this, { status ->
+            when (status) {
+                is UploadState.Idle -> {
+                    appendInfo("\nready to upload\n")
+                    btnUpload.isEnabled = true
+                    btnPickUp.hide()
+                    btnRemove.show()
+                }
+                is UploadState.Uploading -> {
+                    appendInfo("\nuploading...\n")
+                    btnUpload.text = "Uploading..."
+
+                    // hide pick-up and show remove button
+                    btnPickUp.hide()
+                    btnRemove.show()
+
+                    // disabled upload button and change caption
+                    btnUpload.isEnabled = false
+                    btnAbort.show()
+                }
+                is UploadState.Stopped -> {
+                    appendInfo("\nclick button to retry\n")
+                    btnUpload.text = "Retry"
+
+                    btnUpload.isEnabled = true
+                }
+                is UploadState.Aborted -> {
+                    txtInfo.text = "Tidak ada info file."
+                    imgPreview.setImageDrawable(null)
+
+                    btnUpload.text = "Upload"
+
+                    btnPickUp.show()
+                    btnRemove.hide()
+
+                    btnUpload.isEnabled = false
+                    btnAbort.hide()
+                }
+                is UploadState.Finished -> {
+                    appendInfo("\nuploaded\n")
+                    btnUpload.text = "Upload"
+                    btnUpload.isEnabled = false
+                    btnAbort.hide()
+                }
+            }
+        })
+    }
+
+    private fun abortButtonClicked() {
+        if (!isUploadImage) {
+            progressBar.setValue(0, true)
+            btnUpload.isEnabled = false
+            btnAbort.show()
+
+            btnAbort.setOnClickListener {
+                launch {
+                    uploaderUseCase.abortUpload {
+                        this.cancel()
+                        btnAbort.hide()
+                    }
+                }
+            }
         }
     }
 
@@ -100,14 +158,11 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             filePath = File(mediaFilePath)
         )
 
-        appendInfo("\nuploading...\n")
-        btnUpload.text = "Uploading..."
-
         uploaderUseCase.trackProgress {
             progressBar.setValue(it, true)
         }
 
-        val job = launch {
+        launch {
             val result = uploaderUseCase(param)
 
             withContext(Dispatchers.Main) {
@@ -115,33 +170,16 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
                 when(result) {
                     is UploadResult.Success -> {
-                        btnUpload.isEnabled = false
-                        btnUpload.text = "Upload"
+                        viewModel.setUploadingStatus(UploadState.Finished)
                         if (isUploadImage) {
-                            appendInfo("result  :${result.uploadId}\n\n")
+                            appendInfo("${result.uploadId}\n")
                         } else {
-                            appendInfo("result  :${result.videoUrl}\n\n")
+                            appendInfo("${result.videoUrl}\n")
                         }
                     }
                     is UploadResult.Error -> {
-                        btnUpload.isEnabled = true
-                        btnUpload.text = "Retry"
-                        appendInfo("oops    : ${result.message}\n\n")
-                    }
-                }
-            }
-        }
-
-        if (!isUploadImage) {
-            progressBar.setValue(0, true)
-            btnUpload.isEnabled = false
-            btnAbort.show()
-
-            btnAbort.setOnClickListener {
-                launch {
-                    uploaderUseCase.abortUpload {
-                        job.cancel()
-                        btnAbort.hide()
+                        viewModel.setUploadingStatus(UploadState.Stopped)
+                        appendInfo("${result.message}\n")
                     }
                 }
             }
@@ -149,9 +187,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun setPreviewInfo(path: String, isImageOrView: Boolean) {
-        btnUpload.isEnabled = true
-        btnPickUp.hide()
-        btnRemove.show()
+        viewModel.setUploadingStatus(UploadState.Idle)
 
         isUploadImage = isImageOrView
         mediaFilePath = path
@@ -177,11 +213,14 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         }
 
         txtInfo.text = """
+            -------------------------------
+            File info:
             name    : ${file.name}
             path    : ${file.absolutePath}
             size    : ${file.length().formattedToMB()} MB
             type    : $sourceType
             source  : $sourceUpload
+            -------------------------------
         """.trimIndent()
     }
 
@@ -228,6 +267,17 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             .mediaUploaderModule(MediaUploaderModule())
             .build()
             .inject(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_PICKER && resultCode == Activity.RESULT_OK) {
+            val imageList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
+            setPreviewInfo(imageList.first(), true)
+        } else if (requestCode == REQUEST_VIDEO_PICKER && resultCode == Activity.RESULT_OK) {
+            val videoList = data?.getStringArrayListExtra(VIDEO_RESULT_CODE) ?: arrayListOf()
+            setPreviewInfo(videoList.first(), false)
+        }
     }
 
     companion object {
