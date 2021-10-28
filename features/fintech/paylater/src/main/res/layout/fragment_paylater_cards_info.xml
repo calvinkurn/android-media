@@ -80,9 +80,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/unify_space_4"
                         android:src="@drawable/ic_information"
-                        app:layout_constraintBottom_toBottomOf="@id/tvTitlePaymentPartner"
-                        app:layout_constraintLeft_toRightOf="@id/tvTitlePaymentPartner"
-                        app:layout_constraintTop_toTopOf="@id/tvTitlePaymentPartner" />
+                        app:layout_constraintBottom_toBottomOf="@id/simulasiHeading"
+                        app:layout_constraintLeft_toRightOf="@id/simulasiHeading"
+                        app:layout_constraintTop_toTopOf="@id/simulasiHeading" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tvSubTitlePaylaterPartner"
@@ -130,7 +130,6 @@
                         android:text="@string/pay_later_payment_simulation"
                         android:textColor="@color/Unify_N700_96"
                         android:textSize="@dimen/unify_font_12"
-
                         app:layout_constraintLeft_toLeftOf="@id/ivPaylaterPartner"
                         app:layout_constraintTop_toBottomOf="@id/borderGreyOne"
                         app:typographyType="body_2"

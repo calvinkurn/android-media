@@ -63,7 +63,7 @@
     <string name="pay_later_installment_used">Pakai cicilan yang mana, nih?</string>
     <string name="pay_later_duration_to_payoff">Mau dicicil berapa lama?</string>
     <string name="pay_later_something_went_wrong">Ada yang salah</string>
-    <string name="pay_later_payment_simulation">Simulasi pembayaran*</string>
+    <string name="pay_later_payment_simulation">Simulasi pembayaran</string>
     <string name="pay_later_service_fee_selected_partner">Biaya Layanan</string>
     <string name="pay_later_one_month">30 Hari</string>
     <string name="pay_later_partner_interest">Bunga</string>
