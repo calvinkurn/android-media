@@ -349,7 +349,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         productBundleOverView?.amountCtaView?.text = if (viewModel.isPreOrderActive(preOrderStatus)) {
             getString(R.string.action_preorder)
         } else {
-            getString(R.string.action_buy)
+            getString(R.string.action_buy_bundle)
         }
     }
 
@@ -439,7 +439,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 productId = selectedProductIds
             )
             // open variant bottom sheet
-            AtcVariantNavigation.showVariantBottomSheet(this, productVariant)
+            AtcVariantNavigation.showVariantBottomSheet(this, productVariant, variantProductId)
         }
     }
 

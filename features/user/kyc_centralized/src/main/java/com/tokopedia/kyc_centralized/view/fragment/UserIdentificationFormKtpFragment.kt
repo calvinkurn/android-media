@@ -20,12 +20,6 @@ import com.tokopedia.utils.file.FileUtil
  * @author by alvinatin on 02/11/18.
  */
 class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>(), UserIdentificationFormActivity.Listener {
-    private var bulletTextLayout: LinearLayout? = null
-
-    override fun initView(view: View) {
-        super.initView(view)
-        bulletTextLayout = view.findViewById(R.id.layout_info_bullet)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

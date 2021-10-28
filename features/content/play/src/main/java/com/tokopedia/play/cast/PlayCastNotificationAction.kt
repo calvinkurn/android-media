@@ -38,7 +38,7 @@ class PlayCastNotificationAction(context: Context) : NotificationActionsProvider
     }
 
     companion object {
-        val ACTION_OPEN_PLAY = "ACTION_OPEN_PLAY"
+        const val ACTION_OPEN_PLAY = "ACTION_OPEN_PLAY"
         private var isShow = false
 
         fun showRedirectButton(context: Context, isShow: Boolean) {

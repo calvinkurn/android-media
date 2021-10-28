@@ -29,13 +29,7 @@
         app:layout_constraintStart_toEndOf="@+id/cameraShutterImage"
         app:layout_constraintTop_toTopOf="@+id/cameraShutterImage" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/cameraControlGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="cameraShutterImage, cameraSwitchImage" />
-
-    <androidx.constraintlayout.widget.Group
+      <androidx.constraintlayout.widget.Group
         android:id="@+id/reviewPhotoGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
