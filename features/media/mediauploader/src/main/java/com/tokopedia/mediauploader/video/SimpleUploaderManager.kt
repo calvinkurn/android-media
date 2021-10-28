@@ -5,36 +5,29 @@ import com.tokopedia.mediauploader.common.data.consts.FILE_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.SOURCE_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
 import com.tokopedia.mediauploader.common.data.consts.formatNotAllowedMessage
-import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.fileExtension
-import com.tokopedia.mediauploader.image.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.video.data.params.SimpleUploadParam
 import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
 import java.io.File
+import javax.inject.Inject
+import com.tokopedia.mediauploader.common.data.mapper.ImagePolicyMapper.mapToSourcePolicy
 
-class SimpleUploaderManager constructor(
+class SimpleUploaderManager @Inject constructor(
     private val policyUseCase: GetVideoPolicyUseCase,
     private val simpleUploaderUseCase: GetSimpleUploaderUseCase
 ) : UploaderManager {
 
     suspend operator fun invoke(file: File, sourceId: String): UploadResult {
-        // sourceId empty validation
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
-        // file full path
         val filePath = file.path
-
-        // request policy by sourceId
         val policyData = policyUseCase(sourceId)
-
-        val sourcePolicy = ImagePolicyMapper.mapToSourcePolicy(
-            policyData.dataPolicy
-        )
+        val sourcePolicy = mapToSourcePolicy(policyData.dataPolicy)
 
         val onError = if (sourcePolicy.videoPolicy != null) {
-            // get acceptable extension based on policy
             val extensions = sourcePolicy.videoPolicy.extension.split(",")
 
             setError(listOf(
@@ -57,13 +50,11 @@ class SimpleUploaderManager constructor(
     }
 
     private suspend fun upload(file: File, sourceId: String): UploadResult {
-        val uploader = simpleUploaderUseCase(
-            SimpleUploadParam(
-                sourceId = sourceId,
-                file = file,
-                timeOut = "120" // mock
-            )
-        )
+        val uploader = simpleUploaderUseCase(SimpleUploadParam(
+            sourceId = sourceId,
+            file = file,
+            timeOut = "120"
+        ))
 
         val error = if (!uploader.errorMessage.isNullOrBlank()) {
             listOf(uploader.errorMessage)
@@ -77,6 +68,10 @@ class SimpleUploaderManager constructor(
         } else {
             setError(error, sourceId, file)
         }
+    }
+
+    override fun setProgressUploader(progress: ProgressCallback?) {
+        simpleUploaderUseCase.progressCallback = progress
     }
 
 }
