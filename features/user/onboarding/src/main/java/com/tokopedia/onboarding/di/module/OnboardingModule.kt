@@ -37,12 +37,4 @@ class OnboardingModule {
     @OnboardingScope
     @Provides
     fun provideOnboardingAnalytics(): OnboardingAnalytics = OnboardingAnalytics()
-
-    @OnboardingScope
-    @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @OnboardingScope
-    @Provides
-    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 }

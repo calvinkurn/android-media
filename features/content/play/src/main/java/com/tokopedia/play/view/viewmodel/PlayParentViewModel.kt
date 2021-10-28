@@ -32,7 +32,7 @@ class PlayParentViewModel constructor(
         private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
         private val dispatchers: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
-        private val pageMonitoring: PlayPltPerformanceCallback,
+        pageMonitoring: PlayPltPerformanceCallback,
 ) : ViewModel() {
 
     class Factory @Inject constructor(
