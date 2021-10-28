@@ -27,9 +27,9 @@ class OfficialStoreActivity : AppCompatActivity(), OfficialStorePerformanceMonit
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startOfficialStorePerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_official_store)
-        startOfficialStorePerformanceMonitoring()
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container, OfficialHomeContainerFragment.newInstance(null), "wishlist")
                 .commit()
