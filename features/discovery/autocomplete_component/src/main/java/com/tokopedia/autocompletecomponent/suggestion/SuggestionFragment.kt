@@ -44,14 +44,14 @@ class SuggestionFragment :
         }
     }
 
-    @Inject
     var presenter: SuggestionContract.Presenter? = null
+        @Inject set
 
-    @Inject
     var suggestionViewUpdateListener: SuggestionViewUpdateListener? = null
+        @Inject set
 
-    @Inject
     var suggestionTracking: SuggestionTracking? = null
+        @Inject set
 
     private var performanceMonitoring: PerformanceMonitoring? = null
     private val suggestionTypeFactory = SuggestionAdapterTypeFactory(

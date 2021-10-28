@@ -44,14 +44,14 @@ class InitialStateFragment:
         }
     }
 
-    @Inject
     var presenter: InitialStateContract.Presenter? = null
+        @Inject set
 
-    @Inject
     var initialStateViewUpdateListener: InitialStateViewUpdateListener? = null
+        @Inject set
 
-    @Inject
     var initialStateTracking: InitialStateTracking? = null
+        @Inject set
 
     private var performanceMonitoring: PerformanceMonitoring? = null
     private val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(this)
