@@ -1,32 +1,18 @@
 package com.tokopedia.mediauploader
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.mediauploader.common.data.consts.NETWORK_ERROR
-import com.tokopedia.mediauploader.common.data.consts.TIMEOUT_ERROR
-import com.tokopedia.mediauploader.common.logger.ERROR_MAX_LENGTH
-import com.tokopedia.mediauploader.common.logger.trackToTimber
 import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.fileExtension
 import com.tokopedia.mediauploader.common.util.isImage
-import com.tokopedia.mediauploader.common.util.slice
+import com.tokopedia.mediauploader.common.util.request
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import okhttp3.internal.http2.ConnectionShutdownException
-import okhttp3.internal.http2.StreamResetException
 import java.io.File
-import java.io.InterruptedIOException
-import java.net.SocketException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.math.ceil
-import android.util.Log.getStackTraceString as getStackTraceMessage
 
 class UploaderUseCase @Inject constructor(
     private val imageUploaderManager: ImageUploaderManager,
@@ -37,95 +23,49 @@ class UploaderUseCase @Inject constructor(
 
     private var progressUploader: ProgressCallback? = null
 
+    private lateinit var sourceId: String
+    private lateinit var file: File
+
     // this domain isn't using graphql service
     override fun graphqlQuery() = ""
 
     override suspend fun execute(params: RequestParams): UploadResult {
-        val sourceId = params.getString(PARAM_SOURCE_ID, "")
-        val file = params.getObject(PARAM_FILE_PATH) as File
+        sourceId = params.getString(PARAM_SOURCE_ID, "")
+        file = params.getObject(PARAM_FILE_PATH) as File
 
         return if (file.name.isImage()) {
-            imageUploader(file, sourceId)
+            imageUploader()
         } else {
-            if (file.length() >= THRESHOLD_LARGE_FILE_SIZE) {
-                largeUploader(file, sourceId)
+            if (file.length() <= THRESHOLD_LARGE_FILE_SIZE) {
+                simpleUploader()
             } else {
-                simpleUploader(file, sourceId)
+                largeUploader()
             }
         }
     }
 
+    private suspend fun largeUploader() = request(
+        file = file,
+        sourceId = sourceId,
+        uploaderManager = videoLargeUploaderManager,
+        execute = { videoLargeUploaderManager(file, sourceId, userSession.accessToken) }
+    )
 
-    private suspend fun largeUploader(file: File, sourceId: String): UploadResult {
-        return try {
-            videoLargeUploaderManager(file, sourceId, userSession.accessToken)
-        } catch (e: SocketTimeoutException) {
-            videoLargeUploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, file)
-        } catch (e: StreamResetException) {
-            videoLargeUploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, file)
-        } catch (e: Exception) {
-            if (e !is UnknownHostException &&
-                e !is SocketException &&
-                e !is InterruptedIOException &&
-                e !is ConnectionShutdownException &&
-                e !is CancellationException
-            ) {
-                @Suppress("UselessCallOnNotNull")
-                if (getStackTraceMessage(e).orEmpty().isNotEmpty()) {
-                    trackToTimber(sourceId, getStackTraceMessage(e).take(ERROR_MAX_LENGTH).trim())
-                }
-            }
-            return videoLargeUploaderManager.setError(listOf(NETWORK_ERROR), sourceId, file)
-        }
-    }
+    private suspend fun simpleUploader() = request(
+        file = file,
+        sourceId = sourceId,
+        loader = progressUploader,
+        uploaderManager = videoSimpleUploaderManager,
+        execute = { videoSimpleUploaderManager(file, sourceId) }
+    )
 
-    private suspend fun simpleUploader(file: File, sourceId: String): UploadResult {
-        return try {
-            videoSimpleUploaderManager(file, sourceId)
-        } catch (e: SocketTimeoutException) {
-            videoSimpleUploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, file)
-        } catch (e: StreamResetException) {
-            videoSimpleUploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, file)
-        } catch (e: Exception) {
-            if (e !is UnknownHostException &&
-                e !is SocketException &&
-                e !is InterruptedIOException &&
-                e !is ConnectionShutdownException &&
-                e !is CancellationException
-            ) {
-                @Suppress("UselessCallOnNotNull")
-                if (getStackTraceMessage(e).orEmpty().isNotEmpty()) {
-                    trackToTimber(sourceId, getStackTraceMessage(e).take(ERROR_MAX_LENGTH).trim())
-                }
-            }
-            return videoSimpleUploaderManager.setError(listOf(NETWORK_ERROR), sourceId, file)
-        }
-    }
-
-    private suspend fun imageUploader(file: File, sourceId: String): UploadResult {
-        return try {
-            imageUploaderManager.setProgressUploader(progressUploader)
-
-            imageUploaderManager(file, sourceId)
-        } catch (e: SocketTimeoutException) {
-            imageUploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, file)
-        } catch (e: StreamResetException) {
-            imageUploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, file)
-        } catch (e: Exception) {
-            if (e !is UnknownHostException &&
-                e !is SocketException &&
-                e !is InterruptedIOException &&
-                e !is ConnectionShutdownException &&
-                e !is CancellationException
-            ) {
-                @Suppress("UselessCallOnNotNull")
-                if (getStackTraceMessage(e).orEmpty().isNotEmpty()) {
-                    trackToTimber(sourceId, getStackTraceMessage(e).take(ERROR_MAX_LENGTH).trim())
-                }
-            }
-            return imageUploaderManager.setError(listOf(NETWORK_ERROR), sourceId, file)
-        }
-    }
+    private suspend fun imageUploader() = request(
+        file = file,
+        sourceId = sourceId,
+        loader = progressUploader,
+        uploaderManager = imageUploaderManager,
+        execute = { imageUploaderManager(file, sourceId) }
+    )
 
     // Public Method
     fun trackProgress(progress: (percentage: Int) -> Unit) {
@@ -144,10 +84,17 @@ class UploaderUseCase @Inject constructor(
         }
     }
 
+    // Public Method
+    suspend fun abortUpload(abort: () -> Unit) {
+        try {
+            videoLargeUploaderManager.abortUpload(userSession.accessToken) { abort() }
+        } catch (t: Throwable) {}
+    }
+
     companion object {
         const val PARAM_SOURCE_ID = "source_id"
         const val PARAM_FILE_PATH = "file_path"
 
-        private const val THRESHOLD_LARGE_FILE_SIZE = 20971520
+        private const val THRESHOLD_LARGE_FILE_SIZE = 20 * 1024 * 1024 // 20 MB
     }
 }
