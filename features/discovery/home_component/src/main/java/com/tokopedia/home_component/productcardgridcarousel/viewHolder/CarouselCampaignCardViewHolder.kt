@@ -30,14 +30,21 @@ class CarouselCampaignCardViewHolder(
     }
 
     private fun bindView(element: CarouselCampaignCardDataModel?) {
-        element?.grid?.let {
-            cardImage.loadImage(it.imageUrl)
-            element.listener.onProductCardClicked(
+        element?.grid?.let { grid ->
+            cardImage.loadImage(grid.imageUrl)
+            element.listener.onProductCardImpressed(
                 channel = channels,
-                channelGrid = it,
-                position = adapterPosition,
-                applink = it.applink
+                channelGrid = grid,
+                position = adapterPosition
             )
+            cardContainer.setOnClickListener {
+                element.listener.onProductCardClicked(
+                    channel = channels,
+                    channelGrid = grid,
+                    position = adapterPosition,
+                    applink = grid.applink
+                )
+            }
         }
     }
 
