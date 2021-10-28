@@ -71,6 +71,39 @@
     },
     {
       "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickHomepage",
+      "userId": ".+",
+      "eventAction": "click view all on dynamic channel bu carousel",
+      "sessionIris": ".+",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage - new bu widget",
+      "currentSite": "tokopediamarketplace",
+      "item_list": ".*",
+      "event": "view_item_list",
+      "userId": ".+",
+      "eventAction": "impression on product card dynamic channel bu carousel",
+      "sessionIris": ".+",
+      "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
+      "items": [
+        {
+          "index": ".+",
+          "item_brand": "none / other",
+          "item_category": ".+",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": ".+",
+          "dimension_40" : ":*",
+          "price": "\\d*"
+        }
+      ]
+    },
+    {
+      "businessUnit": "home & browse",
       "eventCategory": "homepage - new bu widget",
       "currentSite": "tokopediamarketplace",
       "event": "select_content",
@@ -86,29 +119,7 @@
           "item_id": ".+",
           "dimension_40" : ":*",
           "item_name": ".+",
-          "item_variant": ".+",
-          "price": "\\d*"
-        }
-      ]
-    },
-    {
-      "businessUnit": "home & browse",
-      "eventCategory": "homepage - new bu widget",
-      "currentSite": "tokopediamarketplace",
-      "event": "view_item_list",
-      "userId": ".+",
-      "eventAction": "impression on product card dynamic channel bu carousel",
-      "sessionIris": ".+",
-      "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
-      "items": [
-        {
-          "index": ".+",
-          "item_brand": "none / other",
-          "item_category": ".+",
-          "item_id": ".+",
-          "item_name": ".+",
-          "item_variant": ".+",
-          "dimension_40" : ":*",
+          "item_variant": ".*",
           "price": "\\d*"
         }
       ]
