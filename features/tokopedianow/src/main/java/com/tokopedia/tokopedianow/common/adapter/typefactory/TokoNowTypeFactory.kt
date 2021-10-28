@@ -4,7 +4,7 @@ import com.tokopedia.tokopedianow.common.model.*
 
 interface TokoNowTypeFactory {
     fun type(uiModel: TokoNowCategoryGridUiModel): Int
-    fun type(uiModel: TokoNowRecentPurchaseUiModel): Int
+    fun type(uiModel: TokoNowRepurchaseUiModel): Int
     fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int
     fun type(uiModel: TokoNowEmptyStateOocUiModel): Int
     fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int

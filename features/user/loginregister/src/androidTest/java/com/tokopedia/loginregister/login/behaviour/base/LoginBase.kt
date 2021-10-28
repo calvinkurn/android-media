@@ -80,9 +80,6 @@ open class LoginBase: LoginRegisterBase() {
     lateinit var getAdminTypeUseCaseStub: GetAdminTypeUseCaseStub
 
     @Inject
-    lateinit var getFacebookCredentialUseCaseStub: GetFacebookCredentialUseCaseStub
-
-    @Inject
     lateinit var loginTokenUseCaseStub: LoginTokenUseCaseStub
 
     @Inject

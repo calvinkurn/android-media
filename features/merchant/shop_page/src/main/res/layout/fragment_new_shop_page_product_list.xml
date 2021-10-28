@@ -18,10 +18,10 @@
             android:descendantFocusability="blocksDescendants"
             android:focusable="false"
             android:focusableInTouchMode="false"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
             android:clipToPadding="false"
             android:clipChildren="false"/>
     </com.tokopedia.shop.product.view.widget.StickySingleHeaderView>

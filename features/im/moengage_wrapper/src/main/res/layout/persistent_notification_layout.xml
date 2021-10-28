@@ -5,7 +5,7 @@
     android:background="@color/Unify_N50"
     android:gravity="center_horizontal|center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/dp_5">
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/image_icon6"
@@ -26,9 +26,9 @@
             android:id="@+id/image_icon1"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
-            android:paddingLeft="@dimen/dp_5"
-            android:paddingTop="@dimen/dp_5"
-            android:paddingRight="@dimen/dp_5"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
             android:paddingBottom="@dimen/dp_3"
             android:scaleType="fitCenter"
             android:contentDescription="@null" />
@@ -39,8 +39,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingLeft="@dimen/dp_2"
-            android:paddingRight="@dimen/dp_2"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:textColor="@color/Unify_N700"
             android:textSize="@dimen/sp_10" />
     </LinearLayout>
@@ -57,10 +57,10 @@
             android:id="@+id/image_icon2"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
-            android:paddingLeft="@dimen/dp_5"
-            android:paddingTop="@dimen/dp_5"
-            android:paddingRight="@dimen/dp_5"
-            android:paddingBottom="@dimen/dp_2"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="2dp"
             android:scaleType="fitCenter"
             android:contentDescription="@null" />
 
@@ -70,8 +70,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingLeft="@dimen/dp_2"
-            android:paddingRight="@dimen/dp_2"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:textColor="@color/Unify_N700"
             android:textSize="@dimen/sp_10" />
     </LinearLayout>
@@ -88,10 +88,10 @@
             android:id="@+id/image_icon3"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
-            android:paddingLeft="@dimen/dp_5"
-            android:paddingTop="@dimen/dp_5"
-            android:paddingRight="@dimen/dp_5"
-            android:paddingBottom="@dimen/dp_2"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="2dp"
             android:scaleType="fitCenter"
             android:contentDescription="@null" />
 
@@ -101,8 +101,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingLeft="@dimen/dp_2"
-            android:paddingRight="@dimen/dp_2"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:textColor="@color/Unify_N700"
             android:textSize="@dimen/sp_10" />
     </LinearLayout>
@@ -119,10 +119,10 @@
             android:id="@+id/image_icon4"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
-            android:paddingLeft="@dimen/dp_5"
-            android:paddingTop="@dimen/dp_5"
-            android:paddingRight="@dimen/dp_5"
-            android:paddingBottom="@dimen/dp_2"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="2dp"
             android:scaleType="fitCenter"
             android:contentDescription="@null" />
 
@@ -132,15 +132,15 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingLeft="@dimen/dp_2"
-            android:paddingRight="@dimen/dp_2"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:textColor="@color/Unify_N700"
             android:textSize="@dimen/sp_10" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/lin_container_5"
-        android:layout_width="@dimen/dp_40"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical">

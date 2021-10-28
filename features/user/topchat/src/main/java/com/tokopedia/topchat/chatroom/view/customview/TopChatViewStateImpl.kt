@@ -19,7 +19,7 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
@@ -104,7 +104,7 @@ open class TopChatViewStateImpl constructor(
         initView()
     }
 
-    override fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel = chatRoomViewModel.headerModel
+    override fun getChatRoomHeaderModel(): ChatRoomHeaderUiModel = chatRoomViewModel.headerModel
     override fun useDefaultReplyWatcher(): Boolean = false
 
     override fun initView() {
@@ -488,15 +488,15 @@ open class TopChatViewStateImpl constructor(
         if (getAdapter().getList().isNotEmpty()) {
             for (i in 0 until getAdapter().getList().size) {
                 var item = getAdapter().getList()[i]
-                if (item is BaseChatViewModel) {
-                    if (item is SendableViewModel) {
-                        if ((item as SendableViewModel).isDummy) {
+                if (item is BaseChatUiModel) {
+                    if (item is SendableUiModel) {
+                        if ((item as SendableUiModel).isDummy) {
                             break
                         } else {
-                            return transform(item as BaseChatViewModel)
+                            return transform(item as BaseChatUiModel)
                         }
                     } else {
-                        return transform(item as BaseChatViewModel)
+                        return transform(item as BaseChatUiModel)
                     }
                 } else {
                     break
@@ -513,14 +513,14 @@ open class TopChatViewStateImpl constructor(
     ) {
 
         val isBlocked = when {
-            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL)
+            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL)
             -> {
                 blockedStatus.isPromoBlocked
             }
-            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP) -> {
+            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) -> {
                 blockedStatus.isBlocked
             }
-            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_USER) -> {
+            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) -> {
                 blockedStatus.isBlocked
             }
             else -> {
@@ -561,10 +561,10 @@ open class TopChatViewStateImpl constructor(
 
         val blockText = chatBlockLayout.findViewById<TextView>(R.id.blocked_text)
         val category = when {
-            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
-            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP) ->
+            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
+            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) ->
                 CHAT_BOTH
-            opponentRole.toLowerCase().contains(ChatRoomHeaderViewModel.Companion.ROLE_USER) ->
+            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) ->
                 CHAT_PERSONAL
             else -> {
                 ""
@@ -582,7 +582,7 @@ open class TopChatViewStateImpl constructor(
         chatBlockLayout.visibility = View.GONE
     }
 
-    private fun transform(item: BaseChatViewModel): Parcelable? {
+    private fun transform(item: BaseChatUiModel): Parcelable? {
         return ReplyParcelableModel(item.messageId, item.message, item.replyTime)
     }
 
@@ -708,7 +708,7 @@ open class TopChatViewStateImpl constructor(
         analytics.eventClickTemplate()
     }
 
-    override fun showRetryUploadImages(it: ImageUploadViewModel, retry: Boolean) {
+    override fun showRetryUploadImages(it: ImageUploadUiModel, retry: Boolean) {
         getAdapter().showRetryFor(it, retry)
     }
 

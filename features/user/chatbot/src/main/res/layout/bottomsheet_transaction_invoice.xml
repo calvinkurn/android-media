@@ -24,7 +24,7 @@
 
     <View
         android:id="@+id/view2"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_chatbot_6"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:background="@drawable/chatbot_bg_shader_gray"

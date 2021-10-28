@@ -463,8 +463,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
             val list = it.listChat.filter {
-                !((it is FallbackAttachmentViewModel && it.message.isEmpty()) ||
-                        (it is MessageViewModel && it.message.isEmpty()))
+                !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
+                        (it is MessageUiModel && it.message.isEmpty()))
             }
 
             updateViewData(it)
@@ -478,8 +478,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessGetPreviousChat(page: Int): (ChatroomViewModel) -> Unit {
         return {
             val list = it.listChat.filter {
-                !((it is FallbackAttachmentViewModel && it.message.isEmpty()) ||
-                        (it is MessageViewModel && it.message.isEmpty()))
+                !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
+                        (it is MessageUiModel && it.message.isEmpty()))
             }
             if (page == FIRST_PAGE) isFirstPage = false
             if (list.isNotEmpty()){
@@ -526,7 +526,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun managePreviousStateOfBubble(visitable: Visitable<*>) {
-        if(visitable is MessageViewModel && visitable.isSender){
+        if(visitable is MessageUiModel && visitable.isSender){
             getViewState()?.hideInvoiceList()
             getViewState()?.hideHelpfullOptions()
         }
@@ -534,8 +534,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun manageActionBubble(visitable: Visitable<*>) {
         when {
-            visitable is MessageViewModel && visitable.isSender -> hideActionBubble()
-            visitable is AttachInvoiceSentViewModel && visitable.isSender -> hideActionBubble()
+            visitable is MessageUiModel && visitable.isSender -> hideActionBubble()
+            visitable is AttachInvoiceSentUiModel && visitable.isSender -> hideActionBubble()
         }
     }
 
@@ -544,7 +544,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun sendEventForWelcomeMessage(visitable: Visitable<*>) {
-        if (visitable is BaseChatViewModel && visitable.message.contains(WELCOME_MESSAGE_VALIDATION)) {
+        if (visitable is BaseChatUiModel && visitable.message.contains(WELCOME_MESSAGE_VALIDATION)) {
             chatbotAnalytics.eventShowView(ACTION_IMPRESSION_WELCOME_MESSAGE)
         }
     }
@@ -587,7 +587,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onQuickReplyClicked(model: QuickReplyViewModel) {
         chatbotAnalytics.eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
-        presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime(), opponentId)
+        presenter.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
@@ -602,7 +602,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    override fun onImageUploadCancelClicked(image: ImageUploadViewModel) {
+    override fun onImageUploadCancelClicked(image: ImageUploadUiModel) {
         presenter.cancelImageUpload()
         getViewState()?.showRetryUploadImages(image, true)
     }
@@ -695,7 +695,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun onErrorImageUpload(): (Throwable, ImageUploadViewModel) -> Unit {
+    private fun onErrorImageUpload(): (Throwable, ImageUploadUiModel) -> Unit {
         return { throwable, image ->
             if (view != null) {
                 Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
@@ -704,7 +704,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
+    private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
 
         val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
         if (imagePathList.size <= 0) {
@@ -719,14 +719,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return null
     }
 
-    fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
-        return ImageUploadViewModel.Builder()
+    fun generateChatViewModelWithImage(imageUrl: String): ImageUploadUiModel {
+        return ImageUploadUiModel.Builder()
             .withMsgId(messageId)
             .withFromUid(opponentId)
             .withAttachmentId((System.currentTimeMillis() / ONE_SECOND_IN_MILLISECONDS).toString())
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
-            .withReplyTime(SendableViewModel.SENDING_TEXT)
-            .withStartTime(SendableViewModel.generateStartTime())
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
+            .withStartTime(SendableUiModel.generateStartTime())
             .withIsDummy(true)
             .withImageUrl(imageUrl)
             .build()
@@ -752,7 +752,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun onSendButtonClicked() {
         chatbotAnalytics.eventClick(ACTION_REPLY_BUTTON_CLICKED)
         val sendMessage = replyEditText.text.toString()
-        val startTime = SendableViewModel.generateStartTime()
+        val startTime = SendableUiModel.generateStartTime()
         presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
                 onSendingMessage(sendMessage, startTime))
     }
@@ -771,7 +771,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             showSearchInvoiceScreen()
         } else {
             getViewState()?.hideActionBubble(model)
-            presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
+            presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
             enableTyping()
         }
     }
@@ -927,7 +927,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun sendOptionListSelectedMessage(selectedMessage: String) {
         val sendMessage = selectedMessage
-        val startTime = SendableViewModel.generateStartTime()
+        val startTime = SendableUiModel.generateStartTime()
         presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
                 onSendingMessage(sendMessage, startTime))
     }
@@ -940,7 +940,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }, REQUEST_SUBMIT_CSAT)
     }
 
-    override fun onRetrySendImage(element: ImageUploadViewModel) {
+    override fun onRetrySendImage(element: ImageUploadUiModel) {
         val bottomSheetPage = BottomSheetUnify()
         val viewBottomSheetPage = View.inflate(context, R.layout.retry_upload_image_bottom_sheet_layout, null).apply {
             val rvPages = findViewById<RecyclerView>(R.id.rv_image_upload_option)
@@ -965,7 +965,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     }
 
-    fun onBottomSheetItemClicked(element: ImageUploadViewModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
+    fun onBottomSheetItemClicked(element: ImageUploadUiModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
         return {
             when (it) {
                 RESEND -> {
@@ -1020,7 +1020,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     onGetSuccessResponse = {},
                     setStickyButtonStatus = { isResoListNotEmpty ->
                         if (isResoListNotEmpty) {
-                            val startTime = SendableViewModel.generateStartTime()
+                            val startTime = SendableUiModel.generateStartTime()
                             presenter.sendMessage(messageId, replyText, startTime, opponentId,
                                     onSendingMessage(replyText, startTime))
                         }
@@ -1047,7 +1047,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun transactionNotFoundClick() {
         val selected = presenter.getActionBubbleforNoTrasaction()
-        presenter.sendActionBubble(messageId, selected, SendableViewModel.generateStartTime(), opponentId)
+        presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
     }
 }
 
