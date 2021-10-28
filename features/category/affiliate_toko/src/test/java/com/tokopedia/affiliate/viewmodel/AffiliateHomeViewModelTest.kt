@@ -6,10 +6,7 @@ import com.tokopedia.affiliate.model.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -20,6 +17,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import rx.Subscriber
 
 @ExperimentalCoroutinesApi
 class AffiliateHomeViewModelTest{
@@ -76,11 +74,16 @@ class AffiliateHomeViewModelTest{
     @Test
     fun getAffiliatePerformance() {
         val affiliatePerformanceData: AffiliatePerformanceData = mockk(relaxed = true)
+        val item : AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData.Item = mockk(relaxed = true)
+        val sectionData = AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData(
+                null,null,null,null,null,
+                arrayListOf(item),null,null)
+        affiliatePerformanceData.getAffiliateItemsPerformanceList?.data?.sectionData = sectionData
         coEvery { affiliatePerformanceUseCase.affiliatePerformance(any(),any()) } returns affiliatePerformanceData
 
         affiliateHomeViewModel.getAffiliatePerformance(0)
 
-        //assertEquals(affiliateHomeViewModel.getAffiliateDataItems().value, affiliatePerformanceData)
+        assertEquals(affiliateHomeViewModel.getAffiliateDataItems().value, affiliateHomeViewModel.convertDataToVisitables(sectionData))
         assertEquals(affiliateHomeViewModel.getShimmerVisibility().value, false)
 
     }

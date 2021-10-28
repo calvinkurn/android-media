@@ -59,14 +59,8 @@ class AffiliateHomeViewModel @Inject constructor(
                 shimmerVisibility.value = false
             affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
                 totalItemsCount.value = it.itemTotalCount
-                val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-                it.items?.let { items ->
-                    for (product in items) {
-                        product?.let {
-                            tempList.add(AffiliateSharedProductCardsModel(product))
-                        }
-                    }
-                    affiliateDataList.value = tempList
+                convertDataToVisitables(it)?.let { visitables ->
+                    affiliateDataList.value = visitables
                 }
             }
         }, onError = {
@@ -86,6 +80,19 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun isUserLoggedIn(): Boolean {
         return userSessionInterface.isLoggedIn
+    }
+
+    fun convertDataToVisitables(data : AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
+        val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+        data.items?.let { items ->
+            for (product in items) {
+                product?.let {
+                    tempList.add(AffiliateSharedProductCardsModel(product))
+                }
+            }
+            return@let tempList
+        }
+        return null
     }
 
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
