@@ -68,7 +68,8 @@
       "userId": ".+",
       "eventAction": "impression on product card dynamic channel bu carousel",
       "sessionIris": ".+",
-      "eventLabel": ".+",
+      "item_list": "",
+      "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
       "items": [
         {
           "item_id": ".+",
