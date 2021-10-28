@@ -21,7 +21,7 @@ class InAppLocalDatabaseController private constructor(private val application: 
         get() = Dispatchers.Main
 
     private val getInAppListUseCase: GetInAppListUseCase
-            by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+            by lazy(LazyThreadSafetyMode.NONE) {
                 GetInAppListUseCase(repositoryManager)
             }
     private val deleteExpireInAppUseCase: DeleteExpireInAppUseCase
@@ -63,13 +63,13 @@ class InAppLocalDatabaseController private constructor(private val application: 
         @Volatile
         private var INSTANCE: InAppLocalDatabaseController? = null
 
-        private val SERVER_LOG_STR = "CM_VALIDATION"
-        private val FETCH_ERROR_STR = "CM INApp Fetch V2 Error"
-        private val CLEAR_ERROR_STR = "CM InApp Clear V2 Error"
-        private val SERVER_KEY_TYPE = "type"
-        private val SERVER_KEY_ERROR = "err"
-        private val SERVER_KEY_DATA = "data"
-        private val SERVER_LOG_EXCEPTION = "exception"
+        private const val SERVER_LOG_STR = "CM_VALIDATION"
+        private const val FETCH_ERROR_STR = "CM INApp Fetch V2 Error"
+        private const val CLEAR_ERROR_STR = "CM InApp Clear V2 Error"
+        private const val SERVER_KEY_TYPE = "type"
+        private const val SERVER_KEY_ERROR = "err"
+        private const val SERVER_KEY_DATA = "data"
+        private const val SERVER_LOG_EXCEPTION = "exception"
 
         fun getInstance(application: Application,
                         repositoryManager: RepositoryManager): InAppLocalDatabaseController =
