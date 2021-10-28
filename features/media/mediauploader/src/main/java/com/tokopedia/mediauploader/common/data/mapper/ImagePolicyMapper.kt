@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.image.data.mapper
+package com.tokopedia.mediauploader.common.data.mapper
 
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.data.entity.UploaderPolicy
