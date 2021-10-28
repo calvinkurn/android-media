@@ -25,7 +25,8 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig
+.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
@@ -75,6 +76,7 @@ class ReviewPendingFragment :
         const val CREATE_REVIEW_REQUEST_CODE = 420
         const val INBOX_SOURCE = "inbox"
         const val COACH_MARK_SHOWN = false
+        const val PARAM_WRITE_FORM_SOURCE = "source"
         fun createNewInstance(reviewInboxListener: ReviewInboxListener): ReviewPendingFragment {
             return ReviewPendingFragment().apply {
                 this.reviewInboxListener = reviewInboxListener
@@ -558,6 +560,7 @@ class ReviewPendingFragment :
                 )
                     .buildUpon()
                     .appendQueryParameter(PARAM_RATING, rating.toString())
+                    .appendQueryParameter(PARAM_WRITE_FORM_SOURCE, INBOX_SOURCE)
                     .build()
                     .toString()
             )
