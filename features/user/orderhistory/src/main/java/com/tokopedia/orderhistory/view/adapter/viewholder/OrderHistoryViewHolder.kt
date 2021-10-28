@@ -3,7 +3,6 @@ package com.tokopedia.orderhistory.view.adapter.viewholder
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.view.View
-import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
@@ -11,14 +10,15 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.data.Product
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.orderhistory.databinding.ItemOrderHistoryBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class OrderHistoryViewHolder(
         itemView: View?,
         private val listener: Listener? = null
 ) : AbstractViewHolder<Product>(itemView) {
+
+    private val binding: ItemOrderHistoryBinding? by viewBinding()
 
     interface Listener {
         fun onClickBuyAgain(product: Product)
@@ -27,15 +27,15 @@ class OrderHistoryViewHolder(
         fun trackSeenProduct(product: Product, position: Int)
     }
 
-    private var thumbnail: ImageView? = itemView?.findViewById(R.id.iv_thumbnail)
-    private var emptyStock: Label? = itemView?.findViewById(R.id.lb_empty_stock)
-    private var productName: Typography? = itemView?.findViewById(R.id.tv_product_name)
-    private var campaignDiscount: Label? = itemView?.findViewById(R.id.tv_campaign_discount)
-    private var campaignPreviousPrice: Typography? = itemView?.findViewById(R.id.tv_campaign_price)
-    private var finalPrice: Typography? = itemView?.findViewById(R.id.tv_price)
-    private var freeShipping: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
-    private var buyAgainButton: UnifyButton? = itemView?.findViewById(R.id.tv_buy)
-    private var wishListButton: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
+//    private var thumbnail: ImageView? = itemView?.findViewById(R.id.iv_thumbnail)
+//    private var emptyStock: Label? = itemView?.findViewById(R.id.lb_empty_stock)
+//    private var productName: Typography? = itemView?.findViewById(R.id.tv_product_name)
+//    private var campaignDiscount: Label? = itemView?.findViewById(R.id.tv_campaign_discount)
+//    private var campaignPreviousPrice: Typography? = itemView?.findViewById(R.id.tv_campaign_price)
+//    private var finalPrice: Typography? = itemView?.findViewById(R.id.tv_price)
+//    private var freeShipping: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
+//    private var buyAgainButton: UnifyButton? = itemView?.findViewById(R.id.tv_buy)
+//    private var wishListButton: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
 
     override fun bind(product: Product?) {
         if (product == null) return
@@ -59,14 +59,14 @@ class OrderHistoryViewHolder(
     private fun bindImage(product: Product) {
         ImageHandler.loadImageRounded2(
                 itemView.context,
-                thumbnail,
+                binding?.ivThumbnail,
                 product.imageUrl,
                 8f.toPx()
         )
     }
 
     private fun bindEmptyStockLabel(product: Product) {
-        emptyStock?.apply {
+        binding?.lbEmptyStock?.apply {
             if (product.hasEmptyStock) {
                 show()
                 unlockFeature = true
@@ -78,7 +78,7 @@ class OrderHistoryViewHolder(
     }
 
     private fun bindName(product: Product) {
-        productName?.text = product.name
+        binding?.tvProductName?.text = product.name
     }
 
     private fun bindCampaign(product: Product) {
@@ -92,54 +92,58 @@ class OrderHistoryViewHolder(
     }
 
     private fun bindPrice(product: Product) {
-        finalPrice?.text = product.price
+        binding?.tvPrice?.text = product.price
     }
 
     private fun bindCtaButton(product: Product) {
         if (product.hasEmptyStock) {
-            wishListButton?.show()
-            buyAgainButton?.hide()
-            bindClickWishList(product)
+            binding?.let { binding ->
+                binding.tvWishlist.show()
+                binding.tvBuy.hide()
+                bindClickWishList(product)
+            }
         } else {
-            wishListButton?.hide()
-            buyAgainButton?.show()
-            bindClickBuyAgain(product)
+            binding?.let { binding ->
+                binding.tvWishlist.hide()
+                binding.tvBuy.show()
+                bindClickBuyAgain(product)
+            }
         }
     }
 
     private fun bindFreeShipping(product: Product) {
         if (product.hasFreeShipping) {
-            freeShipping?.show()
-            ImageHandler.loadImageRounded2(itemView.context, freeShipping, product.freeShipping.imageUrl)
+            binding?.ivFreeShipping?.show()
+            ImageHandler.loadImageRounded2(itemView.context, binding?.ivFreeShipping, product.freeShipping.imageUrl)
         } else {
-            freeShipping?.hide()
+            binding?.ivFreeShipping?.hide()
         }
     }
 
     private fun bindClickBuyAgain(product: Product) {
-        buyAgainButton?.setOnClickListener {
+        binding?.tvBuy?.setOnClickListener {
             listener?.onClickBuyAgain(product)
         }
     }
 
     private fun bindClickWishList(product: Product) {
-        wishListButton?.setOnClickListener {
+        binding?.tvWishlist?.setOnClickListener {
             listener?.onClickAddToWishList(product)
         }
     }
 
     private fun toggleCampaign(visibility: Int) {
-        campaignDiscount?.visibility = visibility
-        campaignPreviousPrice?.visibility = visibility
+        binding?.tvCampaignDiscount?.visibility = visibility
+        binding?.tvCampaignPrice?.visibility = visibility
     }
 
     @SuppressLint("SetTextI18n")
     private fun bindDiscount(product: Product) {
-        campaignDiscount?.text = "${product.discountedPercentage}%"
+        binding?.tvCampaignDiscount?.text = "${product.discountedPercentage}%"
     }
 
     private fun bindDropPrice(product: Product) {
-        campaignPreviousPrice?.apply {
+        binding?.tvCampaignPrice?.apply {
             text = product.priceBefore
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
