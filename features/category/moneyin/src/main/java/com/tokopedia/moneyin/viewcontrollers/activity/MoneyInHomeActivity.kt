@@ -177,7 +177,6 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                             sendGoToProductDetailGTM()
                             finish()
                         }
-                        showDeviceNotElligiblePopup(R.string.tradein_not_elligible_price_high)
                         mTvNotUpto?.visibility = View.GONE
                         mTvModelName?.text = homeResult.deviceDisplayName
                         mTvInitialPrice?.text = homeResult.displayMessage
