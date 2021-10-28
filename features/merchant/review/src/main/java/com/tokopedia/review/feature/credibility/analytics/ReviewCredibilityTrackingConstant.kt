@@ -13,5 +13,5 @@ object ReviewCredibilityTrackingConstant {
     const val EVENT_CATEGORY_READING_IMAGE_PREVIEW = "product detail page - review - review image - reading page"
     const val EVENT_CATEGORY_GALLERY = "product detail page - review - review image - gallery"
 
-    const val EVENT_LABEL_VALUE = "value:%s;"
+    const val EVENT_LABEL_CLICK_CTA = "value:%s;user_id:%s;"
 }
