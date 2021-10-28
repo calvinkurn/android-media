@@ -16,43 +16,6 @@ open class GetProductOrderHistoryUseCase @Inject constructor(
     private val paramShopId = "shopID"
     private val paramMinOrderTime = "minOrderTime"
 
-//    fun loadProductHistory(
-//            shopId: String,
-//            onSuccess: (ChatHistoryProductResponse) -> Unit,
-//            onError: (Throwable) -> Unit
-//    ) {
-//        launchCatchError(dispatchers.io,
-//                {
-//                    val params = generateParams(shopId)
-//                    val response = gqlUseCase.apply {
-//                        setTypeClass(ChatHistoryProductResponse::class.java)
-//                        setRequestParams(params)
-//                        setGraphqlQuery(query)
-//                    }.executeOnBackground()
-//                    withContext(dispatchers.main) {
-//                        onSuccess(response)
-//                        updateMinOrderTime(response)
-//                    }
-//                },
-//                {
-//                    withContext(dispatchers.main) {
-//                        onError(it)
-//                    }
-//                }
-//        )
-//    }
-
-//    private fun updateMinOrderTime(result: ChatHistoryProductResponse) {
-//        minOrderTime = result.minOrderTime
-//    }
-//
-//    private fun generateParams(shopId: String): Map<String, Any> {
-//        return mapOf(
-//                paramShopId to shopId,
-//                paramMinOrderTime to minOrderTime
-//        )
-//    }
-
     override fun graphqlQuery(): String {
         return """
         query chatHistoryProducts($$paramShopId: String!, $$paramMinOrderTime:String!) {
