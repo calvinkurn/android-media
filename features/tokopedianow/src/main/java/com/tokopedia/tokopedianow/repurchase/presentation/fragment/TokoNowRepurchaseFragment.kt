@@ -82,6 +82,8 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRepurchaseBind
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.REQUEST_CODE_DATE_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.repurchase.presentation.view.decoration.RepurchaseGridItemDecoration
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseEmptyStateNoHistoryViewHolder.*
@@ -310,7 +312,7 @@ class TokoNowRepurchaseFragment:
         quantity: Int
     ) {
         if (userSession.isLoggedIn) {
-            viewModel.onClickAddToCart(recomItem.productId.toString(), quantity, recomItem.shopId.toString())
+            viewModel.onClickAddToCart(recomItem.productId.toString(), quantity, PRODUCT_RECOMMENDATION, recomItem.shopId.toString())
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
@@ -483,9 +485,7 @@ class TokoNowRepurchaseFragment:
         navToolbar?.setIcon(icons)
     }
 
-    private fun onClickCartButton() {
-        analytics.onClickCartNav(userSession.userId)
-    }
+    private fun onClickCartButton() {}
 
     private fun getAbTestPlatform(): AbTestPlatform {
         val remoteConfigInstance = RemoteConfigInstance(activity?.application)
@@ -625,6 +625,21 @@ class TokoNowRepurchaseFragment:
                 }
             }
         }
+
+        observe(viewModel.repurchaseAddToCartTracker) {
+            when(it.data) {
+                is RepurchaseProductUiModel -> {
+                    trackRepurchaseAddToCart(
+                        quantity = it.quantity,
+                        data = it.data
+                    )
+                }
+            }
+        }
+    }
+
+    private fun trackRepurchaseAddToCart(quantity: Int, data: RepurchaseProductUiModel) {
+        analytics.onClickAddToCart(userSession.userId, quantity, data)
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {

@@ -1,12 +1,8 @@
 package com.tokopedia.tokopedianow.repurchase.analytic
 
 import android.os.Bundle
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_CLICK
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_TOKONOW_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
@@ -20,7 +16,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_NAME
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_VARIANT
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PAGE_SOURCE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PRICE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_QUANTITY
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_ID
@@ -32,13 +27,10 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getDataLayer
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.hitCommonTracker
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_RECOM_PAGE_SOURCE
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_ADD_TO_CART
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_DATE_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_MOST_PURCHASE_FILTER
-import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_CART_NAV
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_DATE_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_MOST_PURCHASE_FILTER
@@ -48,7 +40,6 @@ import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_IMPRESSION_NO_RESULT_REPURCHASE
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.CATEGORY.EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
-import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.TrackAppUtils.*
 
 class RepurchaseAnalytics {
@@ -58,7 +49,6 @@ class RepurchaseAnalytics {
     }
 
     object ACTION {
-        const val EVENT_ACTION_CLICK_CART_NAV = "click cart nav"
         const val EVENT_ACTION_CLICK_ADD_TO_CART = "click add to cart"
         const val EVENT_ACTION_CLICK_PRODUCT = "click product"
         const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT = "click produk serupa"
@@ -74,24 +64,14 @@ class RepurchaseAnalytics {
 
     object VALUE {
         const val REPURCHASE_TOKONOW = "repurchase page tokonow"
+        const val SHOP_NAME = "Tokopedia NOW!"
+        const val SHOP_TYPE = "tokonow"
     }
 
     fun onClickSimilarProduct(userId: String) {
         val dataLayer = getDataLayer(
             event = EVENT_CLICK_TOKONOW,
             action = EVENT_ACTION_CLICK_SIMILAR_PRODUCT,
-            category = EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW
-        )
-        dataLayer[KEY_USER_ID] = userId
-        hitCommonTracker(
-            dataLayer
-        )
-    }
-
-    fun onClickCartNav(userId: String) {
-        val dataLayer = getDataLayer(
-            event = EVENT_CLICK_TOKONOW,
-            action = EVENT_ACTION_CLICK_CART_NAV,
             category = EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW
         )
         dataLayer[KEY_USER_ID] = userId
@@ -197,8 +177,8 @@ class RepurchaseAnalytics {
         )
     }
 
-    fun onClickAddToCart(userId: String, model: RepurchaseProductUiModel) {
-        val item = ecommerceDataLayerAddToCartClicked(model)
+    fun onClickAddToCart(userId: String, quantity: Int, model: RepurchaseProductUiModel) {
+        val item = ecommerceDataLayerAddToCartClicked(model, quantity)
 
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_ADD_TO_CART,
@@ -220,7 +200,7 @@ class RepurchaseAnalytics {
             userId = userId,
             items = arrayListOf(item)
         )
-        dataLayer.putString(KEY_ITEM_LIST, "?")
+        dataLayer.putString(KEY_ITEM_LIST, "")
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
@@ -237,30 +217,30 @@ class RepurchaseAnalytics {
         }
     }
 
-    private fun ecommerceDataLayerAddToCartClicked(model: RepurchaseProductUiModel): Bundle {
+    private fun ecommerceDataLayerAddToCartClicked(model: RepurchaseProductUiModel, quantity: Int): Bundle {
         return Bundle().apply {
             putString(KEY_CATEGORY_ID, model.categoryId)
-            putString(KEY_ITEM_BRAND, "?")
+            putString(KEY_ITEM_BRAND, "")
             putString(KEY_ITEM_CATEGORY, model.category)
             putString(KEY_ITEM_ID, model.id)
             putString(KEY_ITEM_NAME, model.productCard.productName)
-            putString(KEY_ITEM_VARIANT, "?")
+            putString(KEY_ITEM_VARIANT, model.productCard.labelGroupVariantList.joinToString { it.title })
             putString(KEY_PRICE, model.productCard.formattedPrice)
-            putString(KEY_QUANTITY, model.productCard.nonVariant?.quantity.toString())
+            putString(KEY_QUANTITY, quantity.toString())
             putString(KEY_SHOP_ID, model.shopId)
-            putString(KEY_SHOP_NAME, "?")
-            putString(KEY_SHOP_TYPE, "?")
+            putString(KEY_SHOP_NAME, VALUE.SHOP_NAME)
+            putString(KEY_SHOP_TYPE, VALUE.SHOP_TYPE)
         }
     }
 
     private fun ecommerceDataLayerProductClicked(model: RepurchaseProductUiModel, position: Int): Bundle {
         return Bundle().apply {
             putString(KEY_INDEX, position.toString())
-            putString(KEY_ITEM_BRAND, "?")
+            putString(KEY_ITEM_BRAND, "")
             putString(KEY_ITEM_CATEGORY, model.category)
             putString(KEY_ITEM_ID, model.id)
             putString(KEY_ITEM_NAME, model.productCard.productName)
-            putString(KEY_ITEM_VARIANT, "?")
+            putString(KEY_ITEM_VARIANT, model.productCard.labelGroupVariantList.joinToString { it.title })
             putString(KEY_PRICE, model.productCard.formattedPrice)
         }
     }
