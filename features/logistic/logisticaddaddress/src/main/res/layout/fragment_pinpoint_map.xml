@@ -56,8 +56,8 @@
             android:layout_height="@dimen/dp_60"
             android:layout_above="@+id/cl_bottomsheet_getdistrict"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:contentDescription="@string/lokasi_saat_ini"
             app:srcCompat="@drawable/ic_gps_enable" />
 
@@ -65,10 +65,10 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/back_button"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:layout_gravity="start|top"
         android:background="?selectableItemBackgroundBorderless"
         android:contentDescription="@string/navigate_up"

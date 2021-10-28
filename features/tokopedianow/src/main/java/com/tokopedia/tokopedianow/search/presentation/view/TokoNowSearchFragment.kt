@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.search.presentation.view
 
 import android.os.Bundle
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -48,12 +49,12 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCat
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import javax.inject.Inject
 
-class TokoNowSearchFragment:
-        BaseSearchCategoryFragment(),
-        SuggestionListener,
-        CategoryJumperListener,
-        CTATokoNowHomeListener,
-        BroadMatchListener {
+class TokoNowSearchFragment :
+    BaseSearchCategoryFragment(),
+    SuggestionListener,
+    CategoryJumperListener,
+    CTATokoNowHomeListener,
+    BroadMatchListener {
 
     companion object {
         @JvmStatic
@@ -149,6 +150,7 @@ class TokoNowSearchFragment:
             ctaTokoNowHomeListener = this,
             recommendationCarouselListener = this,
             broadMatchListener = this,
+        recomWidgetBindPageNameListener = this
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page

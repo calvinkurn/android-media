@@ -27,7 +27,7 @@ class RepurchaseSortFilterViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_repurchase_sort_filter
 
         private const val FIRST_ITEM_INDEX = 0
-        private const val INACTIVE_SORT_FILTER = 0
+        private const val DEFAULT_SORT_FILTER = 2
         private const val DATE_FORMAT = "d/M/yyyy"
     }
 
@@ -90,7 +90,12 @@ class RepurchaseSortFilterViewHolder(
 
     private fun setupLayout(data: RepurchaseSortFilterUiModel) {
         val filterApplied = data.sortFilterList.any {
-            !it.selectedItem?.id.isNullOrEmpty() || it.sort != INACTIVE_SORT_FILTER
+            val selectedDateFilter = it.selectedDateFilter
+            val startDate = selectedDateFilter?.startDate
+            val endDate = selectedDateFilter?.endDate
+
+            !it.selectedItem?.id.isNullOrEmpty() || it.sort != DEFAULT_SORT_FILTER ||
+                !startDate.isNullOrEmpty() || !endDate.isNullOrEmpty()
         }
         setupSortFilterMargin(filterApplied)
         setupFilterChipMargin(filterApplied)
