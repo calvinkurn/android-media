@@ -18,14 +18,14 @@ class DynamicOnboardingUseCase @Inject constructor(
 ) : CoroutineUseCase<Unit, DynamicOnboardingResponseDataModel>(dispatcher) {
 
     override fun graphqlQuery(): String {
-        return "query {\n" +
-                "    GetDynamicOnboarding {\n" +
-                "        enable\n" +
-                "        config\n" +
-                "        message\n" +
-                "        error_message\n" +
-                "    }\n" +
-                " }"
+        return """query { 
+                    GetDynamicOnboarding
+                        enable
+                        config
+                        message
+                        error_message
+                    } 
+                 }"""
     }
 
     override suspend fun execute(params: Unit): DynamicOnboardingResponseDataModel {

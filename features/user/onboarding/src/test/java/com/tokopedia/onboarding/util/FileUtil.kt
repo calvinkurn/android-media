@@ -16,7 +16,7 @@ object FileUtil {
         return Gson().fromJson<Any>(reader, typeOfT) as T
     }
 
-    private fun readFileContent(fileName: String): String {
+    fun readFileContent(fileName: String): String {
         val fileContent = StringBuilder()
         javaClass.getResource(fileName)?.path?.let { filePath ->
             File(filePath).forEachLine {
