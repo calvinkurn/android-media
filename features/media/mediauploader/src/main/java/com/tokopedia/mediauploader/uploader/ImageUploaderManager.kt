@@ -108,9 +108,7 @@ class ImageUploaderManager constructor(
             errorMessages.addAll(message)
 
             // add the `Kode Error:` as prefix
-            val messages = errorMessages.map {
-                it.addPrefix()
-            }.toList()
+            val messages = errorMessages.map { it.addPrefix() }
 
             trackToTimber(fileToUpload, sourceId, messages)
         } else {

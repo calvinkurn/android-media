@@ -15,6 +15,7 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
@@ -24,6 +25,8 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
+import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -53,9 +56,7 @@ import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -63,12 +64,11 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 24/05/20.
  */
-class PlayBroadcastViewModel @Inject constructor(
+internal class PlayBroadcastViewModel @Inject constructor(
     private val livePusherMediator: PlayLivePusherMediator,
     private val mDataStore: PlayBroadcastDataStore,
     private val hydraConfigStore: HydraConfigStore,
     private val sharedPref: HydraSharedPreferences,
-    private val getConfigurationUseCase: GetConfigurationUseCase,
     private val getChannelUseCase: GetChannelUseCase,
     private val createChannelUseCase: CreateChannelUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
@@ -84,6 +84,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val playBroadcastMapper: PlayBroadcastMapper,
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
+    private val channelRepo: PlayBroadcastChannelRepository,
 ) : ViewModel() {
 
     val isFirstStreaming: Boolean
@@ -172,6 +173,22 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableLivePusherStats = MutableLiveData<PlayLivePusherStatistic>()
     private val _observableLivePusherInfo = MutableLiveData<PlayLiveInfoUiModel>()
 
+    private val _configInfo = _observableConfigInfo.asFlow()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    private val _channelUiState = _configInfo
+        .filterIsInstance<NetworkResult.Success<ConfigurationUiModel>>()
+        .map {
+            PlayChannelUiState(
+                canStream = it.data.streamAllowed,
+                tnc = it.data.tnc,
+            )
+        }
+
+    val uiState = _channelUiState.map {
+        PlayBroadcastUiState(channel = it)
+    }
+
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
 
@@ -246,13 +263,13 @@ class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
-            val config = withContext(dispatcher.io) {
-                getConfigurationUseCase.params = GetConfigurationUseCase.createParams(userSession.shopId)
-                return@withContext getConfigurationUseCase.executeOnBackground()
-            }
+            val configUiModel = channelRepo.getChannelConfiguration()
 
-            val configUiModel = playBroadcastMapper.mapConfiguration(config)
             setChannelId(configUiModel.channelId)
+
+            _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+
+            if (!configUiModel.streamAllowed) return@launchCatchError
 
             // create channel when there are no channel exist
             if (configUiModel.channelType == ChannelType.Unknown) createChannel()
@@ -266,8 +283,6 @@ class PlayBroadcastViewModel @Inject constructor(
                     throw err
                 }
             }
-
-            _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
             setProductConfig(configUiModel.productTagConfig)
             setCoverConfig(configUiModel.coverConfig)

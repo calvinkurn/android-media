@@ -7,14 +7,14 @@
     <View
         android:id="@+id/tokoNowSearchCategoryRecomDivider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:background="@color/Unify_N50" />
 
     <com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
         android:id="@+id/tokoNowSearchCategoryRecomCarousel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:layout_below="@+id/tokoNowSearchCategoryRecomDivider"/>
 
 </RelativeLayout>

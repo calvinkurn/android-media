@@ -112,6 +112,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.reviewProduct)
     implementation projectOrAar(rootProject.ext.features.shopPage)
+    implementation projectOrAar(rootProject.ext.features.productBundle)
+    implementation projectOrAar(rootProject.ext.features.reviewShop)
+
     //Operational
 
     //Payment
@@ -151,6 +154,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.snapshot)
+    implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)

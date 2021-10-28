@@ -97,6 +97,9 @@
     <!-- Shop Page -->
     <string name="title_shop_page">Shop Page</string>
 
+    <!-- Review Shop -->
+    <string name="title_review_shop">Review Shop</string>
+
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
 
@@ -127,6 +130,7 @@
     <string name="title_review_detail">Review Detail</string>
     <string name="title_create_review">Create Review</string>
     <string name="title_review_reminder">Review Reminder</string>
+    <string name="title_review_credibility">Review Credibility</string>
   
     <!-- Inactive Phone -->
     <string name="title_update_inactive_phone">Inactive Phone</string>

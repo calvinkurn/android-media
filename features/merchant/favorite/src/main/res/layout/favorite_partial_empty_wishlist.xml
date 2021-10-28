@@ -37,7 +37,7 @@
         android:text="@string/wishlist_empty_message"
         android:fontFamily="sans-serif"
         android:textColor="@color/Unify_N150"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_lvl2"/>

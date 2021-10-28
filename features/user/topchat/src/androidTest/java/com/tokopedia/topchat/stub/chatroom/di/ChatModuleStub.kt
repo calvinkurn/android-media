@@ -16,6 +16,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.topchat.FakeTopchatCacheManager
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
@@ -200,9 +201,8 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    internal fun provideTopchatCacheManager(@TopchatContext context: Context): TopchatCacheManager {
-        val topchatCachePref = context.getSharedPreferences("topchatCache", Context.MODE_PRIVATE)
-        return TopchatCacheManagerImpl(topchatCachePref)
+    internal fun provideTopchatCacheManager(): TopchatCacheManager {
+        return FakeTopchatCacheManager()
     }
 
     @ChatScope

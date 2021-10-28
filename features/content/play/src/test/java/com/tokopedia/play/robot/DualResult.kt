@@ -9,5 +9,5 @@ sealed class DualResult<T> {
     data class NoValue(val reason: Throwable) : DualResult<Nothing>()
 }
 
-val errorNoResult = "Result has no value"
-val errorHasResult = "Result has value"
+const val errorNoResult = "Result has no value"
+const val errorHasResult = "Result has value"
