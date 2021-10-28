@@ -34,6 +34,12 @@ class CustomVariantManageBottomSheet : BottomSheetUnify() {
         binding?.recyclerViewVariantSelected?.adapter = adapter
         binding?.recyclerViewVariantSelected?.layoutManager = LinearLayoutManager(context)
         adapter.setData(listOf("warna", "ukuran"))
+        adapter.setOnDeleteButtonClickedListener {
+            println("delete")
+        }
+        adapter.setOnEditButtonClickedListener {
+            println("edit")
+        }
     }
 
     override fun onPause() {

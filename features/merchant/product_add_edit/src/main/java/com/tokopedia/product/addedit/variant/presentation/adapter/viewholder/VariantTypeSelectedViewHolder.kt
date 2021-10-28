@@ -7,7 +7,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class VariantTypeSelectedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private var binding by viewBinding<ItemVariantTypeSelectedBinding>()
+    var binding by viewBinding<ItemVariantTypeSelectedBinding>()
 
     fun bindData(text: String) {
         binding?.variantTypeName?.text = text
