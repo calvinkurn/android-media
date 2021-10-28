@@ -14,7 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.Constant.Calendar
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.Utils.Companion.TIMER_CALENDAR_DATE_FORMAT
+import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -125,7 +125,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarTitle.text = title
                 calendarTitleImage.hide()
             }
-            if (Utils.isSaleOver(endDate ?: "", TIMER_CALENDAR_DATE_FORMAT)) {
+            if (Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
                 calendarButton.show()
                 calendarExpiredAlpha.show()
                 calendarButton.isEnabled = false
