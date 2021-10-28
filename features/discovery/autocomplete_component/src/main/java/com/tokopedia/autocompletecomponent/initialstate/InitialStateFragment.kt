@@ -61,12 +61,6 @@ class InitialStateFragment:
         view?.findViewById<RecyclerView?>(R.id.recyclerViewInitialState)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        retainInstance = true
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

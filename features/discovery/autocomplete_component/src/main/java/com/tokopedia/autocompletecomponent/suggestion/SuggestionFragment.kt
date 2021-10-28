@@ -64,12 +64,6 @@ class SuggestionFragment :
         view?.findViewById<RecyclerView?>(R.id.recyclerViewSuggestion)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        retainInstance = true
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
