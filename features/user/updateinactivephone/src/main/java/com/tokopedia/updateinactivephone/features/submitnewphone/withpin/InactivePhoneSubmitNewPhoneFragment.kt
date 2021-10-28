@@ -139,6 +139,8 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
     }
 
     private fun onFailedPhoneValidation(throwable: Throwable) {
+        hideLoading()
+
         val message = ErrorHandler.getErrorMessage(requireContext(), throwable)
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
