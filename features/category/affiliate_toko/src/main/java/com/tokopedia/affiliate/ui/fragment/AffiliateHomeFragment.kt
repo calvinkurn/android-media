@@ -63,6 +63,11 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
 
     companion object {
+        const val NO_ANNOUNCEMENT = "noAnnouncement"
+        const val CCA = "cca"
+        const val SERVICE_STATUS = "serviceStatus"
+        const val USER_BLACKLIST = "userBlacklisted"
+        const val SUCCESS = 1
         fun getFragmentInstance(affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
             return AffiliateHomeFragment().apply {
                 bottomNavBarClickListener = affiliateBottomNavBarClickListener
@@ -216,19 +221,44 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     private fun onGetAnnouncementData(announcementData: AffiliateAnnouncementData?) {
-        if(announcementData?.getAffiliateAnnouncement?.data?.status==1) {
-            affiliate_announcement_ticker_cv.visibility = View.VISIBLE
-            affiliate_announcement_ticker.tickerTitle=announcementData.getAffiliateAnnouncement.data.announcementTitle
-            announcementData.getAffiliateAnnouncement.data.announcementDescription?.let {
-                affiliate_announcement_ticker.setTextDescription(
-                    it
-                )
+        if(announcementData?.getAffiliateAnnouncement?.data?.status==SUCCESS) {
+            when (announcementData.getAffiliateAnnouncement.data.type) {
+                CCA -> {
+                    setupTickerView(
+                        announcementData.getAffiliateAnnouncement.data,
+                        Ticker.TYPE_INFORMATION
+                    )
+                }
+                USER_BLACKLIST -> {
+                    setupTickerView(
+                        announcementData.getAffiliateAnnouncement.data,
+                        Ticker.TYPE_ERROR
+                    )
+                }
+                SERVICE_STATUS -> {
+                    setupTickerView(
+                        announcementData.getAffiliateAnnouncement.data,
+                        Ticker.TYPE_ANNOUNCEMENT
+                    )
+                }
+                NO_ANNOUNCEMENT -> {
+                    affiliate_announcement_ticker_cv.hide()
+                }
             }
-            affiliate_announcement_ticker.tickerType=Ticker.TYPE_ANNOUNCEMENT
         }
 
     }
-
+    private fun setupTickerView(data: AffiliateAnnouncementData.GetAffiliateAnnouncement.Data,tickerType: Int)
+    {
+        affiliate_announcement_ticker_cv.show()
+        affiliate_announcement_ticker.tickerTitle=data.announcementTitle
+        data.announcementDescription?.let {
+            affiliate_announcement_ticker.setTextDescription(
+                it
+            )
+        }
+        affiliate_announcement_ticker.tickerType=tickerType
+    }
     override fun getVMFactory(): ViewModelProvider.Factory {
         return viewModelProvider
     }

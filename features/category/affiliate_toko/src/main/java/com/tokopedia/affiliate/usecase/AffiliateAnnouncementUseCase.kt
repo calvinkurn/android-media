@@ -25,10 +25,10 @@ class AffiliateAnnouncementUseCase @Inject constructor(
 
     private fun mockData(): AffiliateAnnouncementData {
         val mockData = AffiliateAnnouncementData.GetAffiliateAnnouncement.Data(
-            "Lorem Ipsum Dolor Sit Amet","Lorem Ipsum Dolor Sit Amet",
+            "Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!","Saat ini lagi ada pemeliharaan sistem",
             AffiliateAnnouncementData.GetAffiliateAnnouncement.Data.CtaLink("","","",""),
             "Hello",AffiliateAnnouncementData.GetAffiliateAnnouncement.Data.Error( AffiliateAnnouncementData.GetAffiliateAnnouncement.Data.CtaLink("","","","")
-            ,"Hellp",0,""),1,"cca")
+            ,"Hellp",0,""),1,"userBlacklisted")
 
         return AffiliateAnnouncementData(AffiliateAnnouncementData.GetAffiliateAnnouncement(mockData))
     }
