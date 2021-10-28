@@ -96,3 +96,21 @@ fun File.slice(sizeInMb: Int = 10): List<File> {
 
     return slicedVideoFiles
 }
+
+fun File.slice(
+    partNumber: Int,
+    chunkSize: Int,
+): ByteArray? {
+    if (partNumber < 0) return null
+    if (chunkSize < 0) return null
+
+    val inputStream = FileInputStream(this)
+    val byteArray = ByteArray(chunkSize)
+
+    val offset = (partNumber - 1) * chunkSize
+    inputStream.skip(offset.toLong())
+
+    inputStream.read(byteArray, 0, chunkSize)
+
+    return byteArray
+}
