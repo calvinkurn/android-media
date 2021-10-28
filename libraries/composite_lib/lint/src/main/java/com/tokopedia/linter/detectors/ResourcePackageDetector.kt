@@ -28,7 +28,7 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
                 "Please use resource with its package name. " +
                 "Example: com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1",
             category = Category.CORRECTNESS,
-            priority = 5,
+            priority = 10,
             severity = Severity.FATAL,
             implementation = Implementation(
                 ResourcePackageDetector::class.java,
