@@ -273,6 +273,14 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
         } else {
             binding.productBundlingInfo.gone()
         }
+
+        if (data.isBundlingItem && !data.isMultipleBundleProduct) {
+            val bundleQuantityLabelText = String.format(itemView.context.getString(R.string.label_cart_bundle_product_quantity), data.bundleQuantity)
+            binding.labelBundleQuantity.text = bundleQuantityLabelText
+            binding.labelBundleQuantity.show()
+        } else {
+            binding.labelBundleQuantity.gone()
+        }
     }
 
     private fun renderProductActionSection(data: CartItemHolderData) {
@@ -330,6 +338,14 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
     private fun renderProductName(data: CartItemHolderData) {
         binding.textProductName.text = Html.fromHtml(data.productName)
         binding.textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, data))
+        val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
+        if (data.isBundlingItem && !data.isMultipleBundleProduct) {
+            val textProductNameLayoutParams = binding.textProductName.layoutParams as ViewGroup.MarginLayoutParams
+            textProductNameLayoutParams.topMargin = marginTop
+        } else {
+            val textProductNameLayoutParams = binding.textProductName.layoutParams as ViewGroup.MarginLayoutParams
+            textProductNameLayoutParams.topMargin = 0
+        }
     }
 
     private fun renderImage(data: CartItemHolderData) {
