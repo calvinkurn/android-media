@@ -219,4 +219,11 @@ yang ditemukan</string>
     <string name="topchat_desc_empty_text_box">Oops, tulis pesan dulu ya sebelum kirim chat.</string>
     <string name="title_topchat_resend">Kirim ulang</string>
     <string name="title_topchat_delete">Hapus</string>
+    <string name="title_topchat_reply">Balas</string>
+    <string name="title_topchat_copy">Salin</string>
+
+    <string name="title_topchat_bubble_long_click_menu">Pengaturan pesan</string>
+    <string name="title_topchat_reply_bubble_expired">Yah, chat ini sudah terlalu lama untuk kami tampilkan. Coba pilih chat lain, ya.</string>
+    <string name="title_topchat_reply_bubble_onboarding">Sekarang bisa langsung balas chat</string>
+    <string name="desc_topchat_reply_bubble_onboarding">Tinggal tekan dan tahan chat yang mau kamu balas, lalu pilih Balas. Selamat mencoba!</string>
 </resources>

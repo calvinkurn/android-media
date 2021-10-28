@@ -1,5 +1,7 @@
 package com.tokopedia.imagepicker_insta.models
 
+import android.graphics.Matrix
+import android.graphics.RectF
 import android.net.Uri
 
 abstract class Asset(open val contentUri: Uri, open val createdDate: Long)
@@ -39,21 +41,18 @@ data class ZoomInfo(
     var panX: Float? = null,
     var bmpHeight: Int? = null,
     var bmpWidth: Int? = null,
+    var matrix: Matrix?=null,
+    var rectF: RectF?=null
 ) {
     fun hasData(): Boolean {
-        return scale != null && panX != null && panY != null
+        return matrix!=null
     }
 
     fun hasChanged(): Boolean {
-        if (scale != null && scale == 1f) {
-            return false
-        }
-        return (panX != null && panX != 0f) || (panY != null && panY != 0f)
+        return true
     }
 }
 
 data class VideoMetaData(val isSupported: Boolean, val duration: Long)
 
 data class QueryConfiguration(val videoMaxDuration:Long)
-
-data class LockedAspectRatio(val panX:Int,val panY:Int)

@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.di
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.login.view.fragment.SellerSeamlessLoginFragment
@@ -26,5 +27,6 @@ interface LoginComponent {
     fun inject(fragment: SellerSeamlessLoginFragment)
     fun inject(service: RegisterPushNotifService)
     fun inject(getDefaultChosenAddressService: GetDefaultChosenAddressService?)
+    fun inject(registerPushNotificationWorker: RegisterPushNotificationWorker)
 
 }

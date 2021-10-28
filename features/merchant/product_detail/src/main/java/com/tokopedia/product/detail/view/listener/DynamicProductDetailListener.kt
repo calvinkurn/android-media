@@ -2,8 +2,10 @@ package com.tokopedia.product.detail.view.listener
 
 import android.app.Application
 import android.util.SparseIntArray
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
@@ -180,5 +182,13 @@ interface DynamicProductDetailListener {
      * ProductCategoryCarouselViewHolder
      */
     fun onCategoryCarouselImageClicked(url: String, categoryTitle: String, categoryId: String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun onCategoryCarouselSeeAllClicked(url: String, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onCategoryCarouselSeeAllClicked(url:String, componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
+     * ProductBundlingViewHolder
+     */
+    fun onImpressionProductBundling(bundleId: String, bundleType: String, componentTrackDataModel:ComponentTrackDataModel)
+    fun onClickCheckBundling(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onClickProductInBundling(bundleId: String, bundleProductId: String, componentTrackDataModel: ComponentTrackDataModel)
+
 }

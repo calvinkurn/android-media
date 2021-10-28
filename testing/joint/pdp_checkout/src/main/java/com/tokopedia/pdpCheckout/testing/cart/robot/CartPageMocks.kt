@@ -10,6 +10,8 @@ object CartPageMocks {
     val GET_CART_LIST_MOCK_BOE_RESPONSE = R.raw.cart_bebas_ongkir_extra_response
     val GET_CART_LIST_MOCK_HAPPY_FLOW_RESPONSE = R.raw.cart_happy_flow_response
 
+    val GET_CART_LIST_BUNDLE_MOCK_DEFAULT_RESPONSE = R.raw.cart_bundle_analytics_default_response
+
     const val UPDATE_CART_KEY = "update_cart_v2"
     val UPDATE_CART_MOCK_DEFAULT_RESPONSE = R.raw.update_cart_response
 

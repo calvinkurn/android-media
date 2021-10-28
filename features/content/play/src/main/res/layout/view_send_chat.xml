@@ -24,9 +24,7 @@
         android:inputType="textNoSuggestions|textShortMessage"
         android:longClickable="false"
         android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingEnd="@dimen/spacing_lvl2"
-        android:paddingRight="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_Static_White"
         android:textColorHint="@color/play_dms_chat_text"
         android:textCursorDrawable="@null"
@@ -40,11 +38,10 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_send"
-        android:layout_width="@dimen/dp_24"
+        android:layout_width="24dp"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/et_chat"
         app:layout_constraintEnd_toEndOf="parent"
