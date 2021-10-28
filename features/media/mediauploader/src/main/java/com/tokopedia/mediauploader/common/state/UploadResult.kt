@@ -10,8 +10,4 @@ sealed class UploadResult {
     ): UploadResult()
 
     class Error(val message: String): UploadResult()
-
-    object Abort: UploadResult()
-    object Pause: UploadResult()
-    object Continue: UploadResult()
 }
