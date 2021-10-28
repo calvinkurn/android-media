@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/image_upload"
-        android:layout_width="@dimen/dp_72"
-        android:layout_height="@dimen/dp_72"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:layout_marginEnd="@dimen/margin_vs"
         android:padding="2dp"
         android:scaleType="centerCrop"

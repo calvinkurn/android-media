@@ -4,6 +4,7 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.data.model.Product
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.mapper.ProductMapper
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.usecase.GetProductListUseCase
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -33,6 +34,26 @@ class ShowcaseProductAddViewModelTest : ShowcaseProductAddViewModelTestFixture()
 
             assertTrue(showcaseProductAddViewModel.productList.value is Success)
             assertTrue(showcaseProductAddViewModel.fetchingState.value == false)
+        }
+    }
+
+    @Test
+    fun `Get Product List failed scenario`() {
+        runBlocking {
+            mockkObject(GetProductListUseCase)
+            onGetSelectedProductList_thenReturn()
+
+            coEvery { getProductListUseCase.executeOnBackground() } throws Exception()
+
+            val getProductListFilter = GetProductListFilter()
+            getProductListFilter.fkeyword = "baju"
+            showcaseProductAddViewModel.getProductList(filter = getProductListFilter)
+
+            showcaseProductAddViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+            verifySuccessGetSelectedProductListUseCaseCalled(getProductListFilter)
+
+            assertTrue(showcaseProductAddViewModel.productList.value is Fail)
         }
     }
 

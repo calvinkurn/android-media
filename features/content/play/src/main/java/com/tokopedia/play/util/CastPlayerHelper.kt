@@ -27,7 +27,7 @@ class CastPlayerHelper @Inject constructor(
     val hasAvailableSession: Boolean
         get() = player.isCastSessionAvailable
 
-    fun getCurrentMediaMetadata(): MediaMetadata? {
+    private fun getCurrentMediaMetadata(): MediaMetadata? {
         return castContext.sessionManager
                 .currentCastSession
                 .remoteMediaClient

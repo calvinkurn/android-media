@@ -72,7 +72,7 @@
         android:layout_height="@dimen/dp_220"
         android:background="@color/Unify_N0"
         android:gravity="center"
-        android:paddingTop="@dimen/dp_40"
+        android:paddingTop="40dp"
         android:visibility="gone"
         app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"
         app:imageDpiSupportType="singleDpi"
@@ -99,8 +99,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/promo_affiliate_progress_bar"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

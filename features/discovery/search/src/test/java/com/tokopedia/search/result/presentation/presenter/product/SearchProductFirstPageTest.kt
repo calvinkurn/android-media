@@ -78,6 +78,8 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
             productListView.updateScrollListener()
 
+            verifySendTrackingOnFirstTimeLoad(productListView)
+
             verifyHideLoading(productListView)
         }
     }

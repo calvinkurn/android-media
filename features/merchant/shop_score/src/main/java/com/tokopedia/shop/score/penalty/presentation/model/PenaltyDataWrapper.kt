@@ -6,5 +6,5 @@ data class PenaltyDataWrapper(
         second = false,
         third = false
     ),
-    var penaltyFilterList: List<PenaltyFilterUiModel>? = listOf()
+    var penaltyFilterList: List<PenaltyFilterUiModel> = listOf()
 )
