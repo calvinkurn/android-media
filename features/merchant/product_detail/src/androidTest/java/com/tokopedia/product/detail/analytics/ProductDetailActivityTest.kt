@@ -21,6 +21,8 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
@@ -56,6 +58,10 @@ class ProductDetailActivityTest {
             false,
             false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule(isFromNetwork = true,
+            sendValidationResult = true)
+
     private val idlingResource by lazy {
         ProductDetailNetworkIdlingResource(object : ProductIdlingInterface {
             override fun getName(): String = "networkFinish"
@@ -86,6 +92,30 @@ class ProductDetailActivityTest {
     @After
     fun finish() {
         IdlingRegistry.getInstance().unregister(ProductDetailIdlingResource.idlingResource)
+    }
+
+    @Test
+    fun impression_modular_component_thanos() {
+        actionTest { } assertTest {
+            waitForTrackerSent()
+            performClose(activityRule)
+
+            val impressionModularTrackerId = "22661"
+            assertThanos(impressionModularTrackerId)
+            finishTest()
+        }
+    }
+
+    @Test
+    fun view_pdp_thanos() {
+        actionTest { } assertTest {
+            waitForTrackerSent()
+            performClose(activityRule)
+
+            val impressionModularTrackerId = "16333"
+            assertThanos(impressionModularTrackerId)
+            finishTest()
+        }
     }
 
     @Test
@@ -267,6 +297,10 @@ class ProductDetailActivityTest {
 
     private fun intendingIntent() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    private fun assertThanos(trackerId:String) {
+        assertThat(cassavaTestRule.validate(trackerId), hasAllSuccess())
     }
 
     companion object {
