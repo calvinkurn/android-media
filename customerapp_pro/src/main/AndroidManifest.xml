@@ -447,7 +447,7 @@
         <package android:name="com.riau.android" />
         <package android:name="com.ringkas.kas" />
         <package android:name="com.ripple.run" />
-        <package android:name="com.rongmi.yinni.tigapo cket" />
+        <package android:name="com.rongmi.yinni.tigapocket" />
         <package android:name="com.rosteam.gpsemulator" />
         <package android:name="com.rphcp.sumber" />
         <package android:name="com.rupiah.damai" />
@@ -518,7 +518,7 @@
         <package android:name="com.uangtech.indomoney" />
         <package android:name="com.uangtech.pipipi" />
         <package android:name="com.uatas.android" />
-        <package android:name="com.ummadev.caramudah.pinjamu ang.agarcepatcair" />
+        <package android:name="com.ummadev.caramudah.pinjamuang.agarcepatcair" />
         <package android:name="com.unique.mobilefaker" />
         <package android:name="com.upward.cash.kashtrees" />
         <package android:name="com.uranus.kamiRupiah" />
