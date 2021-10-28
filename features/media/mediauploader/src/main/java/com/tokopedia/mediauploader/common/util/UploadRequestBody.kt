@@ -8,32 +8,31 @@ import okhttp3.RequestBody
 import okio.BufferedSink
 import java.io.File
 import java.io.FileInputStream
+import java.io.InputStream
 
 class UploadRequestBody(
-    private val file: File,
+    private val byteArray: ByteArray,
     private val contentType: MediaType?,
     private val callback: ProgressCallback?
 ): RequestBody() {
 
     override fun contentType(): MediaType? = contentType
 
-    override fun contentLength(): Long =file.length()
+    override fun contentLength(): Long = byteArray.size.toLong()
 
     override fun writeTo(sink: BufferedSink) {
-        val fileLength = file.length()
+        val fileLength = byteArray.size
         val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
-        val inputStream = FileInputStream(file)
-        var uploaded = 0L
+        val handler = Handler(Looper.getMainLooper())
 
-        inputStream.use { stream ->
-            val handler = Handler(Looper.getMainLooper())
-            var read = 0
-            while (read != -1) {
-                handler.post(ProgressUpdater(uploaded, fileLength, callback))
-                uploaded += read.toLong()
-                sink.write(buffer, 0, read)
-                read = stream.read(buffer)
-            }
+        var uploaded = 0L
+        var read = 0
+
+        byteArray.forEach {
+            handler.post(ProgressUpdater(uploaded, fileLength.toLong(), callback))
+            uploaded += read.toLong()
+            sink.write(buffer, 0, read)
+            read = it.toInt()
         }
     }
 
