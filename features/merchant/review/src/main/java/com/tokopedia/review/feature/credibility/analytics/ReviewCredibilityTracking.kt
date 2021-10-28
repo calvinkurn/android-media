@@ -28,7 +28,7 @@ object ReviewCredibilityTracking {
     fun trackOnClickCTAOtherUserCredibility(ctaValue: String, userId: String, productId: String, source: String, viewerUserId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                ReviewTrackingConstant.EVENT to ReviewCredibilityTrackingConstant.EVENT_CLICK_PDP,
+                ReviewTrackingConstant.EVENT to ReviewCredibilityTrackingConstant.EVENT_CLICK_INBOX_REVIEW,
                 ReviewTrackingConstant.EVENT_ACTION to ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_CTA_OTHER_USER,
                 ReviewTrackingConstant.EVENT_CATEGORY to getEventCategoryBasedOnSource(source),
                 ReviewTrackingConstant.EVENT_LABEL to String.format(

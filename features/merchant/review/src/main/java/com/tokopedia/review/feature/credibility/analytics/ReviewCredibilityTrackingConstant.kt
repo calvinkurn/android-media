@@ -1,7 +1,6 @@
 package com.tokopedia.review.feature.credibility.analytics
 
 object ReviewCredibilityTrackingConstant {
-    const val EVENT_CLICK_PDP = "clickPDP"
     const val EVENT_CLICK_INBOX_REVIEW = "clickInboxReview"
 
     const val EVENT_ACTION_CLICK_CTA_SELF = "click - cta on personal statistic bottomsheet - self"
