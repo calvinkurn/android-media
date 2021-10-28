@@ -13,13 +13,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.databinding.ActivitySomSubFilterBinding
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomSubFilterCheckboxAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomSubFilterRadioButtonAdapter
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomSubFilterListWrapper
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
-import kotlinx.android.synthetic.main.activity_som_sub_filter.*
 
 class SomSubFilterActivity : BaseSimpleActivity(),
         SomSubFilterCheckboxAdapter.SomSubCheckboxFilterListener, SomSubFilterRadioButtonAdapter.SomSubRadioButtonFilterListener {
@@ -53,6 +53,9 @@ class SomSubFilterActivity : BaseSimpleActivity(),
 
     private var subFilterRadioButtonAdapter: SomSubFilterRadioButtonAdapter? = null
 
+    private var _binding: ActivitySomSubFilterBinding? = null
+    private val binding get() = _binding!!
+
     override fun getNewFragment(): Fragment? = null
 
     override fun getLayoutRes(): Int = R.layout.activity_som_sub_filter
@@ -76,21 +79,22 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
-        setContentView(layoutRes)
+        _binding = ActivitySomSubFilterBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initAdapter()
     }
 
     private fun initAdapter() {
-        rvSomSubFilter.layoutManager = LinearLayoutManager(this)
+        binding.rvSomSubFilter.layoutManager = LinearLayoutManager(this)
         when (idFilter) {
             SomConsts.FILTER_STATUS_ORDER -> {
                 subFilterRadioButtonAdapter = SomSubFilterRadioButtonAdapter(this)
-                rvSomSubFilter.adapter = subFilterRadioButtonAdapter
+                binding.rvSomSubFilter.adapter = subFilterRadioButtonAdapter
                 somSubFilterList?.let { subFilterRadioButtonAdapter?.setSubFilterList(it, idFilter) }
             }
             SomConsts.FILTER_COURIER, SomConsts.FILTER_TYPE_ORDER -> {
                 subFilterCheckboxAdapter = SomSubFilterCheckboxAdapter(this)
-                rvSomSubFilter.adapter = subFilterCheckboxAdapter
+                binding.rvSomSubFilter.adapter = subFilterCheckboxAdapter
                 somSubFilterList?.let {
                     subFilterCheckboxAdapter?.setSubFilterList(it, idFilter)
                 }
@@ -99,8 +103,8 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     private fun btnSaveSubFilter() {
-        btnSaveSubFilter.isEnabled = false
-        btnSaveSubFilter?.setOnClickListener {
+        binding.btnSaveSubFilter.isEnabled = false
+        binding.btnSaveSubFilter.setOnClickListener {
             val cacheManager = SaveInstanceCacheManager(this, true)
             val cacheManagerId = cacheManager.id
             val intent = Intent()
@@ -115,11 +119,11 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     private fun setupToggleShadowToolbar() {
-        rvSomSubFilter.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.rvSomSubFilter.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-                    som_sub_filter_toolbar.isShowShadow = newState != RecyclerView.SCROLL_STATE_IDLE
+                    binding.somSubFilterToolbar.isShowShadow = newState != RecyclerView.SCROLL_STATE_IDLE
                 } catch (e: IndexOutOfBoundsException) {
                 }
             }
@@ -127,12 +131,12 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     private fun setToolbarSubFilter() {
-        setSupportActionBar(som_sub_filter_toolbar)
+        setSupportActionBar(binding.somSubFilterToolbar)
         supportActionBar?.apply {
             title = "$ALL_FILTER $idFilter"
             setDisplayShowHomeEnabled(true)
         }
-        som_sub_filter_toolbar.apply {
+        binding.somSubFilterToolbar.apply {
             isShowBackButton = true
             isShowShadow = false
             setNavigationOnClickListener {
@@ -151,9 +155,9 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     private fun setToggleResetSubFilter() {
-        som_sub_filter_toolbar?.apply {
+        binding.somSubFilterToolbar.apply {
             if (isSelectedSubFilter()) {
-                btnSaveSubFilter.isEnabled = true
+                binding.btnSaveSubFilter.isEnabled = true
                 actionTextView?.show()
                 actionText = getString(R.string.reset)
                 actionTextView?.setOnClickListener {

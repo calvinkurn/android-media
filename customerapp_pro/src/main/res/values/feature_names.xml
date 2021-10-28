@@ -147,6 +147,7 @@
     <string name="label_kategori">Belanja di Tokopedia</string>
     <string name="label_category">category</string>
     <string name="hotlist_label">hotlist</string>
+    <string name="label_affiliate">Affiliate</string>
 
 
     <!--Contact Us-->
@@ -298,6 +299,7 @@
 
     <!--Play-->
     <string name="title_play_df">Play</string>
+    <string name="title_play_broadcaster_df">Play Broadcaster</string>
 
     <!--Interest Pick-->
     <string name="ip_title">Pilih Inspirasi Kamu</string>
@@ -376,4 +378,7 @@
 
     <!-- Review   -->
     <string name="title_review">Ulasan</string>
+
+    <string name="title_image_picker_insta_df">Media Picker</string>
+    <string name="title_feed_create_post">Create Post</string>
 </resources>

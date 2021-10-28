@@ -8,8 +8,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/reputationBadge"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="@id/reputation_points"
         app:layout_constraintTop_toTopOf="parent"

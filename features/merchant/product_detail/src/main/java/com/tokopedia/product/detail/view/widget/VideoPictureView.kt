@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
@@ -14,9 +15,9 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.widget_video_picture.view.*
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -30,9 +31,11 @@ class VideoPictureView @JvmOverloads constructor(
     private var mListener: DynamicProductDetailListener? = null
     private var videoPictureAdapter: VideoPictureAdapter? = null
 
+    private var binding: WidgetVideoPictureBinding = WidgetVideoPictureBinding.inflate(LayoutInflater.from(context))
+
     init {
-        View.inflate(context, R.layout.widget_video_picture, this)
-        pdp_view_pager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
+        addView(binding.root)
+        binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
     }
 
     fun setup(media: List<MediaDataModel>, listener: DynamicProductDetailListener?,
@@ -59,7 +62,7 @@ class VideoPictureView @JvmOverloads constructor(
 
         if (shouldNotifyItemInserted) {
             videoPictureAdapter?.notifyItemInserted(0)
-            imageSliderPageControl?.setIndicator(listOfImage?.size ?: 0)
+            binding.imageSliderPageControl.setIndicator(listOfImage?.size ?: 0)
         } else {
             videoPictureAdapter?.notifyItemChanged(0)
         }
@@ -72,37 +75,37 @@ class VideoPictureView @JvmOverloads constructor(
         val mediaList = processMedia(media)
         videoPictureAdapter = VideoPictureAdapter(mListener?.getProductVideoCoordinator(), mListener, componentTrackDataModel)
 
-        pdp_view_pager?.adapter = videoPictureAdapter
+        binding.pdpViewPager.adapter = videoPictureAdapter
         videoPictureAdapter?.mediaData = mediaList
-        pdp_view_pager.setPageTransformer { _, _ ->
+        binding.pdpViewPager.setPageTransformer { _, _ ->
             //NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
         }
     }
 
     private fun renderVideoAtFirstPosition() {
-        pdp_view_pager?.addOneTimeGlobalLayoutListener {
-            pdp_view_pager?.let {
+        binding.pdpViewPager.addOneTimeGlobalLayoutListener {
+            binding.pdpViewPager.let {
                 mListener?.getProductVideoCoordinator()?.onScrollChangedListener(it, 0)
             }
         }
     }
 
     private fun setupViewPagerCallback() {
-        pdp_view_pager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.pdpViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             var lastPosition = 0
             override fun onPageSelected(position: Int) {
                 if (lastPosition != position) {
                     videoPictureAdapter?.mediaData?.getOrNull(position)?.run {
                         mListener?.onSwipePicture(type, if (isVideoType()) videoUrl else urlOriginal, position + 1, componentTrackDataModel)
                     }
-                    imageSliderPageControl?.setCurrentIndicator(position)
+                    binding.imageSliderPageControl.setCurrentIndicator(position)
                     lastPosition = position
                 }
             }
 
             override fun onPageScrollStateChanged(state: Int) {
                 if (state == RecyclerView.SCROLL_STATE_IDLE) {
-                    mListener?.getProductVideoCoordinator()?.onScrollChangedListener(pdp_view_pager, lastPosition)
+                    mListener?.getProductVideoCoordinator()?.onScrollChangedListener(binding.pdpViewPager, lastPosition)
                 }
             }
 
@@ -111,18 +114,18 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun setPageControl(media: List<MediaDataModel>?) {
-        imageSliderPageControl?.setIndicator(media?.size ?: 0)
+        binding.imageSliderPageControl.setIndicator(media?.size ?: 0)
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            imageSliderPageControl?.activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+            binding.imageSliderPageControl.activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
         } else {
-            imageSliderPageControl?.activeColor = ContextCompat.getColor(context, R.color.product_detail_dms_page_control)
+            binding.imageSliderPageControl.activeColor = ContextCompat.getColor(context, R.color.product_detail_dms_page_control)
         }
-        imageSliderPageControl?.inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
+        binding.imageSliderPageControl.inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
     }
 
     private fun resetViewPagerToFirstPosition() {
-        pdp_view_pager?.postDelayed({
-            pdp_view_pager?.setCurrentItem(0, false)
+        binding.pdpViewPager.postDelayed({
+            binding.pdpViewPager.setCurrentItem(0, false)
         }, 100)
     }
 

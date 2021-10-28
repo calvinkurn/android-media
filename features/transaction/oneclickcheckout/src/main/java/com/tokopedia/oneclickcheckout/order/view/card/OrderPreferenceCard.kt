@@ -155,10 +155,10 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                    val logisticPromo = shippingRecommendationData.logisticPromo
-                    if (logisticPromo != null) {
-                        list.add(0, logisticPromo)
-                        if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                        val logisticPromo = shippingRecommendationData.logisticPromo
+                        if (logisticPromo != null) {
+                            list.add(0, logisticPromo)
+                            if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
@@ -247,10 +247,10 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                    val logisticPromo = shippingRecommendationData.logisticPromo
-                    if (logisticPromo != null) {
-                        list.add(0, logisticPromo)
-                        if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                        val logisticPromo = shippingRecommendationData.logisticPromo
+                        if (logisticPromo != null) {
+                            list.add(0, logisticPromo)
+                            if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
@@ -356,10 +356,10 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                     val shippingRecommendationData = shipment.shippingRecommendationData
                     if (shippingRecommendationData != null) {
                         val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationUiModels)
-                    val logisticPromo = shippingRecommendationData.logisticPromo
-                    if (logisticPromo != null) {
-                        list.add(0, logisticPromo)
-                        if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                        val logisticPromo = shippingRecommendationData.logisticPromo
+                        if (logisticPromo != null) {
+                            list.add(0, logisticPromo)
+                            if (logisticPromo.disabled && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
                                 orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                             }
                         }
@@ -650,8 +650,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                 if (selectedTerm.term > 0) {
                     tvInstallmentDetail.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
                 } else {
-                    if (selectedTerm.isError) tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_afpb_default)
-                    else tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_full_payment)
+                    tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_full_payment)
                 }
                 setupPaymentInstallmentError(selectedTerm)
                 setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
@@ -660,6 +659,20 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         if (selectedCreditCard.availableTerms.isNotEmpty()) {
                             listener.onInstallmentDetailClicked(selectedCreditCard)
                         }
+                    }
+                }
+            } else if (!creditCard.isDebit && creditCard.isAfpb && creditCard.selectedTerm == null) {
+                tvInstallmentType.visible()
+                tvInstallmentDetail.visible()
+                btnChangeInstallment.visible()
+                tvInstallmentDetail.text = binding.root.context.getString(R.string.lbl_installment_afpb_default)
+                tvInstallmentDetail.alpha = ENABLE_ALPHA
+                tvInstallmentErrorMessage.gone()
+                tvInstallmentErrorAction.gone()
+                setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
+                    if (profile.enable) {
+                        val selectedCreditCard = payment.creditCard
+                        listener.onInstallmentDetailClicked(selectedCreditCard)
                     }
                 }
             } else {

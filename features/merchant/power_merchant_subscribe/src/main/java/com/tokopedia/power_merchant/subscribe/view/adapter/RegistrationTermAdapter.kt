@@ -2,17 +2,15 @@ package com.tokopedia.power_merchant.subscribe.view.adapter
 
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
+import com.tokopedia.power_merchant.subscribe.databinding.ItemPmRegistrationTermBinding
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
-import kotlinx.android.synthetic.main.item_pm_registration_term.view.*
 
 /**
  * Created By @ilhamsuaib on 03/03/21
@@ -25,9 +23,12 @@ class RegistrationTermAdapter(
     private var terms: List<RegistrationTermUiModel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegistrationTermViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_pm_registration_term, parent, false)
-        return RegistrationTermViewHolder(view)
+        val binding = ItemPmRegistrationTermBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return RegistrationTermViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: RegistrationTermViewHolder, position: Int) {
@@ -41,10 +42,11 @@ class RegistrationTermAdapter(
         this.terms = terms
     }
 
-    inner class RegistrationTermViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class RegistrationTermViewHolder(private val binding: ItemPmRegistrationTermBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(term: RegistrationTermUiModel) {
-            with(itemView) {
+            with(binding) {
                 tvPmTermItemTitle.text = term.title.parseAsHtml()
                 icPmHeaderTermItem.loadImage(term.resDrawableIcon)
                 setupTermDescription(term)
@@ -52,16 +54,16 @@ class RegistrationTermAdapter(
         }
 
         private fun setupTermDescription(term: RegistrationTermUiModel) {
-            with(itemView) {
+            with(binding) {
                 if (!term.clickableText.isNullOrBlank() && !term.appLinkOrUrl.isNullOrBlank()) {
                     val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_G500
                     val termDescription = PowerMerchantSpannableUtil.createSpannableString(
                         text = term.descriptionHtml.parseAsHtml(),
                         highlightText = term.clickableText.orEmpty(),
-                        colorId = context.getResColor(ctaTextColor),
+                        colorId = root.context.getResColor(ctaTextColor),
                         isBold = true
                     ) {
-                        RouteManager.route(context, term.appLinkOrUrl)
+                        RouteManager.route(root.context, term.appLinkOrUrl)
                         onTermCtaClicked?.invoke(term)
                     }
                     tvPmTermItemDesc.apply {
@@ -73,7 +75,7 @@ class RegistrationTermAdapter(
                 }
                 if (term.isNewSeller && !term.isFirstMondayNewSeller) {
                     tvPmTermItemDesc.setTextColor(
-                        context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                        root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                     )
                 }
             }

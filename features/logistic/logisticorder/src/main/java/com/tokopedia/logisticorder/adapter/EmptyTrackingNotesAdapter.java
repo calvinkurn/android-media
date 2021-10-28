@@ -5,9 +5,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tokopedia.logisticorder.R;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by kris on 5/11/18. Tokopedia
@@ -47,7 +47,7 @@ public class EmptyTrackingNotesAdapter extends
 
     class EmptyTrackingNotesViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView notesText;
+        private Typography notesText;
 
         EmptyTrackingNotesViewHolder(View itemView) {
             super(itemView);

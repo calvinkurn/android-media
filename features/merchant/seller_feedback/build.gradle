@@ -1,8 +1,18 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
 
 buildscript {
     repositories {
@@ -35,6 +45,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.lifeCycleCommon
 
     implementation rootProject.ext.networkDependencies.retrofit
 

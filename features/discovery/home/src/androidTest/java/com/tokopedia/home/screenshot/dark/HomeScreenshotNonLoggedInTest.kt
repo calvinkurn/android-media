@@ -8,12 +8,10 @@ import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.turnOffAnimation
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.BALANCE_EXP
 import com.tokopedia.remoteconfig.RollenceKey.BALANCE_VARIANT_NEW
-import com.tokopedia.remoteconfig.RollenceKey.HOME_EXP
-import com.tokopedia.remoteconfig.RollenceKey.HOME_VARIANT_REVAMP
+
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
@@ -71,13 +69,7 @@ class HomeScreenshotNonLoggedInTest {
                 NAVIGATION_EXP_TOP_NAV,
                 NAVIGATION_VARIANT_REVAMP)
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                CHOOSE_ADDRESS_ROLLENCE_KEY,
-                CHOOSE_ADDRESS_ROLLENCE_KEY)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 BALANCE_EXP,
                 BALANCE_VARIANT_NEW)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                HOME_EXP,
-                HOME_VARIANT_REVAMP)
     }
 }

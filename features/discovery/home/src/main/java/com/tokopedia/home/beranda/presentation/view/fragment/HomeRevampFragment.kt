@@ -102,7 +102,7 @@ import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
-import com.tokopedia.home.widget.FloatingTextButton
+import com.tokopedia.home.constant.HomePerformanceConstant
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
@@ -202,7 +202,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         FragmentListener,
         HomeEggListener,
         HomeTabFeedListener,
-        HomeInspirationListener,
         HomeFeedsListener,
         HomeReviewListener,
         PopularKeywordListener,
@@ -239,7 +238,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
-        private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
 
         private const val EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV
         private const val VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD
@@ -334,7 +332,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var userSession: UserSessionInterface
     private lateinit var root: FrameLayout
     private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
-    private lateinit var floatingTextButton: FloatingTextButton
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
@@ -359,7 +356,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var mShowTokopointNative = false
     private var showSeeAllCard = true
     private var isShowFirstInstallSearch = false
-    private var durationAutoTransition: Long = DEFAULT_INTERVAL_HINT
     private var scrollToRecommendList = false
     private var isFeedLoaded = false
     private var startToTransitionOffset = 0
@@ -447,11 +443,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return if (context == null) {
-            true
-        } else {
-            ChooseAddressUtils.isRollOutUser(context)
-        }
+        return true
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
@@ -497,11 +489,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
         beautyFestEvent = BEAUTY_FEST_NOT_SET
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelOffset(R.dimen.dp_1)
         registerBroadcastReceiverTokoCash()
+        getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
 
     fun callSubordinateTasks() {
@@ -594,7 +588,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
             mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, false)
             isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
-            durationAutoTransition = it.getLong(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
             showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
     }
@@ -626,18 +619,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
-        }
-        view.findViewById<Button>(R.id.btnTest).setOnClickListener {
-            setFalseNewWalletAppCoachmarkShown(context!!)
-            setFalseNewTokopointCoachmarkShown(context!!)
-            enableOnboarding(context!!)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_NAV, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_INBOX, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_BALANCE, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_WALLETAPP_COACHMARK_BALANCE, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, false)
         }
         oldToolbar = view.findViewById(R.id.toolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
@@ -711,7 +692,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
 
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
-        floatingTextButton = view.findViewById(R.id.recom_action_button)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
@@ -1089,7 +1069,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
             val balanceWidgetView = it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget)
-            if (balanceWidgetView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT) {
+            if ((balanceWidgetView.getGopayView() != null || balanceWidgetView.getGopayNewView() != null) && balanceWidgetView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT) {
                 return balanceWidgetView
             }
         }
@@ -1210,20 +1190,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         initEggTokenScrollListener()
         initStickyLogin()
 
-        floatingTextButton.setOnClickListener { view: View? ->
-            scrollToRecommendList()
-            HomePageTracking.eventClickJumpRecomendation()
-        }
-        KeyboardHelper.setKeyboardVisibilityChangedListener(root, object : KeyboardHelper.OnKeyboardVisibilityChangedListener {
-            override fun onKeyboardShown() {
-                floatingTextButton.forceHide()
-            }
-
-            override fun onKeyboardHide() {
-                floatingTextButton.resetState()
-            }
-        })
-
         context?.let {
             if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
         }
@@ -1287,6 +1253,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        if(getHomeViewModel().isFirstLoad) {
+            getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
+        }
         startTokopointRotation()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
@@ -1309,6 +1278,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(
                 ifNavOld = { oldToolbar?.startHintAnimation() }
         )
+        if(getHomeViewModel().isFirstLoad) {
+            getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
+            getHomeViewModel().isFirstLoad = false
+        }
+        manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
     }
 
     private fun startTokopointRotation(rotateNow: Boolean = false) {
@@ -1327,11 +1301,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             chooseAddressAbTestCondition(
                     ifChooseAddressActive = {
                         if (!validateChooseAddressWidget()) {
-                            getHomeViewModel().refresh(isFirstInstall())
+                            getHomeViewModel().refresh(isFirstInstall = isFirstInstall())
                         }
                     },
                     ifChooseAddressNotActive = {
-                        getHomeViewModel().refresh(isFirstInstall())
+                        getHomeViewModel().refresh(isFirstInstall = isFirstInstall())
                     }
             )
 
@@ -1797,7 +1771,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun adjustHomeBackgroundHeight(currentContext: Context) {
-        val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(currentContext)
+        val isChooseAddressShow = true
         if (isChooseAddressShow && (isEligibleGopay != null && isEligibleGopay == true)) {
             val layoutParams = backgroundViewImage.layoutParams
             layoutParams.height =
@@ -2040,7 +2014,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun configureHomeFlag(homeFlag: HomeFlag) {
-        floatingTextButton.visibility = if (homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation) View.VISIBLE else View.GONE
         initAutoRefreshHandler()
         if (isEnableToAutoRefresh(homeFlag)) {
             autoRefreshFlag = homeFlag
@@ -2190,11 +2163,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 ConstantKey.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         )
         if (activity != null && remoteConfigEnable) {
-            activity?.startActivity(PromoListActivity.newInstance(
-                    activity,
-                    PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
-                    PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
-            ))
+            RouteManager.route(requireActivity(), ApplinkConstInternalPromo.PROMO_LIST)
         } else {
             if (activity != null) {
                 showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(R.string.title_activity_promo))
@@ -2303,6 +2272,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     .setLocalCacheModel(localCacheModel)
             )
             chooseAddressWidgetInitialized = false
+            getHomeViewModel().refresh(forceRefresh = true, isFirstInstall = isFirstInstall())
         }
     }
 
@@ -2337,7 +2307,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
         if (::viewModel.isInitialized) {
-            getHomeViewModel().refreshHomeData(isFirstInstall())
+            getHomeViewModel().refreshHomeData()
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
@@ -2501,8 +2471,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 HintData(data.placeholder ?: "", data.keyword ?: ""),
                                 placeholderToHint(data),
                                 isFirstInstall(),
-                                shouldShowTransition(),
-                                durationAutoTransition)
+                                false)
                     },
                     ifNavRevamp = {
                         navToolbar?.setupSearchbar(
@@ -2519,8 +2488,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                             isFirstInstall().toString())
                                 },
                                 searchbarImpressionCallback = {},
-                                durationAutoTransition = durationAutoTransition,
-                                shouldShowTransition = shouldShowTransition()
+                                shouldShowTransition = false
                         )
                     }
             )
@@ -2948,10 +2916,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onFeedContentScrollStateChanged(newState: Int) {}
 
-    override fun onGoToProductDetailFromInspiration(productId: String, imageSource: String, name: String, price: String) {
-        goToProductDetail(productId)
-    }
-
     private fun goToProductDetail(productId: String) {
         activity?.startActivity(getProductIntent(productId))
     }
@@ -3015,7 +2979,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)
-            feedViewHolder.hidePmProCoachmark()
         }
     }
 
@@ -3245,11 +3208,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showToasterReviewSuccess() {
         view?.let { build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, TYPE_NORMAL, getString(R.string.review_oke)).show() }
-    }
-
-    private fun shouldShowTransition(): Boolean {
-        val abTestValue = getAbTestPlatform().getString(ConstantKey.RemoteConfigKey.AB_TEST_AUTO_TRANSITION_KEY, "")
-        return abTestValue == ConstantKey.ABtestValue.AUTO_TRANSITION_VARIANT
     }
 
     /**

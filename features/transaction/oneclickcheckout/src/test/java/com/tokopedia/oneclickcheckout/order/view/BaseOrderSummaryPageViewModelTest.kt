@@ -82,10 +82,11 @@ open class BaseOrderSummaryPageViewModelTest {
         MockKAnnotations.init(this)
         helper = OrderSummaryPageViewModelTestHelper()
         orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers,
-                OrderSummaryPageCartProcessor(addToCartOccMultiExternalUseCase, getOccCartUseCase, updateCartOccUseCase, creditCardTenorListUseCase, testDispatchers),
+                OrderSummaryPageCartProcessor(addToCartOccMultiExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
                 OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, chooseAddressRepository, chooseAddressMapper, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
+                { OrderSummaryPagePaymentProcessor(creditCardTenorListUseCase, testDispatchers) },
                 OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
                 userSessionInterface, orderSummaryAnalytics)
     }

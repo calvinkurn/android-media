@@ -53,12 +53,20 @@ class PlayEtalasePickerViewModelRobot(
         viewModel.loadEtalaseProducts(etalaseId, page)
     }
 
-    fun selectProduct(productId: Long) {
+    fun selectProduct(productId: String) {
         viewModel.selectProduct(productId, true)
     }
 
-    fun deselectProduct(productId: Long) {
+    fun selectProduct(productId: Long) {
+        selectProduct(productId.toString())
+    }
+
+    fun deselectProduct(productId: String) {
         viewModel.selectProduct(productId, false)
+    }
+
+    fun deselectProduct(productId: Long) {
+        deselectProduct(productId.toString())
     }
 
     fun getSelectedProducts() = viewModel.selectedProductList

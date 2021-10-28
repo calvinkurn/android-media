@@ -10,7 +10,6 @@ import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
 import com.tokopedia.loginregister.login.behaviour.data.*
-import com.tokopedia.loginregister.login.data.CloudDiscoverDataSource
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialScope
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
@@ -19,6 +18,7 @@ import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
 
 @Module
 class MockRegisterInitialuseCaseModule {
@@ -68,9 +68,11 @@ class MockRegisterInitialuseCaseModule {
 
     @RegisterInitialScope
     @Provides
-    fun provideDiscoverUseCasStub(cloudDiscoverDataSource: CloudDiscoverDataSource
+    fun provideDiscoverUseCasStub(
+        graphqlRepository: GraphqlRepository,
+        coroutineDispatcher: CoroutineDispatcher
     ): DiscoverUseCaseStub {
-        return DiscoverUseCaseStub(cloudDiscoverDataSource)
+        return DiscoverUseCaseStub(graphqlRepository, coroutineDispatcher)
     }
 
     @RegisterInitialScope

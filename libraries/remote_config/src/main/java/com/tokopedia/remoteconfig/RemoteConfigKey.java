@@ -31,6 +31,7 @@ public class RemoteConfigKey {
     public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message_new";
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
+    public static final String APP_SHOW_AFFILIATES_BUTTON = "old_home_account_show_affiliates";
 
     public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
     public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
@@ -252,11 +253,13 @@ public class RemoteConfigKey {
     public static final String SETTING_SHOW_DARK_MODE_TOGGLE = "android_show_dark_mode_toggle";
     public static final String SETTING_SHOW_SCREEN_RECORDER = "android_enable_screen_recorder";
 
-    public static final String ENABLE_TOKOPEDIA_NOW = "android_main_app_enable_tokopedia_now";
-
     public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
 
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
-  
+
     public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
+
+    public static final String ENABLE_CART_CHECKOUT_BUNDLING = "android_enable_cart_checkout_bundling";
+    public static final String ENABLE_NEW_CONTENT_CREATION_FLOW = "app_android_feed_cc_feature_flag";
+
 }

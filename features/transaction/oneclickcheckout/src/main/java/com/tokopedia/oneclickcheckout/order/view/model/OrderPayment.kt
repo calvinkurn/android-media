@@ -118,7 +118,8 @@ data class OrderPaymentInstallmentTerm(
         var isEnable: Boolean = false,
         var isError: Boolean = false,
         var fee: Double = 0.0,
-        var monthlyAmount: Double = 0.0
+        var monthlyAmount: Double = 0.0,
+        var description: String = "",
 )
 
 data class OrderPaymentOvoAdditionalData(

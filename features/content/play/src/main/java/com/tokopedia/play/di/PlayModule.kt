@@ -1,6 +1,8 @@
 package com.tokopedia.play.di
 
 import android.content.Context
+import com.google.android.exoplayer2.ext.cast.CastPlayer
+import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -12,6 +14,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.sse.PlayChannelSSEImpl
@@ -150,4 +153,14 @@ class PlayModule(val mContext: Context) {
     @Provides
     fun providePlayChannelSSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
         PlayChannelSSEImpl(userSession, dispatchers)
+
+    @Provides
+    fun provideCastContext(@ApplicationContext context: Context): CastContext = CastContext.getSharedInstance(context)
+
+    @Provides
+    fun provideCastPlayer(castContext: CastContext) = CastPlayer(castContext)
+
+    @PlayScope
+    @Provides
+    fun provideCastAnalyticHelper(playAnalytic: PlayAnalytic): CastAnalyticHelper = CastAnalyticHelper(playAnalytic)
 }

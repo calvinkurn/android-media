@@ -66,7 +66,7 @@ ext {
     playServiceSafetyNet = '16.0.0'
     playServiceMeasurementBase = '18.0.0'
     playServiceMeasurementApi = '16.0.4'
-    bomVersion = '26.1.0'
+    bomVersion = '26.2.0'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.7.2'
@@ -101,9 +101,13 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyIconsVersion = '1.0.10'
+    unifyIconsVersion = '1.0.13'
     unifyPrinciplesVersion = '1.3.8'
-    unifyComponentsVersion = '1.1.72'
+    /*
+        please not to upgrade unify component version to 1.1.75 and 1.1.76
+        you can jump over to 1.1.77. There was a bug related to html converter [HtmlLinkHelper class]
+     */
+    unifyComponentsVersion = '1.1.74.1'
     unifyCoachMarkVersion = '1.2.14'
     unifyCalendarVersion = '1.1.4'
     unifyBannerVersion = '1.0.4'
@@ -215,11 +219,6 @@ ext {
             branch     : "io.branch.sdk.android:library:5.0.4",
     ]
 
-    deeplinkDispatchDependencies = [
-            deeplinkDispatch         : "com.airbnb:deeplinkdispatch:${deeplinkDispatchVersion}",
-            deeplinkDispatchProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkDispatchVersion}"
-    ]
-
     miscDependencies = [
             javaPoet              : 'com.squareup:javapoet:1.11.1',
             autoService           : "com.google.auto.service:auto-service:1.0-rc6",
@@ -265,6 +264,7 @@ ext {
             exoPlayer             : "com.google.android.exoplayer:exoplayer:$exoPlayerVersion",
             exoPlayerUi           : "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVersion",
             exoPlayerRtmp         : "com.google.android.exoplayer:extension-rtmp:$exoPlayerVersion",
+            exoPlayerCastExt      : "com.google.android.exoplayer:extension-cast:$exoPlayerVersion",
             lifeCycleExtentions   : "androidx.lifecycle:lifecycle-extensions:$lifeCycleExtensionsVersion",
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
             lifeCycleCommon       : "androidx.lifecycle:lifecycle-common-java8:$lifeCycleVersion",
@@ -276,7 +276,7 @@ ext {
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.3.6",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.3.7",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.7.1.1",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
@@ -291,7 +291,9 @@ ext {
             biometric             : "androidx.biometric:biometric:$biometricVersion",
             embraceSdk            : "io.embrace:embrace-android-sdk:$embraceVersion",
             embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
-            window                : "androidx.window:window:$windowVersion"
+            window                : "androidx.window:window:$windowVersion",
+            mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
+            zoomLayout            : "com.otaliastudios:zoomlayout:1.8.0@aar",
     ]
 
     testDependencies = [

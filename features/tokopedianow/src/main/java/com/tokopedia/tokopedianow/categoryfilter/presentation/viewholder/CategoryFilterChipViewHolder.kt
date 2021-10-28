@@ -5,7 +5,9 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
+import com.tokopedia.tokopedianow.databinding.ItemCategoryFilterChipBinding
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryFilterChipViewHolder(
     itemView: View,
@@ -17,11 +19,7 @@ class CategoryFilterChipViewHolder(
         val LAYOUT = R.layout.item_category_filter_chip
     }
 
-    private var chipFilter: ChipsUnify? = null
-
-    init {
-        chipFilter = itemView.findViewById(R.id.chip_filter)
-    }
+    private var binding: ItemCategoryFilterChipBinding? by viewBinding()
 
     override fun bind(data: CategoryFilterChip) {
         setupFilterChip(data)
@@ -29,18 +27,18 @@ class CategoryFilterChipViewHolder(
     }
 
     fun resetChip() {
-        chipFilter?.chipType = ChipsUnify.TYPE_NORMAL
+        binding?.chipFilter?.chipType = ChipsUnify.TYPE_NORMAL
     }
 
     private fun setupFilterChip(data: CategoryFilterChip) {
-        chipFilter?.run {
+        binding?.chipFilter?.run {
             chipText = data.title
             chipType = data.chipType
         }
     }
 
     private fun setOnClickListener(data: CategoryFilterChip) {
-        chipFilter?.apply {
+        binding?.chipFilter?.apply {
             setOnClickListener {
                 chipType = if (chipType == ChipsUnify.TYPE_SELECTED) {
                     ChipsUnify.TYPE_NORMAL

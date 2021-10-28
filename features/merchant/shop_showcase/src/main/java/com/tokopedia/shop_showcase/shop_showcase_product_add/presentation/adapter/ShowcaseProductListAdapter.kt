@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.adapt
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop_showcase.databinding.ItemProductCardHorizontalBinding
 import com.tokopedia.shop_showcase.databinding.ItemShowcaseProductLoadingBinding

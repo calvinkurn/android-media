@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +27,7 @@ import com.tokopedia.logisticorder.uimodel.TrackHistoryModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
 import com.tokopedia.logisticorder.utils.TrackingPageUtil;
 import com.tokopedia.unifycomponents.ImageUnify;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -130,11 +130,11 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         private Context context;
 
-        private TextView title;
+        private Typography title;
 
-        private TextView time;
+        private Typography time;
 
-        private TextView description;
+        private Typography description;
 
         private ImageView dot;
 

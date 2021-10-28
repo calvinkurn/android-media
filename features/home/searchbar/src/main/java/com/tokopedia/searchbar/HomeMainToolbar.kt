@@ -250,7 +250,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             hints: ArrayList<HintData>,
             isFirstInstall: Boolean,
             isShowTransition: Boolean,
-            durationAutoTransition: Long
+            durationAutoTransition: Long = 0L
     ) {
         if (viewHomeMainToolBar != null) {
             if (::animationJob.isInitialized) {

@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">affiliate_toko</string>
+    <string name="label_affiliate">Affiliate</string>
+
+    <string name="affiliate_home">Home</string>
+    <string name="affiliate_promo">Promosikan</string>
+    <string name="affiliate_bantuan">Bantuan</string>
+
+    <string name="tag_lottie_animation_view">lottieAnimationView</string>
+    <string name="tag_title_textview">titleTextView</string>
+    <string name="tag_badge_textview">badgeTextView</string>
+    <string name="affiliate_choose_product">Pilih produknya dulu, ya!</string>
+    <string name="affiliate_choose_product_description">Kamu bisa pilih produk yang sesuai dengan personamu sebelum mulai dipromosikan.</string>
+    <string name="affiliate_morning">Halo, Selamat pagi!</string>
+    <string name="affiliate_noon">Halo, Selamat siang!</string>
+    <string name="affiliate_afternoon">Halo, Selamat sore!</string>
+    <string name="affiliate_night">Halo, Selamat malam!</string>
+    <string name="affiliate_promote_affiliatw">Promosikan Produk Affiliate</string>
+    <string name="affiliate_promoted_products">Produk yang dipromosikan</string>
+    <string name="affiliate_where_to_promote">Mau promosikan di mana?</string>
+    <string name="affiliate_copy_link">Salin Link</string>
+    <string name="affiliate_never_bought_product">Cari produknya dulu, yuk!</string>
+    <string name="affiliate_still_buy_products">Kalau udah ada produk yang mau dipromosikan, segera salin link-nya, lalu tempel di sini.</string>
+    <string name="affiliate_paste_link">Tempel Link</string>
+    <string name="affiliate_paste_product_link">Tempel link produk di sini</string>
+    <string name="affiliate_active">Aktif</string>
+    <string name="affiliate_inactive">Tidak Aktif</string>
+    <string name="affiliate_how_to_promote">Gimana cara promosikannya?</string>
+    <string name="affiliate_how_to_get_link">Kamu bisa dapatkan link affiliate dengan cara berikut ini:\n</string>
+    <string name="affiliate_how_to_get_link_1">1. Salin link produk yang kamu ingin promosikan di aplikasi Tokopedia (Pastikan produknya termasuk dari kategori yang bisa dipromosikan. Lihat Kategori)</string>
+    <string name="affiliate_how_to_get_link_2">2. Tempel link produk di kolom yang disediakan pada halaman Promosikan</string>
+    <string name="affiliate_how_to_get_link_3">3. Produk akan ditemukan jika link benar</string>
+    <string name="affiliate_how_to_get_link_4">4. Dapatkan link affiliate dengan klik tombol Promosikan</string>
+    <string name="affiliate_link_generated_succesfully">Link affiliate untuk di %s tersalin dan siap dipromosikan.</string>
+    <string name="affiliate_product_count">%s Produk</string>
+    <string name="affiliate_product_inactive">Link produk tidak aktif</string>
+    <string name="affiliate_product_inactive_text">Sementara link produk ini tidak bisa dipromosikan, karena tidak memenuhi syarat untuk Affiliate.</string>
+    <string name="affiliate_beta_info">Ini Affiliate versi Beta</string>
+    <string name="affiliate_beta_info_text">Di versi ini, tim bisnis kami akan mengirimkan laporan Performa Affiliate &amp; pendapatanmu. Nantikan fitur yang lebih optimal di versi berikutnya, ya!</string>
+    <string name="affiliate_beta">BETA</string>
+    <string name="affiliate_product_link_invalid">Pastikan link yang kamu masukkan benar, ya.</string>
+</resources>

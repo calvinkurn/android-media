@@ -26,8 +26,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.facebook.AccessToken
-import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -47,7 +45,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_FACEBOOK
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_GOOGLE
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
@@ -81,21 +78,21 @@ import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
+import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.login.const.LoginConstants.DiscoverLoginId.FACEBOOK
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
-import com.tokopedia.loginregister.login.service.RegisterPushNotifService
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_EMAIL
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_LOGIN_METHOD
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_PHONE
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
-import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -146,7 +143,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
-    private lateinit var callbackManager: CallbackManager
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     @Inject
@@ -278,7 +274,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupBackgroundColor()
-        callbackManager = CallbackManager.Factory.create()
         activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getGoogleClientId(it))
@@ -368,7 +363,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 }
                 isAutoLogin -> {
                     when (method) {
-                        METHOD_LOGIN_FACEBOOK -> onLoginFacebookClick()
                         METHOD_LOGIN_GOOGLE -> onLoginGoogleClick()
                         METHOD_LOGIN_EMAIL -> onLoginEmailClick()
                         else -> {
@@ -400,7 +394,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         viewModel.discoverResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
-                is Success -> onSuccessDiscoverLogin(it.data.providers)
+                is Success -> onSuccessDiscoverLogin(it.data)
                 is Fail -> onErrorDiscoverLogin(it.throwable)
             }
         })
@@ -437,27 +431,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             when (it) {
                 is Success -> onSuccessReloginAfterSQ(it.data)
                 is Fail -> onErrorReloginAfterSQ().invoke(it.throwable)
-            }
-        })
-
-        viewModel.getFacebookCredentialResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> onSuccessGetFacebookCredential(it.data)
-                is Fail -> onErrorGetFacebookCredential(it.throwable)
-            }
-        })
-
-        viewModel.loginTokenFacebookResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> viewModel.getUserInfo()
-                is Fail -> onErrorLoginFacebook("").invoke(it.throwable)
-            }
-        })
-
-        viewModel.loginTokenFacebookPhoneResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> onSuccessLoginFacebookPhone().invoke(it.data)
-                is Fail -> onErrorLoginFacebookPhone().invoke(it.throwable)
             }
         })
 
@@ -520,7 +493,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
         activity?.let {
-            if (isEnableFingerprint && isEnableFingerprintRollout() && data.isRegistered) {
+            if (isEnableFingerprint && data.isRegistered) {
                 enableFingerprint()
             } else {
                 disableFingerprint()
@@ -814,37 +787,37 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH))
     }
 
-    override fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemDataModel>) {
+    override fun onSuccessDiscoverLogin(discoverData: DiscoverData) {
         stopTrace()
         dismissLoadingDiscover()
-        if (providers.isNotEmpty()) {
+        if (discoverData.providers.isNotEmpty()) {
             val layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
 
             layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
             socmedButtonsContainer?.removeAllViews()
-            providers.forEach { discoverItemDataModel ->
+            discoverData.providers.forEach { provider ->
+                if (provider.id.equals(FACEBOOK, ignoreCase = true)) {
+                    return@forEach
+                }
+
                 context?.let { context ->
                     val tv = LoginTextView(context, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    tv.tag = discoverItemDataModel.id
-                    tv.setText(discoverItemDataModel.name)
+                    tv.setText(provider.name)
                     if (userSession.name.isNotEmpty()) {
                         var name = userSession.name
                         if (name.split("\\s".toRegex()).size > 1)
                             name = name.substring(0, name.indexOf(" "))
-                        if ((discoverItemDataModel.id.equals(LoginConstants.DiscoverLoginId.FACEBOOK, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
-                                (discoverItemDataModel.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
-                            tv.setText("${discoverItemDataModel.name} ${getString(R.string.socmed_account_as)} $name")
+                        if ((provider.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
+                            tv.setText("${provider.name} ${getString(R.string.socmed_account_as)} $name")
                         }
                     }
-                    if (!TextUtils.isEmpty(discoverItemDataModel.image)) {
-                        tv.setImage(discoverItemDataModel.image)
-                    } else if (discoverItemDataModel.imageResource != 0) {
-                        tv.setImageResource(discoverItemDataModel.imageResource)
+                    if (!TextUtils.isEmpty(provider.image)) {
+                        tv.setImage(provider.image)
                     }
                     tv.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
 
-                    setDiscoverListener(discoverItemDataModel, tv)
+                    setDiscoverListener(provider, tv)
 
                     socmedButtonsContainer?.childCount?.let { childCount ->
                         socmedButtonsContainer?.addView(tv, childCount, layoutParams)
@@ -859,10 +832,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     }
 
-    private fun setDiscoverListener(discoverItemDataModel: DiscoverItemDataModel, tv: LoginTextView) {
-        if (discoverItemDataModel.id.equals(LoginConstants.DiscoverLoginId.FACEBOOK, ignoreCase = true)) {
-            tv.setOnClickListener { onLoginFacebookClick() }
-        } else if (discoverItemDataModel.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true)) {
+    private fun setDiscoverListener(provider: ProviderData, tv: LoginTextView) {
+        if (provider.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true)) {
             tv.setOnClickListener { onLoginGoogleClick() }
         }
     }
@@ -881,45 +852,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         startActivityForResult(intent, LoginConstants.Request.REQUEST_LOGIN_GOOGLE)
     }
 
-    private fun onLoginFacebookClick() {
-        if (activity != null) {
-            onDismissBottomSheet()
-            activity?.let { analytics.eventClickLoginFacebook(it) }
-            viewModel.getFacebookCredential(this, callbackManager)
-        }
-    }
-
     private fun onDismissBottomSheet() {
         try {
             socmedBottomSheet?.dismiss()
         } catch (e: Exception) {
-        }
-    }
-
-    private fun onSuccessGetFacebookCredential(facebookCredentialData: FacebookCredentialData) {
-        try {
-            showLoadingLogin()
-            if (facebookCredentialData.email.isNotEmpty()) {
-                viewModel.loginFacebook(
-                        facebookCredentialData.accessToken,
-                        facebookCredentialData.email
-                )
-            } else if (facebookCredentialData.phone.isNotEmpty()) {
-                viewModel.loginFacebookPhone(
-                        facebookCredentialData.accessToken,
-                        facebookCredentialData.phone
-                )
-            }
-        } catch (e: Exception) {
-            e.message?.let { onErrorLogin(it, LoginErrorCode.ERROR_ON_FACEBOOK_CATCH_SUCCESS) }
-        }
-    }
-
-    private fun onErrorGetFacebookCredential(errorMessage: Throwable) {
-        dismissLoadingLogin()
-        if (isAdded && activity != null) {
-            val msg = ErrorHandler.getErrorMessage(context, errorMessage)
-            onErrorLogin(msg, LoginErrorCode.ERROR_ON_FACEBOOK, errorMessage)
         }
     }
 
@@ -946,34 +882,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
 
         return isValid
-    }
-
-    override fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
-        return object : GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
-
-            override fun onErrorGetFacebookCredential(errorMessage: Exception?) {
-                dismissLoadingLogin()
-                if (isAdded && activity != null) {
-                    onErrorLogin(ErrorHandler.getErrorMessage(context, errorMessage), LoginErrorCode.ERROR_ON_FACEBOOK_CREDENTIAL)
-                }
-            }
-
-            override fun onSuccessGetFacebookEmailCredential(accessToken: AccessToken?, email: String?) {
-                context?.run {
-                    LetUtil.ifLet(context, accessToken, email) { (context, accessToken, email) ->
-                        viewModel.loginFacebook(accessToken as AccessToken, email as String)
-                    }
-                }
-            }
-
-            override fun onSuccessGetFacebookPhoneCredential(accessToken: AccessToken?, phone: String?) {
-                context?.run {
-                    LetUtil.ifLet(context, accessToken, phone) { (context, accessToken, phone) ->
-                        viewModel.loginFacebookPhone(accessToken as AccessToken, phone as String)
-                    }
-                }
-            }
-        }
     }
 
     override fun showLoadingLogin() {
@@ -1257,14 +1165,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return remoteConfigInstance.abTestPlatform
     }
 
-    fun isEnableFingerprintRollout(): Boolean {
-        if (Build.VERSION.SDK_INT == OS_11) {
-            return getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT_11).isNotEmpty()
-        }
-        return getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT).isNotEmpty()
-    }
-
-
     fun isEnableEncryptRollout(): Boolean {
         val rolloutKey = if (GlobalConfig.isSellerApp()) {
             SessionConstants.Rollout.ROLLOUT_LOGIN_ENCRYPTION_SELLER
@@ -1449,38 +1349,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    override fun onErrorLoginFacebook(email: String): (Throwable) -> Unit {
-        return {
-            dismissLoadingLogin()
-            if (it is AkamaiErrorException) {
-                showPopupErrorAkamai()
-            } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_FACEBOOK, it)
-            }
-        }
-    }
-
-    override fun onSuccessLoginFacebookPhone(): (LoginTokenPojo) -> Unit {
-        return {
-            if (it.loginToken.action == 1) {
-                goToChooseAccountPageFacebook(it.loginToken.accessToken)
-            } else {
-                viewModel.getUserInfo()
-            }
-        }
-    }
-
-    override fun onErrorLoginFacebookPhone(): (Throwable) -> Unit {
-        return {
-            dismissLoadingLogin()
-            if (it is AkamaiErrorException) {
-                showPopupErrorAkamai()
-            } else {
-                onErrorLogin(ErrorHandler.getErrorMessage(context, it), LoginErrorCode.ERROR_FACEBOOK_PHONE, it)
-            }
-        }
-    }
-
     override fun onErrorLoginGoogle(email: String?): (Throwable) -> Unit {
         return {
             logoutGoogleAccountIfExist()
@@ -1523,16 +1391,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    override fun goToChooseAccountPageFacebook(accessToken: String) {
-        activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, LoginConstants.LoginType.FACEBOOK_LOGIN_TYPE)
-
-            startActivityForResult(intent, LoginConstants.Request.REQUEST_CHOOSE_ACCOUNT)
-        }
-    }
-
     private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
@@ -1546,7 +1404,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (activity != null) {
-            callbackManager.onActivityResult(requestCode, resultCode, data)
             if (requestCode == LoginConstants.Request.REQUEST_LOGIN_GOOGLE && data != null) run {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)
@@ -1928,8 +1785,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun registerPushNotif() {
         if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.let {
-                RegisterPushNotifService.startService(it.applicationContext)
+            context?.let {
+                RegisterPushNotificationWorker.scheduleWorker(it)
             }
         }
     }

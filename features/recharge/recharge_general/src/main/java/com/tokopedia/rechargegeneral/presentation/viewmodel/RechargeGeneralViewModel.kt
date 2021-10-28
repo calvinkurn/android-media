@@ -100,8 +100,8 @@ class RechargeGeneralViewModel @Inject constructor(
         return mapOf(PARAM_MENU_ID to menuID)
     }
 
-    fun createProductListParams(menuID: Int, operator: Int): Map<String, Any> {
-        return mapOf(PARAM_MENU_ID to menuID, PARAM_OPERATOR to operator.toString())
+    fun createProductListParams(menuID: Int, operator: String): Map<String, Any> {
+        return mapOf(PARAM_MENU_ID to menuID, PARAM_OPERATOR to operator)
     }
 
     fun createAddBillsParam(addBillRequest: RechargeSBMAddBillRequest): Map<String, Any> {

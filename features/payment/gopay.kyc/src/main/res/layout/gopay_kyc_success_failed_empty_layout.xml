@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/unify_space_16">
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/deferredImage"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/go_pay_kyc_dp_210"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        app:imageDpiSupportType="singleDpi"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/uploadStatusTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:gravity="center"
+        android:text="@string/gopay_kyc_upload_failed_title_text"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/uploadStatusDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:gravity="center"
+        android:text="@string/gopay_kyc_upload_failed_description_text"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_2" />
+
+</LinearLayout>

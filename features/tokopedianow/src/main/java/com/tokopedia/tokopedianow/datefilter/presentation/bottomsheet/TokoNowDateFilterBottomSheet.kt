@@ -14,16 +14,17 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.DateUtil.calendarToStringFormat
 import com.tokopedia.tokopedianow.common.util.DateUtil.getGregorianCalendar
+import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowDateFilterBinding
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
 import com.tokopedia.tokopedianow.datefilter.presentation.adapter.DateFilterAdapter
 import com.tokopedia.tokopedianow.datefilter.presentation.adapter.DateFilterAdapterTypeFactory
 import com.tokopedia.tokopedianow.datefilter.presentation.adapter.differ.DateFilterDiffer
 import com.tokopedia.tokopedianow.datefilter.presentation.uimodel.DateFilterUiModel
 import com.tokopedia.tokopedianow.datefilter.presentation.viewholder.DateFilterViewHolder.*
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.bottomsheet_tokopedianow_date_filter.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 
 class TokoNowDateFilterBottomSheet :
@@ -48,6 +49,8 @@ class TokoNowDateFilterBottomSheet :
         }
     }
 
+    private var binding by autoClearedNullable<BottomsheetTokopedianowDateFilterBinding>()
+
     private var chosenStartDate: GregorianCalendar? = null
     private var chosenEndDate: GregorianCalendar? = null
     private var rvDate: RecyclerView? = null
@@ -59,7 +62,7 @@ class TokoNowDateFilterBottomSheet :
     private var listTitles: MutableList<DateFilterUiModel> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initView(inflater, container)
+        initView()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -204,21 +207,21 @@ class TokoNowDateFilterBottomSheet :
         )
     }
 
-    private fun initView(inflater: LayoutInflater, container: ViewGroup?) {
+    private fun initView() {
         clearContentPadding = true
         showCloseIcon = true
         isDragable = false
         isHideable = false
         selectedFilter = RepurchaseSortFilterUiModel.SelectedDateFilter()
-        setupItemView(inflater, container)
+        setupItemView()
         setTitle(getString(R.string.tokopedianow_sort_filter_title_bottomsheet))
     }
 
-    private fun setupItemView(inflater: LayoutInflater, container: ViewGroup?) {
-        val itemView = inflater.inflate(R.layout.bottomsheet_tokopedianow_date_filter, container)
-        rvDate = itemView.findViewById(R.id.rv_date_filter)
-        btnApplyFilter = itemView.findViewById(R.id.btn_apply_filter)
-        setChild(itemView)
+    private fun setupItemView() {
+        binding = BottomsheetTokopedianowDateFilterBinding.inflate(LayoutInflater.from(context))
+        rvDate = binding?.rvDateFilter
+        btnApplyFilter = binding?.btnApplyFilter
+        setChild(binding?.root)
     }
 
     private fun setupRecyclerView() {

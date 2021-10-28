@@ -11,11 +11,15 @@ import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
-import com.tokopedia.navigation_common.model.*
+import com.tokopedia.navigation_common.model.DebitInstantData
+import com.tokopedia.navigation_common.model.DebitInstantModel
+import com.tokopedia.navigation_common.model.ProfileModel
+import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,7 +32,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.IllegalArgumentException
 import kotlin.test.assertEquals
 
 /**
@@ -76,6 +79,8 @@ class HomeAccountUserViewModelTest {
     private val shortcut = ShortcutResponse()
     private val responseResult = UserAccountDataModel()
     private val linkStatusResult = LinkStatusResponse()
+    private val profilePojo = ProfilePojo(profileInfo = ProfileInfo(phone = "089123456789"))
+    private val throwableMock = mockk<Throwable>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -90,6 +95,7 @@ class HomeAccountUserViewModelTest {
             centralizedUserAssetConfigUseCase,
             balanceAndPointUseCase,
             tokopointsBalanceAndPointUseCase,
+            saldoBalanceUseCase,
             coBrandCCBalanceAndPointUseCase,
             walletEligibleUseCase,
             getLinkStatusUseCase,
@@ -103,6 +109,38 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
+    fun `Execute refreshPhoneNo Success`() {
+        coEvery { getPhoneUseCase(Unit) } returns profilePojo
+
+        viewModel.refreshPhoneNo()
+
+        verify {
+            userSession.phoneNumber = profilePojo.profileInfo.phone
+        }
+        Assertions.assertThat(viewModel.phoneNo.value)
+            .isEqualTo(profilePojo.profileInfo.phone)
+    }
+
+    @Test
+    fun `Execute refreshPhoneNo Success but phone empty`() {
+        coEvery { getPhoneUseCase(Unit) } returns ProfilePojo()
+
+        viewModel.refreshPhoneNo()
+
+        Assertions.assertThat(viewModel.phoneNo.value)
+            .isEqualTo(null)
+    }
+
+    @Test
+    fun `Execute refreshPhoneNo Failed`() {
+        coEvery { getPhoneUseCase(Unit) } throws throwable.throwable
+
+        viewModel.refreshPhoneNo()
+
+        Assertions.assertThat(viewModel.phoneNo.value).isEqualTo("")
+    }
+
+    @Test
     fun `Execute getBuyerData Success`() {
         /* When */
         coEvery { homeAccountUserUsecase.executeOnBackground() } returns responseResult
@@ -110,6 +148,9 @@ class HomeAccountUserViewModelTest {
         coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
 
         viewModel.getBuyerData()
+
+        responseResult.linkStatus = linkStatusResult.response
+
         verify {
             viewModel.saveLocallyAttributes(responseResult)
         }
@@ -121,7 +162,8 @@ class HomeAccountUserViewModelTest {
     fun `Execute getBuyerData Failed`() {
         /* When */
         coEvery { homeAccountUserUsecase.executeOnBackground() } throws throwable.throwable
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
+        coEvery { homeAccountShortcutUseCase.executeOnBackground() } throws throwable.throwable
+        coEvery { getLinkStatusUseCase.invoke(any()) } throws throwable.throwable
 
         viewModel.getBuyerData()
         Assertions.assertThat(viewModel.buyerAccountDataData.value).isEqualTo(throwable)
@@ -237,6 +279,75 @@ class HomeAccountUserViewModelTest {
         verify {
             accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
             accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
+        }
+    }
+
+    @Test
+    fun `Set safe mode Failed`() {
+        val isActive = true
+        /* When */
+        every {
+            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
+                any(),
+                any(),
+                any()
+            )
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
+        }
+
+        viewModel.setSafeMode(isActive)
+
+        justRun { throwableMock.printStackTrace() }
+        verify(atLeast = 1) {
+            throwableMock.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `Set safe mode inactive success`() {
+        val data = SetUserProfileSetting(isSuccess = true, error = "")
+        val setUserProfileResponse = SetUserProfileSettingResponse(data)
+
+        val isActive = false
+        /* When */
+        every {
+            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
+                any(),
+                any(),
+                any()
+            )
+        } answers {
+            firstArg<(SetUserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
+        }
+
+        viewModel.setSafeMode(isActive)
+
+        verify {
+            accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
+            accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
+        }
+    }
+
+    @Test
+    fun `Set safe mode inactive Failed`() {
+        val isActive = false
+        /* When */
+        every {
+            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
+                any(),
+                any(),
+                any()
+            )
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
+        }
+
+        viewModel.setSafeMode(isActive)
+
+        justRun { throwableMock.printStackTrace() }
+        verify(atLeast = 1) {
+            throwableMock.printStackTrace()
         }
     }
 
@@ -405,9 +516,37 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
+    fun `Success get saldo balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { saldoBalanceUseCase(Unit) } returns successGetSaldoBalanceAndPointResponse
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO)
+
+        verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Success<WalletappGetAccountBalance>
+        assert(result.data == successGetSaldoBalanceAndPointResponse.data)
+    }
+
+    @Test
+    fun `Failed get saldo balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { saldoBalanceUseCase(Unit) } coAnswers { throw throwableResponse }
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO)
+
+        verify { balanceAndPointOvserver.onChanged(any()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
     fun `Success get co brand cc balance and point`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
-        coEvery { coBrandCCBalanceAndPointUseCase(Unit) } returns successGetBalanceAndPointResponse
+        coEvery { coBrandCCBalanceAndPointUseCase(Unit) } returns successGetCoBrandCCBalanceAndPointResponse
 
         viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC)
 
@@ -415,7 +554,7 @@ class HomeAccountUserViewModelTest {
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
 
         val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Success<WalletappGetAccountBalance>
-        assert(result.data == successGetBalanceAndPointResponse.data)
+        assert(result.data == successGetCoBrandCCBalanceAndPointResponse.data)
     }
 
     @Test
@@ -483,9 +622,17 @@ class HomeAccountUserViewModelTest {
             "/success_get_balance_and_point.json",
             BalanceAndPointDataModel::class.java
         )
+        private val successGetSaldoBalanceAndPointResponse: SaldoBalanceDataModel = FileUtil.parse(
+            "/success_get_saldo_balance_and_point.json",
+            SaldoBalanceDataModel::class.java
+        )
         private val successGetTokopointBalanceAndPointResponse: TokopointsBalanceDataModel = FileUtil.parse(
             "/success_get_tokopoint_balance_and_point.json",
             TokopointsBalanceDataModel::class.java
+        )
+        private val successGetCoBrandCCBalanceAndPointResponse: CoBrandCCBalanceDataModel = FileUtil.parse(
+            "/success_get_cobrandcc_balance_and_point.json",
+            CoBrandCCBalanceDataModel::class.java
         )
         private val successGetWalletEligibleResponse: WalletEligibleDataModel = FileUtil.parse(
             "/success_get_wallet_eligible.json",

@@ -12,7 +12,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,8 +57,10 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.linkaccount.view.LinkAccountWebViewActivity
+import com.tokopedia.home_account.linkaccount.view.LinkAccountWebviewFragment
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
@@ -83,7 +84,6 @@ import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -108,7 +108,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
-import kotlinx.android.synthetic.main.home_account_user_fragment.*
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -145,6 +145,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
 
+    private val binding by viewBinding(HomeAccountUserFragmentBinding::bind)
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
     private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
@@ -227,7 +228,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        home_account_user_toolbar?.let {
+        binding?.homeAccountUserToolbar?.let {
             it.setIcon(IconBuilder(
                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_ACCOUNT)
             ).addIcon(iconId = IconList.ID_NAV_GLOBAL) {})
@@ -250,34 +251,36 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         showLoading()
         getData()
 
-        home_account_user_fragment_rv?.addOnScrollListener(NavRecyclerViewScrollListener(
-            navToolbar = home_account_user_toolbar,
-            startTransitionPixel = 200,
-            toolbarTransitionRangePixel = 50,
-            navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                override fun onAlphaChanged(offsetAlpha: Float) {
-                    setStatusBarAlpha(offsetAlpha)
-                }
+        binding?.homeAccountUserToolbar?.let {
+            NavRecyclerViewScrollListener(
+                navToolbar = it,
+                startTransitionPixel = START_TRANSITION_PIXEL,
+                toolbarTransitionRangePixel = TOOLBAR_TRANSITION_RANNGE_PIXEL,
+                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                    override fun onAlphaChanged(offsetAlpha: Float) {
+                        setStatusBarAlpha(offsetAlpha)
+                    }
 
-                override fun onSwitchToDarkToolbar() {
-                    home_account_user_toolbar.switchToLightToolbar()
-                }
+                    override fun onSwitchToDarkToolbar() {
+                        it.switchToLightToolbar()
+                    }
 
-                override fun onSwitchToLightToolbar() {
-                }
+                    override fun onSwitchToLightToolbar() {
+                    }
 
-                override fun onYposChanged(yOffset: Int) {
+                    override fun onYposChanged(yOffset: Int) {
+                    }
                 }
-            }
-        ))
+            )
+        }?.let { binding?.homeAccountUserFragmentRv?.addOnScrollListener(it) }
 
-        home_account_user_fragment_rv?.swipeLayout = home_account_user_fragment_swipe_refresh
-        home_account_user_fragment_swipe_refresh?.setOnRefreshListener {
+        binding?.homeAccountUserFragmentRv?.swipeLayout = binding?.homeAccountUserFragmentSwipeRefresh
+        binding?.homeAccountUserFragmentSwipeRefresh?.setOnRefreshListener {
             coachMark?.dismissCoachMark()
             onRefresh()
             getData()
             isNeedRefreshProfileItems = true
-            home_account_user_fragment_swipe_refresh?.isRefreshing = false
+            binding?.homeAccountUserFragmentSwipeRefresh?.isRefreshing = false
         }
     }
 
@@ -289,7 +292,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
                 putExtra(
                     ApplinkConstInternalGlobal.PARAM_LD,
-                    ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
+                    LinkAccountWebviewFragment.BACK_BTN_APPLINK
                 )
             }
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
@@ -387,8 +390,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         initCoachMark(position, itemView, data)
         if (position == 0) {
             initMemberLocalLoad(itemView)
-            initMemberTitle(itemView)
-
             initBalanceAndPointLocalLoad(itemView)
         }
     }
@@ -496,7 +497,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             balanceAndPointUiModel.isActive,
             balanceAndPointUiModel.isFailed
         )
-        if (balanceAndPointUiModel.isFailed && balanceAndPointUiModel.id != AccountConstants.WALLET.SALDO) {
+        if (balanceAndPointUiModel.isFailed) {
             balanceAndPointAdapter?.changeItemToShimmer(
                 UiModelMapper.getBalanceAndPointShimmerUiModel(
                     balanceAndPointUiModel
@@ -606,28 +607,24 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         if (centralizedUserAssetConfig.assetConfig.isNotEmpty()) {
             centralizedUserAssetConfig.assetConfig.forEach {
-                if (it.id == AccountConstants.WALLET.SALDO) {
-                    balanceAndPointAdapter?.addItemWallet(UiModelMapper.getBalanceAndPointUiModel(it))
-                } else {
-                    balanceAndPointAdapter?.addItemWallet(
-                        UiModelMapper.getBalanceAndPointShimmerUiModel(
-                            it
-                        )
+                balanceAndPointAdapter?.addItemWallet(
+                    UiModelMapper.getBalanceAndPointShimmerUiModel(
+                        it
                     )
-                }
+                )
             }
         }
         adapter?.notifyItemChanged(0)
-        viewModel.getGopayWalletEligible()
         getBalanceAndPoints(centralizedUserAssetConfig)
     }
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfig.forEach {
-            if (it.id != AccountConstants.WALLET.GOPAY &&
-                it.id != AccountConstants.WALLET.SALDO
+            if (it.id != AccountConstants.WALLET.GOPAY
             ) {
                 viewModel.getBalanceAndPoint(it.id)
+            } else {
+                viewModel.getGopayWalletEligible()
             }
         }
     }
@@ -670,17 +667,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun onSuccessGetShortcutGroup(shortcutResponse: ShortcutResponse) {
         displayMemberLocalLoad(false)
-        val leftMargin = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            6f,
-            resources.displayMetrics
-        )
-        memberTitle?.setMargin(leftMargin.toInt(), 0, 0, 0)
-        memberTitle?.text =
-            shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier.nameDesc
-        memberIcon?.show()
-        memberIcon?.setImageUrl(shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier.imageURL)
-
+        adapter?.run {
+            if(isFirstItemIsProfile()) {
+                (getItem(0) as ProfileDataView).memberStatus =
+                    shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier
+                notifyDataSetChanged()
+            }
+        }
         val mappedMember = mapper.mapMemberItemDataView(shortcutResponse)
         memberAdapter?.addItems(mappedMember)
     }
@@ -708,7 +701,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun onFailGetData() {
         adapter?.run {
-            if (getItem(0) is ProfileDataView) {
+            if (isFirstItemIsProfile()) {
                 removeItemAt(0)
             }
             addItem(
@@ -726,16 +719,19 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun setStatusBarAlpha(alpha: Float) {
-        val drawable = status_bar_bg.background
-        drawable.alpha = alpha.toInt()
-        status_bar_bg.background = drawable
+        val drawable = binding?.statusBarBg?.background
+        drawable?.alpha = alpha.toInt()
+        binding?.statusBarBg?.background = drawable
     }
+
+    private fun isFirstItemIsProfile(): Boolean =
+        adapter?.getItem(0) is ProfileDataView
 
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
         displayMemberLocalLoad(false)
         displayBalanceAndPointLocalLoad(false)
         adapter?.run {
-            if (getItem(0) is ProfileDataView) {
+            if (isFirstItemIsProfile()) {
                 removeItemAt(0)
             }
             addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
@@ -779,11 +775,11 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun showLoading() {
-        home_account_shimmer_layout?.show()
+        binding?.homeAccountShimmerLayout?.root?.show()
     }
 
     private fun hideLoading() {
-        home_account_shimmer_layout?.hide()
+        binding?.homeAccountShimmerLayout?.root?.hide()
     }
 
     private fun displayBalanceAndPointLocalLoad(isShow: Boolean) {
@@ -808,15 +804,15 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun setupStatusBar() {
         activity?.let {
-            status_bar_bg.background = ColorDrawable(
+            binding?.statusBarBg?.background = ColorDrawable(
                 ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
         }
-        status_bar_bg.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
+        binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            status_bar_bg.visibility = View.INVISIBLE
+            binding?.statusBarBg?.visibility = View.INVISIBLE
         } else {
-            status_bar_bg.visibility = View.VISIBLE
+            binding?.statusBarBg?.visibility = View.VISIBLE
         }
         setStatusBarAlpha(0f)
     }
@@ -837,7 +833,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun getData() {
-        home_account_user_fragment_rv?.scrollToPosition(0)
+        binding?.homeAccountUserFragmentRv?.scrollToPosition(0)
         endlessRecyclerViewScrollListener?.resetState()
         viewModel.getBuyerData()
         setupSettingList()
@@ -875,10 +871,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun setupList() {
-        home_account_user_fragment_rv.layoutManager =
+        binding?.homeAccountUserFragmentRv?.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        home_account_user_fragment_rv?.adapter = adapter
-        home_account_user_fragment_rv?.isNestedScrollingEnabled = false
+        binding?.homeAccountUserFragmentRv?.adapter = adapter
+        binding?.homeAccountUserFragmentRv?.isNestedScrollingEnabled = false
     }
 
     private fun setupSettingList() {
@@ -1307,18 +1303,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         }
     }
 
-    private fun initMemberTitle(itemView: View) {
-        itemView.findViewById<Typography>(R.id.home_account_member_layout_title)?.let {
-            memberTitle = it
-        }
-        itemView.findViewById<ImageUnify>(R.id.home_account_member_layout_member_icon)?.let {
-            memberIcon = it
-        }
-    }
-
     private fun setLoadMore() {
         if (endlessRecyclerViewScrollListener == null) {
-            val layoutManager = home_account_user_fragment_rv?.layoutManager
+            val layoutManager = binding?.homeAccountUserFragmentRv?.layoutManager
             layoutManager?.let {
                 endlessRecyclerViewScrollListener = object : HomeAccountEndlessScrollListener(it) {
                     override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -1330,7 +1317,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
         }
         endlessRecyclerViewScrollListener?.let {
-            home_account_user_fragment_rv?.addOnScrollListener(it)
+            binding?.homeAccountUserFragmentRv?.addOnScrollListener(it)
         }
     }
 
@@ -1497,6 +1484,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REQUEST_CODE_PROFILE_SETTING = 301
         private const val REQUEST_FROM_PDP = 394
         private const val REQUEST_CODE_LINK_ACCOUNT = 302
+
+        private const val START_TRANSITION_PIXEL = 200
+        private const val TOOLBAR_TRANSITION_RANNGE_PIXEL = 50
 
         private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"

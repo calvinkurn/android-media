@@ -48,7 +48,9 @@
     <string name="ktp_protection">Kerahasiaan data kamu dijamin sistem Tokopedia</string>
 
     <string name="face_title">Scan wajah kamu</string>
-    <string name="face_subtitle">Sistem kami akan mendeteksi wajahmu untuk mencocokan data di KTP. Ikuti instruksi kami, ya.</string>
+    <string name="face_subtitle">Kami akan scan wajahmu untuk cocokkan data di KTP. Ikuti instruksi ini:</string>
+    <string name="face_subtitle_body_1">Jangan pakai aksesoris yang menutupi wajahmu.</string>
+    <string name="face_subtitle_body_2">Pastikan wajahmu terkena pencahayaan yang cukup dan terlihat jelas.</string>
     <string name="face_button">Mulai Verifikasi Wajah"</string>
 
     <string name="face_title_kyc">Foto Diri Bersama KTP</string>

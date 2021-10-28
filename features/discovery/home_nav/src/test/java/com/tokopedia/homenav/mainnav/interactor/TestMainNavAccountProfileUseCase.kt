@@ -455,6 +455,40 @@ class TestMainNavAccountProfileUseCase {
         Assert.assertTrue(accountDataModel.profileSaldoDataModel.saldo.isNotEmpty())
         Assert.assertTrue(accountDataModel.profileMembershipDataModel.tokopointPointAmount.isEmpty())
     }
+
+    @Test
+    fun `When gopay is zero and gopay coin is zero and saldo is zero onMapToHeaderModel then gopay is empty and gopay coins in empty and saldo is not empty`(){
+        val getWalletEligibilityUseCase = mockk<GetWalletEligibilityUseCase>(relaxed = true)
+        val getWalletBalanceUseCase = mockk<GetWalletAppBalanceUseCase>(relaxed = true)
+        val getSaldoUseCase = mockk<GetSaldoUseCase>(relaxed = true)
+
+        val getProfileDataUseCase = createProfileDataUseCase(
+            getWalletEligibilityUseCase = getWalletEligibilityUseCase,
+            getWalletAppBalanceUseCase = getWalletBalanceUseCase,
+            getSaldoUseCase = getSaldoUseCase
+        )
+
+        coEvery {
+            getWalletBalanceUseCase.executeOnBackground()
+        } returns buildSuccessWalletAppResponse(walletAppAmount = 0, walletCoinAmount = 0)
+
+        coEvery {
+            getWalletEligibilityUseCase.executeOnBackground()
+        } returns buildEligible()
+
+        coEvery {
+            getSaldoUseCase.executeOnBackground()
+        } returns buildSuccessSaldoResponse(0)
+
+        val accountDataModel = runBlocking {
+            getProfileDataUseCase.executeOnBackground()
+        }
+        Assert.assertTrue(accountDataModel.profileWalletAppDataModel.isWalletAppLinked)
+        Assert.assertTrue(accountDataModel.profileWalletAppDataModel.gopayBalance.isEmpty())
+        Assert.assertTrue(accountDataModel.profileWalletAppDataModel.gopayPointsBalance.isEmpty())
+        Assert.assertTrue(accountDataModel.profileSaldoDataModel.saldo.isNotEmpty())
+        Assert.assertTrue(accountDataModel.profileMembershipDataModel.tokopointPointAmount.isEmpty())
+    }
 }
 
 private fun buildSuccessTokopointsResponse(pointsAmount: Int): Result<TokopointsStatusFilteredPojo> {

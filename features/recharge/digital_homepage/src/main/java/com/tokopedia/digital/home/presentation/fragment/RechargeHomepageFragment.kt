@@ -105,14 +105,14 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         hideStatusBar()
-        
+
         binding.digitalHomepageToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
         initSearchView()
 
         calculateToolbarView(0)
 
-        
+
         binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = adapter
         while (binding.recyclerView.itemDecorationCount > 0) binding.recyclerView.removeItemDecorationAt(0)
@@ -126,7 +126,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             }
         })
 
-        
+
         binding.swipeRefreshLayout.setOnRefreshListener {
             binding.swipeRefreshLayout.isRefreshing = true
             loadData()
@@ -144,12 +144,12 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun initSearchView() {
-        
+
         binding.digitalHomepageSearchView.setFocusChangeListener(this)
     }
 
     private fun hideStatusBar() {
-        
+
         binding.digitalHomepageContainer.fitsSystemWindows = false
         binding.digitalHomepageContainer.requestApplyInsets()
 
@@ -187,7 +187,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             binding.digitalHomepageToolbar.toOnScrolledMode()
             context?.run {
-                
+
                 binding.digitalHomepageOrderList.setColorFilter(
                         ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200), PorterDuff.Mode.MULTIPLY
                 )
@@ -240,7 +240,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                         renderList(it)
                     }
                 }
-                is Fail -> tickerList =  RechargeTickerHomepageModel()
+                is Fail -> tickerList = RechargeTickerHomepageModel()
             }
         })
     }
@@ -397,7 +397,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     override fun onFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
             binding.digitalHomepageSearchView.getSearchTextView()?.let { it.clearFocus() }
-            rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId)
+            rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId,
+                    viewModel.getSearchBarScreenName())
 
             redirectToSearchByDynamicIconsFragment()
         }
@@ -408,11 +409,12 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         if (sectionIds.isNotEmpty()) {
             startActivity(DigitalHomePageSearchActivity.getCallingIntent(
                     requireContext(), platformId, enablePersonalize,
-                    sectionIds, viewModel.getSearchBarPlaceholder()))
+                    sectionIds, viewModel.getSearchBarPlaceholder(),
+                    viewModel.getSearchBarScreenName()))
         }
     }
 
-    private fun renderList(sections: List<RechargeHomepageSections.Section>){
+    private fun renderList(sections: List<RechargeHomepageSections.Section>) {
         val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(sections, tickerList)
         val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
             homeComponent.visitableId()?.toInt()

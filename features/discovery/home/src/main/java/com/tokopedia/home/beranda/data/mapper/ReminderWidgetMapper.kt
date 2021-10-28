@@ -21,7 +21,8 @@ object ReminderWidgetMapper {
                                     link = it.link,
                                     mainText = it.mainText,
                                     subText = it.subText,
-                                    title = it.title
+                                    title = it.title,
+                                    UUID = recharge.UUID
                             )
                     )
             )
@@ -47,12 +48,5 @@ object ReminderWidgetMapper {
                     )
             )
         }
-    }
-
-    fun isSalamWidgetAvailable(salamWidgetData: SalamWidgetData):Boolean{
-        return (salamWidgetData.id!=0 && salamWidgetData.backgroundColor.isNotEmpty() &&
-                salamWidgetData.appLink.isNotEmpty() && salamWidgetData.buttonText.isNotEmpty() &&
-                salamWidgetData.iconURL.isNotEmpty() && salamWidgetData.mainText.isNotEmpty() &&
-                salamWidgetData.subText.isNotEmpty() && salamWidgetData.title.isNotEmpty())
     }
 }

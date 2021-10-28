@@ -6,29 +6,31 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetListener
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeProductRecomBinding
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductRecomViewHolder(
     itemView: View,
     private val tokoNowView: TokoNowView? = null,
     private val listener: HomeProductRecomListener? = null
-): AbstractViewHolder<HomeProductRecomUiModel>(itemView), RecommendationCarouselWidgetListener {
+) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
+    RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_product_recom
     }
 
-    private val productRecom: RecommendationCarouselWidgetView by lazy { itemView.findViewById(R.id.carouselProductRecom) }
-    private val divider: View by lazy { itemView.findViewById(R.id.divider) }
+    private var binding: ItemTokopedianowHomeProductRecomBinding? by viewBinding()
 
     private var channelId = ""
     private var isOoc = false
@@ -36,32 +38,52 @@ class HomeProductRecomViewHolder(
     override fun bind(element: HomeProductRecomUiModel) {
         channelId = element.id
         isOoc = element.id == PRODUCT_RECOM_OOC
-        productRecom.bind(
+        binding?.carouselProductRecom?.bind(
             carouselData = RecommendationCarouselData(
                 recommendationData = element.recomWidget,
                 state = RecommendationCarouselData.STATE_READY,
             ),
-            widgetListener = this
+            basicListener = this,
+            tokonowListener = this
         )
         setOnScrollListener()
         restoreScrollState()
         if (isOoc) {
-            divider.show()
+            binding?.divider?.show()
             val spaceZero = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
             val spaceSixTeen = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-            productRecom.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
+            binding?.carouselProductRecom?.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
         }
     }
 
-    override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) { /* nothing to do */ }
+    override fun onRecomBannerImpressed(
+        data: RecommendationCarouselData,
+        adapterPosition: Int
+    ) { /* nothing to do */
+    }
 
-    override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) { /* nothing to do */ }
+    override fun onRecomBannerClicked(
+        data: RecommendationCarouselData,
+        applink: String,
+        adapterPosition: Int
+    ) { /* nothing to do */
+    }
 
-    override fun onChannelWidgetEmpty() { /* nothing to do */ }
+    override fun onChannelWidgetEmpty() { /* nothing to do */
+    }
 
-    override fun onChannelExpired(data: RecommendationCarouselData, channelPosition: Int) { /* nothing to do */ }
+    override fun onChannelExpired(
+        data: RecommendationCarouselData,
+        channelPosition: Int
+    ) { /* nothing to do */
+    }
 
-    override fun onRecomChannelImpressed(data: RecommendationCarouselData) { /* nothing to do */ }
+    override fun onRecomChannelImpressed(data: RecommendationCarouselData) { /* nothing to do */
+    }
+
+    override fun onWidgetFail(pageName: String, e: Throwable) {
+        //should remove widget
+    }
 
     override fun onRecomProductCardImpressed(
         data: RecommendationCarouselData,
@@ -69,7 +91,13 @@ class HomeProductRecomViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        listener?.onRecomProductCardImpressed(data.recommendationData.recommendationItemList, channelId, data.recommendationData.title, data.recommendationData.pageName, isOoc)
+        listener?.onRecomProductCardImpressed(
+            data.recommendationData.recommendationItemList,
+            channelId,
+            data.recommendationData.title,
+            data.recommendationData.pageName,
+            isOoc
+        )
     }
 
     override fun onSeeAllBannerClicked(
@@ -86,7 +114,7 @@ class HomeProductRecomViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        listener?.onRecomProductCardClicked(recomItem, channelId, data.recommendationData.title, itemPosition.toString(), isOoc)
+        listener?.onRecomProductCardClicked(recomItem, channelId, data.recommendationData.title, itemPosition.toString(), isOoc, applink)
     }
 
     override fun onRecomProductCardAddToCartNonVariant(
@@ -114,20 +142,47 @@ class HomeProductRecomViewHolder(
     }
 
     private fun setOnScrollListener() {
-        productRecom.setScrollListener { scrollState ->
+        binding?.carouselProductRecom?.setScrollListener { scrollState ->
             tokoNowView?.saveScrollState(adapterPosition, scrollState)
         }
     }
 
     private fun restoreScrollState() {
         val scrollState = tokoNowView?.getScrollState(adapterPosition)
-        productRecom.restoreScrollState(scrollState)
+        binding?.carouselProductRecom?.restoreScrollState(scrollState)
     }
 
     interface HomeProductRecomListener {
-        fun onRecomProductCardClicked(recomItem: RecommendationItem, channelId: String, headerName: String, position: String, isOoc: Boolean)
-        fun onRecomProductCardImpressed(recomItems: List<RecommendationItem>, channelId: String, headerName: String, pageName: String, isOoc: Boolean)
-        fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean, applink: String)
-        fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int, headerName: String, channelId: String, position: String)
+        fun onRecomProductCardClicked(
+            recomItem: RecommendationItem,
+            channelId: String,
+            headerName: String,
+            position: String,
+            isOoc: Boolean,
+            applink: String
+        )
+
+        fun onRecomProductCardImpressed(
+            recomItems: List<RecommendationItem>,
+            channelId: String,
+            headerName: String,
+            pageName: String,
+            isOoc: Boolean
+        )
+
+        fun onSeeAllBannerClicked(
+            channelId: String,
+            headerName: String,
+            isOoc: Boolean,
+            applink: String
+        )
+
+        fun onProductRecomNonVariantClick(
+            recomItem: RecommendationItem,
+            quantity: Int,
+            headerName: String,
+            channelId: String,
+            position: String
+        )
     }
 }

@@ -966,4 +966,10 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
         val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/review/detail/123/"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_REVIEW)
     }
+
+    @Test
+    fun `check play broadcaster appLink then should return DF_CONTENT_PLAY_BROADCASTER in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://play-broadcaster"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER)
+    }
 }

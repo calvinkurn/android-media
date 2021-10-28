@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
@@ -208,7 +208,7 @@ class PlayBroadcastPrepareFragment @Inject constructor(
             when (it) {
                 is NetworkResult.Success -> openFinalPreparationPage()
                 NetworkResult.Loading -> {} //showLoading(true)
-                is NetworkResult.Fail -> view?.showToaster(it.error.localizedMessage)
+                is NetworkResult.Fail -> view?.showErrorToaster(it.error)
             }
         })
     }
