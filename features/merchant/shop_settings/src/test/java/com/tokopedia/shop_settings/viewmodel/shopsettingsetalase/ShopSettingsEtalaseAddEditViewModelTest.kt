@@ -1,7 +1,8 @@
-package com.tokopedia.shop_settings.presenter.shopsettingsetalase
+package com.tokopedia.shop_settings.viewmodel.shopsettingsetalase
 
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -69,6 +70,63 @@ class ShopSettingsEtalaseAddEditViewModelTest: ShopSettingsEtalaseTestFixture() 
             val actualResponse = shopSettingsEtalaseAddEditViewModel.shopEtalase.observeAwaitValue()
 
             Assert.assertEquals(expectedResponse, actualResponse)
+        }
+    }
+
+    @Test
+    fun `add etalase should be failed`() {
+        runBlocking {
+            coEvery {
+                addShopEtalaseUseCase.getData(any())
+            } throws Exception()
+
+            shopSettingsEtalaseAddEditViewModel.saveShopEtalase(ShopEtalaseUiModel())
+
+            coVerify {
+                addShopEtalaseUseCase.getData(any())
+            }
+
+            val actualResponse = shopSettingsEtalaseAddEditViewModel.saveMessage.observeAwaitValue()
+
+            Assert.assertTrue(actualResponse is Fail)
+        }
+    }
+
+    @Test
+    fun `update etalase should be failed`() {
+        runBlocking {
+            coEvery {
+                updateShopEtalaseUseCase.getData(any())
+            } throws Exception()
+
+            shopSettingsEtalaseAddEditViewModel.saveShopEtalase(ShopEtalaseUiModel(), true)
+
+            coVerify {
+                updateShopEtalaseUseCase.getData(any())
+            }
+
+            val actualResponse = shopSettingsEtalaseAddEditViewModel.saveMessage.observeAwaitValue()
+
+            Assert.assertTrue(actualResponse is Fail)
+        }
+    }
+
+    @Test
+    fun `get etalase should be failed`() {
+        runBlocking {
+            coEvery {
+                getShopEtalaseUseCase.executeOnBackground().shopShowcases.result
+            } throws Exception()
+
+            shopSettingsEtalaseAddEditViewModel.getShopEtalase()
+
+            coVerify {
+                getShopEtalaseUseCase.executeOnBackground()
+            }
+
+            val actualResponse = shopSettingsEtalaseAddEditViewModel.shopEtalase.observeAwaitValue()
+
+            Assert.assertTrue(actualResponse is Fail)
         }
     }
 
