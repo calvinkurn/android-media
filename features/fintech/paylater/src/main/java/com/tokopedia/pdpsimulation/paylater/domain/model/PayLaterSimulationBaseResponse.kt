@@ -45,9 +45,9 @@ data class Cta(
 ) : Parcelable
 
 @Parcelize
-data class BottomSheetDetail (
+data class BottomSheetDetail(
 
-    @SerializedName("show") val isShow : Boolean?,
+    @SerializedName("show") val isShow: Boolean?,
     @SerializedName("image") val imageUrl: String?,
     @SerializedName("title") val bottomSheetTitle: String?,
     @SerializedName("description") val bottomSheetDescription: String?,

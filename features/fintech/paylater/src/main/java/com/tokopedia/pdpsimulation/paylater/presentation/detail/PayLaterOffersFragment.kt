@@ -148,9 +148,15 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun observeViewModel() {
         payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner, {
+            if (payLaterViewModel.refreshData) {
+                payLaterViewModel.refreshData = false
+            }
             when (it) {
-                is Success -> payLaterAvailableDataLoad(it.data)
-                is Fail -> payLaterAvailableDataLoadFail(it.throwable)
+                is Success ->
+                    payLaterAvailableDataLoad(it.data)
+                is Fail ->
+                    payLaterAvailableDataLoadFail(it.throwable)
+
             }
         })
 
@@ -188,6 +194,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
      */
     private fun payLaterAvailableDataLoad(paylaterProduct: PayLaterGetSimulation) {
         payLaterOffersGlobalError.gone()
+        sortFilter.visibility = View.VISIBLE
         if (paylaterProduct.productList == null || paylaterProduct.productList.isEmpty()) {
             emptyStateError.visible()
             payLaterOffersShimmerGroup.gone()
@@ -273,6 +280,15 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             detailFragment.pdpSimulationCallback = pdpSimulationCallback
             detailFragment.arguments = bundle
             return detailFragment
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (payLaterViewModel.refreshData) {
+            payLaterDataGroup.visibility = View.GONE
+            payLaterOffersShimmerGroup.visibility = View.VISIBLE
+            sortFilter.visibility = View.INVISIBLE
         }
     }
 

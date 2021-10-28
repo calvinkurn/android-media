@@ -161,8 +161,8 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             productDetail.productName.text = it
         }
 
-            productDetail.productPrice.text =
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
+        productDetail.productPrice.text =
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
 
         showProductVariant(data)
 
@@ -297,7 +297,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
-        bottomSheetNavigator.showBottomSheet(modelClass, bundle, this,productId =  productId)
+        bottomSheetNavigator.showBottomSheet(modelClass, bundle, this, productId = productId)
     }
 
     override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
@@ -327,7 +327,6 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         super.onResume()
         if (payLaterViewModel.refreshData) {
             payLaterViewModel.getPayLaterAvailableDetail(productPrice)
-            payLaterViewModel.refreshData = false
         }
     }
 
