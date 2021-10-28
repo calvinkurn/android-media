@@ -1,13 +1,18 @@
 package com.tokopedia.mediauploader.video
 
 import com.tokopedia.mediauploader.UploaderManager
+import com.tokopedia.mediauploader.common.data.consts.CHUNK_UPLOAD
+import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.slice
 import com.tokopedia.mediauploader.video.data.params.*
 import com.tokopedia.mediauploader.video.domain.*
 import java.io.File
+import javax.inject.Inject
+import kotlin.math.ceil
 
-class LargeUploaderManager constructor(
+class LargeUploaderManager @Inject constructor(
     private val initUseCase: InitVideoUploaderUseCase,
     private val checkerUseCase: GetChunkCheckerUseCase,
     private val uploaderUseCase: GetChunkUploaderUseCase,
@@ -16,110 +21,130 @@ class LargeUploaderManager constructor(
 ) : UploaderManager {
 
     private var hasInit = false
-
-    private var currentUploadId = ""
     private var partNumber = 1
 
-    suspend operator fun invoke(file: File, sourceId: String, accessToken: String): UploadResult {
-        var status: UploadResult? = null
-        val files = file.slice()
+    private var accessToken: String = ""
+    private var sourceId: String = ""
+    private var currentUploadId = ""
+    private var chunkSize: Int = 0
 
-        files.forEach {
-            status = largeUpload(it, sourceId, files.size, accessToken)
+    suspend operator fun invoke(file: File, sourceId: String, accessToken: String): UploadResult {
+        this.chunkSize = ceil(file.length() / SIZE_PER_CHUNK.toDouble()).toInt()
+        this.accessToken = accessToken
+        this.sourceId = sourceId
+
+        initUpload(sourceId, file.name)
+
+        for (part in 1..chunkSize) {
+            // bypass if it's already uploaded by part number
+            if (part < partNumber) continue
+
+            // upload the chunk
+            file.slice(part, SIZE_PER_CHUNK)?.let {
+                if (!chunkUpload(file.name, it)) {
+                    return UploadResult.Error(CHUNK_UPLOAD)
+                }
+            }
         }
 
-        return if (status != null) {
-            status as UploadResult
+        val resultVideoUrl = completeUpload()
+
+        return if (resultVideoUrl.isNotEmpty()) {
+            UploadResult.Success(videoUrl = resultVideoUrl)
         } else {
-            UploadResult.Error("")
+            UploadResult.Error(UPLOAD_ABORT)
         }
     }
 
     suspend fun abortUpload(accessToken: String, abort: () -> Unit) {
-        val abortUseCase = abortUseCase(
-            AbortParam(
-                currentUploadId,
-                accessToken
-            )
-        )
+        val abortUseCase = abortUseCase(AbortParam(
+            currentUploadId,
+            accessToken
+        ))
 
         if (abortUseCase.isSuccess()) {
             abort()
         }
     }
 
-    private suspend fun largeUpload(
-        file: File,
-        sourceId: String,
-        chunkSize: Int,
-        accessToken: String
-    ): UploadResult {
-        // init
-        if (!hasInit) {
-            val init = initUseCase(
-                InitParam(
-                    sourceId = sourceId,
-                    fileName = file.name
-                )
-            )
+    private suspend fun initUpload(sourceId: String, fileName: String) {
+        if (hasInit) return
 
+        val init = initUseCase(InitParam(
+            sourceId = sourceId,
+            fileName = fileName
+        ))
+
+        if (init.isSuccess()) {
             currentUploadId = init.uploadId()
             hasInit = true
-        }
-
-        // check current chunk
-        val checker = checkerUseCase(
-            ChunkCheckerParam(
-                uploadId = currentUploadId,
-                partNumber = partNumber.toString(),
-                fileName = file.name
-            )
-        )
-
-        if (!checker.isPartSuccess()) {
-            // upload
-            val uploader = uploaderUseCase(
-                ChunkUploadParam(
-                    sourceId = sourceId,
-                    uploadId = currentUploadId,
-                    partNumber = partNumber.toString(),
-                    file = file,
-                    timeOut = "123"
-                )
-            )
-
-            if (uploader.isSuccess()) {
-                partNumber++
-            } else {
-                if (partNumber > 1) partNumber--
-
-                // failed to upload an existing part, retry it!
-                largeUpload(file, sourceId, chunkSize, accessToken)
-            }
         } else {
-            // complete
-            if (partNumber >= chunkSize) {
-                val complete = completeUseCase(
-                    CompleteParam(
-                        uploadId = currentUploadId,
-                        fileName = file.name,
-                        accessToken = accessToken
-                    )
-                )
+            // re-call if init didn't success
+            initUpload(sourceId, fileName)
+        }
+    }
 
-                if (complete.isSuccess()) {
-                    // return video url
-                    return UploadResult.Success(
-                        videoUrl = complete.videoUrl()
-                    )
-                } else {
-                    // retry to complete
-                    // TODO
-                }
+    private suspend fun chunkUpload(
+        fileName: String,
+        byteArray: ByteArray,
+        maxRetryCount: Int = 3
+    ): Boolean {
+        val uploader = uploaderUseCase(ChunkUploadParam(
+            sourceId = sourceId,
+            uploadId = currentUploadId,
+            partNumber = partNumber.toString(),
+            fileName = fileName,
+            byteArray = byteArray,
+            timeOut = "999"
+        ))
+
+        return if (uploader.isSuccess()) {
+            isChunkCorrect(fileName)
+        } else {
+            // failed to upload a existing part number, retry it 3 times!
+            if (maxRetryCount > 0) {
+                chunkUpload(fileName, byteArray, maxRetryCount - 1)
+            } else {
+                false
+            }
+        }
+    }
+
+    private suspend fun isChunkCorrect(fileName: String): Boolean {
+        val checker = checkerUseCase(ChunkCheckerParam(
+            uploadId = currentUploadId,
+            partNumber = partNumber.toString(),
+            fileName = fileName
+        ))
+
+        if (checker.isPartSuccess()) {
+            partNumber++
+        }
+
+        return checker.isPartSuccess()
+    }
+
+    private suspend fun completeUpload(): String {
+        if (partNumber >= chunkSize) {
+            val complete = completeUseCase(CompleteParam(
+                uploadId = currentUploadId,
+                accessToken = accessToken
+            ))
+
+            if (complete.isSuccess()) {
+                return complete.videoUrl()
             }
         }
 
-        return UploadResult.Error("")
+        return ""
+    }
+
+    override fun setProgressUploader(progress: ProgressCallback?) {
+        // TODO
+    }
+
+    companion object {
+        const val SIZE_PER_CHUNK = 1024 * 1024 * 10 // 10 mb
     }
 
 }
