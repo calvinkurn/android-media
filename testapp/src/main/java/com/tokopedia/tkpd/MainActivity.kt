@@ -30,10 +30,10 @@ class MainActivity : AppCompatActivity() {
         userSession = UserSession(this)
 
         if (TokopediaUrl.getInstance().GQL.contains("staging")) {
-            testapp_environment?.text = "STAGING"
+            testapp_environment?.text = "STAGING URL"
             testapp_environment?.setBackgroundColor(Color.parseColor("#e67e22"))
         } else {
-            testapp_environment?.text = "PRODUCTION"
+            testapp_environment?.text = "LIVE URL"
             testapp_environment?.setBackgroundColor(Color.parseColor("#27ae60"))
         }
 

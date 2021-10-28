@@ -27,21 +27,3 @@ class LogoutUseCase @Inject constructor(@ApplicationContext val repository: Grap
         }
     """.trimIndent()
 }
-
-//class LogoutUseCase @Inject constructor(
-//        @LogoutContext private val context: Context,
-//        private val useCase: GraphqlUseCase<LogoutDataModel>
-//) {
-//    fun execute(onSuccess: (LogoutDataModel) -> Unit, onError: (Throwable) -> Unit) {
-//        val rawQuery = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_logout)
-//        useCase.apply {
-//            setTypeClass(LogoutDataModel::class.java)
-//            setGraphqlQuery(rawQuery)
-//            execute({ result ->
-//                onSuccess(result)
-//            }, { throwable ->
-//                onError(throwable)
-//            })
-//        }
-//    }
-//}
