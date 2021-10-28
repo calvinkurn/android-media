@@ -17,7 +17,7 @@ object UrlBuilder {
     }
 
     fun isChunkUrl(): String {
-        return "$BASE_VOD_UPLOAD_URL/video/upload/init"
+        return "$BASE_VOD_UPLOAD_URL/video/upload/part"
     }
 
     fun uploadUrl(): String {
