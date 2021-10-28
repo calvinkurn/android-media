@@ -17,13 +17,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
-import com.tokopedia.chat_common.data.BaseChatViewModel;
-import com.tokopedia.chat_common.data.SendableViewModel;
+import com.tokopedia.chat_common.data.BaseChatUiModel;
+import com.tokopedia.chat_common.data.SendableUiModel;
 import com.tokopedia.chat_common.util.ChatTimeConverter;
 
 import java.util.Date;
 
-import static com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.ROLE_USER;
+import static com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.ROLE_USER;
 
 /**
  * @author by nisie on 5/9/18.
@@ -83,9 +83,9 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
 
     @Override
     public void bind(T viewModel) {
-        if (viewModel instanceof BaseChatViewModel) {
+        if (viewModel instanceof BaseChatUiModel) {
 
-            BaseChatViewModel element = (BaseChatViewModel) viewModel;
+            BaseChatUiModel element = (BaseChatUiModel) viewModel;
             try {
                 if (Long.parseLong(element.getReplyTime()) / MILISECONDS < START_YEAR) {
 
@@ -100,7 +100,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         }
     }
 
-    protected void setBottomHour(BaseChatViewModel element) {
+    protected void setBottomHour(BaseChatUiModel element) {
         String hourTime = getHourTime(element.getReplyTime());
 
         if (
@@ -130,7 +130,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         return hourTime;
     }
 
-    protected void setHeaderDate(BaseChatViewModel element) {
+    protected void setHeaderDate(BaseChatUiModel element) {
         if (date == null) return;
         String time;
 
@@ -159,7 +159,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         }
     }
 
-    protected void bindChatReadStatus(SendableViewModel element) {
+    protected void bindChatReadStatus(SendableUiModel element) {
         if (chatReadStatus == null) return;
         int imageResource;
         if (element.isShowTime() || alwaysShowTime()) {
@@ -190,7 +190,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         }
     }
 
-    protected void bindRoleHeader(SendableViewModel chat, int gravity) {
+    protected void bindRoleHeader(SendableUiModel chat, int gravity) {
         if (roleContainer == null) {
             hideHeader();
             return;

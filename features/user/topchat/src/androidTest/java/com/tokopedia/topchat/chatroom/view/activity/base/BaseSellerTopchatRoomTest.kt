@@ -11,7 +11,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.gson.Gson
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
@@ -223,10 +223,10 @@ open class BaseSellerTopchatRoomTest : TopchatRoomTest() {
                 attachment.attributes, ProductAttachmentAttributes::class.java
         )
         if (isEmpty) {
-            product.productProfile.status = ProductAttachmentViewModel.statusWarehouse
+            product.productProfile.status = ProductAttachmentUiModel.statusWarehouse
             product.productProfile.remainingStock = 0
         } else {
-            product.productProfile.status = ProductAttachmentViewModel.statusActive
+            product.productProfile.status = ProductAttachmentUiModel.statusActive
             product.productProfile.remainingStock = 1
         }
         attachment.attributes = gson.toJson(product)

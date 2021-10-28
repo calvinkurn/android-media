@@ -140,6 +140,12 @@ data class DataItem(
         @SerializedName("font_color", alternate = ["text_color"])
         val  fontColor: String? = "",
 
+        @SerializedName("variant")
+        val variant: String? = "",
+
+        @SerializedName("color")
+        val color:String? = "",
+
         @SerializedName("button_text")
         var buttonText: String? = "",
 

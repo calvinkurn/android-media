@@ -140,9 +140,12 @@ class SingleProductBundleFragment(
                 .inject(this)
     }
 
-    override fun onVariantSpinnerClicked(selectedVariant: ProductVariant?) {
+    override fun onVariantSpinnerClicked(
+        selectedVariant: ProductVariant?,
+        selectedProductId: String?
+    ) {
         selectedVariant?.let {
-            AtcVariantNavigation.showVariantBottomSheet(this, it)
+            AtcVariantNavigation.showVariantBottomSheet(this, it, selectedProductId.orEmpty())
         }
     }
 
@@ -369,7 +372,7 @@ class SingleProductBundleFragment(
 
     private fun updateTotalAmountAtcButtonText(preorderDurationWording: String?) {
         totalAmount?.amountCtaView?.text = if (preorderDurationWording.isNullOrEmpty()) {
-            getString(R.string.action_buy)
+            getString(R.string.action_buy_bundle)
         } else {
             getString(R.string.action_preorder)
         }
