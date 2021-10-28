@@ -1,5 +1,11 @@
 package com.tokopedia.notifications.inApp;
 
+import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
+
 import android.app.Activity;
 import android.app.Application;
 import android.text.TextUtils;
@@ -27,7 +33,6 @@ import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppProcessor;
-import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -40,12 +45,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-
-import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
 
 /**
  * @author lalit.singh
@@ -150,7 +149,7 @@ public class CMInAppManager implements CmInAppListener,
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
-                if(canShowDialog()) {
+                if (canShowDialog()) {
                     showDialog(cmInApp);
                 }
             }
@@ -244,17 +243,17 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     public void handlePushPayload(RemoteMessage remoteMessage) {
-        new CMInAppController(application, this)
-                .processAndSaveRemoteDataCMInApp(remoteMessage);
+//        new CMInAppController(application, this)
+//                .processAndSaveRemoteDataCMInApp(remoteMessage);
         //TODO new way to save new InApp to Local Database
-        new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onNewInAppStored);
+        new CMInAppProcessor(application, this::onNewInAppStored).processAndSaveRemoteDataCMInApp(remoteMessage);
     }
 
     public void handleAmplificationInAppData(String dataString) {
-        new CMInAppController(application,this)
-                .processAndSaveAmplificationInAppData(dataString);
+//        new CMInAppController(application, this)
+//                .processAndSaveAmplificationInAppData(dataString);
         //TODO new way to save new InApp to Local Database
-        new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onNewInAppStored);
+        new CMInAppProcessor(application, this::onNewInAppStored).processAndSaveAmplificationInAppData(dataString);
     }
 
     private void onNewInAppStored() {
@@ -379,7 +378,7 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     private Boolean getAmplificationRemoteConfig() {
-        if(cmRemoteConfigUtils == null)
+        if (cmRemoteConfigUtils == null)
             return false;
         return cmRemoteConfigUtils.getBooleanRemoteConfig(RemoteConfigKey.ENABLE_AMPLIFICATION,
                 false);
@@ -388,13 +387,14 @@ public class CMInAppManager implements CmInAppListener,
     @Override
     public void onFirstScreenOpen(@NonNull WeakReference<Activity> activity) {
         try {
-            if(activity.get() != null) {
+            if (activity.get() != null) {
                 IrisAnalyticsEvents.INSTANCE.sendFirstScreenEvent(application);
                 if (RulesManager.getInstance() != null)
                     RulesManager.getInstance().updateVisibleStateForAlreadyShown();
                 getAmplificationPushData(activity.get().getApplication());
             }
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 }
 
