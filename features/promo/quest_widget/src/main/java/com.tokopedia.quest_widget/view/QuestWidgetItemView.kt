@@ -1,27 +1,31 @@
 package com.tokopedia.quest_widget.view
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
-import android.text.Html
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.ViewFlipper
 import androidx.core.content.ContextCompat
 import com.example.quest_widget.R
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.quest_widget.data.Config
+import com.tokopedia.quest_widget.data.Progress
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
+const val LAGITEXT = "x lagi"
 class QuestWidgetItemView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-    ): CardUnify(context, attrs) {
+    context: Context, attrs: AttributeSet? = null
+): CardUnify(context, attrs) {
 
-    private var tvBannerTitle: TextView
-    private var tvBannerDesc: TextView
-    private var ivBannerIcon: ImageView
-    val lagi = "x Lagi"
+    private var tvBannerTitle: Typography
+    private var tvBannerDesc: Typography
+    private var ivBannerIcon: ImageUnify
+    private var progressBar: QuestProgressBar
+    private var progressBarContainer : ViewFlipper
+    private var iconContainer : ImageUnify
 
     init {
 
@@ -30,21 +34,59 @@ class QuestWidgetItemView @JvmOverloads constructor(
         tvBannerTitle = findViewById(R.id.tv_banner_title)
         tvBannerDesc = findViewById(R.id.tv_banner_desc)
         ivBannerIcon = findViewById(R.id.iv_banner_icon)
+        progressBar = findViewById(R.id.progressBar)
+        progressBarContainer = findViewById(R.id.progressBarContainer)
+        iconContainer = findViewById(R.id.iconContainer)
     }
 
-    fun setData(item: QuestWidgetListItem, config: Config){
+    @SuppressLint("SetTextI18n")
+    fun setData(item: QuestWidgetListItem, config: Config) {
         tvBannerTitle.text = config.banner_title
         ivBannerIcon.loadImage(config.banner_icon_url)
+        val progress = calculateProgress((item.task?.get(0)?.progress))
+        if (progress != 0F) {
+            progressBarContainer.displayedChild = PROGRESS
+            progressBar.apply {
+                setProgress(calculateProgress(item.task?.get(0)?.progress))
+                setProgressColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                )
+                setRounded(true)
+                setProgressWidth(8F)
+                setProgressBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N75
+                    )
+                )
+            }
 
-        val desc = item.actionButton?.shortText + (item.task?.get(0)?.progress?.current?.let {
-            item.task[0]?.progress?.target?.minus(
-                it
-            )
-        })
+            val desc = item.actionButton?.shortText + (item.task?.get(0)?.progress?.current?.let {
+                item.task[0]?.progress?.target?.minus(
+                    it
+                )
+            })
 
+            tvBannerDesc.text =
+                desc + LAGITEXT + context.resources.getString(R.string.str_sisa) + item.label?.title
+        }else{
+            progressBarContainer.displayedChild = CONTAINER
+        }
+    }
 
-        // desc = Belanja 10x Lagi
+    private fun calculateProgress(progress:Progress?):Float{
+        val start:Float = progress?.current?.toFloat()?:0F
+        val target:Float = progress?.target?.toFloat()?:1F
 
-        tvBannerDesc.text = desc + lagi + context.resources.getString(R.string.str_sisa) + item.label?.title
+       return 100 - (((target-start) / target) * 100)
+    }
+
+    companion object {
+        const val PROGRESS = 0
+        const val CONTAINER = 1
     }
 }
+

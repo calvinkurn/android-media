@@ -1,53 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="@dimen/dim_56dp"
-            android:layout_height="@dimen/dim_56dp"
+        <ViewFlipper
+            android:id="@+id/progressBarContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dim_12dp"
             android:layout_marginBottom="@dimen/dim_14dp"
             android:layout_marginTop="@dimen/dim_14dp"
-            android:background="@drawable/quest_widget_circle_shape"
-            android:indeterminate="false"
-            android:max="100"
-            android:progress="75"
-            android:progressDrawable="@drawable/quest_widget_circular_progress_bar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:measureAllChildren="false">
 
-        <ImageView
+            <com.tokopedia.quest_widget.view.QuestProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="@dimen/dim_56dp"
+                android:layout_height="@dimen/dim_56dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/iconContainer"
+                android:layout_width="@dimen/dim_56dp"
+                android:layout_height="@dimen/dim_56dp"
+                app:srcCompat="@drawable/quest_widget_ellipses"/>
+
+        </ViewFlipper>
+
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_banner_icon"
-            android:layout_width="@dimen/dim_48dp"
-            android:layout_height="@dimen/dim_48dp"
-            app:layout_constraintBottom_toBottomOf="@id/progressBar"
-            app:layout_constraintEnd_toEndOf="@id/progressBar"
-            app:layout_constraintStart_toStartOf="@id/progressBar"
-            app:layout_constraintTop_toTopOf="@id/progressBar" />
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
+            app:layout_constraintBottom_toBottomOf="@id/progressBarContainer"
+            app:layout_constraintEnd_toEndOf="@id/progressBarContainer"
+            app:layout_constraintStart_toStartOf="@id/progressBarContainer"
+            app:layout_constraintTop_toTopOf="@id/progressBarContainer" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_banner_title"
             android:layout_width="@dimen/dim_0dp"
             android:layout_height="wrap_content"
-            android:text="Kupon Cashback 10% hingga Rp200 rb"
+            tools:text="Kupon Cashback 10% hingga Rp200 rb"
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.6"
             android:textColor="@color/Unify_NN950"
             android:layout_marginStart="@dimen/dim_12dp"
-            android:layout_marginLeft="@dimen/dim_12dp"
             android:layout_marginTop="@dimen/dim_12dp"
             android:layout_marginEnd="@dimen/spacing_lvl5"
-            android:layout_marginRight="@dimen/spacing_lvl5"
-            app:layout_constraintStart_toEndOf="@id/progressBar"
+            app:layout_constraintStart_toEndOf="@id/progressBarContainer"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
@@ -56,7 +67,7 @@
             android:id="@+id/tv_banner_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kupon Cashback 10% hingga Rp200 rb"
+            tools:text="Kupon Cashback 10% hingga Rp200 rb"
             android:layout_marginTop="@dimen/dim_2dp"
             android:layout_marginEnd="@dimen/dim_12dp"
             android:textColor="@color/Unify_NN950"
@@ -66,7 +77,6 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.tokopedia.unifycomponents.CardUnify>
+</FrameLayout>
