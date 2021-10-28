@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.variant.presentation.dialog
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +13,6 @@ import com.tokopedia.product.addedit.specification.presentation.adapter.Specific
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.add_edit_product_custom_variant_input_bottom_sheet_content.view.*
-import kotlinx.android.synthetic.main.add_edit_product_select_variant_main_bottom_sheet_content.view.*
 
 class CustomVariantInputBottomSheet : BottomSheetUnify() {
 
@@ -37,11 +34,11 @@ class CustomVariantInputBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding?.root?.recyclerViewVariantSuggestion?.layoutManager = LinearLayoutManager(context)
-        binding?.root?.recyclerViewVariantSuggestion?.adapter = SpecificationValueAdapter(childFragmentManager)
-        binding?.root?.recyclerViewVariantSuggestion?.minimumHeight = 0
-        binding?.root?.recyclerViewVariantSuggestion?.layoutParams?.height = getScreenHeight()
-        binding?.root?.recyclerViewVariantSuggestion?.requestLayout()
+        binding?.recyclerViewVariantSuggestion?.layoutManager = LinearLayoutManager(context)
+        binding?.recyclerViewVariantSuggestion?.adapter = SpecificationValueAdapter(childFragmentManager)
+        binding?.recyclerViewVariantSuggestion?.minimumHeight = 0
+        binding?.recyclerViewVariantSuggestion?.layoutParams?.height = getScreenHeight()
+        binding?.recyclerViewVariantSuggestion?.requestLayout()
     }
 
     override fun onPause() {

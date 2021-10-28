@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.databinding.AddEditProductCustomVariantManageBottomSheetContentBinding
+import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeSelectedAdapter
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.add_edit_product_custom_variant_input_bottom_sheet_content.view.*
-import kotlinx.android.synthetic.main.add_edit_product_select_variant_main_bottom_sheet_content.view.*
 
 class CustomVariantManageBottomSheet : BottomSheetUnify() {
 
@@ -30,6 +30,10 @@ class CustomVariantManageBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val adapter = VariantTypeSelectedAdapter()
+        binding?.recyclerViewVariantSelected?.adapter = adapter
+        binding?.recyclerViewVariantSelected?.layoutManager = LinearLayoutManager(context)
+        adapter.setData(listOf("warna", "ukuran"))
     }
 
     override fun onPause() {
@@ -49,7 +53,6 @@ class CustomVariantManageBottomSheet : BottomSheetUnify() {
 
     private fun initChildLayout() {
         setTitle(getString(R.string.label_variant_custom_manage_bottom_sheet_title))
-
         binding = AddEditProductCustomVariantManageBottomSheetContentBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
         clearContentPadding = true
