@@ -22,6 +22,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -151,6 +152,22 @@ class EventSearchViewModelTest {
 
         assertNotNull(eventSearchViewModel.errorReport.value)
         assertEquals((eventSearchViewModel.errorReport.value as Throwable).message, errorGql.message)
+    }
+
+    @Test
+    fun fetchsearchdata_failedsearchdata_failedcancellation() {
+        assertNotNull(graphqlRepository)
+
+        val cancelException = CancellationException()
+        coEvery {
+            graphqlRepository.response(any(), any())
+        } coAnswers {
+            throw cancelException
+        }
+
+        eventSearchViewModel.getSearchData("",CacheType.CACHE_FIRST,"")
+
+        assertNull(eventSearchViewModel.errorReport.value)
     }
 
     private fun getJson(path: String): String {

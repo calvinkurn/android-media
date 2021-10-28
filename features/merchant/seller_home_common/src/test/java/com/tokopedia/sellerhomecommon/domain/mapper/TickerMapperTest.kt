@@ -36,7 +36,6 @@ class TickerMapperTest {
                 title = "ticker seller",
                 type = 1,
                 message = "Bantu kami menjadi lebih baik dengan membagikan pengalamanmu <a href=\"https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU\">di sini</a><br>",
-                color = "#cde4c3",
                 redirectUrl = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
         ))
 

@@ -45,6 +45,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.lifeCycleCommon
 
     implementation rootProject.ext.networkDependencies.retrofit
 
