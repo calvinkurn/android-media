@@ -94,26 +94,20 @@ class ProductDetailActivityTest {
         IdlingRegistry.getInstance().unregister(ProductDetailIdlingResource.idlingResource)
     }
 
+    /**
+     * view product page
+     * impression - modular component
+     */
     @Test
-    fun impression_modular_component_thanos() {
-        actionTest { } assertTest {
+    fun tracker_journey_id_56() {
+        actionTest {
+            fakeLogin()
+
+        } assertTest {
             waitForTrackerSent()
             performClose(activityRule)
 
-            val impressionModularTrackerId = "22661"
-            assertThanos(impressionModularTrackerId)
-            finishTest()
-        }
-    }
-
-    @Test
-    fun view_pdp_thanos() {
-        actionTest { } assertTest {
-            waitForTrackerSent()
-            performClose(activityRule)
-
-            val impressionModularTrackerId = "16333"
-            assertThanos(impressionModularTrackerId)
+            assertThanos("56")
             finishTest()
         }
     }
