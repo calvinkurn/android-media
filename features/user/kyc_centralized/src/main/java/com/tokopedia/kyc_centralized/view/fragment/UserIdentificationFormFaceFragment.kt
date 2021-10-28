@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
@@ -94,16 +95,17 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     private fun setLivenessViews() {
         title?.setText(R.string.face_title)
         subtitle?.setText(R.string.face_subtitle)
+        bulletTextLayout?.apply {
+            addView(addTextWithBullet(getString(R.string.face_subtitle_body_1)))
+            addView(addTextWithBullet(getString(R.string.face_subtitle_body_2)))
+        }?.show()
         button?.setText(R.string.face_button)
         button?.setOnClickListener { v: View? ->
             analytics?.eventClickNextSelfiePage()
             goToKycLiveness()
         }
+
         setLottieAnimation()
-        if (activity is UserIdentificationFormActivity) {
-            (activity as UserIdentificationFormActivity)
-                    .updateToolbarTitle(getString(R.string.title_kyc_form_face))
-        }
     }
 
     private fun setLottieAnimation() {

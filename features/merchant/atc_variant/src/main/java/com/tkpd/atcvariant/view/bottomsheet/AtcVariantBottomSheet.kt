@@ -50,7 +50,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
-import com.tokopedia.product.detail.common.bottomsheet.TokoMartEducationalInformationBottomSheet
+import com.tokopedia.product.detail.common.bottomsheet.TokoNowEducationalInformationBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -590,10 +590,17 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private fun onSuccessAtc(successMessage: String?) {
         context?.let {
-            val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
+            val message = if (successMessage == null || successMessage.isEmpty())
+                it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
+            else
                 successMessage
-            viewModel.updateActivityResult(atcSuccessMessage = message)
-            showToasterSuccess(message)
+
+            showToasterSuccess(message, ctaText = getString(R.string.atc_variant_see)) {
+                ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
+            }
+            viewModel.updateActivityResult(
+                    atcSuccessMessage = message,
+                    requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
         }
     }
 
@@ -922,7 +929,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     ?: ""
 
             val bottomSheet = if (isTokoNow) {
-                TokoMartEducationalInformationBottomSheet()
+                TokoNowEducationalInformationBottomSheet()
             } else {
                 ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, boImageUrl, uspImageUrl)
             }

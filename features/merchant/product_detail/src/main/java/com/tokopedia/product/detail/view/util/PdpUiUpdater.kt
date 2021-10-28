@@ -120,9 +120,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productBundlingData: ProductBundlingDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_BUNDLING] as? ProductBundlingDataModel
 
+    val topAdsProductBundlingData: TopadsHeadlineUiModel?
+        get() = mapOfData[ProductDetailConstant.SHOPADS_CAROUSEL] as? TopadsHeadlineUiModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
-
             updateData(ProductDetailConstant.PRODUCT_CONTENT, loadInitialData) {
                 basicContentMap?.run {
                     data = ProductContentMainData(
@@ -222,6 +224,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.STOCK_ASSURANCE) {
                 dataP1.stockAssuranceContent?.get(productId)?.let { content ->
                     stockAssuranceData?.oneLinersContent = content
+                }
+            }
+
+            updateData(ProductDetailConstant.SHOPADS_CAROUSEL, loadInitialData) {
+                topAdsProductBundlingData?.run {
+                    this.productId = dataP1?.basic?.productID
                 }
             }
         }

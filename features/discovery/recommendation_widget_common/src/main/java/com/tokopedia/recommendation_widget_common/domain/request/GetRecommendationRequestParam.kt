@@ -13,6 +13,7 @@ data class GetRecommendationRequestParam(
         val location: String = "",
         val keywords: List<String> = listOf(),
         val isTokonow: Boolean = false,
+
 ) {
     private val PAGE_NUMBER = "pageNumber"
     private val PAGE_NAME = "pageName"
