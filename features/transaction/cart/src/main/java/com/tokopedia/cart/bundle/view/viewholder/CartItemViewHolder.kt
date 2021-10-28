@@ -275,7 +275,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
         }
 
         if (data.isBundlingItem && !data.isMultipleBundleProduct) {
-            val bundleQuantityLabelText = String.format(itemView.context.getString(R.string.label_cart_bundle_product_quantity), data.bundleQuantity)
+            val bundleQuantityLabelText = String.format(itemView.context.getString(R.string.label_cart_bundle_product_quantity), data.minOrder)
             binding.labelBundleQuantity.text = bundleQuantityLabelText
             binding.labelBundleQuantity.show()
         } else {
