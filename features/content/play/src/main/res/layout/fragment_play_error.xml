@@ -34,7 +34,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:ellipsize="end"
         android:lineHeight="@dimen/sp_20"
         android:maxLines="1"

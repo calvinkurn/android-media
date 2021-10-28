@@ -1151,26 +1151,28 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 break
             }
         }
-        val tmpAllUnavailableShop = cartDataList.subList(firstIndex, lastIndex).toMutableList()
-        this.tmpAllUnavailableShop = tmpAllUnavailableShop
+        if (firstIndex > RecyclerView.NO_POSITION && lastIndex >= firstIndex && lastIndex <= cartDataList.size) {
+            val tmpAllUnavailableShop = cartDataList.subList(firstIndex, lastIndex).toMutableList()
+            this.tmpAllUnavailableShop = tmpAllUnavailableShop
 
-        val tmpCollapsedUnavailableShop = mutableListOf<CartShopHolderData>()
-        val firstUnavailableShop = tmpAllUnavailableShop.firstOrNull()
-        firstUnavailableShop?.let { shop ->
-            if (shop is CartShopHolderData) {
-                val tmpProducts = getNonCollapsibleUnavailableProduct(shop)
-                val cartShopHolderData = shop.deepCopy()
-                cartShopHolderData.productUiModelList.clear()
-                cartShopHolderData.productUiModelList.addAll(tmpProducts)
+            val tmpCollapsedUnavailableShop = mutableListOf<CartShopHolderData>()
+            val firstUnavailableShop = tmpAllUnavailableShop.firstOrNull()
+            firstUnavailableShop?.let { shop ->
+                if (shop is CartShopHolderData) {
+                    val tmpProducts = getNonCollapsibleUnavailableProduct(shop)
+                    val cartShopHolderData = shop.deepCopy()
+                    cartShopHolderData.productUiModelList.clear()
+                    cartShopHolderData.productUiModelList.addAll(tmpProducts)
 
-                tmpCollapsedUnavailableShop.add(cartShopHolderData)
-                this.tmpCollapsedUnavailableShop = tmpCollapsedUnavailableShop
+                    tmpCollapsedUnavailableShop.add(cartShopHolderData)
+                    this.tmpCollapsedUnavailableShop = tmpCollapsedUnavailableShop
 
-                cartDataList.removeAll(tmpAllUnavailableShop)
-                cartDataList.addAll(firstIndex, tmpCollapsedUnavailableShop)
+                    cartDataList.removeAll(tmpAllUnavailableShop)
+                    cartDataList.addAll(firstIndex, tmpCollapsedUnavailableShop)
 
-                notifyItemRangeRemoved(firstIndex, tmpAllUnavailableShop.size)
-                notifyItemInserted(firstIndex)
+                    notifyItemRangeRemoved(firstIndex, tmpAllUnavailableShop.size)
+                    notifyItemInserted(firstIndex)
+                }
             }
         }
     }
@@ -1179,14 +1181,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         tmpCollapsedUnavailableShop?.let { collapsedUnavailableItems ->
             if (collapsedUnavailableItems.isNotEmpty()) {
                 val firstIndex = cartDataList.indexOf(collapsedUnavailableItems.first())
-                cartDataList.removeAll(collapsedUnavailableItems)
-                collapsedUnavailableItems.clear()
+                if (firstIndex != -1) {
+                    cartDataList.removeAll(collapsedUnavailableItems)
+                    collapsedUnavailableItems.clear()
 
-                tmpAllUnavailableShop?.let { unavailableItems ->
-                    cartDataList.addAll(firstIndex, unavailableItems)
-                    unavailableItems.clear()
-                    notifyItemRemoved(firstIndex)
-                    notifyItemRangeInserted(firstIndex, unavailableItems.size)
+                    tmpAllUnavailableShop?.let { unavailableItems ->
+                        cartDataList.addAll(firstIndex, unavailableItems)
+                        unavailableItems.clear()
+                        notifyItemRemoved(firstIndex)
+                        notifyItemRangeInserted(firstIndex, unavailableItems.size)
+                    }
                 }
             }
         }

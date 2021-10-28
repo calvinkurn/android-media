@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -239,12 +239,12 @@ abstract class BaseTopChatRoomPresenterTest {
             )
         }
 
-        val imageUploadViewModel = ImageUploadViewModel.Builder()
+        val imageUploadViewModel = ImageUploadUiModel.Builder()
             .withMsgId(exMessageId)
             .withFromUid("123123")
             .withAttachmentId("123987")
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
-            .withReplyTime(SendableViewModel.SENDING_TEXT)
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
             .withStartTime("123")
             .withIsDummy(true)
             .withImageUrl("https://ecs.tokopedia.com/image.jpg")

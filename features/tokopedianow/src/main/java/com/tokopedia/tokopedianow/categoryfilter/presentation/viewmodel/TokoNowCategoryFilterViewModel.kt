@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopedianow.categoryfilter.domain.mapper.CategoryFilterMapper
 import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject

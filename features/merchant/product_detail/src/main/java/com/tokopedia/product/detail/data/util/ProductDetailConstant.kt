@@ -67,6 +67,7 @@ object ProductDetailConstant {
     const val PDP_3 = "pdp_3"
     const val PDP_7 = "pdp_7"
     const val PDP_K2K = "k2k_pdp"
+    const val SHOPADS_CAROUSEL = "shopads_carousel"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
@@ -105,6 +106,7 @@ object ProductDetailConstant {
     const val ARG_AFFILIATE_UNIQUE_ID = "ARG_AFFILIATE_UNIQUE_ID"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
     const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
+    const val ARG_EXT_PARAM = "ARG_EXT_PARAM"
     const val REVIEW_PRD_NM = "x_prd_nm"
     const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
 

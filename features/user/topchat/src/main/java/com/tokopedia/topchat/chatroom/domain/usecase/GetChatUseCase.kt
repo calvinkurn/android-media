@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 
 open class GetChatUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetExistingChatPojo>,
-        private val mapper: TopChatRoomGetExistingChatMapper,
+        protected val mapper: TopChatRoomGetExistingChatMapper,
         private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
@@ -233,6 +233,19 @@ open class GetChatUseCase @Inject constructor(
                   blastId
                   source
                   label
+                  parentReply {
+                    attachmentID
+                    attachmentType
+                    senderID
+                    name
+                    fraudStatus
+                    replyTimeUnixNano
+                    source
+                    mainText
+                    subText
+                    imageURL
+                    isExpired
+                  }
                   attachment {
                     id
                     type
