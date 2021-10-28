@@ -25,24 +25,24 @@ class ValidateSilentVerificationUseCase @Inject constructor(@ApplicationContext 
             ${'$'}otpType: String,
             ${'$'}msisdn: String,
             ${'$'}fpData: String,
-            ${'$'}getSL: String,
             ${'$'}email: String,
             ${'$'}mode: String,
             ${'$'}signature: String,
             ${'$'}timeUnix: String,
             ${'$'}userId: Int,
+            ${'$'}tokenId: Int,
         ){
             OTPValidate(
                 code: ${'$'}code, 
                 otpType: ${'$'}otpType, 
                 msisdn: ${'$'}msisdn, 
                 fpData: ${'$'}fpData, 
-                getSL: ${'$'}getSL, 
                 email: ${'$'}email, 
                 mode: ${'$'}mode, 
                 signature: ${'$'}signature, 
                 time_unix: ${'$'}timeUnix, 
-                UserID: ${'$'}userId
+                UserID: ${'$'}userId,
+                TokenID: ${'$'}tokenId
             ) {
                 success
                 message
@@ -59,12 +59,11 @@ class ValidateSilentVerificationUseCase @Inject constructor(@ApplicationContext 
 
 
     companion object {
-        const val PARAM_CODE = "code"
         const val PARAM_OTP_TYPE = "otpType"
         const val PARAM_EMAIL = "email"
         const val PARAM_MODE = "mode"
         const val PARAM_USERID = "userId"
         const val PARAM_MSISDN = "msisdn"
-        const val PARAM_ASSOCIATION_ID = "association_key"
+        const val PARAM_TOKEN_ID = "tokenId"
     }
 }

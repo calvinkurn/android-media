@@ -31,6 +31,7 @@ import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
+import com.tokopedia.otp.silentverification.view.dialog.SilentVerificationDialogUtils
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpConstant.OtpMode.SILENT_VERIFICATION
@@ -130,6 +131,30 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
+    private fun gotoSilentVerificationPage(modeListData: ModeListData) {
+        if(activity != null) {
+            (activity as VerificationActivity).goToSilentVerificationpage(modeListData)
+        }
+    }
+
+    private fun onSilentVerificationClicked(modeListData: ModeListData) {
+        if (ConnectivityUtils.isSilentVerificationPossible(activity)){
+            gotoSilentVerificationPage(modeListData)
+        } else {
+            activity?.run {
+                SilentVerificationDialogUtils.showCellularDataDialog(
+                    this,
+                    onPrimaryButtonClicked = {
+                        gotoSilentVerificationPage(modeListData)
+                        analytics.trackCellularDialogButton(TrackingOtpConstant.Label.LABEL_MENGERTI)
+                    },
+                    onSecondaryButtonClicked = {
+                        analytics.trackCellularDialogButton(TrackingOtpConstant.Label.LABEL_BATAL)
+                    })
+            }
+        }
+    }
+
     open fun setMethodListAdapter() {
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
@@ -141,7 +166,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                         }
                         SILENT_VERIFICATION -> {
                             // Goto silent verification page
-                            (activity as VerificationActivity).goToSilentVerificationpage(modeList)
+                            onSilentVerificationClicked(modeList)
                         }
                         else -> {
                             (activity as VerificationActivity).goToVerificationPage(

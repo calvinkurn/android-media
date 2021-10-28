@@ -74,8 +74,13 @@
     <string name="user_title_login_by_qr">Masuk Sebagai:</string>
     <string name="approve_button_login_by_qr">Ya, Lanjut masuk</string>
     <string name="reject_button_login_by_qr">Batal</string>
+
+    <!--  otp silent verif  -->
     <string name="fragment_silent_verif_title">Siap-siap masuk ke akunmu &#128640;</string>
     <string name="fragment_silent_verif_title_success">Verifikasinya berhasil! &#127881;</string>
     <string name="fragment_silent_verif_subtitle">Tunggu sebentar ya, nomor HP kamu\nsedang diverifikasi.</string>
     <string name="fragment_silent_verif_subtitle_success">Selamat belanja di Tokopedia, ya!</string>
+    <string name="fragment_silent_verif_title_fail">Oops, ada sedikit gangguan</string>
+    <string name="fragment_silent_verif_subtitle_fail">Nomor HP kamu belum berhasil diverifikasi.\nCoba sekali lagi, yuk!</string>
+
 </resources>

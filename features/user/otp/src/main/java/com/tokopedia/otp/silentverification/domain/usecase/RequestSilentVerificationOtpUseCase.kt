@@ -45,6 +45,7 @@ class RequestSilentVerificationOtpUseCase @Inject constructor(@ApplicationContex
                 message_sub_title
                 message_img_link
                 evurl
+                token_id
                 error_code
             }
         }

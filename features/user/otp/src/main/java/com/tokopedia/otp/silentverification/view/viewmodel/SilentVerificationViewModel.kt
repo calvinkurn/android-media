@@ -23,6 +23,7 @@ import com.tokopedia.usecase.coroutines.Success
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -72,14 +73,14 @@ class SilentVerificationViewModel @Inject constructor(
         msisdn: String,
         mode: String,
         userId: Int,
-        correlationId: String) {
+        tokenId: String) {
         launchCatchError(block = {
             val params = mapOf(
                 ValidateSilentVerificationUseCase.PARAM_OTP_TYPE to otpType,
                 ValidateSilentVerificationUseCase.PARAM_MODE to mode,
                 ValidateSilentVerificationUseCase.PARAM_USERID to userId,
                 ValidateSilentVerificationUseCase.PARAM_MSISDN to msisdn,
-                ValidateSilentVerificationUseCase.PARAM_ASSOCIATION_ID to correlationId
+                ValidateSilentVerificationUseCase.PARAM_TOKEN_ID to tokenId
             )
             val result = validateSilentVerificationUseCase(params)
             _validationResponse.value = Success(result.data)
@@ -99,15 +100,23 @@ class SilentVerificationViewModel @Inject constructor(
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     fun verify(context: Context, url: String) {
+        println("verify:$url")
         val connectivityManager =
             context.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
         val request = NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
+
         connectivityManager.requestNetwork(request, object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
+                println("verify:onAvailable")
+
                 val okHttpClient: OkHttpClient =
-                    OkHttpClient.Builder().socketFactory(network.socketFactory).build()
+                    OkHttpClient.Builder()
+                        .socketFactory(network.socketFactory)
+                        .writeTimeout(6, TimeUnit.SECONDS)
+                        .readTimeout(6, TimeUnit.SECONDS)
+                        .build()
                 val req: Request = Request.Builder()
                     .url(url)
                     .build()
@@ -122,9 +131,28 @@ class SilentVerificationViewModel @Inject constructor(
 //                         """.trimIndent()
 //                    )
                 } catch (ex: Exception) {
+                    _bokuVerificationResponse.value = Fail(ex)
                     println("bokunetworkresponse $ex")
                     ex.printStackTrace()
                 }
+            }
+
+            override fun onUnavailable() {
+                super.onUnavailable()
+                _bokuVerificationResponse.value = Fail(Throwable("Unavailable"))
+                println("verify:onUnavailable")
+            }
+
+            override fun onLosing(network: Network, maxMsToLive: Int) {
+                super.onLosing(network, maxMsToLive)
+                _bokuVerificationResponse.value = Fail(Throwable("Unavailable"))
+                println("verify:onLosing")
+            }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                _bokuVerificationResponse.value = Fail(Throwable("Unavailable"))
+                println("verify:onLost")
             }
         })
     }

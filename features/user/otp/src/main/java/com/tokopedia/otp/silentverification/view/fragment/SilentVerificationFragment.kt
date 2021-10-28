@@ -19,6 +19,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.otp.R
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.databinding.FragmentSilentVerificationBinding
 import com.tokopedia.otp.silentverification.di.SilentVerificationComponent
 import com.tokopedia.otp.silentverification.domain.model.RequestSilentVerificationResult
@@ -41,6 +43,9 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var analytics: TrackingOtpUtil
+
     private lateinit var viewModel: SilentVerificationViewModel
     private val binding by viewBinding(FragmentSilentVerificationBinding::bind)
 
@@ -51,13 +56,17 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     private var lottieTaskList: ArrayList<LottieTask<LottieComposition>> = arrayListOf()
 
-    private var correlationId = ""
+    private var tokenId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        ).get(SilentVerificationViewModel::class.java)
+
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
         modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
-        setupLottieAnimation()
     }
 
     override fun onCreateView(
@@ -72,6 +81,17 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
 
+        if(otpData != null && modeListData != null) {
+            analytics.trackClickMethodOtpButton(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
+        }
+
+        setupLottieAnimation()
+        playLottieAnim(LOTTIE_BG_ANIMATION)
+        requestOtp()
+    }
+
+    private fun requestOtp() {
+        showLoadingState()
         otpData?.run {
             viewModel.requestSilentVerification(
                 otpType = otpType.toString(),
@@ -80,8 +100,6 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                 otpDigit = modeListData?.otpDigit ?: 0
             )
         }
-
-        playLottieAnim(LOTTIE_BG_ANIMATION)
     }
 
     override fun initInjector() {
@@ -96,12 +114,12 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             }
         })
 
-        viewModel.bokuVerificationResponse.observe(viewLifecycleOwner, {
-            when(it) {
-                is Success -> handleBokuResult(it.data)
-                is Fail -> onErrorVerification(it.throwable)
-            }
-        })
+//        viewModel.bokuVerificationResponse.observe(viewLifecycleOwner, {
+//            when(it) {
+//                is Success -> handleBokuResult(it.data)
+//                is Fail -> onErrorVerification(it.throwable)
+//            }
+//        })
 
         viewModel.validationResponse.observe(viewLifecycleOwner, {
             when(it) {
@@ -109,6 +127,31 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                 is Fail -> onErrorVerification(it.throwable)
             }
         })
+    }
+
+    private fun showLoadingState() {
+        binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title)
+        binding?.fragmentSilentVerifSubtitle?.text = getString(R.string.fragment_silent_verif_subtitle)
+        hideErrorState()
+    }
+
+    private fun showErrorState() {
+        binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_fail)
+        binding?.fragmentSilentVerifSubtitle?.text = getText(R.string.fragment_silent_verif_subtitle_fail)
+        binding?.fragmentSilentVerifTryAgainBtn?.show()
+        binding?.fragmentSilentVerifTryChangeMethodBtn?.show()
+    }
+
+    private fun hideErrorState() {
+        binding?.fragmentSilentVerifTryAgainBtn?.hide()
+        binding?.fragmentSilentVerifTryChangeMethodBtn?.hide()
+        binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
+            requestOtp()
+            showLoadingState()
+        }
+        binding?.fragmentSilentVerifTryChangeMethodBtn?.setOnClickListener {
+            activity?.finish()
+        }
     }
 
     private fun setupLottieAnimation() {
@@ -141,7 +184,6 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                         Handler().postDelayed({
                             renderFinalSuccess()
                         }, 1000)
-
                     }
                 }
             }
@@ -177,22 +219,23 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     }
 
     private fun onSuccessValidate(data: OtpValidateData) {
-        correlationId = ""
+        tokenId = ""
         if(data.success) {
+            analytics.trackSilentVerificationResult(TrackingOtpConstant.Label.LABEL_SUCCESS)
             renderInitialSuccess()
             Handler().postDelayed({
                 onFinishSilentVerif(data)
             }, 2500)
         } else {
-
+            analytics.trackSilentVerificationResult("${TrackingOtpConstant.Label.LABEL_FAILED}isSuccess:${data.success} - ${data.errorMessage}")
         }
     }
 
     private fun onRequestSuccess(data: RequestSilentVerificationResult) {
         activity?.let {
-            if (data.evUrl.isNotEmpty() && data.correlationId.isNotEmpty()) {
-                correlationId = data.correlationId
-                viewModel.verify(it, data.evUrl)
+            if (data.evUrl.isNotEmpty() && data.tokenId.isNotEmpty()) {
+                tokenId = data.tokenId
+                viewModel.verify(requireActivity(), data.evUrl)
             }
         }
     }
@@ -213,13 +256,13 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     private fun onSuccessBokuVerification() {
         otpData?.run {
-            if(otpData?.msisdn?.isNotEmpty() == true && correlationId.isNotEmpty()) {
+            if(otpData?.msisdn?.isNotEmpty() == true && tokenId.isNotEmpty()) {
                 viewModel.validate(
                     otpType = otpType.toString(),
                     msisdn = msisdn,
                     mode = modeListData?.modeText ?: "",
                     userId = userId.toIntOrZero(),
-                    correlationId = correlationId
+                    tokenId = tokenId
                 )
             }
         }
@@ -232,7 +275,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     }
 
     private fun onErrorVerification(throwable: Throwable) {
-
+        showErrorState()
     }
 
     companion object {
@@ -240,8 +283,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         private const val VALID_SCORE = "10"
         private const val BOKU_ERROR_PREFIX = "-50"
 
-        private const val LOTTIE_SUCCESS_ANIMATION = ""
-        private const val LOTTIE_BG_ANIMATION = ""
+        private const val LOTTIE_SUCCESS_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_success.json"
+        private const val LOTTIE_BG_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_animation_bg.json"
 
         const val SILENT_VERIFICATION_SCREEN = "silentVerification"
 

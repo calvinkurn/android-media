@@ -20,12 +20,12 @@ data class RequestSilentVerificationResult(
     @SerializedName("message")
     @Expose
     var message: String = "",
-    @SerializedName("correlation_id")
-    @Expose
-    var correlationId: String = "",
     @SerializedName("evurl")
     @Expose
     var evUrl: String = "",
+    @SerializedName("token_id")
+    @Expose
+    var tokenId: String = "",
     @SerializedName("errorMessage")
     @Expose
     var errorMessage: String = "",

@@ -643,4 +643,31 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 } + " - ${otpData.otpType} - ${modeListData.modeText}"
         ))
     }
+
+    fun trackCellularDialogButton(label: String) {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_SILENT_VERIF_REMINDER,
+            Action.ACION_CLICK_SILENT_VERIF,
+            label
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        analytics.sendGeneralEvent(map)
+    }
+
+    fun trackSilentVerificationResult(label: String) {
+        val analytics: Analytics = TrackApp.getInstance().gtm
+        val map = TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
+            Action.ACION_CLICK_SILENT_VERIF,
+            label
+        )
+        map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
+        map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
+        analytics.sendGeneralEvent(map)
+    }
+
 }

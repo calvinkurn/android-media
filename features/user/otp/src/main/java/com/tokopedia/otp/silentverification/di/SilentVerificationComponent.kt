@@ -10,7 +10,9 @@ import dagger.Component
  */
 
 @ActivityScope
-@Component(modules = [SilentVerificationViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [
+    SilentVerificationModule::class,
+    SilentVerificationViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface SilentVerificationComponent {
     fun inject(fragment: SilentVerificationFragment)
 }
