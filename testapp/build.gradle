@@ -109,7 +109,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 
     /*
-        Do not remove this dependencies
+        Do not remove this dependencies, because we use real login usecase
     */
     implementation project(rootProject.ext.features.chooseaccount)
     implementation project(rootProject.ext.features.otp)
