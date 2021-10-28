@@ -58,6 +58,7 @@ data class BottomSheetDetail (
 data class Detail(
 
     @SerializedName("gateway_id") val gateway_id: Int?,
+    @SerializedName("installment_description") val installationDescription: String?,
     @SerializedName("installment_per_month") val installment_per_month: Int?,
     @SerializedName("installment_per_month_ceil") val installment_per_month_ceil: Double?,
     @SerializedName("total_fee") val total_fee: Int?,

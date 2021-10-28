@@ -3,6 +3,7 @@ package com.tokopedia.pdpsimulation.paylater.presentation.detail
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -191,6 +192,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
      */
     @SuppressLint("SetTextI18n")
     private fun updateAdditionalPartnerDetail(data: Detail) {
+        data.installationDescription?.let {
+            instructionDetail.text = Html.fromHtml(it)
+        }
         whyText.text =
             resources.getString(R.string.pay_later_partner_why_gateway) + " ${data.gateway_detail?.name ?: ""}?"
         if (data.is_recommended == true) {
