@@ -7,13 +7,14 @@ import com.tokopedia.mediauploader.video.data.VideoUploadServices
 import com.tokopedia.mediauploader.video.data.entity.LargeUploader
 import com.tokopedia.mediauploader.video.data.params.ChunkUploadParam
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
-class GetChunkUploaderUseCase constructor(
+class GetChunkUploaderUseCase @Inject constructor(
     private val services: VideoUploadServices
 ) : CoroutineUseCase<ChunkUploadParam, LargeUploader>(Dispatchers.IO) {
 
     override suspend fun execute(params: ChunkUploadParam): LargeUploader {
-        val (sourceId, uploadId, partNumber, file, timeOut) = params
+        val (sourceId, uploadId, partNumber, _, _, timeOut) = params
 
         return services.uploadLargeUpload(
             urlToUpload = UrlBuilder.uploadUrl(),
