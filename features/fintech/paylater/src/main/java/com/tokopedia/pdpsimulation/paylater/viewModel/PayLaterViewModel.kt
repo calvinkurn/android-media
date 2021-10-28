@@ -29,6 +29,8 @@ class PayLaterViewModel @Inject constructor(
         _payLaterOptionsDetailLiveData
 
 
+    var refreshData = false
+
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
 
@@ -36,6 +38,7 @@ class PayLaterViewModel @Inject constructor(
 
     private var idlingResourceProvider =
         TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
+
 
 
     fun getPayLaterAvailableDetail(price: Long) {
@@ -49,6 +52,7 @@ class PayLaterViewModel @Inject constructor(
 
 
     }
+
 
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()

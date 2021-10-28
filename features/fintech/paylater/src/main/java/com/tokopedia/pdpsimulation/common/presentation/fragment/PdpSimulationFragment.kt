@@ -152,7 +152,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private fun setProductDetailView(data: GetProductV3) {
         data.pictures?.get(0)?.let { pictures ->
             pictures.urlThumbnail?.let { urlThumbnail ->
-                productDetail.productImage.loadImage(
+                imageView.loadImage(
                     urlThumbnail
                 )
             }
@@ -321,6 +321,14 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             payLaterViewModel.getProductDetail(productId = productId)
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (payLaterViewModel.refreshData) {
+            payLaterViewModel.getPayLaterAvailableDetail(productPrice)
+            payLaterViewModel.refreshData = false
+        }
     }
 
     companion object {
