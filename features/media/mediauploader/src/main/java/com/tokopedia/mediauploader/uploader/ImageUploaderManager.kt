@@ -1,17 +1,17 @@
-package com.tokopedia.mediauploader
+package com.tokopedia.mediauploader.uploader
 
 import com.tokopedia.mediauploader.data.consts.*
 import com.tokopedia.mediauploader.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.data.params.MediaUploaderParam
-import com.tokopedia.mediauploader.data.state.ProgressCallback
-import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.domain.DataPolicyUseCase
 import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
 import com.tokopedia.mediauploader.util.*
 import java.io.File
 
-class UploaderManager constructor(
+class ImageUploaderManager constructor(
     private val dataPolicyUseCase: DataPolicyUseCase,
     private val mediaUploaderUseCase: MediaUploaderUseCase
 ) {

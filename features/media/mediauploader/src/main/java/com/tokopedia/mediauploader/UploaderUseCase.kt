@@ -1,11 +1,13 @@
-package com.tokopedia.mediauploader.domain
+package com.tokopedia.mediauploader
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.data.consts.NETWORK_ERROR
 import com.tokopedia.mediauploader.data.consts.TIMEOUT_ERROR
-import com.tokopedia.mediauploader.data.state.ProgressCallback
-import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.mediauploader.domain.DataPolicyUseCase
+import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
+import com.tokopedia.mediauploader.uploader.ImageUploaderManager
 import com.tokopedia.mediauploader.util.ERROR_MAX_LENGTH
 import com.tokopedia.mediauploader.util.trackToTimber
 import com.tokopedia.usecase.RequestParams
@@ -22,11 +24,11 @@ import javax.inject.Inject
 import android.util.Log.getStackTraceString as getStackTraceMessage
 
 class UploaderUseCase @Inject constructor(
-        dataPolicyUseCase: DataPolicyUseCase,
-        mediaUploaderUseCase: MediaUploaderUseCase
+    dataPolicyUseCase: DataPolicyUseCase,
+    mediaUploaderUseCase: MediaUploaderUseCase
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
-    private val uploaderManager = UploaderManager(
+    private val uploaderManager = ImageUploaderManager(
         dataPolicyUseCase,
         mediaUploaderUseCase
     )

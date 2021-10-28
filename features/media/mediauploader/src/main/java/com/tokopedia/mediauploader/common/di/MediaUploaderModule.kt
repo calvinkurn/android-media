@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.di
+package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.data.FileUploadServices
 import com.tokopedia.mediauploader.domain.DataPolicyUseCase
 import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
