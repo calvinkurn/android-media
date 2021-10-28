@@ -89,7 +89,7 @@
       "userId": ".+",
       "eventAction": "click on product card dynamic channel bu carousel",
       "sessionIris": ".+",
-      "eventLabel": ".+",
+      "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
       "items": [
         {
           "item_id": ".+",
