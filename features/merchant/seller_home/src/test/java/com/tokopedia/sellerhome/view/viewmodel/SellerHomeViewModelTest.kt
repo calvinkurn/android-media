@@ -386,6 +386,177 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `given null widget height and second load, should also success`() = coroutineTestRule.runBlockingTest {
+        val isFirstLoad = false
+        val cachingEnabled = true
+
+        val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
+        val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
+        val progressDataUiModel =
+            ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
+        val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
+        val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
+        val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
+        val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
+        val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
+        val multiLineGraphDataUiModel =
+            MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+        val announcementDataUiModel =
+            AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+        val recommendationDataUiModel =
+            RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+        val milestoneDataUiModel =
+            MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns true
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns cachingEnabled
+
+        coEvery {
+            getLayoutUseCase.isFirstLoad
+        } returns isFirstLoad
+
+        everyGetWidgetData_shouldSuccess(
+            cardData,
+            lineGraphDataUiModel,
+            progressDataUiModel,
+            postListDataUiModel,
+            carouselDataUiModel,
+            tableDataUiModel,
+            pieChartDataUiModel,
+            barChartDataUiModel,
+            multiLineGraphDataUiModel,
+            announcementDataUiModel,
+            recommendationDataUiModel,
+            milestoneDataUiModel
+        )
+
+        viewModel.getWidgetLayout(null)
+
+        coVerify {
+            getLayoutUseCase.executeOnBackground(any(), isFirstLoad && cachingEnabled)
+        }
+    }
+
+    @Test
+    fun `given null widget height and caching disabled, should also success`() = coroutineTestRule.runBlockingTest {
+        val isFirstLoad = true
+        val cachingEnabled = false
+
+        val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
+        val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
+        val progressDataUiModel =
+            ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
+        val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
+        val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
+        val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
+        val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
+        val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
+        val multiLineGraphDataUiModel =
+            MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+        val announcementDataUiModel =
+            AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+        val recommendationDataUiModel =
+            RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+        val milestoneDataUiModel =
+            MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns true
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns cachingEnabled
+
+        coEvery {
+            getLayoutUseCase.isFirstLoad
+        } returns isFirstLoad
+
+        everyGetWidgetData_shouldSuccess(
+            cardData,
+            lineGraphDataUiModel,
+            progressDataUiModel,
+            postListDataUiModel,
+            carouselDataUiModel,
+            tableDataUiModel,
+            pieChartDataUiModel,
+            barChartDataUiModel,
+            multiLineGraphDataUiModel,
+            announcementDataUiModel,
+            recommendationDataUiModel,
+            milestoneDataUiModel
+        )
+
+        viewModel.getWidgetLayout(null)
+
+        coVerify {
+            getLayoutUseCase.executeOnBackground(any(), isFirstLoad && cachingEnabled)
+        }
+    }
+
+    @Test
+    fun `given null widget height, caching disabled and second load should also success`() = coroutineTestRule.runBlockingTest {
+        val isFirstLoad = false
+        val cachingEnabled = false
+
+        val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
+        val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
+        val progressDataUiModel =
+            ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
+        val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
+        val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
+        val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
+        val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
+        val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
+        val multiLineGraphDataUiModel =
+            MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+        val announcementDataUiModel =
+            AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+        val recommendationDataUiModel =
+            RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+        val milestoneDataUiModel =
+            MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns true
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns cachingEnabled
+
+        coEvery {
+            getLayoutUseCase.isFirstLoad
+        } returns isFirstLoad
+
+        everyGetWidgetData_shouldSuccess(
+            cardData,
+            lineGraphDataUiModel,
+            progressDataUiModel,
+            postListDataUiModel,
+            carouselDataUiModel,
+            tableDataUiModel,
+            pieChartDataUiModel,
+            barChartDataUiModel,
+            multiLineGraphDataUiModel,
+            announcementDataUiModel,
+            recommendationDataUiModel,
+            milestoneDataUiModel
+        )
+
+        viewModel.getWidgetLayout(null)
+
+        coVerify {
+            getLayoutUseCase.executeOnBackground(any(), isFirstLoad && cachingEnabled)
+        }
+    }
+
+    @Test
     fun `when get widget layout and height param is not null, should also success`() = runBlocking {
 
         val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
@@ -1911,18 +2082,97 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `given new caching enabled when getTicker flow success should set homeTicker liveData success`() {
+    fun `given new caching enabled when getTicker at first load flow success should set homeTicker liveData success`() {
         coroutineTestRule.runBlockingTest {
             val isNewCachingEnabled = true
+            val isCachingEnabled = true
+            val isFirstLoad = true
             val tickerList = listOf(TickerItemUiModel())
 
             onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
             onGetTickerListFlow_thenReturn(tickerList)
 
             viewModel.getTicker()
 
             verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
+
+            val expectedResult = Success(listOf(TickerItemUiModel()))
+            val actualResult = viewModel.homeTicker.value
+
+            Assertions.assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `given new caching enabled when getTicker at second load flow success should set homeTicker liveData success`() {
+        coroutineTestRule.runBlockingTest {
+            val isNewCachingEnabled = true
+            val isCachingEnabled = true
+            val isFirstLoad = false
+            val tickerList = listOf(TickerItemUiModel())
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
+            onGetTickerListFlow_thenReturn(tickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
+
+            val expectedResult = Success(listOf(TickerItemUiModel()))
+            val actualResult = viewModel.homeTicker.value
+
+            Assertions.assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `given new caching enabled and caching disabled when getTicker at first load flow success should set homeTicker liveData success`() {
+        coroutineTestRule.runBlockingTest {
+            val isNewCachingEnabled = true
+            val isCachingEnabled = false
+            val isFirstLoad = true
+            val tickerList = listOf(TickerItemUiModel())
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
+            onGetTickerListFlow_thenReturn(tickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
+
+            val expectedResult = Success(listOf(TickerItemUiModel()))
+            val actualResult = viewModel.homeTicker.value
+
+            Assertions.assertEquals(expectedResult, actualResult)
+        }
+    }
+
+    @Test
+    fun `given new caching enabled and caching disabled when getTicker at second load flow success should set homeTicker liveData success`() {
+        coroutineTestRule.runBlockingTest {
+            val isNewCachingEnabled = true
+            val isCachingEnabled = false
+            val isFirstLoad = false
+            val tickerList = listOf(TickerItemUiModel())
+
+            onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
+            onGetTickerListFlow_thenReturn(tickerList)
+
+            viewModel.getTicker()
+
+            verifyGetTickerResultFlowCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
 
             val expectedResult = Success(listOf(TickerItemUiModel()))
             val actualResult = viewModel.homeTicker.value
@@ -1938,22 +2188,28 @@ class SellerHomeViewModelTest {
             val isNewCachingEnabled = true
             val firstTickerList = listOf(TickerItemUiModel(message = "ticker"))
             val secondTickerList = listOf(TickerItemUiModel(message = "another ticker"))
+            val isCachingEnabled = false
+            val isFirstLoad = true
 
             onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
             onGetTickerListFlow_thenReturn(firstTickerList)
 
             viewModel.getTicker()
 
             verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
 
             onGetCollectingResult_thenReturn(isCollectingResult)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
             onGetTickerListFlow_thenReturn(secondTickerList)
 
             viewModel.getTicker()
 
             verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
 
             val expectedResult = Success(firstTickerList)
             val actualResult = viewModel.homeTicker.value
@@ -1967,14 +2223,18 @@ class SellerHomeViewModelTest {
         coroutineTestRule.runBlockingTest {
             val isNewCachingEnabled = true
             val error = IllegalStateException()
+            val isCachingEnabled = false
+            val isFirstLoad = true
 
             onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled)
             onGetTickerListFlow_thenReturn(error)
+            onGetIsCachingEnabled_thenReturn(isCachingEnabled)
+            onGetTickerIsFirstLoad_thenReturn(isFirstLoad)
 
             viewModel.getTicker()
 
             verifyGetTickerResultFlowCalled()
-            verifyGetTickerUseCaseCalled()
+            verifyGetTickerUseCaseCalled(isFirstLoad, isCachingEnabled)
 
             val expectedResult = Fail(error)
             val actualResult = viewModel.homeTicker.value
@@ -2692,15 +2952,27 @@ class SellerHomeViewModelTest {
         } throws error
     }
 
+    private fun onGetIsCachingEnabled_thenReturn(cachingEnabled: Boolean) {
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns cachingEnabled
+    }
+
+    private fun onGetTickerIsFirstLoad_thenReturn(isFirstLoad: Boolean) {
+        every {
+            getTickerUseCase.isFirstLoad
+        } returns isFirstLoad
+    }
+
     private fun onGetIsNewCachingEnabled_thenReturn(isNewCachingEnabled: Boolean) {
         every {
             remoteConfig.isSellerHomeDashboardNewCachingEnabled()
         } returns isNewCachingEnabled
     }
 
-    private fun verifyGetTickerUseCaseCalled() {
+    private fun verifyGetTickerUseCaseCalled(fistLoad: Boolean, cachingEnabled: Boolean) {
         coVerify {
-            getTickerUseCase.executeOnBackground(any(), any())
+            getTickerUseCase.executeOnBackground(any(), fistLoad && cachingEnabled)
         }
     }
 
