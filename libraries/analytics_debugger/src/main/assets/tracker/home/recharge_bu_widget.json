@@ -72,14 +72,14 @@
       "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
       "items": [
         {
-          "index": ".+",
-          "item_brand": "none / other",
-          "item_category": ".+",
           "item_id": ".+",
+          "price": "\\d*.\\d",
+          "dimension_40" : ".*",
+          "index": ".+",
           "item_name": ".+",
-          "item_variant": ".+",
-          "dimension_40" : ":*",
-          "price": "\\d*"
+          "item_brand": "none / other",
+          "item_variant": ".*",
+          "item_category": ".+",
         }
       ]
     },
@@ -94,14 +94,14 @@
       "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
       "items": [
         {
-          "index": ".+",
-          "item_brand": "none / other",
-          "item_category": ".+",
           "item_id": ".+",
-          "dimension_40" : ":*",
+          "price": "\\d*.\\d",
+          "dimension_40" : ".*",
+          "index": ".+",
           "item_name": ".+",
+          "item_brand": "none / other",
           "item_variant": ".*",
-          "price": "\\d*"
+          "item_category": ".+",
         }
       ]
     }
