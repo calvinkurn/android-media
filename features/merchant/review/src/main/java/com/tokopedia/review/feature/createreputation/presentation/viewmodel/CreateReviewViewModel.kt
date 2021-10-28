@@ -352,8 +352,12 @@ class CreateReviewViewModel @Inject constructor(
         selectedBadRatingCategories.remove(badRatingCategoryId)
     }
 
-    fun isBadRatingSelected(): Boolean {
-        return selectedBadRatingCategories.isNotEmpty() && !isOtherCategoryOnly()
+    fun isBadRatingReasonSelected(isTextAreaNotEmpty: Boolean): Boolean {
+        return if (isOtherCategoryOnly()) {
+            isTextAreaNotEmpty
+        } else {
+            selectedBadRatingCategories.isNotEmpty()
+        }
     }
 
     private fun isOtherCategoryOnly(): Boolean {

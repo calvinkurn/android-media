@@ -903,7 +903,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         if (isGoodRating) {
             createReviewViewModel.updateButtonState(isGoodRating)
         } else {
-            createReviewViewModel.updateButtonState(isTextAreaNotEmpty || createReviewViewModel.isBadRatingSelected())
+            createReviewViewModel.updateButtonState(createReviewViewModel.isBadRatingReasonSelected(isTextAreaNotEmpty))
         }
     }
 
