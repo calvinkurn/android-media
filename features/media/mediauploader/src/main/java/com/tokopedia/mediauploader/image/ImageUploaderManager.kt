@@ -9,13 +9,14 @@ import com.tokopedia.mediauploader.common.util.fileExtension
 import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.isMinBitmapResolution
-import com.tokopedia.mediauploader.image.data.mapper.ImagePolicyMapper
+import com.tokopedia.mediauploader.common.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.image.data.params.ImageUploadParam
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import java.io.File
+import javax.inject.Inject
 
-class ImageUploaderManager constructor(
+class ImageUploaderManager @Inject constructor(
     private val imagePolicyUseCase: GetImagePolicyUseCase,
     private val imageUploaderUseCase: GetImageUploaderUseCase
 ) : UploaderManager {
@@ -97,7 +98,7 @@ class ImageUploaderManager constructor(
         }?: setError(error, sourceId, file)
     }
 
-    fun setProgressUploader(progress: ProgressCallback?) {
+    override fun setProgressUploader(progress: ProgressCallback?) {
         imageUploaderUseCase.progressCallback = progress
     }
 
