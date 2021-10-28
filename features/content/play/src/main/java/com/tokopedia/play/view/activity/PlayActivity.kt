@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -296,6 +297,20 @@ class PlayActivity : BaseActivity(),
     private fun isCustomTaskRoot(): Boolean {
         val activityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val appTasks = activityManager.appTasks
+
+        for(task in appTasks) {
+            val baseIntent = task.taskInfo.baseIntent
+            val categories = baseIntent.categories ?: return true
+
+            Log.d("<INTENT>", "ACTION : ${baseIntent.action}")
+            Log.d("<INTENT>", "SCHEME : ${baseIntent.scheme}")
+            Log.d("<INTENT>", "FLAGS : ${baseIntent.flags}")
+            Log.d("<INTENT>", "CATEGORIES : $categories")
+            Log.d("<INTENT>", "CATEGORIES NOT CONTAIN LAUNCHER : ${!categories.contains(Intent.CATEGORY_LAUNCHER)}")
+        }
+
+        Log.d("<INTENT>", "=====================")
+
         for(task in appTasks) {
             val baseIntent = task.taskInfo.baseIntent
             val categories = baseIntent.categories ?: return true
