@@ -224,6 +224,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
                         viewMoneyInPriceGTM(homeResult.deviceDisplayName + " - " + homeResult.displayMessage)
                     }
                     PriceState.MONEYIN_ERROR -> {
+                        mTvPriceElligible?.text = homeResult.displayMessage
                         showMessageWithAction(homeResult.displayMessage,
                                 getString(R.string.tradein_return)) { this.finish() }
                         errorDialogGTMLabel = homeResult.displayMessage

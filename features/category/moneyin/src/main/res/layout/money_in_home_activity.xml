@@ -43,7 +43,7 @@
                 android:paddingTop="@dimen/dp_12"
                 android:paddingRight="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_12"
-                android:text="@string/tradein_not_elligible_price_high"
+                android:text="@string/not_elligible_money_in"
                 android:textColor="@color/Unify_N700_68"
                 app:typographyType="heading_6"
                 android:visibility="gone"
