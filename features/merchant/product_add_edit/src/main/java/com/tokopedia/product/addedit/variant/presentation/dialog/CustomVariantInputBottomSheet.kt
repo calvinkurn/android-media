@@ -8,8 +8,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.databinding.AddEditProductCustomVariantInputBottomSheetContentBinding
-import com.tokopedia.product.addedit.specification.presentation.adapter.SpecificationValueAdapter
+import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeSuggestionAdapter
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -34,11 +35,22 @@ class CustomVariantInputBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val adapter = VariantTypeSuggestionAdapter()
+        adapter.setData(List(100) { "Warna$it" })
+        adapter.setOnItemClickedListener { position, variantTypeName ->
+            try {
+                binding?.textFieldVariantTypeInput?.setText(variantTypeName)
+                binding?.textFieldVariantTypeInput?.editText?.setSelection(variantTypeName.length)
+            } catch (e: Exception) {
+                // no op
+            }
+        }
         binding?.recyclerViewVariantSuggestion?.layoutManager = LinearLayoutManager(context)
-        binding?.recyclerViewVariantSuggestion?.adapter = SpecificationValueAdapter(childFragmentManager)
+        binding?.recyclerViewVariantSuggestion?.adapter = adapter
         binding?.recyclerViewVariantSuggestion?.minimumHeight = 0
         binding?.recyclerViewVariantSuggestion?.layoutParams?.height = getScreenHeight()
         binding?.recyclerViewVariantSuggestion?.requestLayout()
+        adapter.setHighlightCharLength(3)
     }
 
     override fun onPause() {
