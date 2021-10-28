@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class TokopointsDetailUiModel(
-        var conversionRateUiModel: ConversionRateUiModel = ConversionRateUiModel()
+data class PromoTypeUiModel(
+	var isExclusiveShipping: Boolean = false,
+	var isBebasOngkir: Boolean = false
 ) : Parcelable

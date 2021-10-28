@@ -71,13 +71,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
-    @Named(SubmitHelpTicketUseCase.QUERY_NAME)
-    fun provideSubmitHelpTicketUseCaseQuery(context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
-    }
-
-    @Provides
-    @CheckoutScope
     fun provideScheduler(): SchedulerProvider {
         return MainScheduler()
     }

@@ -1311,7 +1311,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 if (trackingDetailsItemUiModels.size() > 0) {
                     for (TrackingDetailsItemUiModel trackingDetailsItemUiModel : trackingDetailsItemUiModels) {
-                        if (trackingDetailsItemUiModel.getProductId() != null && trackingDetailsItemUiModel.getProductId() == cartItemModel.getProductId() &&
+                        if (trackingDetailsItemUiModel.getProductId() == cartItemModel.getProductId() &&
                                 cartItemModel.getAnalyticsProductCheckoutData() != null) {
                             cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailsItemUiModel.getPromoCodesTracking());
                             cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailsItemUiModel.getPromoDetailsTracking());

@@ -2,9 +2,9 @@ package com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.data.response.SubmitHelpTicketGqlResponse
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketText
-import com.tokopedia.purchase_platform.common.feature.helpticket.data.response.SubmitHelpTicketGqlResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -12,16 +12,15 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
-import javax.inject.Named
 
-class SubmitHelpTicketUseCase @Inject constructor(@Named(QUERY_NAME) val queryString: String, val graphqlUseCase: GraphqlUseCase) : UseCase<SubmitTicketResult>() {
+class SubmitHelpTicketUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase) : UseCase<SubmitTicketResult>() {
 
     var compositeSubscription = CompositeSubscription()
 
     override fun createObservable(params: RequestParams): Observable<SubmitTicketResult> {
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(
-                GraphqlRequest(queryString, SubmitHelpTicketGqlResponse::class.java,
+                GraphqlRequest(QUERY, SubmitHelpTicketGqlResponse::class.java,
                         mapOf(PARAM to params.getObject(PARAM)))
         )
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
@@ -58,11 +57,27 @@ class SubmitHelpTicketUseCase @Inject constructor(@Named(QUERY_NAME) val querySt
 
         const val PARAM = "ErrorDetail"
 
-        const val QUERY_NAME = "submit_ticket"
-
         const val PAGE_ATC = "atc"
         const val PAGE_CHECKOUT = "checkout"
 
         const val GQL_REQUEST_URL = "gql.tokopedia.com"
+
+        private val QUERY = """
+            mutation submit_help_ticket(${"$"}ErrorDetail: TicketErrorDetailData){
+              submit_help_ticket(ErrorDetail:${"$"}ErrorDetail) {
+                status
+                error_messages
+                data {
+                  success
+                  message
+                  texts {
+                    submit_title
+                    submit_description
+                    success_button
+                  }
+                }
+              }
+            }
+        """.trimMargin()
     }
 }

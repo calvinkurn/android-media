@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.product.detail.R
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
@@ -42,12 +41,6 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
     fun provideRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget)
-
-    @ProductDetailScope
-    @Provides
-    @Named(SubmitHelpTicketUseCase.QUERY_NAME)
-    fun provideSubmitHelpTicket(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
 
     @ProductDetailScope
     @Provides
