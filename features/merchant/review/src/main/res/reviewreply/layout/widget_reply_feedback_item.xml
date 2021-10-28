@@ -71,15 +71,6 @@
         app:typographyWeight="reguler"
         tools:text="Udah nyari Nike Air Force 1 Low White Red Casual Shoes ini akhirnya dapet juga di toko ini, thanks banget gan! barang dijamin ori sesuai deskripsi, kualitas mantap, kemasannya rapih, pengirimannya tepat waktu, recommended seller deh pokoknya gak akan kapok belanja kemari gan! next nya gw cari sepatu rare lagi." />
 
-    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
-        android:id="@+id/badRatingReasonReview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvItemAttachmentFeedback"
         android:layout_width="@dimen/layout_lvl0"
@@ -95,12 +86,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
 
+    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
+        android:id="@+id/badRatingReasonReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerFeedbackReply"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_goneMarginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
 
