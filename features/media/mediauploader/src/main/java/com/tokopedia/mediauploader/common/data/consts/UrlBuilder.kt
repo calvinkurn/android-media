@@ -28,6 +28,10 @@ object UrlBuilder {
         return "$BASE_VOD_UPLOAD_URL/video/upload/complete"
     }
 
+    fun isTranscodeUrl(uploadId: String): String {
+        return "$BASE_VOD_UPLOAD_URL/video/transcode/status/$uploadId"
+    }
+
     fun abortUrl(): String {
         return "$BASE_VOD_UPLOAD_URL/video/upload/abort"
     }

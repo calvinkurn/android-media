@@ -3,6 +3,7 @@ package com.tokopedia.mediauploader.video.data
 import com.tokopedia.mediauploader.common.util.NetworkTimeOutInterceptor.Companion.HEADER_TIMEOUT
 import com.tokopedia.mediauploader.video.data.entity.LargeUploader
 import com.tokopedia.mediauploader.video.data.entity.SimpleUploader
+import com.tokopedia.mediauploader.video.data.entity.Transcoding
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -12,7 +13,7 @@ interface VideoUploadServices {
     @Multipart
     @POST
     suspend fun simpleUpload(
-        @Url urlToUpload: String,
+        @Url url: String,
         @Part videoFile: MultipartBody.Part,
         @Part(BODY_FILE_NAME) fileName: RequestBody,
         @Header(HEADER_TIMEOUT) timeOut: String
@@ -21,7 +22,7 @@ interface VideoUploadServices {
     @FormUrlEncoded
     @POST
     suspend fun initLargeUpload(
-        @Url urlToUpload: String,
+        @Url url: String,
         @Field(BODY_FILE_NAME) fileName: String,
         @Field(BODY_SOURCE_ID) sourceId: String
     ): LargeUploader
@@ -29,7 +30,7 @@ interface VideoUploadServices {
     @Multipart
     @POST
     suspend fun uploadLargeUpload(
-        @Url urlToUpload: String,
+        @Url url: String,
         @Part(BODY_SOURCE_ID) sourceId: RequestBody,
         @Part(BODY_UPLOAD_ID) uploadId: RequestBody,
         @Part(BODY_PART_NUMBER) partNumber: RequestBody,
@@ -39,7 +40,7 @@ interface VideoUploadServices {
 
     @GET
     suspend fun chunkCheckerUpload(
-        @Url urlToUpload: String,
+        @Url url: String,
         @Query(BODY_FILE_NAME) fileName: String,
         @Query(BODY_UPLOAD_ID) uploadId: String,
         @Query(BODY_PART_NUMBER) partNumber: String
@@ -48,15 +49,20 @@ interface VideoUploadServices {
     @FormUrlEncoded
     @POST
     suspend fun completeLargeUpload(
-        @Url urlToUpload: String,
+        @Url url: String,
         @Field(BODY_UPLOAD_ID) uploadId: String,
         @Header(HEADER_AUTH) accessToken: String
     ): LargeUploader
 
+    @GET
+    suspend fun checkTranscodingStatus(
+        @Url url: String
+    ): Transcoding
+
     @FormUrlEncoded
     @POST
     suspend fun abortLargeUpload(
-        @Url urlToUpload: String,
+        @Url url: String,
         @Field(BODY_UPLOAD_ID) uploadId: String,
         @Header(HEADER_AUTH) accessToken: String
     ): LargeUploader
