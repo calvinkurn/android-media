@@ -3,6 +3,7 @@ package com.tokopedia.linter
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.tokopedia.linter.detectors.AnimatedVectorDetector
+import com.tokopedia.linter.detectors.DimenResourceNameDetector
 import com.tokopedia.linter.detectors.ResourcePackageDetector
 import com.tokopedia.linter.detectors.UnsupportedColorDetector
 import com.tokopedia.linter.detectors.VectorDrawableDetector
@@ -29,6 +30,7 @@ class IssueRegistry : IssueRegistry() {
                 UnsupportedColorDetector.XML_ISSUE,
                 UnsupportedColorDetector.JAVA_ISSUE,
                 ResourcePackageDetector.JAVA_ISSUE,
+                DimenResourceNameDetector.ISSUE,
                 HANSEL_REQUIRED
         )
 
