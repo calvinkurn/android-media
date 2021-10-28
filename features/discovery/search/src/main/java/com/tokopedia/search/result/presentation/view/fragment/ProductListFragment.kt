@@ -29,7 +29,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -1291,22 +1290,16 @@ class ProductListFragment: BaseDaggerFragment(),
         activity?.finish()
     }
 
-    override fun sendTrackingForNoResult(resultCode: String?, alternativeKeyword: String?, keywordProcess: String?) {
-        val searchParameter = searchParameter ?: return
+    @Suppress("UNCHECKED_CAST")
+    override val filterParamString: String
+        get() {
+            val searchParameterMap = (searchParameter?.getSearchParameterHashMap() ?: mapOf())
+                as Map<String?, String?>
 
-        @Suppress("UNCHECKED_CAST")
-        val searchParameterHashMap = searchParameter.getSearchParameterHashMap() as Map<String?, String?>
-        val filterMapParameter = getFilterParams(searchParameterHashMap)
+            val filterParam = getFilterParams(searchParameterMap)
 
-        SearchTracking.eventSearchNoResult(
-                queryKey,
-                screenName,
-                filterMapParameter,
-                alternativeKeyword,
-                resultCode,
-                keywordProcess
-        )
-    }
+            return UrlParamUtils.generateUrlParamString(filterParam)
+        }
 
     override fun setDefaultLayoutType(defaultView: Int) {
         when (defaultView) {

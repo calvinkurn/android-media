@@ -9,13 +9,9 @@ import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isInstanceOf
 import com.tokopedia.play.util.throwsException
-import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.util.PlayPreference
-import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.every
 import io.mockk.mockk

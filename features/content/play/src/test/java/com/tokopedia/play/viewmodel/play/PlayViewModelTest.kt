@@ -10,9 +10,7 @@ import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.util.*
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -106,7 +104,7 @@ class PlayViewModelTest {
             createPage(channelData)
             focusPage(channelData)
         } thenVerify {
-            isCalled.isFalse()
+            isCalled.assertFalse()
         } andThen {
             runBlockingTest(testDispatcher.coroutineDispatcher) {
                 socketFlow.emit(
@@ -114,7 +112,7 @@ class PlayViewModelTest {
                 )
             }
         } thenVerify {
-            isCalled.isTrue()
+            isCalled.assertTrue()
         }
     }
 }

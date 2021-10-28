@@ -100,12 +100,24 @@ object RepurchaseLayoutMapper {
         add(TokoNowEmptyStateOocUiModel())
     }
 
+    fun MutableList<Visitable<*>>.addRecomWidget(pageName: String) {
+        add(
+            TokoNowRecommendationCarouselUiModel(
+                pageName = pageName,
+                isFirstLoad = true,
+                isBindWithPageName = true
+            )
+        )
+    }
+
     fun MutableList<Visitable<*>>.addEmptyStateNoResult() {
-        add(TokoNowEmptyStateNoResultUiModel(
-            defaultTitleResId = R.string.tokopedianow_repurchase_no_result_title,
-            defaultDescriptionResId = R.string.tokopedianow_repurchase_no_result_description,
-            globalSearchBtnTextResId = R.string.tokopedianow_back_to_tokopedia
-        ))
+        add(
+            TokoNowEmptyStateNoResultUiModel(
+                defaultTitleResId = R.string.tokopedianow_repurchase_no_result_title,
+                defaultDescriptionResId = R.string.tokopedianow_repurchase_no_result_description,
+                globalSearchBtnTextResId = R.string.tokopedianow_back_to_tokopedia
+            )
+        )
     }
 
     fun MutableList<Visitable<*>>.addServerErrorState() {
@@ -234,7 +246,6 @@ object RepurchaseLayoutMapper {
                 miniCartItem.quantity
             }
             updateProductQuantity(productId, quantity)
-            updateProductRecomQuantity(productId, quantity)
         }
     }
 
