@@ -173,11 +173,11 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           error_code
         }
         is_bebas_ongkir_extra
-//        texts {
-//          bottom_sheet
-//          chosen_courier
-//          ticker_courier
-//        }
+        texts {
+          bottom_sheet
+          chosen_courier
+          ticker_courier
+        }
       }
       pre_order {
         header
