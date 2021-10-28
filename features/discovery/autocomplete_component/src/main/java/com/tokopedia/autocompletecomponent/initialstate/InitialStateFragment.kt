@@ -45,13 +45,13 @@ class InitialStateFragment:
     }
 
     @Inject
-    lateinit var presenter: InitialStateContract.Presenter
+    var presenter: InitialStateContract.Presenter? = null
 
     @Inject
-    lateinit var initialStateViewUpdateListener: InitialStateViewUpdateListener
+    var initialStateViewUpdateListener: InitialStateViewUpdateListener? = null
 
     @Inject
-    lateinit var initialStateTracking: InitialStateTracking
+    var initialStateTracking: InitialStateTracking? = null
 
     private var performanceMonitoring: PerformanceMonitoring? = null
     private val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(this)
@@ -71,7 +71,7 @@ class InitialStateFragment:
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         prepareView()
-        presenter.attachView(this)
+        presenter?.attachView(this)
     }
 
     private fun prepareView() {
@@ -84,7 +84,7 @@ class InitialStateFragment:
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.detachView()
+        presenter?.detachView()
     }
 
     override fun getScreenName(): String {
@@ -100,7 +100,7 @@ class InitialStateFragment:
         initialStateAdapter.clearData()
         initialStateAdapter.addAll(list)
 
-        initialStateViewUpdateListener.showInitialStateView()
+        initialStateViewUpdateListener?.showInitialStateView()
     }
 
     private fun stopTracePerformanceMonitoring() {
@@ -116,33 +116,41 @@ class InitialStateFragment:
         val searchParameter = savedInstanceState.getSerializable(SEARCH_PARAMETER)
             as HashMap<String, String>
 
-        presenter.showInitialState(searchParameter)
+        presenter?.showInitialState(searchParameter)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable(SEARCH_PARAMETER, HashMap<String, Any>(presenter.getSearchParameter()))
+
+        val presenter = presenter ?: return
+
+        outState.putSerializable(
+            SEARCH_PARAMETER,
+            HashMap<String, Any>(presenter.getSearchParameter())
+        )
     }
 
     fun show(searchParameter: Map<String, String>) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
 
-        presenter.showInitialState(searchParameter)
+        presenter?.showInitialState(searchParameter)
     }
 
     override fun onProductLineClicked(item: BaseItemInitialStateSearch) {
-        presenter.onProductLineClicked(item)
+        presenter?.onProductLineClicked(item)
     }
 
     override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch) {
-        presenter.onRecentSearchItemClicked(item)
+        presenter?.onRecentSearchItemClicked(item)
     }
 
     override fun onRecentSearchSeeMoreClicked() {
-        presenter.recentSearchSeeMoreClicked()
+        presenter?.recentSearchSeeMoreClicked()
     }
 
     override fun renderCompleteRecentSearch(recentSearchDataView: RecentSearchDataView) {
+        val presenter = presenter ?: return
+
         initialStateAdapter.removeSeeMoreButton(presenter.seeMoreButtonPosition)
         initialStateAdapter.renderRecentSearch(recentSearchDataView, presenter.recentSearchPosition)
     }
@@ -163,7 +171,7 @@ class InitialStateFragment:
     }
 
     private fun deleteRecentSearch(item: BaseItemInitialStateSearch) {
-        presenter.deleteRecentSearchItem(item)
+        presenter?.deleteRecentSearchItem(item)
     }
 
     override fun onDeleteAllRecentSearch() {
@@ -171,7 +179,7 @@ class InitialStateFragment:
     }
 
     private fun deleteAllRecentSearch() {
-        presenter.deleteAllRecentSearch()
+        presenter?.deleteAllRecentSearch()
     }
 
     override fun onRefreshPopularSearch(featureId: String) {
@@ -179,48 +187,48 @@ class InitialStateFragment:
     }
 
     private fun refreshPopularSearch(featureId: String) {
-        presenter.refreshPopularSearch(featureId)
+        presenter?.refreshPopularSearch(featureId)
     }
 
     override fun onRefreshDynamicSection(featureId: String) {
-        presenter.refreshDynamicSection(featureId)
+        presenter?.refreshDynamicSection(featureId)
     }
 
     override fun onRecentViewImpressed(list: List<Any>) {
-        initialStateTracking.impressedRecentView(list)
+        initialStateTracking?.impressedRecentView(list)
     }
 
     override fun onRecentSearchImpressed(list: List<Any>) {
-        val keyword = presenter.getQueryKey()
-        initialStateTracking.impressedRecentSearch(list, keyword)
+        val keyword = presenter?.getQueryKey() ?: ""
+        initialStateTracking?.impressedRecentSearch(list, keyword)
     }
 
     override fun onPopularSearchImpressed(model: DynamicInitialStateItemTrackingModel) {
-        initialStateTracking.impressedDynamicSection(model)
+        initialStateTracking?.impressedDynamicSection(model)
     }
 
     override fun onSeeMoreRecentSearchImpressed(userId: String) {
-        initialStateTracking.impressedSeeMoreRecentSearch(userId)
+        initialStateTracking?.impressedSeeMoreRecentSearch(userId)
     }
 
     override fun trackEventClickRecentSearch(label: String, pageSource: String) {
-        initialStateTracking.eventClickRecentSearch(label, pageSource)
+        initialStateTracking?.eventClickRecentSearch(label, pageSource)
     }
 
     override fun trackEventClickRecentShop(label: String, userId: String, pageSource: String) {
-        initialStateTracking.eventClickRecentShop(label, userId, pageSource)
+        initialStateTracking?.eventClickRecentShop(label, userId, pageSource)
     }
 
     override fun trackEventClickSeeMoreRecentSearch(userId: String) {
-        initialStateTracking.eventClickSeeMoreRecentSearch(userId)
+        initialStateTracking?.eventClickSeeMoreRecentSearch(userId)
     }
 
     override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch) {
-        presenter.onDynamicSectionItemClicked(item)
+        presenter?.onDynamicSectionItemClicked(item)
     }
 
     override fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String, pageSource: String) {
-        initialStateTracking.eventClickDynamicSection(userId, label, type, pageSource)
+        initialStateTracking?.eventClickDynamicSection(userId, label, type, pageSource)
     }
 
     override fun refreshViewWithPosition(position: Int) {
@@ -228,7 +236,7 @@ class InitialStateFragment:
     }
 
     override fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel) {
-        initialStateTracking.impressedDynamicSection(model)
+        initialStateTracking?.impressedDynamicSection(model)
     }
 
     override fun dropKeyBoard() {
@@ -238,24 +246,24 @@ class InitialStateFragment:
     }
 
     override fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView) {
-        presenter.onCuratedCampaignCardClicked(curatedCampaignDataView)
+        presenter?.onCuratedCampaignCardClicked(curatedCampaignDataView)
     }
 
     override fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String, campaignCode: String) {
-        initialStateTracking.eventClickCuratedCampaignCard(userId, label, type, campaignCode)
+        initialStateTracking?.eventClickCuratedCampaignCard(userId, label, type, campaignCode)
     }
 
     override fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String, campaignCode: String) {
-        initialStateTracking.impressedCuratedCampaign(userId, label, type, campaignCode)
+        initialStateTracking?.impressedCuratedCampaign(userId, label, type, campaignCode)
     }
 
     override fun onRecentViewClicked(item: BaseItemInitialStateSearch) {
-        presenter.onRecentViewClicked(item)
+        presenter?.onRecentViewClicked(item)
     }
 
     override fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String) {
         val productDataLayer = item.getRecentViewAsObjectDataLayer()
-        initialStateTracking.eventClickRecentView(productDataLayer, label)
+        initialStateTracking?.eventClickRecentView(productDataLayer, label)
     }
 
     override fun trackEventClickProductLine(
@@ -264,7 +272,7 @@ class InitialStateFragment:
         label: String
     ) {
         val productDataLayer = item.getProductLineAsObjectDataLayer()
-        initialStateTracking.eventClickInitialStateProductLine(
+        initialStateTracking?.eventClickInitialStateProductLine(
             productDataLayer,
             userId,
             label,
@@ -282,23 +290,23 @@ class InitialStateFragment:
         } ?: ChooseAddressConstant.emptyAddress
 
     override fun onRefreshPopularSearch() {
-        initialStateTracking.eventClickRefreshPopularSearch()
+        initialStateTracking?.eventClickRefreshPopularSearch()
     }
 
     override fun onRefreshTokoNowPopularSearch() {
-        initialStateTracking.eventClickRefreshTokoNowPopularSearch()
+        initialStateTracking?.eventClickRefreshTokoNowPopularSearch()
     }
 
     override fun trackEventClickTokoNowDynamicSectionItem(label: String) {
-        initialStateTracking.eventClickTokoNowPopularSearch(label)
+        initialStateTracking?.eventClickTokoNowPopularSearch(label)
     }
 
     override fun trackEventClickChip(userId: String, label: String, type: String, pageSource: String) {
-        initialStateTracking.eventClickDynamicSection(userId, label, type, pageSource)
+        initialStateTracking?.eventClickDynamicSection(userId, label, type, pageSource)
     }
 
     override fun onChipClicked(item: BaseItemInitialStateSearch) {
-        presenter.onChipClicked(item)
+        presenter?.onChipClicked(item)
     }
 
     interface InitialStateViewUpdateListener {

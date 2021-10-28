@@ -206,7 +206,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             .beginTransaction()
             .remove(initialStateFragment)
             .remove(suggestionFragment)
-            .commitNow()
+            .commit()
 
         super.onStop()
     }
