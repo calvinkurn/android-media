@@ -594,10 +594,17 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private fun onSuccessAtc(successMessage: String?) {
         context?.let {
-            val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
+            val message = if (successMessage == null || successMessage.isEmpty())
+                it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
+            else
                 successMessage
-            viewModel.updateActivityResult(atcSuccessMessage = message)
-            showToasterSuccess(message)
+
+            showToasterSuccess(message, ctaText = getString(R.string.atc_variant_see)) {
+                ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
+            }
+            viewModel.updateActivityResult(
+                    atcSuccessMessage = message,
+                    requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
         }
     }
 
