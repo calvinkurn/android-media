@@ -8,6 +8,9 @@ const val UNKNOWN_ERROR = "Oops, Upload gagal, silakan coba kembali beberapa saa
 const val FILE_NOT_FOUND = "Oops, file tidak ditemukan. (602)"
 const val SOURCE_NOT_FOUND = "Oops, source tidak ditemukan. (603)"
 
+const val CHUNK_UPLOAD = "Oops, upload gagal nih, retry yuk! (500)"
+const val UPLOAD_ABORT = "Yah, upload gagal nih, ulang dari awal ya! (501)"
+
 fun formatNotAllowedMessage(allowedFormat: String): String {
     return "Yah, formatnya belum sesuai. Pastikan format gambar kamu dalam $allowedFormat. (301)"
 }
