@@ -16,6 +16,7 @@ data class SomListOrderUiModel(
         val deadlineText: String = "",
         val orderId: String = "",
         val orderProduct: List<OrderProduct> = listOf(),
+        val productCount: Int = 0,
         val orderResi: String = "",
         val orderStatusId: Int = 0,
         val status: String = "",
@@ -32,6 +33,7 @@ data class SomListOrderUiModel(
         var searchParam: String,
         var isOpen: Boolean = false
 ) : Visitable<SomListAdapterTypeFactory> {
+
     override fun type(typeFactory: SomListAdapterTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
     }
@@ -39,7 +41,8 @@ data class SomListOrderUiModel(
     data class OrderProduct(
             val productId: String = "",
             val productName: String = "",
-            val picture: String = ""
+            val picture: String = "",
+            val quantity: Int = 0
     )
 
     data class Button(

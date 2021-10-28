@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.data
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
@@ -54,41 +53,6 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
     )
 }
 
-fun createHomeLayoutItemUiModelList(): List<HomeLayoutItemUiModel> {
-    return listOf(
-            HomeLayoutItemUiModel(
-                    BannerDataModel(
-                            channelModel= ChannelModel(
-                                    id="2222",
-                                    groupId="",
-                                    style= ChannelStyle.ChannelHome,
-                                    channelHeader= ChannelHeader(name="Banner Tokonow"),
-                                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
-                                    layout="banner_carousel_v2")
-                    ),
-                    HomeLayoutItemState.LOADED
-            ),
-            HomeLayoutItemUiModel(
-                    BannerDataModel(
-                            channelModel= ChannelModel(
-                                    id="2222",
-                                    groupId="",
-                                    style= ChannelStyle.ChannelHome,
-                                    channelHeader= ChannelHeader(name="Banner Tokonow"),
-                                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
-                                    layout="banner_carousel_v2")
-                    ),
-                    HomeLayoutItemState.LOADING
-            ),
-            HomeLayoutItemUiModel(
-                    TokoNowChooseAddressWidgetUiModel(
-                            id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID,
-                    ),
-                    HomeLayoutItemState.NOT_LOADED
-            )
-    )
-}
-
 fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
     return listOf(
             HomeLayoutResponse(
@@ -97,7 +61,8 @@ fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
-                    )
+                    ),
+                    token = "==aff1ed" // Dummy token
             )
     )
 }
@@ -109,7 +74,8 @@ fun createHomeLayoutData(): HomeLayoutResponse {
             header = Header(
                     name = "Banner Tokonow",
                     serverTimeUnix = 0
-            )
+            ),
+            token = "==aff1ed" // Dummy token
     )
 }
 
@@ -119,8 +85,7 @@ fun createLoadingState(): HomeLayoutListUiModel {
     mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
             items = mutableList,
-            state = TokoNowLayoutState.LOADING,
-            isInitialLoad = true
+            state = TokoNowLayoutState.LOADING
     )
 }
 
@@ -266,7 +231,7 @@ fun createSliderBannerDataModel(
 fun createCategoryGridDataModel(
     id: String,
     title: String,
-    categoryList: List<TokoNowCategoryItemUiModel>,
+    categoryList: List<TokoNowCategoryItemUiModel>?,
     @TokoNowLayoutState state: Int
 ): TokoNowCategoryGridUiModel {
     return TokoNowCategoryGridUiModel(id = id, title =  title, categoryList = categoryList, state = state)
@@ -290,7 +255,7 @@ fun createHomeProductCardUiModel(
     quantity: Int = 0,
     parentId: String = "",
     product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.RECENT_PURCHASE
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
 ): TokoNowProductCardUiModel {
     return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
 }

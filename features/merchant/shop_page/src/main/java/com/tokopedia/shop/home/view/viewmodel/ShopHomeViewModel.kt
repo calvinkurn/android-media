@@ -542,8 +542,8 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io
             )
 
-            when (val success = playWidgetTools.mapWidgetToggleReminder(response)) {
-                success -> {
+            when (playWidgetTools.mapWidgetToggleReminder(response)) {
+                true -> {
                     _playWidgetReminderObservable.postValue(Success(reminderType))
                 }
                 else -> {

@@ -154,18 +154,26 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
             it.appBarLayoutBrandDetail.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
                 override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                     context?.let { context ->
-                        var colorInt = 0
-                        if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
-                            it.collapsingToolbarBrandDetail.title = title
-                            colorInt = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-                        } else if (verticalOffset == 0) {
-                            it.collapsingToolbarBrandDetail.title = ""
-                            colorInt = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                        }
+                        if(it.toolbarBrandDetail.menu.size() > 0) {
+                            var colorInt = 0
+                            if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+                                it.collapsingToolbarBrandDetail.title = title
+                                colorInt = ContextCompat.getColor(
+                                    context,
+                                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                                )
+                            } else if (verticalOffset == 0) {
+                                it.collapsingToolbarBrandDetail.title = ""
+                                colorInt = ContextCompat.getColor(
+                                    context,
+                                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                                )
+                            }
 
-                        it.toolbarBrandDetail?.let { toolbar ->
-                            setDrawableColorFilter(toolbar.getNavigationIcon(), colorInt)
-                            setDrawableColorFilter(toolbar.menu.getItem(0).icon, colorInt)
+                            it.toolbarBrandDetail?.let { toolbar ->
+                                setDrawableColorFilter(toolbar.getNavigationIcon(), colorInt)
+                                setDrawableColorFilter(toolbar.menu.getItem(0).icon, colorInt)
+                            }
                         }
                     }
                 }

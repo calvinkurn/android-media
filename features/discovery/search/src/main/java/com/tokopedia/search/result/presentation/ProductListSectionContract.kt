@@ -23,6 +23,7 @@ interface ProductListSectionContract {
         fun setProductList(list: List<Visitable<*>>)
         fun addRecommendationList(list: List<Visitable<*>>)
         fun showNetworkError(startRow: Int, throwable: Throwable?)
+        val filterParamString: String
         val queryKey: String
         fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
@@ -46,7 +47,6 @@ interface ProductListSectionContract {
         fun launchLoginActivity(productId: String?)
         fun showAdultRestriction()
         fun redirectSearchToAnotherPage(applink: String?)
-        fun sendTrackingForNoResult(resultCode: String?, alternativeKeyword: String?, keywordProcess: String?)
         fun setDefaultLayoutType(defaultView: Int)
         fun showRefreshLayout()
         fun hideRefreshLayout()
@@ -109,7 +109,6 @@ interface ProductListSectionContract {
         fun trackEventClickSeeMoreBroadMatch(broadMatchItemDataView: BroadMatchDataView)
         fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String)
         fun modifyApplinkToSearchResult(applink: String): String
-        fun showPowerMerchantProPopUp()
     }
 
     interface Presenter : CustomerPresenter<View> {

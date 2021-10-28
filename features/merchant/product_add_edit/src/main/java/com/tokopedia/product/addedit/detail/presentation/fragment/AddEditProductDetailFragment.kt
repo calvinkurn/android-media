@@ -691,10 +691,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitLoadingIndicator?.hide()
         }
 
-        // Setup default message for stock if shop admin or owner
-        viewModel.setupMultiLocationShopValues()
-        productStockField?.setMessage(viewModel.productStockMessage)
-
+        setupDefaultFieldMessage()
         setupSpecificationField()
         setupProductPriceRecommendationField()
         enableProductNameField()
@@ -1348,7 +1345,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun subscribeToProductPriceInputStatus() {
         viewModel.isProductPriceInputError.observe(viewLifecycleOwner, Observer {
             productPriceField?.setError(it)
-            productPriceField?.setMessage(viewModel.productPriceMessage)
+            productPriceField?.setHtmlMessage(viewModel.productPriceMessage)
         })
     }
 
@@ -1590,6 +1587,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
         val intent = ImagePickerAddEditNavigation.getIntent(ctx, ArrayList(imageUrlOrPathList), maxProductPhotoCount, isAdding)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
+    }
+
+    private fun setupDefaultFieldMessage() {
+        // Setup default message for stock if shop admin or owner
+        viewModel.setupMultiLocationShopValues()
+        productPriceField?.setHtmlMessage(viewModel.productPriceMessage)
+        productStockField?.setMessage(viewModel.productStockMessage)
     }
 
     private fun setupSpecificationField() {

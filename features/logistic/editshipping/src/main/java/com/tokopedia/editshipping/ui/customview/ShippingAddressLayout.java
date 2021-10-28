@@ -7,7 +7,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -16,6 +15,7 @@ import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.presenter.EditShippingPresenter;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by Kris on 6/9/2016.
@@ -27,9 +27,9 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
 
     EditText addressArea;
     EditText chooseLocation;
-    TextView phoneNumber;
-    TextView phoneNumberTitle;
-    TextView phoneNumberButton;
+    Typography phoneNumber;
+    Typography phoneNumberTitle;
+    Typography phoneNumberButton;
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
 
     private EditShippingPresenter presenter;
@@ -53,10 +53,10 @@ public class ShippingAddressLayout extends EditShippingCustomView<ShopShipping,
 
         chooseLocation = (EditText) view.findViewById(R.id.value_location);
 
-        phoneNumber = (TextView) view.findViewById(R.id.shop_phone_number);
-        phoneNumberTitle = (TextView) view.findViewById(R.id.shop_phone_number_title);
+        phoneNumber = (Typography) view.findViewById(R.id.shop_phone_number);
+        phoneNumberTitle = (Typography) view.findViewById(R.id.shop_phone_number_title);
 
-        phoneNumberButton = (TextView) view.findViewById(R.id.change_phone_number_button);
+        phoneNumberButton = (Typography) view.findViewById(R.id.change_phone_number_button);
 
         chooseLocation.setOnClickListener(new View.OnClickListener() {
             @Override

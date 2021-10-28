@@ -5,4 +5,6 @@ interface OutOfCoverageListener {
     fun onChangeAddressClicked()
 
     fun onReturnClick()
+
+    val oocPageName: String
 }
