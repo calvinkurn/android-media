@@ -46,7 +46,7 @@ class LastFilterDataViewTest {
 
         assertThat(
             sortFilterParamString,
-            `is`("${savedOption1.key}=${savedOption1.value}#${savedOption2.value}")
+            `is`("${savedOption1.key}=${savedOption1.value}%23${savedOption2.value}")
         )
     }
 }
