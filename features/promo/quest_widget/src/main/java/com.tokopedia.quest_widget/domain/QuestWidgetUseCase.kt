@@ -2,11 +2,12 @@ package com.tokopedia.quest_widget.domain
 
 import com.tokopedia.quest_widget.constants.GQLQueryQuestWidget
 import com.tokopedia.quest_widget.data.QuestWidgetResponse
+import com.tokopedia.quest_widget.data.WidgetData
 import javax.inject.Inject
 
 class QuestWidgetUseCase @Inject constructor(var gqlWrapper: QuestGqlWrapper) {
 
-    suspend fun getResponse(map: HashMap<String, Any>): QuestWidgetResponse? {
+    suspend fun getResponse(map: HashMap<String, Any>): WidgetData? {
         return gqlWrapper.getResponse(getResponseClass(), getQuery(), map)
     }
 
@@ -18,8 +19,8 @@ class QuestWidgetUseCase @Inject constructor(var gqlWrapper: QuestGqlWrapper) {
         return variables
     }
 
-    fun getResponseClass(): Class<QuestWidgetResponse> {
-        return QuestWidgetResponse::class.java
+    fun getResponseClass(): Class<WidgetData> {
+        return WidgetData::class.java
     }
 
     fun getQuery(): String {

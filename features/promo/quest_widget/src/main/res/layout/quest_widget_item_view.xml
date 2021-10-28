@@ -27,8 +27,8 @@
 
         <ImageView
             android:id="@+id/iv_banner_icon"
-            android:layout_width="@dimen/dim_50dp"
-            android:layout_height="@dimen/dim_50dp"
+            android:layout_width="@dimen/dim_48dp"
+            android:layout_height="@dimen/dim_48dp"
             app:layout_constraintBottom_toBottomOf="@id/progressBar"
             app:layout_constraintEnd_toEndOf="@id/progressBar"
             app:layout_constraintStart_toStartOf="@id/progressBar"
@@ -38,6 +38,7 @@
             android:id="@+id/tv_banner_title"
             android:layout_width="@dimen/dim_0dp"
             android:layout_height="wrap_content"
+            android:text="Kupon Cashback 10% hingga Rp200 rb"
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.6"
             android:textColor="@color/Unify_NN950"
@@ -55,6 +56,7 @@
             android:id="@+id/tv_banner_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Kupon Cashback 10% hingga Rp200 rb"
             android:layout_marginTop="@dimen/dim_2dp"
             android:layout_marginEnd="@dimen/dim_12dp"
             android:textColor="@color/Unify_NN950"

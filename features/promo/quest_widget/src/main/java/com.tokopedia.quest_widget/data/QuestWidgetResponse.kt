@@ -178,9 +178,6 @@ data class PageDetail(
     @SerializedName("cta")
     val cta: Cta? = null,
 
-    @SerializedName("isHiddenCta")
-    val isHiddenCta: Boolean? = null,
-
     @SerializedName("text")
     val text: String? = null,
 

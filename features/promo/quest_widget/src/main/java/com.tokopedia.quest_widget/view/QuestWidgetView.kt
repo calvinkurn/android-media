@@ -3,9 +3,11 @@ package com.tokopedia.quest_widget.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -25,7 +27,7 @@ import javax.inject.Inject
 
 class QuestWidgetView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : CardUnify(context, attrs) {
+) : FrameLayout(context, attrs) {
 
     companion object{
         const val LOADING = 0
@@ -38,7 +40,7 @@ class QuestWidgetView @JvmOverloads constructor(
     private var tvLabel: TextView
     private var tvLihat: TextView
     private var rvQuestWidget: RecyclerView
-    private var shimmerQuestWidget: RecyclerView
+    private var shimmerQuestWidget: ConstraintLayout
     private var quest_widget_view_flipper: ViewFlipper
     lateinit var userSession: UserSessionInterface
 
@@ -93,7 +95,7 @@ class QuestWidgetView @JvmOverloads constructor(
         val list = data?.widgetData?.questWidgetList
 
         list?.let {
-            rvQuestWidget.layoutManager = LinearLayoutManager(context)
+            rvQuestWidget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             val adapter = QuestWidgetAdapter(
                     data.widgetData.questWidgetList.questWidgetList,
                     data.config

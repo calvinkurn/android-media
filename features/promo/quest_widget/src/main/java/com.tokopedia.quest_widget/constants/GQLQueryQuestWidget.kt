@@ -57,6 +57,19 @@ object GQLQueryQuestWidget {
         title
       }
     }
+    resultStatus {
+      code
+      reason
+    }
+    isEligible
+    pageDetail {
+      title
+      text
+      cta {
+        url
+        applink
+      }
+    }
   }
 }
   
