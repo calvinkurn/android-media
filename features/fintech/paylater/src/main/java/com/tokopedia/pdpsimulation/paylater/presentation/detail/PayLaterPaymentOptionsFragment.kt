@@ -22,6 +22,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterAdditionalFeeInfo
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet
 import com.tokopedia.unifycomponents.CardUnify
@@ -78,6 +79,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     }
 
     private fun initListener() {
+        additionalFeeDetail.setOnClickListener {
+            openAdditionalPaymentBottomSheet()
+        }
         btnHowToUse.setOnClickListener {
             buttonStatus?.let {
                 when (it) {
@@ -112,6 +116,13 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
         faqList.setOnClickListener {
             openFaqBottomSheet()
+        }
+    }
+
+    private fun openAdditionalPaymentBottomSheet() {
+        val bundle = Bundle()
+        (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
+            it.openBottomSheet(bundle, PayLaterAdditionalFeeInfo::class.java)
         }
     }
 

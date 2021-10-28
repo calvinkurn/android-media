@@ -74,6 +74,16 @@
                         app:typographyWeight="bold"
                         tools:text="@string/kredivo" />
 
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/additionalFeeDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/unify_space_4"
+                        android:src="@drawable/ic_information"
+                        app:layout_constraintBottom_toBottomOf="@id/tvTitlePaymentPartner"
+                        app:layout_constraintLeft_toRightOf="@id/tvTitlePaymentPartner"
+                        app:layout_constraintTop_toTopOf="@id/tvTitlePaymentPartner" />
+
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tvSubTitlePaylaterPartner"
                         android:layout_width="@dimen/unify_space_0"

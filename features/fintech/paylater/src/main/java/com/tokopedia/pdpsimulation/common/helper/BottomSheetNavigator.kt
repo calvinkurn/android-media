@@ -7,6 +7,7 @@ import com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottomsh
 import com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottomsheet.CreditCardsListBottomSheet
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.bottomsheet.CreditCardAvailableBanksBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterAdditionalFeeInfo
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet
 
@@ -32,6 +33,9 @@ class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
 
             modelClass.isAssignableFrom(PayLaterFaqBottomSheet::class.java) ->
                 PayLaterFaqBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)
+
+            modelClass.isAssignableFrom(PayLaterAdditionalFeeInfo::class.java) ->
+                PayLaterAdditionalFeeInfo.show(pdpSimulationCallback, childFragmentManager)
 
             modelClass.isAssignableFrom(PayLaterTokopediaGopayBottomsheet::class.java) -> {
                 bundle.putString(PayLaterActionStepsBottomSheet.PRODUCT_URL, productId)
