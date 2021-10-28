@@ -88,7 +88,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
-                    <include android:id="@+id/evoucher_section_contact_us" layout="@layout/layout_hotel_contact_evoucher"/>
+                    <include layout="@layout/layout_hotel_contact_evoucher"/>
 
                     <View
                         android:layout_width="match_parent"

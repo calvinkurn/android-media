@@ -60,6 +60,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var eVoucherViewModel: HotelEVoucherViewModel
     private var binding by autoClearedNullable<FragmentHotelEVoucherBinding>()
+    private var contactUsBinding : LayoutHotelContactEvoucherBinding? = null
 
     lateinit var orderId: String
     lateinit var cancellationPoliciesAdapter: HotelEVoucherCancellationPoliciesAdapter
@@ -111,6 +112,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentHotelEVoucherBinding.inflate(inflater,container,false)
+        contactUsBinding = binding?.root?.let { LayoutHotelContactEvoucherBinding.bind(it) }
         return binding?.root
     }
 
@@ -337,31 +339,24 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
             if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) binding?.hotelDetailSeperator?.hide()
 
-            if(data.hotelTransportDetails.contactInfo.isNotEmpty()){
-                binding?.evoucherSectionContactUs?.root?.visible()
-
-                if(data.hotelTransportDetails.tickerContactHotel.isNotEmpty()){
-                    binding?.evoucherSectionContactUs?.tvOrderDetailNha?.visible()
-                    binding?.evoucherSectionContactUs?.tvOrderDetailNha?.text = data.hotelTransportDetails.tickerContactHotel
-                }else{
-                    binding?.evoucherSectionContactUs?.tvOrderDetailNha?.gone()
-                }
-
+            if(data.hotelTransportDetails.contactInfo.isNotEmpty() && data.hotelTransportDetails.tickerContactHotel.isNotEmpty()){
+                contactUsBinding?.root?.visible()
+                contactUsBinding?.tvOrderDetailNha?.text = data.hotelTransportDetails.tickerContactHotel
                 val telNum: String = (data.hotelTransportDetails.contactInfo.firstOrNull()?.number ?: 0).toString()
-                binding?.evoucherSectionContactUs?.btnNhaPhone?.setDrawable(
+                contactUsBinding?.btnNhaPhone?.setDrawable(
                     getIconUnifyDrawable(requireContext(), IconUnify.CALL, ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 )
-                binding?.evoucherSectionContactUs?.btnNhaPhone?.setTextColor(
+                contactUsBinding?.btnNhaPhone?.setTextColor(
                     ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 )
-                binding?.evoucherSectionContactUs?.btnNhaPhone?.text = telNum
-                binding?.evoucherSectionContactUs?.btnNhaPhone?.setOnClickListener {
+                contactUsBinding?.btnNhaPhone?.text = telNum
+                contactUsBinding?.btnNhaPhone?.setOnClickListener {
                     val callIntent = Intent(Intent.ACTION_DIAL)
                     callIntent.data = Uri.parse("tel:$telNum")
                     startActivity(callIntent)
                 }
             }else{
-                binding?.evoucherSectionContactUs?.root?.gone()
+                contactUsBinding?.root?.gone()
             }
         }
 
