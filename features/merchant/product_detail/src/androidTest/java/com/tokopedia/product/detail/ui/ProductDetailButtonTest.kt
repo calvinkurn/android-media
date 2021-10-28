@@ -43,11 +43,11 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
             override fun getName(): String = "networkFinish"
 
             override fun idleState(): Boolean {
-                if (activityCommonRule.activity.getPdpFragment().view?.findViewById<ConstraintLayout>(R.id.base_btn_action) == null) {
+                if (activityCommonRule.activity.getPdpFragment().view?.findViewById<ConstraintLayout>(R.id.partial_layout_button_action) == null) {
                     throw RuntimeException("button not found")
                 }
 
-                return activityCommonRule.activity.getPdpFragment().view?.findViewById<ConstraintLayout>(R.id.base_btn_action)?.visibility == View.VISIBLE
+                return activityCommonRule.activity.getPdpFragment().view?.findViewById<ConstraintLayout>(R.id.partial_layout_button_action)?.visibility == View.VISIBLE
             }
         })
     }
