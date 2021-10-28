@@ -336,24 +336,27 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
             if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) binding?.hotelDetailSeperator?.hide()
 
-            if(data.hotelTransportDetails.contactInfo.isNotEmpty() && data.hotelTransportDetails.tickerContactHotel.isNotEmpty()){
-                binding?.hotelContactUs?.root?.visible()
-                binding?.hotelContactUs?.tvOrderDetailNha?.text = data.hotelTransportDetails.tickerContactHotel
+            if(data.hotelTransportDetails.tickerContactHotel.isNotEmpty() && data.hotelTransportDetails.contactInfo.isNotEmpty()) {
+                binding?.tvOrderDetailNha?.show()
+                binding?.tvOrderDetailNha?.text = data.hotelTransportDetails.tickerContactHotel
+            } else {
+                binding?.tvOrderDetailNha?.gone()
+            }
+
+            if(data.hotelTransportDetails.contactInfo.isNotEmpty()){
                 val telNum: String = (data.hotelTransportDetails.contactInfo.firstOrNull()?.number ?: 0).toString()
-                binding?.hotelContactUs?.btnNhaPhone?.setDrawable(
+                binding?.btnNhaPhone?.setDrawable(
                     getIconUnifyDrawable(requireContext(), IconUnify.CALL, ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 )
-                binding?.hotelContactUs?.btnNhaPhone?.setTextColor(
+                binding?.btnNhaPhone?.setTextColor(
                     ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 )
-                binding?.hotelContactUs?.btnNhaPhone?.text = telNum
-                binding?.hotelContactUs?.btnNhaPhone?.setOnClickListener {
+                binding?.btnNhaPhone?.text = telNum
+                binding?.btnNhaPhone?.setOnClickListener {
                     val callIntent = Intent(Intent.ACTION_DIAL)
                     callIntent.data = Uri.parse("tel:$telNum")
                     startActivity(callIntent)
                 }
-            }else{
-                binding?.hotelContactUs?.root?.gone()
             }
         }
 
