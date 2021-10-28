@@ -30,6 +30,8 @@ class MoneyInHomeViewModel @Inject constructor(
     var imeiResponseLiveData: MutableLiveData<String?> = MutableLiveData()
     var imei: String? = null
 
+    var tradeInType: Int = 2
+
     override fun doOnCreate() {
         super.doOnCreate()
         checkLogin()
@@ -50,7 +52,7 @@ class MoneyInHomeViewModel @Inject constructor(
         }
         tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
-            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics), diagnostics)
+            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics, tradeInType), diagnostics)
         }, onError = {
             it.printStackTrace()
             warningMessage.value = it.localizedMessage

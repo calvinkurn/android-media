@@ -15,9 +15,11 @@ import javax.inject.Inject
 class ProcessMessageUseCase @Inject constructor(
         private val repository: CommonTradeInRepository)  {
 
-    private var tradeInType: Int = 0
-
-    fun createRequestParams(tradeInParams : TradeInParams, diagnostics: DeviceDiagnostics): HashMap<String, Any> {
+    fun createRequestParams(
+        tradeInParams: TradeInParams,
+        diagnostics: DeviceDiagnostics,
+        tradeinType: Int = 0
+    ): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
         try {
             val imei = ArrayList<String>()
@@ -37,7 +39,7 @@ class ProcessMessageUseCase @Inject constructor(
             deviceDiagInput.deviceReview = diagnostics.reviewDetails
             deviceDiagInput.newPrice = tradeInParams.newPrice
             deviceDiagInput.oldPrice = diagnostics.tradeInPrice
-            deviceDiagInput.tradeInType = tradeInType
+            deviceDiagInput.tradeInType = tradeinType
             variables["params"] = deviceDiagInput
         } catch (e: Exception) {
             e.printStackTrace()
@@ -49,8 +51,8 @@ class ProcessMessageUseCase @Inject constructor(
         return GqlInsertDeviceDiag.GQL_QUERY
     }
 
-    suspend fun processMessage(tradeInParams: TradeInParams, diagnostics: DeviceDiagnostics): DeviceDiagInputResponse {
-        val variables = createRequestParams(tradeInParams, diagnostics)
+    suspend fun processMessage(tradeInParams: TradeInParams, diagnostics: DeviceDiagnostics, tradeinType: Int = 0): DeviceDiagInputResponse {
+        val variables = createRequestParams(tradeInParams, diagnostics, tradeinType)
         return repository.getGQLData(getQuery(), DeviceDiagInputResponse::class.java, variables) as DeviceDiagInputResponse
     }
 }
