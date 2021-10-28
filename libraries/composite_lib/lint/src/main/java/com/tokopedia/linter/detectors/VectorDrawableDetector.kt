@@ -91,7 +91,7 @@ class VectorDrawableDetector : Detector(), XmlScanner {
 
     private fun reportDrawableError(context: XmlContext, attribute: Attr) {
         val attrName = attribute.name
-        val message = "Unsafe vector as $attrName. " +
+        val message = "Unsafe vector usage in $attrName. " +
             "Consider using setCompoundDrawablesWithIntrinsicBounds() programmatically."
 
         val lintFix = LintFix.create()
@@ -104,7 +104,7 @@ class VectorDrawableDetector : Detector(), XmlScanner {
 
     private fun reportBackgroundError(context: XmlContext, attribute: Attr) {
         val attrName = attribute.name
-        val message = "Unsafe vector as $attrName. " +
+        val message = "Unsafe vector usage in $attrName. " +
             "Consider using setBackgroundResource() programmatically."
 
         val lintFix = LintFix.create()

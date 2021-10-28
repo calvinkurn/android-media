@@ -8,13 +8,14 @@ import android.util.Log
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
-import timber.log.Timber
 import java.lang.ref.WeakReference
 
-class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationCallback,
-                                 val pushIntentHandler: PushIntentHandler,
-                                 val callback: ShowInAppCallback,
-                                 val dialogVisibilityContract: CmDialogVisibilityContract) {
+class CmActivityLifecycleHandler(
+    private val applicationCallback: CmActivityApplicationCallback,
+    private val pushIntentHandler: PushIntentHandler,
+    val callback: ShowInAppCallback,
+    private val dialogVisibilityContract: CmDialogVisibilityContract
+) {
 
     var currentWeakActivity: WeakReference<Activity>? = null
         private set
@@ -24,14 +25,18 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
             checkApplication(activity)
             updateCurrentActivity(activity)
             if (intent != null && intent.extras != null) {
-                pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, intent.extras)
+                pushIntentHandler.isHandledByPush =
+                    pushIntentHandler.processPushIntent(activity, intent.extras)
             }
         } catch (t: Throwable) {
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                    mapOf("type" to "exception",
-                            "err" to Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT),
-                            "data" to ""
-                    ))
+            ServerLogger.log(
+                Priority.P2, "CM_VALIDATION",
+                mapOf(
+                    "type" to "exception",
+                    "err" to Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT),
+                    "data" to ""
+                )
+            )
         }
     }
 
@@ -46,13 +51,17 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
             if (intent != null) {
                 finalBundle = intent.extras
             }
-            pushIntentHandler.isHandledByPush = pushIntentHandler.processPushIntent(activity, finalBundle)
+            pushIntentHandler.isHandledByPush =
+                pushIntentHandler.processPushIntent(activity, finalBundle)
         } catch (t: Throwable) {
-            ServerLogger.log(Priority.P2, "CM_VALIDATION",
-                    mapOf("type" to "exception",
-                            "err" to Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT),
-                            "data" to ""
-                    ))
+            ServerLogger.log(
+                Priority.P2, "CM_VALIDATION",
+                mapOf(
+                    "type" to "exception",
+                    "err" to Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT),
+                    "data" to ""
+                )
+            )
         }
     }
 
@@ -74,10 +83,9 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
     }
 
     private fun clearCurrentActivity(activity: Activity) {
-        if (currentWeakActivity != null) {
-            val name = currentWeakActivity?.get()?.javaClass?.simpleName ?: ""
-            if (name.equals(activity.javaClass.simpleName, ignoreCase = true)) {
-                currentWeakActivity?.clear()
+        currentWeakActivity?.let {
+            if (activity == it.get()) {
+                it.clear()
             }
         }
     }
@@ -101,16 +109,16 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
     fun getCurrentActivity(): Activity? {
         val activity = currentWeakActivity?.get()
         activity?.let {
-            if (it.isFinishing) {
-                return null
+            return if (it.isFinishing) {
+                null
             } else {
-                return it
+                it
             }
         }
         return null
     }
 
-    fun onFirstScreenOpen(activity: WeakReference<Activity>){
+    fun onFirstScreenOpen(activity: WeakReference<Activity>) {
         applicationCallback.onFirstScreenOpen(activity)
     }
 

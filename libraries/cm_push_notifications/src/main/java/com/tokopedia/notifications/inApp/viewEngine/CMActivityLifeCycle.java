@@ -5,13 +5,10 @@ import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tokopedia.iris.Iris;
-import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
-import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +46,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "exception");
             messageMap.put("err", Log.getStackTraceString
-                            (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
             messageMap.put("data", "");
             ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
@@ -59,8 +56,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     public void onActivityStarted(@NotNull Activity activity) {
         try {
             lifecycleHandler.onActivityStartedInternal(activity);
-
-            if (cancelManager != null && cancelManager.isCancellable(activity)) {
+            if (cancelManager.isCancellable(activity)) {
                 cancelManager.clearNotifications(activity.getApplicationContext());
             }
         } catch (Exception e) {
@@ -69,10 +65,12 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     }
 
     @Override
-    public void onActivityResumed(Activity activity) { }
+    public void onActivityResumed(Activity activity) {
+    }
 
     @Override
-    public void onActivityPaused(Activity activity) { }
+    public void onActivityPaused(Activity activity) {
+    }
 
     @Override
     public void onActivityStopped(Activity activity) {
@@ -85,7 +83,8 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+    }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
@@ -96,7 +95,4 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
             Timber.e(e);
         }
     }
-
-
-
 }

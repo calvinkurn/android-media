@@ -795,19 +795,13 @@ class TokoNowHomeFragment: Fragment(),
             removeAllScrollListener()
 
             when(it) {
-                is Success -> {
-                    onSuccessGetHomeLayout(it.data)
-                }
-                is Fail -> {
-                    showFailedToFetchData()
-                    logHomeLayoutError(it.throwable)
-                }
+                is Success -> onSuccessGetHomeLayout(it.data)
+                is Fail -> onFailedGetHomeLayout(it.throwable)
             }
 
             rvHome?.post {
                 addScrollListener()
                 resetSwipeLayout()
-                stickyLoginLoadContent()
             }
         }
 
@@ -1009,6 +1003,12 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
+    private fun onFailedGetHomeLayout(throwable: Throwable) {
+        showFailedToFetchData()
+        stickyLoginLoadContent()
+        logHomeLayoutError(throwable)
+    }
+
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         loadHeaderBackground()
@@ -1025,11 +1025,14 @@ class TokoNowHomeFragment: Fragment(),
     private fun onHideHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         hideHeaderBackground()
+        stickyLoginLoadContent()
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         showHeaderBackground()
+        stickyLoginLoadContent()
+        getProductAddToCartQuantity()
     }
 
     private fun checkAddressDataAndServiceArea() {

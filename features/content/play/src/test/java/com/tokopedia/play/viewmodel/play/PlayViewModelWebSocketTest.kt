@@ -2,14 +2,11 @@ package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.play.data.Voucher
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.fake.FakePlayWebSocket
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andThen
-import com.tokopedia.play.robot.andWhen
-import com.tokopedia.play.robot.play.andWhenExpectEvent
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
@@ -23,7 +20,6 @@ import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.websocket.response.*
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -33,9 +29,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
