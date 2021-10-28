@@ -11,7 +11,8 @@
       "businessUnit": "search",
       "pageSource": ".+",
       "relatedKeyword": ".+ - .+",
-      "sessionIris": ".+"
+      "sessionIris": ".+",
+      "searchFilter": ".*"
     }
   ]
 }
