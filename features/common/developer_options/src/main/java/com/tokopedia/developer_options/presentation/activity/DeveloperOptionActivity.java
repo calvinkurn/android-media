@@ -8,6 +8,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -69,7 +71,9 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV;
@@ -325,6 +329,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         accessTokenView = findViewById(R.id.access_token);
         appAuthSecretView = findViewById(R.id.app_auth_secret);
+        appAuthSecretView.setVisibility(View.GONE);
         requestFcmToken = findViewById(R.id.requestFcmToken);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
@@ -721,6 +726,43 @@ public class DeveloperOptionActivity extends BaseActivity {
             Toast.makeText(this, decoder, Toast.LENGTH_LONG).show();
         });
 
+        findViewById(R.id.get_system_apps).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                List<ApplicationInfo> apps = DeveloperOptionActivity.this.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+                StringBuilder systemApps = new StringBuilder();
+                for (ApplicationInfo applicationInfo : apps) {
+                    if ((applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
+                        if (!"".equals(systemApps)) {
+                            systemApps.append(",");
+                        }
+                        systemApps.append(applicationInfo.packageName);
+                    }
+                }
+                String text = systemApps.toString();
+                ClipData clip = ClipData.newPlainText("Copied Text", text);
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+                Toast.makeText(DeveloperOptionActivity.this, text, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        findViewById(R.id.get_system_apps).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showApps(true);
+            }
+        });
+
+        findViewById(R.id.get_non_system_apps).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showApps(false);
+            }
+        });
+
         requestFcmToken.setOnClickListener(v -> {
             Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
             startService(intent);
@@ -736,6 +778,32 @@ public class DeveloperOptionActivity extends BaseActivity {
             getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).edit().putBoolean(LEAK_CANARY_TOGGLE_KEY, isChecked).apply();
             Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void showApps(boolean isSystemApps) {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        List<ApplicationInfo> apps = DeveloperOptionActivity.this.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+        StringBuilder systemApps = new StringBuilder();
+        for (ApplicationInfo applicationInfo : apps) {
+            boolean check;
+            if (isSystemApps) {
+                check = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM;
+            } else {
+                check = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM;
+            }
+            if (check) {
+                if (systemApps.length() != 0) {
+                    systemApps.append(",");
+                }
+                systemApps.append(applicationInfo.packageName);
+            }
+        }
+        String text = systemApps.toString();
+        ClipData clip = ClipData.newPlainText("Copied Text", text);
+        if (clipboard != null) {
+            clipboard.setPrimaryClip(clip);
+        }
+        Toast.makeText(DeveloperOptionActivity.this, text, Toast.LENGTH_LONG).show();
     }
 
     private boolean getLeakCanaryToggleValue() {
