@@ -11,7 +11,7 @@ import kotlin.system.measureTimeMillis
 class ImageEncryptionUtilTest {
 
     @Test
-    fun UsingCommonUtilWheninitAesEncryptUsingThenDecodedSymmetrically() {
+    fun usingCommonUtilWheninitAesEncryptThenDecodedSymmetrically() {
         val aes = ImageEncryptionUtil.initAesEncrypt()
         val iv = aes.iv
 
