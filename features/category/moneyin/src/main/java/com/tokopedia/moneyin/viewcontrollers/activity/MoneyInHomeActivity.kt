@@ -296,6 +296,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
         if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = MoneyinConstants.CAMPAIGN_ID_STAGING
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
                 TokopediaUrl.getInstance().TYPE == Env.STAGING, TEST_TYPE)
+        laku6TradeIn.setTokopediaTestType(TEST_TYPE)
         requestPermission()
     }
 
