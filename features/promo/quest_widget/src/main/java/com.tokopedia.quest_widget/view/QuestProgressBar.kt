@@ -7,6 +7,9 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.FloatRange
+import android.animation.ValueAnimator
+import kotlin.math.min
+
 
 class QuestProgressBar : View {
     constructor(context: Context) : super(context)
@@ -36,7 +39,7 @@ class QuestProgressBar : View {
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
-        diameter = Math.min(width, height).toFloat()
+        diameter = min(width, height).toFloat()
         updateRect()
     }
 
@@ -51,8 +54,8 @@ class QuestProgressBar : View {
 
     private fun calculateAngle(progress: Float) = maxAngle / maxProgress * progress
 
-    fun setProgress(@FloatRange(from = 0.0, to = 100.0) progress: Float) {
-        angle = calculateAngle(progress)
+    fun setProgress(@FloatRange(from = 5.0, to = 100.0) progress: Float) {
+        setAnimationProgress(progress)
         invalidate()
     }
 
@@ -76,5 +79,15 @@ class QuestProgressBar : View {
     fun setRounded(rounded: Boolean) {
         progressPaint.strokeCap = if (rounded) Paint.Cap.ROUND else Paint.Cap.BUTT
         invalidate()
+    }
+
+    private fun setAnimationProgress(progress: Float) {
+        val animator = ValueAnimator.ofInt(5, calculateAngle(progress).toInt())
+        animator.duration = 2000
+        animator.addUpdateListener { animation ->  angle =
+            (animation.animatedValue as Int).toFloat()
+            invalidate()
+        }
+        animator.start()
     }
 }

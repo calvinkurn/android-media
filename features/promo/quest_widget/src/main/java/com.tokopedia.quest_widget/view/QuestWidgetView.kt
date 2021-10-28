@@ -67,10 +67,6 @@ class QuestWidgetView @JvmOverloads constructor(
 
         quest_widget_view_flipper.displayedChild = LOADING
 
-        val viewModelProvider =
-            ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
-        viewModel = viewModelProvider[QuestWidgetViewModel::class.java]
-
         viewModel.questWidgetListLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {

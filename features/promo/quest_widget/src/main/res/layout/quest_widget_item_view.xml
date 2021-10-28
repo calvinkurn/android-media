@@ -7,9 +7,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:animateLayoutChanges="true"
         android:layout_height="match_parent">
 
-        <ViewFlipper
+        <FrameLayout
             android:id="@+id/progressBarContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -26,6 +27,8 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="@dimen/dim_56dp"
                 android:layout_height="@dimen/dim_56dp"
+                android:visibility="gone"
+                tools:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -33,10 +36,12 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iconContainer"
                 android:layout_width="@dimen/dim_56dp"
+                android:visibility="gone"
+                tools:visibility="visible"
                 android:layout_height="@dimen/dim_56dp"
                 app:srcCompat="@drawable/quest_widget_ellipses"/>
 
-        </ViewFlipper>
+        </FrameLayout>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_banner_icon"

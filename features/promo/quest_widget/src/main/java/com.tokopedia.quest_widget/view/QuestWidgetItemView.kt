@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ViewFlipper
 import androidx.core.content.ContextCompat
 import com.example.quest_widget.R
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.Progress
@@ -24,7 +27,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
     private var tvBannerDesc: Typography
     private var ivBannerIcon: ImageUnify
     private var progressBar: QuestProgressBar
-    private var progressBarContainer : ViewFlipper
+    private var progressBarContainer : FrameLayout
     private var iconContainer : ImageUnify
 
     init {
@@ -45,7 +48,8 @@ class QuestWidgetItemView @JvmOverloads constructor(
         ivBannerIcon.loadImage(config.banner_icon_url)
         val progress = calculateProgress((item.task?.get(0)?.progress))
         if (progress != 0F) {
-            progressBarContainer.displayedChild = PROGRESS
+            iconContainer.hide()
+            progressBar.show()
             progressBar.apply {
                 setProgress(calculateProgress(item.task?.get(0)?.progress))
                 setProgressColor(
@@ -73,7 +77,8 @@ class QuestWidgetItemView @JvmOverloads constructor(
             tvBannerDesc.text =
                 desc + LAGITEXT + context.resources.getString(R.string.str_sisa) + item.label?.title
         }else{
-            progressBarContainer.displayedChild = CONTAINER
+            progressBar.hide()
+            iconContainer.show()
         }
     }
 
