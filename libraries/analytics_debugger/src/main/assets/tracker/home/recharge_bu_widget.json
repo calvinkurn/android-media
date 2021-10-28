@@ -41,25 +41,6 @@
       "eventLabel": ""
     },
     {
-      "promotions": [
-        {
-          "creative_name": ".+",
-          "creative_slot": ".+",
-          "item_id": ".+",
-          "item_name": ".+",
-          "creative_url": ""
-        }
-      ],
-      "businessUnit": "home & browse",
-      "eventCategory": "homepage",
-      "currentSite": "tokopediamarketplace",
-      "event": "select_content",
-      "userId": ".+",
-      "eventAction": "click on banner card dynamic channel bu carousel",
-      "sessionIris": ".+",
-      "eventLabel": ".+"
-    },
-    {
       "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
