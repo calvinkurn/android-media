@@ -634,7 +634,9 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
         val allItemsLoaded = channelToken.isEmpty()
-        val isLoading = homeLayoutItemList.map { it.layout }.contains(HomeProgressBarUiModel)
+        val items: List<HomeLayoutItemUiModel?> = homeLayoutItemList
+        val layoutList = items.filterNotNull().map { it.layout }
+        val isLoading = layoutList.contains(HomeProgressBarUiModel)
         val scrolledToBottom = lastVisibleItemIndex == homeLayoutItemList.count() - DEFAULT_INDEX
         return scrolledToBottom && !isLoading && !allItemsLoaded
     }
