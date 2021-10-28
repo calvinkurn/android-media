@@ -16,7 +16,7 @@ class GetChunkCheckerUseCase @Inject constructor(
         val (uploadId, partNumber, fileName) = params
 
         return services.chunkCheckerUpload(
-            urlToUpload = UrlBuilder.isChunkUrl(),
+            url = UrlBuilder.isChunkUrl(),
             fileName = fileName,
             uploadId = uploadId,
             partNumber = partNumber

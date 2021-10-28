@@ -14,7 +14,7 @@ class SetCompleteUploaderUseCase @Inject constructor(
 
     override suspend fun execute(params: CompleteParam): LargeUploader {
         return services.completeLargeUpload(
-            urlToUpload = UrlBuilder.completeUrl(),
+            url = UrlBuilder.completeUrl(),
             uploadId = params.uploadId,
             accessToken = params.accessToken
         )

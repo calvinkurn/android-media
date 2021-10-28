@@ -20,7 +20,7 @@ class GetSimpleUploaderUseCase @Inject constructor(
         val (sourceId, file, timeOut) = params
 
         return services.simpleUpload(
-            urlToUpload = UrlBuilder.simpleUrl(sourceId),
+            url = UrlBuilder.simpleUrl(sourceId),
             videoFile = params.fileBody(progressCallback),
             fileName = file.name.requestBody(),
             timeOut = timeOut

@@ -17,7 +17,7 @@ class GetChunkUploaderUseCase @Inject constructor(
         val (sourceId, uploadId, partNumber, _, _, timeOut) = params
 
         return services.uploadLargeUpload(
-            urlToUpload = UrlBuilder.uploadUrl(),
+            url = UrlBuilder.uploadUrl(),
             sourceId = sourceId.requestBody(),
             uploadId = uploadId.requestBody(),
             partNumber = partNumber.requestBody(),

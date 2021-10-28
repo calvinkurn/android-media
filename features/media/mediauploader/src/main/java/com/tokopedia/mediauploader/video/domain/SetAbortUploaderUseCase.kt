@@ -16,7 +16,7 @@ class SetAbortUploaderUseCase @Inject constructor(
         val (uploadId, accessToken) = params
 
         return services.abortLargeUpload(
-            urlToUpload = UrlBuilder.abortUrl(),
+            url = UrlBuilder.abortUrl(),
             uploadId = uploadId,
             accessToken = accessToken
         )

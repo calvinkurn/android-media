@@ -16,7 +16,7 @@ class InitVideoUploaderUseCase @Inject constructor(
         val (sourceId, fileName) = params
 
         return services.initLargeUpload(
-            urlToUpload = UrlBuilder.initUrl(),
+            url = UrlBuilder.initUrl(),
             fileName = fileName,
             sourceId = sourceId
         )
