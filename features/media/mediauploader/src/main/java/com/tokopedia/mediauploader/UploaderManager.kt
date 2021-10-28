@@ -2,11 +2,13 @@ package com.tokopedia.mediauploader
 
 import com.tokopedia.mediauploader.common.data.consts.NETWORK_ERROR
 import com.tokopedia.mediauploader.common.logger.trackToTimber
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.addPrefix
 import java.io.File
 
 interface UploaderManager {
+    fun setProgressUploader(progress: ProgressCallback?)
 
     fun setError(message: List<String>, sourceId: String, file: File): UploadResult {
         val errorMessages = mutableListOf<String>()
