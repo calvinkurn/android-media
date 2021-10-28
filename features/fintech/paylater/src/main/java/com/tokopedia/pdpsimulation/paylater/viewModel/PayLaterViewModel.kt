@@ -94,6 +94,7 @@ class PayLaterViewModel @Inject constructor(
         super.onCleared()
     }
 
+
     companion object {
         const val DATA_FAILURE = "NULL DATA"
         const val PAY_LATER_NOT_APPLICABLE = "Pay Later Not Applicable"

@@ -3,6 +3,7 @@ package com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -35,8 +36,13 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider =
-            ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
+            ViewModelProviders.of(getGrandParent(), viewModelFactory.get())
         viewModelProvider.get(PayLaterViewModel::class.java)
+    }
+
+    private fun getGrandParent(): Fragment {
+        return requireParentFragment().requireParentFragment().requireParentFragment()
+            .requireParentFragment()
     }
 
 

@@ -7,6 +7,7 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,7 +48,7 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider =
-            ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
+            ViewModelProviders.of(getGrandParent(), viewModelFactory.get())
         viewModelProvider.get(PayLaterViewModel::class.java)
     }
 
@@ -70,6 +71,11 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
         initListener()
         setData()
     }
+
+    private fun getGrandParent(): Fragment {
+        return requireParentFragment().requireParentFragment()
+    }
+
 
     override fun getScreenName(): String {
         return "Detail Penawaran"
@@ -110,13 +116,16 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
                         openActionBottomSheet()
 
                     RedirectionType.RedirectionWebView -> {
-                        if (!urlToRedirect.isNullOrEmpty())
+                        if (!urlToRedirect.isNullOrEmpty()) {
+                            payLaterViewModel.isPayLaterProductActive = true
+                            payLaterViewModel.refreshData = true
                             RouteManager.route(
                                 activity,
                                 ApplinkConstInternalGlobal.WEBVIEW,
                                 urlToRedirect
                             )
-                        payLaterViewModel.refreshData = true
+                        }
+
                     }
 
                     RedirectionType.RedirectionApp -> {

@@ -152,7 +152,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private fun setProductDetailView(data: GetProductV3) {
         data.pictures?.get(0)?.let { pictures ->
             pictures.urlThumbnail?.let { urlThumbnail ->
-                imageView.loadImage(
+                productDetail.productImage.setImageUrl(
                     urlThumbnail
                 )
             }
@@ -330,6 +330,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
             payLaterViewModel.refreshData = false
         }
     }
+
 
     companion object {
         const val SIMULATION_TAB_INDEX = 0
