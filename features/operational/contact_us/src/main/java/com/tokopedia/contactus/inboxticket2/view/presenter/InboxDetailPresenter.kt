@@ -402,9 +402,8 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                         )
 
                     } else {
-                        mView?.setSnackBarErrorMessage(
-                            "", true
-                        )
+                        mView?.setSnackBarErrorMessage(mView?.getActivity()?.getString(R.string.contact_us_sent_error_message)
+                                ?: "", true)
                     }
 
 

@@ -641,13 +641,15 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     override fun setMessageMaxLengthReached() {
 
-        Toaster.make(
-            getRootView(),
-            "Pesan telah memenuhi batas maksimal 1,000 karakter.",
-            Snackbar.LENGTH_LONG,
-            Toaster.TYPE_ERROR,
-            SNACKBAR_OK,
-            View.OnClickListener { })
+        with(Toaster) {
+            make(
+                getRootView(),
+                getString(R.string.contact_us_maximum_length_error_text),
+                Snackbar.LENGTH_LONG,
+                TYPE_ERROR,
+                SNACKBAR_OK,
+                View.OnClickListener { })
+        }
 
     }
 
