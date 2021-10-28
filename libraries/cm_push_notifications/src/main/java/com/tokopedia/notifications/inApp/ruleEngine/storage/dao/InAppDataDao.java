@@ -73,6 +73,6 @@ public interface InAppDataDao {
 
     /*if et(end time is 0 then inApp only expired when freq == 0)*/
     @Query("Select * from inapp_data where et < :currentUnixTimeStamp and shown == 0")
-    List<CMInApp> getAllExpiredInAPP(long currentUnixTimeStamp);
+    List<CMInApp> getAllExpiredInApp(long currentUnixTimeStamp);
 
 }

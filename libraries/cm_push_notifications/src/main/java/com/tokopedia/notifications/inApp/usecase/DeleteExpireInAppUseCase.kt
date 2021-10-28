@@ -19,7 +19,7 @@ class DeleteExpireInAppUseCase(private val application: Application,
 
     private fun deleteAllExpireInAPP() {
         val expiredInAPPList =
-                repositoryManager.inAppDataDao?.getAllExpiredInAPP(System.currentTimeMillis())
+                repositoryManager.inAppDataDao?.getAllExpiredInApp(System.currentTimeMillis())
         expiredInAPPList?.forEach {
             if (it.freq > 0 && it.lastShownTime == 0L) {
                 IrisAnalyticsEvents.sendInAppEvent(application.applicationContext,

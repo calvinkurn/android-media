@@ -2,7 +2,6 @@ package com.tokopedia.notifications.inApp.usecase
 
 import android.app.Application
 import android.util.Log
-import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
@@ -21,7 +20,7 @@ class InAppLocalDatabaseController private constructor(private val application: 
         get() = Dispatchers.Main
 
     private val getInAppListUseCase: GetInAppListUseCase
-            by lazy(LazyThreadSafetyMode.NONE) {
+            by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
                 GetInAppListUseCase(repositoryManager)
             }
     private val deleteExpireInAppUseCase: DeleteExpireInAppUseCase
@@ -32,11 +31,11 @@ class InAppLocalDatabaseController private constructor(private val application: 
     fun getInAppData(screenName: String, isActivity: Boolean,
                      inAppFetchListener: InAppFetchListener) {
         launchCatchError(block = {
-            inAppFetchListener.onInAPPListFetchCompleted(
-                    getInAppListUseCase.getInAPPListByScreenName(screenName, isActivity)
+            inAppFetchListener.onInAppListFetchCompleted(
+                    getInAppListUseCase.getInAppListByScreenName(screenName, isActivity)
             )
         }, onError = {
-            inAppFetchListener.onInAPPListFetchCompleted(null)
+            inAppFetchListener.onInAppListFetchCompleted(null)
             logThrowable(it, FETCH_ERROR_STR)
         })
     }
@@ -83,5 +82,5 @@ class InAppLocalDatabaseController private constructor(private val application: 
 
 
 interface InAppFetchListener {
-    fun onInAPPListFetchCompleted(inAppList: List<CMInApp>?)
+    fun onInAppListFetchCompleted(inAppList: List<CMInApp>?)
 }
