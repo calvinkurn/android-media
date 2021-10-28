@@ -49,7 +49,6 @@ interface VideoUploadServices {
     @POST
     suspend fun completeLargeUpload(
         @Url urlToUpload: String,
-        @Field(BODY_FILE_NAME) fileName: String,
         @Field(BODY_UPLOAD_ID) uploadId: String,
         @Header(HEADER_AUTH) accessToken: String
     ): LargeUploader
