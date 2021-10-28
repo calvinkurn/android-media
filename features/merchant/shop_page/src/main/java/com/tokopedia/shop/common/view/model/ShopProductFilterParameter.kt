@@ -54,8 +54,8 @@ class ShopProductFilterParameter() : Parcelable {
         return mapParameter[PMAX_PARAM_KEY].toIntOrZero()
     }
 
-    fun getCategory(): Int {
-        return mapParameter[CATEGORY_PARAM_KEY].toIntOrZero()
+    fun getCategory(): Int? {
+        return mapParameter[CATEGORY_PARAM_KEY]?.toIntOrNull()
     }
 
     fun getMapDataWithDefaultSortId(): Map<String, String> {
