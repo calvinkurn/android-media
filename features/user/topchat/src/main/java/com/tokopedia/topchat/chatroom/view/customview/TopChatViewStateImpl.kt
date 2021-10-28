@@ -397,10 +397,9 @@ open class TopChatViewStateImpl constructor(
     }
 
     private fun createChatSettingMenu(): TopchatItemMenu {
-        // TODO: Update with unify icon
         return TopchatItemMenu(
             title = view.context.getString(R.string.title_chat_setting),
-            iconUnify = IconUnify.SETTING,
+            iconUnify = IconUnify.CHAT_SETTING,
             id = ID_CHAT_SETTING,
             showNewLabel = true
         )
