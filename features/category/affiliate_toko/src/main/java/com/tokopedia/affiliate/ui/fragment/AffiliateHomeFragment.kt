@@ -15,6 +15,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
+import com.tokopedia.affiliate.ANNOUNCEMENT__TYPE_SUCCESS
+import com.tokopedia.affiliate.ANNOUNCEMENT__TYPE_CCA
+import com.tokopedia.affiliate.ANNOUNCEMENT__TYPE_SERVICE_STATUS
+import com.tokopedia.affiliate.ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT
+import com.tokopedia.affiliate.ANNOUNCEMENT__TYPE_USER_BLACKLIST
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -63,11 +68,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
 
     companion object {
-        const val NO_ANNOUNCEMENT = "noAnnouncement"
-        const val CCA = "cca"
-        const val SERVICE_STATUS = "serviceStatus"
-        const val USER_BLACKLIST = "userBlacklisted"
-        const val SUCCESS = 1
         fun getFragmentInstance(affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
             return AffiliateHomeFragment().apply {
                 bottomNavBarClickListener = affiliateBottomNavBarClickListener
@@ -221,27 +221,27 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     private fun onGetAnnouncementData(announcementData: AffiliateAnnouncementData?) {
-        if(announcementData?.getAffiliateAnnouncement?.data?.status==SUCCESS) {
+        if(announcementData?.getAffiliateAnnouncement?.data?.status== ANNOUNCEMENT__TYPE_SUCCESS) {
             when (announcementData.getAffiliateAnnouncement.data.type) {
-                CCA -> {
+                ANNOUNCEMENT__TYPE_CCA -> {
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data,
                         Ticker.TYPE_INFORMATION
                     )
                 }
-                USER_BLACKLIST -> {
+                ANNOUNCEMENT__TYPE_USER_BLACKLIST -> {
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data,
                         Ticker.TYPE_ERROR
                     )
                 }
-                SERVICE_STATUS -> {
+                ANNOUNCEMENT__TYPE_SERVICE_STATUS -> {
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data,
                         Ticker.TYPE_ANNOUNCEMENT
                     )
                 }
-                NO_ANNOUNCEMENT -> {
+                ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT -> {
                     affiliate_announcement_ticker_cv.hide()
                 }
             }

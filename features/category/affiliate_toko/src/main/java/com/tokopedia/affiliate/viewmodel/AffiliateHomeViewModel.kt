@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.AffiliateAnnouncementData
-import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.model.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
@@ -15,7 +14,7 @@ import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 class AffiliateHomeViewModel @Inject constructor(
@@ -45,7 +44,7 @@ class AffiliateHomeViewModel @Inject constructor(
     }
     fun getAnnouncementInformation() {
         launchCatchError(block = {
-            affiliateAnnouncement.value=affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(userSessionInterface.userId)
+            affiliateAnnouncement.value=affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
         },onError = {
             it.printStackTrace()
             errorMessage.value=it.localizedMessage
