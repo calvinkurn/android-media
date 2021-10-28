@@ -9,12 +9,12 @@ import com.tokopedia.mediauploader.common.util.fileExtension
 import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.isMinBitmapResolution
-import com.tokopedia.mediauploader.common.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.image.data.params.ImageUploadParam
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import java.io.File
 import javax.inject.Inject
+import com.tokopedia.mediauploader.common.data.mapper.ImagePolicyMapper.mapToSourcePolicy
 
 class ImageUploaderManager @Inject constructor(
     private val imagePolicyUseCase: GetImagePolicyUseCase,
@@ -22,27 +22,15 @@ class ImageUploaderManager @Inject constructor(
 ) : UploaderManager {
 
     suspend operator fun invoke(file: File, sourceId: String): UploadResult {
-        // sourceId empty validation
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
-        // file full path
         val filePath = file.path
-
-        // request policy by sourceId
         val policyData = imagePolicyUseCase(sourceId)
-
-        val sourcePolicy = ImagePolicyMapper.mapToSourcePolicy(
-            policyData.dataPolicy
-        )
+        val sourcePolicy = mapToSourcePolicy(policyData.dataPolicy)
 
         val onError = if (sourcePolicy.imagePolicy != null) {
-            // get acceptable extension based on policy
             val extensions = sourcePolicy.imagePolicy.extension.split(",")
-
-            // get maximum file size
             val maxFileSize = sourcePolicy.imagePolicy.maxFileSize
-
-            // get max and min bitmap resolution
             val maxRes = sourcePolicy.imagePolicy.maximumRes
             val minRes = sourcePolicy.imagePolicy.minimumRes
 
@@ -57,7 +45,7 @@ class ImageUploaderManager @Inject constructor(
                         maxResBitmapMessage(maxRes.width, maxRes.height)
                     filePath.isMinBitmapResolution(minRes.width, minRes.height) ->
                         minResBitmapMessage(minRes.width, minRes.height)
-                    else -> ""
+                    else -> UNKNOWN_ERROR
                 }
             ), sourceId, file) as UploadResult.Error
         } else {
@@ -72,29 +60,21 @@ class ImageUploaderManager @Inject constructor(
     }
 
     private suspend fun upload(file: File, sourceId: String, policy: SourcePolicy): UploadResult {
-        // media uploader
-        val uploaderParams = ImageUploadParam(
+        val upload = imageUploaderUseCase(ImageUploadParam(
             hostUrl = policy.host,
             sourceId = sourceId,
             file = file,
             timeOut = policy.timeOut.toString(),
-        )
+        ))
 
-        // upload file
-        val upload = imageUploaderUseCase(uploaderParams)
-
-        // getting error from gql response
         val error = if (upload.header.messages.isNotEmpty()) {
             upload.header.messages
         } else {
-            // error handling, when server returned empty error message
             listOf(UNKNOWN_ERROR)
         }
 
         return upload.data?.let {
-            UploadResult.Success(
-                uploadId = it.uploadId
-            )
+            UploadResult.Success(uploadId = it.uploadId)
         }?: setError(error, sourceId, file)
     }
 
