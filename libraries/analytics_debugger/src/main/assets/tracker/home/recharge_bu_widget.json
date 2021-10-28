@@ -79,7 +79,7 @@
           "item_name": ".+",
           "item_brand": "none / other",
           "item_variant": ".*",
-          "item_category": ".+",
+          "item_category": ".+"
         }
       ]
     },
@@ -101,7 +101,7 @@
           "item_name": ".+",
           "item_brand": "none / other",
           "item_variant": ".*",
-          "item_category": ".+",
+          "item_category": ".+"
         }
       ]
     }
