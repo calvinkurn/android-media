@@ -44,6 +44,7 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConverto
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_FETCH;
 
 /**
  * @author lalit.singh
@@ -124,14 +125,30 @@ public class CMInAppManager implements CmInAppListener,
     private void showInAppNotification(String name, int entityHashCode, boolean isActivity) {
         if (excludeScreenList != null && excludeScreenList.contains(name))
             return;
-//        RulesManager.getInstance().checkValidity(
-//                name,
-//                0L,
-//                this,
-//                entityHashCode,
-//                isActivity
-//        );
-        //TODO new way to fetch InApp from Local Database
+        if(cmRemoteConfigUtils == null) {
+            fetchInAppVOld(name, entityHashCode, isActivity);
+        }else {
+            boolean isNewFetchEnabled =
+                    cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_FETCH,
+                            false);
+            if(isNewFetchEnabled){
+                fetchInAppVNew(name, entityHashCode, isActivity);
+            }else {
+                fetchInAppVOld(name, entityHashCode, isActivity);
+            }
+        }
+    }
+
+    private void fetchInAppVOld(String name, int entityHashCode, boolean isActivity) {
+        RulesManager.getInstance().checkValidity(
+                name,
+                0L,
+                this,
+                entityHashCode,
+                isActivity);
+    }
+
+    private void fetchInAppVNew(String name, int entityHashCode, boolean isActivity){
         InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
                 .clearExpiredInApp();
         InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
@@ -140,6 +157,8 @@ public class CMInAppManager implements CmInAppListener,
                                 entityHashCode, name)
                 );
     }
+
+
 
     @Override
     public void notificationsDataResult(List<CMInApp> inAppDataList, int entityHashCode, String screenName) {

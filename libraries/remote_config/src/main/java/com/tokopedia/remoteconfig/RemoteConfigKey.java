@@ -212,6 +212,7 @@ public class RemoteConfigKey {
     public static final String CHAT_PRODUCT_CAROUSEL = "android_chat_product_carousel";
 
     public static final String ENABLE_AMPLIFICATION = "app_push_amplification_enabled_v2";
+    public static final String ENABLE_NEW_INAPP_LOCAL_FETCH = "app_enable_new_inapp_local_fetch";
 
     public static final String ENABLE_TICKER_CHARGE_BO = "enable_ticker_editshipping";
 
