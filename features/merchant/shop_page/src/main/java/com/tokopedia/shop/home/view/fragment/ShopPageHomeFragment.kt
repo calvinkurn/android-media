@@ -1083,8 +1083,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
-        val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-        viewModel?.getWidgetContentData(listWidgetLayoutToLoad.toList(), shopId, widgetUserAddressLocalData)
+        if(listWidgetLayoutToLoad.isNotEmpty()) {
+            val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
+                    ?: LocalCacheModel()
+            viewModel?.getWidgetContentData(listWidgetLayoutToLoad.toList(), shopId, widgetUserAddressLocalData)
+        }
     }
 
     private fun isWidgetMvc(data: ShopPageHomeWidgetLayoutUiModel.WidgetLayout): Boolean {
@@ -1096,12 +1099,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout> {
-        return if (shopHomeAdapter.isLoadFirstWidgetContentData()) {
-            listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, lastCompletelyVisibleItemPosition + 1)
+        return if (listWidgetLayout.isNotEmpty()) {
+            if (shopHomeAdapter.isLoadFirstWidgetContentData()) {
+                listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, lastCompletelyVisibleItemPosition + 1)
+            } else {
+                val toIndex = LOAD_WIDGET_ITEM_PER_PAGE.takeIf { it <= listWidgetLayout.size }
+                        ?: listWidgetLayout.size
+                listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, toIndex)
+            }
         } else {
-            val toIndex = LOAD_WIDGET_ITEM_PER_PAGE.takeIf { it <= listWidgetLayout.size }
-                    ?: listWidgetLayout.size
-            listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, toIndex)
+            mutableListOf()
         }
     }
 

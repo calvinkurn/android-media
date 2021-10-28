@@ -623,15 +623,19 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             HomeLayoutItemUiModel(repurchaseUiModel, HomeLayoutItemState.LOADED)
         )
 
-        val expectedResult = HomeLayoutListUiModel(
-            items = homeLayoutItems,
-            state = TokoNowLayoutState.SHOW
+        val expectedResult = Success(
+            HomeLayoutListUiModel(
+                items = homeLayoutItems,
+                state = TokoNowLayoutState.SHOW
+            )
         )
 
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetRepurchaseWidgetUseCaseCalled()
         verifyAddToCartUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+
+        viewModel.atcQuantity
+            .verifySuccessEquals(expectedResult)
 
         viewModel.miniCartAdd
             .verifySuccessEquals(Success(AddToCartDataModel()))
@@ -699,16 +703,20 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             )
         )
 
-        val expectedResult = HomeLayoutListUiModel(
-            items = homeLayoutItems,
-            state = TokoNowLayoutState.SHOW
+        val expectedResult = Success(
+            HomeLayoutListUiModel(
+                items = homeLayoutItems,
+                state = TokoNowLayoutState.SHOW
+            )
         )
 
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetRepurchaseWidgetUseCaseCalled()
         verifyGetMiniCartUseCaseCalled()
         verifyDeleteCartUseCaseCalled()
-        verifyGetHomeLayoutResponseSuccess(expectedResult)
+
+        viewModel.atcQuantity
+            .verifySuccessEquals(expectedResult)
 
         viewModel.miniCartRemove
             .verifySuccessEquals(Success(Pair(productId, "")))
