@@ -295,12 +295,16 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun isCustomTaskRoot(): Boolean {
+
         val activityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val appTasks = activityManager.appTasks
 
+        Log.d("<INTENT>", "=====================")
+        Log.d("<INTENT>", "CUSTOM TASK ROOT")
+
         for(task in appTasks) {
             val baseIntent = task.taskInfo.baseIntent
-            val categories = baseIntent.categories ?: return true
+            val categories = baseIntent.categories
 
             Log.d("<INTENT>", "ACTION : ${baseIntent.action}")
             Log.d("<INTENT>", "SCHEME : ${baseIntent.scheme}")
