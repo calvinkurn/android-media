@@ -274,9 +274,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
             binding.productBundlingInfo.gone()
         }
 
-        if (data.isBundlingItem && !data.isMultipleBundleProduct) {
-            val bundleQuantityLabelText = String.format(itemView.context.getString(R.string.label_cart_bundle_product_quantity), data.minOrder)
-            binding.labelBundleQuantity.text = bundleQuantityLabelText
+        if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
+            val labelBundleQuantityText = String.format(itemView.context.getString(R.string.label_cart_bundle_product_quantity), data.bundleLabelQuantity)
+            binding.labelBundleQuantity.text = labelBundleQuantityText
             binding.labelBundleQuantity.show()
         } else {
             binding.labelBundleQuantity.gone()
@@ -339,7 +339,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
         binding.textProductName.text = Html.fromHtml(data.productName)
         binding.textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, data))
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
-        if (data.isBundlingItem && !data.isMultipleBundleProduct) {
+        if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
             val textProductNameLayoutParams = binding.textProductName.layoutParams as ViewGroup.MarginLayoutParams
             textProductNameLayoutParams.topMargin = marginTop
         } else {
