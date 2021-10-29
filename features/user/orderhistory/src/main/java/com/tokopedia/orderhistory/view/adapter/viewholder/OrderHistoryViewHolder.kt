@@ -27,16 +27,6 @@ class OrderHistoryViewHolder(
         fun trackSeenProduct(product: Product, position: Int)
     }
 
-//    private var thumbnail: ImageView? = itemView?.findViewById(R.id.iv_thumbnail)
-//    private var emptyStock: Label? = itemView?.findViewById(R.id.lb_empty_stock)
-//    private var productName: Typography? = itemView?.findViewById(R.id.tv_product_name)
-//    private var campaignDiscount: Label? = itemView?.findViewById(R.id.tv_campaign_discount)
-//    private var campaignPreviousPrice: Typography? = itemView?.findViewById(R.id.tv_campaign_price)
-//    private var finalPrice: Typography? = itemView?.findViewById(R.id.tv_price)
-//    private var freeShipping: ImageView? = itemView?.findViewById(R.id.iv_free_shipping)
-//    private var buyAgainButton: UnifyButton? = itemView?.findViewById(R.id.tv_buy)
-//    private var wishListButton: UnifyButton? = itemView?.findViewById(R.id.tv_wishlist)
-
     override fun bind(product: Product?) {
         if (product == null) return
         bindCardClick(product)
