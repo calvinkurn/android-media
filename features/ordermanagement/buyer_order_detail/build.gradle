@@ -49,6 +49,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.digitalRecommendation)
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
@@ -87,6 +88,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
 
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 

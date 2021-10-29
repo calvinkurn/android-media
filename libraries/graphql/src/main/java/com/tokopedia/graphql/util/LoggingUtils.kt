@@ -43,6 +43,11 @@ object LoggingUtils {
     }
 
     @JvmStatic
+    fun logGqlErrorSsl(classType: String, request: String, throwable: Throwable, tls: String, cipherSuites: String) {
+        ServerLogger.log(Priority.P1, "GQL_ERROR", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim(), "tls" to tls, "cipher" to cipherSuites))
+    }
+
+    @JvmStatic
     fun logGqlErrorNetwork(classType: String, request: String, throwable: Throwable) {
         ServerLogger.log(
             Priority.P1,

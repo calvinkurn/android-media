@@ -54,6 +54,15 @@ class ExtKtTest {
         }
     }
 
+    @Test
+    fun `given data class param should returns as expected`() {
+        runBlockingTest {
+            val param = FooModel(1, "")
+            val actual = repository.request<FooModel, FooModel>("", param)
+            assertEquals(case, actual)
+        }
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun `given map of arbitrary type should throw exception`() {
         runBlockingTest {

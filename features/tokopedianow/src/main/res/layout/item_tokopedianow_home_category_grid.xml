@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:inflatedId="@+id/channel_title"
-            android:layout="@layout/view_stub_dc_title"
+            android:layout="@layout/partial_tokopedianow_view_stub_dc_title"
             app:layout_constraintBottom_toBottomOf="@+id/tv_see_all"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_see_all"

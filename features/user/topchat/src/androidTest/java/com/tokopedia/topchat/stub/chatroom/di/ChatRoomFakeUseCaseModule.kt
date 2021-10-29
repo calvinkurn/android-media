@@ -3,7 +3,7 @@ package com.tokopedia.topchat.stub.chatroom.di
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
@@ -22,6 +22,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
+import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
 import dagger.Module
 import dagger.Provides
@@ -251,5 +252,22 @@ class ChatRoomFakeUseCaseModule {
             gqlUseCase: GraphqlUseCaseStub<ChatTokoNowWarehouseResponse>
     ): ChatTokoNowWarehouseUseCaseStub {
         return ChatTokoNowWarehouseUseCaseStub(gqlUseCase)
+    }
+
+    // -- separator -- view model usecase start here //
+
+    @Provides
+    @ChatScope
+    fun provideGetExistingMessageIdUseCase(
+        stub: GetExistingMessageIdUseCaseStub
+    ): GetExistingMessageIdUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetExistingMessageIdUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetExistingMessageIdUseCaseStub {
+        return GetExistingMessageIdUseCaseStub(repository, dispatchers)
     }
 }

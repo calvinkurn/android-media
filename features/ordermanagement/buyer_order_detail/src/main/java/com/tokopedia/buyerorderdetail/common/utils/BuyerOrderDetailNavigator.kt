@@ -42,25 +42,6 @@ class BuyerOrderDetailNavigator(
         return Uri.parse("$TELEPHONY_URI$phoneNumber")
     }
 
-    private fun createProductListPayload(productList: List<ProductListUiModel.ProductUiModel>): String {
-        return GsonSingleton.instance.toJson(JsonArray(productList.size).apply {
-            productList.forEach {
-                add(createProductPayload(it))
-            }
-        })
-    }
-
-    private fun createProductPayload(it: ProductListUiModel.ProductUiModel): JsonObject {
-        return JsonObject().apply {
-            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_TITLE, it.productName)
-            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_PRICE, it.priceText)
-            addProperty(
-                BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_IMAGE_URL,
-                it.productThumbnailUrl
-            )
-        }
-    }
-
     private fun applyTransition() {
         activity.overridePendingTransition(
             com.tokopedia.resources.common.R.anim.slide_right_in_medium,
@@ -130,21 +111,15 @@ class BuyerOrderDetailNavigator(
         cacheManager: SaveInstanceCacheManager
     ) {
         if (buyerOrderDetailData is Success) {
-            val intent = RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE
-            )
-            val payload: Map<String, Any> = mapOf(
-                BuyerRequestCancellationIntentParamKey.SHOP_NAME to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName,
-                BuyerRequestCancellationIntentParamKey.INVOICE to buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
-                BuyerRequestCancellationIntentParamKey.JSON_LIST_PRODUCT to createProductListPayload(
-                    buyerOrderDetailData.data.productListUiModel.productList
-                ),
-                BuyerOrderDetailCommonIntentParamKey.ORDER_ID to buyerOrderDetailData.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
-                BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
-                BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,
-                BuyerRequestCancellationIntentParamKey.BODY_CANCEL_REQUESTED to button.popUp.body,
-                BuyerRequestCancellationIntentParamKey.SHOP_ID to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopId
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)
+            val payload: Map<String, Any?> = mapOf(
+                    BuyerRequestCancellationIntentParamKey.SHOP_NAME to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName,
+                    BuyerRequestCancellationIntentParamKey.INVOICE to buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
+                    BuyerOrderDetailCommonIntentParamKey.ORDER_ID to buyerOrderDetailData.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                    BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
+                    BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,
+                    BuyerRequestCancellationIntentParamKey.BODY_CANCEL_REQUESTED to button.popUp.body,
+                    BuyerRequestCancellationIntentParamKey.SHOP_ID to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopId
             )
             val cacheId = cacheManager.generateUniqueRandomNumber()
             cacheManager.put(cacheId, payload)
@@ -159,47 +134,22 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToAskSeller(buyerOrderDetailData: BuyerOrderDetailUiModel) {
-        val intent = RouteManager.getIntent(
-            activity,
-            ApplinkConst.TOPCHAT_ROOM_ASKSELLER,
-            buyerOrderDetailData.productListUiModel.productListHeaderUiModel.shopId
-        )
-        intent.putExtra(
-            ApplinkConst.Chat.INVOICE_ID,
-            buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderId
-        )
-        intent.putExtra(
-            ApplinkConst.Chat.INVOICE_CODE,
-            buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice
-        )
-        intent.putExtra(
-            ApplinkConst.Chat.INVOICE_TITLE,
-            buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productName.orEmpty()
-        )
-        intent.putExtra(
-            ApplinkConst.Chat.INVOICE_DATE,
-            buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.purchaseDate
-        )
-        intent.putExtra(
-            ApplinkConst.Chat.INVOICE_IMAGE_URL,
-            buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productThumbnailUrl.orEmpty()
-        )
-        intent.putExtra(
-            ApplinkConst.Chat.INVOICE_URL,
-            buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.url
-        )
-        intent.putExtra(
-            ApplinkConst.Chat.INVOICE_STATUS_ID,
-            buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId
-        )
-        intent.putExtra(
-            ApplinkConst.Chat.INVOICE_STATUS,
-            buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatus
-        )
-        intent.putExtra(
-            ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT,
-            buyerOrderDetailData.paymentInfoUiModel.paymentGrandTotal.value
-        )
+        val intent = RouteManager.getIntent(activity, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, buyerOrderDetailData.productListUiModel.productListHeaderUiModel.shopId)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_ID, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderId)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice)
+        val productName =
+            buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productName ?:
+            buyerOrderDetailData.productListUiModel.productBundlingList?.firstOrNull()?.bundleItemList?.firstOrNull()?.productName
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName.orEmpty())
+        intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.purchaseDate)
+        val productThumbnail =
+            buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productThumbnailUrl ?:
+            buyerOrderDetailData.productListUiModel.productBundlingList?.firstOrNull()?.bundleItemList?.firstOrNull()?.productThumbnailUrl
+        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, productThumbnail.orEmpty())
+        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.url)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatus)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, buyerOrderDetailData.paymentInfoUiModel.paymentGrandTotal.value)
         intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()

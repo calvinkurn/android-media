@@ -42,6 +42,10 @@
     <string name="copy_label_awb_number">bom_awb</string>
     <string name="copy_label_receiver_address">bom_receiver_address</string>
 
+    <!--Product Bundling-->
+    <string name="buyer_order_detail_bundling_price_total">Total Harga Paket</string>
+
+    <!--Order Extension-->
     <string name="order_extension_title_order_has_been_sent">Oops, penjual telah mengirim pesananmu</string>
     <string name="order_extension_desc_order_has_been_sent">Pesanan yang sudah masuk proses pengiriman tidak dapat dibatalkan.</string>
     <string name="order_extension_title_confirmed_order_cancelled">Yakin ingin membatalkan pesanan?</string>

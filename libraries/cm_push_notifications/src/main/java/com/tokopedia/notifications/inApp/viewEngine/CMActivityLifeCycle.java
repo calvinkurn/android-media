@@ -5,17 +5,15 @@ import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tokopedia.iris.Iris;
-import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
-import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,8 +24,6 @@ import timber.log.Timber;
  */
 public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbacks {
 
-    public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
-    private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
     private final CmActivityLifecycleHandler lifecycleHandler;
     private final NotificationCancelManager cancelManager;
 
@@ -42,9 +38,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         try {
             if (activity != null && activityCount == 0) {
-                trackIrisEventForAppOpen(activity);
-                if (RulesManager.getInstance() != null)
-                    RulesManager.getInstance().updateVisibleStateForAlreadyShown();
+                lifecycleHandler.onFirstScreenOpen(new WeakReference<>(activity));
             }
             activityCount++;
             lifecycleHandler.onActivityCreatedInternalForPush(activity);
@@ -52,7 +46,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "exception");
             messageMap.put("err", Log.getStackTraceString
-                            (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
             messageMap.put("data", "");
             ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
@@ -62,8 +56,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     public void onActivityStarted(@NotNull Activity activity) {
         try {
             lifecycleHandler.onActivityStartedInternal(activity);
-
-            if (cancelManager != null && cancelManager.isCancellable(activity)) {
+            if (cancelManager.isCancellable(activity)) {
                 cancelManager.clearNotifications(activity.getApplicationContext());
             }
         } catch (Exception e) {
@@ -72,10 +65,12 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     }
 
     @Override
-    public void onActivityResumed(Activity activity) { }
+    public void onActivityResumed(Activity activity) {
+    }
 
     @Override
-    public void onActivityPaused(Activity activity) { }
+    public void onActivityPaused(Activity activity) {
+    }
 
     @Override
     public void onActivityStopped(Activity activity) {
@@ -88,7 +83,8 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+    }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
@@ -99,12 +95,4 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
             Timber.e(e);
         }
     }
-
-    private void trackIrisEventForAppOpen(Activity activity) {
-        Iris instance = IrisAnalytics.Companion.getInstance(activity);
-        Map<String, Object> map = new HashMap<>();
-        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
-        instance.saveEvent(map);
-    }
-
 }
