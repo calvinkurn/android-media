@@ -184,8 +184,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         if (lastValidateUsePromoRequest != null) {
             promoRequest.codes = ArrayList(lastValidateUsePromoRequest.codes.filterNotNull())
         } else {
-            val globalCodes = orderPromo.lastApply?.codes ?: emptyList()
-            promoRequest.codes = ArrayList(globalCodes)
+            promoRequest.codes = ArrayList(orderPromo.lastApply.codes)
         }
         return promoRequest
     }
@@ -196,7 +195,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         if (lastRequestOrderCodes != null) {
             codes = lastRequestOrderCodes
         } else {
-            val voucherOrders = orderPromo.lastApply?.voucherOrders ?: emptyList()
+            val voucherOrders = orderPromo.lastApply.voucherOrders
             for (voucherOrder in voucherOrders) {
                 if (voucherOrder.uniqueId.equals(uniqueId, true)) {
                     if (!codes.contains(voucherOrder.code)) {
@@ -243,7 +242,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         if (lastValidateUsePromoRequest != null) {
             validateUsePromoRequest.codes = lastValidateUsePromoRequest.codes
         } else {
-            val globalCodes = orderPromo.lastApply?.codes ?: emptyList()
+            val globalCodes = orderPromo.lastApply.codes
             validateUsePromoRequest.codes = globalCodes.toMutableList()
         }
         validateUsePromoRequest.skipApply = 0

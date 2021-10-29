@@ -6,10 +6,9 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 /**
  * Created by fwidjaja on 13/03/20.
  */
-
-
 object LastApplyUiMapper {
     private const val RED_STATE = "red"
+
     fun mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel: PromoUiModel): LastApplyUiModel {
         return LastApplyUiModel(
                 codes = promoUiModel.codes,
