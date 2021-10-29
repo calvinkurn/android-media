@@ -164,7 +164,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     private fun onErrorGetCartList(throwable: Throwable, initialLoad: Boolean) {
-        throwable.printStackTrace()
         Timber.e(throwable)
         view?.let {
             if (!initialLoad) {
@@ -333,7 +332,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     private fun onErrorUpdateCartForCheckout(throwable: Throwable, cartItemDataList: List<CartItemHolderData>) {
-        throwable.printStackTrace()
         view?.let { view ->
             view.hideProgressLoading()
             view.renderErrorToShipmentForm(throwable)

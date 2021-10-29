@@ -10,8 +10,6 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
  */
 class PlayBroadcasterResponseBuilder {
 
-    private val gson = Gson()
-
     fun buildRecommendedChannelTagsResponse(tags: List<String>): GetRecommendedChannelTagsResponse {
         return GetRecommendedChannelTagsResponse(
                 recommendedTags = GetRecommendedChannelTagsResponse.GetRecommendedTags(
