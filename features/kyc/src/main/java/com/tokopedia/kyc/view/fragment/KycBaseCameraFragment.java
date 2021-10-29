@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
+public class KycBaseCameraFragment extends BaseDaggerFragment {
 
     private static final String FOLDER_NAME = "extras";
     private static final String FILE_EXTENSIONS = ".jpg";

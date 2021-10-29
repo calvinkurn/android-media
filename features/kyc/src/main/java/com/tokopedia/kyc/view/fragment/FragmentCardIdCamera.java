@@ -20,12 +20,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.util.Utils;
 
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FragmentCardIdCamera extends HomeCreditBaseCameraFragment {
+public class FragmentCardIdCamera extends KycBaseCameraFragment {
     public static String ACTION_CREATOR_ARG = "action_creator_arg";
     public static String ACTION_KEYS_PROVIDER_ARG = "action_keys_provider_arg";
     private ActionCreator actionCreator;

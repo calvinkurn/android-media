@@ -20,7 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FragmentSelfieIdCamera extends HomeCreditBaseCameraFragment {
+public class FragmentSelfieIdCamera extends KycBaseCameraFragment {
 
     public static String ACTION_CREATOR_ARG = "action_creator_arg";
     public static String ACTION_KEYS_PROVIDER_ARG = "action_keys_provider_arg";
