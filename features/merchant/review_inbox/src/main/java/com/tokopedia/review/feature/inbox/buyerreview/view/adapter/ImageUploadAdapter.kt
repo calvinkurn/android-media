@@ -10,11 +10,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload
 import com.tokopedia.review.inbox.R
-import java.io.File
 import java.util.*
 
 /**
@@ -63,26 +62,9 @@ class ImageUploadAdapter constructor(var context: Context) :
     }
 
     private fun bindImage(holder: ViewHolder, position: Int) {
-        try {
-            Glide.with(holder.image.context)
-                .asBitmap()
-                .load(File(list[position].fileLoc))
-                .centerCrop()
-                .into(
-                    getRoundedImageViewTarget(
-                        holder.image,
-                        convertDpToPx(holder.image.context, RADIUS_CORNER.toFloat())
-                    )
-                )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        holder.image.loadImage(list[position].fileLoc)
         holder.image.setOnClickListener(listener?.onImageClicked(position, list[position]))
         setBorder(holder, position)
-    }
-
-    private fun convertDpToPx(context: Context, dp: Float): Float {
-        return dp * context.resources.displayMetrics.density
     }
 
     private fun setBorder(holder: ViewHolder, position: Int) {
@@ -122,11 +104,6 @@ class ImageUploadAdapter constructor(var context: Context) :
     fun addList(data: ArrayList<ImageUpload>) {
         list.clear()
         list.addAll(data)
-        notifyDataSetChanged()
-    }
-
-    fun addImage(image: ImageUpload) {
-        list.add(image)
         notifyDataSetChanged()
     }
 
