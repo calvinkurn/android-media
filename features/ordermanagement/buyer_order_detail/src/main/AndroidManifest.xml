@@ -22,7 +22,6 @@
         </activity>
         <activity
             android:name=".presentation.activity.BuyerOrderExtensionActivity"
-            android:label="@string/buyer_order_extension_label"
             android:theme="@style/BuyerOrderExtensionTheme.Transparent"
             android:screenOrientation="portrait">
             <intent-filter>
