@@ -58,9 +58,6 @@ class TokoNowCategoryFragment:
 
     override val toolbarPageName = "TokoNow Category"
 
-    override val oocPageName: String
-        get() = "tokonow - category page"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -99,6 +96,7 @@ class TokoNowCategoryFragment:
     }
 
     override fun createTypeFactory() = CategoryTypeFactoryImpl(
+            tokoNowListener = createTokoNowListener(),
             chooseAddressListener = this,
             titleListener = this,
             bannerListener = this,
@@ -107,11 +105,10 @@ class TokoNowCategoryFragment:
             productItemListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
-            outOfCoverageListener = this,
             recommendationCarouselListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
-        recomWidgetBindPageNameListener = this
+            recomWidgetBindPageNameListener = this
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel

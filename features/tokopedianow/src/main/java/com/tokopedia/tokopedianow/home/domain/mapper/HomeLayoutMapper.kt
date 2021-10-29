@@ -44,6 +44,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
 
@@ -72,7 +73,7 @@ object HomeLayoutMapper {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
         when (id) {
-            EMPTY_STATE_NO_ADDRESS -> add(HomeLayoutItemUiModel(TokoNowEmptyStateOocUiModel(id = id, eventCategory = EVENT_CATEGORY_HOME_PAGE), HomeLayoutItemState.LOADED))
+            EMPTY_STATE_NO_ADDRESS -> add(HomeLayoutItemUiModel(TokoNowEmptyStateOocUiModel(id = id, eventCategory = EVENT_CATEGORY_HOME_PAGE, hostSource = SOURCE), HomeLayoutItemState.LOADED))
             EMPTY_STATE_FAILED_TO_FETCH_DATA -> add(HomeLayoutItemUiModel(TokoNowServerErrorUiModel, HomeLayoutItemState.LOADED))
             else -> add(HomeLayoutItemUiModel(HomeEmptyStateUiModel(id = id), HomeLayoutItemState.LOADED))
         }

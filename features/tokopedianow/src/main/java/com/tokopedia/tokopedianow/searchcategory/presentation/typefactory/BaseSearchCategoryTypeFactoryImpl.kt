@@ -14,17 +14,16 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAdd
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BannerViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.CategoryFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
@@ -33,9 +32,9 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.Product
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.QuickFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TitleViewHolder
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.OutOfCoverageViewHolder
 
 abstract class BaseSearchCategoryTypeFactoryImpl(
+    protected val tokoNowListener: TokoNowView,
     protected val chooseAddressListener: ChooseAddressListener,
     protected val titleListener: TitleListener,
     protected val bannerListener: BannerComponentListener,
@@ -43,7 +42,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val categoryFilterListener: CategoryFilterListener,
     protected val productItemListener: ProductItemListener,
     protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-    protected val outOfCoverageListener: OutOfCoverageListener,
     private val recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
     private val recommendationCarouselBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?
 ): BaseAdapterTypeFactory(), BaseSearchCategoryTypeFactory, TokoNowTypeFactory {
@@ -63,8 +61,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     override fun type(productItemDataView: ProductItemDataView) = ProductItemViewHolder.LAYOUT
 
     override fun type(viewModel: LoadingMoreModel) = LoadingMoreViewHolder.LAYOUT
-
-    override fun type(outOfCoverageDataView: OutOfCoverageDataView) = OutOfCoverageViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowEmptyStateNoResultUiModel) = TokoNowEmptyStateNoResultViewHolder.LAYOUT
 
@@ -89,16 +85,9 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             QuickFilterViewHolder.LAYOUT -> QuickFilterViewHolder(view, quickFilterListener)
             ProductCountViewHolder.LAYOUT -> ProductCountViewHolder(view)
             LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(view)
-            OutOfCoverageViewHolder.LAYOUT -> OutOfCoverageViewHolder(view, outOfCoverageListener)
-            TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(
-                view,
-                tokoNowEmptyStateNoResultListener
-            )
-            TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(
-                view,
-                recommendationCarouselListener,
-                recommendationCarouselBindPageNameListener
-            )
+            TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(view, tokoNowEmptyStateNoResultListener)
+            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowListener)
+            TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(view, recommendationCarouselListener, recommendationCarouselBindPageNameListener)
             else -> super.createViewHolder(view, type)
         }
     }

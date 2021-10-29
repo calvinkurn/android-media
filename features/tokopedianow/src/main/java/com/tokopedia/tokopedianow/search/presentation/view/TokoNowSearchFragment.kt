@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.search.presentation.view
 
 import android.os.Bundle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -69,9 +68,6 @@ class TokoNowSearchFragment :
 
     override val toolbarPageName = "TokoNow Search"
 
-    override val oocPageName: String
-        get() = "tokonow - search page"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -137,6 +133,7 @@ class TokoNowSearchFragment :
     }
 
     override fun createTypeFactory() = SearchTypeFactoryImpl(
+            tokoNowListener = createTokoNowListener(),
             chooseAddressListener = this,
             titleListener = this,
             bannerListener = this,
@@ -145,12 +142,11 @@ class TokoNowSearchFragment :
             productItemListener = this,
             tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,
-            outOfCoverageListener = this,
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
             recommendationCarouselListener = this,
             broadMatchListener = this,
-        recomWidgetBindPageNameListener = this
+            recomWidgetBindPageNameListener = this
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page

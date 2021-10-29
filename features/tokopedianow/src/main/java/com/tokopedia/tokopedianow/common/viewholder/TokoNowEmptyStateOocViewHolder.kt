@@ -2,7 +2,6 @@ package com.tokopedia.tokopedianow.common.viewholder
 
 import android.app.Activity
 import android.view.View
-import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -11,8 +10,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowEmptyStateOocBinding
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryEmptyProductBinding
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowEmptyStateOocViewHolder(
@@ -27,9 +24,11 @@ class TokoNowEmptyStateOocViewHolder(
     }
 
     private var binding: ItemTokopedianowEmptyStateOocBinding? by viewBinding()
+    private var hostSource = ""
 
-    override fun bind(element: TokoNowEmptyStateOocUiModel?) {
-        showEmptyStateNoAddress(element?.eventCategory.orEmpty())
+    override fun bind(element: TokoNowEmptyStateOocUiModel) {
+        hostSource = element.hostSource
+        showEmptyStateNoAddress(element.eventCategory)
     }
 
     private fun showEmptyStateNoAddress(eventCategory: String) {
@@ -48,11 +47,10 @@ class TokoNowEmptyStateOocViewHolder(
         }
     }
 
-
     private fun showBottomSheetChooseAddress() {
         val chooseAddressBottomSheet = ChooseAddressBottomSheet()
         chooseAddressBottomSheet.setListener(object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
-            override fun getLocalizingAddressHostSourceBottomSheet(): String = SOURCE
+            override fun getLocalizingAddressHostSourceBottomSheet(): String = hostSource
 
             override fun onAddressDataChanged() {
                 tokoNowListener?.refreshLayoutPage()
