@@ -16,44 +16,16 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeepLinkMapperShopScore {
 
-    const val PARAM_IS_CONSENT = "is_consent"
-    const val COMMUNICATION_PERIOD = "communication_period"
-    const val TRANSITION_PERIOD = "transition_period"
-    const val PARAM_TYPE = "type"
-
-    fun getShopScoreApplink(context: Context, deeplink: String): String {
-        return if (deeplink.startsWith(ApplinkConst.SHOP_SCORE_DETAIL_ACKNOWLEDGE_INTERRUPT)) {
-            getInterruptHandlerPageApplink()
+    fun getShopScoreApplink(context: Context): String {
+        return if (isEnableNewShopScore(context)) {
+            ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
         } else {
-            when (Uri.parse(deeplink).getQueryParameter(PARAM_TYPE)) {
-                COMMUNICATION_PERIOD -> {
-                    deeplink.replace(ApplinkConst.SHOP_SCORE_DETAIL, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
-                }
-                else -> {
-                    if (isEnableNewShopScore(context)) {
-                        ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
-                    } else {
-                        if (GlobalConfig.isSellerApp()) {
-                            ApplinkConstInternalSellerapp.SELLER_HOME
-                        } else {
-                            ApplinkConstInternalSellerapp.SELLER_MENU
-                        }
-                    }
-                }
+            if (GlobalConfig.isSellerApp()) {
+                ApplinkConstInternalSellerapp.SELLER_HOME
+            } else {
+                ApplinkConstInternalSellerapp.SELLER_MENU
             }
         }
-    }
-
-    private fun getInterruptHandlerPageApplink(): String {
-        val param = mapOf<String, Any>(PARAM_IS_CONSENT to true)
-
-        val applink = if (GlobalConfig.isSellerApp()) {
-            ApplinkConstInternalSellerapp.SELLER_HOME
-        } else {
-            ApplinkConstInternalSellerapp.SELLER_MENU
-        }
-
-        return UriUtil.buildUriAppendParams(applink, param)
     }
 
     fun isEnableNewShopScore(context: Context): Boolean {

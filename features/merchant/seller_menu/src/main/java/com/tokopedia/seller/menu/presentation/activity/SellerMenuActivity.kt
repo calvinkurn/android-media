@@ -24,25 +24,6 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        showInterruptToaster(intent)
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        showInterruptToaster(intent)
-    }
-
-    private fun showInterruptToaster(intent: Intent?) {
-        intent?.data?.let { uri ->
-            val parentView = window.decorView
-            pmShopScoreInterruptHelper.setShopScoreConsentStatus(uri) {
-                if (it) {
-                    pmShopScoreInterruptHelper.showsShopScoreConsentToaster(parentView)
-                }
-            }
-
-            pmShopScoreInterruptHelper.showToasterPmProInterruptPage(uri, parentView)
-        }
     }
 
     override fun getNewFragment(): Fragment? {

@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.fragment
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -184,7 +183,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var recommendationWidgetView: View? = null
     private var navigationOtherMenuView: View? = null
-    private var isEligibleShowRecommendationCoachMark: Boolean = false
     private val coachMark: CoachMark2? by lazy {
         context?.let {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -280,7 +278,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        handleInterruptPageOnActivityResult(requestCode)
         handleMilestoneWidgetFinishedMission(requestCode)
     }
 
@@ -428,10 +425,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showRecommendationWidgetCoachMark(view: View) {
-        this.recommendationWidgetView = view
-        if (!isEligibleShowRecommendationCoachMark) return
-        isEligibleShowRecommendationCoachMark = false
-
         val coachMarkItems by getCoachMarkItems()
 
         if (coachMarkItems.isNotEmpty()) {
@@ -665,20 +658,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
-    }
-
-    fun onNewIntent(uri: Uri?) {
-        uri?.let {
-            binding?.run {
-                pmShopScoreInterruptHelper.setShopScoreConsentStatus(it) {
-                    if (it) {
-                        pmShopScoreInterruptHelper.showsShopScoreConsentToaster(root.rootView)
-                    }
-                }
-
-                pmShopScoreInterruptHelper.showToasterPmProInterruptPage(it, root.rootView)
-            }
-        }
     }
 
     private fun initPltPerformanceMonitoring() {
@@ -1624,8 +1603,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun Ticker.addSellerHomeImpressionListener(impressHolder: ImpressHolder?,
-                                                       ticker: TickerItemUiModel?) {
+    private fun Ticker.addSellerHomeImpressionListener(
+        impressHolder: ImpressHolder?,
+        ticker: TickerItemUiModel?
+    ) {
         impressHolder?.let { holder ->
             ticker?.let { ticker ->
                 addOnImpressionListener(holder) {
@@ -1726,11 +1707,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setRecommendationCoachMarkEligibility() {
-        isEligibleShowRecommendationCoachMark =
-            pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
-        if (isEligibleShowRecommendationCoachMark) {
-            scrollToRecommendationWidget()
-        }
+        scrollToRecommendationWidget()
     }
 
     private fun scrollToRecommendationWidget() {
@@ -1802,17 +1779,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 )
             }
             return@lazy coachMarkItems
-        }
-    }
-
-    private fun handleInterruptPageOnActivityResult(requestCode: Int) {
-        view?.let {
-            if (::pmShopScoreInterruptHelper.isInitialized) {
-                pmShopScoreInterruptHelper.onActivityResult(requestCode) {
-                    scrollToRecommendationWidget()
-                    isEligibleShowRecommendationCoachMark = true
-                }
-            }
         }
     }
 
