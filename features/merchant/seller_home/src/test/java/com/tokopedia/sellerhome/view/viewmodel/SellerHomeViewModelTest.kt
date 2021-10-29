@@ -2073,6 +2073,186 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `get multi line graph widget data when new cache enabled, on first load and cache enabled should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getMultiLineGraphUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getMultiLineGraphUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MultiLineGraphDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getMultiLineGraphUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getMultiLineGraphUseCase.getResultFlow()
+            }
+
+            //number of data keys and result should same
+            Assertions.assertTrue(dataKeys.size == result.size)
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `get multi line graph widget data when new cache enabled, on first load and cache disabled should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = true
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getMultiLineGraphUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getMultiLineGraphUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MultiLineGraphDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getMultiLineGraphUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getMultiLineGraphUseCase.getResultFlow()
+            }
+
+            //number of data keys and result should same
+            Assertions.assertTrue(dataKeys.size == result.size)
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `get multi line graph widget data when new cache enabled, on second load and cache enabled should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+            val isCacheEnabled = true
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getMultiLineGraphUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getMultiLineGraphUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MultiLineGraphDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getMultiLineGraphUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getMultiLineGraphUseCase.getResultFlow()
+            }
+
+            //number of data keys and result should same
+            Assertions.assertTrue(dataKeys.size == result.size)
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+        }
+    }
+
+    @Test
+    fun `get multi line graph widget data when new cache enabled, on second load and cache disabled should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString(), anyString())
+            val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+            val isCacheEnabled = false
+            val isFirstLoad = false
+
+            every {
+                remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            } returns true
+
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns isCacheEnabled
+
+            every {
+                getMultiLineGraphUseCase.isFirstLoad
+            } returns isFirstLoad
+
+            coEvery {
+                getMultiLineGraphUseCase.getResultFlow()
+            } returns MutableSharedFlow<List<MultiLineGraphDataUiModel>>(replay = 1).apply {
+                emit(result)
+            }
+
+            viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+            coVerify {
+                getMultiLineGraphUseCase.executeOnBackground(any(), isFirstLoad && isCacheEnabled)
+            }
+
+            coVerify {
+                getMultiLineGraphUseCase.getResultFlow()
+            }
+
+            //number of data keys and result should same
+            Assertions.assertTrue(dataKeys.size == result.size)
+
+            val expectedResult = Success(result)
+            Assertions.assertTrue(expectedResult.data.size == dataKeys.size)
+            Assertions.assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+        }
+    }
+
+    @Test
     fun `should failed when get multi line graph widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
 
