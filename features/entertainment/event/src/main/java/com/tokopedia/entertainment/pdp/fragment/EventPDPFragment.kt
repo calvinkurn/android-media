@@ -324,15 +324,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         event_pdp_collapsing_toolbar.title = ""
         event_pdp_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            var isShow = false
-            var scrollRange = -1
-
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.totalScrollRange
-                }
-
-                if (scrollRange + verticalOffset == 0) {
+                if (Math.abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
                     event_pdp_collapsing_toolbar.title = productDetailData.title
                     context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }?.let {
                         navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
@@ -340,8 +333,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_black)
                     widget_event_pdp_tab_section.setScrolledMode()
                     widget_event_pdp_tab_section.show()
-                    isShow = true
-                } else if (isShow) {
+                } else if(verticalOffset == 0){
                     event_pdp_collapsing_toolbar.title = ""
                     context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let {
                         navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
@@ -349,7 +341,6 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                     event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_white)
                     widget_event_pdp_tab_section.setNullMode()
                     widget_event_pdp_tab_section.hide()
-                    isShow = false
                 }
             }
         })

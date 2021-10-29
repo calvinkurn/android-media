@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/image_banner"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dimen_dp_200"
+    android:layout_height="wrap_content"
     android:adjustViewBounds="true"
     android:focusable="true"
-    android:scaleType="centerCrop"
     app:srcCompat="@drawable/ic_loading_image" />
