@@ -143,6 +143,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
                     }
                 })
             }
+            listener?.onProductAnchorImpressionHitGTM(productInfoDataModel)
         }
     }
 
@@ -179,6 +180,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
 
     interface ProductInfoListener{
         fun onProductAnchorImpression(productInfoDataModel: ProductInfoDataModel)
+        fun onProductAnchorImpressionHitGTM(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorClick(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorAddToCart(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorBuyNow(productInfoDataModel: ProductInfoDataModel)

@@ -438,23 +438,32 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         productInfoDataModel.productDetailData?.let { productDetailData ->
             if (productDetailData.isTopads) {
                 TopAdsUrlHitter(context).hitImpressionUrl(
-                        className,
-                        productDetailData.trackerImageUrl,
-                        productDetailData.id.toString(),
-                        productDetailData.name,
-                        productDetailData.imageUrl)
+                    className,
+                    productDetailData.trackerImageUrl,
+                    productDetailData.id.toString(),
+                    productDetailData.name,
+                    productDetailData.imageUrl
+                )
             }
         }
-        RecommendationPageTracking.eventImpressionPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
+    }
+
+    override fun onProductAnchorImpressionHitGTM(productInfoDataModel: ProductInfoDataModel) {
+        RecommendationPageTracking.eventImpressionPrimaryProductWithProductId(
+            productInfoDataModel.mapToRecommendationTracking(),
+            "0",
+            ref,
+            internalRef
+        )
     }
 
     override fun onProductAnchorClick(productInfoDataModel: ProductInfoDataModel) {
         productInfoDataModel.productDetailData?.let { productDetailData ->
             if (productDetailData.isTopads) {
                 TopAdsUrlHitter(context).hitClickUrl(
-                        className,
-                        productDetailData.clickUrl,
-                        productDetailData.id.toString(),
+                    className,
+                    productDetailData.clickUrl,
+                    productDetailData.id.toString(),
                         productDetailData.name,
                         productDetailData.imageUrl)
             }
