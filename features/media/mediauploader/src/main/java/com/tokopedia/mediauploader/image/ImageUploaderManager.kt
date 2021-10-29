@@ -45,7 +45,7 @@ class ImageUploaderManager @Inject constructor(
                         maxResBitmapMessage(maxRes.width, maxRes.height)
                     filePath.isMinBitmapResolution(minRes.width, minRes.height) ->
                         minResBitmapMessage(minRes.width, minRes.height)
-                    else -> UNKNOWN_ERROR
+                    else -> ""
                 }
             ), sourceId, file) as UploadResult.Error
         } else {

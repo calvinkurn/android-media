@@ -35,7 +35,7 @@ class SimpleUploaderManager @Inject constructor(
                     !file.exists() -> FILE_NOT_FOUND
                     !extensions.contains(filePath.fileExtension()) ->
                         formatNotAllowedMessage(sourcePolicy.videoPolicy.extension)
-                    else -> UNKNOWN_ERROR
+                    else -> ""
                 }
             ), sourceId, file) as UploadResult.Error
         } else {
