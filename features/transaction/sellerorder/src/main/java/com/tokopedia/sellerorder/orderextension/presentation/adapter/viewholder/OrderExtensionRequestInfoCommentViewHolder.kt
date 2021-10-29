@@ -79,8 +79,8 @@ class OrderExtensionRequestInfoCommentViewHolder(
 
     override fun onViewDetachedFromWindow() {
         super.onViewDetachedFromWindow()
-        removeListeners()
         binding?.root?.hideKeyboard()
+        removeListeners()
     }
 
     private fun createCommentTextWatcher(): TextWatcher {
