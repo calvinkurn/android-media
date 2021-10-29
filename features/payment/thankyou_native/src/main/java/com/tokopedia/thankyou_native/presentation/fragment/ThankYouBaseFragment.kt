@@ -47,11 +47,13 @@ import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.Dig
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
+import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 
@@ -81,7 +83,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private val marketRecommendationPlaceLayout = R.layout.thank_layout_market_place_recom
 
-    private val topadsHeadlineView = R.layout.thanks_item_top_ads_headlines_view.xml
+    private val topadsHeadlineLayoutId = R.layout.thanks_item_top_ads_headlines_view
+    private lateinit var topadsHeadlineView: TopAdsHeadlineView
 
     private var iDigitalRecommendationView: IDigitalRecommendationView? = null
 
@@ -138,14 +141,15 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun loadTopAdsRecommendationView() {
-        getTopAdsRecommendationContainer()?.let {
-            /**
-             * todo() lavekush please call your code from here.
-             * this container don's have padding or margin
-             */
-            //TODP add RV, and title and Lihat sumes
+        getTopAdsRecommendationContainer()?.let { container ->
 
+            container.addView(getView(topadsHeadlineLayoutId))
+            topadsHeadlineView = container.findViewById(R.id.topads_headline_view)
         }
+    }
+
+    private fun getView(@LayoutRes layout: Int): View {
+        return LayoutInflater.from(context).inflate(layout, null, false)
     }
 
     private fun getFeatureRecommendationData() {
@@ -527,14 +531,15 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
+        val session = UserSession(requireContext().applicationContext)
         topadsHeadlineView.getHeadlineAds(
-            getHeadlineAdsParam(topadsHeadLinePage),
+            getHeadlineAdsParam(topadsHeadLinePage,session.userId),
             this::onSuccessResponse,
             this::hideHeadlineView
         )
     }
 
-    private fun getHeadlineAdsParam(topadsHeadLinePage: Int): String {
+    private fun getHeadlineAdsParam(topadsHeadLinePage: Int, userId: String): String {
         return UrlParamHelper.generateUrlParamString(
             mutableMapOf(
                 PARAM_DEVICE to VALUE_DEVICE,
@@ -542,36 +547,25 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 PARAM_EP to VALUE_EP,
                 PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
                 PARAM_ITEM to VALUE_ITEM,
-                PARAM_SRC to "inbox",
+                PARAM_SRC to "thank_you_page",
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-                PARAM_USER_ID to "userid", //TODO @ankit add user id
+                PARAM_USER_ID to userId,
             )
         )
     }
 
     private fun onSuccessResponse(cpmModel: CpmModel) {
-//        topadsHeadlineUiModel?.run {
-//            this.cpmModel = cpmModel
+        showHeadlineView(cpmModel)
+        /*topadsHeadlineUiModel?.run {
+            this.cpmModel = cpmModel
             showHeadlineView(cpmModel)
-//        }
+        }*/
     }
 
     private fun hideHeadlineView() {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.hide()
     }
-
-//     fun bind(element: TopadsHeadlineUiModel?) {
-//        topadsHeadlineUiModel = element
-//        hideHeadlineView()
-//        topadsHeadlineUiModel?.run {
-//            if (cpmModel != null) {
-//                showHeadlineView(cpmModel!!)
-//            } else {
-//                fetchTopadsHeadlineAds(topadsHeadlineUiModel?.topadsHeadLinePage ?: 0)
-//            }
-//        }
-//    }
 
     private fun showHeadlineView(cpmModel: CpmModel) {
         topadsHeadlineView.hideShimmerView()
