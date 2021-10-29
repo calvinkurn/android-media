@@ -350,6 +350,8 @@
     <string name="label_variant_custom_input_bottom_sheet_title">Buat tipe varian</string>
     <string name="label_variant_custom_manage_bottom_sheet_title">Atur varian</string>
     <string name="label_variant_value_empty">Belum ada Kapasitas Memory yang bisa dipilih. Tambah pilihan Kapasitas Memory dulu, ya.</string>
+    <string name="label_cvt_tips">Beri nama varian atau pakai varian dari kategori lain. Kamu bisa buat maksimum 2 varian, ya.</string>
+    <string name="label_cvt_tips_title">Sekarang kamu bisa buat varian sendiri</string>
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
     

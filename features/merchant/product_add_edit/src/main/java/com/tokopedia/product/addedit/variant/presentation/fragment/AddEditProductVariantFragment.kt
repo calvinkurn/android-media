@@ -23,6 +23,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.*
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepicker.common.*
@@ -176,6 +177,7 @@ class AddEditProductVariantFragment :
             CustomVariantInputBottomSheet().show(childFragmentManager)
         }
         CustomVariantManageBottomSheet().show(childFragmentManager)
+        showCoachmark()
 
         variantTypeAdapter = VariantTypeAdapter(this)
         variantValueAdapterLevel1 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_ONE_POSITION)
@@ -1081,7 +1083,6 @@ class AddEditProductVariantFragment :
     }
 
     private fun removeSizechart() {
-        val url = viewModel.variantSizechart.value?.urlOriginal.orEmpty()
         viewModel.updateSizechart("")
     }
 
@@ -1141,6 +1142,19 @@ class AddEditProductVariantFragment :
                         }
                     })
         }
+    }
+
+    private fun showCoachmark() {
+        val items = listOf(
+            CoachMark2Item(
+                buttonAddVariantType,
+                getString(R.string.label_cvt_tips_title),
+                getString(R.string.label_cvt_tips),
+                CoachMarkContentPosition.BOTTOM.position
+            )
+        )
+        val coachMark = CoachMark2(requireContext())
+        coachMark.showCoachMark(ArrayList(items), scrollViewContent, 0)
     }
 
     private fun setRecyclerViewToFlex(recyclerView: RecyclerView) {
