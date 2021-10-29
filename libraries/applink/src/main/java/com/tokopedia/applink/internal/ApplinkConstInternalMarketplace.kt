@@ -265,4 +265,6 @@ object ApplinkConstInternalMarketplace {
     const val ARGS_LAYOUT_ID = "layoutID"
 
     const val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
+
+    const val ARGS_IS_UPGRADE = "is_upgrade"
 }
