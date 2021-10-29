@@ -18,7 +18,6 @@ import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoOptionViewHolder
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
-import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifycomponents.toPx
 
 class SomBottomSheetOrderExtensionRequest(
@@ -48,13 +47,6 @@ class SomBottomSheetOrderExtensionRequest(
         object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
                 return SNAP_TO_END
-            }
-        }
-    }
-    private val temporaryCommentHolderHelper by lazy {
-        object: OrderExtensionRequestInfoCommentViewHolder.TemporaryCommentHolderHelper() {
-            override fun getTextAreaHolder(): TextAreaUnify2? {
-                return binding?.dummyTextArea
             }
         }
     }
@@ -106,8 +98,7 @@ class SomBottomSheetOrderExtensionRequest(
                 adapter = adapter ?: OrderExtensionRequestInfoAdapter(
                     OrderExtensionRequestInfoAdapterTypeFactory(
                         this@SomBottomSheetOrderExtensionRequest,
-                        this@SomBottomSheetOrderExtensionRequest,
-                        temporaryCommentHolderHelper
+                        this@SomBottomSheetOrderExtensionRequest
                     )
                 )
                 rvRequestExtensionInfo.adapter = adapter

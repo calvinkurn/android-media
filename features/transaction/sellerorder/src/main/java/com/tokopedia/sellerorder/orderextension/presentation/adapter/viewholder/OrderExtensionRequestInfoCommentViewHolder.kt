@@ -5,11 +5,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.databinding.ItemOrderExtensionRequestInfoCommentBinding
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.unifycomponents.TextAreaUnify2
@@ -17,8 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class OrderExtensionRequestInfoCommentViewHolder(
     itemView: View?,
-    private val listener: OrderExtensionRequestInfoCommentListener,
-    private val temporaryCommentHolderHelper: TemporaryCommentHolderHelper
+    private val listener: OrderExtensionRequestInfoCommentListener
 ) : BaseOrderExtensionRequestInfoViewHolder<OrderExtensionRequestInfoUiModel.CommentUiModel>(
     itemView
 ) {
@@ -77,13 +75,12 @@ class OrderExtensionRequestInfoCommentViewHolder(
     override fun onViewAttachedFromWindow() {
         super.onViewDetachedFromWindow()
         setupListeners()
-        endTemporaryCommentHolderHelper()
     }
 
     override fun onViewDetachedFromWindow() {
         super.onViewDetachedFromWindow()
         removeListeners()
-        setupTemporaryCommentHolderHelper()
+        binding?.root?.hideKeyboard()
     }
 
     private fun createCommentTextWatcher(): TextWatcher {
@@ -179,18 +176,6 @@ class OrderExtensionRequestInfoCommentViewHolder(
         }
     }
 
-    private fun setupTemporaryCommentHolderHelper() {
-        if (element?.hasFocus == true) {
-            temporaryCommentHolderHelper.setCommentUiModel(element)
-            temporaryCommentHolderHelper.setCommentChangeListener(listener)
-        }
-    }
-
-    private fun endTemporaryCommentHolderHelper() {
-        temporaryCommentHolderHelper.setCommentUiModel(null)
-        temporaryCommentHolderHelper.setCommentChangeListener(null)
-    }
-
     private fun handleCommentTextChange(text: String) {
         if (adapterPosition != RecyclerView.NO_POSITION) {
             element?.run {
@@ -204,79 +189,5 @@ class OrderExtensionRequestInfoCommentViewHolder(
 
     interface OrderExtensionRequestInfoCommentListener {
         fun onCommentChange(element: OrderExtensionRequestInfoUiModel.CommentUiModel)
-    }
-
-    /**
-     * The view inside OrderExtensionRequestInfoCommentViewHolder will be detached when the view goes
-     * off the screen which makes the EditText inside OrderExtensionRequestInfoCommentViewHolder lose
-     * it focus. To still capturing keyboard input, we need an invisible EditText placed outside the
-     * OrderExtensionRequestInfoCommentViewHolder. That EditText will act as a representative of the
-     * EditText from OrderExtensionRequestInfoCommentViewHolder
-     */
-    abstract class TemporaryCommentHolderHelper {
-
-        private var element: OrderExtensionRequestInfoUiModel.CommentUiModel? = null
-        private var commentChangeListener: OrderExtensionRequestInfoCommentListener? = null
-        private val textWatcher by lazy {
-            object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    element?.run {
-                        if (value != s?.toString().orEmpty()) {
-                            value = s?.toString().orEmpty()
-                            commentChangeListener?.onCommentChange(this)
-                        }
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {}
-            }
-        }
-        private val focusChangeListener by lazy {
-            View.OnFocusChangeListener { _, hasFocus ->
-                onFocusChange(hasFocus)
-            }
-        }
-
-        protected abstract fun getTextAreaHolder(): TextAreaUnify2?
-
-        private fun setupTextAreaHolder() {
-            getTextAreaHolder()?.editText?.run {
-                removeListeners()
-                setText(element?.value.orEmpty())
-                if (element != null) {
-                    setupListeners()
-                    requestFocus()
-                    setSelection(element?.value?.length.orZero())
-                }
-            }
-        }
-
-        private fun AutoCompleteTextView.removeListeners() {
-            removeTextChangedListener(textWatcher)
-            onFocusChangeListener = null
-        }
-
-        private fun AutoCompleteTextView.setupListeners() {
-            addTextChangedListener(textWatcher)
-            onFocusChangeListener = focusChangeListener
-        }
-
-        fun setCommentUiModel(element: OrderExtensionRequestInfoUiModel.CommentUiModel?) {
-            this.element = element
-            setupTextAreaHolder()
-        }
-
-        fun setCommentChangeListener(listener: OrderExtensionRequestInfoCommentListener?) {
-            commentChangeListener = listener
-        }
-
-        private fun onFocusChange(hasFocus: Boolean) {
-            element?.run {
-                this.hasFocus = hasFocus
-                commentChangeListener?.onCommentChange(this)
-            }
-        }
     }
 }

@@ -11,8 +11,7 @@ import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensio
 
 class OrderExtensionRequestInfoAdapterTypeFactory(
     private val optionListener: OrderExtensionRequestInfoOptionViewHolder.SomRequestExtensionOptionListener,
-    private val textAreaListener: OrderExtensionRequestInfoCommentViewHolder.OrderExtensionRequestInfoCommentListener,
-    private val temporaryCommentHolderHelper: OrderExtensionRequestInfoCommentViewHolder.TemporaryCommentHolderHelper
+    private val textAreaListener: OrderExtensionRequestInfoCommentViewHolder.OrderExtensionRequestInfoCommentListener
 ) : BaseAdapterTypeFactory() {
 
     fun type(descriptionUiModel: OrderExtensionRequestInfoUiModel.DescriptionUiModel): Int {
@@ -31,7 +30,7 @@ class OrderExtensionRequestInfoAdapterTypeFactory(
         return when (type) {
             OrderExtensionRequestInfoDescriptionViewHolder.LAYOUT -> OrderExtensionRequestInfoDescriptionViewHolder(parent)
             OrderExtensionRequestInfoOptionViewHolder.LAYOUT -> OrderExtensionRequestInfoOptionViewHolder(parent, optionListener)
-            OrderExtensionRequestInfoCommentViewHolder.LAYOUT -> OrderExtensionRequestInfoCommentViewHolder(parent, textAreaListener, temporaryCommentHolderHelper)
+            OrderExtensionRequestInfoCommentViewHolder.LAYOUT -> OrderExtensionRequestInfoCommentViewHolder(parent, textAreaListener)
             else -> super.createViewHolder(parent, type)
         }
     }
