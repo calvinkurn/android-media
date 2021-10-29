@@ -23,5 +23,14 @@ data class PinnedMessageUiModel(
 enum class PinnedMessageEditStatus {
     Editing,
     Uploading,
-    Nothing,
+    Nothing;
+
+    val isEditing: Boolean
+        get() = this == Editing
+
+    val isUploading: Boolean
+        get() = this == Uploading
+
+    val isNothing: Boolean
+        get() = this == Nothing
 }
