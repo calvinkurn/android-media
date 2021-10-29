@@ -74,7 +74,6 @@ class ToolbarViewComponent(
         }
     }
 
-
     fun setFollowStatus(followStatus: PlayPartnerFollowStatus) {
         if (followStatus is PlayPartnerFollowStatus.Followable) {
             tvFollow.text = getString(
