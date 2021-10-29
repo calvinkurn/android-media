@@ -3,7 +3,6 @@ package com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -13,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
@@ -33,17 +33,19 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private var component: PdpSimulationComponent? = null
 
+    private var parterName: String? = ""
+    private var tenure: Int? = 0
+    private var montlyInstallment: Double? = 0.0
+    private var productId: String? = ""
+
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider =
-            ViewModelProviders.of(getGrandParent(), viewModelFactory.get())
+            ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
         viewModelProvider.get(PayLaterViewModel::class.java)
     }
 
-    private fun getGrandParent(): Fragment {
-        return requireParentFragment().requireParentFragment().requireParentFragment()
-            .requireParentFragment()
-    }
+
 
 
     init {
@@ -82,6 +84,11 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     private fun getArgumentData() {
         arguments?.let {
             cta = it.getParcelable<Cta>(GOPAY_BOTTOMSHEET_DETAIL) as Cta
+            parterName = it.getString(PARTER_NAME) ?: ""
+            tenure = it.getInt(TENURE)
+            montlyInstallment = it.getDouble(EMI_AMOUNT)
+            productId = it.getString(PRODUCT_ID)
+
         }
     }
 
@@ -103,7 +110,14 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     }
 
     private fun sendImpressionAnalytics() {
-
+        pdpSimulationCallback?.sendAnalytics(
+            PdpSimulationEvent.PayLater.GopayBottomSheetImpression(
+                productId ?: "",
+                tenure.toString(),
+                parterName ?: "",
+                montlyInstallment.toString()
+            )
+        )
     }
 
     private fun initListners() {
@@ -128,7 +142,15 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     }
 
     private fun sendClickAnalytics() {
-
+        pdpSimulationCallback?.sendAnalytics(
+            PdpSimulationEvent.PayLater.GopayBottomSheetButtonClick(
+                productId ?: "",
+                tenure.toString(),
+                parterName ?: "",
+                montlyInstallment.toString(),
+                cta.android_url ?: ""
+            )
+        )
     }
 
     private fun initBottomSheet() {
@@ -151,7 +173,10 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
         private const val TAG = "PayLaterTokopediaGopayBottomsheet"
         const val GOPAY_BOTTOMSHEET_DETAIL = "gopayBottomsheetDetail"
-
+        const val PARTER_NAME = "partnerName"
+        const val TENURE = " tenure"
+        const val EMI_AMOUNT = "emiAmount"
+        const val PRODUCT_ID = "productID"
 
         fun show(
             bundle: Bundle,

@@ -57,6 +57,7 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
     private var urlToRedirect: String = ""
     private var partnerName: String? = ""
     private var tenure: Int? = 0
+    private var montlyInstallment: Double? = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -182,6 +183,9 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
                     responseData?.cta?.android_url ?: ""
                 )
             )
+            bundle.putString(PARTER_NAME, partnerName)
+            bundle.putInt(TENURE, tenure ?: 0)
+            bundle.putDouble(EMI_AMOUNT, montlyInstallment ?: 0.0)
             it.openBottomSheet(
                 bundle, PayLaterActionStepsBottomSheet::class.java
             )
@@ -279,6 +283,7 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
             }
         data.installment_per_month_ceil?.let { montlyInstallment ->
             if (data.tenure != PAY_LATER_BASE_TENURE) {
+                this.montlyInstallment = montlyInstallment
                 totalAmount.text = "${
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(
                         montlyInstallment, false
@@ -441,7 +446,9 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
     companion object {
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"
         const val PAY_LATER_BASE_TENURE = 1
-        const val PAY_LATER_APPLICATION_DATA = "payLaterApplicationData"
+        const val PARTER_NAME = "partnerName"
+        const val TENURE = " tenure"
+        const val EMI_AMOUNT = "emiAmount"
         val rejectionList = listOf(2, 10, 9)
         val processiongList = listOf(1)
         val buttonRedirectionWeb = listOf(2)

@@ -38,7 +38,7 @@ class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
                 PayLaterAdditionalFeeInfo.show(pdpSimulationCallback, childFragmentManager)
 
             modelClass.isAssignableFrom(PayLaterTokopediaGopayBottomsheet::class.java) -> {
-                bundle.putString(PayLaterActionStepsBottomSheet.PRODUCT_URL, productId)
+                bundle.putString(productID, productId)
                 PayLaterTokopediaGopayBottomsheet.show(
                     bundle,
                     pdpSimulationCallback,
@@ -55,5 +55,9 @@ class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
             modelClass.isAssignableFrom(CreditCardAvailableBanksBottomSheet::class.java) ->
                 CreditCardAvailableBanksBottomSheet.show(bundle, childFragmentManager)
         }
+    }
+
+    companion object {
+        const val productID = "productID"
     }
 }
