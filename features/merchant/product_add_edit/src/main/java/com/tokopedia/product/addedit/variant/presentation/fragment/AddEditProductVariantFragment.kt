@@ -39,6 +39,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT
 import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
+import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
@@ -177,7 +178,7 @@ class AddEditProductVariantFragment :
             CustomVariantInputBottomSheet().show(childFragmentManager)
         }
         CustomVariantManageBottomSheet().show(childFragmentManager)
-        showCoachmark()
+        showCoachmarkCustomVariantType()
 
         variantTypeAdapter = VariantTypeAdapter(this)
         variantValueAdapterLevel1 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_ONE_POSITION)
@@ -1144,17 +1145,21 @@ class AddEditProductVariantFragment :
         }
     }
 
-    private fun showCoachmark() {
-        val items = listOf(
-            CoachMark2Item(
-                buttonAddVariantType,
-                getString(R.string.label_cvt_tips_title),
-                getString(R.string.label_cvt_tips),
-                CoachMarkContentPosition.BOTTOM.position
+    private fun showCoachmarkCustomVariantType() {
+        val showed = SharedPreferencesUtil.getFirstTimeCustomVariantType(requireActivity())
+        if (!showed) {
+            val items = listOf(
+                CoachMark2Item(
+                    buttonAddVariantType,
+                    getString(R.string.label_cvt_tips_title),
+                    getString(R.string.label_cvt_tips),
+                    CoachMarkContentPosition.BOTTOM.position
+                )
             )
-        )
-        val coachMark = CoachMark2(requireContext())
-        coachMark.showCoachMark(ArrayList(items), scrollViewContent, 0)
+            val coachMark = CoachMark2(requireContext())
+            coachMark.showCoachMark(ArrayList(items), scrollViewContent)
+            SharedPreferencesUtil.setFirstTimeCustomVariantType(requireActivity(), true)
+        }
     }
 
     private fun setRecyclerViewToFlex(recyclerView: RecyclerView) {
