@@ -6,12 +6,24 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSubmissionExtendsBottomSheetTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_3"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/order_extension_title_submission_extends_bottom_sheet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSubmissionExtendsTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSubmissionExtendsBottomSheetTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_2"
         android:textColor="@color/Unify_N700_96"

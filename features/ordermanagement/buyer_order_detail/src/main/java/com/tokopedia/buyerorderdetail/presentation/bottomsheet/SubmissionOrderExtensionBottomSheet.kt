@@ -55,7 +55,6 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         binding =
             OrderExtensionSubmissionExtendsBottomsheetBinding.inflate(inflater, container, false)
         setChild(binding?.root)
-        setTitle(getString(R.string.order_extension_title_submission_extends_bottom_sheet))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
