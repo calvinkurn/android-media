@@ -350,7 +350,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     override fun getErrorMessage(throwable: Throwable): String {
         val message = context?.let { getErrorMessage(it, throwable) }
         if (message.isNullOrEmpty()) {
-            return context?.getString(R.string.default_request_error_unknown) ?: ""
+            return context?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown) ?: ""
         }
         return message
     }
