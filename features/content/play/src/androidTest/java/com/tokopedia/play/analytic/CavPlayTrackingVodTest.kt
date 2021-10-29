@@ -40,7 +40,6 @@ class CavPlayTrackingVodTest {
         } test {
             fakeLogin()
             fakeLaunch()
-            performCart()
             performLike()
             performPinnedProduct()
             performRotateByClick()
@@ -48,12 +47,6 @@ class CavPlayTrackingVodTest {
             Thread.sleep(2000)
             validate()
         }
-    }
-
-    private fun performCart() {
-        register(idlResCart)
-        Espresso.onView(ViewMatchers.withId(R.id.rl_cart)).perform(ViewActions.click()) // cart
-        unregister(idlResCart)
     }
 
     private fun performLike() {
@@ -121,17 +114,6 @@ class CavPlayTrackingVodTest {
         Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.iv_back)).perform(ViewActions.click())
     }
-
-    private val idlResCart by lazy { ComponentIdlingResource(
-            object : PlayIdlingResource{
-                override fun getName(): String = "clickCart"
-
-                override fun idleState(): Boolean {
-                    val view = intentsTestRule.activity.findViewById<RelativeLayout>(R.id.rl_cart)
-                    return view.visibility == View.VISIBLE
-                }
-            }
-    ) }
 
     private val idlResLike by lazy {
         ComponentIdlingResource(

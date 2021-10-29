@@ -151,10 +151,6 @@ class PlayViewModelRobot(
         }.exhaustive
     }
 
-    fun updateCartCountFromNetwork() {
-        viewModel.updateBadgeCart()
-    }
-
     fun showKeyboard(keyboardHeight: Int = 50) {
         viewModel.onKeyboardShown(keyboardHeight)
     }
