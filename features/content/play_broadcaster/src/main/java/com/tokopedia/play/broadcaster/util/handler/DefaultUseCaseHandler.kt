@@ -7,11 +7,9 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import java.lang.reflect.Type
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-
 
 /**
  * Created by mzennis on 06/11/20.

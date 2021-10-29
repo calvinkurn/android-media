@@ -260,18 +260,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveInfo() {
-        parentViewModel.observableLivePusherInfo.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLivePusherInfo.observe(viewLifecycleOwner) {
             when (it) {
                 is PlayLiveLogState.Init -> debugView.setLiveInfo(it)
                 is PlayLiveLogState.Changed -> debugView.updateState(it.state)
             }
-        })
+        }
     }
 
     private fun observeLiveStats() {
-        parentViewModel.observableLivePusherStatistic.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLivePusherStatistic.observe(viewLifecycleOwner) {
             debugView.updateStats(it)
-        })
+        }
     }
 
     private fun setupObserve() {
@@ -557,7 +557,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableLiveCountDownTimerState.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLiveCountDownTimerState.observe(viewLifecycleOwner) {
             when(it)  {
                 is PlayLiveCountDownTimerState.Active -> showCounterDuration(it.remainingInMs)
                 is PlayLiveCountDownTimerState.Finish -> {
@@ -565,7 +565,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     showDialogWhenTimeout()
                 }
             }
-        })
+        }
     }
 
     private fun observeChatList() {
@@ -584,7 +584,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeEvent() {
-        parentViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableEvent.observe(viewLifecycleOwner) {
             when {
                 it.freeze -> {
                     showForceStopDialog(
@@ -601,7 +601,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     )
                 }
             }
-        })
+        }
     }
 
     private fun observeInteractiveConfig() {
@@ -622,7 +622,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeCreateInteractiveSession() {
-        parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner, Observer { state ->
+        parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
                 is NetworkResult.Success -> {
@@ -644,7 +644,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     )
                 }
             }
-        })
+        }
     }
 
     private fun observeUiState() {

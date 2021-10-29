@@ -15,7 +15,6 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import java.io.File
 import java.util.*
-import kotlin.math.max
 
 /**
  * Created by jegul on 25/09/20

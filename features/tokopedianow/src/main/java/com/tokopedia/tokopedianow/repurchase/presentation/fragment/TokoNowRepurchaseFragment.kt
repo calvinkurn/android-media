@@ -35,7 +35,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
-import com.tokopedia.recommendation_widget_common.viewutil.updateRecomWidgetQtyItemWithMiniCart
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -205,7 +204,7 @@ class TokoNowRepurchaseFragment:
         }
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
-        recomWidgetViewModel?.updateRecomWidgetQtyItemWithMiniCart(localCacheModel?.shop_id.orEmpty())
+        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
 
     override fun onChooseAddressWidgetRemoved() {
@@ -540,6 +539,7 @@ class TokoNowRepurchaseFragment:
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data.isShowMiniCartWidget)
+                recomWidgetViewModel?.updateMiniCartWithPageData(it.data)
             }
         }
 

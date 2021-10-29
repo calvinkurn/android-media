@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/viewStcIdentifierOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_stc_date_filter_height"
+        android:background="@drawable/bg_stc_item_filter_gradient_overlay" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/imgStcExclusiveIdentifier"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="60dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvStcExclusiveIdentifierTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="46dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="46dp"
+            android:gravity="center_horizontal"
+            android:text="@string/stc_exclusive_identifier_title" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvStcExclusiveIdentifierDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="46dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="46dp"
+            android:gravity="center_horizontal"
+            app:typographyType="body_3"
+            tools:text="Kamu bisa merubah rentang waktu menjadi 7 hari, 30 hari, per hari, per bulan, bahkan custom." />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnStcUpgradeShopCta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="60dp"
+            android:text="@string/stc_upgrade_shop"
+            app:unifyButtonSize="medium" />
+    </LinearLayout>
+</LinearLayout>
