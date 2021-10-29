@@ -6,7 +6,10 @@
       "eventCategory": "courier selection",
       "event": "clickCourier",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId":".*"
     },
     {
       "eventAction": "view promo already applied in checkout list",
