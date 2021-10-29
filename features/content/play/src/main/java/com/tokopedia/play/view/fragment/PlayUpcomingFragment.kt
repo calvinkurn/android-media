@@ -24,7 +24,6 @@ import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
-import com.tokopedia.play.view.uimodel.state.PlayCartUiState
 import com.tokopedia.play.view.uimodel.state.PlayPartnerUiState
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
@@ -135,7 +134,7 @@ class PlayUpcomingFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
-                renderToolbarView(state.partner, state.share.shouldShow, state.cart)
+                renderToolbarView(state.partner, state.share.shouldShow)
             }
         }
 
@@ -238,14 +237,11 @@ class PlayUpcomingFragment @Inject constructor(
     private fun renderToolbarView(
         partnerState: PlayPartnerUiState,
         isShareable: Boolean,
-        cartState: PlayCartUiState,
     ) {
         toolbarView.setFollowStatus(partnerState.followStatus)
         toolbarView.setPartnerName(partnerState.name)
 
         toolbarView.setIsShareable(isShareable)
-
-        toolbarView.showCart(cartState.shouldShow)
     }
 
     override fun onClickActionButton() {
@@ -273,8 +269,6 @@ class PlayUpcomingFragment @Inject constructor(
     override fun onPartnerNameClicked(view: ToolbarViewComponent) {
         playViewModel.submitAction(ClickPartnerNameAction)
     }
-
-    override fun onCartButtonClicked(view: ToolbarViewComponent) { }
 
     override fun onCopyButtonClicked(view: ToolbarViewComponent) {
         playViewModel.submitAction(ClickShareAction)

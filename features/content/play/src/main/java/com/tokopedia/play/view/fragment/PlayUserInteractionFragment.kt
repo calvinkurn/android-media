@@ -314,11 +314,6 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(ClickPartnerNameAction)
     }
 
-    override fun onCartButtonClicked(view: ToolbarViewComponent) {
-        playViewModel.submitAction(ClickCartAction)
-        analytic.clickCartIcon()
-    }
-
     override fun onCopyButtonClicked(view: ToolbarViewComponent) {
         playViewModel.submitAction(ClickShareAction)
 
@@ -854,7 +849,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 renderInteractiveView(prevState?.interactiveView, state.interactiveView, state.partner)
                 renderWinnerBadgeView(state.winnerBadge)
-                renderToolbarView(state.partner, state.share, state.cart)
+                renderToolbarView(state.partner, state.share)
                 renderLikeView(prevState?.like, state.like)
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
@@ -1083,7 +1078,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
-            InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
             InteractionEvent.SendChat -> shouldComposeChat()
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
         }
@@ -1497,16 +1491,12 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderToolbarView(
         partner: PlayPartnerUiState,
-        share: PlayShareUiState,
-        cart: PlayCartUiState,
+        share: PlayShareUiState
     ) {
         toolbarView.setFollowStatus(partner.followStatus)
         toolbarView.setPartnerName(partner.name)
 
         toolbarView.setIsShareable(share.shouldShow)
-
-        toolbarView.showCart(cart.shouldShow)
-        toolbarView.setCartCount(cart.count)
     }
 
     private fun renderLikeView(

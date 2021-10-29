@@ -17,7 +17,6 @@ data class PlayViewerNewUiState(
     val like: PlayLikeUiState,
     val totalView: PlayTotalViewUiState,
     val share: PlayShareUiState,
-    val cart: PlayCartUiState,
     val rtn: PlayRtnUiState,
 )
 
@@ -72,17 +71,6 @@ data class PlayLikeUiState(
         val isLiked: Boolean,
         val canShowBubble: Boolean,
 )
-
-data class PlayCartUiState(
-        val shouldShow: Boolean,
-        val count: PlayCartCount,
-)
-
-sealed class PlayCartCount {
-
-    data class Show(val countText: String) : PlayCartCount()
-    object Hide : PlayCartCount()
-}
 
 data class PlayRtnUiState(
     val shouldShow: Boolean,

@@ -28,7 +28,6 @@ data class PlayChannelData(
         val partnerInfo: PlayPartnerInfo,
         val likeInfo: PlayLikeInfoUiModel,
         val channelReportInfo: PlayChannelReportUiModel,
-        val cartInfo: PlayCartInfoUiModel,
         val pinnedInfo: PlayPinnedInfoUiModel,
         val quickReplyInfo: PlayQuickReplyInfoUiModel,
         val videoMetaInfo: PlayVideoMetaInfoUiModel,
