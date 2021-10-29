@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
@@ -67,7 +68,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
                         doUploadImage(FileType.ID_CARD, ID_CARD)
                     } else {
                         hideLoading()
-                        onError(Throwable(it.data.validation.error))
+                        onError(MessageErrorException(it.data.validation.error))
                     }
                 }
 

@@ -8,6 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
@@ -30,7 +31,7 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
                     if (it.data.validation.isSuccess) {
                         onSuccessPhoneValidation()
                     } else {
-                        onFailedPhoneValidation(Throwable(it.data.validation.error))
+                        onFailedPhoneValidation(MessageErrorException(it.data.validation.error))
                     }
                 }
                 is Fail -> {
@@ -46,10 +47,8 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
                     if (it.data.submit.isSuccess == STATUS_OK) {
                         onSuccessSubmitNewPhoneNumber()
                     } else {
-                        val errors = it.data.submit.errorMessage
-                        if (!errors.isNullOrEmpty()) {
-                            onFailedSubmitNewPhoneNumber(Throwable(it.data.submit.errorMessage.first()))
-                        }
+                        val errorMessage = it.data.submit.errorMessage.first()
+                        onFailedSubmitNewPhoneNumber(MessageErrorException(errorMessage))
                     }
                 }
                 is Fail -> {
@@ -65,7 +64,7 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
                     if (it.data.verify.isSuccess) {
                         onSuccessVerificationNewPhone(it.data)
                     } else {
-                        onFailedVerificationNewPhone(Throwable(it.data.verify.errorMessage))
+                        onFailedVerificationNewPhone(MessageErrorException(it.data.verify.errorMessage))
                     }
                 }
                 is Fail -> {
