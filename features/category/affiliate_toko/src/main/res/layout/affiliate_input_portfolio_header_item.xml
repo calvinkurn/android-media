@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2"
+        app:typographyWeight="reguler"
+        android:text="Hai, Ana! Isi profil sosial media kamu di bawah ini, ya!"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sub_header"
+        app:typographyType="body_3"
+        android:text="Isi minimal 1 sosial media."
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        app:layout_constraintStart_toStartOf="@id/header"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
