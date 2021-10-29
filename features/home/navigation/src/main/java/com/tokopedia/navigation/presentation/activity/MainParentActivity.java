@@ -767,12 +767,7 @@ public class MainParentActivity extends BaseActivity implements
             }
             cartBundle.putString("CartFragment", MainParentActivity.class.getSimpleName());
 
-            boolean isBundleToggleOn = Switch.INSTANCE.isBundleToggleOn(this);
-            if (isBundleToggleOn) {
-                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.CART_FRAGMENT, cartBundle));
-            } else {
-                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.OLD_CART_FRAGMENT, cartBundle));
-            }
+            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.CART_FRAGMENT, cartBundle));
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         } else {
             Bundle bundleWishlist = new Bundle();
