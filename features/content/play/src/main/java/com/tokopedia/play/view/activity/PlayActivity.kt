@@ -294,38 +294,6 @@ class PlayActivity : BaseActivity(),
         } else super.onBackPressed()
     }
 
-    private fun isCustomTaskRoot(): Boolean {
-
-        val activityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val appTasks = activityManager.appTasks
-
-        Log.d("<INTENT>", "=====================")
-        Log.d("<INTENT>", "CUSTOM TASK ROOT")
-        Log.d("<INTENT>", "ISTASKROOT: $isTaskRoot")
-
-        for(task in appTasks) {
-            val baseIntent = task.taskInfo.baseIntent
-            val categories = baseIntent.categories
-
-            Log.d("<INTENT>", "ACTION : ${baseIntent.action}")
-            Log.d("<INTENT>", "SCHEME : ${baseIntent.scheme}")
-            Log.d("<INTENT>", "FLAGS : ${baseIntent.flags}")
-            Log.d("<INTENT>", "CATEGORIES : $categories")
-            if(categories != null)
-                Log.d("<INTENT>", "CATEGORIES NOT CONTAIN LAUNCHER : ${!categories.contains(Intent.CATEGORY_LAUNCHER)}")
-        }
-
-        Log.d("<INTENT>", "=====================")
-
-        for(task in appTasks) {
-            val baseIntent = task.taskInfo.baseIntent
-            val categories = baseIntent.categories ?: return true
-
-            return !categories.contains(Intent.CATEGORY_LAUNCHER)
-        }
-        return true
-    }
-
     override fun requestEnableNavigation() {
         swipeContainerView.setEnableSwiping(!orientation.isLandscape)
     }
