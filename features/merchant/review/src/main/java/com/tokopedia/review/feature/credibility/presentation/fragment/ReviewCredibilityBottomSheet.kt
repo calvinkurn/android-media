@@ -195,9 +195,9 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
             text = buttonText
             setOnClickListener {
                 if (isUsersOwnCredibility()) {
-                    ReviewCredibilityTracking.trackOnClickCTASelfCredibility(buttonText, userId, source)
+                    ReviewCredibilityTracking.trackOnClickCTASelfCredibility(buttonText, userId, source, viewModel.userId)
                 } else {
-                    ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(buttonText, userId, productId, source)
+                    ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(buttonText, userId, productId, source, viewModel.userId)
                 }
                 handleRouting(applink)
             }
