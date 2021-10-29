@@ -325,22 +325,25 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         event_pdp_collapsing_toolbar.title = ""
         event_pdp_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                if (Math.abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
-//                    event_pdp_collapsing_toolbar.title = productDetailData.title
-//                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }?.let {
-//                        navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
-//                    }
-//                    event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_black)
-                    widget_event_pdp_tab_section.setScrolledMode()
-                    widget_event_pdp_tab_section.show()
-                } else if(verticalOffset == 0){
-//                    event_pdp_collapsing_toolbar.title = ""
-//                    context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0) }?.let {
-//                        navIcon?.setColorFilter(it, PorterDuff.Mode.SRC_ATOP)
-//                    }
-//                    event_pdp_toolbar.menu.getItem(0).setIcon(com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_white)
-                    widget_event_pdp_tab_section.setNullMode()
-                    widget_event_pdp_tab_section.hide()
+                context?.let { context ->
+                    var icon = 0
+                    var color = 0
+                    if (Math.abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+                        event_pdp_collapsing_toolbar.title = productDetailData.title
+                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                        icon = com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_black
+                        widget_event_pdp_tab_section.setScrolledMode()
+                        widget_event_pdp_tab_section.show()
+                    } else if (verticalOffset == 0) {
+                        event_pdp_collapsing_toolbar.title = ""
+                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        icon = com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_white
+                        widget_event_pdp_tab_section.setNullMode()
+                        widget_event_pdp_tab_section.hide()
+                    }
+
+                    event_pdp_toolbar.menu.getItem(0).setIcon(icon)
+                    navIcon?.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
                 }
             }
         })
