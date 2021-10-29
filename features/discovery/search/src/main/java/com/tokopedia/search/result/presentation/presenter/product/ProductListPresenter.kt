@@ -107,7 +107,6 @@ import org.json.JSONArray
 import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
-import rx.observers.Subscribers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -227,10 +226,6 @@ class ProductListPresenter @Inject constructor(
             e.printStackTrace()
             false
         }
-    }
-
-    private fun checkNavigationRollenceValue(rollenceKey: String, expectedValue: String): Boolean {
-        return view.abTestRemoteConfig?.getString(rollenceKey, NAVIGATION_VARIANT_OLD) == expectedValue
     }
 
     private fun getHasFullThreeDotsOptions(): Boolean {
