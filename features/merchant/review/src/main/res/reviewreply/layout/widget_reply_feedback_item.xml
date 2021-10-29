@@ -95,6 +95,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/reply_feedback_item_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="badRatingReasonReview, rvItemAttachmentFeedback, tvFeedbackReview"/>
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerFeedbackReply"
         android:layout_width="match_parent"
@@ -103,7 +110,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:layout_goneMarginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
+        app:layout_constraintTop_toBottomOf="@id/reply_feedback_item_barrier" />
 
     <View
         android:id="@+id/replyFeedbackState"
