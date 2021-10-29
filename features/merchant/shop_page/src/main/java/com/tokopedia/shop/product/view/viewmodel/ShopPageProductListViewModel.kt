@@ -265,7 +265,8 @@ class ShopPageProductListViewModel @Inject constructor(
             widgetUserAddressLocalData: LocalCacheModel,
             rating: String = "",
             pmax: Int = 0,
-            pmin: Int = 0
+            pmin: Int = 0,
+            fcategory: Int? = null
     ): GetShopProductUiModel {
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
                 page = page,
@@ -276,6 +277,7 @@ class ShopPageProductListViewModel @Inject constructor(
                 rating = rating,
                 pmax = pmax,
                 pmin = pmin,
+                fcategory = fcategory,
                 userDistrictId = widgetUserAddressLocalData.district_id,
                 userCityId = widgetUserAddressLocalData.city_id,
                 userLat = widgetUserAddressLocalData.lat,
@@ -322,7 +324,8 @@ class ShopPageProductListViewModel @Inject constructor(
                         widgetUserAddressLocalData,
                         shopProductFilterParameter.getRating(),
                         shopProductFilterParameter.getPmax(),
-                        shopProductFilterParameter.getPmin()
+                        shopProductFilterParameter.getPmin(),
+                        shopProductFilterParameter.getCategory()
                 )
             }
             productListData.postValue(Success(listShopProduct))

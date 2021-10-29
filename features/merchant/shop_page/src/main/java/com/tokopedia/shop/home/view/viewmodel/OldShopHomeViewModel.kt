@@ -343,6 +343,7 @@ class OldShopHomeViewModel @Inject constructor(
                     rating = shopProductFilterParameter.getRating()
                     pmax = shopProductFilterParameter.getPmax()
                     pmin = shopProductFilterParameter.getPmin()
+                    fcategory = shopProductFilterParameter.getCategory()
                     userDistrictId = widgetUserAddressLocalData.district_id
                     userCityId = widgetUserAddressLocalData.city_id
                     userLat = widgetUserAddressLocalData.lat
