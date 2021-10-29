@@ -43,6 +43,10 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
@@ -85,12 +89,8 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataVie
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.tokopedianow.searchcategory.utils.OOC_TOKONOW
-import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
-import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
 import com.tokopedia.tokopedianow.searchcategory.utils.REPURCHASE_WIDGET_POSITION
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
@@ -418,7 +418,13 @@ abstract class BaseSearchCategoryViewModel(
 
         visitableList.add(chooseAddressDataView)
         visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
-        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_NO_RESULT))
+        visitableList.add(
+            TokoNowRecommendationCarouselUiModel(
+                pageName = TOKONOW_NO_RESULT,
+                keywords = getKeywordForGeneralSearchTracking(),
+                isBindWithPageName = true
+            )
+        )
     }
 
     private fun createVisitableListWithProduct(
@@ -939,15 +945,15 @@ abstract class BaseSearchCategoryViewModel(
             onViewReloadPage()
     }
 
-    protected open fun refreshMiniCart() {
+    open fun refreshMiniCart() {
         val shopId = shopIdLiveData.value ?: ""
         if (!shopId.isValidId()) return
 
         getMiniCartListSimplifiedUseCase.cancelJobs()
         getMiniCartListSimplifiedUseCase.setParams(listOf(shopId))
         getMiniCartListSimplifiedUseCase.execute(
-                ::onViewUpdateCartItems,
-                ::onGetMiniCartDataFailed,
+            ::onViewUpdateCartItems,
+            ::onGetMiniCartDataFailed,
         )
     }
 
