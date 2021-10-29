@@ -1,16 +1,12 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.RoundedBitmapDrawable
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload
 import com.tokopedia.review.inbox.R
@@ -136,26 +132,8 @@ class ImageUploadAdapter constructor(var context: Context) :
         private const val VIEW_UPLOAD_BUTTON = 100
         private const val VIEW_REVIEW_IMAGE = 97
         private const val MAX_IMAGE = 5
-        const val RADIUS_CORNER = 4
         fun createAdapter(context: Context): ImageUploadAdapter {
             return ImageUploadAdapter(context)
-        }
-
-        private fun getRoundedImageViewTarget(
-            imageView: ImageView,
-            radius: Float
-        ): BitmapImageViewTarget {
-            return object : BitmapImageViewTarget(imageView) {
-                override fun setResource(resource: Bitmap?) {
-                    val circularBitmapDrawable: RoundedBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(
-                            imageView.context.resources,
-                            resource
-                        )
-                    circularBitmapDrawable.cornerRadius = radius
-                    imageView.setImageDrawable(circularBitmapDrawable)
-                }
-            }
         }
     }
 
