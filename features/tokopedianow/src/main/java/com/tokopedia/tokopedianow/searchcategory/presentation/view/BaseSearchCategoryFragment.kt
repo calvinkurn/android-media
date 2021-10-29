@@ -48,7 +48,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
-import com.tokopedia.recommendation_widget_common.viewutil.updateRecomWidgetQtyItemWithMiniCart
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
@@ -620,13 +619,12 @@ abstract class BaseSearchCategoryFragment:
         miniCartSimplifiedData ?: return
 
         miniCartWidget?.updateData(miniCartSimplifiedData)
+        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
-        recomWidgetViewModel?.updateRecomWidgetQtyItemWithMiniCart(
-            getViewModel().shopIdLiveData.value ?: ""
-        )
+        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
