@@ -136,7 +136,6 @@ class ShopHomeViewModel @Inject constructor(
         get() = _checkCampaignFlashSaleRemindMeStatusData
     private val _checkCampaignFlashSaleRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
 
-
     val bottomSheetFilterLiveData : LiveData<Result<DynamicFilterModel>>
         get() = _bottomSheetFilterLiveData
     private val _bottomSheetFilterLiveData = MutableLiveData<Result<DynamicFilterModel>>()
@@ -397,7 +396,7 @@ class ShopHomeViewModel @Inject constructor(
         }) {}
     }
 
-    fun getCampaignRemindMeStatus(campaignId: String) {
+    fun getCampaignFlashSaleRemindMeStatus(campaignId: String) {
         launchCatchError(block = {
             val getCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
                 getCampaignNotifyMe(campaignId)
@@ -449,9 +448,9 @@ class ShopHomeViewModel @Inject constructor(
                 checkCampaignNotifyMeModel.errorMessage,
                 action
             )
-            _checkCampaignNplRemindMeStatusData.postValue(Success(checkCampaignNotifyMeUiModel))
+            _checkCampaignFlashSaleRemindMeStatusData.postValue(Success(checkCampaignNotifyMeUiModel))
         }) {
-            _checkCampaignNplRemindMeStatusData.postValue(Fail(CheckCampaignNplException(
+            _checkCampaignFlashSaleRemindMeStatusData.postValue(Fail(CheckCampaignNplException(
                 it.cause,
                 it.message,
                 campaignId

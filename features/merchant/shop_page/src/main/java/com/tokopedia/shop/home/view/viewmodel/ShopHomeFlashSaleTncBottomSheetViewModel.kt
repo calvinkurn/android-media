@@ -26,11 +26,9 @@ class ShopHomeFlashSaleTncBottomSheetViewModel @Inject constructor(
         launchCatchError(
             block = {
                 Success(withContext(dispatcherProvider.io) {
-                    getMerchantCampaignTncUseCase.params =
-                        GetShopHomeMerchantCampaignTncUseCase.createParams(campaignId)
+                    getMerchantCampaignTncUseCase.params = GetShopHomeMerchantCampaignTncUseCase.createParams(campaignId)
                     val tncModel = getMerchantCampaignTncUseCase.executeOnBackground()
-                    flashSaleTncLiveData.value =
-                        Success(ShopPageHomeMapper.mapToShopHomeFlashSaleTncUiModel(tncModel))
+                    flashSaleTncLiveData.postValue(Success(ShopPageHomeMapper.mapToShopHomeFlashSaleTncUiModel(tncModel)))
                 })
             }, onError = {
                 flashSaleTncLiveData.value = Fail(it)

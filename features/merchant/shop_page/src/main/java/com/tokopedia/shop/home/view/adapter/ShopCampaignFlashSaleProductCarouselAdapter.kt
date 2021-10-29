@@ -2,13 +2,16 @@ package com.tokopedia.shop.home.view.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeFlashSaleProductCardBigGridViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeFlashSaleProductCardGridViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeFlashSaleProductListViewHolder
+import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
-class ShopCampaignFlashSaleProductCarouselAdapter :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSaleWidgetListener)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var flashSaleProductList: List<ShopHomeProductUiModel> = listOf()
 
@@ -31,13 +34,16 @@ class ShopCampaignFlashSaleProductCarouselAdapter :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             PRODUCT_CARD_LIST -> {
-                ShopHomeFlashSaleProductListViewHolder(parent)
+                val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid)
+                ShopHomeFlashSaleProductListViewHolder(itemView, listener)
             }
             PRODUCT_CARD_BIG_GRID -> {
-                ShopHomeFlashSaleProductCardBigGridViewHolder(parent)
+                val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid)
+                ShopHomeFlashSaleProductCardBigGridViewHolder(itemView, listener)
             }
             else -> {
-                ShopHomeFlashSaleProductCardGridViewHolder(parent)
+                val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid)
+                ShopHomeFlashSaleProductCardGridViewHolder(itemView, listener)
             }
         }
     }

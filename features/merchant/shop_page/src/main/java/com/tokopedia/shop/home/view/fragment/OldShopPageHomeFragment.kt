@@ -2484,19 +2484,18 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     }
 
     override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
-        TODO("Not yet implemented")
     }
 
     override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
-        TODO("Not yet implemented")
     }
 
     override fun onClickFlashSaleReminder(model: ShopHomeFlashSaleUiModel) {
-        TODO("Not yet implemented")
     }
 
     override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
-        TODO("Not yet implemented")
+    }
+
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
     }
 
     override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {

@@ -4,11 +4,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
@@ -29,7 +31,9 @@ class ShopHomeFlashSaleViewHolder(
     private val flashSaleCampaignNameView: Typography? = itemView.findViewById(R.id.tgp_flash_sale_campaign_name)
     private val tncInfoIconView: AppCompatImageView? = itemView.findViewById(R.id.iv_tnc_info_icon)
     private val ctaSeeAllView: Typography? = itemView.findViewById(R.id.tgp_cta_see_all)
-    private val backGroundView: View? = itemView.findViewById(R.id.bg_flash_sale)
+    private val singleBackGroundView: View? = itemView.findViewById(R.id.bg_single)
+    private val doubleBackGroundView: View? = itemView.findViewById(R.id.bg_double)
+    private val multipleBackGroundView: View? = itemView.findViewById(R.id.bg_multiple)
     private val countDownLayout: View? = itemView.findViewById(R.id.flash_sale_count_down_layout)
     private val timerDescriptionView: Typography? = itemView.findViewById(R.id.tgp_flash_sale_timer_desc)
     private val timerView: TimerUnifySingle? = itemView.findViewById(R.id.tus_flash_sale_timer)
@@ -37,23 +41,23 @@ class ShopHomeFlashSaleViewHolder(
     private val reminderBellView: AppCompatImageView? = itemView.findViewById(R.id.iv_remind_me_bell)
     private val reminderCountView: Typography? = itemView.findViewById(R.id.tgp_remind_me)
     private val productCarouselView: RecyclerView? = itemView.findViewById(R.id.rv_flash_sale_product_carousel)
-    private val productCarouselAdapter: ShopCampaignFlashSaleProductCarouselAdapter = ShopCampaignFlashSaleProductCarouselAdapter()
+    private val productCarouselAdapter: ShopCampaignFlashSaleProductCarouselAdapter = ShopCampaignFlashSaleProductCarouselAdapter(listener)
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_flash_sale_widget
         private const val SINGLE = 1
         private const val DOUBLE = 2
-        private const val SINGLE_PRODUCT_BACKGROUND_HEIGHT = 198
-        private const val DOUBLE_PRODUCT_BACKGROUND_HEIGHT = 212
-        private const val MULTIPLE_PRODUCT_BG_HEIGHT = 184
         private const val ONE = 1
         private const val ONE_HUNDRED = 100
         private const val ONE_THOUSAND = 1000
         private const val ONE_MILLION = 1000000
     }
 
-    init { setupClickListener(listener) }
+    init {
+        setupClickListener(listener)
+        setupProductCardCarouselView(productCarouselView)
+    }
 
     override fun bind(element: ShopHomeFlashSaleUiModel) {
         this.uiModel = element
@@ -95,6 +99,13 @@ class ShopHomeFlashSaleViewHolder(
         }
     }
 
+    private fun setupProductCardCarouselView(productCarouselView: RecyclerView?) {
+        itemView.context?.run {
+            productCarouselView?.adapter = productCarouselAdapter
+            productCarouselView?.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        }
+    }
+
     private fun setupHeader(campaignName: String) {
         flashSaleCampaignNameView?.text = campaignName
     }
@@ -104,25 +115,14 @@ class ShopHomeFlashSaleViewHolder(
     }
 
     private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>) {
+        // reset background visibility
+        singleBackGroundView?.hide()
+        doubleBackGroundView?.hide()
+        multipleBackGroundView?.hide()
         when(productList.size) {
-            SINGLE -> {
-                backGroundView?.layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    SINGLE_PRODUCT_BACKGROUND_HEIGHT
-                )
-            }
-            DOUBLE -> {
-                backGroundView?.layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    DOUBLE_PRODUCT_BACKGROUND_HEIGHT
-                )
-            }
-            else -> {
-                backGroundView?.layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    MULTIPLE_PRODUCT_BG_HEIGHT
-                )
-            }
+            SINGLE -> { singleBackGroundView?.show() }
+            DOUBLE -> { doubleBackGroundView?.show() }
+            else -> { multipleBackGroundView?.show() }
         }
     }
 
@@ -186,7 +186,6 @@ class ShopHomeFlashSaleViewHolder(
     private fun setupProductCardCarousel(model: ShopHomeFlashSaleUiModel) {
         val productList = model.data?.firstOrNull()?.productList ?: listOf()
         productCarouselAdapter.setProductList(productList)
-        productCarouselView?.adapter = productCarouselAdapter
     }
 
     private fun isStatusCampaignFinished(statusCampaign: String): Boolean {

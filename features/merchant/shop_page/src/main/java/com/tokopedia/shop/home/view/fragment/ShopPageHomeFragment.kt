@@ -1027,7 +1027,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 listCampaignFlashSaleUiModel.forEach { flashSaleCampaignUiModel ->
                     flashSaleCampaignUiModel.data?.firstOrNull()?.let { flashSaleItem ->
                         if (flashSaleItem.statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, ignoreCase = true))
-                            viewModel?.getCampaignRemindMeStatus(flashSaleItem.campaignId)
+                            viewModel?.getCampaignFlashSaleRemindMeStatus(flashSaleItem.campaignId)
                     }
                 }
             }
@@ -2262,7 +2262,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
         context?.run {
-            if (shopId.isNotBlank() && model.header.etalaseId.isNotBlank()) {
+            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
                 model.data?.firstOrNull()?.let { flashSaleItem ->
                     shopPageHomeTracking.onClickSeeAllButtonFlashSaleWidget(
                             statusCampaign = flashSaleItem.statusCampaign,
@@ -2271,7 +2271,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             isOwner = isOwner
                     )
                 }
-                RouteManager.route(this, ApplinkConst.SHOP_ETALASE, shopId, model.header.etalaseId)
+                RouteManager.route(this, model.header.ctaLink)
             }
         }
     }
@@ -2322,6 +2322,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     isOwner = isOwner
             )
         }
+    }
+
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
+        goToPDP(model.id?:"")
     }
 
     private fun handleClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {

@@ -352,6 +352,7 @@ object ShopPageHomeMapper {
                 it.totalNotify,
                 it.totalNotifyWording,
                 mapCampaignFlashSaleListProduct(it.statusCampaign, it.listProduct),
+                false
             )
         }
     }
