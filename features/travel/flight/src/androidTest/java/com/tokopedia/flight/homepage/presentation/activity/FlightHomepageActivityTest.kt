@@ -190,7 +190,7 @@ class FlightHomepageActivityTest {
         // select today
         val sdf = SimpleDateFormat("d")
         val dateToday = sdf.format(DateUtil.getCurrentDate())
-        onView(getElementFromMatchAtPosition(withText(dateToday), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withText(dateToday), 1)).perform(click())
 
         Thread.sleep(3000)
     }

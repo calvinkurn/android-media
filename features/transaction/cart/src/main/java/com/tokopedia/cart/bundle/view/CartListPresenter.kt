@@ -1,6 +1,5 @@
 package com.tokopedia.cart.bundle.view
 
-import android.util.Log
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -165,7 +164,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     private fun onErrorGetCartList(throwable: Throwable, initialLoad: Boolean) {
-        throwable.printStackTrace()
         Timber.e(throwable)
         view?.let {
             if (!initialLoad) {
@@ -334,7 +332,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     private fun onErrorUpdateCartForCheckout(throwable: Throwable, cartItemDataList: List<CartItemHolderData>) {
-        throwable.printStackTrace()
         view?.let { view ->
             view.hideProgressLoading()
             view.renderErrorToShipmentForm(throwable)
