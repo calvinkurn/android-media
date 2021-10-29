@@ -281,7 +281,7 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    if (isCustomTaskRoot()) {
+                    if (isTaskRoot) {
                         val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
                         startActivity(intent)
                         finish()
