@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.listener
 
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 interface ShopHomeFlashSaleWidgetListener {
 
@@ -13,4 +14,6 @@ interface ShopHomeFlashSaleWidgetListener {
     fun onTimerFinished(model: ShopHomeFlashSaleUiModel)
 
     fun onFlashSaleProductClicked(model: ShopHomeProductUiModel)
+
+    fun onFlashSaleWidgetImpressed(model : ShopHomeFlashSaleUiModel, position: Int)
 }
