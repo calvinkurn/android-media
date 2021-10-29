@@ -2497,5 +2497,9 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
 
     override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
     }
+
+    override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
+        TODO("Not yet implemented")
+    }
     //endregion
 }

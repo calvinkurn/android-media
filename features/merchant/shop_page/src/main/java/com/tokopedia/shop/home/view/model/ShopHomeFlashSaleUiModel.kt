@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 
 class ShopHomeFlashSaleUiModel(
@@ -10,6 +11,9 @@ class ShopHomeFlashSaleUiModel(
     override val header: Header,
     val data: List<FlashSaleItem>? = null
 ) : BaseShopHomeWidgetUiModel() {
+
+    val impressHolder = ImpressHolder()
+
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

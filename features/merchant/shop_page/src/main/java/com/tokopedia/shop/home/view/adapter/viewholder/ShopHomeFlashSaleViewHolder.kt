@@ -7,6 +7,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -68,7 +69,16 @@ class ShopHomeFlashSaleViewHolder(
         setupFlashSaleCountDownTimer(element)
         setupFlashSaleReminder(flashSaleItem?.isRemindMe?:false, flashSaleItem?.totalNotify?:0)
         setupProductCardCarousel(element)
+        setupWidgetImpressionListener(element)
         // todo set placeholder
+    }
+
+    private fun setupWidgetImpressionListener(uiModel: ShopHomeFlashSaleUiModel) {
+        uiModel.data?.firstOrNull()?.let {
+            itemView.addOnImpressionListener(uiModel.impressHolder) {
+                listener.onFlashSaleWidgetImpressed(uiModel, adapterPosition)
+            }
+        }
     }
 
     private fun setupClickListener(listener: ShopHomeFlashSaleWidgetListener) {

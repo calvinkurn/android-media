@@ -31,10 +31,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_OK_TOASTER_NOT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_LIST_TOGGLE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_RECOMMENDATION
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REMINDER_FLASH_SALE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TNC
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TNC_BUTTON_FLASH_SALE_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL_BUTTON_FLASH_SALE_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL_PRODUCT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_WISHLIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE
@@ -102,6 +105,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_90
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_NAVIGATION_BANNER
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
@@ -1144,6 +1148,149 @@ class ShopPageHomeTracking(
                                 imageUrl
                         ))))
         sendDataLayerEvent(eventMap)
+    }
+
+    fun impressionCampaignFlashSaleWidget(
+            campaignId: String,
+            statusCampaign: String,
+            shopId: String,
+            userId: String,
+            position: Int,
+            isOwner: Boolean,
+    ) {
+
+        val ecommerce = mutableMapOf(
+                PROMO_VIEW to mutableMapOf(
+                        PROMOTIONS to listOf(
+                                createEcommerceFlashSaleItemMap(
+                                        creative = statusCampaign,
+                                        id = campaignId,
+                                        name = FLASH_SALE.replace(" ", "_"),
+                                        position = position
+                                )
+                        )
+                )
+        )
+        val eventMap = createFlashSaleTrackerMap(
+                eventName = PROMO_VIEW,
+                eventAction = joinSpace(FLASH_SALE, IMPRESSION),
+                eventCategory = getShopPageCategory(isOwner),
+                eventLabel = "",
+                shopId = shopId,
+                userId = userId,
+                ecommerceMap = ecommerce
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
+    fun onClickReminderButtonFlashSaleWidget(
+            campaignId: String,
+            shopId: String,
+            userId: String,
+            isOwner: Boolean,
+    ) {
+        val eventMap = createFlashSaleTrackerMap(
+                eventName = CLICK_SHOP_PAGE,
+                eventAction = joinSpace(CLICK, FLASH_SALE),
+                eventCategory = getShopPageCategory(isOwner),
+                eventLabel = joinDash(CLICK_REMINDER_FLASH_SALE_WIDGET, campaignId),
+                shopId = shopId,
+                userId = userId,
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
+    fun onClickSeeAllButtonFlashSaleWidget(
+            statusCampaign: String,
+            shopId: String,
+            userId: String,
+            isOwner: Boolean,
+    ) {
+        val eventMap = createFlashSaleTrackerMap(
+                eventName = CLICK_SHOP_PAGE,
+                eventAction = joinSpace(CLICK, FLASH_SALE),
+                eventCategory = getShopPageCategory(isOwner),
+                eventLabel = joinDash(CLICK_VIEW_ALL_BUTTON_FLASH_SALE_WIDGET, statusCampaign),
+                shopId = shopId,
+                userId = userId,
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
+    fun onClickTnCButtonFlashSaleWidget(
+            campaignId: String,
+            shopId: String,
+            userId: String,
+            isOwner: Boolean,
+    ) {
+        val eventMap = createFlashSaleTrackerMap(
+                eventName = CLICK_SHOP_PAGE,
+                eventAction = joinSpace(CLICK, FLASH_SALE),
+                eventCategory = getShopPageCategory(isOwner),
+                eventLabel = joinDash(CLICK_TNC_BUTTON_FLASH_SALE_WIDGET, campaignId),
+                shopId = shopId,
+                userId = userId,
+        )
+        sendDataLayerEvent(eventMap)
+    }
+
+    // enable when item view is ready
+//    fun onClickSeeAllButtonOnCarouselProductFlashSaleWidget(
+//            campaignId: String,
+//            statusCampaign: String,
+//            shopId: String,
+//            userId: String,
+//            isOwner: Boolean,
+//    ) {
+//        val eventMap = createFlashSaleTrackerMap(
+//                eventName = CLICK_SHOP_PAGE,
+//                eventAction = joinSpace(CLICK, FLASH_SALE),
+//                eventCategory = getShopPageCategory(isOwner),
+//                eventLabel = joinDash(CLICK_VIEW_ALL_BUTTON_FLASH_SALE_WIDGET, statusCampaign),
+//                shopId = shopId,
+//                userId = userId,
+//        )
+//        sendDataLayerEvent(eventMap)
+//    }
+
+    private fun createFlashSaleTrackerMap(
+            eventName: String,
+            eventAction: String,
+            eventCategory: String,
+            eventLabel: String,
+            shopId: String,
+            userId: String,
+            ecommerceMap: Map<String, Any>? = null
+    ): MutableMap<String, Any> {
+        val flashSaleEventMap = mutableMapOf<String, Any>(
+                EVENT to eventName,
+                EVENT_ACTION to eventAction,
+                EVENT_CATEGORY to eventCategory,
+                EVENT_LABEL to eventLabel,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to shopId,
+                USER_ID to userId
+        )
+        ecommerceMap?.let {
+            flashSaleEventMap[ECOMMERCE] = it
+        }
+
+        return flashSaleEventMap
+    }
+
+    private fun createEcommerceFlashSaleItemMap(
+            creative: String,
+            id: String,
+            name: String,
+            position: Int
+    ): Map<String, Any> {
+        return mapOf(
+                CREATIVE to creative,
+                ID to id,
+                NAME to name,
+                POSITION to (position + 1)
+        )
     }
 
     private fun createCampaignNplWidgetItemMap(

@@ -2249,12 +2249,28 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
-        model.data?.firstOrNull()?.let { showFlashTncSaleBottomSheet(it.campaignId) }
+        model.data?.firstOrNull()?.let {
+            shopPageHomeTracking.onClickTnCButtonFlashSaleWidget(
+                    campaignId = it.campaignId,
+                    shopId = shopId,
+                    userId = userId,
+                    isOwner = isOwner
+            )
+            showFlashTncSaleBottomSheet(it.campaignId)
+        }
     }
 
     override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
         context?.run {
             if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
+                model.data?.firstOrNull()?.let { flashSaleItem ->
+                    shopPageHomeTracking.onClickSeeAllButtonFlashSaleWidget(
+                            statusCampaign = flashSaleItem.statusCampaign,
+                            shopId = shopId,
+                            userId = userId,
+                            isOwner = isOwner
+                    )
+                }
                 RouteManager.route(this, model.header.ctaLink)
             }
         }
@@ -2299,6 +2315,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 setFlashSaleRemindMeClickedCampaignId(campaignId)
                 redirectToLoginPage()
             }
+            shopPageHomeTracking.onClickReminderButtonFlashSaleWidget(
+                    campaignId = campaignId,
+                    shopId = shopId,
+                    userId = userId,
+                    isOwner = isOwner
+            )
         }
     }
 
@@ -2386,6 +2408,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     selectedBanner?.imageUrl ?: "",
                     customDimensionShopPage,
                     isOwner
+            )
+        }
+    }
+
+    override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
+        model.data?.firstOrNull()?.let { itemFlashSale ->
+            val campaignId = itemFlashSale.campaignId
+            val statusCampaign = itemFlashSale.statusCampaign
+            shopPageHomeTracking.impressionCampaignFlashSaleWidget(
+                    campaignId = campaignId,
+                    statusCampaign = statusCampaign,
+                    shopId = shopId,
+                    userId = userId,
+                    position = position,
+                    isOwner = isOwner
             )
         }
     }
