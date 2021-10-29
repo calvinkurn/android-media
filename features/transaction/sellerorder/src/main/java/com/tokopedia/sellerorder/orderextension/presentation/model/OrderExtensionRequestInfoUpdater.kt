@@ -71,15 +71,15 @@ interface OrderExtensionRequestInfoUpdater {
         }
     }
 
-    class OnFinishSendingOrderExtensionRequest : OrderExtensionRequestInfoUpdater {
+    class OnFailedSendingOrderExtensionRequest(private val shouldDismiss: Boolean) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = false)
+            return oldData.copy(processing = false, completed = shouldDismiss)
         }
     }
 
-    class OnOrderExtensionRequestComplete: OrderExtensionRequestInfoUpdater {
+    class OnSuccessSendingOrderExtensionRequest: OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(completed = true)
+            return oldData.copy(processing = false, completed = true)
         }
     }
 }
