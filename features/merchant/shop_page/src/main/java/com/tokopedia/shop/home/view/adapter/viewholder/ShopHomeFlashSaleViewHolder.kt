@@ -24,7 +24,7 @@ import java.util.*
 
 class ShopHomeFlashSaleViewHolder(
     itemView: View,
-    listener: ShopHomeFlashSaleWidgetListener
+    private val listener: ShopHomeFlashSaleWidgetListener
 ) : AbstractViewHolder<ShopHomeFlashSaleUiModel>(itemView) {
 
     private var uiModel: ShopHomeFlashSaleUiModel? = null
