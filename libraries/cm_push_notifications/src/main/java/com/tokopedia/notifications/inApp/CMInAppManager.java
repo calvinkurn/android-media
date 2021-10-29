@@ -1,11 +1,5 @@
 package com.tokopedia.notifications.inApp;
 
-import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
-import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
-
 import android.app.Activity;
 import android.app.Application;
 import android.text.TextUtils;
@@ -45,6 +39,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_FETCH;
+import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL_IMAGE_ONLY;
+import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_SILENT;
 
 /**
  * @author lalit.singh
@@ -125,14 +126,30 @@ public class CMInAppManager implements CmInAppListener,
     private void showInAppNotification(String name, int entityHashCode, boolean isActivity) {
         if (excludeScreenList != null && excludeScreenList.contains(name))
             return;
-//        RulesManager.getInstance().checkValidity(
-//                name,
-//                0L,
-//                this,
-//                entityHashCode,
-//                isActivity
-//        );
-        //TODO new way to fetch InApp from Local Database
+        if(cmRemoteConfigUtils == null) {
+            fetchInAppVOld(name, entityHashCode, isActivity);
+        }else {
+            boolean isNewFetchEnabled =
+                    cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_FETCH,
+                            false);
+            if(isNewFetchEnabled){
+                fetchInAppVNew(name, entityHashCode, isActivity);
+            }else {
+                fetchInAppVOld(name, entityHashCode, isActivity);
+            }
+        }
+    }
+
+    private void fetchInAppVOld(String name, int entityHashCode, boolean isActivity) {
+        RulesManager.getInstance().checkValidity(
+                name,
+                0L,
+                this,
+                entityHashCode,
+                isActivity);
+    }
+
+    private void fetchInAppVNew(String name, int entityHashCode, boolean isActivity){
         InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
                 .clearExpiredInApp();
         InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())

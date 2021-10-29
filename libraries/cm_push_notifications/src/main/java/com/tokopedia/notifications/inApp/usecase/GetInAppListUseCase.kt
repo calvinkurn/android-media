@@ -10,7 +10,7 @@ import java.util.*
 
 class GetInAppListUseCase(private val repositoryManager: RepositoryManager) {
 
-    suspend fun getInAPPListByScreenName(screenName: String, isActivity: Boolean): List<CMInApp>? {
+    suspend fun getInAppListByScreenName(screenName: String, isActivity: Boolean): List<CMInApp>? {
         return withContext(Dispatchers.IO) {
             synchronized(this) {
                 getActiveInAppData(screenName, isActivity)
