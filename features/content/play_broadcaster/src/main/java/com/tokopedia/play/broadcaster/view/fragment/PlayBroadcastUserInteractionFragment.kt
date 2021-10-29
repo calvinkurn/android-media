@@ -293,6 +293,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         super.onDestroy()
     }
 
+    /**
+     * Dismissing all dialog -> not ideal because the it doesn't eliminate the root cause
+     * Need to revamp the flow of stopping live stream and all
+     */
+    override fun onDestroyView() {
+        if (::exitDialog.isInitialized) getExitDialog().dismiss()
+        if (::forceStopDialog.isInitialized) forceStopDialog.dismiss()
+
+        super.onDestroyView()
+    }
+
     override fun onBackPressed(): Boolean {
         return when {
             isPinnedFormVisible() -> {
