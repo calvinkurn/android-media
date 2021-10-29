@@ -310,7 +310,8 @@ class PlayActivity : BaseActivity(),
             Log.d("<INTENT>", "SCHEME : ${baseIntent.scheme}")
             Log.d("<INTENT>", "FLAGS : ${baseIntent.flags}")
             Log.d("<INTENT>", "CATEGORIES : $categories")
-            Log.d("<INTENT>", "CATEGORIES NOT CONTAIN LAUNCHER : ${!categories.contains(Intent.CATEGORY_LAUNCHER)}")
+            if(categories != null)
+                Log.d("<INTENT>", "CATEGORIES NOT CONTAIN LAUNCHER : ${!categories.contains(Intent.CATEGORY_LAUNCHER)}")
         }
 
         Log.d("<INTENT>", "=====================")
