@@ -951,13 +951,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         //send impression for calendar filter action menu
         menu.findItem(R.id.actionStcSelectDate)?.let {
             view?.addOnImpressionListener(dateFilterImpressHolder) {
-                val tabName = statisticPage?.pageTitle.orEmpty()
-                val chosenPeriod = headerSubTitle
-                StatisticTracker.sendCalendarImpressionEvent(
-                    userSession.userId,
-                    tabName,
-                    chosenPeriod
-                )
+                StatisticTracker.sendCalendarImpressionEvent(userSession.userId)
             }
         }
 

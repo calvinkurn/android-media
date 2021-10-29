@@ -9,6 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.databinding.ViewStcExclusiveIdentifierBinding
 
@@ -58,6 +59,7 @@ class ExclusiveIdentifierView : LinearLayout {
 
     private fun openPowerMerchantPage() {
         RouteManager.route(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
+        StatisticTracker.sendClickEventOnCtaExclusiveIdentifier()
     }
 
     fun setOnCtaClickListener(function: () -> Unit) {

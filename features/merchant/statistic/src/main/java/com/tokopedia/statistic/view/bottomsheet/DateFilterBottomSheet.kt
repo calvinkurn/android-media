@@ -11,10 +11,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.analytics.StatisticTracker
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.databinding.BottomsheetStcSelectDateRangeBinding
 import com.tokopedia.statistic.view.adapter.DateFilterAdapter
@@ -173,6 +176,7 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
             icStcExclusiveFeature.isVisible = !isRegularMerchant
             stcFilterExclusiveIdentifier.isVisible = isRegularMerchant
             stcFilterExclusiveIdentifier.setOnCtaClickListener {
+                StatisticTracker.sendClickEventOnCloseDateFilter(userSession.userId)
                 dismiss()
             }
             if (isRegularMerchant) {
@@ -185,6 +189,13 @@ class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBindi
                 val topMargin = it.dpToPx(36).toInt()
                 viewStcFilterHeader.setMargin(0, topMargin, 0, 0)
                 viewStcFilterHeader.setBackgroundResource(R.drawable.bg_stc_filter_header)
+            }
+
+            if (tvStcExclusiveFeature.isVisible) {
+                StatisticTracker.sendImpressionExclusiveFeatureDateFilter(userSession.userId)
+            }
+            if (stcFilterExclusiveIdentifier.isVisible) {
+                StatisticTracker.sendImpressionExclusiveIdentifierDateFilter(userSession.userId)
             }
         }
     }
