@@ -180,6 +180,10 @@ public interface ShipmentContract {
                                                     String eventAction,
                                                     String eventLabel);
 
+        void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(String eventLabel,
+                                               String userId,
+                                               List<Object> listProducts);
+
         void sendAnalyticsOnClickChooseOtherAddressShipment();
 
         void sendAnalyticsOnClickTopDonation();

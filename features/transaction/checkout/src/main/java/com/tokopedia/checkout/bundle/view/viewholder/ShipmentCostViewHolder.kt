@@ -75,6 +75,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
 
                 val crossSellItemPrice = itemCrossSellView.findViewById<Typography>(R.id.tv_cross_sell_price)
                 crossSellItemPrice.text = getPriceFormat(crossSellItemLabel, crossSellItemPrice, crossSell.crossSellModel.price.toDouble())
+                mLinearLayoutCrossSell.removeAllViews()
                 mLinearLayoutCrossSell.addView(itemCrossSellView)
                 mLinearLayoutCrossSell.visibility = View.VISIBLE
             }

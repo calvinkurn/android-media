@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.bundle.analytics.CheckoutAnalyticsPurchaseProtection;
@@ -86,6 +87,7 @@ import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
@@ -1024,6 +1026,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (isPurchaseProtectionPage) {
                         mTrackerPurchaseProtection.eventClickOnBuy(userSessionInterface.getUserId(), checkoutRequest.getProtectionAnalyticsData());
                     }
+                    boolean isCrossSellChecked = false;
+                    for(ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
+                        if (shipmentCrossSellModel.isChecked()) isCrossSellChecked = true;
+                    }
+                    if (isCrossSellChecked) {
+                        triggerCrossSellClickPilihPembayaran();
+                    }
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else if (checkoutData.getErrorReporter().getEligible()) {
                     getView().hideLoading();
@@ -1046,6 +1055,37 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         };
+    }
+
+    private void triggerCrossSellClickPilihPembayaran() {
+        List<ShipmentCrossSellModel> shipmentCrossSellModelList = getListShipmentCrossSellModel();
+        for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
+            CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
+            String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
+            String digitalProductId = String.valueOf(crossSellModel.getId());
+            String eventLabel = digitalCategoryName + " " + digitalProductId;
+            String digitalProductName = crossSellModel.getInfo().getTitle();
+
+            List<Object> productList = new ArrayList<>();
+            List<ShipmentCartItemModel> cartItemModelList = getShipmentCartItemModelList();
+            for (ShipmentCartItemModel shipmentCartItemModel : cartItemModelList) {
+                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                    productList.add(DataLayer.mapOf(
+                            ConstantTransactionAnalytics.Key.BRAND, "",
+                            ConstantTransactionAnalytics.Key.CATEGORY, cartItemModel.getProductId(),
+                            ConstantTransactionAnalytics.Key.ID, "",
+                            ConstantTransactionAnalytics.Key.NAME, cartItemModel.getName(),
+                            ConstantTransactionAnalytics.Key.PRICE, cartItemModel.getPrice(),
+                            ConstantTransactionAnalytics.Key.QUANTITY, cartItemModel.getQuantity(),
+                            ConstantTransactionAnalytics.Key.SHOP_ID, cartItemModel.getShopId(),
+                            ConstantTransactionAnalytics.Key.SHOP_NAME, cartItemModel.getShopName(),
+                            ConstantTransactionAnalytics.Key.SHOP_TYPE, "",
+                            ConstantTransactionAnalytics.Key.VARIANT, digitalProductName
+                    ));
+                }
+            }
+            analyticsActionListener.sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(eventLabel, userSessionInterface.getUserId(), productList);
+        }
     }
 
     public Map<String, Object> generateCheckoutAnalyticsDataLayer(CheckoutRequest checkoutRequest, String step, String pageSource) {
@@ -1337,16 +1377,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<CrossSellModel> listCrossSellItemData = new ArrayList<>();
 
         if (!listShipmentCrossSellModel.isEmpty()) {
-            for (ShipmentCrossSellModel crossSellModel : listShipmentCrossSellModel) {
-                CrossSellModel crossSellItemData = new CrossSellModel();
-                crossSellItemData.setId(crossSellModel.getCrossSellModel().getId());
-                crossSellItemData.setTransactionType(crossSellModel.getCrossSellModel().getOrderSummary().getTitle());
-                crossSellItemData.setPrice(crossSellModel.getCrossSellModel().getPrice());
-                crossSellItemData.setAdditionalVerticalId(crossSellItemData.getAdditionalVerticalId());
-                listCrossSellItemData.add(crossSellItemData);
-            }
+            crossSellRequest.setListItem(listShipmentCrossSellModel);
         }
-        crossSellRequest.setListItem(listCrossSellItemData);
+        crossSellRequest.setListItem(listShipmentCrossSellModel);
 
         CheckoutRequest checkoutRequest = new CheckoutRequest();
         checkoutRequest.setDonation(isDonation);

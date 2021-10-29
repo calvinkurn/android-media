@@ -521,16 +521,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (!shipmentCrossSellModelList.isEmpty()) {
             shipmentAdapter.addListShipmentCrossSellModel(shipmentCrossSellModelList);
-            /*for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
+            for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
                 CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
-                String digitalCategoryName = crossSellUi.getCrossSellOrderSummary().getTitle();
-                String digitalProductId = crossSellUi.getId();
+                String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
+                long digitalProductId = crossSellModel.getId();
                 String eventLabel = digitalCategoryName + " " + digitalProductId;
-                String digitalProductName = crossSellUi.getInfo().getTitle();
+                String digitalProductName = crossSellModel.getInfo().getTitle();
 
                 checkoutAnalyticsCourierSelection.eventViewAutoCheckCrossSell(userSessionInterface.getUserId(),
                         (i+1)+"", eventLabel, digitalProductName, getChildCatIdsCrossSell(shipmentCartItemModelList));
-            }*/
+            }
         }
 
         if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
@@ -576,6 +576,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (isReloadAfterPriceChangeHigher) {
             delayScrollToFirstShop();
         }
+    }
+
+    private ArrayList<Long> getChildCatIdsCrossSell(List<ShipmentCartItemModel> shipmentCartItemModelList) {
+        ArrayList<Long> childCatIds = new ArrayList<>();
+        for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
+            for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
+                childCatIds.add(cartItemModel.getProductId());
+            }
+        }
+        return childCatIds;
     }
 
     private void addShippingCompletionTicker(boolean isEligibleNewShippingExperience) {
@@ -1107,6 +1117,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 stringObjectMap, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
+    }
+
+    @Override
+    public void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(String eventLabel, String userId, List<Object> listProducts) {
+        checkoutAnalyticsCourierSelection.sendCrossSellClickPilihPembayaran(eventLabel, userId, listProducts);
     }
 
     @Override
@@ -1868,6 +1883,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         String digitalProductName = crossSellModel.getInfo().getTitle();
 
         List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
+        checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(checked, userSessionInterface.getUserId(), index+"", eventLabel, digitalProductName, getChildCatIdsCrossSell(shipmentCartItemModels));
     }
 
     @Override
