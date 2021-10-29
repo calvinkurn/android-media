@@ -43,4 +43,8 @@
     <string name="tunggu_ya_produknya_lagi_dicari">Tunggu, ya. Produknya lagi dicari</string>
     <string name="pernah_dibeli">Pernah Dibeli</string>
     <string name="terakhir_dilihat">Terakhir Dilihat</string>
+    <string name="no_product_bought_on_tokopedia_yet">Kamu belum pernah beli produk di Tokopedia</string>
+    <string name="no_product_bought_on_tokopedia_yet_content">Tidak apa-apa, kamu tetap bisa promosikan produk yang ada di Tokopedia</string>
+    <string name="no_product_seen_on_tokopedia_yet">Belum ada produk yang dilihat di Tokopedia</string>
+    <string name="no_product_seen_on_tokopedia_yet_content">Kamu bisa cari produk affiliate di Tokopedia, lalu tempel link di sini untuk dapat link affiliate</string>
 </resources>

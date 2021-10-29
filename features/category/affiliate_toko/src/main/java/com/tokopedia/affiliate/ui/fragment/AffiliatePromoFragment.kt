@@ -122,8 +122,8 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         val tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_recommended)
         val viewPager = view?.findViewById<ViewPager2>(R.id.view_pager_recommended)
         activity?.let {
-            tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance(this))
-            tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance(this))
+            tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance(AffiliateRecommendedProductFragment.BOUGHT_IDENTIFIER,this))
+            tabFragments.add(AffiliateRecommendedProductFragment.getFragmentInstance(AffiliateRecommendedProductFragment.LAST_VIEWED_IDENTIFIER,this))
             val adapter = AffiliateRecommendedAdapter(childFragmentManager, lifecycle, context, tabFragments)
             viewPager?.adapter = adapter
             if (tabLayout != null && viewPager != null) {

@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class AffiliateRecommendedProductViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
@@ -23,7 +24,7 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
     private var errorMessage = MutableLiveData<String>()
     private val pageLimit = 20
 
-    fun getAffiliateRecommendedProduct(page : Int) {
+    fun getAffiliateRecommendedProduct(identifier : String,page : Int) {
         if(page == PAGE_ZERO)
             shimmerVisibility.value = true
         launchCatchError(block = {
@@ -38,7 +39,7 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
                             tempList.add(AffiliateStaggeredPromotionCardModel(product))
                         }
                     }
-                    affiliateDataList.value = tempList
+                    affiliateDataList.value = ArrayList()
                 }
             }
         }, onError = {

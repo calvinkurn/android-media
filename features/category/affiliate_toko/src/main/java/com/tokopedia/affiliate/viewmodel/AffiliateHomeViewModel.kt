@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.AffiliateAnnouncementData
 import com.tokopedia.affiliate.model.AffiliateValidateUserData

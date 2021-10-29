@@ -26,6 +26,19 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/affiliate_no_product_seen_iv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_220"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_40"
+        android:visibility="gone"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_product_not_found.png"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/recommended_global_error"
         android:layout_width="match_parent"
