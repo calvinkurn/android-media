@@ -250,14 +250,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
 
     fun bindLike(feedXCard: FeedXCard) {
-        bindLike(
-            feedXCard.like,
-            feedXCard.id.toIntOrZero(),
-            feedXCard.typename,
-            feedXCard.followers.isFollowed,
-            feedXCard.author.id,
-            isVideo(feedXCard.media.firstOrNull())
-        )
+        if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
+            bindViews(feedXCard)
+        } else {
+            bindLike(
+                    feedXCard.like,
+                    feedXCard.id.toIntOrZero(),
+                    feedXCard.typename,
+                    feedXCard.followers.isFollowed,
+                    feedXCard.author.id,
+                    isVideo(feedXCard.media.firstOrNull())
+            )
+        }
     }
 
     fun bindFollow(feedXCard: FeedXCard) {
@@ -440,6 +444,43 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 isVideo,
                 caption)
         }
+    }
+    private fun bindViews(feedXCard: FeedXCard){
+        val view = feedXCard.views
+        if (feedXCard.like.isLiked) {
+            val colorGreen =
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            likeButton.setImage(IconUnify.THUMB_FILLED, colorGreen, colorGreen)
+        } else {
+            val colorGrey =
+                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            likeButton.setImage(IconUnify.THUMB, colorGrey, colorGrey)
+        }
+        if (view.count != 0) {
+            likedText.show()
+
+            likedText.text =
+                    MethodChecker.fromHtml(
+                            context.getString(
+                                    R.string.feed_component_viewed_count_text,
+                                    view.count.productThousandFormatted(1)
+                            )
+                    )
+        } else {
+            likedText.hide()
+        }
+        likeButton.setOnClickListener {
+            listener?.onLikeClick(
+                    positionInFeed,
+                    feedXCard.id.toIntOrZero(),
+                    feedXCard.like.isLiked,
+                    feedXCard.typename,
+                    feedXCard.followers.isFollowed,
+                    shopId = feedXCard.author.id,
+                    isVideo = true
+            )
+        }
+
     }
 
     private fun bindLike(
@@ -1195,6 +1236,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                             override fun onFinish() {
                                 timer_view.gone()
+                                volumeIcon?.gone()
                             }
                         }.start()
                     }
@@ -1290,6 +1332,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val tagProducts = mutableListOf<FeedXProduct>()
         isVODViewFrozen = false
         var count1 = 0
+        var shouldTrack = true
+        var isPaused = false
         vod_lanjut_menonton_btn?.gone()
         vod_frozen_view?.gone()
 
@@ -1358,6 +1402,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                 override fun onFinish() {
                                     videoPlayer?.pause()
+                                    isPaused = true
                                     vod_lanjut_menonton_btn?.visible()
                                     vod_frozen_view?.visible()
                                     vod_full_screen_icon?.gone()
@@ -1378,28 +1423,31 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 }
 
                                 override fun onFinish() {
-                                    Log.v("Three", "add view id : ${feedXCard.playChannelID}")
-                                    listener?.addVODView(feedXCard.playChannelID)
+                                    if(!isPaused) {
+                                        listener?.addVODView(feedXCard.playChannelID, positionInFeed)
+                                        shouldTrack = false
+                                    }
                                 }
                             }.start()
                         }
+                       if(!isPaused) {
+                           object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
+                               override fun onTick(millisUntilFinished: Long) {
+                                   time -= 1
+                                   vod_timer_view.text =
+                                           String.format(
+                                                   "%02d:%02d",
+                                                   (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
+                                                   time % MINUTE_IN_HOUR
+                                           )
+                               }
 
-                        object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
-                            override fun onTick(millisUntilFinished: Long) {
-                                time -= 1
-                                vod_timer_view.text =
-                                        String.format(
-                                                "%02d:%02d",
-                                                (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
-                                                time % MINUTE_IN_HOUR
-                                        )
-                            }
-
-                            override fun onFinish() {
-                                vod_timer_view.gone()
-                                vod_volumeIcon.gone()
-                            }
-                        }.start()
+                               override fun onFinish() {
+                                   vod_timer_view.gone()
+                                   vod_volumeIcon.gone()
+                               }
+                           }.start()
+                       }
                     }
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {

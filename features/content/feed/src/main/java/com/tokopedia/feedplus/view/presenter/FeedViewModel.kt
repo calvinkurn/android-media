@@ -38,6 +38,7 @@ import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
+import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.domain.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
@@ -108,6 +109,7 @@ class FeedViewModel @Inject constructor(
     val toggleFavoriteShopResp = MutableLiveData<Result<FavoriteShopViewModel>>()
     val trackAffiliateResp = MutableLiveData<Result<TrackAffiliateViewModel>>()
     val reportResponse = MutableLiveData<Result<DeletePostViewModel>>()
+    val viewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
 
 
     private val _playWidgetModel = MutableLiveData<Result<CarouselPlayCardViewModel>>()
@@ -177,11 +179,16 @@ class FeedViewModel @Inject constructor(
             submitInterestPickResp.value = Fail(it)
         })
     }
-    fun trackVisitChannel(channelId: String) {
+    fun trackVisitChannel(channelId: String,rowNumber: Int) {
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
             trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
-            trackVisitChannelBroadcasterUseCase.executeOnBackground()
+            val trackResponse = trackVisitChannelBroadcasterUseCase.executeOnBackground()
+            val data = ViewsKolModel()
+            data.rowNumber = rowNumber
+            data.isSuccess = trackResponse.reportVisitChannelTracking.success
+            viewTrackResponse.postValue(Success(data))
         }) {
+            viewTrackResponse.postValue(Fail(it))
         }
     }
 

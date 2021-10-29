@@ -145,6 +145,7 @@
 
     <!--DYNAMIC POST ASSETS-->
     <string name="feed_component_liked_count_text"> Disukai oleh <![CDATA["<font color='#212121'><b> %s orang</b></font> ]]></string>
+    <string name="feed_component_viewed_count_text"> Ditonton oleh <![CDATA["<font color='#212121'><b> %s orang</b></font> ]]></string>
     <string name="feed_component_liked_count_text_only_me">Disukai olehmu</string>
     <string name="feed_component_liked_by_text">Disukai oleh %s dan  <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
     <string name="feed_component_liked_by_text_me">Disukai olehmu dan <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>

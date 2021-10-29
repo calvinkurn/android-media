@@ -617,6 +617,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             })
 
+            viewTrackResponse.observe(lifecycleOwner, Observer {
+                when (it) {
+                    is Success -> {
+                        onSuccessAddViewVODPost(it.data.rowNumber)
+                    }
+                }
+            })
+
             reportResponse.observe(lifecycleOwner, Observer {
                 when (it) {
                     is Fail -> {
@@ -1842,8 +1850,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun addVODView(playChannelId: String) {
-        feedViewModel.trackVisitChannel(playChannelId)
+    override fun addVODView(playChannelId: String, rowNumber: Int) {
+        feedViewModel.trackVisitChannel(playChannelId, rowNumber)
     }
 
     override fun onPostTagBubbleClick(
@@ -2616,6 +2624,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     val likeValue = Integer.valueOf(like.countFmt) + 1
                     like.countFmt = likeValue.toString()
                 } catch (ignored: NumberFormatException) {
+                    Timber.e(ignored)
                 }
 
                 like.count = like.count + 1
@@ -2623,11 +2632,29 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 try {
                     val likeValue = Integer.valueOf(like.countFmt) - 1
                     like.countFmt = likeValue.toString()
-                } catch (ignored: NumberFormatException) {
+                }
+                catch (ignored: NumberFormatException) {
+                    Timber.e(ignored)
                 }
 
                 like.count = like.count - 1
             }
+            adapter.notifyItemChanged(rowNumber, PAYLOAD_ANIMATE_LIKE)
+        }
+    }
+
+    private fun onSuccessAddViewVODPost(rowNumber: Int) {
+        val newList = adapter.getlist()
+        if (newList.size > rowNumber && newList[rowNumber] is DynamicPostUiModel) {
+            val item = (newList[rowNumber] as DynamicPostUiModel)
+            val view = item.feedXCard.views
+                try {
+                    val viewValue = Integer.valueOf(view.countFmt) + 1
+                    view.countFmt = viewValue.toString()
+                } catch (ignored: NumberFormatException) {
+                }
+
+                view.count = view.count + 1
             adapter.notifyItemChanged(rowNumber, PAYLOAD_ANIMATE_LIKE)
         }
     }
@@ -2817,7 +2844,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         context?.let {
             if (!TextUtils.isEmpty(link)) {
                 if (RouteManager.isSupportApplink(it, link)) {
-                    RouteManager.route(it, link)
+
                 } else {
                     RouteManager.route(
                         it,

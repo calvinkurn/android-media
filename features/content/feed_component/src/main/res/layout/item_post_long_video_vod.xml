@@ -72,7 +72,6 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        app:layout_constraintDimensionRatio="4:5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -117,7 +116,7 @@
         android:minWidth="@dimen/dp_24"
         android:paddingStart="@dimen/feed_component_dp_6"
         android:paddingTop="@dimen/unify_space_2"
-        android:paddingEnd="@dimen/unify_space_4"
+        android:paddingEnd="@dimen/unify_space_2"
         android:paddingBottom="@dimen/unify_space_2"
         android:singleLine="true"
         android:text="@string/feed_post_tag_text"
@@ -139,17 +138,29 @@
         app:srcCompat="@drawable/ic_feed_volume_mute"
         android:contentDescription="@string/feed_post_content_desc_volume_btn" />
 
-    <ImageView
+    <androidx.cardview.widget.CardView
         android:id="@+id/vod_full_screen_icon"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:cardBackgroundColor="@color/Unify_NN900"
+        app:cardCornerRadius="12dp"
         android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_fullscreen"
-        android:contentDescription="@string/feed_post_content_desc_full_screen" />
+        app:layout_constraintEnd_toEndOf="parent">
 
+            <ImageView
+                android:padding="@dimen/dp_2"
+                android:id="@+id/vod_full_screen_icon_img_view"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginBottom="@dimen/dp_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_fullscreen"
+                android:contentDescription="@string/feed_post_content_desc_full_screen" />
+    </androidx.cardview.widget.CardView>
 
     <View
         android:id="@+id/vod_frozen_view"

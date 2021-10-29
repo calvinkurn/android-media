@@ -1091,7 +1091,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     }
     @Override
-    public void addVODView(@NonNull String playChannelId) {
+    public void addVODView(@NonNull String playChannelId, int rowNumber) {
 
     }
 

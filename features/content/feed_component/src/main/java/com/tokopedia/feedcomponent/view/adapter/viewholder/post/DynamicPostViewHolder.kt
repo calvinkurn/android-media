@@ -686,7 +686,8 @@ open class DynamicPostViewHolder(v: View,
                 redirectUrl: String,
         )
         fun addVODView(
-                playChannelId: String
+                playChannelId: String,
+                rowNumber: Int
         )
         fun onPostTagBubbleClick(
                 positionInFeed: Int,
