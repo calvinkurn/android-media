@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -326,24 +327,21 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         event_pdp_app_bar_layout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                 context?.let { context ->
-                    var icon = 0
                     var color = 0
                     if (Math.abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
                         event_pdp_collapsing_toolbar.title = productDetailData.title
-                        //color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-                        //icon = com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_black
+                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                         widget_event_pdp_tab_section.setScrolledMode()
                         widget_event_pdp_tab_section.show()
                     } else if (verticalOffset == 0) {
                         event_pdp_collapsing_toolbar.title = ""
-                        //color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-                        //icon = com.tokopedia.entertainment.R.drawable.ic_event_pdp_share_white
+                        color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                         widget_event_pdp_tab_section.setNullMode()
                         widget_event_pdp_tab_section.hide()
                     }
 
-                    event_pdp_toolbar.menu.getItem(0).setIcon(icon)
-                    navIcon?.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+                    setDrawableColorFilter(navIcon, color)
+                    setDrawableColorFilter(event_pdp_toolbar.menu.getItem(0).icon, color)
                 }
             }
         })
@@ -550,6 +548,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     private fun checkVisibilityItem(): Int{
         return (rv_event_pdp.layoutManager
                 as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+    }
+
+    private fun setDrawableColorFilter(drawable: Drawable?, color: Int) {
+        drawable?.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
     }
 
     companion object {
