@@ -1,12 +1,8 @@
 package com.tokopedia.seller.menu.presentation.activity
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
-import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.base.BaseSellerMenuActivity
@@ -17,9 +13,6 @@ class SellerMenuActivity : BaseSellerMenuActivity() {
 
     @Inject
     lateinit var sellerMenuTracker: SellerMenuTracker
-
-    @Inject
-    lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
