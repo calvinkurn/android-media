@@ -1,13 +1,9 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
-import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
@@ -22,8 +18,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2020-03-05.
  */
-class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext private val context: Context,
-                                                        private val graphqlUseCase: GraphqlUseCase,
+class ValidateUsePromoRevampUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                                         private val chosenAddressRequestHelper: ChosenAddressRequestHelper)
     : UseCase<ValidateUsePromoRevampUiModel>() {
 
@@ -44,8 +39,7 @@ class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext priv
 
     override fun createObservable(requestParams: RequestParams?): Observable<ValidateUsePromoRevampUiModel> {
         val paramValidateUse = requestParams?.getObject(PARAM_VALIDATE_USE) as ValidateUsePromoRequest
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.mutation_validate_use_promo_revamp), ValidateUseResponse::class.java, getParams(paramValidateUse))
+        val graphqlRequest = GraphqlRequest(VALIDATE_USE_QUERY, ValidateUseResponse::class.java, getParams(paramValidateUse))
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

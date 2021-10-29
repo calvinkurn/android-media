@@ -78,6 +78,6 @@ class SubmitHelpTicketUseCase @Inject constructor(val graphqlUseCase: GraphqlUse
                 }
               }
             }
-        """.trimMargin()
+        """.trimIndent()
     }
 }
