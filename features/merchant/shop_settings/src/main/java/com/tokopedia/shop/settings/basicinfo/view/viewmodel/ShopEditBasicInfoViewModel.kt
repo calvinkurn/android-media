@@ -10,8 +10,9 @@ import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
@@ -141,7 +142,8 @@ class ShopEditBasicInfoViewModel @Inject constructor(
 
     fun getAllowShopNameDomainChanges() {
         launchCatchError(dispatchers.io, block = {
-            _allowShopNameDomainChanges.postValue(Success(getAllowShopNameDomainChangesAsync().await()))
+            val allowChanges = getAllowShopNameDomainChangesUseCase.executeOnBackground().data
+            _allowShopNameDomainChanges.postValue(Success(allowChanges))
         }, onError = {
             _allowShopNameDomainChanges.postValue(Fail(it))
         })
@@ -188,8 +190,9 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                     } else {
                         false
                     }
-                }
-                .collectLatest {
+                }.catch {
+                    _validateShopName.value = Fail(it)
+                }.collectLatest {
                     _validateShopName.value = Success(it)
                 }
     }
@@ -210,6 +213,8 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                     } else {
                         false
                     }
+                }.catch {
+                    _validateShopDomain.value = Fail(it)
                 }.collectLatest {
                     if(!it.validateDomainShopName.isValid) {
                         currentShopName?.let { shopName ->
@@ -234,18 +239,6 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 }.collectLatest {
                     _shopDomainSuggestion.value = Success(it)
                 }
-    }
-
-    private fun getAllowShopNameDomainChangesAsync(): Deferred<AllowShopNameDomainChangesData> {
-        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
-            var allowChanges = AllowShopNameDomainChangesData()
-            try {
-                allowChanges = getAllowShopNameDomainChangesUseCase.executeOnBackground().data
-            } catch (t: Throwable) {
-                _allowShopNameDomainChanges.postValue(Fail(t))
-            }
-            allowChanges
-        }
     }
 
     private fun String.nullIfNotChanged(previousValue: String?): String? {
