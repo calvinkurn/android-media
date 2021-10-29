@@ -15,7 +15,10 @@
     <dimen name="dp_155">155dp</dimen>
     <dimen name="dp_156">156dp</dimen>
     <dimen name="dp_160">160dp</dimen>
+    <dimen name="dp_184">184dp</dimen>
+    <dimen name="dp_198">198dp</dimen>
     <dimen name="dp_210">210dp</dimen>
+    <dimen name="dp_212">212dp</dimen>
 
     <dimen name="shop_page_header_sub_info_min_height">58dp</dimen>
     <dimen name="shop_page_header_sub_button_height">36dp</dimen>

@@ -1027,7 +1027,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 listCampaignFlashSaleUiModel.forEach { flashSaleCampaignUiModel ->
                     flashSaleCampaignUiModel.data?.firstOrNull()?.let { flashSaleItem ->
                         if (flashSaleItem.statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, ignoreCase = true))
-                            viewModel?.getCampaignRemindMeStatus(flashSaleItem.campaignId)
+                            viewModel?.getCampaignFlashSaleRemindMeStatus(flashSaleItem.campaignId)
                     }
                 }
             }
@@ -2300,6 +2300,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 redirectToLoginPage()
             }
         }
+    }
+
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
+        goToPDP(model.id?:"")
     }
 
     private fun handleClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
