@@ -33,14 +33,12 @@ class MediaUploaderModule {
     fun provideUploaderUseCase(
         imageUploader: ImageUploaderManager,
         simpleUploader: SimpleUploaderManager,
-        largeUploader: LargeUploaderManager,
-        userSession: UserSessionInterface
+        largeUploader: LargeUploaderManager
     ): UploaderUseCase {
         return UploaderUseCase(
             imageUploader,
             simpleUploader,
-            largeUploader,
-            userSession
+            largeUploader
         )
     }
 

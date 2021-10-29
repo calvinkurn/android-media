@@ -50,8 +50,7 @@ interface VideoUploadServices {
     @POST
     suspend fun completeLargeUpload(
         @Url url: String,
-        @Field(BODY_UPLOAD_ID) uploadId: String,
-        @Header(HEADER_AUTH) accessToken: String
+        @Field(BODY_UPLOAD_ID) uploadId: String
     ): LargeUploader
 
     @GET
@@ -63,8 +62,7 @@ interface VideoUploadServices {
     @POST
     suspend fun abortLargeUpload(
         @Url url: String,
-        @Field(BODY_UPLOAD_ID) uploadId: String,
-        @Header(HEADER_AUTH) accessToken: String
+        @Field(BODY_UPLOAD_ID) uploadId: String
     ): LargeUploader
 
     companion object {
@@ -72,8 +70,6 @@ interface VideoUploadServices {
         private const val BODY_SOURCE_ID = "source_id"
         private const val BODY_UPLOAD_ID = "upload_id"
         private const val BODY_PART_NUMBER = "part_number"
-
-        private const val HEADER_AUTH = "Authorization"
     }
 
 }

@@ -6,7 +6,9 @@ import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.slice
-import com.tokopedia.mediauploader.video.data.params.*
+import com.tokopedia.mediauploader.video.data.params.ChunkCheckerParam
+import com.tokopedia.mediauploader.video.data.params.ChunkUploadParam
+import com.tokopedia.mediauploader.video.data.params.InitParam
 import com.tokopedia.mediauploader.video.domain.*
 import java.io.File
 import javax.inject.Inject
@@ -23,14 +25,12 @@ class LargeUploaderManager @Inject constructor(
     private var hasInit = false
     private var partNumber = 1
 
-    private var accessToken: String = ""
     private var sourceId: String = ""
     private var currentUploadId = ""
     private var chunkSize: Int = 0
 
-    suspend operator fun invoke(file: File, sourceId: String, accessToken: String): UploadResult {
+    suspend operator fun invoke(file: File, sourceId: String): UploadResult {
         this.chunkSize = ceil(file.length() / SIZE_PER_CHUNK.toDouble()).toInt()
-        this.accessToken = accessToken
         this.sourceId = sourceId
 
         initUpload(sourceId, file.name)
@@ -56,11 +56,8 @@ class LargeUploaderManager @Inject constructor(
         }
     }
 
-    suspend fun abortUpload(accessToken: String, abort: () -> Unit) {
-        val abortUseCase = abortUseCase(AbortParam(
-            currentUploadId,
-            accessToken
-        ))
+    suspend fun abortUpload(abort: () -> Unit) {
+        val abortUseCase = abortUseCase(currentUploadId)
 
         if (abortUseCase.isSuccess()) {
             abort()
@@ -126,12 +123,10 @@ class LargeUploaderManager @Inject constructor(
 
     private suspend fun completeUpload(): String {
         if (partNumber >= chunkSize) {
-            val complete = completeUseCase(CompleteParam(
-                uploadId = currentUploadId,
-                accessToken = accessToken
-            ))
-
+            val complete = completeUseCase(currentUploadId)
             if (complete.isSuccess()) {
+                resetUpload()
+
                 return complete.videoUrl()
             }
         }
@@ -141,6 +136,11 @@ class LargeUploaderManager @Inject constructor(
 
     override fun setProgressUploader(progress: ProgressCallback?) {
         // TODO
+    }
+
+    private fun resetUpload() {
+        currentUploadId = ""
+        hasInit = false
     }
 
     companion object {

@@ -9,7 +9,6 @@ import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import java.io.File
 import javax.inject.Inject
@@ -17,8 +16,7 @@ import javax.inject.Inject
 class UploaderUseCase @Inject constructor(
     private val imageUploaderManager: ImageUploaderManager,
     private val videoSimpleUploaderManager: SimpleUploaderManager,
-    private val videoLargeUploaderManager: LargeUploaderManager,
-    private val userSession: UserSessionInterface
+    private val videoLargeUploaderManager: LargeUploaderManager
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
     private var progressUploader: ProgressCallback? = null
@@ -48,7 +46,7 @@ class UploaderUseCase @Inject constructor(
         file = file,
         sourceId = sourceId,
         uploaderManager = videoLargeUploaderManager,
-        execute = { videoLargeUploaderManager(file, sourceId, userSession.accessToken) }
+        execute = { videoLargeUploaderManager(file, sourceId) }
     )
 
     private suspend fun simpleUploader() = request(
@@ -87,7 +85,7 @@ class UploaderUseCase @Inject constructor(
     // Public Method
     suspend fun abortUpload(abort: () -> Unit) {
         try {
-            videoLargeUploaderManager.abortUpload(userSession.accessToken) { abort() }
+            videoLargeUploaderManager.abortUpload { abort() }
         } catch (t: Throwable) {}
     }
 
