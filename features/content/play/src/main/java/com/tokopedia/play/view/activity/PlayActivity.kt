@@ -301,6 +301,7 @@ class PlayActivity : BaseActivity(),
 
         Log.d("<INTENT>", "=====================")
         Log.d("<INTENT>", "CUSTOM TASK ROOT")
+        Log.d("<INTENT>", "ISTASKROOT: $isTaskRoot")
 
         for(task in appTasks) {
             val baseIntent = task.taskInfo.baseIntent
