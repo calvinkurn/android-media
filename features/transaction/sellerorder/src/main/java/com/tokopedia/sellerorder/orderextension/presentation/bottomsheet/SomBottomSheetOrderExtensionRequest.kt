@@ -75,13 +75,17 @@ class SomBottomSheetOrderExtensionRequest(
     }
 
     override fun show() {
-        (bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
-            16.toPx(),
-            0,
-            16.toPx(),
-            0.toPx()
-        )
-        super.show()
+        if (!data.completed) {
+            (bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
+                16.toPx(),
+                0,
+                16.toPx(),
+                0.toPx()
+            )
+            super.show()
+        } else {
+            dismiss()
+        }
     }
 
     override fun onCommentChange(element: OrderExtensionRequestInfoUiModel.CommentUiModel) {

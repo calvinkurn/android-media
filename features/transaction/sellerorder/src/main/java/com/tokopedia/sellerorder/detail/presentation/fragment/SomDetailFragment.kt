@@ -1406,14 +1406,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     protected open fun onFailedSendOrderExtensionRequest(errorMessage: String) {
         SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, false)
-        bottomSheetManager?.dismissBottomSheets()
         loadDetail()
         showErrorToaster(errorMessage)
     }
 
     protected open fun onSuccessSendOrderExtensionRequest(data: OrderExtensionRequestResultUiModel) {
         SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, true)
-        bottomSheetManager?.dismissBottomSheets()
         loadDetail()
         showCommonToaster(data.message)
     }

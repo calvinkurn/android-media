@@ -20,6 +20,13 @@ class OrderExtensionRequestInfoAdapter(
         }
     }
 
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewDetachedFromWindow(holder)
+        if (holder is BaseOrderExtensionRequestInfoViewHolder) {
+            holder.onViewDetachedFromWindow()
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun processDiff(newItems: List<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>) {
         val diffCallback = OrderExtensionRequestInfoDiffUtil(
@@ -45,13 +52,6 @@ class OrderExtensionRequestInfoAdapter(
 
     private fun setRequestFocusAsFalse(index: Int) {
         (visitables.getOrNull(index) as? OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem)?.requestFocus = false
-    }
-
-    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
-        super.onViewDetachedFromWindow(holder)
-        if (holder is BaseOrderExtensionRequestInfoViewHolder) {
-            holder.onViewDetachedFromWindow()
-        }
     }
 
     fun updateItems(newItems: List<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>) {

@@ -11,6 +11,7 @@ data class OrderExtensionRequestInfoUiModel(
     var items: List<BaseOrderExtensionRequestInfoItem> = emptyList(),
     var processing: Boolean = false,
     var success: Boolean = true,
+    var completed: Boolean = false,
     var errorMessage: String = ""
 ) {
     private fun getCommentUiModelForOption(optionCode: Int): CommentUiModel? {

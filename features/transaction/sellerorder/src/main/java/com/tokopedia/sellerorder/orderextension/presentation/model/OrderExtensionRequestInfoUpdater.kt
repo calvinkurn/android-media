@@ -76,4 +76,10 @@ interface OrderExtensionRequestInfoUpdater {
             return oldData.copy(processing = false)
         }
     }
+
+    class OnOrderExtensionRequestComplete: OrderExtensionRequestInfoUpdater {
+        override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
+            return oldData.copy(completed = true)
+        }
+    }
 }

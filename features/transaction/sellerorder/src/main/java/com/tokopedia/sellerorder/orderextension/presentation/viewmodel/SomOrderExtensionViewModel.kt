@@ -74,6 +74,13 @@ class SomOrderExtensionViewModel @Inject constructor(
         }
     }
 
+    private suspend fun onOrderExtensionRequestCompleted() {
+        withContext(dispatcher.main) {
+            orderExtensionRequestInfoUpdates.value =
+                OrderExtensionRequestInfoUpdater.OnOrderExtensionRequestComplete()
+        }
+    }
+
     fun getSomRequestExtensionInfo(orderId: String) {
         launchCatchError(block = {
             val result = somGetOrderExtensionRequestInfoUseCase.execute(orderId, userSession.shopId, userSession.userId)
@@ -107,6 +114,7 @@ class SomOrderExtensionViewModel @Inject constructor(
                     if (!mappedResult.success) {
                         onFailedSendingOrderExtensionRequest()
                     }
+                    onOrderExtensionRequestCompleted()
                 } else {
                     onFailedSendingOrderExtensionRequest()
                 }
