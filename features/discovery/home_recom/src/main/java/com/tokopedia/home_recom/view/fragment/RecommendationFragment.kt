@@ -445,6 +445,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         productDetailData.imageUrl)
             }
         }
+    }
+
+    override fun onProductAnchorImpressionHitGTM(productInfoDataModel: ProductInfoDataModel) {
         RecommendationPageTracking.eventImpressionPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
     }
 
