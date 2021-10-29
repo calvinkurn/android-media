@@ -29,7 +29,7 @@ class CMInAppController(
         get() = Dispatchers.IO
 
 
-    fun processAndSaveRemoteDataCMInApp(remoteMessage: RemoteMessage) {
+    fun processAndSaveCMInAppRemotePayload(remoteMessage: RemoteMessage) {
         try {
             val cmInApp: CMInApp? = CmInAppBundleConvertor.getCmInApp(remoteMessage)
             cmInApp?.let {
@@ -61,7 +61,7 @@ class CMInAppController(
         }
     }
 
-    fun processAndSaveAmplificationInAppData(dataString: String?) {
+    fun processAndSaveCMInAppAmplificationData(dataString: String?) {
         try {
             val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
             val amplificationCMInApp = gson.fromJson(dataString, AmplificationCMInApp::class.java)

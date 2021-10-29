@@ -13,8 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import java.util.HashMap
 import kotlin.coroutines.CoroutineContext
 
-class InAppLocalDatabaseController private constructor(private val application: Application,
-                                                       private val repositoryManager: RepositoryManager) : CoroutineScope {
+class InAppLocalDatabaseController private constructor(
+    private val application: Application,
+    private val repositoryManager: RepositoryManager
+) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -32,11 +34,13 @@ class InAppLocalDatabaseController private constructor(private val application: 
                 SaveNewInAppUseCase(application, repositoryManager)
             }
 
-    fun getInAppData(screenName: String, isActivity: Boolean,
-                     inAppFetchListener: InAppFetchListener) {
+    fun getInAppData(
+        screenName: String, isActivity: Boolean,
+        inAppFetchListener: InAppFetchListener
+    ) {
         launchCatchError(block = {
             inAppFetchListener.onInAppListFetchCompleted(
-                    getInAppListUseCase.getInAppListByScreenName(screenName, isActivity)
+                getInAppListUseCase.getInAppListByScreenName(screenName, isActivity)
             )
         }, onError = {
             inAppFetchListener.onInAppListFetchCompleted(null)
@@ -52,16 +56,6 @@ class InAppLocalDatabaseController private constructor(private val application: 
         })
     }
 
-    private fun logThrowable(throwable: Throwable, dataMessage: String){
-        val messageMap: MutableMap<String, String> = HashMap()
-        messageMap[SERVER_KEY_TYPE] = SERVER_LOG_EXCEPTION
-        messageMap[SERVER_KEY_ERROR] = Log.getStackTraceString(throwable).substring(0,
-                Log.getStackTraceString(throwable).length.coerceAtMost(CMConstant.TimberTags.MAX_LIMIT)
-        )
-        messageMap[SERVER_KEY_DATA] = dataMessage
-        ServerLogger.log(Priority.P2, SERVER_LOG_STR, messageMap)
-    }
-
     fun saveNewInApp(cmInApp: CMInApp, newInAppSavedListener: NewInAppSavedListener) {
         launchCatchError(block = {
             val isSaved = saveNewInAppUseCase.saveInApp(cmInApp)
@@ -69,8 +63,19 @@ class InAppLocalDatabaseController private constructor(private val application: 
                 newInAppSavedListener.onNewInAppSaved()
             }
         }, onError = {
-            //todo Timber Logging by lalit
+            logThrowable(it, SAVE_ERROR_STR)
         })
+    }
+
+    private fun logThrowable(throwable: Throwable, dataMessage: String) {
+        val messageMap: MutableMap<String, String> = HashMap()
+        messageMap[SERVER_KEY_TYPE] = SERVER_LOG_EXCEPTION
+        messageMap[SERVER_KEY_ERROR] = Log.getStackTraceString(throwable).substring(
+            0,
+            Log.getStackTraceString(throwable).length.coerceAtMost(CMConstant.TimberTags.MAX_LIMIT)
+        )
+        messageMap[SERVER_KEY_DATA] = dataMessage
+        ServerLogger.log(Priority.P2, SERVER_LOG_STR, messageMap)
     }
 
     companion object {
@@ -80,17 +85,23 @@ class InAppLocalDatabaseController private constructor(private val application: 
         private const val SERVER_LOG_STR = "CM_VALIDATION"
         private const val FETCH_ERROR_STR = "CM INApp Fetch V2 Error"
         private const val CLEAR_ERROR_STR = "CM InApp Clear V2 Error"
+        private const val SAVE_ERROR_STR = "CM InApp Save V2 Error"
         private const val SERVER_KEY_TYPE = "type"
         private const val SERVER_KEY_ERROR = "err"
         private const val SERVER_KEY_DATA = "data"
         private const val SERVER_LOG_EXCEPTION = "exception"
 
-        fun getInstance(application: Application,
-                        repositoryManager: RepositoryManager): InAppLocalDatabaseController =
-                INSTANCE ?: synchronized(this) {
-                    INSTANCE
-                            ?: InAppLocalDatabaseController(application, repositoryManager).also { INSTANCE = it }
-                }
+        fun getInstance(
+            application: Application,
+            repositoryManager: RepositoryManager
+        ): InAppLocalDatabaseController =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE
+                    ?: InAppLocalDatabaseController(
+                        application,
+                        repositoryManager
+                    ).also { INSTANCE = it }
+            }
     }
 
 }
