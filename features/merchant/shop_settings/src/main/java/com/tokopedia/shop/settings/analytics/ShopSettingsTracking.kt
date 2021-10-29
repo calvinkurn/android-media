@@ -1,25 +1,22 @@
 package com.tokopedia.shop.settings.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.EVENT
+import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.EVENT_ACTION
+import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.EVENT_CATEGORY
+import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.EVENT_CATEGORY_VALUE
+import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.EVENT_LABEL
+import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.EVENT_VALUE
+import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.PAGE_TYPE
+import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.PAGE_TYPE_VALUE
+import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.SHOP_ID
+import com.tokopedia.shop.settings.analytics.ShopSettingsTrackingConstant.SHOP_TYPE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 
 object ShopSettingsTracking {
 
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
-
-    private val EVENT = "event"
-    private val EVENT_CATEGORY = "eventCategory"
-    private val EVENT_ACTION = "eventAction"
-    private val EVENT_LABEL = "eventLabel"
-    private val SHOP_ID = "shopId"
-    private val SHOP_TYPE = "shopType"
-    private val PAGE_TYPE = "pageType"
-
-    private val EVENT_VALUE = "clickShopPage"
-    private val EVENT_CATEGORY_VALUE = "setting page - seller"
-    private val PAGE_TYPE_VALUE = "/shoppage"
-
 
     private fun getDataLayer(
             event: String,

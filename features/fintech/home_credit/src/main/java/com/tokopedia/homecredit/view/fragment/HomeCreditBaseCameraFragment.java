@@ -9,6 +9,7 @@ import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -61,7 +62,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     private List<Flash> supportedFlashList;
     public FrameLayout cameraLayout;
     public IconUnify flashControl;
-    public ImageView buttonCancel;
+    public IconUnify buttonCancel;
 
     private Size mCaptureNativeSize;
     public ImageView imageCaptured;
@@ -354,6 +355,14 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     public void onResume() {
         super.onResume();
         onVisible();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (isCameraOpen) {
+            cameraView.close();
+        }
     }
 
     @Override

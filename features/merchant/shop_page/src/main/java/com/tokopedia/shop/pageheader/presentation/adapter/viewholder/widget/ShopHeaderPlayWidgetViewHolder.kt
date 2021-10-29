@@ -77,7 +77,9 @@ class ShopHeaderPlayWidgetViewHolder(
         playSgcWidgetContainer?.hide()
     }
 
-    private fun allowLiveStreaming(dataModel: ShopPageHeaderDataModel) = dataModel.broadcaster.streamAllowed && GlobalConfig.isSellerApp()
+    private fun allowLiveStreaming(dataModel: ShopPageHeaderDataModel): Boolean {
+        return dataModel.broadcaster.streamAllowed && GlobalConfig.isSellerApp()
+    }
 
     private fun setupTextContentSgcWidget() {
         if (playSgcLetsTryLiveTypography.text.isBlank()) playSgcLetsTryLiveTypography.text = MethodChecker.fromHtml(itemView.context.getString(R.string.shop_page_play_widget_title))

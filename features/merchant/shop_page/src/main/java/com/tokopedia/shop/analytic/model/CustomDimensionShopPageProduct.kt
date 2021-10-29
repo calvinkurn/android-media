@@ -1,8 +1,6 @@
 package com.tokopedia.shop.analytic.model
 
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
-import com.tokopedia.shop.analytic.model.TrackShopTypeDef
+import com.tokopedia.shop.common.constant.TrackShopTypeDef
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 
 /**

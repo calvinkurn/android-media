@@ -14,6 +14,7 @@ class ProgressWidgetUiModel(
         override val appLink: String,
         override val subtitle: String,
         override val tooltip: TooltipUiModel?,
+        override val tag: String,
         override val dataKey: String,
         override val ctaText: String,
         override val isShowEmpty: Boolean,
@@ -31,7 +32,7 @@ class ProgressWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<ProgressDataUiModel> {
-        return ProgressWidgetUiModel(id, widgetType, title, appLink, subtitle, tooltip, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+        return ProgressWidgetUiModel(id, widgetType, title, appLink, subtitle, tooltip, tag, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<ProgressDataUiModel>): Boolean {

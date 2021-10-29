@@ -4,19 +4,21 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
+import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
+import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.NearestWarehouseResponse
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
-import com.tokopedia.product.detail.data.model.restrictioninfo.UniqueSellingPointTokoCabang
+import com.tokopedia.product.detail.common.data.model.usp.UniqueSellingPointTokoCabang
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
+import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
@@ -125,9 +127,19 @@ data class ProductInfoP2Data(
         @Expose
         var reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery = ImageReviewGqlResponse.ProductReviewImageListQuery(),
 
+        @SerializedName("bundleInfo")
+        @Expose
+        var bundleInfoList: List<BundleInfo> = emptyList(),
+
         @SerializedName("rating")
         @Expose
-        var rating: ProductRatingCount = ProductRatingCount()
+        var rating: ProductRatingCount = ProductRatingCount(),
+
+        @SerializedName("ticker")
+        @Expose
+        var ticker: ProductTicker = ProductTicker()
+
+
 ) {
     data class Response(
             @SerializedName("pdpGetData")

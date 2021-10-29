@@ -29,7 +29,6 @@ abstract class BuyerOrderDetailTrackerValidationTestFixture {
         IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
         clearGtmLog()
         setVersionName()
-        Utils.login()
     }
 
     private fun clearGtmLog() {

@@ -22,4 +22,6 @@
     <string name="mini_cart_chat_btn_label">Langsung Chat</string>
     <string name="mini_cart_chat_bottomsheet_title_label">Lampirkan belanjaanmu?</string>
     <string name="mini_cart_chat_btn_label_ask_product">Tanya Soal Produk (%1$d/3)</string>
+    <string name="mini_cart_coachmark_title">Barang berhasil masuk keranjang!</string>
+    <string name="mini_cart_coachmark_desc">Cek keranjang khusus transaksi Tokopedia NOW! di sini, atau bisa juga langsung beli.</string>
 </resources>

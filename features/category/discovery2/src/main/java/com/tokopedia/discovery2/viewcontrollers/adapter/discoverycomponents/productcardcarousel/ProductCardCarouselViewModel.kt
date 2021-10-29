@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -33,6 +34,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val maxHeightProductCard: MutableLiveData<Int> = MutableLiveData()
     private val productLoadError: MutableLiveData<Boolean> = MutableLiveData()
+    private val _atcFailed =  SingleLiveEvent<Int>()
     private var isLoading = false
 
     @Inject
@@ -42,6 +44,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun getProductCardMaxHeight(): LiveData<Int> = maxHeightProductCard
     fun getProductCardHeaderData(): LiveData<ComponentsItem?> = productCarouselHeaderData
     fun getProductLoadState(): LiveData<Boolean> = productLoadError
+    val atcFailed:LiveData<Int> = _atcFailed
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -221,5 +224,13 @@ class ProductCardCarouselViewModel(val application: Application, val components:
             parentComponentId = components.id
             id = ComponentNames.ProductListEmptyState.componentName
         }
+    }
+
+    fun handleAtcFailed(position: Int){
+        _atcFailed.value = position
+    }
+
+    fun containsTokoNowProducts():Boolean{
+        return (components.properties?.tokonowATCActive == true)
     }
 }

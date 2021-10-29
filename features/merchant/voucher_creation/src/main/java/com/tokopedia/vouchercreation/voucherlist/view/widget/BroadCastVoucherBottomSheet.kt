@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
@@ -28,12 +30,10 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
                 }
             }
         }
-
         const val TAG: String = "SuccessCreateBottomSheet"
-
+        private const val TPD_VOUCHER_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/mvc/mvc_voucher.png"
         private const val DATE_FORMAT = "dd MMMM yyyy"
         private const val HOUR_FORMAT = "HH:mm"
-
         private const val VOUCHER = "voucher"
     }
 
@@ -41,6 +41,7 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
         arguments?.getParcelable<VoucherUiModel?>(VOUCHER)
     }
 
+    private var tkpdVoucherView: ImageUnify? = null
     private var voucherPeriodInfoView: Typography? = null
     private var broadCastButton: View? = null
     private var socialMediaShareButton: View? = null
@@ -70,6 +71,9 @@ class BroadCastVoucherBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupView(view: View) {
+        // load tokopedia voucher image
+        tkpdVoucherView = view.findViewById(R.id.iu_tkpd_voucher)
+        tkpdVoucherView?.loadImage(TPD_VOUCHER_IMAGE_URL)
         // voucher period info setup
         voucherPeriodInfoView = view.findViewById(R.id.tgp_voucher_period_info)
         voucherUiModel?.let { uiModel ->

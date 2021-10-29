@@ -2,6 +2,7 @@ package com.tokopedia.deals.common.analytics
 
 import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.deals.brand_detail.data.Product
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRODUCT_CARD
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.model.response.EventProductDetail
@@ -31,6 +32,18 @@ class DealsAnalytics @Inject constructor(
     private fun getTrackingMapWithHeader(): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
         map[DealsAnalyticsConstants.SCREEN_NAME] = "/deals/"
+        map[DealsAnalyticsConstants.CURRENT_SITE] = DealsAnalyticsConstants.TOKOPEDIA_DIGITAL_DEALS
+        map[DealsAnalyticsConstants.CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
+        map[DealsAnalyticsConstants.SESSION_IRIS] = getIrisSessionId()
+        map[DealsAnalyticsConstants.USER_ID] = getUserId()
+        map[DealsAnalyticsConstants.BUSINESS_UNIT] = DealsAnalyticsConstants.TRAVELENTERTAINMENT_BU
+        map[DealsAnalyticsConstants.CATEGORY_LABEL] = DealsAnalyticsConstants.DEALS
+        return map
+    }
+
+    private fun getTrackingBrandDetailWithHeader(): MutableMap<String, String> {
+        val map = mutableMapOf<String, String>()
+        map[DealsAnalyticsConstants.SCREEN_NAME] = ""
         map[DealsAnalyticsConstants.CURRENT_SITE] = DealsAnalyticsConstants.TOKOPEDIA_DIGITAL_DEALS
         map[DealsAnalyticsConstants.CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
         map[DealsAnalyticsConstants.SESSION_IRIS] = getIrisSessionId()
@@ -871,4 +884,76 @@ class DealsAnalytics @Inject constructor(
 
         return dataPromotions
     }
+
+    fun eventBrandDetailImpressionProduct(brandName: String, positionAdapter: Int, product: Product) {
+        val map = getTrackingBrandDetailWithHeader() as MutableMap<String, Any>
+        val position = positionAdapter + 1
+        map.addGeneralEvent(
+                DealsAnalyticsConstants.Event.PRODUCT_VIEW,
+                DealsAnalyticsConstants.Action.IMPRESSION_PRODUCT_BRAND,
+                String.format(DealsAnalyticsConstants.Label.BRAND_DETAIL_IMPRESSION, brandName, position.toString())
+        )
+        map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
+                DealsAnalyticsConstants.CURRENCY_CODE, DealsAnalyticsConstants.IDR,
+                DealsAnalyticsConstants.IMPRESSIONS, getECommerceDataProductBrandDetailImpression(brandName, product, position)
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun eventBrandDetailClickProduct(brandName: String, positionAdapter: Int, product: Product) {
+        val map = getTrackingBrandDetailWithHeader() as MutableMap<String, Any>
+        val position = positionAdapter + 1
+        map.addGeneralEvent(
+                DealsAnalyticsConstants.Event.PRODUCT_CLICK,
+                DealsAnalyticsConstants.Action.CLICK_PRODUCT_BRAND,
+                String.format(DealsAnalyticsConstants.Label.BRAND_DETAIL_IMPRESSION, product.displayName, position.toString())
+        )
+        map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
+                DealsAnalyticsConstants.CLICK, DataLayer.mapOf(DealsAnalyticsConstants.ACTION_FIELD,
+                DataLayer.mapOf(DealsAnalyticsConstants.Item.list, String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName)),
+                DealsAnalyticsConstants.PRODUCTS, getECommerceDataProductBrandDetailClick(brandName, product, position)
+        )
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getECommerceDataProductBrandDetailImpression(brandName: String, product: Product, position: Int): MutableList<MutableMap<String, Any>> {
+        val dataImpressions = mutableListOf<MutableMap<String, Any>>()
+        val category = product.category.firstOrNull() ?: ""
+        product.also {
+            val impression = DataLayer.mapOf(
+                    DealsAnalyticsConstants.Item.name, it.displayName,
+                    DealsAnalyticsConstants.Item.id, it.id,
+                    DealsAnalyticsConstants.Item.price, it.salesPrice,
+                    DealsAnalyticsConstants.Item.brand, brandName,
+                    DealsAnalyticsConstants.Item.category, category,
+                    DealsAnalyticsConstants.Item.variant, DealsAnalyticsConstants.NONE,
+                    DealsAnalyticsConstants.Item.list, String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName),
+                    DealsAnalyticsConstants.Item.position, position
+            )
+            dataImpressions.add(impression)
+        }
+        return dataImpressions
+    }
+
+    private fun getECommerceDataProductBrandDetailClick(brandName: String, product: Product, position: Int): MutableList<MutableMap<String, Any>> {
+        val dataImpressions = mutableListOf<MutableMap<String, Any>>()
+        val category = product.category.firstOrNull() ?: ""
+        product.also {
+            val impression = DataLayer.mapOf(
+                    DealsAnalyticsConstants.Item.name, it.displayName,
+                    DealsAnalyticsConstants.Item.id, it.id,
+                    DealsAnalyticsConstants.Item.price, it.salesPrice,
+                    DealsAnalyticsConstants.Item.brand, brandName,
+                    DealsAnalyticsConstants.Item.category, category,
+                    DealsAnalyticsConstants.Item.variant, DealsAnalyticsConstants.NONE,
+                    DealsAnalyticsConstants.Item.position, position,
+                    DealsAnalyticsConstants.Item.attribution, DealsAnalyticsConstants.NONE
+            )
+            dataImpressions.add(impression)
+        }
+        return dataImpressions
+    }
+
+
 }

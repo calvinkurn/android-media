@@ -40,7 +40,7 @@ class DigitalTelcoEnquiryViewModel @Inject constructor(private val graphqlReposi
             val params = mapOf(PARAM_FIELDS to enquiryParams)
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoEnquiryData::class.java, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<TelcoEnquiryData>()
 
             val result = if (data?.enquiry != null && data.enquiry.attributes != null) {

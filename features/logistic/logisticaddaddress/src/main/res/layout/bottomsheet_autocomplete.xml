@@ -13,12 +13,12 @@
         android:id="@+id/layout_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:search_bar_show_icon="false" />
@@ -33,19 +33,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16">
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp">
 
         <ImageView
             android:id="@+id/iv_current_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:contentDescription="@string/current_location"
             app:srcCompat="@drawable/ic_current_location" />
 
@@ -56,7 +56,7 @@
             android:layout_toEndOf="@id/iv_current_location"
             android:layout_toRightOf="@id/iv_current_location"
             android:text="@string/tv_current_location_text"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="14sp" />
 
     </RelativeLayout>
 
@@ -67,9 +67,9 @@
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_20"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="20dp"
         android:visibility="gone">
 
         <include
@@ -77,35 +77,35 @@
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20" />
+            android:layout_marginTop="20dp" />
 
         <include
             android:id="@+id/loading_list_2"
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20" />
+            android:layout_marginTop="20dp" />
 
         <include
             android:id="@+id/loading_list_3"
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20" />
+            android:layout_marginTop="20dp" />
 
         <include
             android:id="@+id/loading_list_4"
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20" />
+            android:layout_marginTop="20dp" />
 
         <include
             android:id="@+id/loading_list_5"
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20" />
+            android:layout_marginTop="20dp" />
 
     </LinearLayout>
 
@@ -124,8 +124,8 @@
             android:layout_marginEnd="@dimen/dp_18"
             android:layout_marginRight="@dimen/dp_18"
             android:clipToPadding="false"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_8" />
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
 
     </LinearLayout>
 

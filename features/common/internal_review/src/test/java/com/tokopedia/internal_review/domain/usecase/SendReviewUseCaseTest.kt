@@ -49,13 +49,13 @@ class SendReviewUseCaseTest {
         sendReviewUseCase.params = params
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val result = sendReviewUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         val errors = successResponse.getData<ReviewResponseModel>(ReviewResponseModel::class.java).chipSubmitReviewApp.messageError
@@ -72,14 +72,14 @@ class SendReviewUseCaseTest {
         sendReviewUseCase.params = params
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         expectedException.expect(MessageErrorException::class.java)
         sendReviewUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         val errors = successResponse.getData<ReviewResponseModel>(ReviewResponseModel::class.java).chipSubmitReviewApp.messageError
@@ -94,14 +94,14 @@ class SendReviewUseCaseTest {
         sendReviewUseCase.params = params
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         expectedException.expect(MessageErrorException::class.java)
         sendReviewUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         val errors = successResponse.getData<ReviewResponseModel>(ReviewResponseModel::class.java).chipSubmitReviewApp.messageError

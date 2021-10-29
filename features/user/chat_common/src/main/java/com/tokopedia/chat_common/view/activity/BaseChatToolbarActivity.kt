@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.view.fragment.BaseChatActivityListener
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 
 /**
  * @author by nisie on 23/11/18.
@@ -46,8 +46,8 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
             val upArrow = MethodChecker.getDrawable(applicationContext, R.drawable.ic_action_back)
             if (upArrow != null) {
                 upArrow.setColorFilter(
-                        MethodChecker.getColor(this@BaseChatToolbarActivity, com.tokopedia.unifyprinciples.R.color.Unify_N500),
-                        PorterDuff.Mode.SRC_ATOP
+                    MethodChecker.getColor(this@BaseChatToolbarActivity, com.tokopedia.unifyprinciples.R.color.Unify_N500),
+                    PorterDuff.Mode.SRC_ATOP
                 )
                 this.setHomeAsUpIndicator(upArrow)
             }
@@ -60,7 +60,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
             toolbar.elevation = 10f
         }
 
-        intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let {
+        intent.getParcelableExtra<ChatRoomHeaderUiModel>(ApplinkConst.Chat.PARAM_HEADER)?.let {
 
             ImageHandler.loadImageCircle2(this@BaseChatToolbarActivity, findViewById<ImageView>(R.id.user_avatar), it.image)
             (findViewById<TextView>(R.id.title)).text = it.name

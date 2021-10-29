@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewdetail.view.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.ViewCompat
@@ -77,8 +78,8 @@ abstract class BaseTopicsBottomSheet(private val mActivity: FragmentActivity?,
         }
     }
 
-    override fun dismiss() {
-        super.dismiss()
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
         topicAdapter?.sortFilterList?.toList()?.let { topic ->
             sortAdapter?.sortFilterListUiModel?.let { sort ->
                 listener.invoke(topic, sort)

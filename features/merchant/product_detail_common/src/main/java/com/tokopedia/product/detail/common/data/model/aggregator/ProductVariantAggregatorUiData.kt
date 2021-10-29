@@ -5,9 +5,8 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
-import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
-import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
+import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
@@ -25,29 +24,33 @@ data class ProductVariantAggregatorUiData(
 
         var rates: List<P2RatesEstimate> = listOf(),
 
+        var reData: RestrictionInfoResponse = RestrictionInfoResponse(),
+
+        var uspImageUrl: String = "",
+
+        var cashBackPercentage: Int = 0,
+
         //region only for tracker
         var simpleBasicInfo: SimpleBasicInfo = SimpleBasicInfo(),
 
         var shopType: String = "",
 
-        var boData: BebasOngkir = BebasOngkir()
+        var boData: BebasOngkir = BebasOngkir(),
+
+        var isCod: Boolean = false
         //endregion
 ) {
-
-    fun getRatesEstimateByProductId(productId: String): P2RatesEstimateData? {
-        var result: P2RatesEstimateData? = null
+    fun getP2RatesEstimateByProductId(productId: String): P2RatesEstimate? {
+        var result: P2RatesEstimate? = null
         rates.forEach {
-            if (productId in it.listfProductId) result = it.p2RatesData
+            if (productId in it.listfProductId) result = it
         }
         return result
     }
 
-    fun getRatesBottomSheetData(productId: String): ErrorBottomSheet? {
-        var result: ErrorBottomSheet? = null
-        rates.forEach {
-            if (productId in it.listfProductId) result = it.errorBottomSheet
-        }
-        return result
+    fun shouldHideRatesBottomSheet(rates: P2RatesEstimate?): Boolean {
+        if (rates == null) return true
+        return rates.p2RatesData.p2RatesError.isEmpty() || rates.p2RatesData.p2RatesError.firstOrNull()?.errorCode == 0
     }
 
     fun getBebasOngkirStringType(productId: String): String {

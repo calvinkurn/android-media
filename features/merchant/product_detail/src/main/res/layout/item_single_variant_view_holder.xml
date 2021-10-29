@@ -10,7 +10,7 @@
     <View
         android:id="@+id/single_variant_top_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,6 +41,16 @@
         app:typographyType="body_2"
         tools:text="variant_choose_label"
         tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="24dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:icon_name="CHEVRON_RIGHT"
+        app:layout_constraintTop_toTopOf="@+id/txt_choose_variant_label"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_choose_variant_label"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_single_variant"

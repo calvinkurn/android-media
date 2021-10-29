@@ -1,16 +1,13 @@
 package com.tokopedia.tkpd;
 
 import android.content.SharedPreferences;
-import android.os.Build;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.ProcessLifecycleOwner;
-import androidx.preference.PreferenceManager;
-import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
+import androidx.preference.PreferenceManager;
 
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.performance.util.AppStartPerformanceTracker;
@@ -18,26 +15,17 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.utils.permission.SlicePermission;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import io.embrace.android.embracesdk.Embrace;
-
 
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
 public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    private native byte[] bytesFromJNI();
 
     @Override
     public void initConfigValues() {
@@ -78,11 +66,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     @Override
-    protected void loadSignatureLibrary() {
-        System.loadLibrary("native-lib");
-    }
-
-    @Override
     public String versionName() {
         return BuildConfig.VERSION_NAME;
     }
@@ -90,11 +73,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public int versionCode() {
         return BuildConfig.VERSION_CODE;
-    }
-
-    @Override
-    protected byte[] getJniBytes() {
-        return bytesFromJNI();
     }
 
     @Override
@@ -107,9 +85,9 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void onCreate() {
         CheckAndTraceAppStartIfEnabled();
-        setupAppScreenMode();
         Embrace.getInstance().start(this);
         super.onCreate();
+        setupAppScreenMode();
     }
 
     public void CheckAndTraceAppStartIfEnabled() {
@@ -128,11 +106,22 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         }
     }
 
+    private boolean checkForceLightMode() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
+            return true;
+        }
+        return false;
+    }
+
     private void setupAppScreenMode() {
+        boolean isForceLightMode = checkForceLightMode();
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
         int screenMode;
-        if (isDarkMode) {
+        if (isDarkMode && !isForceLightMode) {
             screenMode = AppCompatDelegate.MODE_NIGHT_YES;
         } else {
             screenMode = AppCompatDelegate.MODE_NIGHT_NO;

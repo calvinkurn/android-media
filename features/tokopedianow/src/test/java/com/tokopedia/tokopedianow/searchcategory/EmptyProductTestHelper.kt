@@ -3,13 +3,13 @@ package com.tokopedia.tokopedianow.searchcategory
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.EmptyProductDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.usecase.RequestParams
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.nullValue
@@ -45,7 +45,7 @@ class EmptyProductTestHelper(
     }
 
     private fun Visitable<*>.assertEmptyProductDataView() {
-        assertThat(this, instanceOf(EmptyProductDataView::class.java))
+        assertThat(this, instanceOf(TokoNowEmptyStateNoResultUiModel::class.java))
     }
 
     private fun `Then assert header background is hidden`() {
@@ -85,7 +85,7 @@ class EmptyProductTestHelper(
             visitableList: List<Visitable<*>>,
             expectedOptionList: List<Option?>,
     ) {
-        val emptyStateDataView = visitableList.filterIsInstance<EmptyProductDataView>().first()
+        val emptyStateDataView = visitableList.filterIsInstance<TokoNowEmptyStateNoResultUiModel>().first()
 
         assertThat(emptyStateDataView.activeFilterList, shouldBe(expectedOptionList))
     }

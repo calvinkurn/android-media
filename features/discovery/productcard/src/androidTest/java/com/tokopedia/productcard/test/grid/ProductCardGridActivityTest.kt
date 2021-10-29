@@ -76,6 +76,7 @@ internal class ProductCardGridActivityTest: AppCompatActivity() {
                 }
             })
             productCardView?.setAddVariantClickListener { toast("Add Variant") }
+            productCardView?.setNotifyMeOnClickListener { toast("Notify me") }
         }
 
         private fun toast(message: String) {

@@ -153,6 +153,9 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             if (payment.creditCard.selectedTerm?.isError == true) {
                 currentState = disableButtonState(currentState)
             }
+            if (payment.creditCard.isAfpb && payment.creditCard.selectedTerm == null) {
+                currentState = disableButtonState(currentState)
+            }
             return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.PAY, buttonState = currentState)
         }
         total.emit(result)
@@ -167,10 +170,12 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
     private suspend fun calculateOrderCostWithPaymentFee(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPayment: OrderPayment): Pair<OrderCost, OrderPayment> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.default) {
-            val (cost, _) = calculateOrderCostWithoutPaymentFee(orderCart, shipping, validateUsePromoRevampUiModel)
+            val (cost, _) = calculateOrderCostWithoutPaymentFee(orderCart, shipping, validateUsePromoRevampUiModel, orderPayment)
             var subtotal = cost.totalPrice + cost.productDiscountAmount + cost.shippingDiscountAmount
             var payment = orderPayment
-            payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - cost.productDiscountAmount - cost.shippingDiscountAmount else 0.0, cost.productDiscountAmount + cost.shippingDiscountAmount)
+            if (!orderPayment.creditCard.isAfpb) {
+                payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - cost.productDiscountAmount - cost.shippingDiscountAmount else 0.0, cost.productDiscountAmount + cost.shippingDiscountAmount)
+            }
             val fee = payment.getRealFee()
             subtotal += fee
             subtotal -= cost.productDiscountAmount
@@ -182,7 +187,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
         return result
     }
 
-    suspend fun calculateOrderCostWithoutPaymentFee(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?): Pair<OrderCost, ArrayList<Int>> {
+    suspend fun calculateOrderCostWithoutPaymentFee(orderCart: OrderCart, shipping: OrderShipment, validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, orderPayment: OrderPayment): Pair<OrderCost, ArrayList<Int>> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.default) {
             var totalProductPrice = 0.0

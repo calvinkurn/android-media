@@ -1,20 +1,25 @@
 package com.tokopedia.sellerhome.view.fragment
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark2
@@ -22,9 +27,9 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.PMShopScoreInterruptHelper
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -42,26 +47,32 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_MILESTONE_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_MULTI_LINE_GRAPH_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PIE_CHART_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_POST_LIST_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
+import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
+import com.tokopedia.sellerhome.databinding.FragmentSahBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
-import com.tokopedia.sellerhome.view.model.TickerUiModel
+import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
+import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -74,11 +85,15 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_sah.view.*
+import com.tokopedia.utils.image.ImageProcessingUtil
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
@@ -91,8 +106,7 @@ import kotlin.coroutines.CoroutineContext
  */
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
-    WidgetListener,
-    CoroutineScope, SellerHomeFragmentListener {
+    WidgetListener, CoroutineScope, SellerHomeFragmentListener {
 
     companion object {
         @JvmStatic
@@ -100,16 +114,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
         val SEARCH_MENU_ID = R.id.menu_sah_search
+
+        private const val REQ_CODE_MILESTONE_WIDGET = 8043
         private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
         private const val ERROR_LAYOUT = "Error get layout data."
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
-
         private const val DEFAULT_HEIGHT_DP = 720f
-
         private const val RV_TOP_POSITION = 0
+        private const val TICKER_FIRST_INDEX = 0
     }
 
     @Inject
@@ -126,6 +141,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Inject
     lateinit var pmShopScoreInterruptHelper: PMShopScoreInterruptHelper
+
+    @Inject
+    lateinit var shopShareHelper: ShopShareHelper
 
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
@@ -174,7 +192,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
-    private val tickerImpressHolder = ImpressHolder()
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var shopShareData: ShopShareDataUiModel? = null
+    private var shopImageFilePath: String = ""
+    private var binding by autoClearedNullable<FragmentSahBinding>()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -208,7 +229,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_sah, container, false)
+        binding = FragmentSahBinding.inflate(layoutInflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -229,10 +251,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.multiLineGraphWidgetData, WidgetType.MULTI_LINE_GRAPH)
         observeWidgetData(sellerHomeViewModel.announcementWidgetData, WidgetType.ANNOUNCEMENT)
         observeWidgetData(sellerHomeViewModel.recommendationWidgetData, WidgetType.RECOMMENDATION)
+        observeWidgetData(sellerHomeViewModel.milestoneWidgetData, WidgetType.MILESTONE)
         observeTickerLiveData()
         observeCustomTracePerformanceMonitoring()
-        context?.let { UpdateShopActiveService.startService(it) }
+        observeShopShareData()
+        observeShopShareTracker()
 
+        context?.let { UpdateShopActiveService.startService(it) }
         setupPMShopScoreInterrupt()
     }
 
@@ -250,11 +275,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onDestroy() {
         super.onDestroy()
         pmShopScoreInterruptHelper.destroy()
+        shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         handleInterruptPageOnActivityResult(requestCode)
+        handleMilestoneWidgetFinishedMission(requestCode)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -324,14 +351,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
         val cardValue = model.data?.value ?: "0"
-        val state = model.data?.state.orEmpty()
+        val state = model.data?.state?.name.orEmpty()
         SellerHomeTracking.sendImpressionCardEvent(model.dataKey, state, cardValue)
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
         SellerHomeTracking.sendClickCardEvent(
             model.dataKey,
-            model.data?.state.orEmpty(), model.data?.value ?: "0"
+            model.data?.state?.name.orEmpty(), model.data?.value ?: "0"
         )
     }
 
@@ -419,239 +446,78 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    fun setNavigationOtherMenuView(view: View?) {
-        if (navigationOtherMenuView == null) {
-            navigationOtherMenuView = view
-        }
-    }
-
-    fun showNotificationBadge() {
-        Handler().postDelayed({
-            context?.let {
-                val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
-                if (notifCenterCount > 0) {
-                    notificationDotBadge?.showBadge(menuItem ?: return@let)
-                } else {
-                    notificationDotBadge?.removeBadge(menuItem ?: return@let)
-                }
-            }
-        }, NOTIFICATION_BADGE_DELAY)
-    }
-
-    fun onNewIntent(uri: Uri?) {
-        uri?.let {
-            view?.run {
-                pmShopScoreInterruptHelper.setShopScoreConsentStatus(it) {
-                    if (it) {
-                        pmShopScoreInterruptHelper.showsShopScoreConsentToaster(view?.rootView)
-                    }
-                }
-
-                pmShopScoreInterruptHelper.showToasterPmProInterruptPage(it, view?.rootView)
-            }
-        }
-    }
-
-    private fun initPltPerformanceMonitoring() {
-        performanceMonitoringSellerHomePlt =
-            (activity as? SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
-    }
-
-    private fun hideTooltipIfExist() {
-        val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
-        if (bottomSheet is BottomSheetUnify)
-            bottomSheet.dismiss()
-    }
-
-    private fun setupView() = view?.run {
-        emptyState = findViewById(R.id.empty_state_seller_home)
-
-        val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    return try {
-                        val isCardWidget = adapter.data[position].widgetType != WidgetType.CARD
-                        if (isCardWidget) spanCount else 1
-                    } catch (e: IndexOutOfBoundsException) {
-                        spanCount
-                    }
-                }
-            }
-
-            setOnVerticalScrollListener {
-                requestVisibleWidgetsData()
-                handleCoachMarkVisibility()
-            }
-        }
-        recyclerView?.run {
-            layoutManager = sellerHomeLayoutManager
-            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-        }
-
-        swipeRefreshLayout.setOnRefreshListener {
-            reloadPage()
-            showNotificationBadge()
-            sellerHomeListener?.getShopInfo()
-        }
-
-        sahGlobalError.setActionClickListener {
-            reloadPage()
-        }
-        emptyState?.run {
-            setTitle(context?.getString(R.string.sah_failed_to_get_information).orEmpty())
-            setImageDrawable(
-                resources.getDrawable(
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
-                    null
-                )
-            )
-            setPrimaryCTAText(
-                context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
-            )
-            setPrimaryCTAClickListener {
-                reloadPage()
-            }
-        }
-
-        setRecyclerViewLayoutAnimation()
-
-        setViewBackground()
-    }
-
-    /**
-     * load only visible widget on screen, except card widget should load all directly
-     * */
-    private fun requestVisibleWidgetsData() {
-        val layoutManager = recyclerView?.layoutManager as? GridLayoutManager ?: return
-        val firstVisible = layoutManager.findFirstVisibleItemPosition()
-        val lastVisible = layoutManager.findLastVisibleItemPosition()
-
-        val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
-        adapter.data.forEachIndexed { index, widget ->
-            if (!widget.isLoaded) {
-                if (widget.widgetType == WidgetType.CARD) {
-                    visibleWidgets.add(widget)
-                } else {
-                    if (index in firstVisible..lastVisible) {
-                        visibleWidgets.add(widget)
-                    }
-                }
-            }
-        }
-
-        if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
-    }
-
-    private fun reloadPage() = view?.run {
-        val isAdapterNotEmpty = adapter.data.isNotEmpty()
-        setProgressBarVisibility(!isAdapterNotEmpty)
-        swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
-
-        sahGlobalError.gone()
-        emptyState?.gone()
-        val deviceHeight =
-            if (isNewLazyLoad) {
-                deviceDisplayHeight
-            } else {
-                null
-            }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight)
-        sellerHomeViewModel.getTicker()
-    }
-
-    private fun List<BaseWidgetUiModel<*>>.setLoading() {
-        forEach {
-            it.isLoading = true
-            it.isLoaded = true
-        }
-    }
-
-    private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_CARD_TRACE)
-        sellerHomeViewModel.getCardWidgetData(dataKeys)
-    }
-
-    private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_LINE_GRAPH_TRACE)
-        sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
-    }
-
-    private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_PROGRESS_TRACE)
-        sellerHomeViewModel.getProgressWidgetData(dataKeys)
-    }
-
-    private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys: List<TableAndPostDataKey> =
-            widgets.filterIsInstance<PostListWidgetUiModel>().map {
-                val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
-                return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
-            }
-        startCustomMetric(SELLER_HOME_POST_LIST_TRACE)
-        sellerHomeViewModel.getPostWidgetData(dataKeys)
-    }
-
-    private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_CAROUSEL_TRACE)
-        sellerHomeViewModel.getCarouselWidgetData(dataKeys)
-    }
-
-    private fun getTableData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys: List<TableAndPostDataKey> = widgets.filterIsInstance<TableWidgetUiModel>().map {
-            val postFilter = it.tableFilters.find { filter -> filter.isSelected }?.value.orEmpty()
-            return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
-        }
-        startCustomMetric(SELLER_HOME_TABLE_TRACE)
-        sellerHomeViewModel.getTableWidgetData(dataKeys)
-    }
-
-    private fun getPieChartData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_PIE_CHART_TRACE)
-        sellerHomeViewModel.getPieChartWidgetData(dataKeys)
-    }
-
-    private fun getBarChartData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_BAR_CHART_TRACE)
-        sellerHomeViewModel.getBarChartWidgetData(dataKeys)
-    }
-
-    private fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach { it.isLoaded = true }
-        val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
-        sellerHomeViewModel.getMultiLineGraphWidgetData(dataKeys)
-    }
-
-    private fun getRecommendationData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach { it.isLoaded = true }
-        val dataKeys = Utils.getWidgetDataKeys<RecommendationWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_RECOMMENDATION_TRACE)
-        sellerHomeViewModel.getRecommendationWidgetData(dataKeys)
-    }
-
-    private fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>) {
-        widgets.onEach { it.isLoaded = true }
-        val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
-        startCustomMetric(SELLER_HOME_ANNOUNCEMENT_TRACE)
-        sellerHomeViewModel.getAnnouncementWidgetData(dataKeys)
-    }
-
     override fun setOnErrorWidget(position: Int, widget: BaseWidgetUiModel<*>, error: String) {
         showErrorToaster(error)
+    }
+
+    override fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {
+        if (!isAdded || context == null) return
+
+        val postFilterBottomSheet =
+            (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.POST_FILTER_TAG) as? WidgetFilterBottomSheet)
+                ?: WidgetFilterBottomSheet.newInstance()
+        postFilterBottomSheet.init(
+            requireContext(),
+            com.tokopedia.sellerhomecommon.R.string.shc_select_category,
+            element.postFilter
+        ) {
+            recyclerView?.post {
+                val copiedWidget = element.copy().apply { data = null }
+                notifyWidgetChanged(copiedWidget)
+                getPostData(listOf(element))
+            }
+        }.show(childFragmentManager, WidgetFilterBottomSheet.POST_FILTER_TAG)
+    }
+
+    override fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {
+        if (!isAdded || context == null) return
+
+        val tableFilterBottomSheet =
+            (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.TABLE_FILTER_TAG) as? WidgetFilterBottomSheet)
+                ?: WidgetFilterBottomSheet.newInstance()
+        tableFilterBottomSheet.init(
+            requireContext(),
+            com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data,
+            element.tableFilters
+        ) {
+            recyclerView?.post {
+                val copiedWidget = element.copy().apply { data = null }
+                notifyWidgetChanged(copiedWidget)
+                getTableData(listOf(element))
+            }
+            SellerHomeTracking.sendTableFilterClickEvent(element)
+        }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
+    }
+
+    override fun onMilestoneMissionActionClickedListener(
+        element: MilestoneWidgetUiModel,
+        mission: BaseMilestoneMissionUiModel,
+        missionPosition: Int
+    ) {
+        when (mission) {
+            is MilestoneMissionUiModel -> {
+                when (mission.missionButton.urlType) {
+                    BaseMilestoneMissionUiModel.UrlType.REDIRECT -> {
+                        activity?.let {
+                            RouteManager.route(it, mission.missionButton.appLink)
+                        }
+                    }
+                    BaseMilestoneMissionUiModel.UrlType.SHARE -> {
+                        shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
+                        setupShopSharing()
+                    }
+                }
+            }
+            is MilestoneFinishMissionUiModel -> {
+                activity?.let {
+                    val mIntent = RouteManager.getIntent(it, mission.getWebViewAppLink())
+                    it.startActivityForResult(mIntent, REQ_CODE_MILESTONE_WIDGET)
+                    SellerHomeTracking.sendMilestoneFinishedMissionCtaClickEvent()
+                }
+            }
+        }
+
+        SellerHomeTracking.sendMilestoneMissionCtaClickEvent(mission, missionPosition)
     }
 
     override fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {
@@ -763,47 +629,355 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendAnnouncementClickEvent(element)
     }
 
-    override fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {
-        if (!isAdded || context == null) return
-
-        val postFilterBottomSheet =
-            (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.POST_FILTER_TAG) as? WidgetFilterBottomSheet)
-                ?: WidgetFilterBottomSheet.newInstance()
-        postFilterBottomSheet.init(
-            requireContext(),
-            com.tokopedia.sellerhomecommon.R.string.shc_select_category,
-            element.postFilter
-        ) {
-            recyclerView?.post {
-                val copiedWidget = element.copy().apply { data = null }
-                notifyWidgetChanged(copiedWidget)
-                getPostData(listOf(element))
-            }
-        }.show(childFragmentManager, WidgetFilterBottomSheet.POST_FILTER_TAG)
+    override fun sendMilestoneMissionImpressionEvent(
+        mission: BaseMilestoneMissionUiModel,
+        position: Int
+    ) {
+        SellerHomeTracking.sendMilestoneMissionImpressionEvent(mission, position)
     }
 
-    override fun showTableFilter(element: TableWidgetUiModel, adapterPosition: Int) {
-        if (!isAdded || context == null) return
+    override fun sendMilestoneWidgetImpressionEvent(element: MilestoneWidgetUiModel) {
+        SellerHomeTracking.sendMilestoneWidgetImpressionEvent(element)
+    }
 
-        val tableFilterBottomSheet =
-            (childFragmentManager.findFragmentByTag(WidgetFilterBottomSheet.TABLE_FILTER_TAG) as? WidgetFilterBottomSheet)
-                ?: WidgetFilterBottomSheet.newInstance()
-        tableFilterBottomSheet.init(
-            requireContext(),
-            com.tokopedia.sellerhomecommon.R.string.shc_select_statistic_data,
-            element.tableFilters
-        ) {
-            recyclerView?.post {
-                val copiedWidget = element.copy().apply { data = null }
-                notifyWidgetChanged(copiedWidget)
-                getTableData(listOf(element))
+    override fun sendMilestoneWidgetCtaClickEvent() {
+        SellerHomeTracking.sendMilestoneWidgetCtaClickEvent()
+    }
+
+    override fun sendMilestoneWidgetMinimizeClickEvent() {
+        SellerHomeTracking.sendMilestoneWidgetMinimizeClickEvent()
+    }
+
+    fun setNavigationOtherMenuView(view: View?) {
+        if (navigationOtherMenuView == null) {
+            navigationOtherMenuView = view
+        }
+    }
+
+    fun showNotificationBadge() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            context?.let {
+                val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
+                if (notifCenterCount > 0) {
+                    notificationDotBadge?.showBadge(menuItem ?: return@let)
+                } else {
+                    notificationDotBadge?.removeBadge(menuItem ?: return@let)
+                }
             }
-            SellerHomeTracking.sendTableFilterClickEvent(element)
-        }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
+        }, NOTIFICATION_BADGE_DELAY)
+    }
+
+    fun onNewIntent(uri: Uri?) {
+        uri?.let {
+            binding?.run {
+                pmShopScoreInterruptHelper.setShopScoreConsentStatus(it) {
+                    if (it) {
+                        pmShopScoreInterruptHelper.showsShopScoreConsentToaster(root.rootView)
+                    }
+                }
+
+                pmShopScoreInterruptHelper.showToasterPmProInterruptPage(it, root.rootView)
+            }
+        }
+    }
+
+    private fun initPltPerformanceMonitoring() {
+        performanceMonitoringSellerHomePlt =
+            (activity as? SellerHomeActivity)?.performanceMonitoringSellerHomeLayoutPlt
+    }
+
+    private fun hideTooltipIfExist() {
+        val bottomSheet = childFragmentManager.findFragmentByTag(TAG_TOOLTIP)
+        if (bottomSheet is BottomSheetUnify)
+            bottomSheet.dismiss()
+    }
+
+    private fun setupView() = binding?.root?.run {
+        emptyState = findViewById(R.id.empty_state_seller_home)
+
+        val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return try {
+                        val isCardWidget = adapter.data[position].widgetType != WidgetType.CARD
+                        if (isCardWidget) spanCount else 1
+                    } catch (e: IndexOutOfBoundsException) {
+                        spanCount
+                    }
+                }
+            }
+
+            setOnVerticalScrollListener {
+                requestVisibleWidgetsData()
+                handleCoachMarkVisibility()
+            }
+        }
+        recyclerView?.run {
+            layoutManager = sellerHomeLayoutManager
+            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        }
+
+        binding?.swipeRefreshLayout?.setOnRefreshListener {
+            reloadPage()
+            showNotificationBadge()
+            sellerHomeListener?.getShopInfo()
+        }
+
+        binding?.sahGlobalError?.setActionClickListener {
+            reloadPage()
+        }
+        emptyState?.run {
+            setTitle(context?.getString(R.string.sah_failed_to_get_information).orEmpty())
+            setImageDrawable(
+                resources.getDrawable(
+                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                    null
+                )
+            )
+            setPrimaryCTAText(
+                context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
+            )
+            setPrimaryCTAClickListener {
+                reloadPage()
+            }
+        }
+
+        setRecyclerViewLayoutAnimation()
+
+        setViewBackground()
+    }
+
+    /**
+     * load only visible widget on screen, except card widget should load all directly
+     * */
+    private fun requestVisibleWidgetsData() {
+        val layoutManager = recyclerView?.layoutManager as? GridLayoutManager ?: return
+        val firstVisible = layoutManager.findFirstVisibleItemPosition()
+        val lastVisible = layoutManager.findLastVisibleItemPosition()
+
+        val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+        adapter.data.forEachIndexed { index, widget ->
+            if (!widget.isLoaded) {
+                if (widget.widgetType == WidgetType.CARD) {
+                    visibleWidgets.add(widget)
+                } else {
+                    if (index in firstVisible..lastVisible) {
+                        visibleWidgets.add(widget)
+                    }
+                }
+            }
+        }
+
+        if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+    }
+
+    private fun reloadPage() = binding?.run {
+        val isAdapterNotEmpty = adapter.data.isNotEmpty()
+        setProgressBarVisibility(!isAdapterNotEmpty)
+        swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
+
+        sahGlobalError.gone()
+        emptyState?.gone()
+        val deviceHeight =
+            if (isNewLazyLoad) {
+                deviceDisplayHeight
+            } else {
+                null
+            }
+        sellerHomeViewModel.getWidgetLayout(deviceHeight)
+        sellerHomeViewModel.getTicker()
+    }
+
+    private fun List<BaseWidgetUiModel<*>>.setLoading() {
+        forEach {
+            it.isLoading = true
+            it.isLoaded = true
+        }
+    }
+
+    private fun getCardData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<CardWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_CARD_TRACE)
+        sellerHomeViewModel.getCardWidgetData(dataKeys)
+    }
+
+    private fun getLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_LINE_GRAPH_TRACE)
+        sellerHomeViewModel.getLineGraphWidgetData(dataKeys)
+    }
+
+    private fun getProgressData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_PROGRESS_TRACE)
+        sellerHomeViewModel.getProgressWidgetData(dataKeys)
+    }
+
+    private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys: List<TableAndPostDataKey> =
+            widgets.filterIsInstance<PostListWidgetUiModel>().map {
+                val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
+                return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
+            }
+        startCustomMetric(SELLER_HOME_POST_LIST_TRACE)
+        sellerHomeViewModel.getPostWidgetData(dataKeys)
+    }
+
+    private fun getCarouselData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<CarouselWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_CAROUSEL_TRACE)
+        sellerHomeViewModel.getCarouselWidgetData(dataKeys)
+    }
+
+    private fun getTableData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys: List<TableAndPostDataKey> =
+            widgets.filterIsInstance<TableWidgetUiModel>().map {
+                val postFilter =
+                    it.tableFilters.find { filter -> filter.isSelected }
+                        ?.value.orEmpty()
+                return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
+            }
+        startCustomMetric(SELLER_HOME_TABLE_TRACE)
+        sellerHomeViewModel.getTableWidgetData(dataKeys)
+    }
+
+    private fun getPieChartData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<PieChartWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_PIE_CHART_TRACE)
+        sellerHomeViewModel.getPieChartWidgetData(dataKeys)
+    }
+
+    private fun getBarChartData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<BarChartWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_BAR_CHART_TRACE)
+        sellerHomeViewModel.getBarChartWidgetData(dataKeys)
+    }
+
+    private fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_MULTI_LINE_GRAPH_TRACE)
+        sellerHomeViewModel.getMultiLineGraphWidgetData(dataKeys)
+    }
+
+    private fun getRecommendationData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<RecommendationWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_RECOMMENDATION_TRACE)
+        sellerHomeViewModel.getRecommendationWidgetData(dataKeys)
+    }
+
+    private fun getAnnouncementData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<AnnouncementWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_ANNOUNCEMENT_TRACE)
+        sellerHomeViewModel.getAnnouncementWidgetData(dataKeys)
+    }
+
+    private fun getMilestoneData(widgets: List<BaseWidgetUiModel<*>>) {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<MilestoneWidgetUiModel>(widgets)
+        startCustomMetric(SELLER_HOME_MILESTONE_TRACE)
+        sellerHomeViewModel.getMilestoneWidgetData(dataKeys)
+    }
+
+    private fun setupShopSharing() {
+        ImageHandler.loadImageWithTarget(
+            context,
+            shopShareData?.shopSnippetURL.orEmpty(),
+            object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                        resource,
+                        Bitmap.CompressFormat.PNG
+                    )
+                    if (savedFile != null) {
+                        shopImageFilePath = savedFile.absolutePath
+                        initShopShareBottomSheet()
+                    }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // no op
+                }
+            }
+        )
+        if (shopShareData == null) {
+            val milestoneWidget = adapter.data.firstOrNull { it is MilestoneWidgetUiModel }
+            milestoneWidget?.let {
+                handleShopShareMilestoneWidget(it)
+                notifyWidgetChanged(it)
+            }
+        }
+    }
+
+    private fun initShopShareBottomSheet() {
+        val shareListener = object : ShareBottomsheetListener {
+
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                val shareDataModel = ShopShareHelper.DataModel(
+                    shareModel = shareModel,
+                    shopImageFilePath = shopImageFilePath,
+                    shopCoreUrl = shopShareData?.shopUrl.orEmpty()
+                )
+                activity?.let {
+                    shopShareHelper.onShareOptionClicked(
+                        it,
+                        view,
+                        shareDataModel,
+                        callback = { shareModel, _ ->
+                            setOnShopShareOptionClicked(shareModel)
+                        }
+                    )
+                }
+            }
+
+            override fun onCloseOptionClicked() {
+                //no op
+            }
+        }
+
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(shareListener)
+            setMetaData(
+                userSession.shopName,
+                userSession.shopAvatar,
+                ""
+            )
+            setOgImageUrl(shopShareData?.shopSnippetURL.orEmpty())
+            imageSaved(shopImageFilePath)
+        }
+        universalShareBottomSheet?.show(childFragmentManager, this)
+    }
+
+    private fun setOnShopShareOptionClicked(shareModel: ShareModel) {
+        val socialMediaName = when (shareModel) {
+            is ShareModel.CopyLink -> {
+                SellerHomeConst.SHOP_SHARE_DEFAULT_CHANNEL
+            }
+            is ShareModel.Others -> {
+                SellerHomeConst.SHOP_SHARE_OTHERS_CHANNEL
+            }
+            else -> shareModel.socialMediaName.orEmpty()
+        }
+        SellerHomeTracking.sendMilestoneMissionShareClickEvent(socialMediaName)
+        sellerHomeViewModel.sendShopShareQuestTracker(socialMediaName)
+        universalShareBottomSheet?.dismiss()
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {
-        view?.progressBarSah?.visibility = if (isShown) View.VISIBLE else View.GONE
+        binding?.progressBarSah?.visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
     private fun observeShopLocationLiveData() {
@@ -811,7 +985,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             when (result) {
                 is Success -> setOnSuccessGetShopLocation(result.data)
                 is Fail -> {
-                    result.throwable.printStackTrace()
+                    SellerHomeErrorHandler.logException(
+                        result.throwable, SellerHomeErrorHandler.SHOP_LOCATION
+                    )
                 }
             }
             setProgressBarVisibility(false)
@@ -890,7 +1066,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Suppress("UNCHECKED_CAST")
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
-        view?.sahGlobalError?.gone()
+        binding?.sahGlobalError?.gone()
         emptyState?.gone()
         recyclerView?.visible()
 
@@ -948,6 +1124,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                                 Unit
                             }
                         }
+                        recyclerView?.post {
+                            handleShopShareMilestoneWidget(newWidget)
+                        }
                     }
                 }
                 newWidgets
@@ -958,8 +1137,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
         if (!isAnyWidgetFromCache) {
-            view?.swipeRefreshLayout?.isEnabled = true
-            view?.swipeRefreshLayout?.isRefreshing = false
+            binding?.swipeRefreshLayout?.isEnabled = true
+            binding?.swipeRefreshLayout?.isRefreshing = false
         }
 
         recyclerView?.post {
@@ -967,6 +1146,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(false)
+        showEmptyState()
 
         if (isWidgetHasError) {
             showErrorToaster()
@@ -1000,6 +1180,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.BAR_CHART]?.run { getBarChartData(this) }
         groupedWidgets[WidgetType.MULTI_LINE_GRAPH]?.run { getMultiLineGraphData(this) }
         groupedWidgets[WidgetType.RECOMMENDATION]?.run { getRecommendationData(this) }
+        groupedWidgets[WidgetType.MILESTONE]?.run { getMilestoneData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
             recyclerView?.post {
                 val newWidgetList = adapter.data.toMutableList()
@@ -1014,7 +1195,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
+    private fun setOnErrorGetLayout(throwable: Throwable) = binding?.run {
         if (adapter.data.isEmpty()) {
             showErrorViewByException(throwable)
         } else {
@@ -1022,7 +1203,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             sahGlobalError.gone()
             emptyState?.gone()
         }
-        view?.swipeRefreshLayout?.isRefreshing = false
+        swipeRefreshLayout.isRefreshing = false
         setProgressBarVisibility(false)
 
         SellerHomeErrorHandler.logException(
@@ -1033,40 +1214,61 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
     }
 
-    private fun showErrorViewByException(throwable: Throwable) = view?.run {
-        val errorType =
-            when (throwable) {
-                is MessageErrorException -> null
-                is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
-                else -> GlobalError.SERVER_ERROR
-            }
+    private fun showErrorViewByException(throwable: Throwable) = binding?.run {
+        val errorType: Int? = when (throwable) {
+            is MessageErrorException -> null
+            is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
+            is EmptyLayoutException -> GlobalError.PAGE_NOT_FOUND
+            else -> GlobalError.SERVER_ERROR
+        }
 
-        if (errorType == null) {
-            sahGlobalError?.gone()
-            emptyState?.showMessageExceptionError(throwable)
-        } else {
-            sahGlobalError?.run {
-                setType(errorType)
-                visible()
+        when (errorType) {
+            null -> {
+                sahGlobalError.gone()
+                emptyState?.showMessageExceptionError(throwable)
             }
-            emptyState?.gone()
+            GlobalError.PAGE_NOT_FOUND -> showEmptyState()
+            else -> {
+                sahGlobalError.run {
+                    setType(errorType)
+                    visible()
+                }
+                emptyState?.gone()
+            }
         }
     }
 
-    private fun showErrorToaster(errorMessage: String? = null) = view?.run {
+    private fun showEmptyState() {
+        recyclerView?.post {
+            val isLayoutEmpty = adapter.data.isEmpty()
+            if (isLayoutEmpty) {
+                emptyState?.run {
+                    if (isVisible) return@post
+                    emptyState?.setImageUrl(SellerHomeUrl.IMG_LAYOUT_NO_PERMISSION)
+                    setTitle(getString(R.string.sah_empty_layout_message))
+                    setDescription(SellerHomeConst.EMPTY_STRING)
+                    setPrimaryCTAText(SellerHomeConst.EMPTY_STRING)
+                    visible()
+                }
+                binding?.sahGlobalError?.gone()
+            }
+        }
+    }
+
+    private fun showErrorToaster(errorMessage: String? = null) = binding?.run {
         if (isErrorToastShown) return@run
         isErrorToastShown = true
 
-        val message = errorMessage ?: context.getString(R.string.sah_failed_to_get_information)
+        val message = errorMessage ?: getString(R.string.sah_failed_to_get_information)
 
         Toaster.build(
-            this, message,
-            TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.sah_reload)
+            this.root, message,
+            TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, getString(R.string.sah_reload)
         ) {
             reloadPageOrLoadDataOfErrorWidget()
         }.show()
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             isErrorToastShown = false
         }, TOAST_DURATION)
     }
@@ -1127,7 +1329,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         errorType = SellerHomeErrorHandler.ErrorType.ERROR_TICKER,
                         deviceId = userSession.deviceId.orEmpty()
                     )
-                    view?.relTicker?.gone()
+                    binding?.relTicker?.gone()
                 }
             }
         })
@@ -1144,13 +1346,38 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground() = view?.run {
+    private fun observeShopShareData() {
+        observe(sellerHomeViewModel.shopShareData) {
+            when (it) {
+                is Success -> {
+                    shopShareData = it.data
+                }
+                is Fail -> {
+                    SellerHomeErrorHandler.logException(
+                        it.throwable, SellerHomeErrorHandler.SHOP_SHARE_DATA
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeShopShareTracker() {
+        observe(sellerHomeViewModel.shopShareTracker) {
+            if (it is Fail) {
+                SellerHomeErrorHandler.logException(
+                    it.throwable, SellerHomeErrorHandler.SHOP_SHARE_TRACKING
+                )
+            }
+        }
+    }
+
+    private fun setViewBackground() = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
             isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            else -> viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
+            else -> viewBgShopStatus.setBackgroundColor(root.context.getResColor(android.R.color.transparent))
         }
     }
 
@@ -1207,6 +1434,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 SELLER_HOME_RECOMMENDATION_TRACE,
                 isFromCache
             )
+            WidgetType.MILESTONE -> stopCustomMetric(
+                SELLER_HOME_MILESTONE_TRACE,
+                isFromCache
+            )
         }
     }
 
@@ -1230,7 +1461,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         forEach { widgetData ->
             newWidgetList.indexOfFirst {
                 it.dataKey == widgetData.dataKey && it.widgetType == widgetType
-            }.takeIf { it > -1 }?.let { index ->
+            }.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
                 val widget = newWidgetList.getOrNull(index)
                 if (widget is W) {
                     if (shouldRemoveWidget(widget, widgetData)) {
@@ -1240,16 +1471,32 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         val copiedWidget = widget.copy()
                         copiedWidget.data = widgetData
                         copiedWidget.isLoading = widget.data?.isFromCache ?: false
+
+                        handleShopShareMilestoneWidget(copiedWidget)
+
                         newWidgetList[index] = copiedWidget
                     }
                 }
             }
         }
         updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
-        view?.addOneTimeGlobalLayoutListener {
+        binding?.root?.addOneTimeGlobalLayoutListener {
             recyclerView?.post {
                 checkLoadingWidgets()
                 requestVisibleWidgetsData()
+            }
+        }
+    }
+
+    private fun <D : BaseDataUiModel> handleShopShareMilestoneWidget(widget: BaseWidgetUiModel<D>) {
+        if (widget is MilestoneWidgetUiModel) {
+            val shareMission = widget.data?.milestoneMissions?.firstOrNull {
+                return@firstOrNull it.missionButton
+                    .urlType == BaseMilestoneMissionUiModel.UrlType.SHARE
+            }
+            val isShareMissionAvailable = !shareMission?.missionCompletionStatus.orFalse()
+            if (isShareMissionAvailable) {
+                sellerHomeViewModel.getShopInfoById()
             }
         }
     }
@@ -1332,16 +1579,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
-
-        fun getTickerType(hexColor: String?): Int = when (hexColor) {
-            context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING
-            else -> Ticker.TYPE_ANNOUNCEMENT
-        }
-
-        view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
-        view?.tickerView?.run {
+        binding?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
+        binding?.tickerView?.run {
+            val tickerImpressHolders = mutableListOf<ImpressHolder>()
             val tickersData = tickers.map {
-                TickerData(it.title, it.message, getTickerType(it.color), true, it)
+                TickerData(it.title, it.message, it.type, true, it).also {
+                    tickerImpressHolders.add(ImpressHolder())
+                }
             }
 
             val adapter = TickerPagerAdapter(context, tickersData)
@@ -1349,26 +1593,48 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     if (!RouteManager.route(context, linkUrl.toString())) {
-                        if (itemData is TickerUiModel) {
+                        if (itemData is TickerItemUiModel) {
                             RouteManager.route(context, itemData.redirectUrl)
                         }
                     }
-                    SellerHomeTracking.sendHomeTickerCtaClickEvent(getShopStatusStr())
+                    (itemData as? TickerItemUiModel)?.let {
+                        SellerHomeTracking.sendHomeTickerCtaClickEvent(
+                            it.id,
+                            it.type
+                        )
+                    }
                 }
             })
-            addOnImpressionListener(tickerImpressHolder) {
-                SellerHomeTracking.sendHomeTickerImpressionEvent(getShopStatusStr())
+
+            // Add impression listener on first page of ticker
+            addSellerHomeImpressionListener(
+                tickerImpressHolders.firstOrNull(),
+                tickers.firstOrNull()
+            )
+
+            // Add impression listener if ticker view pager swiped to another page
+            onTickerPageChangeListener = { pageIndex ->
+                if (pageIndex > TICKER_FIRST_INDEX) {
+                    addSellerHomeImpressionListener(
+                        tickerImpressHolders.getOrNull(pageIndex),
+                        tickers.getOrNull(pageIndex)
+                    )
+                }
             }
         }
     }
 
-    private fun getShopStatusStr(): String {
-        val isOfficialStore = userSession.isShopOfficialStore
-        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
-        return when {
-            isOfficialStore -> "OS"
-            isPowerMerchant -> "PM"
-            else -> "RM"
+    private fun Ticker.addSellerHomeImpressionListener(impressHolder: ImpressHolder?,
+                                                       ticker: TickerItemUiModel?) {
+        impressHolder?.let { holder ->
+            ticker?.let { ticker ->
+                addOnImpressionListener(holder) {
+                    SellerHomeTracking.sendHomeTickerImpressionEvent(
+                        ticker.id,
+                        ticker.type
+                    )
+                }
+            }
         }
     }
 
@@ -1423,7 +1689,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val isAnyLoadingWidget =
             adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
         if (!isAnyLoadingWidget) {
-            view?.swipeRefreshLayout?.isRefreshing = false
+            binding?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
         }
     }
@@ -1431,8 +1697,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun setRecyclerViewLayoutAnimation() {
         if (isNewLazyLoad) {
             context?.let {
-                val animation: LayoutAnimationController =
-                    AnimationUtils.loadLayoutAnimation(it, R.anim.seller_home_rv_layout_animation)
+                val animation: LayoutAnimationController = AnimationUtils.loadLayoutAnimation(
+                    it, R.anim.seller_home_rv_layout_animation
+                )
                 recyclerView?.layoutAnimation = animation
             }
         }
@@ -1447,9 +1714,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         visible()
     }
 
-    private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean =
-        !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
+    private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
+        return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
                 this !is DescriptionWidgetUiModel && this !is WhiteSpaceUiModel
+    }
 
     private fun setupPMShopScoreInterrupt() {
         activity?.let {
@@ -1544,6 +1812,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     scrollToRecommendationWidget()
                     isEligibleShowRecommendationCoachMark = true
                 }
+            }
+        }
+    }
+
+    private fun handleMilestoneWidgetFinishedMission(requestCode: Int) {
+        view?.post {
+            if (requestCode == REQ_CODE_MILESTONE_WIDGET) {
+                val milestoneWidgets = adapter.data.filterIsInstance<MilestoneWidgetUiModel>()
+                getMilestoneData(milestoneWidgets)
             }
         }
     }

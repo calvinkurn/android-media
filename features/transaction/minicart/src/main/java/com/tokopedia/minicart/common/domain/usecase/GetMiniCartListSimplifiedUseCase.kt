@@ -34,7 +34,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
         }
 
         val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<MiniCartGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
         if (response.miniCart.status == "OK") {
             return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)

@@ -11,11 +11,12 @@
       "userId": ".+",
       "businessUnit": "search",
       "isResultFound": "true|false",
-      "categoryIdMapping": ".+",
-      "categoryNameMapping": ".+",
+      "categoryIdMapping": ".*",
+      "categoryNameMapping": ".*",
       "relatedKeyword": ".+ - .+",
       "sessionIris": ".+",
-      "pageSource": ".*"
+      "pageSource": ".*",
+      "searchFilter": ".*"
     },
     {
       "event": "view_item_list",

@@ -22,7 +22,7 @@ class GetSaldoUseCase @Inject constructor(
     override suspend fun executeOnBackground(): Result<SaldoPojo> {
         return try {
             val gqlRequest = GraphqlRequest(query, SaldoPojo::class.java, params.parameters)
-            val gqlResponse = graphqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+            val gqlResponse = graphqlUseCase.response(listOf(gqlRequest), GraphqlCacheStrategy
                     .Builder(CacheType.ALWAYS_CLOUD).build())
 
             val error = gqlResponse.getError(SaldoPojo::class.java)
@@ -40,7 +40,7 @@ class GetSaldoUseCase @Inject constructor(
         private val query = getQuery()
         private fun getQuery(): String {
 
-            return """query {
+            return """query getHomeNavSaldo {
                     balance {
                         buyer_hold
                         buyer_hold_fmt

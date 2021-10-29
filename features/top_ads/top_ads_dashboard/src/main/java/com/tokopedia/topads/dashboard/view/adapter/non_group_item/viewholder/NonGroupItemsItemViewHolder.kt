@@ -32,7 +32,7 @@ class NonGroupItemsItemViewHolder(val view: View,
                                   var selectMode: ((select: Boolean) -> Unit),
                                   var actionDelete: ((pos: Int) -> Unit),
                                   var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                                  var editDone: ((groupId: Int, adPriceBid: Int) -> Unit)) : NonGroupItemsViewHolder<NonGroupItemsItemModel>(view) {
+                                  var editDone: ((groupId: String, adPriceBid: Int) -> Unit)) : NonGroupItemsViewHolder<NonGroupItemsItemModel>(view) {
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_dash_item_non_group_card

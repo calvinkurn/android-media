@@ -9,7 +9,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.smartbills.R
 import kotlinx.android.synthetic.main.view_smart_bills_empty_state.view.*
 
-class SmartBillsEmptyStateViewHolder(itemView: View) : AbstractViewHolder<EmptyModel>(itemView) {
+class SmartBillsEmptyStateViewHolder(itemView: View, val listener: EmptyStateSBMListener) : AbstractViewHolder<EmptyModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -19,8 +19,12 @@ class SmartBillsEmptyStateViewHolder(itemView: View) : AbstractViewHolder<EmptyM
     override fun bind(element: EmptyModel) {
         with (itemView) {
             smart_bills_empty_state_button.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
+                listener.clickEmptyButton()
             }
         }
+    }
+
+    interface EmptyStateSBMListener{
+        fun clickEmptyButton()
     }
 }

@@ -50,4 +50,8 @@
     <string name="label_tokonow_show_less">Tampilkan Lebih Sedikit</string>
     <string name="label_tokonow_show_more">Lihat Selengkapnya</string>
     <string name="label_tokonow_show_other">+ %d Lainnya</string>
+    <string name="cart_default_wording_show_more">Tampilkan Semua</string>
+    <string name="cart_default_wording_show_less">Tampilkan Lebih Sedikit</string>
+    <string name="message_toaster_cart_change_bundle_success">Paket bundle berhasil diubah</string>
+    <string name="label_cart_bundle_product_quantity">Paket isi %s</string>
 </resources>

@@ -35,7 +35,7 @@ data class WithoutGroupDataItem(
 	val adPriceBid: Int = 0,
 
 	@field:SerializedName("item_id")
-	val itemId: Int = 0,
+	val itemId: String = "",
 
 	@field:SerializedName("stat_avg_position")
 	val statAvgPosition: Int = 0,
@@ -62,10 +62,10 @@ data class WithoutGroupDataItem(
 	val statTotalImpression: String = "",
 
 	@field:SerializedName("ad_id")
-	val adId: Int = 0,
+	val adId: String = "",
 
 	@field:SerializedName("group_id")
-	val groupId: Int = 0,
+	val groupId: String = "",
 
 	@field:SerializedName("group_name")
 	val groupName: String = "",

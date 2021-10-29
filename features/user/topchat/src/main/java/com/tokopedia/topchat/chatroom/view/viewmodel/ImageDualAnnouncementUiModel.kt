@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 /**
@@ -22,7 +22,7 @@ class ImageDualAnnouncementUiModel
  * @param redirectUrlTop    redirect url in http for Top image click
  * @param imageUrlBottom    image url Bottom image
  * @param redirectUrlBottom redirect url in http for Bottom image click
- * @param blastId           blast id for campaign.
+ * @param broadcastBlastId           blast id for campaign.
  */
 constructor(
         messageId: String,
@@ -37,9 +37,9 @@ constructor(
         var redirectUrlTop: String,
         var imageUrlBottom: String,
         var redirectUrlBottom: String,
-        val blastId: Long,
+        val broadcastBlastId: Long,
         source: String
-) : BaseChatViewModel(
+) : BaseChatUiModel(
         messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source
 ), Visitable<TopChatTypeFactory> {
 

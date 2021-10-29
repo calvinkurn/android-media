@@ -63,7 +63,7 @@ class GetOrderUseCaseTest {
         val uiModel: OrderUiModel = getMappedUiModel(data)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         coEvery {
@@ -73,7 +73,7 @@ class GetOrderUseCaseTest {
         val actualResult: OrderUiModel = getOrderUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         coVerify {
@@ -90,14 +90,14 @@ class GetOrderUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetOrderResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(RuntimeException::class.java)
         val actualResult = getOrderUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertNull(actualResult)

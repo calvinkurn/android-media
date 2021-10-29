@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.pusher
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.broadcaster.util.extension.safeExecute
 import com.wmspanel.libstream.Streamer
 import java.util.*
 import kotlin.math.ceil
@@ -63,21 +64,23 @@ class PlayLivePusherStatistic {
         val streamer = mStreamer ?: return
         val connectionId = mConnectionId ?: return
 
+        val bytesSent = streamer.safeExecute { getBytesSent(connectionId) } ?: 0L
         val currentTime = System.currentTimeMillis()
-        val bytesSent = streamer.getBytesSent(connectionId)
         val timeDiff = currentTime - mPrevTime
         mBps = (if (timeDiff > 0) 8 * 1000 * (bytesSent - mPrevBytes) / timeDiff else 0)
         mPrevTime = currentTime
         mPrevBytes = bytesSent
         mPacketLossIncreased = false
-        mFps = streamer.fps
-        val audioPacketLost = streamer.getAudioPacketsLost(connectionId)
-        val videoPacketLost = streamer.getAudioPacketsLost(connectionId)
-        val udpPacketsLost = streamer.getAudioPacketsLost(connectionId)
+
+        mFps = streamer.safeExecute { fps } ?: 0.0
+
+        val audioPacketLost = streamer.safeExecute { getAudioPacketsLost(connectionId) }
+        val videoPacketLost = streamer.safeExecute { getAudioPacketsLost(connectionId) }
+        val udpPacketsLost = streamer.safeExecute { getAudioPacketsLost(connectionId) }
         if (mAudioPacketsLost != audioPacketLost || mVideoPacketsLost != videoPacketLost || mUdpPacketsLost != udpPacketsLost) {
-            mAudioPacketsLost = audioPacketLost
-            mVideoPacketsLost = videoPacketLost
-            mUdpPacketsLost = udpPacketsLost
+            mAudioPacketsLost = audioPacketLost ?: 0
+            mVideoPacketsLost = videoPacketLost ?: 0
+            mUdpPacketsLost = udpPacketsLost ?: 0
             mPacketLossIncreased = true
         }
     }

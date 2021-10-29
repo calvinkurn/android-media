@@ -4,9 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.util.bindTitleText
+import com.tokopedia.seller.search.databinding.ItemSearchResultProductBinding
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.ProductSearchListener
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.ProductSellerSearchUiModel
-import kotlinx.android.synthetic.main.item_search_result_product.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemProductSearchViewHolder(
     itemViewProduct: View,
@@ -17,16 +18,18 @@ class ItemProductSearchViewHolder(
         val LAYOUT = R.layout.item_search_result_product
     }
 
+    private val binding: ItemSearchResultProductBinding? by viewBinding()
+
     override fun bind(element: ProductSellerSearchUiModel) {
-        with(itemView) {
-            ivSearchResultProduct?.setImageUrl(element.imageUrl.orEmpty())
-            tvSearchResultProductTitle?.bindTitleText(
+        binding?.run {
+            ivSearchResultProduct.setImageUrl(element.imageUrl.orEmpty())
+            tvSearchResultProductTitle.bindTitleText(
                 element.title.orEmpty(),
                 element.keyword.orEmpty()
             )
-            tvSearchResultProductDesc?.text = element.desc
+            tvSearchResultProductDesc.text = element.desc
 
-            setOnClickListener {
+            root.setOnClickListener {
                 productSearchListener.onProductItemClicked(element, adapterPosition)
             }
         }

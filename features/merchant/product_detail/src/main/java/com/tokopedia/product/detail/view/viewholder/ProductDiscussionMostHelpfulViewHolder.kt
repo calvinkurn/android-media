@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -9,13 +10,11 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.talk.Question
+import com.tokopedia.product.detail.databinding.ItemDynamicDiscussionMostHelpfulBinding
 import com.tokopedia.product.detail.view.adapter.ProductDiscussionQuestionsAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful.view.*
-import kotlinx.android.synthetic.main.partial_dynamic_discussion_local_load.view.*
-import kotlinx.android.synthetic.main.partial_dynamic_discussion_most_helpful_empty_state.view.*
 
-class ProductDiscussionMostHelpfulViewHolder(view: View,
+class ProductDiscussionMostHelpfulViewHolder(private val view: View,
                                              private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductDiscussionMostHelpfulDataModel>(view) {
 
@@ -23,6 +22,8 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
         private const val EMPTY_TALK_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/talk_product_detail_empty.png"
         val LAYOUT = R.layout.item_dynamic_discussion_most_helpful
     }
+
+    private val binding = ItemDynamicDiscussionMostHelpfulBinding.bind(view)
 
     override fun bind(element: ProductDiscussionMostHelpfulDataModel) {
         with(element) {
@@ -56,13 +57,17 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
                     hideShimmer()
                     hideLocalLoad()
                 }
+            }.also {
+                view.addOnImpressionListener(element.impressHolder) {
+                    listener.onImpressComponent(getComponentTrackData(element))
+                }
             }
         }
     }
 
     private fun showEmptyState(type: String, name: String) {
-        itemView.productDiscussionMostHelpfulEmptyLayout.apply {
-            show()
+        binding.productDiscussionMostHelpfulEmptyLayout.apply {
+            root.show()
             productDetailDiscussionEmptyButton.setOnClickListener {
                 listener.onDiscussionSendQuestionClicked(ComponentTrackDataModel(type, name, adapterPosition + 1))
             }
@@ -73,7 +78,7 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
     private fun showMultipleQuestions(questions: List<Question>?, type: String, name: String) {
         questions?.let {
             val questionsAdapter = ProductDiscussionQuestionsAdapter(it, listener, type, name, adapterPosition + 1)
-            itemView.productDiscussionMostHelpfulQuestions.apply {
+            binding.productDiscussionMostHelpfulQuestions.apply {
                 adapter = questionsAdapter
                 show()
             }
@@ -81,11 +86,11 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
     }
 
     private fun showTitle() {
-        itemView.productDiscussionMostHelpfulTitle.show()
+        binding.productDiscussionMostHelpfulTitle.show()
     }
 
     private fun showSeeAll(totalQuestion: Int, type: String, name: String, numberOfThreadsShown: String) {
-        itemView.productDiscussionMostHelpfulSeeAll.apply {
+        binding.productDiscussionMostHelpfulSeeAll.apply {
             text = context.getString(R.string.product_detail_discussion_see_all, totalQuestion)
             setOnClickListener {
                 listener.goToTalkReading(ComponentTrackDataModel(type, name, adapterPosition + 1), numberOfThreadsShown)
@@ -95,8 +100,8 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
     }
 
     private fun showLocalLoad() {
-        itemView.apply {
-            productDiscussionLocalLoadLayout.show()
+        binding.productDiscussionLocalLoadLayout.apply {
+            root.show()
             productDetailDiscussionLocalLoad.apply {
                 title?.text = getString(R.string.product_detail_discussion_local_load_title)
                 description?.text = getString(R.string.product_detail_discussion_local_load_description)
@@ -108,30 +113,34 @@ class ProductDiscussionMostHelpfulViewHolder(view: View,
     }
 
     private fun hideMultipleQuestion() {
-        itemView.productDiscussionMostHelpfulQuestions.hide()
+        binding.productDiscussionMostHelpfulQuestions.hide()
     }
 
     private fun hideTitle() {
-        itemView.apply {
+        binding.apply {
             productDiscussionMostHelpfulTitle.hide()
             productDiscussionMostHelpfulSeeAll.hide()
         }
     }
 
     private fun showShimmer() {
-        itemView.productDiscussionShimmerLayout.show()
+        binding.productDiscussionShimmerLayout.root.show()
     }
 
     private fun hideEmptyState() {
-        itemView.productDiscussionMostHelpfulEmptyLayout.hide()
+        binding.productDiscussionMostHelpfulEmptyLayout.root.hide()
     }
 
     private fun hideShimmer() {
-        itemView.productDiscussionShimmerLayout.hide()
+        binding.productDiscussionShimmerLayout.root.hide()
     }
 
     private fun hideLocalLoad() {
-        itemView.productDiscussionLocalLoadLayout.hide()
+        binding.productDiscussionLocalLoadLayout.root.hide()
     }
+
+    private fun getComponentTrackData(
+        element: ProductDiscussionMostHelpfulDataModel
+    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 
 }

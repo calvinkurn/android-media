@@ -110,7 +110,7 @@ class SmartBillsViewHolder(val view: View,
                 } else this.gone()
             }
 
-            if(!element.amountText.isNullOrEmpty()) {
+            if(!element.amountText.isNullOrEmpty() && accordionType != PAID_TYPE) {
                 tv_smart_bills_item_price.show()
                 tv_smart_bills_item_price.text = if (accordionType != ACTION_TYPE)
                     element.amountText else getString(R.string.smart_bills_clustering_price)
@@ -198,6 +198,17 @@ class SmartBillsViewHolder(val view: View,
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
             }
+
+            if(element.newBillLabel.isNewLabel && element.newBillLabel.text.isNotEmpty()){
+                icon_menu_sbm_delete.apply {
+                    show()
+                    setOnClickListener {
+                        detailListener.onDeleteClicked(element)
+                    }
+                }
+            } else {
+                icon_menu_sbm_delete.gone()
+            }
         }
     }
 
@@ -207,6 +218,7 @@ class SmartBillsViewHolder(val view: View,
 
     interface DetailListener {
         fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet)
+        fun onDeleteClicked(bill: RechargeBills)
     }
 
     private fun getDueUrgencyColor(type: Int, context: Context): Int {
