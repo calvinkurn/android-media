@@ -89,7 +89,6 @@ import com.tokopedia.config.GlobalConfig
 object DeeplinkMapper {
 
     const val TOKOPOINTS = "tokopoints"
-    const val TOKOMART = "tokomart"
     val LOCK = Any()
 
     /**
@@ -201,10 +200,6 @@ object DeeplinkMapper {
                     uri.pathSegments[0] == ApplinkConst.RewardFallback.Reward.REWARDS)
         ) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
-        }
-
-        if (pathSize == 1 && (uri.pathSegments[0] == TOKOMART)) {
-            return ApplinkConstInternalTokopediaNow.HOME
         }
 
         val appLinkContent =
@@ -417,11 +412,10 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.TokopediaNow.SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowSearch(deeplink) },
             DLP.startWith(ApplinkConst.TokopediaNow.CATEGORY) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowCategory(deeplink) },
             DLP.startWith(ApplinkConst.TokopediaNow.REPURCHASE) { _, _, _, _ -> ApplinkConstInternalTokopediaNow.REPURCHASE },
-            DLP.exact(ApplinkConst.TokoMart.HOME) { _, _, _, _ -> ApplinkConstInternalTokopediaNow.HOME },
-            DLP.startWith(ApplinkConst.TokoMart.SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowSearch(deeplink) },
-            DLP.startWith(ApplinkConst.TokoMart.CATEGORY) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowCategory(deeplink) },
-            DLP.startWith(ApplinkConst.TokoMart.REPURCHASE) { _, _, _, _ -> ApplinkConstInternalTokopediaNow.REPURCHASE },
             DLP.startWith(ApplinkConst.TELEPHONY_MASKING, ApplinkConstInternalGlobal.TELEPHONY_MASKING),
+            DLP.startWith(ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS),
+            DLP.matchPattern(ApplinkConst.PRODUCT_BUNDLE, targetDeeplink = { ctx, uri, deeplink, idList ->
+                UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, idList?.getOrNull(0)) }),
             DLP.startWith(ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS),
             DLP.host(ApplinkConst.WEBVIEW_DOWNLOAD_HOST) { _, _, _, _ -> ApplinkConstInternalGlobal.WEBVIEW_DOWNLOAD },
             DLP.host(ApplinkConst.WEBVIEW_PARENT_HOME_HOST) { _, _, _, _ -> ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME },

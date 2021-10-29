@@ -36,7 +36,7 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun getDistrictBoundaries(districtId: Int): GetDistrictBoundaryResponse {
+    suspend fun getDistrictBoundaries(districtId: Long): GetDistrictBoundaryResponse {
         val param = mapOf("districtId" to districtId)
         val request = GraphqlRequest(KeroLogisticQuery.kero_district_boundary,
                 GetDistrictBoundaryResponse::class.java, param)

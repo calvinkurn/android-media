@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -13,6 +14,7 @@ import com.tokopedia.search.result.domain.model.QuickFilterModel
 import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
 import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -63,6 +65,7 @@ class SearchProductFirstPageGqlUseCase(
             addGlobalNavRequest(requestParams, query, params)
             addInspirationCarouselRequest(requestParams, params)
             addInspirationWidgetRequest(requestParams, params)
+            addGetLastFilterRequest(requestParams, params)
         }
 
         graphqlUseCase.clearRequest()
@@ -74,7 +77,11 @@ class SearchProductFirstPageGqlUseCase(
 
         val topAdsImageViewModelObservable = createTopAdsImageViewModelObservable(query)
 
-        return Observable.zip(gqlSearchProductObservable, topAdsImageViewModelObservable, this::setTopAdsImageViewModelList)
+        return Observable.zip(
+            gqlSearchProductObservable,
+            topAdsImageViewModelObservable,
+            ::setTopAdsImageViewModelList,
+        )
     }
 
     private fun getQueryFromParameters(parameters: Map<String?, Any?>): String {
@@ -130,6 +137,22 @@ class SearchProductFirstPageGqlUseCase(
                     SearchInspirationWidgetModel::class.java,
                     mapOf(GQL.KEY_PARAMS to params)
             )
+
+    private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(
+        requestParams: RequestParams,
+        params: String,
+    ) {
+        if (!requestParams.isSkipGetLastFilterWidget())
+            add(createGetLastFilterRequest(params = params))
+    }
+
+    @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
+    private fun createGetLastFilterRequest(params: String) =
+        GraphqlRequest(
+            GetLastFilter.GQL_QUERY,
+            LastFilterModel::class.java,
+            mapOf(GQL.KEY_PARAMS to params)
+        )
 
     private fun createTopAdsImageViewModelObservable(query: String): Observable<List<TopAdsImageViewModel>> {
         return Observable.create<List<TopAdsImageViewModel>>({ emitter ->
@@ -339,5 +362,22 @@ class SearchProductFirstPageGqlUseCase(
                 }
             }
         """
+
+        private const val GET_LAST_FILTER_GQL_QUERY = """
+            query GetLastFilter(${'$'}params:String!) {
+              fetchLastFilter(param: ${'$'}params){
+                data {
+                  title
+                  description
+                  category_id_l2
+                  filters {
+                    title
+                    key
+                    name
+                    value
+                  }
+                }
+              }
+            }"""
     }
 }

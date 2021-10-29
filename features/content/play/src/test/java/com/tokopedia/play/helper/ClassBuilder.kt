@@ -39,7 +39,7 @@ class ClassBuilder {
         multipleLikesMapper = multipleLikesMapper,
     )
 
-    fun getPlayRealTimeNotificationMapper(
+    private fun getPlayRealTimeNotificationMapper(
             userSession: UserSessionInterface = mockk(relaxed = true),
             htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer()
     ) = PlayRealTimeNotificationMapper(
@@ -47,7 +47,7 @@ class ClassBuilder {
             htmlTextTransformer = htmlTextTransformer,
     )
 
-    fun getPlayMultipleLikesMapper() = PlayMultipleLikesMapper()
+    private fun getPlayMultipleLikesMapper() = PlayMultipleLikesMapper()
 
     fun getMapperExtraParams(
             channelId: String? = null,

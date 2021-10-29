@@ -49,7 +49,6 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         layoutParams?.height = listener.windowHeight - listener.homeMainToolbarHeight +
                 context.resources.getDimensionPixelSize(R.dimen.dp_8) +
                 context.resources.getDimensionPixelSize(R.dimen.dp_8) +
-                context.resources.getDimensionPixelSize(R.dimen.dp_8) +
                 context.resources.getDimensionPixelSize(R.dimen.dp_8)
         container?.layoutParams = layoutParams
 
@@ -122,15 +121,6 @@ class HomeRecommendationFeedViewHolder(itemView: View,
             homeFeedsTabShadow?.visibility = View.VISIBLE
         } else {
             homeFeedsTabShadow?.visibility = View.INVISIBLE
-        }
-    }
-
-    fun hidePmProCoachmark() {
-        homeFeedsViewPager?.let {
-            val fragment = homeFeedPagerAdapter?.getRegisteredFragment(
-                it.currentItem
-            )
-            fragment?.hidePmProCoachmark()
         }
     }
 

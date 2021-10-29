@@ -69,6 +69,9 @@ class PlaySocketMapper(
             PlaySocketType.UpdateConfigMultipleLike.value -> {
                 return mapToUpdateMultipleLikeConfig()
             }
+            PlaySocketType.UserWinnerStatus.value -> {
+                return mapToUserWinnerStatus()
+            }
         }
         return null
     }
@@ -123,6 +126,10 @@ class PlaySocketMapper(
 
     private fun mapToUpdateMultipleLikeConfig(): UpdateMultipleLikeConfig? {
         return convertToModel(webSocketResponse.jsonObject, UpdateMultipleLikeConfig::class.java)
+    }
+
+    private fun mapToUserWinnerStatus(): UserWinnerStatus? {
+        return convertToModel(webSocketResponse.jsonObject, UserWinnerStatus::class.java)
     }
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {
