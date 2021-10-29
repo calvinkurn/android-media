@@ -2753,9 +2753,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
-        getHomeViewModel().setHomeNotif(
-            notificationCount, inboxCount, cartCount
-        )
+        try {
+            getHomeViewModel().setHomeNotif(notificationCount, inboxCount, cartCount)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 
