@@ -295,7 +295,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onBackPressed(): Boolean {
         return when {
-            hasPinnedFormView() -> {
+            isPinnedFormVisible() -> {
                 parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
                 true
             }
@@ -356,7 +356,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                    primaryListener = { dialog -> dialog.dismiss() },
                    secondaryCta = getString(R.string.play_broadcast_exit),
                    secondaryListener = { dialog ->
-                       dialog.dismiss()
+                       parentViewModel.submitAction(PlayBroadcastAction.ExitLive)
                        parentViewModel.stopLiveStream(shouldNavigate = true)
                        analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                    }
@@ -475,7 +475,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             is PlayLiveViewState.Started -> showLoading(false)
             is PlayLiveViewState.Stopped -> {
                 showLoading(false)
-                 if (state.shouldNavigate) navigateToSummary()
+                val exitDialog = getExitDialog()
+                exitDialog.dialogSecondaryCTA.isLoading = false
+                exitDialog.dismiss()
+                if (state.shouldNavigate) navigateToSummary()
             }
             is PlayLiveViewState.Error -> {
                 showLoading(false)
@@ -639,6 +642,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
+
+                if (::exitDialog.isInitialized) {
+                    val exitDialog = getExitDialog()
+                    exitDialog.dialogSecondaryCTA.isLoading = state.isExiting
+                    exitDialog.dialogSecondaryCTA.isEnabled = !state.isExiting
+                    exitDialog.dialogPrimaryCTA.isEnabled = !state.isExiting
+                }
             }
         }
     }
@@ -660,13 +670,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prevState == state) return
 
-        if (state.editStatus != PinnedMessageEditStatus.Editing) hideKeyboard()
+        if (!state.editStatus.isEditing) hideKeyboard()
 
         /**
          * Pinned Message success uploading
          */
-        if (prevState?.editStatus == PinnedMessageEditStatus.Uploading &&
-            state.editStatus == PinnedMessageEditStatus.Nothing) {
+        if (prevState?.editStatus?.isUploading == true && state.editStatus.isNothing) {
 
             analytic.clickSavePinChatMessage(
                 channelId = parentViewModel.channelId,
@@ -696,6 +705,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 clInteraction.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun isPinnedFormVisible(): Boolean {
+        val formView = view?.findViewWithTag<View>(PINNED_MSG_FORM_TAG)
+        return formView != null && formView.visibility == View.VISIBLE
     }
 
     private fun hasPinnedFormView(): Boolean {

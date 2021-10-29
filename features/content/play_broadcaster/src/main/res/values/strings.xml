@@ -211,6 +211,6 @@
     <!--Pinned Message-->
     <string name="play_bro_create_pinned_msg">Buat Pin Chat</string>
     <string name="play_bro_pinned_msg_form_title">Pin Chat</string>
-    <string name="play_bro_pinned_msg_form_placeholder">Tulis Judul Live</string>
+    <string name="play_bro_pinned_msg_form_placeholder">Tulis Pin Chat</string>
     <string name="play_bro_pinned_msg_form_instruction">Buat pin chat untuk kasih info penting ke penontonmu selama Live berlangsung.</string>
 </resources>

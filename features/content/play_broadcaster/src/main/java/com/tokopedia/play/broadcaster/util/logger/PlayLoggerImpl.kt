@@ -4,7 +4,6 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
-import com.tokopedia.play.broadcaster.util.extension.getName
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import javax.inject.Inject
 
@@ -33,7 +32,7 @@ class PlayLoggerImpl @Inject constructor(
 
     override fun logPusherState(pusherState: PlayLivePusherMediatorState) {
         collector.collect(
-            Pair("pusher", pusherState.getName())
+            Pair("pusher", pusherState.tag)
         )
     }
 

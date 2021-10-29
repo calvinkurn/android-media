@@ -9,6 +9,8 @@ import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import java.io.File
@@ -139,5 +141,17 @@ class UiModelBuilder {
         desc: String,
     ) = TermsAndConditionUiModel(
         desc = desc,
+    )
+
+    fun buildPinnedMessageUiModel(
+        id: String = "",
+        message: String = "",
+        isActive: Boolean = true,
+        editStatus: PinnedMessageEditStatus = PinnedMessageEditStatus.Nothing,
+    ) = PinnedMessageUiModel(
+        id = id,
+        message = message,
+        isActive = isActive,
+        editStatus = editStatus,
     )
 }

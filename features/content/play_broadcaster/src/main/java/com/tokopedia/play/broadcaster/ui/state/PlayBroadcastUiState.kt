@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditSt
 internal data class PlayBroadcastUiState(
     val channel: PlayChannelUiState,
     val pinnedMessage: PinnedMessageUiState,
+    val isExiting: Boolean,
 )
 
 internal data class PlayChannelUiState(

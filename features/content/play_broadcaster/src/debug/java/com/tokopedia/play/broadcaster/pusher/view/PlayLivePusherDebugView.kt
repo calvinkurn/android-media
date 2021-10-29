@@ -10,7 +10,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
-import com.tokopedia.play.broadcaster.util.extension.getName
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -62,7 +61,7 @@ class PlayLivePusherDebugView : ScrollView {
     }
 
     fun updateState(state: PlayLivePusherMediatorState) {
-        tvStatus.text = state.getName()
-        tvFullLog.append("\n${state.getName()}")
+        tvStatus.text = state.tag
+        tvFullLog.append("\n${state.tag}")
     }
 }

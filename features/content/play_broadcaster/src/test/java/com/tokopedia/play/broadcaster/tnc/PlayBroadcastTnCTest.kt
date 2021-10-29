@@ -14,7 +14,7 @@ import org.junit.Test
 /**
  * Created by jegul on 06/10/21
  */
-class PlayBroadcastTnCViewModelTest {
+class PlayBroadcastTnCTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -42,19 +42,19 @@ class PlayBroadcastTnCViewModelTest {
             channelRepo = mockRepo,
         )
 
-        val state = robot.recordState {
-            getConfig()
+        robot.use {
+            val state = robot.recordState {
+                getConfig()
+            }
+
+            state.channel
+                .canStream
+                .assertEqualTo(false)
+
+            state.channel
+                .tnc
+                .assertEqualTo(mockTnCList)
         }
-
-        state.channel
-            .canStream
-            .assertEqualTo(false)
-
-        state.channel
-            .tnc
-            .assertEqualTo(mockTnCList)
-
-        robot.cancelRemainingTasks()
     }
 
     @Test
@@ -71,14 +71,14 @@ class PlayBroadcastTnCViewModelTest {
             channelRepo = mockRepo,
         )
 
-        val state = robot.recordState {
-            getConfig()
+        robot.use {
+            val state = robot.recordState {
+                getConfig()
+            }
+
+            state.channel
+                .canStream
+                .assertEqualTo(true)
         }
-
-        state.channel
-            .canStream
-            .assertEqualTo(true)
-
-        robot.cancelRemainingTasks()
     }
 }
