@@ -11,17 +11,9 @@ class ValidateUsePromoCheckoutMapper {
 
     companion object {
         fun mapToValidateUseRevampPromoUiModel(validateUsePromoRevamp: ValidateUsePromoRevamp): ValidateUsePromoRevampUiModel {
-            var status = validateUsePromoRevamp.status
-//            validateUsePromoRevamp?.status?.let { status = it }
-
-            val listMessage = validateUsePromoRevamp.message
-//            validateUsePromoRevamp?.message?.forEach {
-//                listMessage.add(it)
-//            }
-
             return ValidateUsePromoRevampUiModel(
-                    status = status,
-                    message = listMessage,
+                    status = validateUsePromoRevamp.status,
+                    message = validateUsePromoRevamp.message,
                     promoUiModel = mapToPromoUiModel(validateUsePromoRevamp.promo)
             )
         }
@@ -39,17 +31,13 @@ class ValidateUsePromoCheckoutMapper {
         }
 
         private fun mapTrackingDetails(trackingDetails: List<TrackingDetailsItem>): List<TrackingDetailsItemUiModel> {
-            val trackingDetailUiModels = ArrayList<TrackingDetailsItemUiModel>()
-            trackingDetails.forEach {
-                val trackingDetailsItemUiModel = TrackingDetailsItemUiModel().apply {
+            return trackingDetails.map {
+                TrackingDetailsItemUiModel().apply {
                     promoDetailsTracking = it.promoDetailsTracking
                     productId = it.productId
                     promoCodesTracking = it.promoCodesTracking
                 }
-                trackingDetailUiModels.add(trackingDetailsItemUiModel)
             }
-
-            return trackingDetailUiModels
         }
 
         private fun mapTickerInfoUiModel(tickerInfo: TickerInfo): TickerInfoUiModel {
@@ -64,46 +52,24 @@ class ValidateUsePromoCheckoutMapper {
         }
 
         private fun mapCodes(codes: List<String>): ArrayList<String> {
-            val listNewCodes = arrayListOf<String>()
-            codes.forEach {
-//                it?.let {
-                    listNewCodes.add(it)
-//                }
-            }
-            return listNewCodes
+            return ArrayList(codes)
         }
 
         private fun mapMessageUiModel(messageData: Message): MessageUiModel {
-            val color = messageData.color
-//            messageData?.color?.let { color = it }
-
-            val state = messageData.state
-//            messageData?.state?.let { state = it }
-
-            val text = messageData.text
-//            messageData?.text?.let { text = it }
             return MessageUiModel(
-                    color = color,
-                    state = state,
-                    text = text)
+                    color = messageData.color,
+                    state = messageData.state,
+                    text = messageData.text)
         }
 
         private fun mapListVoucherOrders(voucherOrders: List<VoucherOrdersItem>): List<PromoCheckoutVoucherOrdersItemUiModel> {
-            val listVoucherOrders = arrayListOf<PromoCheckoutVoucherOrdersItemUiModel>()
-            voucherOrders.let {
-                it.forEach { voucherOrderItem ->
-                    listVoucherOrders.add(mapToVoucherOrdersItemUiModel(voucherOrderItem))
-                }
-            }
-            return listVoucherOrders
+            return voucherOrders.map { mapToVoucherOrdersItemUiModel(it) }
         }
 
         private fun mapToVoucherOrdersItemUiModel(voucherOrdersItem: VoucherOrdersItem): PromoCheckoutVoucherOrdersItemUiModel {
-            var code = ""
-            voucherOrdersItem.code.let { code = it }
             return PromoCheckoutVoucherOrdersItemUiModel(
                     success = voucherOrdersItem.success,
-                    code = code,
+                    code = voucherOrdersItem.code,
                     type = voucherOrdersItem.type,
                     uniqueId = voucherOrdersItem.uniqueId,
                     messageUiModel = mapMessageUiModel(voucherOrdersItem.message)
@@ -162,62 +128,37 @@ class ValidateUsePromoCheckoutMapper {
                     currencyDetailStr = usageSummaries.currencyDetailsStr)
         }
 
-        private fun mapToBenefitSummaryInfoUiModel(benefitSummaryInfo: BenefitSummaryInfo): BenefitSummaryInfoUiModel {
-            val benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel()
-            benefitSummaryInfo.let { benefit ->
-                benefitSummaryInfoUiModel.finalBenefitText = benefit.finalBenefitText
-                benefitSummaryInfoUiModel.finalBenefitAmountStr = benefit.finalBenefitAmountStr
-                benefitSummaryInfoUiModel.finalBenefitAmount = benefit.finalBenefitAmount
-                benefitSummaryInfoUiModel.summaries = mapToListSummaryInfoUiModel(benefit.summaries)
+        private fun mapToBenefitSummaryInfoUiModel(benefit: BenefitSummaryInfo): BenefitSummaryInfoUiModel {
+            val benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel().apply {
+                finalBenefitText = benefit.finalBenefitText
+                finalBenefitAmountStr = benefit.finalBenefitAmountStr
+                finalBenefitAmount = benefit.finalBenefitAmount
+                summaries = mapToListSummaryInfoUiModel(benefit.summaries)
             }
             return benefitSummaryInfoUiModel
         }
 
         private fun mapToListSummaryInfoUiModel(listSummariesItem: List<SummariesItem>): List<SummariesItemUiModel> {
-            val listSummaryInfoUiModel = arrayListOf<SummariesItemUiModel>()
-            listSummariesItem.forEach { summary ->
-                var desc = ""
-                summary.description.let { desc = it }
-
-                var type = ""
-                summary.type.let { type = it }
-
-                var amountStr = ""
-                summary.amountStr.let { amountStr = it }
-
-                val summaryItemUiModel = SummariesItemUiModel(
-                        description = desc,
-                        type = type,
+            return listSummariesItem.map { summary ->
+                SummariesItemUiModel(
+                        description = summary.description,
+                        type = summary.type,
                         amount = summary.amount,
-                        amountStr = amountStr,
+                        amountStr = summary.amountStr,
                         details = mapToDetailSummaryUiModel(summary.details)
                 )
-                listSummaryInfoUiModel.add(summaryItemUiModel)
             }
-            return listSummaryInfoUiModel
         }
 
         private fun mapToDetailSummaryUiModel(listDetailsItem: List<DetailsItem>): List<DetailsItemUiModel> {
-            val listDetailsItemUiModel = arrayListOf<DetailsItemUiModel>()
-            listDetailsItem.forEach { details ->
-                var desc = ""
-                details.description.let { desc = it }
-
-                var amountStr = ""
-                details.amountStr.let { amountStr = it }
-
-                var type = ""
-                details.type.let { type = it }
-
-                val detailItemUiModel = DetailsItemUiModel(
-                        description = desc,
-                        amountStr = amountStr,
+            return listDetailsItem.map { details ->
+                DetailsItemUiModel(
+                        description = details.description,
+                        amountStr = details.amountStr,
                         amount = details.amount,
-                        type = type
+                        type = details.type
                 )
-                listDetailsItemUiModel.add(detailItemUiModel)
             }
-            return listDetailsItemUiModel
         }
     }
 }

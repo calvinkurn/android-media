@@ -32,11 +32,8 @@ object LastApplyUiMapper {
     }
 
     private fun mapVoucherOrdersItem(promoCheckoutVoucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel): LastApplyVoucherOrdersItemUiModel {
-        var code = ""
-        promoCheckoutVoucherOrdersItemUiModel.code.let { code = it }
-
         return LastApplyVoucherOrdersItemUiModel(
-                code = code,
+                code = promoCheckoutVoucherOrdersItemUiModel.code,
                 uniqueId = promoCheckoutVoucherOrdersItemUiModel.uniqueId,
                 message = mapMessageUiModel(promoCheckoutVoucherOrdersItemUiModel.messageUiModel)
         )
@@ -60,11 +57,7 @@ object LastApplyUiMapper {
     }
 
     private fun mapUsageSummaries(usageSummariesList: List<UsageSummariesUiModel>): List<LastApplyUsageSummariesUiModel> {
-        val listLastApplyUsageSummariesUiModel = arrayListOf<LastApplyUsageSummariesUiModel>()
-        usageSummariesList.forEach {
-            listLastApplyUsageSummariesUiModel.add(mapUsageSummariesUiModel(it))
-        }
-        return listLastApplyUsageSummariesUiModel
+        return usageSummariesList.map { mapUsageSummariesUiModel(it) }
     }
 
     private fun mapMessageInfo(messageInfoUiModel: MessageInfoUiModel): LastApplyMessageInfoUiModel {
