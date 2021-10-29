@@ -296,9 +296,13 @@ class ShopInfoViewHolder(
         }
     }
 
-    private fun goToPowerMerchantSubscribe(tab: String) {
+    private fun goToPowerMerchantSubscribe(tab: String, isUpdate: Boolean = false) {
         val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        val appLinkPMTab = Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build().toString()
+        val appLinkPMTabBuilder = Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab)
+        if (isUpdate) {
+            appLinkPMTabBuilder.appendQueryParameter(ApplinkConstInternalMarketplace.ARGS_IS_UPGRADE, isUpdate.toString())
+        }
+        val appLinkPMTab = appLinkPMTabBuilder.build().toString()
         context?.let { RouteManager.route(context, appLinkPMTab) }
     }
 
@@ -378,7 +382,15 @@ class ShopInfoViewHolder(
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                    upgradePMTextView.showWithCondition(isNewSeller == false)
+                    with(upgradePMTextView) {
+                        val shouldShow = isNewSeller == false
+                        showWithCondition(shouldShow)
+                        if (shouldShow) {
+                            setOnClickListener {
+                                goToPowerMerchantSubscribe(TAB_PM_PRO, true)
+                            }
+                        }
+                    }
                 } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
                     upgradePMTextView.hide()
                 }

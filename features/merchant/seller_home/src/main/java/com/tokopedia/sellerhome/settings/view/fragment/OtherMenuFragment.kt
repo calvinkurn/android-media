@@ -301,13 +301,19 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
     }
 
-    override fun onGoToPowerMerchantSubscribe(tab: String?) {
+    override fun onGoToPowerMerchantSubscribe(tab: String?, isUpdate: Boolean) {
         sellerMenuTracker.sendEventClickShopSettingNew()
         if (tab != null) {
             val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-            val appLinkPMTab =
-                Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build()
-                    .toString()
+            val appLinkPMTabBuilder =
+                Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab)
+            if (isUpdate) {
+                appLinkPMTabBuilder.appendQueryParameter(
+                    ApplinkConstInternalMarketplace.ARGS_IS_UPGRADE,
+                    isUpdate.toString()
+                )
+            }
+            val appLinkPMTab = appLinkPMTabBuilder.build().toString()
             context.let { RouteManager.route(it, appLinkPMTab) }
         }
     }
