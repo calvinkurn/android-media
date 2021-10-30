@@ -77,7 +77,7 @@ class PlayEtalaseListFragment @Inject constructor(
      * Observe
      */
     private fun observeEtalase() {
-        viewModel.observableEtalase.observe(viewLifecycleOwner, Observer {
+        viewModel.observableEtalase.observe(viewLifecycleOwner) {
             when (it.state) {
                 PageResultState.Loading -> {
                     etalaseSetupCoordinator.hideGlobalError()
@@ -95,16 +95,15 @@ class PlayEtalaseListFragment @Inject constructor(
                     startPostponedTransition()
                 }
             }
-
-        })
+        }
     }
 
     private fun observeEtalaseStatus() {
-        viewModel.observableEtalaseProductState.observe(viewLifecycleOwner, Observer {
+        viewModel.observableEtalaseProductState.observe(viewLifecycleOwner) {
             if (it.state is PageResultState.Fail) {
                 analytic.viewEtalaseError(it.state.error.localizedMessage)
             }
-        })
+        }
     }
 
     /**

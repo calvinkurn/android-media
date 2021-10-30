@@ -1356,6 +1356,7 @@ class TokoNowHomeFragment: Fragment(),
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
+            isThrowOnError = false
             if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                 ogImageUrl = shareModel.ogImgUrl
             }
