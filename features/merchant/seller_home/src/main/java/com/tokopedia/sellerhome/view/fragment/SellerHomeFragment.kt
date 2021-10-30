@@ -1707,7 +1707,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setRecommendationCoachMarkEligibility() {
-        scrollToRecommendationWidget()
+        val isEligibleShowRecommendationCoachMark =
+            pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+        if (isEligibleShowRecommendationCoachMark) {
+            scrollToRecommendationWidget()
+        }
     }
 
     private fun scrollToRecommendationWidget() {

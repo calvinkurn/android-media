@@ -63,6 +63,13 @@ class PMShopScoreInterruptHelper @Inject constructor(
         pmCommonPreferenceManager.apply()
     }
 
+    fun getRecommendationCoachMarkStatus(): Boolean {
+        return pmCommonPreferenceManager.getBoolean(
+            PMCommonPreferenceManager.KEY_RECOMMENDATION_COACH_MARK,
+            false
+        ).orFalse()
+    }
+
     fun destroy() {
         data = null
         oneTimeWorkRequest = null
