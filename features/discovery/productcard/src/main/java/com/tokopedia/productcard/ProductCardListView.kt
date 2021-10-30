@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
@@ -191,5 +192,14 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonAddToCart?.isEnabled = false
         buttonAddToCart?.buttonVariant = UnifyButton.Variant.FILLED
         buttonAddToCart?.text = context.getString(R.string.product_card_out_of_stock)
+    }
+
+    fun wishlistPage_V2_revamp(btnSecondaryAction: Unit?) {
+        buttonSecondary?.visible()
+        buttonSecondary?.setOnClickListener { btnSecondaryAction }
+    }
+
+    fun setSecondaryButtonClickListener(secondaryButtonListener: (View) -> Unit) {
+        buttonSecondary?.setOnClickListener(secondaryButtonListener)
     }
 }

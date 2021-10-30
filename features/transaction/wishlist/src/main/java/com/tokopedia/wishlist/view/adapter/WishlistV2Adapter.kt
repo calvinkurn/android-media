@@ -3,6 +3,7 @@ package com.tokopedia.wishlist.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.wishlist.data.model.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.*
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
@@ -16,9 +17,6 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.view.adapter.viewholder.*
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 
-/**
- * Created by fwidjaja on 14/10/21.
- */
 class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<WishlistV2TypeLayoutData>()
@@ -39,6 +37,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onCariBarangClicked()
         fun onNotFoundButtonClicked(keyword: String)
         fun onProductRecommendationClicked(productId: String)
+        fun onThreeDotsMenuClicked(listThreeDotsMenu: List<WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem>)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

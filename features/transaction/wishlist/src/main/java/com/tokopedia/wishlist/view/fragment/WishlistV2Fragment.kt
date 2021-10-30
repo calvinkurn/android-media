@@ -55,7 +55,9 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
+import com.tokopedia.wishlist.view.adapter.WishlistV2ThreeDotsMenuBottomSheetAdapter
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
+import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
 import javax.inject.Inject
 
@@ -118,6 +120,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         const val MIN_KEYWORD_CHARACTER_COUNT = 1
         private const val PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2"
         const val PARAM_HOME = "home"
+        const val SHARE_LINK_PRODUCT = "SHARE_LINK_PRODUCT"
+        const val DELETE_WISHLIST = "DELETE_WISHLIST"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -415,6 +419,30 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         filterBottomSheet.show(childFragmentManager)
     }
 
+    private fun showBottomSheetThreeDotsMenu(listThreeDotsMenu: List<WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem>) {
+        val bottomSheetThreeDotsMenu = WishlistV2ThreeDotsMenuBottomSheet.newInstance()
+        if (bottomSheetThreeDotsMenu.isAdded || childFragmentManager.isStateSaved) return
+
+        val threeDotsMenuBottomSheetAdapter = WishlistV2ThreeDotsMenuBottomSheetAdapter()
+        threeDotsMenuBottomSheetAdapter.listThreeDotsMenuItem = listThreeDotsMenu
+
+        bottomSheetThreeDotsMenu.setAdapter(threeDotsMenuBottomSheetAdapter)
+        bottomSheetThreeDotsMenu.setListener(object : WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener{
+            override fun onThreeDotsMenuItemSelected(additionalItem: WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem) {
+                if (additionalItem.url.isNotEmpty()) {
+                    RouteManager.route(context, additionalItem.url)
+                } else {
+                    if (additionalItem.action == SHARE_LINK_PRODUCT) {
+                        println("++ share link product")
+                    } else if (additionalItem.action == DELETE_WISHLIST) {
+                        println("++ delete wishlist")
+                    }
+                }
+            }
+        })
+        bottomSheetThreeDotsMenu.show(childFragmentManager)
+    }
+
     private fun renderWishlist(items: List<WishlistV2Response.Data.WishlistV2.ItemsItem>) {
         val listItem = arrayListOf<WishlistV2TypeLayoutData>()
         items.forEach { item ->
@@ -428,7 +456,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     isShopRatingYellow = true,
                     hasSecondaryButton = true,
                     hasTambahKeranjangButton = true)
-            listItem.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout()))
+            listItem.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item.buttons.additionalButtons))
         }
 
         if (!onLoadMore) {
@@ -481,6 +509,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_INFO, productId)
             startActivity(intent)
         }
+    }
+
+    override fun onThreeDotsMenuClicked(listThreeDotsMenu: List<WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem>) {
+        showBottomSheetThreeDotsMenu(listThreeDotsMenu)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
