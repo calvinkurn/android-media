@@ -1,6 +1,9 @@
 package com.tokopedia.buyerorder.recharge.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
+import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -15,4 +18,7 @@ data class RechargeOrderDetailTopSectionModel(
         val invoiceRefNum: String,
         val invoiceUrl: String,
         val titleData: List<RechargeOrderDetailSimpleModel>
-) : Parcelable
+) : Parcelable, Visitable<RechargeOrderDetailTypeFactory> {
+    override fun type(typeFactory: RechargeOrderDetailTypeFactory?): Int =
+            typeFactory?.type(this).orZero()
+}

@@ -27,7 +27,6 @@ class RechargeOrderDetailViewModel @Inject constructor(
     fun fetchData(requestParams: RechargeOrderDetailRequest) {
         launchCatchError(block = {
             val orderDetailDeferred = fetchOrderDetailDataAsync(requestParams)
-
             _orderDetailData.postValue(orderDetailDeferred.await())
         }) {
             it.printStackTrace()

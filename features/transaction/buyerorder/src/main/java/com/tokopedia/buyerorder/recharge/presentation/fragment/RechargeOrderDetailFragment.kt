@@ -5,23 +5,42 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.buyerorder.databinding.FragmentRechargeOrderDetailBinding
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
+import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
+import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailTopSectionViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.viewmodel.RechargeOrderDetailViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
  * @author by furqan on 28/10/2021
  */
-class RechargeOrderDetailFragment : BaseDaggerFragment() {
+class RechargeOrderDetailFragment : BaseDaggerFragment(),
+        RechargeOrderDetailTopSectionViewHolder.RechargeOrderDetailTopSectionActionListener {
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var rechargeViewModel: RechargeOrderDetailViewModel
+    private val rechargeViewModel: RechargeOrderDetailViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(RechargeOrderDetailViewModel::class.java)
+    }
+
+    private val typeFactory: RechargeOrderDetailTypeFactory by lazy {
+        RechargeOrderDetailTypeFactory(this)
+    }
+    private val adapter: RechargeOrderDetailAdapter by lazy {
+        RechargeOrderDetailAdapter(typeFactory)
+    }
 
     private var orderId: String = ""
     private var orderCategory: String = ""
@@ -40,10 +59,6 @@ class RechargeOrderDetailFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activity?.run {
-            rechargeViewModel = ViewModelProvider(this, viewModelFactory).get(RechargeOrderDetailViewModel::class.java)
-        }
-
         savedInstanceState?.let {
             orderId = it.getString(EXTRA_ORDER_ID) ?: ""
             orderCategory = it.getString(EXTRA_ORDER_CATEGORY) ?: ""
@@ -60,6 +75,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupViews()
+        showLoading()
+        observeData()
+
         rechargeViewModel.fetchData(
                 RechargeOrderDetailRequest(
                         orderCategory = orderCategory,
@@ -73,6 +92,47 @@ class RechargeOrderDetailFragment : BaseDaggerFragment() {
 
         outState.putString(EXTRA_ORDER_ID, orderId)
         outState.putString(EXTRA_ORDER_CATEGORY, orderCategory)
+    }
+
+    override fun onCopyInvoiceNumberClicked(invoiceRefNum: String) {
+//        TODO("Not yet implemented")
+    }
+
+    private fun setupViews() {
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        with(binding) {
+            rvRechargeOrderDetail.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            rvRechargeOrderDetail.adapter = adapter
+        }
+    }
+
+    private fun observeData() {
+        rechargeViewModel.orderDetailData.observe(viewLifecycleOwner, {
+            hideLoading()
+            when (it) {
+                is Success -> {
+                    adapter.updateItems(it.data)
+                }
+                is Fail -> {
+
+                }
+            }
+        })
+    }
+
+    private fun showRecyclerView() {
+        binding.rvRechargeOrderDetail.show()
+    }
+
+    private fun showLoading() {
+        binding.rechargeOrderDetailLoader.show()
+    }
+
+    private fun hideLoading() {
+        binding.rechargeOrderDetailLoader.hide()
     }
 
     companion object {
