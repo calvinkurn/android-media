@@ -360,6 +360,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation rootProject.ext.miscDependencies.liveDataKtx
 
+    implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.startupRuntime
+
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }

@@ -1,11 +1,13 @@
 package com.tokopedia.tkpd;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.work.Configuration;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -25,7 +27,8 @@ import kotlin.Pair;
  * Created by ricoharisin on 11/11/16.
  */
 
-public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
+public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication
+    implements Configuration.Provider{
 
     protected void setVersionName() {
         Pair<String, String> versions = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
@@ -127,5 +130,14 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         intent.putExtra("EXTRA_IS_CLASS_NAME", className);
         intent.putExtra("EXTRA_IS_FROM_SCREENSHOT", isFromScreenshot);
         getApplicationContext().startActivity(intent);
+    }
+
+    @SuppressLint("RestrictedApi")
+    @NonNull
+    @Override
+    public Configuration getWorkManagerConfiguration() {
+        return new Configuration.Builder().setInitializationExceptionHandler(throwable -> {
+            throw new RuntimeException("WorkManager failed to initialize", throwable);
+        }).build();
     }
 }

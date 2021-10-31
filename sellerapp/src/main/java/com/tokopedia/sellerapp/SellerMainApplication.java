@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,8 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.URLUtil;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.work.Configuration;
+import androidx.work.InitializationExceptionHandler;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
@@ -73,7 +77,7 @@ import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHOR
  */
 
 public class SellerMainApplication extends SellerRouterApplication implements
-        MoengagePushListener, MoengageInAppListener {
+        MoengagePushListener, MoengageInAppListener, Configuration.Provider {
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
@@ -370,4 +374,12 @@ public class SellerMainApplication extends SellerRouterApplication implements
                 && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
     }
 
+    @SuppressLint("RestrictedApi")
+    @NonNull
+    @Override
+    public Configuration getWorkManagerConfiguration() {
+        return new Configuration.Builder().setInitializationExceptionHandler(throwable -> {
+            throw new RuntimeException("WorkManager failed to initialize", throwable);
+        }).build();
+    }
 }
