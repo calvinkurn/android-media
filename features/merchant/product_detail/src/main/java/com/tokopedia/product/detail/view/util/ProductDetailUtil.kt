@@ -307,6 +307,17 @@ internal fun View?.animateCollapse() = this?.run {
     startAnimation(animation)
 }
 
+internal fun String?.checkIfNumber(): String {
+    if (this == null) return ""
+
+    return try {
+        this.toLong()
+        this
+    } catch (t: Throwable) {
+        ""
+    }
+}
+
 internal fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
     val productCardOptionsModel = ProductCardOptionsModel()
     productCardOptionsModel.hasWishlist = true
