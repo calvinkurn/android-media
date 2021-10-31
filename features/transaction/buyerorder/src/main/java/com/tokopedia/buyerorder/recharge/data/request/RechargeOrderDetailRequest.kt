@@ -6,5 +6,5 @@ package com.tokopedia.buyerorder.recharge.data.request
 class RechargeOrderDetailRequest(
         val orderCategory: String,
         val orderId: String,
-        val upstream: String?
+        val upstream: String? = null
 )
