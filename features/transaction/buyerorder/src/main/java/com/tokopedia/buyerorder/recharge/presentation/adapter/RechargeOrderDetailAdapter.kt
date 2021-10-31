@@ -16,6 +16,7 @@ class RechargeOrderDetailAdapter(private val typeFactory: RechargeOrderDetailTyp
         val newItems = setupItems(data)
         visitables.clear()
         visitables.addAll(newItems)
+        notifyDataSetChanged()
     }
 
     private fun setupItems(

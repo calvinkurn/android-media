@@ -10,7 +10,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.detail.data.OrderCategory
-import com.tokopedia.buyerorder.detail.view.fragment.OmsDetailFragment
+import com.tokopedia.buyerorder.detail.view.activity.OrderListDetailActivity
 import com.tokopedia.buyerorder.recharge.di.DaggerRechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.fragment.RechargeOrderDetailFragment
@@ -63,7 +63,9 @@ class RechargeOrderDetailActivity : BaseSimpleActivity(), HasComponent<RechargeO
             return if (it.contains(OrderCategory.DIGITAL, true)) {
                 RechargeOrderDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)
             } else {
-                OmsDetailFragment.getInstance(orderId, "", fromPayment.toString(), upstream)
+                startActivity(OrderListDetailActivity.getIntent(this, orderId, intent.data))
+                finish()
+                null
             }
         }
         return null
@@ -88,9 +90,8 @@ class RechargeOrderDetailActivity : BaseSimpleActivity(), HasComponent<RechargeO
                                 .add(com.tokopedia.abstraction.R.id.parent_view, RechargeOrderDetailFragment.getInstance(orderId, OrderCategory.DIGITAL))
                                 .commit()
                     } else {
-                        supportFragmentManager.beginTransaction()
-                                .add(com.tokopedia.abstraction.R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment.toString(), upstream))
-                                .commit()
+                        startActivity(OrderListDetailActivity.getIntent(this, orderId, intent.data))
+                        finish()
                     }
                 }
             } else {
