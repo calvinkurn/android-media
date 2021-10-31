@@ -290,7 +290,6 @@ ext {
             embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
             window                : "androidx.window:window:$windowVersion",
             mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
-            zoomLayout            : "com.otaliastudios:zoomlayout:1.8.0@aar",
             startupRuntime        : "androidx.startup:startup-runtime:$startupRuntimeVersion",
     ]
 
