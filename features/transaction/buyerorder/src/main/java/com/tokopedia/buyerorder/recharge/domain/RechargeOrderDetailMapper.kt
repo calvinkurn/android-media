@@ -53,7 +53,7 @@ class RechargeOrderDetailMapper {
                                         isTitleBold = false,
                                         isDetailBold = true,
                                         alignment = RechargeSimpleAlignment.LEFT,
-                                        isCopyable = (it.label.equals(VOUCHER_CODE_LABEL, true) || it.label.equals(TOKEN_LABEL, true))
+                                        isCopyable = (it.label.equals(VOUCHER_CODE_LABEL, true))
                                 )
                             }.toList()
                     ),
@@ -98,6 +98,5 @@ class RechargeOrderDetailMapper {
 
         private const val DATE_LABEL = "Tanggal"
         private const val VOUCHER_CODE_LABEL = "Kode Voucher"
-        private const val TOKEN_LABEL = "Token"
     }
 }

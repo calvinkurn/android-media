@@ -46,7 +46,18 @@ class RechargeOrderDetailSimpleView @JvmOverloads constructor(context: Context, 
                     tgRechargeOrderDetailProduct.gravity = Gravity.END
                 }
             }
+            if (data.isCopyable) {
+                icRechargeSimpleCopy.visibility = View.VISIBLE
+            } else {
+                icRechargeSimpleCopy.visibility = View.GONE
+            }
             root.visibility = View.VISIBLE
+        }
+    }
+
+    fun setCopyListener(action: () -> Unit) {
+        binding.icRechargeSimpleCopy.setOnClickListener {
+            action()
         }
     }
 

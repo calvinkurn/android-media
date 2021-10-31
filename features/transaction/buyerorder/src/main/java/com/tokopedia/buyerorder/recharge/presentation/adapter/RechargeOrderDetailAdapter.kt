@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailDividerModel
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailModel
+import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailSectionModel
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailTopSectionModel
 
 /**
@@ -24,11 +25,17 @@ class RechargeOrderDetailAdapter(private val typeFactory: RechargeOrderDetailTyp
     ): List<Visitable<RechargeOrderDetailTypeFactory>> {
         return mutableListOf<Visitable<RechargeOrderDetailTypeFactory>>().apply {
             setupTopSection(data.topSectionModel)
+            setupDetailSection(data.detailsSection)
         }
     }
 
     private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupTopSection(topModel: RechargeOrderDetailTopSectionModel) {
         add(topModel)
+        addDivider()
+    }
+
+    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupDetailSection(detailModel: RechargeOrderDetailSectionModel) {
+        add(detailModel)
         addDivider()
     }
 
