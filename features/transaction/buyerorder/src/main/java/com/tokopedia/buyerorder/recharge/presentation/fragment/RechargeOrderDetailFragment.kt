@@ -115,6 +115,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     adapter.updateItems(it.data)
+                    showRecyclerView()
                 }
                 is Fail -> {
 
@@ -125,6 +126,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     private fun showRecyclerView() {
         binding.rvRechargeOrderDetail.show()
+    }
+
+    private fun hideRecyclerView() {
+        binding.rvRechargeOrderDetail.hide()
     }
 
     private fun showLoading() {
