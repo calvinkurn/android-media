@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/unify_space_8"
+    android:orientation="horizontal"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_recharge_order_detail_product_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        tools:text="Jenis Layanan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_recharge_order_detail_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Telkomsel - Simpati 100.000" />
+
+</LinearLayout>

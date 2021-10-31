@@ -155,4 +155,13 @@
 
     <string name="zero_rupiah">Rp0</string>
     <string name="free_rupiah">Gratis</string>
+    <string name="recharge_order_detail_see_invoice_label">Lihat Invoice</string>
+    <string name="recharge_order_detail_purchase_date_label">Tanggal Pembelian</string>
+    <string name="order_detail_recharge_product_detail_label">Detail Produk</string>
+    <string name="recharge_order_detail_payment_detail_label">Rincian Pembayaran</string>
+    <string name="recharge_order_detail_total_payment_label">Total Bayar</string>
+    <string name="recharge_order_detail_sbm_label">Bayar Sekaligus</string>
+    <string name="recharge_order_detail_sbm_detail">Banyak tagihan? Sekali bayar, semua lunas</string>
+    <string name="recharge_order_detail_mybills_label">Langganan</string>
+    <string name="recharge_order_detail_mybills_detail">Ada tagihan rutin? Biar nggak lupa, Langganan aja</string>
 </resources>
