@@ -13,6 +13,8 @@ import java.lang.reflect.Type
 
 object Teleporter {
     var teleporterPatternList: List<TeleporterPattern>? = null
+    var lastFetch: Long = 0L
+    const val DURATION_FETCH = 300000
     const val MAINAPP_TELEPORTER_REMOTE_CONFIG = "android_mainapp_teleporter_v3"
     const val SELLERAPP_TELEPORTER_REMOTE_CONFIG = "android_sellerapp_teleporter_v3"
     val gson = Gson()
@@ -136,7 +138,11 @@ object Teleporter {
     }
 
     private fun getConfig(context: Context): List<TeleporterPattern>? {
-        getLatestConfig(context)
+        val now = System.currentTimeMillis()
+        if (now - lastFetch > DURATION_FETCH) {
+            getLatestConfig(context)
+            lastFetch = now
+        }
         return teleporterPatternList
     }
 
