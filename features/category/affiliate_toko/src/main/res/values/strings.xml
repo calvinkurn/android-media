@@ -39,4 +39,5 @@
     <string name="affiliate_beta_info_text">Di versi ini, tim bisnis kami akan mengirimkan laporan Performa Affiliate &amp; pendapatanmu. Nantikan fitur yang lebih optimal di versi berikutnya, ya!</string>
     <string name="affiliate_beta">BETA</string>
     <string name="affiliate_product_link_invalid">Pastikan link yang kamu masukkan benar, ya.</string>
+    <string name="affiliate_portfolio_confirm_btn">Selanjutnya</string>
 </resources>

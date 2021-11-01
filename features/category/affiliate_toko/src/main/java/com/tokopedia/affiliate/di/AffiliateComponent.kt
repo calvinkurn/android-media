@@ -7,6 +7,7 @@ import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
+import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
 import dagger.Component
 
 @AffiliateScope
@@ -23,5 +24,7 @@ interface AffiliateComponent {
     fun injectHelpFragment(affiliateHelpFragment: AffiliateHelpFragment)
 
     fun inject(affiliatePromotionBottomSheet: AffiliatePromotionBottomSheet)
+
+    fun injectPortfolioFragment(affiliatePortfolioFragment: AffiliatePortfolioFragment)
 
 }
