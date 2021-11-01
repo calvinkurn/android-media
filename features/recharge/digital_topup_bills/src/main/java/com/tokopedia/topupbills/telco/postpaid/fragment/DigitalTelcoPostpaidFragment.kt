@@ -295,7 +295,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 )
             }
 
-            override fun onRenderOperator() {
+            override fun onRenderOperator(isDelayed: Boolean) {
                 operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
                     inputNumberActionType = InputNumberActionType.MANUAL
                     if (it) {
@@ -423,7 +423,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun renderProductFromCustomData() {
+    override fun renderProductFromCustomData(isDelayed: Boolean) {
         try {
             if (postpaidClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
                 operatorSelected = operatorData.rechargeCatalogPrefixSelect.prefixes.single {

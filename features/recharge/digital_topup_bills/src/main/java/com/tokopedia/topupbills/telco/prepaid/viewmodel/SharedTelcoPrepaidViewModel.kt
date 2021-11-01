@@ -25,6 +25,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.Delayed
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -79,6 +80,8 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val inputWidgetFocus: LiveData<Boolean>
         get() = _inputWidgetFocus
 
+    private var getCatalogProductListJob: Job? = null
+
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
         _productCatalogItem.postValue(productCatalogItem)
     }
@@ -112,27 +115,35 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     }
 
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
-                              filterData: ArrayList<HashMap<String, Any>>?, autoSelectProductId: Int = 0, clientNumber: String) {
+                              filterData: ArrayList<HashMap<String, Any>>?,
+                              autoSelectProductId: Int = 0, clientNumber: String,
+                              isDelayed: Boolean = false
+    ) {
         launchCatchError(block = {
-            val mapParam = HashMap<String, Any>()
-            mapParam[KEY_MENU_ID] = menuId
-            mapParam[KEY_OPERATOR_ID] = operatorId
-            mapParam[KEY_CLIENT_NUMBER] = arrayListOf(clientNumber)
-            if (filterData != null && filterData.size > 0) {
-                mapParam[KEY_FILTER_DATA] = filterData
-            }
+            getCatalogProductListJob = CoroutineScope(coroutineContext).launch {
+                if (isDelayed) {
+                    delay(PRODUCT_LIST_DELAY_TIME)
+                }
+                val mapParam = HashMap<String, Any>()
+                mapParam[KEY_MENU_ID] = menuId
+                mapParam[KEY_OPERATOR_ID] = operatorId
+                mapParam[KEY_CLIENT_NUMBER] = arrayListOf(clientNumber)
+                if (filterData != null && filterData.size > 0) {
+                    mapParam[KEY_FILTER_DATA] = filterData
+                }
 
-            val data = withContext(dispatcher) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<TelcoCatalogProductInputMultiTab>()
+                val data = withContext(dispatcher) {
+                    val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
+                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                }.getSuccessData<TelcoCatalogProductInputMultiTab>()
 
-            _loadingProductList.postValue(false)
-            if (data.rechargeCatalogProductDataData.productInputList.isEmpty()) {
-                _productList.postValue(Fail(MessageErrorException()))
-            } else {
-                _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
-                setFavNumberSelected(autoSelectProductId.toString())
+                _loadingProductList.postValue(false)
+                if (data.rechargeCatalogProductDataData.productInputList.isEmpty()) {
+                    _productList.postValue(Fail(MessageErrorException()))
+                } else {
+                    _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
+                    setFavNumberSelected(autoSelectProductId.toString())
+                }
             }
         }) {
             _loadingProductList.postValue(false)
@@ -160,5 +171,6 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
         const val EXP_TIME = 10
         const val DELAY_TIME: Long = 100
+        const val PRODUCT_LIST_DELAY_TIME: Long = 1000
     }
 }

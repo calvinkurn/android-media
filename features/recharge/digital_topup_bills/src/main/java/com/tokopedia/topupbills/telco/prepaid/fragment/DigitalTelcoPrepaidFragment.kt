@@ -109,11 +109,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun subscribeUi() {
         sharedModelPrepaid.productCatalogItem.observe(viewLifecycleOwner, Observer {
             if (isProductExist(it)) {
-                sharedModelPrepaid.setVisibilityTotalPrice(true)
-                telco_buy_widget.setTotalPrice(it.attributes.price)
+                sharedModelPrepaid.setVisibilityTotalPrice(
+                    !telcoClientNumberWidget.isErrorMessageShown())
+                buyWidget.setTotalPrice(it.attributes.price)
                 it.attributes.productPromo?.run {
                     if (this.newPrice.isNotEmpty()) {
-                        telco_buy_widget.setTotalPrice(this.newPrice)
+                        buyWidget.setTotalPrice(this.newPrice)
                     }
                 }
                 prepareProductForCheckout(it)
@@ -217,7 +218,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         price = telcoProduct.attributes.pricePlain
         checkVoucherWithDelay()
         generateCheckoutPassData(
-            telco_input_number.getInputNumber(),
+            telcoClientNumberWidget.getInputNumber(),
             if (telcoProduct.attributes.productPromo != null) "1" else "0",
             telcoProduct.attributes.categoryId.toString(),
             telcoProduct.attributes.operatorId.toString(),
@@ -395,27 +396,41 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         addToCartViewModel = viewModelFragmentProvider.get(DigitalAddToCartViewModel::class.java)
     }
 
-    override fun renderProductFromCustomData() {
+    override fun renderProductFromCustomData(isDelayed: Boolean) {
         try {
             if (telcoClientNumberWidget.getInputNumber().length >= MINIMUM_OPERATOR_PREFIX) {
                 showProducts = true
+
+                /* operator check */
                 val selectedOperator =
                     this.operatorData.rechargeCatalogPrefixSelect.prefixes.single {
                         telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                     }
+
+                /* validate phone number */
                 validatePhoneNumber(operatorData, telcoClientNumberWidget, buyWidget) {
                     hitTrackingForInputNumber(selectedOperator)
                 }
 
-                operatorId = selectedOperator.operator.id
-                productId = 0
-                sharedModelPrepaid.setVisibilityTotalPrice(false)
-                telcoClientNumberWidget.run {
-                    setIconOperator(selectedOperator.operator.attributes.imageUrl)
-                    clearErrorState()
+                /* reload product, reset selected items */
+                if (operatorId != selectedOperator.operator.id ||
+                    telcoClientNumberWidget.getInputNumber()
+                        .length in MINIMUM_VALID_NUMBER_LENGTH .. MAXIMUM_VALID_NUMBER_LENGTH
+                ) {
+                    operatorId = selectedOperator.operator.id
+                    productId = 0
+                    sharedModelPrepaid.setVisibilityTotalPrice(false)
+                    telcoClientNumberWidget.run {
+                        setIconOperator(selectedOperator.operator.attributes.imageUrl)
+                    }
+                    renderProductViewPager()
+                    getProductListData(isDelayed)
                 }
-                renderProductViewPager()
-                getProductListData()
+
+                /* update checkoutPassData with new input number */
+                if (isCheckoutPassDataInitialized()) {
+                    checkoutPassData.clientNumber = telcoClientNumberWidget.getInputNumber()
+                }
             }
         } catch (exception: NoSuchElementException) {
             operatorId = ""
@@ -476,12 +491,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             )
         }
 
-        override fun onRenderOperator() {
+        override fun onRenderOperator(isDelayed: Boolean) {
             operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
+                inputNumberActionType = InputNumberActionType.MANUAL
                 if (it) {
                     getPrefixOperatorData()
                 } else {
-                    renderProductFromCustomData()
+                    renderProductFromCustomData(isDelayed)
                 }
             }
         }
@@ -531,12 +547,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.setContactName(contactName)
     }
 
-    private fun getProductListData() {
+    private fun getProductListData(isDelayed: Boolean) {
         sharedModelPrepaid.setProductListShimmer(true)
         if (operatorId.isNotEmpty()) {
             sharedModelPrepaid.getCatalogProductList(
                 DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,
-                productId, telcoClientNumberWidget.getInputNumber()
+                productId, telcoClientNumberWidget.getInputNumber(),
+                isDelayed
             )
         }
     }

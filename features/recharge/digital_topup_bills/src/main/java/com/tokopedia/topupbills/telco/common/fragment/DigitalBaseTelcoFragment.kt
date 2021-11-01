@@ -88,8 +88,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             categoryName = topupAnalytics.getCategoryName(value)
         }
 
-    private var phoneValidatorJob: Job? = null
-
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
@@ -379,21 +377,20 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         buyWidget: TopupBillsCheckoutWidget,
         isValidTracking: () -> Unit
     ) {
-        phoneValidatorJob?.cancel()
-        phoneValidatorJob = CoroutineScope(Dispatchers.Main).launch {
-            delay(DELAY_INPUT_NUMBER_VALIDATOR)
-            for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
-                val phoneIsValid = Pattern.compile(validation.rule)
-                    .matcher(clientNumberWidget.getInputNumber()).matches()
-                if (!phoneIsValid) {
-                    clientNumberWidget.setErrorInputNumber(validation.message)
-                    buyWidget.setBuyButtonState(false)
-                    break
-                }
+        var isValid = true
+        for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
+            val phoneIsValid = Pattern.compile(validation.rule)
+                .matcher(clientNumberWidget.getInputNumber()).matches()
+            if (!phoneIsValid) {
+                isValid = false
+                clientNumberWidget.setErrorInputNumber(validation.message)
+                break
+            } else {
+                clientNumberWidget.clearErrorState()
             }
-            isValidTracking.invoke()
-            buyWidget.setBuyButtonState(true)
         }
+        isValidTracking.invoke()
+        buyWidget.setVisibilityLayout(isValid)
     }
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
@@ -552,22 +549,16 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
                 lastOffset = verticalOffSet
                 if (abs(verticalOffSet) >= appBarLayout.totalScrollRange && !lastIsCollapsed) {
-                    //Collapsed
-                    lastIsCollapsed = true
-                    onCollapseAppBar()
-                    if (!fadeOut.hasStarted() || fadeOut.hasEnded()) {
-                        bannerImage.clearAnimation()
-                        bannerImage.startAnimation(fadeOut)
+                    if (!getClientInputNumber().isErrorMessageShown()) {
+                        //Collapsed
+                        lastIsCollapsed = true
+                        onCollapseAppBar()
+                        (activity as? BaseTelcoActivity)?.onCollapseAppBar()
                     }
-                    (activity as? BaseTelcoActivity)?.onCollapseAppBar()
                 } else if (verticalOffSet == 0 && lastIsCollapsed) {
                     //Expanded
                     lastIsCollapsed = false
                     onExpandAppBar()
-                    if (!fadeIn.hasStarted() || fadeIn.hasEnded()) {
-                        bannerImage.clearAnimation()
-                        bannerImage.startAnimation(fadeIn)
-                    }
                     (activity as? BaseTelcoActivity)?.onExpandAppBar()
                 }
             }
@@ -588,7 +579,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun renderPromoAndRecommendation()
 
-    protected abstract fun renderProductFromCustomData()
+    protected abstract fun renderProductFromCustomData(isDelayed: Boolean = false)
 
     protected abstract fun setupCheckoutData()
 
@@ -623,6 +614,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     companion object {
         const val MINIMUM_OPERATOR_PREFIX = 4
+        const val MINIMUM_VALID_NUMBER_LENGTH = 10
+        const val MAXIMUM_VALID_NUMBER_LENGTH = 14
 
         const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 76
         const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
@@ -633,7 +626,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         const val DEFAULT_ICON_RES = 0
         const val FADE_IN_DURATION: Long = 300
         const val FADE_OUT_DURATION: Long = 300
-        const val DELAY_INPUT_NUMBER_VALIDATOR = 1000L
 
         const val TELCO_BASE_PREFERENCE_NAME = "telco_base_preferences"
         const val TELCO_PERMISSION_CHECKER_IS_DENIED = "telco_permission_checker_is_denied"

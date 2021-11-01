@@ -107,11 +107,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                     if (s?.toString()?.isEmpty() == true) {
                         listener.onClearAutoComplete()
                         imgOperator.visibility = View.GONE
+                        clearErrorState()
                     }
-
-                    if (inputNumberField.isInputError) clearErrorState()
-
-                    listener.onRenderOperator()
+                    listener.onRenderOperator(true)
                 }
             })
 
@@ -214,14 +212,19 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun setErrorInputNumber(errorMessage: String, resetProvider: Boolean = false) {
         inputNumberField.run {
-            setMessage(errorMessage)
-            isInputError = true
+            val dummy = textInputLayout.helperText.toString()
+            if (dummy != errorMessage) {
+                setMessage(errorMessage)
+                isInputError = true
 
-            if (resetProvider) {
-                imgOperator.visibility = View.GONE
+                if (resetProvider) {
+                    imgOperator.visibility = View.GONE
+                }
             }
         }
     }
+
+    fun isErrorMessageShown(): Boolean = inputNumberField.isInputError
 
     fun clearErrorState() {
         inputNumberField.run {
@@ -253,7 +256,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         ImageHandler.LoadImage(imgOperator, url)
         ImageHandler.LoadImage(imgOperatorResult, url)
         imgOperator.visibility = View.VISIBLE
-        clearErrorState()
+//        clearErrorState()
     }
 
     fun setVisibleResultNumber(show: Boolean) {
@@ -338,7 +341,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     interface ActionListener {
         fun onNavigateToContact(isSwitchChecked: Boolean)
-        fun onRenderOperator()
+        fun onRenderOperator(isDelayed: Boolean)
         fun onClearAutoComplete()
         fun onClickClearInput()
         fun onShowFilterChip(isLabeled: Boolean)

@@ -60,6 +60,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
     private var telcoFilterData: TelcoFilterData = TelcoFilterData()
     private var productType = TelcoProductType.PRODUCT_LIST
 
+    private var currentSelectedItem: Pair<TelcoProduct, Int>? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -160,6 +162,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         sharedModelPrepaid.setProductCatalogSelected(itemProduct)
         sharedModelPrepaid.setInputWidgetFocus(false)
         telcoTelcoProductView.selectProductItem(position)
+        currentSelectedItem = itemProduct to position
         if (::selectedOperatorName.isInitialized) {
             topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName,
                     userSession.userId, labelList)
@@ -179,6 +182,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
             override fun onClickOnProduct() {
                 activity?.run {
                     telcoTelcoProductView.selectProductItem(position)
+                    currentSelectedItem = itemProduct to position
                     sharedModelPrepaid.setProductCatalogSelected(itemProduct)
                     sharedModelPrepaid.setProductAutoCheckout(itemProduct)
                     sharedModelPrepaid.setInputWidgetFocus(false)
@@ -314,6 +318,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
 
                     renderSortFilter(it.product.id, it.filterTagComponents)
                     telcoTelcoProductView.renderProductList(productType, showTitle, it.product.dataCollections, sharedModelPrepaid.selectedCategoryViewPager.value == titleProduct)
+
+                    // [Misael] : harus check position
+//                    currentSelectedItem?.let { (itemProduct, position) ->
+//                        sharedModelPrepaid.setProductCatalogSelected(itemProduct)
+//                        sharedModelPrepaid.setInputWidgetFocus(false)
+//                        telcoTelcoProductView.selectProductItem(position)
+//                    }
                 } else {
                     onErrorProductList()
                 }
