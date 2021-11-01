@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:paddingHorizontal="16dp"
+    tools:paddingTop="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_manage_violation_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        tools:text="Produk diduga tidak layak jual karena:"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        android:background="@drawable/bg_product_manage_violation_reason">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product_manage_violation_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_5"
+            tools:text="Berupa pakaian dalam bekas"/>
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_manage_violation_step_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        tools:text="Lakukan langkah berikut untuk menyelesaikan:"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_product_manage_violation_step"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        tools:listitem="@layout/item_product_manage_violation"
+        tools:itemCount="2"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_product_manage_violation_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        tools:text="Bantuan"/>
+
+</LinearLayout>
