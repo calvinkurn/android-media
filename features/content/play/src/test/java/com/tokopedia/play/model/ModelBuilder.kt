@@ -961,25 +961,25 @@ class ModelBuilder {
               }
         }""".trimIndent()
 
-    fun buildChannel() = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
+    fun buildChannel(): ChannelDetailsWithRecomResponse = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
 
-    fun buildSocketCredential() = gson.fromJson(socketCredential, SocketCredential::class.java)
+    fun buildSocketCredential(): SocketCredential = gson.fromJson(socketCredential, SocketCredential::class.java)
 
-    fun buildChannelWithShop() = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
+    fun buildChannelWithShop(): ChannelDetailsWithRecomResponse = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
 
-    fun buildShopInfo() = gson.fromJson(shopInfoJson, ShopInfo::class.java)
+    fun buildShopInfo(): ShopInfo = gson.fromJson(shopInfoJson, ShopInfo::class.java)
 
-    fun buildNewChat() = gson.fromJson(newChatJson, PlayChat::class.java)
+    fun buildNewChat(): PlayChat = gson.fromJson(newChatJson, PlayChat::class.java)
 
-    fun buildTotalLike() = gson.fromJson(totalLikeCount, TotalLikeContent.Response::class.java)
+    fun buildTotalLike(): TotalLikeContent.Response = gson.fromJson(totalLikeCount, TotalLikeContent.Response::class.java)
 
-    fun buildIsLike() = gson.fromJson(isLike, IsLikedContent.Data::class.java)
+    fun buildIsLike(): IsLikedContent.Data = gson.fromJson(isLike, IsLikedContent.Data::class.java)
 
-    fun buildProductTagging() = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
+    fun buildProductTagging(): ProductTagging = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
 
-    fun buildProductVariant() = gson.fromJson(productVariant, GetProductVariantResponse::class.java)
+    fun buildProductVariant(): GetProductVariantResponse = gson.fromJson(productVariant, GetProductVariantResponse::class.java)
 
-    fun buildProduct() = gson.fromJson(product, Product::class.java)
+    fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
     fun buildAddToCartModelResponseSuccess() = AddToCartDataModel(data = DataModel(cartId = "123", success = 1))
     fun buildAddToCartModelResponseFail() = AddToCartDataModel(
