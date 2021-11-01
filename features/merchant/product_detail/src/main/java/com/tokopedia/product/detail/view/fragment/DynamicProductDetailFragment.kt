@@ -3606,7 +3606,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     goToLogin()
                 }
             }
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
 
         }
     }
