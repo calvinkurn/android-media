@@ -8,43 +8,52 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class WidgetModel(
-        @Expose
-        @SerializedName("ID")
-        val id: Long?,
-        @Expose
-        @SerializedName("applink")
-        val appLink: String?,
-        @Expose
-        @SerializedName("ctaText")
-        val ctaText: String?,
-        @Expose
-        @SerializedName("dataKey")
-        val dataKey: String?,
-        @Expose
-        @SerializedName("subtitle")
-        val subtitle: String?,
-        @Expose
-        @SerializedName("tooltip")
-        val tooltip: TooltipModel,
-        @Expose
-        @SerializedName("title")
-        val title: String?,
-        @Expose
-        @SerializedName("widgetType")
-        val widgetType: String?,
-        @Expose
-        @SerializedName("showEmpty")
-        val isShowEmpty: Boolean?,
-        @Expose
-        @SerializedName("postFilter")
-        val postFilter: List<PostFilterModel>?,
-        @Expose
-        @SerializedName("emptyState")
-        val emptyStateModel: WidgetEmptyStateModel,
-        @Expose
-        @SerializedName("comparePeriode")
-        val isComparePeriodeOnly: Boolean = false,
-        @Expose
-        @SerializedName("searchTableColumnFilter")
-        val searchTableColumnFilters: List<SearchTableColumnFilterModel>?
+    @Expose
+    @SerializedName("ID")
+    val id: Long?,
+    @Expose
+    @SerializedName("applink")
+    val appLink: String?,
+    @Expose
+    @SerializedName("ctaText")
+    val ctaText: String?,
+    @Expose
+    @SerializedName("maxData")
+    val maxData: Int? = 0,
+    @Expose
+    @SerializedName("maxDisplay")
+    val maxDisplay: Int? = 0,
+    @Expose
+    @SerializedName("dataKey")
+    val dataKey: String?,
+    @Expose
+    @SerializedName("subtitle")
+    val subtitle: String?,
+    @Expose
+    @SerializedName("tooltip")
+    val tooltip: TooltipModel,
+    @Expose
+    @SerializedName("tag")
+    val tag: String? = "",
+    @Expose
+    @SerializedName("title")
+    val title: String?,
+    @Expose
+    @SerializedName("widgetType")
+    val widgetType: String?,
+    @Expose
+    @SerializedName("showEmpty")
+    val isShowEmpty: Boolean?,
+    @Expose
+    @SerializedName("postFilter")
+    val postFilter: List<PostFilterModel>?,
+    @Expose
+    @SerializedName("emptyState")
+    val emptyStateModel: WidgetEmptyStateModel,
+    @Expose
+    @SerializedName("comparePeriode")
+    val isComparePeriodeOnly: Boolean = false,
+    @Expose
+    @SerializedName("searchTableColumnFilter")
+    val searchTableColumnFilters: List<SearchTableColumnFilterModel>?
 )

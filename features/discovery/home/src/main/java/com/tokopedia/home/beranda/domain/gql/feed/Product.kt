@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.domain.gql.feed
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -36,6 +37,7 @@ data class Product(
         @SerializedName("tracker_image_url")
         @Expose
         val trackerImageUrl: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: String = "",

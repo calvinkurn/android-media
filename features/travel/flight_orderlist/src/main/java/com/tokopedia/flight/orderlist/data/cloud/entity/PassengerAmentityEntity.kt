@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderlist.data.cloud.entity
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -17,6 +18,7 @@ class PassengerAmentityEntity(
         @SerializedName("amenity_type")
         @Expose
         val amenityType: Int = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: String = "",

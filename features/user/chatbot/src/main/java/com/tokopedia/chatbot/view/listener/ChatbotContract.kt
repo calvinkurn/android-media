@@ -1,9 +1,9 @@
 package com.tokopedia.chatbot.view.listener
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -46,6 +46,14 @@ interface ChatbotContract {
         fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?)
 
         fun removeDummy(visitable: Visitable<*>)
+
+        fun loadChatHistory()
+
+        fun startNewSession()
+
+        fun blockTyping()
+
+        fun enableTyping()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -55,7 +63,7 @@ interface ChatbotContract {
         fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel, startTime: String, opponentId: String)
 
         fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String)
-                : AttachInvoiceSentViewModel
+                : AttachInvoiceSentUiModel
 
         fun getExistingChat(messageId: String,
                             onError: (Throwable) -> Unit,
@@ -91,10 +99,10 @@ interface ChatbotContract {
 
         fun sendReadEvent(messageId: String)
 
-        fun uploadImages(it: ImageUploadViewModel,
+        fun uploadImages(it: ImageUploadUiModel,
                          messageId : String,
                          opponentId : String,
-                         onError: (Throwable, ImageUploadViewModel) -> Unit)
+                         onError: (Throwable, ImageUploadUiModel) -> Unit)
 
         fun destroyWebSocket()
 
@@ -112,6 +120,8 @@ interface ChatbotContract {
                                     onGetSuccessResponse: (String) -> Unit,
                                     setStickyButtonStatus: (Boolean) -> Unit,
                                     onError: (Throwable) -> Unit)
+
+        fun checkForSession(messageId: String)
 
     }
 }

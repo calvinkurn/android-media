@@ -3,20 +3,18 @@ package com.tokopedia.troubleshooter.notification.ui.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.troubleshooter.notification.R
+import com.tokopedia.troubleshooter.notification.databinding.ItemLayoutTickerBinding
 import com.tokopedia.troubleshooter.notification.ui.adapter.TickerAdapter
 import com.tokopedia.troubleshooter.notification.ui.adapter.factory.TickerItemFactory
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerUIView
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TickerViewHolder(view: View): AbstractViewHolder<TickerUIView>(view) {
 
-    private val txtTitle = view.findViewById<Typography>(R.id.txtTitle)
-    private val lstTicker = view.findViewById<RecyclerView>(R.id.lstTicker)
-
+    private val binding: ItemLayoutTickerBinding? by viewBinding()
     private val context by lazy { itemView.context }
     private var adapter: TickerAdapter? = null
 
@@ -25,15 +23,15 @@ class TickerViewHolder(view: View): AbstractViewHolder<TickerUIView>(view) {
 
         if (adapter == null) {
             adapter = TickerAdapter(TickerItemFactory())
-            lstTicker?.layoutManager = LinearLayoutManager(context)
-            lstTicker?.adapter = adapter
+            binding?.lstTicker?.layoutManager = LinearLayoutManager(context)
+            binding?.lstTicker?.adapter = adapter
         }
 
         if (element.tickers.isNotEmpty()) {
-            txtTitle?.show()
+            binding?.txtTitle?.show()
         }
 
-        txtTitle?.text = context.getString(R.string.notif_ticker_title)
+        binding?.txtTitle?.text = context.getString(R.string.notif_ticker_title)
         adapter?.addTickers(element.tickers)
     }
 

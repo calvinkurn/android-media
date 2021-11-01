@@ -1,537 +1,512 @@
 package com.tokopedia.sellerhome.settings.view.viewholder
 
 import android.content.Context
-import android.net.Uri
-import android.view.LayoutInflater
+import android.util.TypedValue
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.shape.CornerFamily
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.gm.common.constant.PMProURL
+import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.elyeproj.loaderviewlibrary.LoaderTextView
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.seller.menu.common.analytics.*
-import com.tokopedia.seller.menu.common.constant.Constant
-import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
-import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
-import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
-import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
+import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
+import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
+import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
-import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
-import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
+import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
+import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapter
+import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTypeFactory
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
+import com.tokopedia.sellerhome.settings.view.animator.OtherMenuContentAnimator
+import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
+import com.tokopedia.sellerhome.settings.view.animator.OtherMenuShareButtonAnimator
+import com.tokopedia.sellerhome.settings.view.animator.SecondaryShopInfoAnimator
+import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
+import com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_other_menu.view.*
-import java.lang.StringBuilder
-import java.util.*
 
-class OtherMenuViewHolder(private val itemView: View,
-                          private val context: Context,
-                          private val listener: Listener,
-                          private val trackingListener: SettingTrackingListener,
-                          private val freeShippingTracker: SettingFreeShippingTracker,
-                          private val shopOperationalTracker: SettingShopOperationalTracker,
-                          private val userSession: UserSessionInterface) {
+class OtherMenuViewHolder(
+    private val view: View?,
+    private val context: Context,
+    private val lifecycleOwner: LifecycleOwner?,
+    private val userSession: UserSessionInterface,
+    private var listener: Listener) : LifecycleObserver {
 
-    companion object {
-        private val GREY_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-
-        private val TEAL_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_T500
-        private val YELLOW_TEXT_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_Y400
-
-        private const val TAB_PM_PARAM = "tab"
-        private const val TAB_PM = "pm"
-        private const val TAB_PM_PRO = "pm_pro"
+    private val otherMenuAdapter by lazy {
+        listener.getFragmentAdapter() as? OtherMenuAdapter
     }
 
-    fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
-        with(uiModel) {
-            with(itemView) {
-                when {
-                    partialResponseStatus.first && partialResponseStatus.second -> {
-                        setupSuccessLayout()
-                        shopStatusUiModel?.let { setShopStatusType(it) }
-                        saldoBalanceUiModel?.let { setSaldoBalance(it) }
-                        topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
-                        shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let {
-                            setShopTotalFollowers(it)
-                            setDotVisibility(it.shopFollowers)
-                        }
-
-                        findViewById<LocalLoad>(R.id.localLoadOthers)?.gone()
-                        findViewById<LinearLayout>(R.id.shopStatus)?.visible()
-                        findViewById<LinearLayout>(R.id.saldoBalance)?.visible()
-                        findViewById<LinearLayout>(R.id.topAdsBalance)?.visible()
-                    }
-                    partialResponseStatus.first -> {
-                        setupSuccessLayout()
-                        shopStatusUiModel?.let { setShopStatusType(it) }
-                        shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let {
-                            setShopTotalFollowers(it)
-                            setDotVisibility(it.shopFollowers)
-                        }
-
-                        findViewById<LinearLayout>(R.id.shopStatus)?.visible()
-                        findViewById<LocalLoad>(R.id.localLoadOthers)?.run {
-                            setup()
-                            visible()
-                        }
-                        findViewById<LinearLayout>(R.id.saldoBalance)?.gone()
-                        findViewById<LinearLayout>(R.id.topAdsBalance)?.gone()
-                    }
-                    partialResponseStatus.second -> {
-                        setupSuccessLayout()
-                        saldoBalanceUiModel?.let { setSaldoBalance(it) }
-                        topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
-
-                        findViewById<Typography>(R.id.dot)?.gone()
-                        findViewById<LinearLayout>(R.id.shopStatus)?.gone()
-                        findViewById<LocalLoad>(R.id.localLoadOthers)?.run {
-                            setup()
-                            visible()
-                        }
-                        findViewById<LinearLayout>(R.id.saldoBalance)?.visible()
-                        findViewById<LinearLayout>(R.id.topAdsBalance)?.visible()
-                    }
-                    else -> {
-                        onErrorGetSettingShopInfoData()
-                    }
-                }
-            }
-        }
+    private val secondaryInfoAdapter by lazy {
+        val adapterTypeFactory = ShopSecondaryInfoAdapterTypeFactory(listener)
+        ShopSecondaryInfoAdapter(adapterTypeFactory, context)
     }
 
-    fun onLoadingGetSettingShopInfoData() {
-        val loadingLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_loading, null, false)
-        (itemView.shopInfoLayout as? LinearLayout)?.run {
-            removeAllViews()
-            addView(loadingLayout)
-        }
+    private var scrollView: NestedScrollView? = null
+    private var otherMenuHeader: LinearLayout? = null
+    private var contentMotionLayout: MotionLayout? = null
+    private var secondaryInfoRecyclerView: RecyclerView? = null
+    private var shareButtonImage: AppCompatImageView? = null
+
+    private var headerShopNameTextView: Typography? = null
+    private var headerShopNextButton: IconUnify? = null
+    private var headerShopShareButton: IconUnify? = null
+    private var shopStatusCurvedImage: AppCompatImageView? = null
+    private var shopAvatarImage: ImageUnify? = null
+    private var shopNameTextView: Typography? = null
+    private var shopNextButton: IconUnify? = null
+    private var topadsAutoTopupIcon: IconUnify? = null
+
+    private var balanceSaldoCard: CardUnify? = null
+    private var balanceTopadsCard: CardUnify? = null
+    private var balanceSaldoTextView: Typography? = null
+    private var balanceTopadsTopupView: TopadsTopupView? = null
+    private var shimmerSaldo: LoaderTextView? = null
+    private var shimmerTopads: LoaderTextView? = null
+    private var errorLayoutSaldo: ConstraintLayout? = null
+    private var errorLayoutTopads: ConstraintLayout? = null
+
+    private var motionLayoutAnimator: OtherMenuContentAnimator? = null
+    private var scrollHeaderAnimator: OtherMenuHeaderAnimator? = null
+    private var shareButtonAnimator: OtherMenuShareButtonAnimator? = null
+    private var secondaryShopInfoAnimator: SecondaryShopInfoAnimator? = null
+
+    private val saldoImpressHolder = ImpressHolder()
+    private val topadsImpressHolder = ImpressHolder()
+    private val shopAvatarImpressHolder = ImpressHolder()
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        setInitialValues()
+        balanceTopadsTopupView?.stopAnimation()
     }
 
-    fun onErrorGetSettingShopInfoData() {
-        val errorLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_error, null, false)
-        errorLayout?.run {
-            findViewById<LocalLoad>(R.id.settingLocalLoad)?.setup()
-            findViewById<Typography>(R.id.dot)?.gone()
-        }
-        (itemView.shopInfoLayout as? LinearLayout)?.run {
-            removeAllViews()
-            addView(errorLayout)
-            setOnClickAction()
-        }
-        setShopName(userSession.shopName)
-        setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
+    fun setInitialLayouts() {
+        initView()
+        setupView()
+        setupClickListener()
+        registerLifecycleOwner()
     }
 
-    private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
-        itemView.shopInfoLayout.findViewById<AppCompatImageView>(R.id.shopBadges)?.run {
-            ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
-            setOnClickListener {
-                listener.onShopBadgeClicked()
-                shopBadgeUiModel.sendSettingShopInfoClickTracking()
-            }
-        }
-    }
-
-    fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
-        val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
-        val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
-        itemView.shopInfoLayout.findViewById<Typography>(R.id.shopFollowers)?.run {
-            visibility = followersVisibility
-            text = StringBuilder("${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}")
-            setOnClickListener {
-                shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
-                listener.onFollowersCountClicked()
-            }
-        }
-    }
-
-    fun setupFreeShippingLayout() {
-        itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.apply {
-            setOnClickListener {
-                listener.onFreeShippingClicked()
-                freeShippingTracker.trackFreeShippingClick()
-            }
-            visibility = View.VISIBLE
-
-            freeShippingTracker.trackFreeShippingImpression()
-        }
-    }
-
-    fun hideFreeShippingLayout() {
-        itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.hide()
-    }
-
-    fun showOperationalHourLayout(shopOperational: ShopOperationalUiModel) {
-        itemView.findViewById<View>(R.id.shopOperationalHour)?.run {
-            val timeLabel = shopOperational.timeLabel
-            val shopOperationalStatus = itemView.context.getString(shopOperational.status)
-
-            findViewById<Typography>(R.id.textOperationalHour)?.text = if(timeLabel != null) {
-                context.getString(timeLabel)
+    fun setIsTopadsAutoTopup(isAutoTopup: Boolean) {
+        val color =
+            if (isAutoTopup) {
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
             } else {
-                shopOperational.time
+                com.tokopedia.unifyprinciples.R.color.Unify_NN500
             }
-            findViewById<Label>(R.id.labelShopStatus)?.apply {
-                text = shopOperationalStatus
-                setLabelType(shopOperational.labelType)
-            }
-            findViewById<ImageView>(R.id.imageOperationalHour)?.apply {
-                setImageDrawable(ContextCompat.getDrawable(context, shopOperational.icon))
-            }
-
-            if (shopOperational.hasShopSettingsAccess) {
-                setOnClickListener {
-                    shopOperationalTracker.trackClickShopOperationalHour(shopOperationalStatus)
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
-                }
-            }
-
-            visibility = View.VISIBLE
-        }
-    }
-
-    private fun setDotVisibility(shopFollowers: Long) {
-        val shouldShowFollowers = shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
-        val dotVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
-        val tvDot = itemView.shopInfoLayout.findViewById<Typography>(R.id.dot)
-        tvDot?.visibility = dotVisibility
-    }
-
-    private fun setupSuccessLayout() {
-        val successLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_success, null, false)
-        (itemView.shopInfoLayout as? LinearLayout)?.run {
-            removeAllViews()
-            addView(successLayout)
-            setOnClickAction()
-        }
-        setShopName(userSession.shopName)
-        setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
-    }
-
-    private fun setShopName(shopName: String) {
-        itemView.run {
-            shopInfoLayout.findViewById<Typography>(R.id.shopName)?.run {
-                text = MethodChecker.fromHtml(shopName)
-                setOnClickListener {
-                    listener.onShopInfoClicked()
-                    sendClickShopNameTracking()
-                }
-            }
-        }
-    }
-
-    private fun setShopAvatar(shopAvatarUiModel: ShopAvatarUiModel) {
-        itemView.shopInfoLayout.findViewById<ImageUnify>(R.id.shopImage)?.run {
-            urlSrc = shopAvatarUiModel.shopAvatarUrl
-            sendSettingShopInfoImpressionTracking(shopAvatarUiModel, trackingListener::sendImpressionDataIris)
+        topadsAutoTopupIcon?.run {
+            setImage(
+                newLightEnable = ContextCompat.getColor(
+                    context,
+                    color
+                )
+            )
             setOnClickListener {
-                listener.onShopInfoClicked()
-                shopAvatarUiModel.sendSettingShopInfoClickTracking()
+                listener.onTopAdsTooltipClicked(isAutoTopup)
             }
         }
     }
 
-    private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
-        itemView.findViewById<LinearLayout>(R.id.saldoBalance).run {
-            findViewById<Typography>(R.id.balanceTitle)?.text = context.resources.getString(R.string.setting_balance)
-            findViewById<Typography>(R.id.balanceValue)?.text = saldoBalanceUiModel.balanceValue
-            sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
-            findViewById<Typography>(R.id.balanceValue)?.setOnClickListener {
-                listener.onSaldoClicked()
-                saldoBalanceUiModel.sendSettingShopInfoClickTracking()
+    fun setBalanceSaldoData(state: SettingResponseState<String>) {
+        when (state) {
+            is SettingResponseState.SettingSuccess -> {
+                setBalanceSaldoSuccess(state.data)
+            }
+            is SettingResponseState.SettingError -> {
+                setBalanceSaldoFailed()
+            }
+            else -> {
+                setBalanceSaldoLoading()
             }
         }
     }
 
-    private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
-        itemView.findViewById<LinearLayout>(R.id.topAdsBalance).run {
-            findViewById<Typography>(R.id.topadsBalanceTitle)?.text = context.resources.getString(R.string.setting_topads_credits)
-            findViewById<Typography>(R.id.topadsBalanceValue)?.text = topadsBalanceUiModel.balanceValue
-            sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
-            findViewById<Typography>(R.id.topadsBalanceValue)?.setOnClickListener {
-                listener.onKreditTopadsClicked()
-                topadsBalanceUiModel.sendSettingShopInfoClickTracking()
+    fun setBalanceTopadsData(state: SettingResponseState<String>) {
+        when (state) {
+            is SettingResponseState.SettingSuccess -> {
+                setBalanceTopadsSuccess(state.data)
             }
-            val isTopAdsUser = topadsBalanceUiModel.isTopAdsUser
-            val topAdsTooltipDrawable =
-                    if (isTopAdsUser) {
-                        ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
-                    } else {
-                        ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
+            is SettingResponseState.SettingError -> {
+                setBalanceTopadsFailed()
+            }
+            else -> {
+                setBalanceTopadsLoading()
+            }
+        }
+    }
+
+    fun setShopOperationalData(state: SettingResponseState<ShopOperationalData>) {
+        secondaryInfoRecyclerView?.post {
+            secondaryInfoAdapter.setShopOperationalData(state)
+        }
+    }
+
+    fun setShopStatusData(state: SettingResponseState<ShopStatusUiModel>) {
+        secondaryInfoRecyclerView?.post {
+            secondaryInfoAdapter.setShopStatusData(state)
+        }
+    }
+
+    fun setReputationBadgeData(state: SettingResponseState<String>) {
+        secondaryInfoRecyclerView?.post {
+            secondaryInfoAdapter.setReputationBadgeData(state)
+        }
+    }
+
+    fun setShopFollowersData(state: SettingResponseState<String>) {
+        secondaryInfoRecyclerView?.post {
+            secondaryInfoAdapter.setShopFollowersData(state)
+        }
+    }
+
+    fun setFreeShippingData(state: SettingResponseState<Pair<Boolean, String>>) {
+        secondaryInfoRecyclerView?.post {
+            secondaryInfoAdapter.setFreeShippingData(state)
+        }
+    }
+
+    fun runShareButtonAnimation() {
+        animateShareButton()
+    }
+
+    fun swipeSecondaryInfoGently() {
+        secondaryShopInfoAnimator?.swipeRecyclerViewGently()
+    }
+
+    fun toggleTopadsTopup() {
+        balanceTopadsTopupView?.run {
+            setOnAnimationFinishedListener {
+                listener.onTopadsValueSet()
+            }
+            toggleTopadsTopupWithAnimation()
+        }
+    }
+
+    fun scrollToTop() {
+        scrollView?.post {
+            scrollView?.smoothScrollTo(
+                OtherMenuFragment.SCROLLVIEW_INITIAL_POSITION,
+                OtherMenuFragment.SCROLLVIEW_INITIAL_POSITION
+            )
+        }
+    }
+
+    private fun initView() {
+        view?.run {
+            contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)
+            scrollView = findViewById(R.id.sv_sah_new_other)
+            otherMenuHeader = findViewById(R.id.view_sah_new_other_header)
+            secondaryInfoRecyclerView = findViewById(R.id.rv_sah_new_other_secondary_info)
+            shareButtonImage = findViewById(R.id.iv_sah_new_other_share)
+
+            headerShopNameTextView = findViewById(R.id.tv_sah_new_other_header_name)
+            headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
+            headerShopShareButton = findViewById(R.id.ic_sah_new_other_header_share)
+            shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
+            shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
+            shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
+            shopNextButton = findViewById(R.id.iv_sah_new_other_shop_name)
+            topadsAutoTopupIcon = findViewById(R.id.ic_sah_new_other_balance_topads)
+
+            balanceSaldoCard = findViewById(R.id.card_sah_new_other_saldo)
+            balanceTopadsCard = findViewById(R.id.card_sah_new_other_topads)
+            balanceSaldoTextView = findViewById(R.id.tv_sah_new_other_saldo_value)
+            balanceTopadsTopupView = findViewById(R.id.topads_topup_view_sah)
+            shimmerSaldo = findViewById(R.id.shimmer_sah_new_other_balance_saldo)
+            shimmerTopads = findViewById(R.id.shimmer_sah_new_other_topads)
+            errorLayoutSaldo = findViewById(R.id.error_state_sah_new_other_saldo)
+            errorLayoutTopads = findViewById(R.id.error_state_sah_new_other_topads)
+        }
+    }
+
+    private fun setupView() {
+        setupRecyclerView()
+        setupSecondaryInfoAdapter()
+        setupScrollHeaderAnimator()
+        setupShareButtonAnimator()
+        setupContentAnimator()
+    }
+
+    private fun setupRecyclerView() {
+        (listener.getRecyclerView() as? VerticalRecyclerView)?.clearItemDecoration()
+        otherMenuAdapter?.populateAdapterData()
+    }
+
+    private fun setupScrollHeaderAnimator() {
+        val tv = TypedValue()
+        if ((lifecycleOwner as? Fragment)?.activity?.theme?.resolveAttribute(
+                android.R.attr.actionBarSize,
+                tv,
+                true
+            ) == true
+        ) {
+            val actionBarHeight =
+                TypedValue.complexToDimensionPixelSize(tv.data, context.resources?.displayMetrics)
+            val statusBarHeight =
+                context.resources?.getDimensionPixelSize(R.dimen.sah_status_bar_height).orZero()
+            scrollHeaderAnimator =
+                OtherMenuHeaderAnimator(
+                    scrollView,
+                    otherMenuHeader,
+                    actionBarHeight + statusBarHeight
+                ).also {
+                    it.init()
+                }
+        }
+    }
+
+    private fun setupContentAnimator() {
+        motionLayoutAnimator = OtherMenuContentAnimator(contentMotionLayout).also {
+            it.animateInitialSlideIn()
+        }
+    }
+
+    private fun setupShareButtonAnimator() {
+        shareButtonAnimator = OtherMenuShareButtonAnimator(shareButtonImage).also {
+            it.setInitialButtonState()
+        }
+    }
+
+    private fun setupSecondaryInfoAdapter() {
+        secondaryInfoRecyclerView?.run {
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            adapter = secondaryInfoAdapter
+            itemAnimator = null
+            val decorationDrawable =
+                context?.resources?.getDrawable(R.drawable.divider_sah_new_other_secondary, null)
+            val itemDecoration =
+                DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL).apply {
+                    decorationDrawable?.let {
+                        setDrawable(it)
                     }
-            findViewById<AppCompatImageView>(R.id.topAdsStatusTooltip)?.run {
-                setImageDrawable(topAdsTooltipDrawable)
-                setOnClickListener {
-                    listener.onTopAdsTooltipClicked(isTopAdsUser)
                 }
-            }
+            addItemDecoration(itemDecoration)
+            secondaryShopInfoAnimator = SecondaryShopInfoAnimator(this)
         }
     }
 
-    private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
-        val shopType = shopStatusUiModel.userShopInfoWrapper.shopType
-        showShopStatusHeader(shopType)
-        val layoutInflater = shopType?.shopTypeLayoutRes?.let { LayoutInflater.from(context).inflate(it, null, false) }
-        val shopStatusLayout: View? = when(shopType) {
-            is RegularMerchant -> {
-                listener.onStatusBarNeedDarkColor(true)
-                layoutInflater?.apply {
-                    setRegularMerchantShopStatus(shopType, shopStatusUiModel)
-                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
-                    setOnClickListener {
-                        goToPowerMerchantSubscribe(TAB_PM)
-                    }
-                }
-            }
-            is PowerMerchantStatus -> {
-                listener.onStatusBarNeedDarkColor(false)
-                layoutInflater?.apply {
-                    setPowerMerchantShopStatus(shopType, shopStatusUiModel)
-                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
-                    setOnClickListener {
-                        goToPowerMerchantSubscribe(TAB_PM_PRO)
-                    }
-                }
-            }
-            is ShopType.OfficialStore -> {
-                listener.onStatusBarNeedDarkColor(false)
-                layoutInflater?.apply {
-                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
-                }
-            }
-            is PowerMerchantProStatus.Advanced -> {
-                layoutInflater?.apply {
-                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
-                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
-                    setOnClickListener {
-                        goToPowerMerchantSubscribe(TAB_PM_PRO)
-                    }
-                }
+    private fun setupClickListener() {
+        setupShopInfoClickListener()
+        setupBalanceClickListener()
+    }
 
-            }
-            is PowerMerchantProStatus.Expert -> {
-                layoutInflater?.apply {
-                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
-                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
-                    setOnClickListener {
-                        goToPowerMerchantSubscribe(TAB_PM_PRO)
-                    }
-                }
-            }
-            is PowerMerchantProStatus.Ultimate -> {
-                layoutInflater?.apply {
-                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
-                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
-                    setOnClickListener {
-                        goToPowerMerchantSubscribe(TAB_PM_PRO)
-                    }
-                }
-            }
-            is PowerMerchantProStatus.InActive -> {
-                layoutInflater?.apply {
-                    setPowerMerchantProStatus(shopStatusUiModel, shopType)
-                    sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
-                    setOnClickListener {
-                        goToPowerMerchantSubscribe(TAB_PM_PRO)
-                    }
-                }
-            }
-            else -> null
+    private fun setupShopInfoClickListener() {
+        headerShopNameTextView?.setOnClickListener {
+            listener.onShopInfoClicked()
+            sendClickShopNameTracking()
         }
-        (itemView.findViewById(R.id.shopStatus) as? LinearLayout)?.run {
-            removeAllViews()
-            shopStatusLayout?.let { view ->
-                addView(view)
-            }
+        headerShopNextButton?.setOnClickListener {
+            listener.onShopInfoClicked()
+            sendShopInfoClickNextButtonTracking()
         }
-    }
-
-    private fun goToPowerMerchantSubscribe(tab: String) {
-        val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
-        val appLinkPMTab = Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab).build().toString()
-        context.let { RouteManager.route(context, appLinkPMTab) }
-    }
-
-    private fun View.hideTransactionSection() {
-        findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.hide()
-        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)?.hide()
-        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)?.hide()
-    }
-
-    private fun View.showTransactionSection() {
-        findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.show()
-        findViewById<View>(com.tokopedia.seller.menu.common.R.id.divider_stats_rm)?.setBackgroundResource(com.tokopedia.seller.menu.common.R.drawable.ic_divider_stats_rm)
-        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)?.show()
-        findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)?.show()
-    }
-
-    private fun showShopStatusHeader(shopType: ShopType?) {
-        shopType?.let { itemView.shopStatusHeader?.setImageDrawable(ContextCompat.getDrawable(context, it.shopTypeHeaderRes)) }
-        itemView.shopStatusHeaderIcon?.run {
-            if (shopType !is RegularMerchant) {
-                visibility = View.VISIBLE
-                shopType?.shopTypeHeaderIconRes?.let { iconRes ->
-                    setImageDrawable(ContextCompat.getDrawable(context, iconRes))
-                }
-            } else {
-                visibility = View.GONE
-            }
+        shopAvatarImage?.setOnClickListener {
+            NewOtherMenuTracking.sendEventClickShopAvatar()
+            listener.onShopInfoClicked()
         }
-    }
-
-    private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus, statusUiModel: ShopStatusUiModel): View {
-        val upgradePMTextView: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.upgradePMText)
-        val powerMerchantStatusTextView: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantStatusText)
-        val powerMerchantText: Typography = findViewById(com.tokopedia.seller.menu.common.R.id.powerMerchantText)
-        val periodType = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
-        val isNewSeller = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
-        when (powerMerchantStatus) {
-            is PowerMerchantStatus.Active -> {
-                if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                    upgradePMTextView.showWithCondition(isNewSeller == false)
-                } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
-                    upgradePMTextView.hide()
-                }
-                powerMerchantStatusTextView.hide()
-                powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
-            }
-            is PowerMerchantStatus.NotActive -> {
-                powerMerchantStatusTextView.show()
-                upgradePMTextView.hide()
-                powerMerchantText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.power_merchant_status)
-                powerMerchantStatusTextView.setOnClickListener {
-                    goToPowerMerchantSubscribe(TAB_PM_PRO)
-                }
-            }
+        shopNameTextView?.setOnClickListener {
+            listener.onShopInfoClicked()
+            sendClickShopNameTracking()
         }
-        return this
-    }
-
-    private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant, shopStatusUiModel: ShopStatusUiModel): View {
-        val userShopInfo = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
-        val txStatsRM = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_stats_rm)
-        val txTotalStatsRM = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.tx_total_stats_rm)
-        val regularMerchantStatus = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.regularMerchantStatus)
-        regularMerchantStatus.run {
-            text = when (regularMerchant) {
-                is RegularMerchant.NeedUpgrade -> context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_upgrade)
-            }
-        }
-
-        val thresholdTransaction  = 110
-        val maxTransaction = 100
-        val totalTransaction = userShopInfo?.totalTransaction ?: 0
-        if (totalTransaction >= thresholdTransaction) {
-            hideTransactionSection()
-        } else {
-            if (userShopInfo?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                showTransactionSection()
-                if (totalTransaction > maxTransaction) {
-                    txStatsRM.text = MethodChecker.fromHtml(context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_passed))
-                    txTotalStatsRM.hide()
-                } else {
-                    txStatsRM.setupStatsWordingRM(userShopInfo)
-                    txTotalStatsRM.show()
-                    txTotalStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.total_transaction, totalTransaction.toString())
-                }
-            } else {
-                hideTransactionSection()
-            }
-        }
-        return this
-    }
-
-    private fun Typography.setupStatsWordingRM(userShopInfo: UserShopInfoWrapper.UserShopInfoUiModel) {
-        text = if(userShopInfo.dateCreated.isBlank()) {
-            context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
-        } else {
-            if (userShopInfo.isBeforeOnDate) {
-                context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
-            } else {
-                context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
-            }
-        }
-    }
-
-    private fun View.setPowerMerchantProStatus(shopStatusUiModel: ShopStatusUiModel, powerMerchantStatus: PowerMerchantProStatus): View {
-        val goldOS = shopStatusUiModel.userShopInfoWrapper.userShopInfoUiModel
-        val ivBgPMPro = findViewById<ShapeableImageView>(com.tokopedia.seller.menu.common.R.id.iv_bg_pm_pro)
-        val powerMerchantProIcon = findViewById<IconUnify>(com.tokopedia.seller.menu.common.R.id.powerMerchantProIcon)
-        val powerMerchantProStatusText = findViewById<Typography>(com.tokopedia.seller.menu.common.R.id.powerMerchantProStatusText)
-        when (powerMerchantStatus) {
-            is PowerMerchantProStatus.Advanced -> {
-                ivBgPMPro.loadImage(PMProURL.BG_ADVANCE)
-                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, GREY_TEXT_COLOR))
-                powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
-            }
-            is PowerMerchantProStatus.Expert -> {
-                ivBgPMPro.loadImage(PMProURL.BG_EXPERT)
-                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, TEAL_TEXT_COLOR))
-                powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
-            }
-            is PowerMerchantProStatus.Ultimate -> {
-                ivBgPMPro.loadImage(PMProURL.BG_ULTIMATE)
-                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, YELLOW_TEXT_COLOR))
-                powerMerchantProStatusText.text = goldOS?.pmProGradeName?.capitalize(Locale.getDefault()) ?: ""
-            }
-            is PowerMerchantProStatus.InActive -> {
-                powerMerchantProStatusText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
-                powerMerchantProStatusText.text = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_not_active)
-            }
-        }
-        val roundedRadius = 16F
-        ivBgPMPro.shapeAppearanceModel = ivBgPMPro.shapeAppearanceModel
-                .toBuilder()
-                .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
-                .build()
-        powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
-        return this
-    }
-
-    private fun View.setOnClickAction() {
-        findViewById<AppCompatImageView>(R.id.settingShopNext)?.setOnClickListener {
+        shopNextButton?.setOnClickListener {
             listener.onShopInfoClicked()
             sendShopInfoClickNextButtonTracking()
         }
     }
 
-    private fun LocalLoad.setup() {
-        title?.text = context.resources.getString(R.string.setting_error_message)
-        description?.text = context.resources.getString(R.string.setting_error_description)
-        refreshBtn?.setOnClickListener {
-            listener.onRefreshShopInfo()
+    private fun setupBalanceClickListener() {
+        balanceSaldoCard?.setOnClickListener {
+            listener.onSaldoClicked()
+        }
+        balanceTopadsCard?.setOnClickListener {
+            listener.onKreditTopadsClicked()
+        }
+        errorLayoutSaldo?.setOnClickListener {
+            listener.onSaldoBalanceRefresh()
+        }
+        errorLayoutTopads?.setOnClickListener {
+            listener.onKreditTopAdsRefresh()
+        }
+    }
+
+    private fun registerLifecycleOwner() {
+        lifecycleOwner?.let { lifecycleOwner ->
+            (lifecycleOwner as? Fragment)?.viewLifecycleOwnerLiveData?.observe(lifecycleOwner) {
+                it.lifecycle.addObserver(this)
+            }
+        }
+    }
+
+    private fun setBalanceSaldoSuccess(saldoString: String) {
+        balanceSaldoTextView?.run {
+            text = saldoString
+            show()
+            addOnImpressionListener(saldoImpressHolder) {
+                NewOtherMenuTracking.sendEventImpressionSaldoBalance()
+            }
+        }
+        errorLayoutSaldo?.invisible()
+        shimmerSaldo?.gone()
+    }
+
+    private fun setBalanceTopadsSuccess(topadsValueString: String) {
+        balanceTopadsTopupView?.run {
+            setTopadsValue(topadsValueString)
+            show()
+            addOnImpressionListener(topadsImpressHolder) {
+                NewOtherMenuTracking.sendEventImpressionTopadsBalance()
+            }
+            listener.onTopadsValueSet()
+        }
+        errorLayoutTopads?.invisible()
+        shimmerTopads?.gone()
+    }
+
+    private fun setBalanceSaldoLoading() {
+        balanceSaldoTextView?.invisible()
+        errorLayoutSaldo?.invisible()
+        shimmerSaldo?.show()
+    }
+
+    private fun setBalanceTopadsLoading() {
+        balanceTopadsTopupView?.invisible()
+        errorLayoutTopads?.invisible()
+        shimmerTopads?.show()
+    }
+
+    private fun setBalanceSaldoFailed() {
+        balanceSaldoTextView?.invisible()
+        errorLayoutSaldo?.show()
+        shimmerSaldo?.gone()
+    }
+
+    private fun setBalanceTopadsFailed() {
+        balanceTopadsTopupView?.invisible()
+        errorLayoutTopads?.show()
+        shimmerTopads?.gone()
+    }
+
+    private fun setShopAvatar() {
+        shopAvatarImage?.run {
+            urlSrc = userSession.shopAvatar
+            addOnImpressionListener(shopAvatarImpressHolder) {
+                NewOtherMenuTracking.sendEventImpressionShopAvatar()
+            }
+        }
+    }
+
+    private fun setShopName() {
+        val shopName = userSession.shopName
+        headerShopNameTextView?.text = shopName
+        shopNameTextView?.text = shopName
+    }
+
+    private fun setShopStatus() {
+        val imageResource: Int
+        val headerBackgroundResource: Int
+        when {
+            userSession.isShopOfficialStore -> {
+                imageResource = R.drawable.bg_sah_new_other_curved_header_os
+                headerBackgroundResource = R.drawable.bg_sah_new_other_header_os
+            }
+            userSession.isGoldMerchant -> {
+                imageResource = R.drawable.bg_sah_new_other_curved_header_pm
+                headerBackgroundResource = R.drawable.bg_sah_new_other_header_pm
+            }
+            else -> {
+                imageResource = R.drawable.bg_sah_new_other_curved_header_rm
+                headerBackgroundResource = R.drawable.bg_sah_new_other_header_rm
+            }
+        }
+        shopStatusCurvedImage?.setImageResource(imageResource)
+        otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
+    }
+
+    private fun setInitialValues() {
+        secondaryInfoAdapter.showInitialInfo()
+        setHeaderValues()
+        setInitialBalanceInfoLoading()
+    }
+
+    private fun setHeaderValues() {
+        setShopAvatar()
+        setShopName()
+        setShopStatus()
+    }
+
+    private fun setInitialBalanceInfoLoading() {
+        setBalanceSaldoLoading()
+        setBalanceTopadsLoading()
+    }
+
+    private fun animateShareButton() {
+        if (shareButtonAnimator?.isShareButtonShowing() != true) {
+            shareButtonAnimator?.animateShareButtonSlideIn()
+        }
+        showShareButtons()
+    }
+
+    private fun showShareButtons() {
+        shareButtonImage?.run {
+            show()
+            setOnClickListener {
+                listener.onShareButtonClicked()
+            }
+        }
+        headerShopShareButton?.run {
+            show()
+            setOnClickListener {
+                listener.onShareButtonClicked()
+            }
         }
     }
 
     interface Listener {
+        fun getRecyclerView(): RecyclerView?
+        fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>?
         fun onShopInfoClicked()
         fun onShopBadgeClicked()
         fun onFollowersCountClicked()
         fun onSaldoClicked()
         fun onKreditTopadsClicked()
         fun onRefreshShopInfo()
-        fun onStatusBarNeedDarkColor(isDefaultDark: Boolean)
-        fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
         fun onFreeShippingClicked()
+        fun onShopOperationalClicked()
+        fun onGoToPowerMerchantSubscribe(tab: String?)
+        fun onShopBadgeRefresh()
+        fun onShopTotalFollowersRefresh()
+        fun onUserInfoRefresh()
+        fun onOperationalHourRefresh()
+        fun onSaldoBalanceRefresh()
+        fun onKreditTopAdsRefresh()
+        fun onFreeShippingRefresh()
+        fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
+        fun onTopadsValueSet()
+        fun onShareButtonClicked()
+        fun onShopStatusImpression(shopType: ShopType)
+        fun onFreeShippingImpression()
     }
 
 }

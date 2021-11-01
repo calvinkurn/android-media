@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
@@ -34,7 +33,7 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             viewModel = viewModelProvider.get(SharedRechargeGeneralViewModel::class.java)
         }
     }

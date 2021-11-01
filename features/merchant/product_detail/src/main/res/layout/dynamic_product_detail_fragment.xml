@@ -19,29 +19,29 @@
             android:id="@+id/layout_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/pdp_bg_search"
             android:layout_toStartOf="@+id/btn_wishlist"
             android:layout_toLeftOf="@+id/btn_wishlist"
             android:orientation="horizontal"
-            android:padding="@dimen/dp_4">
+            android:padding="4dp">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:contentDescription="@null"
-                android:layout_marginStart="@dimen/dp_2"
-                android:layout_marginLeft="@dimen/dp_2"
+                android:layout_marginStart="2dp"
+                android:layout_marginLeft="2dp"
                 app:srcCompat="@drawable/ic_product_detail_search_bar" />
 
             <TextView
                 android:id="@+id/et_search"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginStart="4dp"
+                android:layout_marginLeft="4dp"
                 android:background="@null"
                 android:ellipsize="end"
                 android:enabled="true"
@@ -82,7 +82,6 @@
         android:id="@+id/swipeRefreshPdp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:descendantFocusability="blocksDescendants"
         app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toTopOf="@+id/pdp_button_barrier"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -96,15 +95,6 @@
             android:layout_height="match_parent"/>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
-    <com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
-        android:id="@+id/stickyTitleComparisonWidget"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_barrier"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="visible"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/pdp_button_barrier"
@@ -143,10 +133,10 @@
             android:layout_gravity="bottom"
             android:background="@drawable/card_shadow_top"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -182,7 +172,7 @@
             <RelativeLayout
                 android:id="@+id/btn_affiliate_pdp"
                 android:layout_width="@dimen/dp_145"
-                android:layout_height="@dimen/dp_40"
+                android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/bg_button_green"
@@ -220,6 +210,7 @@
         </RelativeLayout>
 
         <include
+            android:id="@+id/partial_layout_button_action"
             layout="@layout/partial_layout_button_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -235,7 +226,7 @@
         android:id="@+id/base_btn_follow"
         layout="@layout/layout_button_npl_follow"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         android:visibility="gone"
         tools:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

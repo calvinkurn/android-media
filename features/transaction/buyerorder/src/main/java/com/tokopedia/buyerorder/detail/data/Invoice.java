@@ -16,11 +16,6 @@ public class Invoice {
     @Expose
     private String invoiceUrl;
 
-    public Invoice(String invoiceRefNum, String invoiceUrl) {
-        this.invoiceRefNum = invoiceRefNum;
-        this.invoiceUrl = invoiceUrl;
-    }
-
     public String invoiceRefNum() {
         return invoiceRefNum;
     }

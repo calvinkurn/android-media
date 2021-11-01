@@ -14,17 +14,17 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.features.topAdsManagementCommon)
-    implementation project(rootProject.ext.libraries.adapterDelegate)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
+    implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -35,13 +35,13 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.sortFilter
-    implementation project(rootProject.ext.libraries.remoteResourceRequest)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.miscDependencies.viewModelKtx
-    implementation project(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.dialog
 }

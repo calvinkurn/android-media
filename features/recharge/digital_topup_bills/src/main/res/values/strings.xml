@@ -17,7 +17,7 @@
     <string name="digital_title_price">Harga</string>
     <string name="digital_title_details_bills">Detail Tagihan</string>
     <string name="digital_see_more_btn">Lihat Detail</string>
-    <string name="Telco_title_showcase_client_number">Nggak perlu repot pilih provider</string>
+    <string name="telco_title_showcase_client_number">Nggak perlu repot pilih provider</string>
     <string name="telco_label_showcase_client_number">Cukup masukkan nomor HP, langsung tersedia pilihan pulsa dan paket data yang sesuai</string>
     <string name="telco_title_showcase_promo">Diskon spesial buat kamu</string>
     <string name="telco_label_showcase_promo">Mau beli pulsa dan paket data lebih hemat? Pilih sendiri kode promonya!</string>
@@ -28,5 +28,8 @@
     <string name="telco_title_filter_result">Hasil Filter</string>
     <string name="telco_reset_filter">Reset</string>
     <string name="telco_save_filter">Simpan</string>
-    <string name="telco_pick_product">Pilih</string>
+    <string name="telco_content_desc_content_book">contact book</string>
+    <string name="digital_client_label">Nomor Telepon</string>
+    <string name="telco_pick_product">Beli</string>
+    <string name="telco_choose_denom">Pilih Nominal</string>
 </resources>

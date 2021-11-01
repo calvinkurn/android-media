@@ -1,6 +1,12 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -21,6 +27,9 @@ android {
     packagingOptions {
         exclude 'META-INF/**'
     }
+    buildFeatures {
+        viewBinding true
+    }
 
     defaultConfig {
         multiDexEnabled true
@@ -35,18 +44,39 @@ android {
 
 dependencies {
 
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
 
-    implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.commonTopupBills)
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.promoCheckoutCommon)
+    implementation rootProject.ext.supportLibDependencies.design
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.miscDependencies.gson
+
+    implementation rootProject.ext.miscDependencies.liveData
+    implementation rootProject.ext.miscDependencies.liveDataKtx
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+
+    implementation projectOrAar(rootProject.ext.features.commonDigital)
+    implementation projectOrAar(rootProject.ext.features.commonTopupBills)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
 
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.principles
@@ -71,12 +101,12 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
 
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
         exclude module: 'support-annotations'
     }

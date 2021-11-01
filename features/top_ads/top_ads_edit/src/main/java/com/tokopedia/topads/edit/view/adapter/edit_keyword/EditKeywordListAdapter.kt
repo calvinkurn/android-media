@@ -3,8 +3,7 @@ package com.tokopedia.topads.edit.view.adapter.edit_keyword
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.common.data.response.GetKeywordResponse
-import com.tokopedia.topads.edit.data.KeySharedModel
+import com.tokopedia.topads.common.data.response.KeySharedModel
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewholder.EditKeywordViewHolder
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordViewModel

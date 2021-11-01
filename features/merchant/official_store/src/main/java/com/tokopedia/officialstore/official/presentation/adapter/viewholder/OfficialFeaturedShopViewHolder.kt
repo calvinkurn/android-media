@@ -14,6 +14,8 @@ import com.tokopedia.officialstore.official.presentation.widget.FeaturedShopAdap
 import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.viewmodel_official_featured_shop.view.*
 
+//this is old featured brand from external api
+//now doubles with featured brand on dynamic channel
 class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener): AbstractViewHolder<OfficialFeaturedShopDataModel>(view){
 
     private var adapter: FeaturedShopAdapter? = null
@@ -23,7 +25,7 @@ class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener)
     override fun bind(element: OfficialFeaturedShopDataModel) {
         if(adapter == null){
             adapter = FeaturedShopAdapter(itemView.context)
-            itemView.recycler_view_featured_shop?.addItemDecoration(GridSpacingItemDecoration(2, 8))
+            itemView.recycler_view_featured_shop?.addItemDecoration(GridSpacingItemDecoration(SPACE_COUNT_2, SPACE_COUNT_8))
             itemView.recycler_view_featured_shop?.adapter = adapter
         }
 
@@ -65,6 +67,8 @@ class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener)
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.viewmodel_official_featured_shop
+        private const val SPACE_COUNT_2 = 2
+        private const val SPACE_COUNT_8 = 8
     }
 
 }

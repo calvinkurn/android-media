@@ -1,5 +1,6 @@
 package com.tokopedia.shop.note
 
+import android.text.format.DateUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -16,6 +17,6 @@ object NoteUtil {
 
     private fun getFormattedDate(dateFormat: SimpleDateFormat, time: Int): String{
         dateFormat.timeZone = TimeZone.getTimeZone("Asia/Jakarta")
-        return dateFormat.format(Date(time * 1000L))
+        return dateFormat.format(Date(time * DateUtils.SECOND_IN_MILLIS))
     }
 }

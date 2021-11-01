@@ -11,6 +11,8 @@ interface CommonTopupBillsEventTracking {
             const val CLICK_HOMEPAGE = "clickHomepage"
             const val ADD_TO_CART = "addToCart"
             const val CHECKOUT = "checkout"
+            const val DIGITAL_GENERAL_EVENT = "digitalGeneralEvent"
+            const val DIGITAL_GENERAL_EVENT_IRIS = "digitalGeneralEventIris"
         }
     }
 
@@ -19,6 +21,7 @@ interface CommonTopupBillsEventTracking {
             const val DIGITAL_NATIVE = "digital - native"
             const val DIGITAL_HOMEPAGE = "digital - homepage"
             const val DIGITAL_CHECKOUT = "digital - checkout"
+            const val DIGITAL_PDP_FAVORITE_NUMBER = "digital - pdp favorite number"
         }
     }
 
@@ -29,6 +32,16 @@ interface CommonTopupBillsEventTracking {
             const val VIEW_CHECKOUT = "view checkout"
             const val CLICK_PROCEED_TO_PAYMENT = "click proceed to payment"
             const val CLICK_REMOVE_PROMO = "click 'x' on promo"
+            const val FAVNUMBER_VIEW_EMPTY_FAVORITE_NUMBER= "view empty favorite number"
+            const val FAVNUMBER_VIEW_COACHMARK = "view coachmark"
+            const val FAVNUMBER_CLICK_CONTINUE = "click lanjut transaksi"
+            const val FAVNUMBER_CLICK_KEBAB_MENU = "click kebab menu"
+            const val FAVNUMBER_VIEW_EDIT_BOTTOM_SHEET = "view edit bottom sheet"
+            const val FAVNUMBER_CLICK_SAVE_BOTTOM_SHEET = "click simpan on edit bottom sheet"
+            const val FAVNUMBER_VIEW_DELETION_POP_UP = "view deletion pop up"
+            const val FAVNUMBER_CLICK_CONFIRM_DELETE_POP_UP = "click hapus on deletion pop up"
+            const val FAVNUMBER_VIEW_DELETION_SUCCESS_TOASTER = "view deletion success toaster"
+            const val FAVNUMBER_VIEW_DELETION_FAILED_TOASTER = "view deletion failed toaster"
         }
     }
 
@@ -64,6 +77,9 @@ interface CommonTopupBillsEventTracking {
             const val DIMENSION_82 = "dimension82"
 
             const val EMPTY = "none/other"
+
+            const val REGULAR_PRODUCT = "regular product"
+            const val SPECIAL_PROMO = "special product promo"
         }
     }
 

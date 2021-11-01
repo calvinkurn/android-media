@@ -1,48 +1,84 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.drawable.Drawable
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
-import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.common.generateTopchatButtonPdp
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_ATC_MAX_ORDER
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_MIN_QTY
+import com.tokopedia.product.detail.databinding.PartialLayoutButtonActionBinding
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
+import com.tokopedia.unifyprinciples.Typography
+import rx.Observable
+import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 
 class PartialButtonActionView private constructor(val view: View,
                                                   private val buttonListener: PartialButtonActionListener) {
+
+    private val binding = PartialLayoutButtonActionBinding.bind(view)
+
     var visibility: Boolean = false
         set(value) {
             field = value
-            with(view) {
-                if (value) base_btn_action.visible() else base_btn_action.gone()
-            }
+            if (value) binding.baseBtnAction.visible() else binding.baseBtnAction.gone()
         }
-    var hasComponentLoading = false
-    var isExpressCheckout = false
-    var isWarehouseProduct: Boolean = false
-    var hasShopAuthority: Boolean = false
-    var isLeasing: Boolean = false
-    var hasTopAdsActive: Boolean = false
-    var isShopOwner: Boolean = false
-    var preOrder: PreOrder? = PreOrder()
-    var onSuccessGetCartType = false
-    var cartTypeData: CartTypeData? = null
+    private var hasComponentLoading = false
+    private var isExpressCheckout = false
+    private var isWarehouseProduct: Boolean = false
+    private var hasShopAuthority: Boolean = false
+    private var hasTopAdsActive: Boolean = false
+    private var isShopOwner: Boolean = false
+    private var preOrder: PreOrder? = PreOrder()
+    private var onSuccessGetCartType = false
+    private var cartTypeData: CartTypeData? = null
+    private var textWatcher: TextWatcher? = null
+    private var quantityDebounceSubscription: Subscription? = null
+    private var localQuantity: Int = 0
+    private var tokonowButtonData: TokoNowButtonData? = null
+
+    private val containerTokonowVar = view.findViewById<ConstraintLayout>(R.id.tokonow_button_container)
+    private val btnTokonowVar = view.findViewById<UnifyButton>(R.id.btn_atc_tokonow_variant)
+    private val txtTotalStockTokonowVar = view.findViewById<Typography>(R.id.txt_total_quantity)
+    private val dividerTokonow = view.findViewById<View>(R.id.divider_button_quantity)
+    private val txtProductNameTokonowVar = view.findViewById<Typography>(R.id.txt_product_name)
+
+    private val icDeleteNonVar = view.findViewById<IconUnify>(R.id.btn_delete_tokonow_non_var)
+    private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(R.id.qty_tokonow_non_var)
+    private val btnChat = view.findViewById<UnifyButton>(R.id.btn_topchat)
 
     companion object {
         fun build(_view: View, _buttonListener: PartialButtonActionListener) = PartialButtonActionView(_view, _buttonListener)
+
+        private const val QUANTITY_REGEX = "[^0-9]"
+        private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500L
+        private const val TEXTWATCHER_QUANTITY_RESET_DEBOUNCE_TIME = 1000L
+        private const val DEFAULT_TOTAL_STOCK = 1
     }
 
-    fun setButtonP1(preOrder: PreOrder?, isLeasing: Boolean) {
+    init {
+        btnChat.generateTopchatButtonPdp()
+    }
+
+    fun setButtonP1(preOrder: PreOrder?) {
         this.preOrder = preOrder
-        this.isLeasing = isLeasing
     }
 
     fun setTopAdsButton(hasTopAdsActive: Boolean) {
@@ -50,13 +86,20 @@ class PartialButtonActionView private constructor(val view: View,
         updateTopAdsButton()
     }
 
-    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, isShopOwner: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
+    fun renderData(isWarehouseProduct: Boolean,
+                   hasShopAuthority: Boolean,
+                   isShopOwner: Boolean,
+                   hasTopAdsActive: Boolean,
+                   tokonowButtonData: TokoNowButtonData? = null,
+                   cartTypeData: CartTypeData? = null) {
+
         this.isWarehouseProduct = isWarehouseProduct
         this.hasShopAuthority = hasShopAuthority
         this.hasTopAdsActive = hasTopAdsActive
         this.cartTypeData = cartTypeData
         this.isShopOwner = isShopOwner
         this.onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
+        this.tokonowButtonData = tokonowButtonData
         renderButton()
     }
 
@@ -69,6 +112,8 @@ class PartialButtonActionView private constructor(val view: View,
     private fun renderButton() {
         if (hasShopAuthority) {
             showShopManageButton()
+        } else if (!GlobalConfig.isSellerApp() && tokonowButtonData != null) {
+            showTokoNowButton()
         } else if (!GlobalConfig.isSellerApp() && onSuccessGetCartType) {
             showCartTypeButton()
         } else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType) {
@@ -80,64 +125,215 @@ class PartialButtonActionView private constructor(val view: View,
         }
     }
 
-    private fun showCartTypeButton() = with(view) {
+    private fun showTokoNowButton() = with(binding) {
+        btnEmptyStock.hide()
+        sellerButtonContainer.hide()
+        btnBuyNow.hide()
+        btnAddToCart.hide()
+
+        if (tokonowButtonData?.isVariant == true) {
+            showViewTokoNowVar()
+            renderTokoNowVar()
+        } else {
+            showViewTokoNowNonVar()
+            renderTokoNowNonVar(tokonowButtonData?.selectedMiniCart
+                    ?: MiniCartItem(), tokonowButtonData?.minQuantity ?: DEFAULT_MIN_QTY,
+                    tokonowButtonData?.maxQuantity ?: DEFAULT_ATC_MAX_ORDER)
+        }
+
+        txtProductNameTokonowVar.text = tokonowButtonData?.productTitle ?: ""
+        renderTopChat(cartTypeData?.unavailableButtons ?: listOf())
+        containerTokonowVar.show()
+    }
+
+
+    private fun showViewTokoNowVar() {
+        qtyButtonPdp.hide()
+        icDeleteNonVar.hide()
+        btnTokonowVar.show()
+        txtTotalStockTokonowVar.show()
+        dividerTokonow.show()
+    }
+
+    private fun showViewTokoNowNonVar() {
+        qtyButtonPdp.show()
+        icDeleteNonVar.show()
+        btnTokonowVar.hide()
+        txtTotalStockTokonowVar.hide()
+        dividerTokonow.hide()
+    }
+
+    private fun renderTokoNowVar() = with(view) {
+        val availableButton = cartTypeData?.availableButtons ?: listOf()
+        btnTokonowVar.text = availableButton.getOrNull(0)?.text
+                ?: context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
+        btnTokonowVar.generateTheme(availableButton.getOrNull(0)?.color
+                ?: ProductDetailCommonConstant.KEY_BUTTON_PRIMARY)
+        btnTokonowVar.setOnClickListener {
+            buttonListener.buttonCartTypeClick(availableButton.getOrNull(0)?.cartType
+                    ?: ProductDetailCommonConstant.KEY_NORMAL_BUTTON, btnTokonowVar.text.toString(), true)
+        }
+
+        txtTotalStockTokonowVar.text = context.getString(R.string.pdp_pcs_builder, tokonowButtonData?.totalStockAtcVariant
+                ?: DEFAULT_TOTAL_STOCK)
+    }
+
+    private fun renderTopChat(unavailableButton: List<String>) {
+        btnChat.apply {
+            showWithCondition(ProductDetailCommonConstant.KEY_CHAT !in unavailableButton)
+            setOnClickListener {
+                buttonListener.topChatButtonClicked()
+            }
+        }
+    }
+
+    private fun showCartTypeButton() {
         hideButtonEmptyAndTopAds()
-        resetTopChatLayoutParams()
+
+        renderNormalButtonCartRedirection()
 
         val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
+        renderTopChat(unavailableButton)
+    }
+
+    private fun renderNormalButtonCartRedirection() = with(binding) {
+        qtyButtonPdp.hide()
         val availableButton = cartTypeData?.availableButtons ?: listOf()
 
-        btn_topchat.showWithCondition(ProductDetailConstant.KEY_CHAT !in unavailableButton)
+        btnBuyNow.showWithCondition(availableButton.firstOrNull() != null)
+        btnAddToCart.showWithCondition(availableButton.getOrNull(1) != null)
 
-        btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
-        btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
+        btnBuyNow.text = availableButton.getOrNull(0)?.text ?: ""
+        btnAddToCart.text = availableButton.getOrNull(1)?.text ?: ""
 
-        btn_buy_now.text = availableButton.getOrNull(0)?.text ?: ""
-        btn_add_to_cart.text = availableButton.getOrNull(1)?.text ?: ""
-
-        btn_buy_now.setOnClickListener {
+        btnBuyNow.setOnClickListener {
             buttonListener.buttonCartTypeClick(availableButton.getOrNull(0)?.cartType
-                    ?: "", btn_buy_now.text.toString(), availableButton.getOrNull(0)?.showRecommendation
+                    ?: "", btnBuyNow.text.toString(), availableButton.getOrNull(0)?.showRecommendation
                     ?: false)
         }
 
-        btn_add_to_cart.setOnClickListener {
+        btnAddToCart.setOnClickListener {
             buttonListener.buttonCartTypeClick(availableButton.getOrNull(1)?.cartType
-                    ?: "", btn_add_to_cart.text.toString(), availableButton.getOrNull(1)?.showRecommendation
+                    ?: "", btnAddToCart.text.toString(), availableButton.getOrNull(1)?.showRecommendation
                     ?: false)
         }
 
-        btn_topchat.setOnClickListener {
-            buttonListener.topChatButtonClicked()
+        btnBuyNow.generateTheme(availableButton.getOrNull(0)?.color ?: "")
+        btnAddToCart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
+    }
+
+    private fun renderTokoNowNonVar(selectedMiniCart: MiniCartItem, minQuantity: Int, maxQuantity: Int) = with(view) {
+        localQuantity = selectedMiniCart.quantity
+        qtyButtonPdp?.run {
+            minValue = minQuantity
+            maxValue = maxQuantity
+            setValue(localQuantity)
+
+            if (textWatcher != null) {
+                editText.removeTextChangedListener(textWatcher)
+            }
+            if (quantityDebounceSubscription != null) {
+                buttonListener.getRxCompositeSubcription().remove(quantityDebounceSubscription)
+                quantityDebounceSubscription = null
+            }
+
+            initTextWatcherDebouncer(minQuantity, maxQuantity, selectedMiniCart)
+            show()
         }
 
-        btn_buy_now.generateTheme(availableButton.getOrNull(0)?.color ?: "")
-        btn_add_to_cart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
+        icDeleteNonVar?.setOnClickListener {
+            buttonListener.onDeleteAtcClicked()
+        }
+    }
+
+    private fun initTextWatcherDebouncer(minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem) {
+        quantityDebounceSubscription = Observable.create(
+                Observable.OnSubscribe<Int> { subscriber ->
+                    textWatcher = object : TextWatcher {
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                        }
+
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        }
+
+                        override fun afterTextChanged(s: Editable?) {
+                            val quantityInt: Int = s.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
+                            subscriber.onNext(quantityInt)
+                        }
+                    }
+                    qtyButtonPdp?.editText?.addTextChangedListener(textWatcher)
+                })
+                .debounce {
+                    if (it < minQuantity) {
+                        // Use longer debounce when reset qty, to support automation
+                        Observable.just(it).delay(TEXTWATCHER_QUANTITY_RESET_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                    } else {
+                        Observable.just(it).delay(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                    }
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Timber.d(e)
+                    }
+
+                    override fun onNext(quantity: Int) {
+                        onNextValueQuantity(quantity, minQuantity, maxQuantity, selectedMiniCart)
+                    }
+                })
+
+        buttonListener.getRxCompositeSubcription().add(quantityDebounceSubscription)
+    }
+
+    private fun onNextValueQuantity(quantity: Int, minQuantity: Int, maxQuantity: Int, selectedMiniCart: MiniCartItem) {
+        qtyButtonPdp?.run {
+            if (quantity < minQuantity) {
+                setValue(minQuantity)
+            } else if (quantity > maxQuantity) {
+                setValue(maxQuantity)
+            } else {
+                if (localQuantity != quantity && quantity != 0) {
+                    buttonListener.updateQuantityNonVarTokoNow(
+                            quantity = getValue(),
+                            miniCart = selectedMiniCart,
+                            oldValue = localQuantity
+                    )
+                    localQuantity = quantity
+                    //fire again to update + and - button
+                    setValue(localQuantity)
+                }
+            }
+        }
     }
 
     private fun UnifyButton.generateTheme(colorDescription: String) {
         when (colorDescription) {
-            ProductDetailConstant.KEY_BUTTON_PRIMARY -> {
+            ProductDetailCommonConstant.KEY_BUTTON_PRIMARY -> {
                 this.buttonVariant = UnifyButton.Variant.FILLED
                 this.buttonType = UnifyButton.Type.TRANSACTION
                 this.isEnabled = true
             }
-            ProductDetailConstant.KEY_BUTTON_DISABLE -> {
+            ProductDetailCommonConstant.KEY_BUTTON_DISABLE -> {
                 this.buttonVariant = UnifyButton.Variant.FILLED
                 this.buttonType = UnifyButton.Type.MAIN
                 this.isEnabled = false
             }
-            ProductDetailConstant.KEY_BUTTON_PRIMARY_GREEN -> {
+            ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN -> {
                 this.buttonVariant = UnifyButton.Variant.FILLED
                 this.buttonType = UnifyButton.Type.MAIN
                 this.isEnabled = true
             }
-            ProductDetailConstant.KEY_BUTTON_SECONDARY_GREEN -> {
+            ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN -> {
                 this.buttonVariant = UnifyButton.Variant.GHOST
                 this.buttonType = UnifyButton.Type.MAIN
                 this.isEnabled = true
             }
-            ProductDetailConstant.KEY_BUTTON_SECONDARY_GRAY -> {
+            ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY -> {
                 this.buttonVariant = UnifyButton.Variant.GHOST
                 this.buttonType = UnifyButton.Type.ALTERNATE
                 this.isEnabled = true
@@ -151,113 +347,88 @@ class PartialButtonActionView private constructor(val view: View,
     }
 
     private fun showNewCheckoutButton() {
-        with(view) {
+        with(binding) {
+            qtyButtonPdp.hide()
             hideButtonEmptyAndTopAds()
-            btn_topchat.visibility = View.VISIBLE
-            btn_buy_now.text = context.getString(
-                    if (preOrder?.isPreOrderActive() == true) {
-                        R.string.action_preorder
-                    } else {
-                        if (isExpressCheckout) {
-                            R.string.buy_now
+
+            btnBuyNow.apply {
+                text = context.getString(
+                        if (preOrder?.isPreOrderActive() == true) {
+                            R.string.action_preorder
                         } else {
-                            R.string.buy
-                        }
-                    })
-            btn_add_to_cart.text = context.getString(R.string.plus_product_to_cart)
-            btn_buy_now.visible()
-            btn_add_to_cart.visible()
+                            if (isExpressCheckout) {
+                                com.tokopedia.product.detail.common.R.string.buy_now
+                            } else {
+                                R.string.buy
+                            }
+                        })
 
-            if (isLeasing) {
-                btn_apply_leasing.visibility = View.VISIBLE
-                btn_add_to_cart.visibility = View.GONE
-                btn_buy_now.visibility = View.GONE
-                changeTopChatLayoutParamsToHandleLeasingLayout()
-            } else {
-                resetTopChatLayoutParams()
-                btn_apply_leasing.visibility = View.GONE
-            }
-            btn_buy_now.setOnClickListener {
-                if (hasComponentLoading) return@setOnClickListener
-                buttonListener.buyNowClick(btn_buy_now.text.toString())
-            }
-            btn_add_to_cart.setOnClickListener {
-                if (hasComponentLoading) return@setOnClickListener
-                buttonListener.addToCartClick(btn_add_to_cart.text.toString())
+                setOnClickListener {
+                    if (hasComponentLoading) return@setOnClickListener
+                    buttonListener.buyNowClick(btnBuyNow.text.toString())
+                }
+
+                generateTheme(ProductDetailCommonConstant.KEY_BUTTON_SECONDARY)
+                show()
             }
 
-            btn_buy_now.generateTheme(ProductDetailConstant.KEY_BUTTON_SECONDARY)
-            btn_add_to_cart.generateTheme(ProductDetailConstant.KEY_BUTTON_PRIMARY)
-            btn_topchat.setOnClickListener {
-                buttonListener.topChatButtonClicked()
+            btnAddToCart.apply {
+                text = context.getString(com.tokopedia.product.detail.common.R.string.plus_product_to_cart)
+                setOnClickListener {
+                    if (hasComponentLoading) return@setOnClickListener
+                    buttonListener.addToCartClick(btnAddToCart.text.toString())
+                }
+                generateTheme(ProductDetailCommonConstant.KEY_BUTTON_PRIMARY)
+                show()
             }
-            btn_apply_leasing.setOnClickListener {
-                buttonListener.leasingButtonClicked()
+
+            btnChat.apply {
+                setOnClickListener {
+                    buttonListener.topChatButtonClicked()
+                }
+                show()
             }
         }
     }
 
-    private fun resetTopChatLayoutParams() {
-        with(view) {
-            val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
-            topChatParams.startToStart = PARENT_ID
-            topChatParams.rightToLeft = btn_buy_now.id
-            topChatParams.endToStart = btn_buy_now.id
-            btn_topchat.layoutParams = topChatParams
-        }
-    }
-
-    private fun changeTopChatLayoutParamsToHandleLeasingLayout() {
-        with(view) {
-            val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
-            topChatParams.startToEnd = UNSET
-            topChatParams.startToStart = PARENT_ID
-            topChatParams.rightToLeft = btn_apply_leasing.id
-            topChatParams.endToStart = btn_apply_leasing.id
-            btn_topchat.layoutParams = topChatParams
-        }
-    }
-
-    private fun changeTopChatLayoutParamsToHandleWarehouseButton() = with(view) {
-        val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
-        topChatParams.startToEnd = UNSET
-        topChatParams.startToStart = PARENT_ID
-        topChatParams.rightToLeft = btn_empty_stock.id
-        topChatParams.endToStart = btn_empty_stock.id
-        btn_topchat.layoutParams = topChatParams
-    }
-
-    private fun hideButtonEmptyAndTopAds() = with(view) {
-        btn_empty_stock.hide()
-        seller_button_container.hide()
+    private fun hideButtonEmptyAndTopAds() = with(binding) {
+        btnEmptyStock.hide()
+        sellerButtonContainer.hide()
+        containerTokonowVar.hide()
     }
 
     private fun showShopManageButton() {
-        with(view) {
-            btn_empty_stock.hide()
-            btn_topchat.hide()
-            btn_buy_now.hide()
-            btn_add_to_cart.hide()
+        with(binding) {
+            val context = view.context
+            containerTokonowVar.hide()
+            btnEmptyStock.hide()
+            btnChat.hide()
+            btnBuyNow.hide()
+            btnAddToCart.hide()
+            qtyButtonPdp.hide()
 
-            seller_button_container.show()
+            sellerButtonContainer.show()
             if (hasTopAdsActive) {
-                btn_top_ads.setOnClickListener { buttonListener.rincianTopAdsClicked() }
-                btn_top_ads.text = context.getString(R.string.rincian_topads)
+                btnTopAds.setOnClickListener { buttonListener.rincianTopAdsClicked() }
+                btnTopAds.text = context.getString(R.string.rincian_topads)
             } else {
-                btn_top_ads.setOnClickListener { buttonListener.advertiseProductClicked() }
-                btn_top_ads.text = context.getString(R.string.promote_topads)
+                btnTopAds.setOnClickListener { buttonListener.advertiseProductClicked() }
+                btnTopAds.text = context.getString(R.string.promote_topads)
             }
-            btn_edit_product.setOnClickListener { buttonListener.editProductButtonClicked() }
+            btnEditProduct.setOnClickListener { buttonListener.editProductButtonClicked() }
         }
     }
 
     private fun showNoStockButton() {
-        with(view) {
-            changeTopChatLayoutParamsToHandleWarehouseButton()
-            seller_button_container.hide()
-            btn_empty_stock.show()
-            btn_topchat.showWithCondition(!isShopOwner)
-            btn_topchat.setOnClickListener { buttonListener.topChatButtonClicked() }
+        with(binding) {
+            sellerButtonContainer.hide()
+            containerTokonowVar.hide()
+            btnEmptyStock.show()
+            qtyButtonPdp.hide()
+            btnChat.apply {
+                showWithCondition(!isShopOwner)
+                setOnClickListener { buttonListener.topChatButtonClicked() }
+            }
         }
     }
 
@@ -270,14 +441,26 @@ class PartialButtonActionView private constructor(val view: View,
     }
 
     fun gone() {
-        view.base_btn_action.gone()
+        binding.baseBtnAction.gone()
     }
 
     fun setBackground(resource: Int) {
-        view.base_btn_action.setBackgroundResource(resource)
+        binding.baseBtnAction.setBackgroundResource(resource)
     }
 
     fun setBackground(drawable: Drawable) {
-        view.base_btn_action.background = drawable
+        binding.baseBtnAction.background = drawable
     }
 }
+
+data class TokoNowButtonData(
+        //var
+        val totalStockAtcVariant: Int = 0,
+        val productTitle: String = "",
+        val isVariant: Boolean = false,
+
+        //non var
+        val minQuantity: Int = DEFAULT_MIN_QTY,
+        val maxQuantity: Int = DEFAULT_ATC_MAX_ORDER,
+        val selectedMiniCart: MiniCartItem? = null
+)

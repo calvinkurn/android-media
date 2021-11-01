@@ -12,9 +12,10 @@ import androidx.cardview.widget.CardView
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 
 import com.tokopedia.shop.R
@@ -32,6 +33,7 @@ class ShopHomeVoucherViewHolder(
 
     interface ShopHomeVoucherViewHolderListener {
         fun onVoucherImpression()
+        fun onVoucherTokoMemberInformationImpression()
         fun onVoucherReloaded()
     }
 
@@ -81,7 +83,10 @@ class ShopHomeVoucherViewHolder(
             }
         } else {
             if (model.data != null && model.data.isShown == true) {
-                shopHomeVoucherViewHolderListener.onVoucherImpression()
+                if(model.data.animatedInfoList?.size.orZero() > 1)
+                    shopHomeVoucherViewHolderListener.onVoucherTokoMemberInformationImpression()
+                else
+                    shopHomeVoucherViewHolderListener.onVoucherImpression()
                 merchantVoucherShimmering?.hide()
                 merchantVoucherWidget?.show()
                 merchantVoucherReload?.hide()
@@ -89,12 +94,9 @@ class ShopHomeVoucherViewHolder(
 
                 model.data.apply {
                     merchantVoucherWidget?.setData(MvcData(
-                            title = titles?.firstOrNull()?.text ?: "",
-                            subTitle = model.data.subTitle ?: "",
-                            imageUrl = model.data.imageURL ?: ""
+                            model.data.animatedInfoList
                     ),
                             shopId = model.data.shopId ?: "0",
-                            isMainContainerSetFitsSystemWindows = false,
                             source = MvcSource.SHOP
                     )
                 }

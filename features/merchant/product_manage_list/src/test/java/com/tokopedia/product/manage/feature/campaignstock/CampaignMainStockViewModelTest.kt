@@ -32,7 +32,8 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
                 isActive = true,
                 isAllStockEmpty = false,
                 access = createShopOwnerAccess(),
-                isCampaign = false
+                isCampaign = false,
+                campaignTypeList = listOf()
             )
         )
 
@@ -52,7 +53,8 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
                 isActive = true,
                 isAllStockEmpty = false,
                 access = createShopOwnerAccess(),
-                isCampaign = false
+                isCampaign = false,
+                campaignTypeList = listOf()
             ),
             SellableStockProductUIModel(
                 productId = "1",
@@ -61,7 +63,8 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
                 isActive = true,
                 isAllStockEmpty = false,
                 access = createShopOwnerAccess(),
-                isCampaign = false
+                isCampaign = false,
+                campaignTypeList = listOf()
             )
         )
 
@@ -83,7 +86,8 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
                 isActive = true,
                 isAllStockEmpty = false,
                 access = createShopOwnerAccess(),
-                isCampaign = false
+                isCampaign = false,
+                campaignTypeList = listOf()
             ),
             SellableStockProductUIModel(
                 productId = "1",
@@ -92,7 +96,8 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
                 isActive = true,
                 isAllStockEmpty = false,
                 access = createShopOwnerAccess(),
-                isCampaign = false
+                isCampaign = false,
+                campaignTypeList = listOf()
             )
         )
 
@@ -114,7 +119,8 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
                 isActive = true,
                 isAllStockEmpty = false,
                 access = createShopOwnerAccess(),
-                isCampaign = false
+                isCampaign = false,
+                campaignTypeList = listOf()
             ),
             SellableStockProductUIModel(
                 productId = "1",
@@ -123,7 +129,8 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
                 isActive = true,
                 isAllStockEmpty = false,
                 access = createShopOwnerAccess(),
-                isCampaign = false
+                isCampaign = false,
+                campaignTypeList = listOf()
             )
         )
 
@@ -145,7 +152,8 @@ class CampaignMainStockViewModelTest: CampaignMainStockViewModelTestFixture() {
                 isActive = true,
                 isAllStockEmpty = false,
                 access = createShopOwnerAccess(),
-                isCampaign = false
+                isCampaign = false,
+                campaignTypeList = listOf()
             )
         )
 

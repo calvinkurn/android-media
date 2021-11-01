@@ -151,7 +151,12 @@ object SomConsts {
     const val PRINT_AWB_WEBVIEW_TITLE = "Pengaturan Label Pengiriman"
 
     const val PREFIX_HTTP = "http"
+    const val PREFIX_HTTPS = "https://"
 
     // Set Delivered Consts
     const val SOM_SET_DELIVERED_SUCCESS_CODE = 1
+
+    const val DEFAULT_INVALID_ORDER_ID = "0"
+
+    const val ENCODING_UTF_8 = "UTF-8"
 }

@@ -9,6 +9,7 @@ object BuyerOrderDetailTrackerValidationConstant {
     const val clickProductQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_product.json"
     const val clickSeeSimilarProductQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_product_action_button_see_similar_product.json"
     const val clickBuyAgainProductQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_product_action_button_buy_again.json"
+    const val successBuyAgainProductQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_success_buy_again.json"
     const val clickShipmentInfoTnCQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_shipment_info_tnc.json"
     const val clickCopyAWBQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_copy_awb.json"
     const val clickPrimaryActionButtonChatSellerQueryPath = "tracker/ordermanagement/buyer_order_detail/buyer_order_detail_click_primary_action_button_chat_seller.json"

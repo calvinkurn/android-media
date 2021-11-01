@@ -1,8 +1,9 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import android.graphics.Color
-import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
+import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.HeaderModel
 import com.tokopedia.sellerhomecommon.domain.model.TableDataSetModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
@@ -15,7 +16,8 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 30/06/20
  */
 
-class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse, List<TableDataUiModel>> {
+class TableMapper @Inject constructor() :
+    BaseResponseMapper<GetTableDataResponse, List<TableDataUiModel>> {
 
     companion object {
         /**
@@ -31,45 +33,92 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
         private const val COLOR = "color"
         private const val BACKGROUND_COLOR = "background-color"
         private const val APOSTROPHE = "\""
+
+        private const val CONST_ZERO = 0
+        private const val CONST_ONE = 1
     }
 
-    override fun mapRemoteDataToUiData(response: GetTableDataResponse, isFromCache: Boolean): List<TableDataUiModel> {
-        return response.fetchSearchTableWidgetData.data.map {
+    override fun mapRemoteDataToUiData(
+        response: GetTableDataResponse,
+        isFromCache: Boolean
+    ): List<TableDataUiModel> {
+        return response.fetchSearchTableWidgetData.data.map { table ->
             TableDataUiModel(
-                    dataKey = it.dataKey,
-                    error = it.errorMsg,
-                    dataSet = getTableDataSet(it.data),
-                    isFromCache = isFromCache,
-                    showWidget = it.showWidget.orFalse()
+                dataKey = table.dataKey,
+                error = table.errorMsg,
+                dataSet = getTableDataSet(table.data, MAX_ROWS_PER_PAGE),
+                isFromCache = isFromCache,
+                showWidget = table.showWidget.orFalse()
             )
         }
     }
 
-    private fun getTableDataSet(data: TableDataSetModel): List<TablePageUiModel> {
+    fun mapRemoteDataToUiData(
+        response: GetTableDataResponse,
+        isFromCache: Boolean,
+        dataKeys: List<DataKeyModel>
+    ): List<TableDataUiModel> {
+        return response.fetchSearchTableWidgetData.data.mapIndexed { i, table ->
+            var maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ROWS_PER_PAGE
+            maxDisplay = if (maxDisplay == CONST_ZERO) {
+                MAX_ROWS_PER_PAGE
+            } else {
+                maxDisplay
+            }
+
+            return@mapIndexed TableDataUiModel(
+                dataKey = table.dataKey,
+                error = table.errorMsg,
+                dataSet = getTableDataSet(table.data, maxDisplay),
+                isFromCache = isFromCache,
+                showWidget = table.showWidget.orFalse()
+            )
+        }
+    }
+
+    private fun getTableDataSet(
+        data: TableDataSetModel,
+        maxRowsPerPage: Int
+    ): List<TablePageUiModel> {
         val headers: List<TableHeaderUiModel> = getHeaders(data.headers)
         val tablePages = mutableListOf<TablePageUiModel>()
 
+        val tableRows = data.rows
         var rows = mutableListOf<TableRowsUiModel>()
-        val rowCount = data.rows.size
-        data.rows.forEachIndexed { i, row ->
-            val firstTextColumn = row.columns.firstOrNull { it.type == COLUMN_TEXT || it.type == COLUMN_HTML }
+        val rowCount = tableRows.size
+
+        val zeroRowCount = CONST_ZERO
+        val oneRowCount = CONST_ONE
+        tableRows.forEachIndexed { i, row ->
+            val firstTextColumn = row.columns.firstOrNull {
+                it.type == COLUMN_TEXT || it.type == COLUMN_HTML
+            }
             row.columns.forEachIndexed { j, col ->
                 if (j < headers.size) {
                     val width = headers[j].width
                     val rowColumn: TableRowsUiModel = when (col.type) {
-                        COLUMN_TEXT -> TableRowsUiModel.RowColumnText(col.value, width, firstTextColumn == col)
+                        COLUMN_TEXT -> TableRowsUiModel.RowColumnText(
+                            col.value,
+                            width,
+                            isLeftAlign = firstTextColumn == col
+                        )
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
-                        else -> TableRowsUiModel.RowColumnHtml(col.value, width, firstTextColumn == col, getColorFromHtml(col.value)) //it's COLUMN_HTML
+                        else -> TableRowsUiModel.RowColumnHtml(
+                            col.value,
+                            width,
+                            isLeftAlign = firstTextColumn == col,
+                            getColorFromHtml(col.value)
+                        ) //it's COLUMN_HTML
                     }
                     rows.add(rowColumn)
                 }
             }
 
-            if (i.plus(1).rem(MAX_ROWS_PER_PAGE) == 0 && rowCount >= MAX_ROWS_PER_PAGE) {
+            if (i.plus(oneRowCount).rem(maxRowsPerPage) == zeroRowCount && rowCount >= maxRowsPerPage) {
                 val tablePage = TablePageUiModel(headers, rows)
                 tablePages.add(tablePage)
                 rows = mutableListOf()
-            } else if (i == rowCount.minus(1)) {
+            } else if (i == rowCount.minus(oneRowCount)) {
                 val tablePage = TablePageUiModel(headers, rows)
                 tablePages.add(tablePage)
             }
@@ -80,8 +129,9 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
 
     private fun getHeaders(headers: List<HeaderModel>): List<TableHeaderUiModel> {
         val firstHeader = headers.firstOrNull { it.title.isNotBlank() }
+        val noWidth = CONST_ZERO
         return headers.map { header ->
-            val headerWidth = if (header.width < 0) 0 else header.width
+            val headerWidth = if (header.width < noWidth) noWidth else header.width
             return@map TableHeaderUiModel(header.title, headerWidth, header == firstHeader)
         }
     }
@@ -101,11 +151,13 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
             val colorFromStyleTagRegex = "(<+)(.+)style*=*(\"*)(.+)color*:*(.+)".toRegex()
 
             val colorString =
-                    when {
-                        htmlString.matches(colorFromFontTagRegex) -> getColorFromFontTag(htmlString)
-                        htmlString.matches(colorFromStyleTagRegex) -> getColorFromStyleAttribute(htmlString)
-                        else -> null
-                    }
+                when {
+                    htmlString.matches(colorFromFontTagRegex) -> getColorFromFontTag(htmlString)
+                    htmlString.matches(colorFromStyleTagRegex) -> getColorFromStyleAttribute(
+                        htmlString
+                    )
+                    else -> null
+                }
 
             if (colorString.isNullOrEmpty()) {
                 null
@@ -122,15 +174,15 @@ class TableMapper @Inject constructor(): BaseResponseMapper<GetTableDataResponse
         val colorFromFont = htmlString.substringAfter(COLOR)
         val indexOfFirstApostrophe = colorFromFont.indexOf(APOSTROPHE)
         val indexOfSecondApostrophe = colorFromFont.indexOf(APOSTROPHE, indexOfFirstApostrophe + 1)
-        return colorFromFont.substring(indexOfFirstApostrophe + 1, indexOfSecondApostrophe)
+        return colorFromFont.substring(indexOfFirstApostrophe + CONST_ONE, indexOfSecondApostrophe)
     }
 
     private fun getColorFromStyleAttribute(htmlString: String): String {
         // We remove background-color style attribute to be able to substring the color of the text only
         val colorWithoutBackgroundColor = htmlString.replace(BACKGROUND_COLOR, "")
         return colorWithoutBackgroundColor.substringAfter(COLOR)
-                .substringBefore("\"").substringBefore(";")
-                .replace("[^A-Za-z0-9#]+".toRegex(), "")
+            .substringBefore("\"").substringBefore(";")
+            .replace("[^A-Za-z0-9#]+".toRegex(), "")
     }
 
 }

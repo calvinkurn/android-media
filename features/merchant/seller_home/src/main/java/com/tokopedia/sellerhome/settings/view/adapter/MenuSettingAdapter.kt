@@ -14,10 +14,13 @@ import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
+import java.util.*
 
 class MenuSettingAdapter(private val context: Context?,
                          private val listener: Listener,
+                         private val isShowScreenRecorder: Boolean,
                          typeFactory: OtherMenuAdapterTypeFactory): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
 
     companion object {
@@ -25,6 +28,8 @@ class MenuSettingAdapter(private val context: Context?,
         private const val PASSWORD_ALIAS = "password"
 
         private const val DEVELOPER_OPTION_INDEX_FROM_LAST = 4
+        private const val SCREEN_RECORDER_INDEX_FROM_LAST = 3
+        private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
     }
 
     private val otherSettingList = listOf(
@@ -57,6 +62,11 @@ class MenuSettingAdapter(private val context: Context?,
             MenuItemUiModel(
                     context?.getString(R.string.setting_menu_review_app).orEmpty(),
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING) { listener.onReviewApplication() },
+            MenuItemUiModel(
+                title = context?.getString(R.string.setting_menu_give_feedback).orEmpty(),
+                settingTypeInfix = SettingTrackingConstant.APP_SETTING,
+                tag = getFeedbackTag()
+            ) { listener.onGiveFeedback() },
             DividerUiModel(DividerType.THIN_INDENTED)
     )
 
@@ -68,6 +78,11 @@ class MenuSettingAdapter(private val context: Context?,
             menuList.add(SettingLoadingUiModel)
         }
         menuList.addAll(otherSettingList)
+        if (isShowScreenRecorder)
+            menuList.add(menuList.size - SCREEN_RECORDER_INDEX_FROM_LAST, MenuItemUiModel(
+                    context?.getString(R.string.setting_screen_recorder).orEmpty(),
+                    clickApplink = ApplinkConstInternalGlobal.SCREEN_RECORDER,
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING))
         if (GlobalConfig.isAllowDebuggingTools())
             menuList.add(menuList.size - DEVELOPER_OPTION_INDEX_FROM_LAST, MenuItemUiModel(
                     context?.getString(R.string.setting_menu_developer_options).orEmpty(),
@@ -150,12 +165,22 @@ class MenuSettingAdapter(private val context: Context?,
             listener.onNoAccess()
         }
     }
-    
+
+    private fun getFeedbackTag(): String {
+        val expiredDateMillis = FEEDBACK_EXPIRED_DATE
+        val todayMillis = Date().time
+        return if (todayMillis < expiredDateMillis) {
+            context?.getString(R.string.setting_new_tag).orEmpty()
+        } else {
+            SellerHomeConst.EMPTY_STRING
+        }
+    }
+
     interface Listener {
         fun onAddOrChangePassword()
         fun onShareApplication()
         fun onReviewApplication()
+        fun onGiveFeedback()
         fun onNoAccess()
     }
-
 }

@@ -96,7 +96,11 @@ data class ShopInfo(
 
         @SerializedName("shopTier")
         @Expose
-        val shopTier: Int = 0
+        val shopTier: Int = 0,
+
+        @SerializedName("branchLinkDomain")
+        @Expose
+        val branchLinkDomain: String = "",
 
 ) {
     fun isShopInfoNotEmpty():Boolean {
@@ -237,9 +241,12 @@ data class ShopInfo(
             @SerializedName("openDate")
             @Expose
             val openDateUnix: String = "",
+            @SerializedName("openDateUTC")
+            @Expose
+            val openDateUnixUtc: String = "",
             @SerializedName("status")
             @Expose
-            val status: Int = 0,
+            val status: Int = 0
     )
 
     data class CreatedInfo(

@@ -1,0 +1,37 @@
+{
+  "readme": "Click back from verification page",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "Input OTP google_authenticator",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "eventCategory": "otp page",
+      "event": "clickOtp",
+      "eventAction": "click button back",
+      "sessionIris": ".+",
+      "eventLabel": ".+"
+    }
+  ]
+}

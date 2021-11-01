@@ -13,12 +13,12 @@ import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.FADE_IN_VIDEO_THUMBNAIL_DURATION
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.HIDE_VALUE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOW_VALUE
+import com.tokopedia.product.detail.databinding.PdpVideoViewHolderBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.ProductExoPlayer
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.detail.view.widget.VideoStateListener
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
-import kotlinx.android.synthetic.main.pdp_video_view_holder.view.*
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -39,9 +39,11 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
         val LAYOUT = R.layout.pdp_video_view_holder
     }
 
+    private val binding = PdpVideoViewHolderBinding.bind(view)
+
     init {
-        video_volume = view.pdp_main_video.findViewById(R.id.pdp_volume_control)
-        video_full_screen = view.pdp_main_video.findViewById(R.id.pdp_maximize_control)
+        video_volume = binding.pdpMainVideo.findViewById(R.id.pdp_volume_control)
+        video_full_screen = binding.pdpMainVideo.findViewById(R.id.pdp_maximize_control)
     }
 
     override fun bind(data: MediaDataModel) {
@@ -58,19 +60,19 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
         }
     }
 
-    private fun setThumbnail() = with(view) {
-        pdp_video_overlay.loadImageWithoutPlaceholder(thumbnail)
-        pdp_video_overlay.alpha = SHOW_VALUE
-        pdp_video_overlay.show()
+    private fun setThumbnail() = with(binding) {
+        pdpVideoOverlay.loadImageWithoutPlaceholder(thumbnail)
+        pdpVideoOverlay.alpha = SHOW_VALUE
+        pdpVideoOverlay.show()
     }
 
-    private fun removeThumbnail() = with(view) {
-        pdp_video_overlay.animate().alpha(HIDE_VALUE).setListener(object : Animator.AnimatorListener {
+    private fun removeThumbnail() = with(binding) {
+        pdpVideoOverlay.animate().alpha(HIDE_VALUE).setListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator?) {
             }
 
             override fun onAnimationEnd(animation: Animator?) {
-                pdp_video_overlay.hide()
+                pdpVideoOverlay.hide()
             }
 
             override fun onAnimationCancel(animation: Animator?) {
@@ -82,24 +84,24 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
         }).duration = FADE_IN_VIDEO_THUMBNAIL_DURATION
     }
 
-    private fun showBufferLoading() = with(view) {
-        pdp_video_loading?.animate()
-        pdp_video_loading?.show()
+    private fun showBufferLoading() = with(binding) {
+        pdpVideoLoading.animate()
+        pdpVideoLoading.show()
     }
 
-    private fun hideBufferLoading() = with(view) {
-        pdp_video_loading?.hide()
+    private fun hideBufferLoading() = with(binding) {
+        pdpVideoLoading.hide()
     }
 
     private fun setupVolume(isMute: Boolean) {
         video_volume?.setImageResource(if (!isMute) R.drawable.ic_pdp_volume_up else R.drawable.ic_pdp_volume_mute)
     }
 
-    override fun setPlayer(player: ProductExoPlayer?) = with(view) {
+    override fun setPlayer(player: ProductExoPlayer?) = with(binding) {
         mPlayer = player
         if (player == null) {
-            pdp_main_video.player = null
-            pdp_main_video.gone()
+            pdpMainVideo.player = null
+            pdpMainVideo.gone()
             setThumbnail()
         } else {
             if (player.getExoPlayer().playbackState == Player.STATE_READY) removeThumbnail()
@@ -111,7 +113,7 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
                 override fun onVideoReadyToPlay() {
                     removeThumbnail()
                     hideBufferLoading()
-                    pdp_main_video.useController = true
+                    pdpMainVideo.useController = true
                 }
 
                 override fun onVideoBuffering() {
@@ -126,9 +128,9 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
                     listener?.onVideoStateChange(stopDuration, videoDuration)
                 }
             })
-            pdp_main_video.show()
-            if (pdp_main_video.player == null) {
-                pdp_main_video.player = player.getExoPlayer()
+            pdpMainVideo.show()
+            if (pdpMainVideo.player == null) {
+                pdpMainVideo.player = player.getExoPlayer()
             }
         }
     }

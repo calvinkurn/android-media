@@ -36,8 +36,8 @@
     <string name="shop_page_header_request_unmoderate_option_2_text">Saya sudah melakukan perbaikan toko.</string>
     <string name="shop_page_header_request_unmoderate_option_2_value">Have Fixed</string>
     <string name="shop_page_header_request_unmoderate_btn_send_text">Kirim</string>
-    <string name="shop_page_header_request_unmoderate_appended_text">&lt;br /&gt;&lt;br /&gt;Permohonan buka toko dapat dilakukan dengan mengklik link berikut <![CDATA[<a href="%1$s">%2$s</a>]]></string>
-    <string name="shop_page_header_request_unmoderate_appended_text_dummy_url">https://tokopedia.com/#req-shop-moderate-bottomsheet</string>
+    <string name="shop_page_header_request_unmoderate_appended_text" formatted="true">&lt;br /&gt;&lt;br /&gt;Permohonan buka toko dapat dilakukan dengan mengklik link berikut <![CDATA[<a href="%1$s">%2$s</a>]]></string>
+    <string name="shop_page_header_request_unmoderate_appended_text_dummy_url" formatted="true">https://tokopedia.com/#req-shop-moderate-bottomsheet</string>
 
     <string name="shop_page_bottom_sheet_reputation_title">Reputasi Toko</string>
     <string name="shop_page_bottom_sheet_product_quality_title">@string/shop_page_label_product_quality</string>
@@ -127,6 +127,11 @@
 
     <string name="shop_product_search_title_empty_state">Produk lain di Toko ini</string>
 
+    <string name="shop_product_showcase_empty_state_title">Oops, belum ada produk di etalase ini</string>
+    <string name="shop_product_showcase_empty_state_desc">Cek Etalase lainnya, ya.</string>
+
+    <string name="shop_product_showcase_empty_state_btn_primary">Kembali</string>
+
     <string name="shop_info_default_etalase">Pilih Etalase</string>
     <string name="shop_info_default_etalase_title">Etalase</string>
     <string name="shop_info_default_produk_title">Produk</string>
@@ -189,7 +194,6 @@
 
     <string name="shop_search_product">Search Shop Product</string>
     <string name="shop_search_product_in_this_shop_etalase">di Etalase Toko ini</string>
-    <string name="shop_search_product_in_tokopedia">di Tokopedia</string>
     <string name="shop_search_product_in_shop_name">di %1s</string>
     <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
     <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
@@ -216,37 +220,13 @@
     <string name="new_shop_page_header_shop_close_description_seller">Toko akan dibuka otomatis pada %1$s. <![CDATA[<a href="">%2$s</a>]]></string>
     <string name="new_shop_page_header_shop_close_title_seller">Toko Anda Sedang Tutup</string>
     <string name="new_shop_page_header_shop_close_description_buyer_clickable_text">Help Center</string>
-    <string name="new_shop_page_header_shop_close_description_seller_clickable_text">Buka Toko</string>
+    <string name="new_shop_page_header_shop_close_description_seller_clickable_text" formatted="true">Buka Toko</string>
     <string name="shop_page_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
     <string name="shop_page_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
 
-
-    <!-- shop new info -->
-    <string name="shop_page_setting_title">Toko Kamu</string>
-    <string name="shop_page_setting_dashboard">Dashboard Toko</string>
-    <string name="shop_page_setting_action_manage_sale">Lihat dan atur penjualanmu di sini</string>
-    <!-- profile -->
-    <string name="shop_page_setting_profile">Profil Toko</string>
-    <string name="shop_page_setting_action_change_profile">Ubah profil toko</string>
-    <string name="shop_page_setting_action_change_note">Ubah catatan toko</string>
-    <string name="shop_page_setting_action_manage_opening_time">Atur jam buka toko</string>
-    <string name="shop_page_setting_shop_status">Status Toko</string>
     <!-- product -->
-    <string name="shop_page_setting_product">Produk</string>
-    <string name="shop_page_setting_action_display_products">Lihat daftar produk</string>
-    <string name="shop_page_setting_action_edit_etalage">Tambah dan ubah etalase</string>
     <string name="shop_page_product_no_upload_product">Agar tidak dinonaktifkan, tambah produk sebelum 90 hari</string>
     <string name="shop_page_product_action_no_upload_product">Oke</string>
-    <!-- support -->
-    <string name="shop_page_setting_support">Bantuan</string>
-    <string name="shop_page_setting_support_center">Pusat Bantuan</string>
-    <string name="shop_page_setting_action_get_support">Dapatkan bantuan melalui Tokopedia Care</string>
-    <string name="shop_page_setting_seller_center">Pusat Seller</string>
-    <string name="shop_page_setting_action_get_tips">Dapatkan tips berjualan dan informasi penting</string>
-    <!-- shipping -->
-    <string name="shop_page_setting_shipping">Lokasi dan Pengiriman</string>
-    <string name="shop_page_setting_action_edit_location">Lokasi toko</string>
-    <string name="shop_page_setting_action_manage_shipping_service">Atur layanan pengiriman</string>
     <string name="video_component_tag">video_container</string>
     <string name="close_youtube">Close</string>
     <string name="video_not_found">Video tidak ditemukan</string>
@@ -267,20 +247,6 @@
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
     <string name="shop_page_retry">Ulangi</string>
     <string name="shop_page_lottie_sgc_url">https://ecs7.tokopedia.net/android/hydra/sgc_entry_point.json</string>
-    <string name="review_shop_empty_list_content">Belum ada ulasan yang diberikan untuk toko ini</string>
-    <string name="review">Ulasan</string>
-    <string name="product_review_label_by">Oleh</string>
-    <string name="see_reply">Lihat Balasan</string>
-    <string name="seller">Penjual</string>
-    <string name="more_to_complete">Selengkapnya</string>
-    <string name="product_review_label_counter_like_1_formatted">Anda dan %1$d orang terbantu</string>
-    <string name="product_review_label_counter_like_2_formatted">Anda terbantu</string>
-    <string name="product_review_label_counter_like_3_formatted">Terbantu?</string>
-    <string name="product_review_label_counter_like_4_formatted">%1$d orang terbantu</string>
-    <string name="menu_delete">Hapus</string>
-    <string name="close_reply">Tutup Balasan</string>
-    <string name="menu_report">Laporkan</string>
-    <string name="shop_page_setting_no_access_error">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
 
     <string name="shop_home_npl_remind_me">Ingatkan</string>
     <string name="shop_home_npl_campaign_follow">Follow Toko</string>

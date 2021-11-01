@@ -34,11 +34,12 @@ import com.tokopedia.flight.cancellation.presentation.bottomsheet.FlightCancella
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellationReviewViewModel
+import com.tokopedia.flight.databinding.FragmentFlightCancellationReviewBinding
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_flight_cancellation_review.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -53,6 +54,8 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
 
     private lateinit var attachmentAdapter: FlightCancellationAttachmentAdapter
     private lateinit var estimationNotesAdapter: FlightCancellationReviewEstimationNotesAdapter
+
+    private var binding by autoClearedNullable<FragmentFlightCancellationReviewBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,24 +77,26 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_cancellation_review, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentFlightCancellationReviewBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tv_description_refund.text = descriptionText()
-        tv_description_refund.movementMethod = LinkMovementMethod.getInstance()
-        button_submit.setOnClickListener {
+        binding?.tvDescriptionRefund?.text = descriptionText()
+        binding?.tvDescriptionRefund?.movementMethod = LinkMovementMethod.getInstance()
+        binding?.buttonSubmit?.setOnClickListener {
             navigateToTermsAndConditionsPage()
         }
 
         val adapterTypeFactory = FlightCancellationAttachmentAdapterTypeFactory(this, false)
         attachmentAdapter = FlightCancellationAttachmentAdapter(adapterTypeFactory)
-        rv_attachments.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        rv_attachments.setHasFixedSize(true)
-        rv_attachments.isNestedScrollingEnabled = false
-        rv_attachments.adapter = attachmentAdapter
+        binding?.rvAttachments?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding?.rvAttachments?.setHasFixedSize(true)
+        binding?.rvAttachments?.isNestedScrollingEnabled = false
+        binding?.rvAttachments?.adapter = attachmentAdapter
 
         showLoading()
     }
@@ -155,13 +160,13 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     override fun showLoading() {
-        sv_review_container.visibility = View.GONE
-        full_page_loading.visibility = View.VISIBLE
+        binding?.svReviewContainer?.visibility = View.GONE
+        binding?.fullPageLoading?.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        sv_review_container.visibility = View.VISIBLE
-        full_page_loading.visibility = View.GONE
+        binding?.svReviewContainer?.visibility = View.VISIBLE
+        binding?.fullPageLoading?.visibility = View.GONE
     }
 
     private fun renderView() {
@@ -171,25 +176,25 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         renderList(cancellationModel.cancellationList)
 
         if (cancellationModel.cancellationReasonAndAttachmentModel.reason.isNotEmpty()) {
-            txt_cancellation_reason.text = cancellationModel.cancellationReasonAndAttachmentModel.reason
-            container_additional_reason.visibility = View.VISIBLE
+            binding?.txtCancellationReason?.text = cancellationModel.cancellationReasonAndAttachmentModel.reason
+            binding?.containerAdditionalReason?.visibility = View.VISIBLE
         } else {
-            container_additional_reason.visibility = View.GONE
+            binding?.containerAdditionalReason?.visibility = View.GONE
         }
 
         if (flightCancellationReviewViewModel.shouldShowAttachments()) {
             attachmentAdapter.clearAllElements()
             attachmentAdapter.addElement(cancellationModel.cancellationReasonAndAttachmentModel.attachmentList)
         } else {
-            container_additional_documents.visibility = View.GONE
+            binding?.containerAdditionalDocuments?.visibility = View.GONE
         }
 
         if (cancellationModel.cancellationReasonAndAttachmentModel.reason.isEmpty() ||
                 cancellationModel.cancellationReasonAndAttachmentModel.attachmentList.size == 0) {
-            container_additional_data.visibility = View.GONE
+            binding?.containerAdditionalData?.visibility = View.GONE
         }
 
-        tv_total_refund.text = cancellationModel.cancellationReasonAndAttachmentModel.estimateFmt
+        binding?.tvTotalRefund?.text = cancellationModel.cancellationReasonAndAttachmentModel.estimateFmt
     }
 
     private fun renderRefundableView(data: FlightCancellationEstimateEntity) {
@@ -270,12 +275,12 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     private fun showEstimateValue(estimationNotes: List<String>) {
-        container_estimate_refund.visibility = View.VISIBLE
+        binding?.containerEstimateRefund?.visibility = View.VISIBLE
 
         if (estimationNotes.isNotEmpty()) {
-            tv_refund_star.visibility = View.VISIBLE
+            binding?.tvRefundStar?.visibility = View.VISIBLE
         } else {
-            tv_refund_star.visibility = View.GONE
+            binding?.tvRefundStar?.visibility = View.GONE
         }
 
         if (!::estimationNotesAdapter.isInitialized) {
@@ -283,24 +288,24 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         }
         estimationNotesAdapter.setData(estimationNotes)
 
-        rvEstimationNotes.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        rvEstimationNotes.setHasFixedSize(true)
-        rvEstimationNotes.adapter = estimationNotesAdapter
-        rvEstimationNotes.visibility = View.VISIBLE
+        binding?.rvEstimationNotes?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding?.rvEstimationNotes?.setHasFixedSize(true)
+        binding?.rvEstimationNotes?.adapter = estimationNotesAdapter
+        binding?.rvEstimationNotes?.visibility = View.VISIBLE
     }
 
     private fun hideEstimateValue() {
-        container_estimate_refund.visibility = View.GONE
-        rvEstimationNotes.visibility = View.GONE
+        binding?.containerEstimateRefund?.visibility = View.GONE
+        binding?.rvEstimationNotes?.visibility = View.GONE
     }
 
     private fun showRefundDetail(message: String) {
-        tv_refund_detail.text = message
-        tv_refund_detail.visibility = View.VISIBLE
+        binding?.tvRefundDetail?.text = message
+        binding?.tvRefundDetail?.visibility = View.VISIBLE
     }
 
     private fun hideRefundDetail() {
-        tv_refund_detail.visibility = View.GONE
+        binding?.tvRefundDetail?.visibility = View.GONE
     }
 
     private fun showCancellationError(t: Throwable) {

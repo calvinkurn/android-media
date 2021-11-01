@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker.editor.watermark.data
 import android.graphics.Color
 import android.graphics.Paint
 import androidx.annotation.ColorInt
+import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.takeAndEllipsizeOf
 
@@ -15,7 +16,7 @@ open class TextDefault(
     override var textShadowBlurRadius: Float = 0f,
     override var textShadowXOffset: Float = 0f,
     override var textShadowYOffset: Float = 0f,
-    override var textAlpha: Int = 50,
-    override var textSize: Int = 24,
+    override var textAlpha: Int = 80,
+    override var textSize: Int = 10,
     override var text: String = "",
 ) : TextUIModel, PositionDefault()

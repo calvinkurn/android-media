@@ -1,5 +1,7 @@
 package com.tokopedia.sellerapp.deeplink;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,65 +10,27 @@ import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.airbnb.deeplinkdispatch.DeepLinkHandler;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
-import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.sellerapp.BuildConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
-import com.tokopedia.topads.applink.TopAdsApplinkModule;
-import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
-import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.webview.WebViewApplinkModule;
-import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
-
-/**
- * @author rizkyfadillah on 26/07/17.
- */
-@DeepLinkHandler({
-        TopAdsApplinkModule.class,
-        WebViewApplinkModule.class,
-        HomeCreditAppLinkModule.class
-})
-/* **
- * Navigation will via RouteManager -> manifest instead.
- * Put new Deeplink directly into the target activity
- */
-@Deprecated
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";
     private static final String URL_QUERY_PARAM = "url";
 
-
-    public static DeepLinkDelegate getDelegateInstance() {
-        return new DeepLinkDelegate(
-                new TopAdsApplinkModuleLoader(),
-                new WebViewApplinkModuleLoader(),
-                new HomeCreditAppLinkModuleLoader()
-        );
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
             UserSessionInterface userSession = new UserSession(this);
@@ -77,21 +41,20 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                     startActivity(new Intent(this, SplashScreenActivity.class));
                 }
             } else {
-                processApplink(deepLinkDelegate, presenter);
+                processApplink(presenter);
             }
 
         }
         finish();
     }
 
-    private void processApplink(DeepLinkDelegate deepLinkDelegate,
-                                DeepLinkAnalyticsImpl presenter) {
+    private void processApplink(DeepLinkAnalyticsImpl presenter) {
         Uri applink = getIntent().getData();
-        presenter.processUTM(this, applink);
-
         if (applink == null) {
             return;
         }
+
+        presenter.processUTM(this, applink);
 
         String applinkString = applink.toString();
         logWebViewApplink(applink);
@@ -99,40 +62,16 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         //map applink to internal if any
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
         if (TextUtils.isEmpty(mappedDeeplink)) {
-            routeToApplink(deepLinkDelegate, applinkString);
+            routeToApplink(applinkString);
         } else {
-            routeToApplink(deepLinkDelegate, mappedDeeplink);
+            routeToApplink(mappedDeeplink);
         }
     }
 
-    private void routeToApplink(DeepLinkDelegate deepLinkDelegate, String applinkString) {
-        if (deepLinkDelegate.supportsUri(applinkString)) {
-            try {
-                getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                deepLinkDelegate.dispatchFrom(this, getIntent());
-                if (getIntent().getExtras() != null) {
-                    Bundle bundle = getIntent().getExtras();
-                    eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
-                }
-                AppUtil.logAirBnbUsage(applinkString);
-            } catch (Exception exception) {
-                String message = String.format("Unable to handle applink: %s - %s", applinkString, exception.getLocalizedMessage());
-                logExceptionToCrashlytics(exception, message);
-            }
-        } else {
-            Intent intent = RouteManager.getIntent(this, applinkString);
-            startActivity(intent);
-            this.finish();
-        }
-    }
-
-
-    public void eventPersonalizedClicked(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
-                AppEventTracking.Category.PUSH_NOTIFICATION,
-                AppEventTracking.Action.OPEN,
-                label);
+    private void routeToApplink(String applinkString) {
+        Intent intent = RouteManager.getIntent(this, applinkString);
+        startActivity(intent);
+        this.finish();
     }
 
     public static Intent moveToCreateShop(Context context) {
@@ -183,12 +122,4 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         }
     }
 
-    private void logExceptionToCrashlytics(Exception exception, String message) {
-        if (!BuildConfig.DEBUG) {
-            RuntimeException recordException = new RuntimeException(message, exception);
-            FirebaseCrashlytics.getInstance().recordException(recordException);
-        } else {
-            exception.printStackTrace();
-        }
-    }
 }

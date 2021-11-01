@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.view.adapter.FtPDPInstallmentCalculationAdap
 
 class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.GetTncDataFromFragment, TkpdBaseV4Fragment() {
 
-    private var productPrice: Float? = 0f
+    private var productPrice: Double? = 0.0
     private var isOfficialStore: Boolean = false
     private lateinit var ftRecyclerView: RecyclerView
     private var tncDataListId: String = ""
@@ -31,10 +31,10 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
         const val KEY_INSTALLMENT_TNC_LIST = "keyInstallmentTncList"
         const val KEY_INSTALLMENT_IS_OFFICIAL_STORE = "keyInstallmentIsOfficialStore"
 
-        fun createInstance(context: Context?, productPrice: Float, tncList: ArrayList<FtInstallmentTnc>, isOfficialStore: Boolean,
+        fun createInstance(context: Context?, productPrice: Double, tncList: ArrayList<FtInstallmentTnc>, isOfficialStore: Boolean,
                            dataList: ArrayList<FtCalculationPartnerData>): FtPdpInstallmentCalculationFragment {
             val bundle = Bundle()
-            bundle.putFloat(KEY_INSTALLMENT_PRODUCT_PRICE, productPrice)
+            bundle.putDouble(KEY_INSTALLMENT_PRODUCT_PRICE, productPrice)
             bundle.putBoolean(KEY_INSTALLMENT_IS_OFFICIAL_STORE, isOfficialStore)
             val lendingPartnerFragment = FtPdpInstallmentCalculationFragment()
             context?.let {
@@ -59,11 +59,11 @@ class FtPdpInstallmentCalculationFragment : FtPDPInstallmentCalculationAdapter.G
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            productPrice = it.getFloat(KEY_INSTALLMENT_PRODUCT_PRICE)
+            productPrice = it.getDouble(KEY_INSTALLMENT_PRODUCT_PRICE)
             isOfficialStore = it.getBoolean(KEY_INSTALLMENT_IS_OFFICIAL_STORE)
 
             tncDataListId = it.getString(KEY_INSTALLMENT_TNC_LIST) ?: ""
-            val cacheManager = SaveInstanceCacheManager(context!!, tncDataListId)
+            val cacheManager = SaveInstanceCacheManager(requireContext(), tncDataListId)
 
             tncDataList = cacheManager.get(FtInstallmentTnc::class.java.simpleName,
                     object : TypeToken<ArrayList<FtInstallmentTnc>>() {}.type, ArrayList())

@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_gravity="center"
         android:layout_width="@dimen/unify_space_32"
-        android:layout_height="@dimen/unify_space_32"/>
+        android:layout_height="@dimen/unify_space_32"
+        android:layout_gravity="center" />
 </FrameLayout>

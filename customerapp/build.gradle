@@ -1,18 +1,18 @@
 apply plugin: 'com.android.application'
+apply plugin: 'embrace-swazzler'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
+apply plugin: 'newrelic'
+
 if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
 }
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'io.hansel.preprocessor'
 
+apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
-apply from: '../tools/set_debug_tools.gradle'
-
-def isProduction() {
-    return project.hasProperty('tkpdBuildType') && tkpdBuildType == "production";
-}
+apply plugin: 'kotlin-parcelize'
 
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -61,12 +61,6 @@ def isFirebasePerformanceLogEnabled() {
     return "false"
 }
 
-android.applicationVariants.all { variant ->
-    def variantNameCap = variant.name.capitalize()
-    task ("generateBundledResourcesHash${variantNameCap}")
-    task ("bundle${variantNameCap}JsAndAssets")
-}
-
 project.ext {
     defaultVersionCode = 418001101;
     defaultVersionName = "4.01-test";
@@ -77,16 +71,17 @@ buildscript {
         google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-        jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         maven {
-            url 'https://www.jitpack.io'
+            url "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
+        classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.miscDependencies.hansel
         classpath rootProject.ext.gradlePlugin.googleServices
+        classpath rootProject.ext.gradlePlugin.testRetry
     }
 }
 ext.lintchecks = [
@@ -96,9 +91,9 @@ ext.lintchecks = [
         'TypographyOverTextViewUsage'
 ] as String[]
 
+apply plugin: "org.gradle.test-retry"
 
 android {
-
     packagingOptions {
         exclude 'META-INF/**'
         pickFirst '**/armeabi-v7a/libc++_shared.so'
@@ -107,6 +102,15 @@ android {
         pickFirst '**/x86_64/libc++_shared.so'
         pickFirst '**/x86/libjsc.so'
         pickFirst '**/armeabi-v7a/libjsc.so'
+    }
+    testOptions {
+        unitTests.all {
+           retry {
+                failOnPassedAfterRetry = true
+                maxFailures = 42
+                maxRetries = 1
+            }
+        }
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -121,7 +125,6 @@ android {
             renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
             assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
-            jniLibs.srcDirs = ["jniLibs"]
         }
 
         String sharedTestDir = 'src/sharedTest/java'
@@ -139,6 +142,7 @@ android {
         abortOnError false
         xmlReport true
         htmlReport false
+        checkDependencies true
     }
 
     signingConfigs {
@@ -224,6 +228,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
     configurations.all {
         resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
@@ -263,29 +271,31 @@ dependencies {
 
     implementation platform(rootProject.ext.firebase.bom)
 
-    implementation project(rootProject.ext.features.customer_mid_app)
-    implementation project(rootProject.ext.features.tkpdcore)
-    implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation projectOrAar(rootProject.ext.features.customer_mid_app)
+    implementation projectOrAar(rootProject.ext.features.tkpdcore)
+    implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation project(rootProject.ext.libraries.deviceInfo)
-    implementation project(rootProject.ext.features.navigation)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.core_legacy)
-    implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.features.promoGamificationCommon)
-    implementation project(rootProject.ext.features.promoMvcWidget)
-    implementation project(rootProject.ext.libraries.oms)
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.linker)
-    implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.pushNotificationCommon)
-    implementation project(rootProject.ext.libraries.cmPushNotifications)
-    implementation project(rootProject.ext.features.kyc)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.features.productManageCommon)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.features.navigation)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.core_legacy)
+    implementation projectOrAar(rootProject.ext.features.loyalty)
+    implementation projectOrAar(rootProject.ext.features.promoGamificationCommon)
+    implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+    implementation projectOrAar(rootProject.ext.libraries.oms)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
+    implementation projectOrAar(rootProject.ext.features.commonDigital)
+    implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
+    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
+    implementation projectOrAar(rootProject.ext.features.kyc)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.features.productManageCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.features.mediaCommon)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.features.mediaCommon)
+    implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
 
@@ -316,14 +326,13 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.analyticsDependencies.appsflyer
-    implementation project(rootProject.ext.features.moengageWrapper)
+    implementation projectOrAar(rootProject.ext.features.moengageWrapper)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.apacheLang
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
@@ -333,7 +342,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation rootProject.ext.miscDependencies.liveDataKtx
 
-    implementation rootProject.ext.firebase.appIndexing
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
@@ -345,6 +353,7 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleProcess
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore
@@ -359,14 +368,15 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
+    }
+    implementation (rootProject.ext.miscDependencies.ucrop){
+        exclude group: 'com.android.support'
     }
 
     //[START] test and androidTest dependencies

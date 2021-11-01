@@ -38,15 +38,16 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
         }
     }
 
-    private fun setMargins(view: View, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
-        val cardView: CardView = view.findViewById(R.id.cardViewProductCard)
-        val params = cardView.layoutParams as FrameLayout.LayoutParams
+    private fun setMargins(view: View?, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
+        val cardView: CardView? = view?.findViewById(R.id.cardViewProductCard)
+        val params = cardView?.layoutParams as? FrameLayout.LayoutParams
 
-        params.rightMargin = right
-        params.leftMargin = left
-        params.bottomMargin = bottom
-        params.topMargin = top
-
-        cardView.layoutParams = params
+        params?.let {
+            it.rightMargin = right
+            it.leftMargin = left
+            it.bottomMargin = bottom
+            it.topMargin = top
+            cardView.layoutParams = it
+        }
     }
 }

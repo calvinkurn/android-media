@@ -1,0 +1,58 @@
+package com.tokopedia.play.view.uimodel.action
+
+/**
+ * Created by jegul on 28/06/21
+ */
+sealed class PlayViewerNewAction
+
+/**
+ * Interactive
+ */
+object InteractivePreStartFinishedAction : PlayViewerNewAction()
+object InteractiveOngoingFinishedAction : PlayViewerNewAction()
+
+data class InteractiveWinnerBadgeClickedAction(val height: Int) : PlayViewerNewAction()
+
+object InteractiveTapTapAction : PlayViewerNewAction()
+
+object ClickFollowInteractiveAction : PlayViewerNewAction()
+object ClickRetryInteractiveAction : PlayViewerNewAction()
+
+object ClickCloseLeaderboardSheetAction : PlayViewerNewAction()
+
+object RefreshLeaderboard: PlayViewerNewAction()
+
+/**
+ * Partner
+ */
+object ClickFollowAction : PlayViewerNewAction()
+object ClickPartnerNameAction : PlayViewerNewAction()
+
+/**
+ * Like
+ */
+object ClickLikeAction : PlayViewerNewAction()
+
+/**
+ * Share
+ */
+object ClickShareAction : PlayViewerNewAction()
+
+/**
+ * Cart
+ */
+object ClickCartAction : PlayViewerNewAction()
+
+/**
+ * Swipe
+ */
+object SetChannelActiveAction : PlayViewerNewAction()
+
+/**
+ * Upcoming Page
+ */
+object ImpressUpcomingChannel: PlayViewerNewAction()
+object ClickRemindMeUpcomingChannel: PlayViewerNewAction()
+object ClickWatchNowUpcomingChannel: PlayViewerNewAction()
+
+data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

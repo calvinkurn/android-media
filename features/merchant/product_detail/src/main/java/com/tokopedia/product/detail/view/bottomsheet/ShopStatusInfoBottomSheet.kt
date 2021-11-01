@@ -2,17 +2,12 @@ package com.tokopedia.product.detail.view.bottomsheet
 
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ShopStatusLinkMovementMethod
 import com.tokopedia.product.detail.view.util.goToWebView
-import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
@@ -28,13 +23,26 @@ class ShopStatusInfoBottomSheet : BottomSheetUnify() {
     private var messageText: Typography? = null
     private var messageCloseNote: Typography? = null
     private var btnRequestOpen: UnifyButton? = null
-    var statusInfo: ShopInfo.StatusInfo? = null
-    var closedInfo: ShopInfo.ClosedInfo? = null
-    var isShopOwner: Boolean = false
+
+    private var titleText: String = ""
+    private var message: String = ""
+    private var reason: String = ""
+    private var btnText: String = ""
+    private var btnLink: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+    }
+
+    fun show(title: String, message: String, reason: String, btnText: String, btnLink: String,
+             supportFragmentManager: FragmentManager) {
+        this.titleText = title
+        this.message = message
+        this.reason = reason
+        this.btnText = btnText
+        this.btnLink = btnLink
+        show(supportFragmentManager, "Shop Status BS")
     }
 
     private fun initView() {
@@ -43,41 +51,29 @@ class ShopStatusInfoBottomSheet : BottomSheetUnify() {
         messageCloseNote = parentView?.findViewById(R.id.message_close_note)
         btnRequestOpen = parentView?.findViewById(R.id.btn_request_open_shop)
 
-        when (statusInfo?.shopStatus) {
-            ShopStatusDef.CLOSED -> {
-                btnRequestOpen?.hide()
-                messageCloseNote?.show()
-                setTitle(context?.getString(R.string.bs_title_shop_closed) ?: "")
-            }
-            ShopStatusDef.MODERATED -> {
-                showBtnRequest()
-                messageCloseNote?.hide()
-                setTitle(context?.getString(R.string.bs_title_shop_moderated) ?: "")
-            }
-            ShopStatusDef.MODERATED_PERMANENTLY -> {
-                showBtnRequest()
-                messageCloseNote?.hide()
-                setTitle(context?.getString(R.string.bs_title_shop_moderated_permanent) ?: "")
-            }
-            else -> {
-                btnRequestOpen?.hide()
-                messageCloseNote?.hide()
+        setTitle(titleText)
+
+        messageText?.shouldShowWithAction(message.isNotBlank()) {
+            context?.let {
+                messageText?.text = HtmlLinkHelper(it, message).spannedString
+                messageText?.movementMethod = ShopStatusLinkMovementMethod { link ->
+                    goToWebView(link)
+                }
             }
         }
 
-
-        context?.let {
-            messageText?.text = HtmlLinkHelper(it, statusInfo?.statusMessage ?: "").spannedString
-            messageCloseNote?.text = MethodChecker.fromHtml(closedInfo?.note ?: "")
-            messageText?.movementMethod = ShopStatusLinkMovementMethod {
-                goToWebView(it)
+        messageCloseNote?.shouldShowWithAction(reason.isNotBlank()) {
+            context?.let {
+                messageCloseNote?.text = HtmlLinkHelper(it, reason).spannedString
             }
-            btnRequestOpen?.text = it.getString(R.string.bs_btn_title)
+        }
+
+        btnRequestOpen?.shouldShowWithAction(btnText.isNotBlank()) {
+            btnRequestOpen?.text = btnText
             btnRequestOpen?.setOnClickListener {
-                goToContactUs()
+                route(btnLink)
             }
         }
-
         setChild(parentView)
     }
 
@@ -87,14 +83,13 @@ class ShopStatusInfoBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun goToContactUs() {
+    private fun route(url: String) {
         context?.let {
-            RouteManager.route(it, ApplinkConst.CONTACT_US_NATIVE)
+            if (RouteManager.isSupportApplink(it, url)) {
+                RouteManager.route(it, url)
+            } else {
+                goToWebView(url)
+            }
         }
     }
-
-    private fun showBtnRequest(){
-        btnRequestOpen?.showWithCondition(isShopOwner)
-    }
-
 }

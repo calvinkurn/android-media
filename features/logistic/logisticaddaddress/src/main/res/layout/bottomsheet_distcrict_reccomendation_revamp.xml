@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_map_search_location"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/district_recommendation_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_zip_code"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="@dimen/dp_100"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <include
+                android:id="@+id/card_address"
+                layout="@layout/card_address_new_loc" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/et_kodepos"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_32"
+                app:text_field_label="Kode Pos"
+                app:text_field_input_type="number"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_kodepos_chips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.SearchBarUnify
+            android:id="@+id/search_page_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:search_bar_show_icon="false"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_desc_input_district"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/search_page_input"
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/ll_list_district"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:layout_below="@id/tv_desc_input_district"
+            android:visibility="visible">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_list_district"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_popular_city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/ll_list_district"
+            android:gravity="bottom"
+            android:layout_marginTop="20dp"
+            android:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title_popular_city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/kota_populer"
+                app:typographyType="heading_4" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_chips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom_chooose_zipcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/Unify_N0"
+            android:layout_alignParentBottom="true"
+            android:visibility="visible">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_choose_zipcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonType="main"
+                android:textStyle="bold"
+                android:text="@string/btn_pilih"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -51,7 +51,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             return HideViewHolder.LAYOUT
         }
         val chat = visitables[position]
-        return if (chat is MessageViewModel) {
+        return if (chat is MessageUiModel) {
             if (chat.isSender) {
                 CustomChatbotMessageViewHolder.TYPE_RIGHT
             } else {
@@ -84,11 +84,12 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             QuickReplyViewHolder.LAYOUT -> QuickReplyViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
             ChatbotFallbackAttachmentViewHolder.LAYOUT -> ChatbotFallbackAttachmentViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
             StickyActionButtonViewHolder.LAYOUT -> StickyActionButtonViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener, actionButtonClickListener)
+            ChatRatingViewHolder.LAYOUT -> ChatRatingViewHolder(parent, chatLinkHandlerListener,chatbotAdapterListener, chatRatingListener)
             else -> createViewHolder(parent, type)
         }
     }
 
-    override fun type(imageUploadViewModel: ImageUploadViewModel): Int {
+    override fun type(imageUploadUiModel: ImageUploadUiModel): Int {
         return ChatbotImageUploadViewHolder.LAYOUT
     }
 
@@ -112,7 +113,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
         return CsatOptionListViewHolder.LAYOUT
     }
 
-    override fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int {
+    override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
         return AttachedInvoiceSentViewHolder.LAYOUT
     }
 
@@ -132,7 +133,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
         return ChatActionListBubbleViewHolder.LAYOUT
     }
 
-    override fun type(fallbackAttachmentViewModel: FallbackAttachmentViewModel): Int {
+    override fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int {
         return ChatbotFallbackAttachmentViewHolder.LAYOUT
     }
 
@@ -148,7 +149,6 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             ChatbotLiveChatSeparatorViewHolder.LAYOUT -> ChatbotLiveChatSeparatorViewHolder(parent)
             AttachedInvoiceSentViewHolder.LAYOUT -> AttachedInvoiceSentViewHolder(parent)
             AttachedInvoiceSelectionViewHolder.LAYOUT -> AttachedInvoiceSelectionViewHolder(parent, attachedInvoiceSelectionListener)
-            ChatRatingViewHolder.LAYOUT -> ChatRatingViewHolder(parent, chatLinkHandlerListener, chatRatingListener)
             ChatActionListBubbleViewHolder.LAYOUT -> ChatActionListBubbleViewHolder(parent, chatActionListBubbleListener, chatLinkHandlerListener)
             ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener)
             else -> super.createViewHolder(parent, type)

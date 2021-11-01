@@ -6,18 +6,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_N0"
     android:orientation="vertical"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     android:paddingTop="9dp">
 
     <LinearLayout
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@+id/tv_score"
+        android:id="@+id/ly_reputation_group"
+        android:layout_marginEnd="5dp"
+        android:layout_toStartOf="@+id/tv_score"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
         android:orientation="vertical">
-
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_date"
@@ -60,12 +60,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:background="@android:drawable/list_selector_background"
         android:gravity="end|center_vertical"
         android:textColor="@color/Unify_N700_68"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:typographyType="heading_3"
         app:typographyWeight="reguler"
         tools:text="0" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_below="@id/ly_reputation_group"/>
 
 </RelativeLayout>

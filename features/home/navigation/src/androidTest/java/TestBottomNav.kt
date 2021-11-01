@@ -10,6 +10,8 @@ import androidx.test.rule.ActivityTestRule
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.navigation.presentation.customview.LottieBottomNavbar
 import com.tokopedia.navigation.test.R
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
@@ -18,24 +20,36 @@ import org.junit.Rule
 import org.junit.Test
 
 class TestBottomNav {
-    @get:Rule
-    var activityRule: ActivityTestRule<TestBottomNavActivity> = ActivityTestRule(TestBottomNavActivity::class.java)
-
     val context = InstrumentationRegistry.getInstrumentation().context
 
     val POSITION_HOME = 0
     val POSITION_FEED = 1
     val POSITION_OS = 2
+    val POSITION_UOH = 3
 
+    @get:Rule
+    var activityRule = object : ActivityTestRule<TestBottomNavActivity>(
+        TestBottomNavActivity::class.java
+    ) {
+        override fun beforeActivityLaunched() {
+            RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                RollenceKey.NAVIGATION_EXP_TOP_NAV,
+                RollenceKey.NAVIGATION_VARIANT_REVAMP
+            )
+            super.beforeActivityLaunched()
+        }
+    }
     @Test
     fun testWhenPageInflatedWithoutNotification_bottomNavHome_showAllFiveComponent() {
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_HOME))).check(matches(isDisplayed()))
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_FEED))).check(matches(isDisplayed()))
         onView(withTagStringValue(getLottieAnimationViewId(POSITION_OS))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_UOH))).check(matches(isDisplayed()))
 
         onView(withTagStringValue(getTitleTextViewId(POSITION_HOME))).check(matches(isDisplayed()))
         onView(withTagStringValue(getTitleTextViewId(POSITION_FEED))).check(matches(isDisplayed()))
         onView(withTagStringValue(getTitleTextViewId(POSITION_OS))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getTitleTextViewId(POSITION_UOH))).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.notification_badge),
                 withTagStringValue(getBadgeTextViewId(POSITION_HOME)))).check(matches(not(isDisplayed())))
@@ -43,6 +57,8 @@ class TestBottomNav {
                 withTagStringValue(getBadgeTextViewId(POSITION_FEED)))).check(matches(not(isDisplayed())))
         onView(allOf(withId(R.id.notification_badge),
                 withTagStringValue(getBadgeTextViewId(POSITION_OS)))).check(matches(not(isDisplayed())))
+        onView(allOf(withId(R.id.notification_badge),
+            withTagStringValue(getBadgeTextViewId(POSITION_UOH)))).check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -73,11 +89,11 @@ class TestBottomNav {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val lottieBottomNavbar: LottieBottomNavbar =
                     activityRule.activity.findViewById(R.id.bottom_navbar)
-            lottieBottomNavbar.setBadge(0, POSITION_HOME)
+            lottieBottomNavbar.setBadge(0, POSITION_FEED)
         }
-        onView(withTagStringValue(getLottieAnimationViewId(POSITION_HOME))).check(matches(isDisplayed()))
-        onView(withTagStringValue(getBadgeTextViewId(POSITION_HOME))).check(matches(isDisplayed()))
-        onView(withTagStringValue(getBadgeTextViewId(POSITION_HOME))).check(matches(withText("")))
+        onView(withTagStringValue(getLottieAnimationViewId(POSITION_FEED))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getBadgeTextViewId(POSITION_FEED))).check(matches(isDisplayed()))
+        onView(withTagStringValue(getBadgeTextViewId(POSITION_FEED))).check(matches(withText("")))
     }
 
     @Test

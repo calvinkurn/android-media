@@ -1,0 +1,51 @@
+{
+  "readme": "Success verification with whatsapp method",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "Input OTP whatsapp",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "eventCategory": "otp page",
+      "event": "clickOtp",
+      "eventAction": "click metode otp",
+      "sessionIris": ".+",
+      "eventLabel": "success - .+ - whatsapp"
+    },
+    {
+      "eventCategory": "input otp page",
+      "event": "clickConfirm",
+      "eventAction": "click on verifikasi",
+      "sessionIris": ".+",
+      "eventLabel": ".+"
+    },
+    {
+      "eventCategory": "otp page",
+      "event": "clickOtp",
+      "eventAction": "auto submit otp page",
+      "sessionIris": ".+",
+      "eventLabel": "success - .+ - whatsapp"
+    }
+  ]
+}

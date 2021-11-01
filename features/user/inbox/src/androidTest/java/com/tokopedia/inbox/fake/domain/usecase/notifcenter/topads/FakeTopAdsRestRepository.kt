@@ -8,9 +8,13 @@ import java.lang.reflect.Type
 
 class FakeTopAdsRestRepository : RestRepository {
 
+    var isError = false
     var response = TopAdsmageViewResponse(null, null, null)
 
     override suspend fun getResponse(request: RestRequest): RestResponse {
+        if (isError) {
+            throw IllegalStateException("Error Get TDN")
+        }
         return RestResponse(response, 200, false)
     }
 

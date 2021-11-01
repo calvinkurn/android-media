@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    tools:ignore="RtlSymmetry">
+
+    <View
+        android:id="@+id/product_category_top_separator"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/Unify_N50"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_category_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_category_top_separator"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="Kategori lain di Tokopedia NOW!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_category_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="16dp"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="@+id/product_category_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/product_category_title"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Lihat Semua" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/product_category_rv"
+        android:layout_width="match_parent"
+        android:layout_height=  "wrap_content"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="true"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/product_category_title"
+        tools:listitem="@layout/item_category_image_view_holder" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

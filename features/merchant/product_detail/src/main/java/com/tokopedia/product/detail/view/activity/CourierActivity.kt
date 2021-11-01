@@ -20,5 +20,5 @@ class CourierActivity: BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment = CourierFragment.newInstance(
-            intent.getStringExtra(ARGS_PRODUCT_ID), intent.getParcelableArrayListExtra(ARGS_LIST_SHIPMENT) ?: listOf())
+            intent.getStringExtra(ARGS_PRODUCT_ID) ?: "", intent.getParcelableArrayListExtra(ARGS_LIST_SHIPMENT) ?: listOf())
 }

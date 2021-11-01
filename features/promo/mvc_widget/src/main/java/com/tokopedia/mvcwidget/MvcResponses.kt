@@ -1,11 +1,13 @@
 package com.tokopedia.mvcwidget
 
+import android.os.Parcelable
 import androidx.annotation.StringDef
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.DEFAULT
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.FIRST_FOLLOW
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_CLOSE
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_OPEN
+import kotlinx.android.parcel.Parcelize
 
 data class TokopointsCatalogMVCListResponse(
         @SerializedName("tokopointsCatalogMVCList") val data: TokopointsCatalogMVCList? = null
@@ -68,17 +70,17 @@ data class TokopointsCatalogMVCSummaryResponse(
 
 data class TokopointsCatalogMVCSummary(
         @SerializedName("resultStatus") val resultStatus: ResultStatus?,
-        @SerializedName("titles") val titles: List<Titles?>?,
         @SerializedName("isShown") val isShown: Boolean?,
-        @SerializedName("subTitle") val subTitle: String?,
-        @SerializedName("imageURL") val imageURL: String?,
-        @SerializedName("counterTotal") val counterTotal: Int?
+        @SerializedName("counterTotal") val counterTotal: Int?,
+        @SerializedName("animatedInfos") val animatedInfoList: List<AnimatedInfos?>?
         )
 
-data class Titles(
-        @SerializedName("text") val text: String?,
-        @SerializedName("icon") val icon: String?
-)
+@Parcelize
+data class AnimatedInfos(
+        @SerializedName("title") val title: String?,
+        @SerializedName("subTitle") val subTitle: String?,
+        @SerializedName("iconURL") val iconURL: String?
+):Parcelable
 
 data class MembershipRegisterResponse(
         @SerializedName("membershipRegister") val data: MembershipRegister? = null

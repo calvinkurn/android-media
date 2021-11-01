@@ -90,9 +90,10 @@
 
     <string name="feed_open_feed">Buka Feed</string>
     <string name="feed_finish_follow_recommendation">Yeay, updatenya siap dilihat!</string>
-    <string name="feed_delete_post">Hapus Post</string>
-    <string name="feed_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
-    <string name="feed_post_deleted">Post berhasil dihapus</string>
+    <string name="feed_delete_post">Ingin hapus postingan ini?</string>
+    <string name="feed_after_delete_cant">Postingan yang dihapus akan hilang
+dari Feed.</string>
+    <string name="feed_post_deleted">Post Kamu Berhasil di Hapus</string>
     <string name="feed_msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="feed_msg_add_wishlist">Sukses menambah wishlist</string>
 
@@ -104,5 +105,32 @@
     <string name="feed_onboarding_name_format">Hai, %s</string>
 
     <string name="feed_con_desc_btn_search">button search</string>
+
+    <!-- Like -->
+    <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
+
+    <!--Toaster -->
+    <string name="feed_go_to_cart">Lihat Keranjang</string>
+    <string name="feed_go_to_wishlist">Lihat Wishlist</string>
+    <string name="feed_added_to_wishlist">Sukses menambah wishlist.</string>
+    <string name="feed_added_to_cart">Barang berhasil ditambahkan.</string>
+
+
+    <!--Share -->
+    <string name="feed_share_weblink">https://www.tokopedia.com/content/%s</string>
+    <string name="feed_share_pdp">https://www.tokopedia.com/product_detail/%s</string>
+    <string name="feed_share_asgc_weblink">https://www.tokopedia.com/feedcommunicationdetail/%s</string>
+    <string name="feed_background_image">Feed background image</string>
+    <string name="feed_header_mask">searchbar feed header mask</string>
+    <string name="feed_fab_shop">Feed Fab Shop</string>
+  
+    <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+
+    <string name="feed_post_sebagai">Post sebagai</string>
+    <string name="feed_post_successful_toaster">Yay, post kamu berhasil di-upload!</string>
+
+    <!--Floating Action Button-->
+    <string name="feed_fab_create_post">Buat Post</string>
+    <string name="feed_fab_create_live">Buat Live</string>
 
 </resources>

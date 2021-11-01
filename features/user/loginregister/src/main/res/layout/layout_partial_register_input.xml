@@ -1,143 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/Unify_N0"
-                android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_lvl5"
+    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_marginRight="@dimen/spacing_lvl5"
+    android:background="@color/Unify_N0">
 
     <RelativeLayout
+        android:id="@+id/email_phone_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_16">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:id="@+id/email_phone_layout"
+        <com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout
+            android:id="@+id/input_layout"
+            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/partial_input_3"
+            android:hint="@string/phone_or_email_input"
+            android:inputType="phone"
+            android:paddingStart="@dimen/partial_input_minus_5"
+            app:defaultTextColorLabel="@color/Unify_N700_44"
+            app:focusedTextColorLabel="@color/Unify_N700_44"
+            tools:ignore="RtlSymmetry">
 
-            <com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout
-                android:id="@+id/input_layout"
-                style="@style/HintTextInputLayout"
+            <AutoCompleteTextView
+                android:id="@+id/input_email_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_3"
-                app:defaultTextColorLabel="@color/Unify_N700_44"
-                app:focusedTextColorLabel="@color/Unify_N700_44"
-                android:hint="@string/phone_or_email_input"
-                android:inputType="phone"
-                android:paddingLeft="-5dp">
+                android:contentDescription="@string/content_desc_input_email_phone"
+                android:imeOptions="actionDone"
+                android:paddingStart="@dimen/partial_input_5"
+                android:singleLine="true"
+                android:textColor="@color/Unify_N700_96"
+                tools:ignore="LabelFor" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/input_email_phone"
-                    android:contentDescription="@string/content_desc_input_email_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/dp_5"
-                    android:textColor="@color/Unify_N700_96"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true"/>
+        </com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout>
 
-            </com.tokopedia.loginregister.tkpddesign.TkpdHintTextInputLayout>
-
-            <TextView
-                android:id="@+id/change_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/dp_5"
-                android:gravity="center"
-                android:background="@color/Unify_N0"
-                android:layout_marginTop="@dimen/dp_20"
-                android:padding="@dimen/dp_8"
-                android:text="@string/change_2"
-                android:textColor="@color/Unify_G400"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/email_phone_layout"
-            android:fontFamily="sans-serif"
-            android:gravity="end"
-            android:text="@string/default_placeholder"
-            android:textColor="@color/Unify_N700_44"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
-            android:visibility="visible"
-            tools:visibility="visible"/>
-
-        <TextView
-            android:id="@+id/error_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/email_phone_layout"
-            android:fontFamily="sans-serif"
-            android:gravity="end"
-            android:textColor="@color/Unify_R600"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
-            android:visibility="invisible"
-            tools:visibility="visible"/>
-
-        <com.tokopedia.unifycomponents.TextFieldUnify
-            android:id="@+id/wrapper_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/error_message"
-            android:visibility="gone"
-            app:text_field_label="@string/title_password"
-            app:text_field_label_static = "true"
-            app:text_field_input_type="textPassword"/>
-
-        <TextView
-            android:id="@+id/forgot_pass"
-            android:contentDescription="@string/content_desc_forgot_pass"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/change_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/wrapper_password"
-            android:layout_gravity="end"
-            android:fontFamily="sans-serif"
-            android:gravity="end"
-            android:lineSpacingExtra="9sp"
-            android:paddingTop="@dimen/spacing_lvl2"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10"
-            android:paddingBottom="@dimen/spacing_lvl2"
-            android:layout_marginRight="-10dp"
-            android:text="@string/title_forgot_password"
+            android:layout_marginTop="@dimen/partial_input_20"
+            android:layout_marginEnd="@dimen/partial_input_5"
+            android:background="@color/Unify_N0"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="@string/change_2"
             android:textColor="@color/Unify_G400"
-            android:textSize="12sp"
-            android:textStyle="normal"
             android:visibility="gone"
-            />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/register_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/forgot_pass"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/register"
-            android:textAllCaps="false"
-            app:unifyButtonSize="large"
-            app:unifyButtonType="main"
-            app:unifyButtonVariant="filled"/>
-
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
     </RelativeLayout>
 
-</FrameLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/email_phone_layout"
+        android:fontFamily="sans-serif"
+        android:gravity="end"
+        android:text="@string/default_placeholder"
+        android:textColor="@color/Unify_N700_44"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/email_phone_layout"
+        android:layout_alignParentStart="true"
+        android:fontFamily="sans-serif"
+        android:gravity="end"
+        android:textColor="@color/Unify_R600"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/wrapper_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/error_message"
+        android:visibility="gone"
+        app:text_field_input_type="textPassword"
+        app:text_field_label="@string/title_password"
+        app:text_field_label_static="true" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/forgot_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/wrapper_password"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/partial_input_minus_10"
+        android:contentDescription="@string/content_desc_forgot_pass"
+        android:gravity="end"
+        android:paddingLeft="@dimen/partial_input_10"
+        android:paddingTop="@dimen/spacing_lvl2"
+        android:paddingRight="@dimen/partial_input_10"
+        android:paddingBottom="@dimen/spacing_lvl2"
+        android:text="@string/title_forgot_password"
+        android:textColor="@color/Unify_G400"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/register_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/forgot_pass"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:text="@string/register"
+        android:textAllCaps="false"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+</RelativeLayout>

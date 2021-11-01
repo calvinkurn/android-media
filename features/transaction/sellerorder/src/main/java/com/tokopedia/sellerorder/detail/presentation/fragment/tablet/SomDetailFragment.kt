@@ -20,7 +20,6 @@ import com.tokopedia.sellerorder.detail.data.model.SetDelivered
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_som_detail.*
 
 class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment() {
 
@@ -56,7 +55,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
 
     override fun handleRequestPickUpResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)) {
-            val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(SomConsts.RESULT_PROCESS_REQ_PICKUP)
+            val resultProcessReqPickup = data.getParcelableExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP) ?: SomProcessReqPickup.Data.MpLogisticRequestPickup()
             val message = resultProcessReqPickup.listMessage.firstOrNull { it.isNotBlank() }.orEmpty()
             showCommonToaster(message)
             shouldRefreshOrderList = true

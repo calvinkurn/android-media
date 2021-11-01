@@ -1,0 +1,148 @@
+package com.tokopedia.product.viewmodel
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
+import com.tokopedia.product.detail.usecase.*
+import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
+import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkStatic
+import io.mockk.spyk
+import org.junit.Before
+import org.junit.Rule
+
+/**
+ * Created by Yehezkiel on 08/06/21
+ */
+abstract class BasePdpViewModelTest {
+
+    @RelaxedMockK
+    lateinit var userSessionInterface: UserSessionInterface
+
+    @RelaxedMockK
+    lateinit var getPdpLayoutUseCase: GetPdpLayoutUseCase
+
+    @RelaxedMockK
+    lateinit var getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase
+
+    @RelaxedMockK
+    lateinit var getProductInfoP2OtherUseCase: GetProductInfoP2OtherUseCase
+
+    @RelaxedMockK
+    lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
+
+    @RelaxedMockK
+    lateinit var removeWishlistUseCase: RemoveWishListUseCase
+
+    @RelaxedMockK
+    lateinit var addWishListUseCase: AddWishListUseCase
+
+    @RelaxedMockK
+    lateinit var getRecommendationUseCase: GetRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var trackAffiliateUseCase: TrackAffiliateUseCase
+
+    @RelaxedMockK
+    lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
+
+    @RelaxedMockK
+    lateinit var updateCartCounterUseCase: UpdateCartCounterUseCase
+
+    @RelaxedMockK
+    lateinit var addToCartUseCase: AddToCartUseCase
+
+    @RelaxedMockK
+    lateinit var addToCartOcsUseCase: AddToCartOcsUseCase
+
+    @RelaxedMockK
+    lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
+
+    @RelaxedMockK
+    lateinit var toggleNotifyMeUseCase: ToggleNotifyMeUseCase
+
+    @RelaxedMockK
+    lateinit var discussionMostHelpfulUseCase: DiscussionMostHelpfulUseCase
+
+    @RelaxedMockK
+    lateinit var getP2DataAndMiniCartUseCase: GetP2DataAndMiniCartUseCase
+
+    @RelaxedMockK
+    lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
+
+    @RelaxedMockK
+    lateinit var getRecommendationFilterChips: GetRecommendationFilterChips
+
+    @RelaxedMockK
+    lateinit var miniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase
+
+    @RelaxedMockK
+    lateinit var getTopadsIsAdsUseCase: GetTopadsIsAdsUseCase
+
+    @RelaxedMockK
+    lateinit var updateCartUseCase: UpdateCartUseCase
+
+    @RelaxedMockK
+    lateinit var deleteCartUseCase: DeleteCartUseCase
+
+    lateinit var spykViewModel: DynamicProductDetailViewModel
+
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
+        mockkStatic(RemoteConfigInstance::class)
+        spykViewModel = spyk(viewModel)
+    }
+
+    val viewModel by lazy {
+        createViewModel()
+    }
+
+    private fun createViewModel(): DynamicProductDetailViewModel {
+        return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider,
+                { getPdpLayoutUseCase },
+                { getProductInfoP2LoginUseCase },
+                { getProductInfoP2OtherUseCase },
+                { getP2DataAndMiniCartUseCase },
+                { toggleFavoriteUseCase },
+                { removeWishlistUseCase },
+                { addWishListUseCase },
+                { getRecommendationUseCase },
+                { getRecommendationFilterChips },
+                { trackAffiliateUseCase },
+                { submitHelpTicketUseCase },
+                { updateCartCounterUseCase },
+                { addToCartUseCase },
+                { addToCartOcsUseCase },
+                { addToCartOccUseCase },
+                { toggleNotifyMeUseCase },
+                { discussionMostHelpfulUseCase },
+                { topAdsImageViewUseCase },
+                { miniCartListSimplifiedUseCase },
+                { updateCartUseCase },
+                { deleteCartUseCase },
+                { getTopadsIsAdsUseCase },
+                userSessionInterface)
+    }
+}

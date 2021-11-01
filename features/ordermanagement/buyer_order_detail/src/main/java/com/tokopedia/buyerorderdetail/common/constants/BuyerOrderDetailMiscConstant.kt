@@ -10,5 +10,11 @@ object BuyerOrderDetailMiscConstant {
     const val PATH_TOKOPEDIA_CARE = "help"
     const val DAGGER_ATC_QUERY_NAME = "atcMultiQuery"
     const val TICKER_KEY_SHIPPING_INFO = "shipping_info_ticker"
+    const val TICKER_KEY_SELLER_ORDER_EXTENSION = "seller_request_extension"
     const val WAITING_INVOICE_ORDER_ID = "0"
+    const val RESULT_BUYER_REQUEST_CANCEL_STATUS_FAILED = 0
+    const val RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_TOASTER = 1
+    const val RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_DIALOG = 3
+
+    const val ENCODING_UTF_8 = "UTF-8"
 }

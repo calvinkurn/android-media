@@ -9,6 +9,8 @@ import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.presentation.adapter.DetailedInvoiceAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.factory.InvoiceTypeFactory
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -54,5 +56,10 @@ class ThankYouPageModule {
     fun provideDetailInvoiceAdapter(invoiceTypeFactory: InvoiceTypeFactory): DetailedInvoiceAdapter {
         return DetailedInvoiceAdapter(arrayListOf(), invoiceTypeFactory)
     }
+
+    @Provides
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase =
+        TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
+
 
 }

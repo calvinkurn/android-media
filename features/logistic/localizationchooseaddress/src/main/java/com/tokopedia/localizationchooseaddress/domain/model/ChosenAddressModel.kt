@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ChosenAddressModel (
-        var addressId: Int = 0,
+        var addressId: Long = 0,
         var receiverName: String = "",
         var addressName: String = "",
         var districtId: Int = 0,
@@ -16,4 +16,7 @@ data class ChosenAddressModel (
         var latitude: String = "",
         var longitude: String = "",
         var postalCode: String = "",
+        var tokonowModel: TokonowModel = TokonowModel(),
+        var errorCode: ErrorChosenAddressModel = ErrorChosenAddressModel()
+
 ): Parcelable

@@ -6,6 +6,7 @@
       "clientId" : ".*",
       "isLoggedInStatus" : "true|false",
       "appsflyerId": ".*",
+      "theme": ".*",
       "shopId" : "\\d+",
       "screenName" : "/cart",
       "event": "openScreen",

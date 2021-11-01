@@ -9,34 +9,43 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageTickerMapper.mapToTickerData
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.variant.adapter.ProductVariantAdapter
 import com.tokopedia.product.manage.common.feature.variant.adapter.factory.ProductVariantStockAdapterFactoryImpl
 import com.tokopedia.product.manage.common.feature.variant.adapter.viewholder.ProductVariantStockViewHolder
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class QuickEditVariantStockBottomSheet(
-    private val onSaveVariantsStock: (EditVariantResult) -> Unit = {}
-): QuickEditVariantBottomSheet(), ProductVariantStockViewHolder.ProductVariantStockListener {
+    private val onSaveVariantsStock: (EditVariantResult) -> Unit = {},
+    private val onClickProductCampaignType: (List<ProductCampaignType>) -> Unit = {}
+) : QuickEditVariantBottomSheet(), ProductVariantStockViewHolder.ProductVariantStockListener,
+    ProductCampaignInfoListener {
 
     companion object {
-        private const val EXTRA_PRODUCT_ID = "extra_product_id"
         val TAG: String = QuickEditVariantStockBottomSheet::class.java.simpleName
 
         fun createInstance(
             productId: String,
+            isBundling: Boolean = false,
+            onClickCampaignInfo: (List<ProductCampaignType>) -> Unit,
             onSaveVariantsStock: (EditVariantResult) -> Unit
         ): QuickEditVariantStockBottomSheet {
-            return QuickEditVariantStockBottomSheet(onSaveVariantsStock).apply {
+            return QuickEditVariantStockBottomSheet(
+                onSaveVariantsStock,
+                onClickCampaignInfo
+            ).apply {
                 val bundle = Bundle()
                 bundle.putString(EXTRA_PRODUCT_ID, productId)
+                bundle.putBoolean(EXTRA_IS_BUNDLING, isBundling)
                 arguments = bundle
             }
         }
     }
 
     private val variantStockAdapter by lazy {
-        ProductVariantAdapter(ProductVariantStockAdapterFactoryImpl(this))
+        ProductVariantAdapter(ProductVariantStockAdapterFactoryImpl(this, this))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,6 +80,10 @@ class QuickEditVariantStockBottomSheet(
         ProductManageTracking.eventClickStatusToggleVariant(status)
         variantStockAdapter.updateVariantStatus(variantId, status)
         viewModel.setVariantStatus(variantId, status)
+    }
+
+    override fun onClickCampaignInfo(campaignTypeList: List<ProductCampaignType>) {
+        onClickProductCampaignType(campaignTypeList)
     }
 
     private fun observeViewState() {

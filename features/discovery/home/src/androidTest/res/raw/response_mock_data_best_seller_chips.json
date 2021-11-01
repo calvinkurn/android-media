@@ -1,0 +1,53 @@
+[
+    {
+        "data": {
+            "recommendationFilterChips": {
+                "data": {
+                    "filter": [
+                        {
+                            "isActivated": true,
+                            "name": "Sarung Tangan Motor",
+                            "options": [],
+                            "templateName": "",
+                            "title": "Sarung Tangan Motor",
+                            "value": "&category_id=1319"
+                        },
+                        {
+                            "isActivated": false,
+                            "name": "Aksesori Body Motor",
+                            "options": [],
+                            "templateName": "",
+                            "title": "Aksesori Body Motor",
+                            "value": "&category_id=1304"
+                        },
+                        {
+                            "isActivated": false,
+                            "name": "Jas Hujan",
+                            "options": [],
+                            "templateName": "",
+                            "title": "Jas Hujan",
+                            "value": "&category_id=1318"
+                        },
+                        {
+                            "isActivated": false,
+                            "name": "Masker Buff",
+                            "options": [],
+                            "templateName": "",
+                            "title": "Masker Buff",
+                            "value": "&category_id=1320"
+                        },
+                        {
+                            "isActivated": false,
+                            "name": "Wash and Wax",
+                            "options": [],
+                            "templateName": "",
+                            "title": "Wash and Wax",
+                            "value": "&category_id=1330"
+                        }
+                    ],
+                    "sort": []
+                }
+            }
+        }
+    }
+]

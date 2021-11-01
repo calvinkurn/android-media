@@ -100,16 +100,16 @@ data class CalculationInstallmentData(
         val interestRate: Float,
 
         @SerializedName("minimum_amount")
-        val minimumAmount: Int,
+        val minimumAmount: Double,
 
         @SerializedName("maximum_amount")
-        val maximumAmount: Int,
+        val maximumAmount: Double,
 
         @SerializedName("monthly_price")
-        val monthlyPrice: Float,
+        val monthlyPrice: Double,
 
         @SerializedName("os_monthly_price")
-        val osMonthlyPrice: Float
+        val osMonthlyPrice: Double
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -117,20 +117,20 @@ data class CalculationInstallmentData(
             parcel.readFloat(),
             parcel.readString() ?: "",
             parcel.readFloat(),
-            parcel.readInt(),
-            parcel.readInt(),
-            parcel.readFloat(),
-            parcel.readFloat())
+            parcel.readDouble(),
+            parcel.readDouble(),
+            parcel.readDouble(),
+            parcel.readDouble())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(creditCardInstallmentTerm)
         parcel.writeFloat(mdrValue)
         parcel.writeString(mdrType)
         parcel.writeFloat(interestRate)
-        parcel.writeInt(minimumAmount)
-        parcel.writeInt(maximumAmount)
-        parcel.writeFloat(monthlyPrice)
-        parcel.writeFloat(osMonthlyPrice)
+        parcel.writeDouble(minimumAmount)
+        parcel.writeDouble(maximumAmount)
+        parcel.writeDouble(monthlyPrice)
+        parcel.writeDouble(osMonthlyPrice)
     }
 
     override fun describeContents(): Int {

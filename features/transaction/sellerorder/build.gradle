@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
+apply plugin: 'kotlin-kapt'
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -10,7 +12,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
 
@@ -20,6 +21,10 @@ buildscript {
 }
 
 android {
+    buildFeatures {
+        viewBinding true
+    }
+    
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -35,22 +40,29 @@ android {
     }
 }
 
-dependencies {
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
-    implementation project(rootProject.ext.features.sellerMigrationCommon)
-    implementation project(rootProject.ext.features.sellerActiveCommon)
-    implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.medialoader)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.webview)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.analytics)
+dependencies {
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+
+    implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -64,39 +76,38 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.calendar
     implementation rootProject.ext.unifyDependencies.icons
 
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
+    implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.chips
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.flexBoxLayout
 
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-
     implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.androidxTest
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     // UI Test
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test), {
         exclude group: "com.google.android.gms", module: "play-services-plus"
         exclude group: "com.google.android.gms", module: "play-services-location"
         exclude group: "com.google.android.gms", module: "play-services-maps"
@@ -105,7 +116,7 @@ dependencies {
     }
     androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
 
-    androidTestImplementation project(rootProject.ext.features.loginregister)
+    androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
 }
 
 project.ext {

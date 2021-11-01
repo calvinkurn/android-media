@@ -22,6 +22,7 @@ class SellerMenuTracker(
 
         // name
         private const val EVENT_CLICK_SHOP_ACCOUNT = "clickShopAccount"
+        private const val EVENT_CLICK_SHOP_SETTING = "clickShopSetting"
         private const val EVENT_CLICK_TOP_NAV = "clickTopNav"
         private const val EVENT_VIEW_SHOP_ACCOUNT = "viewShopAccountIris"
 
@@ -29,6 +30,7 @@ class SellerMenuTracker(
         private const val CATEGORY_MA_SHOP_ACCOUNT = "ma - shop account"
         private const val CATEGORY_SETTINGS = "settings"
         private const val CATEGORY_TOP_NAV = "top nav"
+        private const val CATEGORY_SHOP_SETTING = "shopSetting"
 
         // action
         private const val ACTION_CLICK_SHOP_ACCOUNT = "click shop account"
@@ -62,6 +64,7 @@ class SellerMenuTracker(
         private const val ACTION_CLICK_SHOP_LOCATION = "click shop settings - tambah dan ubah lokasi toko"
         private const val ACTION_CLICK_SHIPPING = "click shop settings - atur layanan pengiriman"
         private const val ACTION_CLICK_NOTIFICATION_SETTINGS = "click shop settings - atur notifikasi penjual"
+        private const val ACTION_CLICK_POWER_MERCHANT = "clickPowerMerchant"
 
         // label
         private const val LABEL_CREATE_SHOP = "create shop"
@@ -83,6 +86,7 @@ class SellerMenuTracker(
         // key
         private const val KEY_CURRENT_SITE = "currentSite"
         private const val KEY_USER_ID = "userId"
+        private const val KEY_SHOP_ID = "shopId"
         private const val KEY_BUSINESS_UNIT = "businessUnit"
         private const val KEY_SCREEN_NAME = "screenName"
 
@@ -213,6 +217,21 @@ class SellerMenuTracker(
         analytics.sendGeneralEvent(event)
     }
 
+    fun sendEventClickShopSettingNew() {
+        val label = getShopType()
+        val event = TrackAppUtils.gtmData(
+            EVENT_CLICK_SHOP_SETTING,
+            CATEGORY_SHOP_SETTING,
+            ACTION_CLICK_POWER_MERCHANT,
+            label
+        )
+        event[KEY_CURRENT_SITE] = TOKOPEDIA_MARKET_PALCE
+        event[KEY_USER_ID] = userSession.userId
+        event[KEY_BUSINESS_UNIT] = PHYSICAL_GOODS
+        event[KEY_SHOP_ID] = userSession.shopId
+        analytics.sendGeneralEvent(event)
+    }
+
     fun sendEventClickSaldoBalance() {
         val event = createMenuItemEvent(ACTION_CLICK_SHOP_BALANCE)
         analytics.sendGeneralEvent(event)
@@ -340,7 +359,7 @@ class SellerMenuTracker(
                 TrackAppUtils.EVENT_LABEL to if (isNewSeller) "$NEW_SELLER ${getShopType()}" else getShopType(),
                 KEY_CURRENT_SITE to TOKOPEDIA_MARKET_PALCE,
                 KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
-                KEY_USER_ID to userSession.shopId
+                KEY_USER_ID to userSession.userId
         )
         analytics.sendGeneralEvent(mapData)
     }
@@ -353,7 +372,7 @@ class SellerMenuTracker(
                 TrackAppUtils.EVENT_LABEL to if (isNewSeller) "$NEW_SELLER ${getShopType()}" else getShopType(),
                 KEY_CURRENT_SITE to TOKOPEDIA_MARKET_PALCE,
                 KEY_BUSINESS_UNIT to PHYSICAL_GOODS,
-                KEY_USER_ID to userSession.shopId
+                KEY_USER_ID to userSession.userId
         )
         analytics.sendGeneralEvent(mapData)
     }

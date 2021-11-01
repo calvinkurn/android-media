@@ -23,6 +23,7 @@ import com.tokopedia.recharge_pdp_emoney.di.DaggerEmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
+import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpAnalyticsUtils
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -97,7 +98,7 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
         menuBottomSheet.show(supportFragmentManager, TAG_EMONEY_MENU)
     }
 
-    override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
         showBottomMenus()
         return false
     }
@@ -111,8 +112,8 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
         return false
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId ?: "" == R.id.emoney_action_overflow_menu) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId ?: "" == R.id.emoney_action_overflow_menu) {
             showBottomMenus()
             return true
         }
@@ -142,6 +143,10 @@ class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>
 
     override fun getToolbarResourceID(): Int {
         return R.id.emoney_toolbar
+    }
+
+    override fun sendScreenAnalytics() {
+        EmoneyPdpAnalyticsUtils.openEmoneyPdpScreen()
     }
 
     companion object {

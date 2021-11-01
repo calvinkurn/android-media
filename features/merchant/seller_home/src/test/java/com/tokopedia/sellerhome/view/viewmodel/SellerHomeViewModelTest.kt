@@ -4,12 +4,20 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
+import com.tokopedia.sellerhome.domain.model.ShopCoreInfoResponse
+import com.tokopedia.sellerhome.domain.model.ShopInfoResultResponse
+import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.utils.observeAwaitValue
+import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
+import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
+import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -26,7 +34,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
-import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
 
 /**
@@ -48,6 +56,7 @@ class SellerHomeViewModelTest {
         private const val DATA_KEY_MULTI_LINE = "MULTI_LINE"
         private const val DATA_KEY_ANNOUNCEMENT = "ANNOUNCEMENT"
         private const val DATA_KEY_RECOMMENDATION = "RECOMMENDATION"
+        private const val DATA_KEY_MILESTONE = "MILESTONE"
     }
 
     @RelaxedMockK
@@ -96,6 +105,15 @@ class SellerHomeViewModelTest {
     lateinit var getRecommendationDataUseCase: GetRecommendationDataUseCase
 
     @RelaxedMockK
+    lateinit var getMilestoneDataUseCase: GetMilestoneDataUseCase
+
+    @RelaxedMockK
+    lateinit var getShopInfoByIdUseCase: GetShopInfoByIdUseCase
+
+    @RelaxedMockK
+    lateinit var shopQuestGeneralTrackerUseCase: ShopQuestGeneralTrackerUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
     @get:Rule
@@ -112,23 +130,26 @@ class SellerHomeViewModelTest {
         MockKAnnotations.init(this)
 
         viewModel = SellerHomeViewModel(
-                { userSession },
-                { getTickerUseCase },
-                { getLayoutUseCase },
-                { getShopLocationUseCase },
-                { getCardDataUseCase },
-                { getLineGraphDataUseCase },
-                { getProgressDataUseCase },
-                { getPostDataUseCase },
-                { getCarouselDataUseCase },
-                { getTableDataUseCase },
-                { getPieChartDataUseCase },
-                { getBarChartDataUseCase },
-                { getMultiLineGraphUseCase },
-                { getAnnouncementDataUseCase },
-                { getRecommendationDataUseCase },
-                remoteConfig,
-                coroutineTestRule.dispatchers
+            { userSession },
+            { getTickerUseCase },
+            { getLayoutUseCase },
+            { getShopLocationUseCase },
+            { getCardDataUseCase },
+            { getLineGraphDataUseCase },
+            { getProgressDataUseCase },
+            { getPostDataUseCase },
+            { getCarouselDataUseCase },
+            { getTableDataUseCase },
+            { getPieChartDataUseCase },
+            { getBarChartDataUseCase },
+            { getMultiLineGraphUseCase },
+            { getAnnouncementDataUseCase },
+            { getRecommendationDataUseCase },
+            { getMilestoneDataUseCase },
+            { getShopInfoByIdUseCase },
+            { shopQuestGeneralTrackerUseCase },
+            remoteConfig,
+            coroutineTestRule.dispatchers
         )
 
         dynamicParameter = getDynamicParameter()
@@ -136,9 +157,9 @@ class SellerHomeViewModelTest {
 
     private fun getDynamicParameter(): DynamicParameterModel {
         return DynamicParameterModel(
-                startDate = "15-07-20202",
-                endDate = "21-07-20202",
-                pageSource = "seller-home"
+            startDate = "15-07-20202",
+            endDate = "21-07-20202",
+            pageSource = "seller-home"
         )
     }
 
@@ -226,15 +247,21 @@ class SellerHomeViewModelTest {
 
         val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
         val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
-        val progressDataUiModel = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
+        val progressDataUiModel =
+            ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
         val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
         val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
         val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
         val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
         val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
-        val multiLineGraphDataUiModel = MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
-        val announcementDataUiModel = AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
-        val recommendationDataUiModel = RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+        val multiLineGraphDataUiModel =
+            MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+        val announcementDataUiModel =
+            AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+        val recommendationDataUiModel =
+            RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+        val milestoneDataUiModel =
+            MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -251,8 +278,20 @@ class SellerHomeViewModelTest {
         coEvery {
             getLayoutUseCase.isFirstLoad
         } returns true
-        everyGetWidgetData_shouldSuccess(cardData, lineGraphDataUiModel, progressDataUiModel, postListDataUiModel,
-                carouselDataUiModel, tableDataUiModel, pieChartDataUiModel, barChartDataUiModel, multiLineGraphDataUiModel, announcementDataUiModel, recommendationDataUiModel)
+        everyGetWidgetData_shouldSuccess(
+            cardData,
+            lineGraphDataUiModel,
+            progressDataUiModel,
+            postListDataUiModel,
+            carouselDataUiModel,
+            tableDataUiModel,
+            pieChartDataUiModel,
+            barChartDataUiModel,
+            multiLineGraphDataUiModel,
+            announcementDataUiModel,
+            recommendationDataUiModel,
+            milestoneDataUiModel
+        )
 
         viewModel.getWidgetLayout(0f)
 
@@ -276,6 +315,7 @@ class SellerHomeViewModelTest {
                 is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
                 is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
                 is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
                 else -> it
             }
         }.map {
@@ -298,15 +338,21 @@ class SellerHomeViewModelTest {
 
         val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
         val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
-        val progressDataUiModel = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
+        val progressDataUiModel =
+            ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
         val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
         val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
         val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
         val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
         val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
-        val multiLineGraphDataUiModel = MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
-        val announcementDataUiModel = AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
-        val recommendationDataUiModel = RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+        val multiLineGraphDataUiModel =
+            MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+        val announcementDataUiModel =
+            AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+        val recommendationDataUiModel =
+            RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+        val milestoneDataUiModel =
+            MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -323,8 +369,20 @@ class SellerHomeViewModelTest {
         coEvery {
             getLayoutUseCase.isFirstLoad
         } returns true
-        everyGetWidgetData_shouldSuccess(cardData, lineGraphDataUiModel, progressDataUiModel, postListDataUiModel,
-                carouselDataUiModel, tableDataUiModel, pieChartDataUiModel, barChartDataUiModel, multiLineGraphDataUiModel, announcementDataUiModel, recommendationDataUiModel)
+        everyGetWidgetData_shouldSuccess(
+            cardData,
+            lineGraphDataUiModel,
+            progressDataUiModel,
+            postListDataUiModel,
+            carouselDataUiModel,
+            tableDataUiModel,
+            pieChartDataUiModel,
+            barChartDataUiModel,
+            multiLineGraphDataUiModel,
+            announcementDataUiModel,
+            recommendationDataUiModel,
+            milestoneDataUiModel
+        )
 
         viewModel.getWidgetLayout(5000f)
 
@@ -348,6 +406,7 @@ class SellerHomeViewModelTest {
                 is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
                 is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
                 is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
                 else -> it
             }
         }.map {
@@ -362,111 +421,130 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `when get widget layout and height param is not null and is new caching enabled, should also success`() = runBlocking {
+    fun `when get widget layout and height param is not null and is new caching enabled, should also success`() =
+        runBlocking {
 
-        val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
-        val shopId = "123456"
-        val page = "seller-home"
+            val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
+            val shopId = "123456"
+            val page = "seller-home"
 
-        val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
-        val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
-        val progressDataUiModel = ProgressDataUiModel(DATA_KEY_PROGRESS, showWidget = true)
-        val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
-        val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
-        val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
-        val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
-        val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
-        val multiLineGraphDataUiModel = MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
-        val announcementDataUiModel = AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
-        val recommendationDataUiModel = RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+            val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
+            val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
+            val progressDataUiModel = ProgressDataUiModel(DATA_KEY_PROGRESS, showWidget = true)
+            val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
+            val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
+            val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
+            val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
+            val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
+            val multiLineGraphDataUiModel =
+                MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+            val announcementDataUiModel =
+                AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+            val recommendationDataUiModel =
+                RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+            val milestoneDataUiModel =
+                MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
 
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
+            getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
-        every {
-            userSession.shopId
-        } returns shopId
+            every {
+                userSession.shopId
+            } returns shopId
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-        onGetIsNewCachingEnabled_thenReturn(true)
-        coEvery {
-            getLayoutUseCase.executeOnBackground()
-        } returns layoutList
-        onGetLayoutFlow_thenReturn(layoutList)
-        coEvery {
-            getLayoutUseCase.isFirstLoad
-        } returns true
-        everyGetWidgetData_shouldSuccess(cardData, lineGraphDataUiModel, progressDataUiModel, postListDataUiModel,
-                carouselDataUiModel, tableDataUiModel, pieChartDataUiModel, barChartDataUiModel, multiLineGraphDataUiModel,
-                announcementDataUiModel, recommendationDataUiModel)
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+            onGetIsNewCachingEnabled_thenReturn(true)
+            coEvery {
+                getLayoutUseCase.executeOnBackground()
+            } returns layoutList
+            onGetLayoutFlow_thenReturn(layoutList)
+            coEvery {
+                getLayoutUseCase.isFirstLoad
+            } returns true
+            everyGetWidgetData_shouldSuccess(
+                cardData,
+                lineGraphDataUiModel,
+                progressDataUiModel,
+                postListDataUiModel,
+                carouselDataUiModel,
+                tableDataUiModel,
+                pieChartDataUiModel,
+                barChartDataUiModel,
+                multiLineGraphDataUiModel,
+                announcementDataUiModel,
+                recommendationDataUiModel,
+                milestoneDataUiModel
+            )
 
-        viewModel.getWidgetLayout(5000f)
+            viewModel.getWidgetLayout(5000f)
 
-        coVerify {
-            userSession.shopId
-        }
-        coVerify {
-            getLayoutUseCase.getResultFlow()
-        }
-
-        val successLayoutList = layoutList.map {
-            when (it) {
-                is CardWidgetUiModel -> it.apply { data = cardData }
-                is LineGraphWidgetUiModel -> it.apply { data = lineGraphDataUiModel }
-                is ProgressWidgetUiModel -> it.apply { data = progressDataUiModel }
-                is PostListWidgetUiModel -> it.apply { data = postListDataUiModel }
-                is CarouselWidgetUiModel -> it.apply { data = carouselDataUiModel }
-                is TableWidgetUiModel -> it.apply { data = tableDataUiModel }
-                is PieChartWidgetUiModel -> it.apply { data = pieChartDataUiModel }
-                is BarChartWidgetUiModel -> it.apply { data = barChartDataUiModel }
-                is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
-                is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
-                is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
-                else -> it
+            coVerify {
+                userSession.shopId
             }
-        }.map {
-            it.apply {
-                isLoading = false
+            coVerify {
+                getLayoutUseCase.getResultFlow()
             }
-        }
 
-        assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
-            successLayoutList.find { it.data == actualWidget.data } != null
-        } == true)
-    }
+            val successLayoutList = layoutList.map {
+                when (it) {
+                    is CardWidgetUiModel -> it.apply { data = cardData }
+                    is LineGraphWidgetUiModel -> it.apply { data = lineGraphDataUiModel }
+                    is ProgressWidgetUiModel -> it.apply { data = progressDataUiModel }
+                    is PostListWidgetUiModel -> it.apply { data = postListDataUiModel }
+                    is CarouselWidgetUiModel -> it.apply { data = carouselDataUiModel }
+                    is TableWidgetUiModel -> it.apply { data = tableDataUiModel }
+                    is PieChartWidgetUiModel -> it.apply { data = pieChartDataUiModel }
+                    is BarChartWidgetUiModel -> it.apply { data = barChartDataUiModel }
+                    is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
+                    is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
+                    is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                    is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
+                    else -> it
+                }
+            }.map {
+                it.apply {
+                    isLoading = false
+                }
+            }
+
+            assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
+                successLayoutList.find { it.data == actualWidget.data } != null
+            } == true)
+        }
 
     @Test
-    fun `given new caching enabled and use case already start collecting, get layout should not being called`() = runBlocking {
-        val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
-        val shopId = "123456"
-        val page = "seller-home"
+    fun `given new caching enabled and use case already start collecting, get layout should not being called`() =
+        runBlocking {
+            val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
+            val shopId = "123456"
+            val page = "seller-home"
 
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
+            getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
-        every {
-            userSession.shopId
-        } returns shopId
+            every {
+                userSession.shopId
+            } returns shopId
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-        onGetIsNewCachingEnabled_thenReturn(true)
-        coEvery {
-            getLayoutUseCase.executeOnBackground()
-        } returns layoutList
-        onGetLayoutFlow_thenReturn(layoutList)
-        coEvery {
-            getLayoutUseCase.isFirstLoad
-        } returns true
-        coEvery {
-            getLayoutUseCase.collectingResult
-        } returns true
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+            onGetIsNewCachingEnabled_thenReturn(true)
+            coEvery {
+                getLayoutUseCase.executeOnBackground()
+            } returns layoutList
+            onGetLayoutFlow_thenReturn(layoutList)
+            coEvery {
+                getLayoutUseCase.isFirstLoad
+            } returns true
+            coEvery {
+                getLayoutUseCase.collectingResult
+            } returns true
 
-        viewModel.getWidgetLayout(10f)
+            viewModel.getWidgetLayout(10f)
 
-        assert(viewModel.widgetLayout.value == null)
-    }
+            assert(viewModel.widgetLayout.value == null)
+        }
 
     @Test
     fun `given old and new caching not enabled, use case with transform flow should only called once`() {
@@ -557,41 +635,42 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `given getting cached data from use case with transform flow first time failed, should still execute use case`() = runBlocking {
-        val throwable = MessageErrorException("error message")
-        val shopId = "123456"
-        val page = "seller-home"
+    fun `given getting cached data from use case with transform flow first time failed, should still execute use case`() =
+        runBlocking {
+            val throwable = MessageErrorException("error message")
+            val shopId = "123456"
+            val page = "seller-home"
 
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
+            getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
-        every {
-            userSession.shopId
-        } returns shopId
+            every {
+                userSession.shopId
+            } returns shopId
 
-        coEvery {
-            getLayoutUseCase.setUseCache(true)
-        } throws throwable
-        coEvery {
-            getLayoutUseCase.executeOnBackground()
-        } throws throwable
-        onGetIsNewCachingEnabled_thenReturn(false)
-        coEvery {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-        coEvery {
-            getLayoutUseCase.isFirstLoad
-        } returns true
+            coEvery {
+                getLayoutUseCase.setUseCache(true)
+            } throws throwable
+            coEvery {
+                getLayoutUseCase.executeOnBackground()
+            } throws throwable
+            onGetIsNewCachingEnabled_thenReturn(false)
+            coEvery {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+            coEvery {
+                getLayoutUseCase.isFirstLoad
+            } returns true
 
-        viewModel.getWidgetLayout(10f)
+            viewModel.getWidgetLayout(10f)
 
-        coVerify {
-            userSession.shopId
+            coVerify {
+                userSession.shopId
+            }
+
+            coVerify {
+                getLayoutUseCase.executeOnBackground()
+            }
         }
-
-        coVerify {
-            getLayoutUseCase.executeOnBackground()
-        }
-    }
 
     @Test
     fun `get shop location then returns success result`() = runBlocking {
@@ -651,6 +730,137 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when get milestone widget data then return success`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val result = listOf(MilestoneDataUiModel())
+
+            coEvery {
+                getMilestoneDataUseCase.executeOnBackground()
+            } returns result
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            verify {
+                getMilestoneDataUseCase.params = any()
+            }
+
+            val expected = Success(result)
+            viewModel.milestoneWidgetData.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when get milestone widget data then throw exception`() {
+        coroutineTestRule.runBlockingTest {
+            val dataKeys = listOf(anyString())
+            val exception = RuntimeException("")
+            getMilestoneDataUseCase.params = GetMilestoneDataUseCase.createParams(dataKeys)
+
+            coEvery {
+                getMilestoneDataUseCase.executeOnBackground()
+            } throws exception
+
+            viewModel.getMilestoneWidgetData(dataKeys)
+
+            val expected = Fail(exception)
+            viewModel.milestoneWidgetData.verifyErrorEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when fetch shop info by id then return success`() {
+        coroutineTestRule.runBlockingTest {
+            val shopId = "12345"
+            val shopInfo = ShopInfoResultResponse(
+                coreInfo = ShopCoreInfoResponse("abc"),
+                shopSnippetURL = "xyz"
+            )
+            every {
+                userSession.userId
+            } returns shopId
+
+            coEvery {
+                getShopInfoByIdUseCase.execute(anyLong())
+            } returns shopInfo
+
+            viewModel.getShopInfoById()
+
+            val expected = Success(
+                ShopShareDataUiModel(
+                    shopUrl = shopInfo.coreInfo?.url.orEmpty(),
+                    shopSnippetURL = shopInfo.shopSnippetURL.orEmpty()
+                )
+            )
+            viewModel.shopShareData.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when fetch shop info by id then throw exception`() {
+        coroutineTestRule.runBlockingTest {
+            val shopId = "12345"
+            val exception = MessageErrorException()
+            every {
+                userSession.userId
+            } returns shopId
+
+            coEvery {
+                getShopInfoByIdUseCase.execute(anyLong())
+            } throws exception
+
+            viewModel.getShopInfoById()
+
+            val expected = Fail(exception)
+            viewModel.shopShareData.verifyErrorEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when send shop quest tracker then return success`() {
+        coroutineTestRule.runBlockingTest {
+            val response = ShopQuestGeneralTracker()
+            shopQuestGeneralTrackerUseCase.params =
+                ShopQuestGeneralTrackerUseCase.createRequestParams(
+                    actionName = anyString(),
+                    source = anyString(),
+                    channel = anyString(),
+                    input = ShopQuestGeneralTrackerInput(anyString())
+                )
+            coEvery {
+                shopQuestGeneralTrackerUseCase.executeOnBackground()
+            } returns response
+
+            viewModel.sendShopShareQuestTracker(anyString())
+
+            val expected = Success(response)
+            viewModel.shopShareTracker.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when send shop quest tracker then throw exception`() {
+        coroutineTestRule.runBlockingTest {
+            val exception = Exception()
+            shopQuestGeneralTrackerUseCase.params =
+                ShopQuestGeneralTrackerUseCase.createRequestParams(
+                    actionName = anyString(),
+                    source = anyString(),
+                    channel = anyString(),
+                    input = ShopQuestGeneralTrackerInput(anyString())
+                )
+            coEvery {
+                shopQuestGeneralTrackerUseCase.executeOnBackground()
+            } throws exception
+
+            viewModel.sendShopShareQuestTracker(anyString())
+
+            val expected = Fail(exception)
+            viewModel.shopShareTracker.verifyErrorEquals(expected)
+        }
+    }
+
+    @Test
     fun `get card widget data then returns success result`() = runBlocking {
         val dataKeys = listOf("a", "b", "c")
 
@@ -696,8 +906,10 @@ class SellerHomeViewModelTest {
     fun `get line graph widget data then returns success result`() = runBlocking {
         val dataKeys = listOf("x", "y", "z")
 
-        val lineGraphDataResult = listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
-        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val lineGraphDataResult =
+            listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
+        getLineGraphDataUseCase.params =
+            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -721,7 +933,8 @@ class SellerHomeViewModelTest {
         val dataKeys = listOf("x", "y", "z")
 
         val throwable = MessageErrorException("error message")
-        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.params =
+            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -741,7 +954,8 @@ class SellerHomeViewModelTest {
     fun `get progress widget data then returns success result`() = runBlocking {
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
-        val progressDataList = listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
+        val progressDataList =
+            listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
 
         getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
 
@@ -786,7 +1000,10 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns success result`() = runBlocking {
-        val dataKeys = listOf(Pair("x", "x"), Pair("y", "y"))
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -810,7 +1027,10 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns failed result`() = runBlocking {
-        val dataKeys = listOf(Pair("x", "x"), Pair("y", "y"))
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
         val exception = MessageErrorException("error msg")
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -832,8 +1052,18 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get carousel widget data then returns success results`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
-        val carouselList = listOf(CarouselDataUiModel(), CarouselDataUiModel(), CarouselDataUiModel(), CarouselDataUiModel())
+        val dataKeys = listOf(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()
+        )
+        val carouselList = listOf(
+            CarouselDataUiModel(),
+            CarouselDataUiModel(),
+            CarouselDataUiModel(),
+            CarouselDataUiModel()
+        )
 
         getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
 
@@ -856,7 +1086,12 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get carousel widget data then returns failed results`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+        val dataKeys = listOf(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()
+        )
         val throwable = MessageErrorException("error")
 
         getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
@@ -877,10 +1112,14 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get table widget data`() = runBlocking {
-        val dataKeys = listOf(Pair("x", "x"), Pair("y", "y"))
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
-        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getTableDataUseCase.params =
+            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getTableDataUseCase.executeOnBackground()
@@ -901,9 +1140,13 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get table widget data`() = runBlocking {
-        val dataKeys = listOf(Pair("x", "x"), Pair("y", "y"))
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
 
-        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getTableDataUseCase.params =
+            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getTableDataUseCase.executeOnBackground()
@@ -922,10 +1165,11 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get pie chart widget data`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+        val dataKeys = listOf(anyString(), anyString())
         val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
 
-        getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPieChartDataUseCase.params =
+            GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getPieChartDataUseCase.executeOnBackground()
@@ -946,9 +1190,10 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get pie chart widget data`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+        val dataKeys = listOf(anyString(), anyString())
 
-        getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPieChartDataUseCase.params =
+            GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getPieChartDataUseCase.executeOnBackground()
@@ -967,10 +1212,11 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get bar chart widget data`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+        val dataKeys = listOf(anyString(), anyString())
         val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
 
-        getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getBarChartDataUseCase.params =
+            GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getBarChartDataUseCase.executeOnBackground()
@@ -991,9 +1237,10 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get bar chart widget data`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+        val dataKeys = listOf(anyString(), anyString())
 
-        getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getBarChartDataUseCase.params =
+            GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getBarChartDataUseCase.executeOnBackground()
@@ -1012,10 +1259,11 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get multi line graph widget data`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+        val dataKeys = listOf(anyString(), anyString())
         val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
 
-        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params =
+            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getMultiLineGraphUseCase.executeOnBackground()
@@ -1039,9 +1287,10 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get multi line graph widget data`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+        val dataKeys = listOf(anyString(), anyString())
 
-        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params =
+            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getMultiLineGraphUseCase.executeOnBackground()
@@ -1060,7 +1309,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get announcement widget data`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString())
+        val dataKeys = listOf(anyString())
         val result = listOf(AnnouncementDataUiModel())
 
         getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
@@ -1087,7 +1336,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get announcement widget data`() = runBlocking {
-        val dataKeys = listOf(ArgumentMatchers.anyString(), ArgumentMatchers.anyString())
+        val dataKeys = listOf(anyString(), anyString())
 
         getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
 
@@ -1355,223 +1604,253 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `given getting widget data is success, when getting initial widgets layout, start and stop plt custom trace should not be null`() = runBlocking {
-        val layoutList: List<BaseWidgetUiModel<*>> = listOf(
+    fun `given getting widget data is success, when getting initial widgets layout, start and stop plt custom trace should not be null`() =
+        runBlocking {
+            val layoutList: List<BaseWidgetUiModel<*>> = listOf(
                 SectionWidgetUiModel(
-                        id = "section",
-                        widgetType = WidgetType.SECTION,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = "section",
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
+                    id = "section",
+                    widgetType = WidgetType.SECTION,
+                    title = "",
+                    subtitle = "",
+                    tooltip = TooltipUiModel("", "", true, listOf()),
+                    tag = "",
+                    appLink = "",
+                    dataKey = "section",
+                    ctaText = "",
+                    isShowEmpty = true,
+                    data = null,
+                    isLoaded = false,
+                    isLoading = false,
+                    isFromCache = false,
+                    isNeedToBeRemoved = false,
+                    emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+                ),
                 CardWidgetUiModel(
-                        id = DATA_KEY_CARD,
-                        widgetType = WidgetType.CARD,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_CARD,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
+                    id = DATA_KEY_CARD,
+                    widgetType = WidgetType.CARD,
+                    title = "",
+                    subtitle = "",
+                    tooltip = TooltipUiModel("", "", true, listOf()),
+                    tag = "",
+                    appLink = "",
+                    dataKey = DATA_KEY_CARD,
+                    ctaText = "",
+                    isShowEmpty = true,
+                    data = null,
+                    isLoaded = false,
+                    isLoading = false,
+                    isFromCache = false,
+                    isNeedToBeRemoved = false,
+                    emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+                ),
                 CardWidgetUiModel(
-                        id = DATA_KEY_CARD,
-                        widgetType = WidgetType.CARD,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_CARD,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
+                    id = DATA_KEY_CARD,
+                    widgetType = WidgetType.CARD,
+                    title = "",
+                    subtitle = "",
+                    tooltip = TooltipUiModel("", "", true, listOf()),
+                    tag = "",
+                    appLink = "",
+                    dataKey = DATA_KEY_CARD,
+                    ctaText = "",
+                    isShowEmpty = true,
+                    data = null,
+                    isLoaded = false,
+                    isLoading = false,
+                    isFromCache = false,
+                    isNeedToBeRemoved = false,
+                    emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+                ),
                 CardWidgetUiModel(
-                        id = DATA_KEY_CARD,
-                        widgetType = WidgetType.CARD,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_CARD,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""))
-        )
-        val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
-        val shopId = "123456"
-        val page = "seller-home"
+                    id = DATA_KEY_CARD,
+                    widgetType = WidgetType.CARD,
+                    title = "",
+                    subtitle = "",
+                    tooltip = TooltipUiModel("", "", true, listOf()),
+                    tag = "",
+                    appLink = "",
+                    dataKey = DATA_KEY_CARD,
+                    ctaText = "",
+                    isShowEmpty = true,
+                    data = null,
+                    isLoaded = false,
+                    isLoading = false,
+                    isFromCache = false,
+                    isNeedToBeRemoved = false,
+                    emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+                )
+            )
+            val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
+            val shopId = "123456"
+            val page = "seller-home"
 
-        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
+            getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
-        every {
-            userSession.shopId
-        } returns shopId
+            every {
+                userSession.shopId
+            } returns shopId
 
-        every {
-            remoteConfig.isSellerHomeDashboardCachingEnabled()
-        } returns true
-        coEvery {
-            getLayoutUseCase.executeOnBackground()
-        } returns layoutList
-        coEvery {
-            getLayoutUseCase.isFirstLoad
-        } returns true
-        coEvery {
-            getCardDataUseCase.executeOnBackground()
-        } returns listOf(cardData)
+            every {
+                remoteConfig.isSellerHomeDashboardCachingEnabled()
+            } returns true
+            coEvery {
+                getLayoutUseCase.executeOnBackground()
+            } returns layoutList
+            coEvery {
+                getLayoutUseCase.isFirstLoad
+            } returns true
+            coEvery {
+                getCardDataUseCase.executeOnBackground()
+            } returns listOf(cardData)
 
-        viewModel.getWidgetLayout(120f)
+            viewModel.getWidgetLayout(120f)
 
-        assert(viewModel.startWidgetCustomMetricTag.value != null)
-        assert(viewModel.stopWidgetType.value != null)
-    }
+            assert(viewModel.startWidgetCustomMetricTag.value != null)
+            assert(viewModel.stopWidgetType.value != null)
+        }
 
     @Test
     fun `given some widget data is empty and should be removed, when initial load, should not have included that widget`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
-                SectionWidgetUiModel(
-                        id = "section",
-                        widgetType = WidgetType.SECTION,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = "section",
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                AnnouncementWidgetUiModel(
-                        id = DATA_KEY_ANNOUNCEMENT,
-                        widgetType = WidgetType.ANNOUNCEMENT,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_ANNOUNCEMENT,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = true,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                SectionWidgetUiModel(
-                        id = "section_other",
-                        widgetType = WidgetType.SECTION,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = "section_other",
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                CarouselWidgetUiModel(
-                        id = DATA_KEY_CAROUSEL,
-                        widgetType = WidgetType.CAROUSEL,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_CAROUSEL,
-                        ctaText = "",
-                        isShowEmpty = false,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                PostListWidgetUiModel(
-                        id = DATA_KEY_POST_LIST,
-                        widgetType = WidgetType.POST_LIST,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_POST_LIST,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        postFilter = listOf(WidgetFilterUiModel("", "", true))),
-                SectionWidgetUiModel(
-                        id = "section_other2",
-                        widgetType = WidgetType.SECTION,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = "section_other2",
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                ProgressWidgetUiModel(
-                        id = DATA_KEY_PROGRESS,
-                        widgetType = WidgetType.PROGRESS,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_PROGRESS,
-                        ctaText = "",
-                        isShowEmpty = false,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""))
+            SectionWidgetUiModel(
+                id = "section",
+                widgetType = WidgetType.SECTION,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = "section",
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            AnnouncementWidgetUiModel(
+                id = DATA_KEY_ANNOUNCEMENT,
+                widgetType = WidgetType.ANNOUNCEMENT,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_ANNOUNCEMENT,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = true,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            SectionWidgetUiModel(
+                id = "section_other",
+                widgetType = WidgetType.SECTION,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = "section_other",
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            CarouselWidgetUiModel(
+                id = DATA_KEY_CAROUSEL,
+                widgetType = WidgetType.CAROUSEL,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_CAROUSEL,
+                ctaText = "",
+                isShowEmpty = false,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            PostListWidgetUiModel(
+                id = DATA_KEY_POST_LIST,
+                widgetType = WidgetType.POST_LIST,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_POST_LIST,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                postFilter = listOf(WidgetFilterUiModel("", "", true)),
+                maxData = 6,
+                maxDisplay = 3
+            ),
+            SectionWidgetUiModel(
+                id = "section_other2",
+                widgetType = WidgetType.SECTION,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = "section_other2",
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            ProgressWidgetUiModel(
+                id = DATA_KEY_PROGRESS,
+                widgetType = WidgetType.PROGRESS,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_PROGRESS,
+                ctaText = "",
+                isShowEmpty = false,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            )
         )
 
-        val announcementData = AnnouncementDataUiModel(dataKey = DATA_KEY_ANNOUNCEMENT, showWidget = false)
+        val announcementData =
+            AnnouncementDataUiModel(dataKey = DATA_KEY_ANNOUNCEMENT, showWidget = false)
         val carouselData = CarouselDataUiModel(dataKey = DATA_KEY_CAROUSEL, showWidget = true)
-        val postData = PostListDataUiModel(dataKey = DATA_KEY_POST_LIST, postPagers = listOf(PostListPagerUiModel()), showWidget = true)
+        val postData = PostListDataUiModel(
+            dataKey = DATA_KEY_POST_LIST,
+            postPagers = listOf(PostListPagerUiModel()),
+            showWidget = true
+        )
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
@@ -1612,42 +1891,47 @@ class SellerHomeViewModelTest {
     @Test
     fun `given the previous widget needs to be removed, get initial layout should check the more previous widget for removability`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
-                ProgressWidgetUiModel(
-                        id = DATA_KEY_PROGRESS,
-                        widgetType = WidgetType.PROGRESS,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_PROGRESS,
-                        ctaText = "",
-                        isShowEmpty = false,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = true,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                AnnouncementWidgetUiModel(
-                        id = DATA_KEY_ANNOUNCEMENT,
-                        widgetType = WidgetType.ANNOUNCEMENT,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_ANNOUNCEMENT,
-                        ctaText = "",
-                        isShowEmpty = false,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
+            ProgressWidgetUiModel(
+                id = DATA_KEY_PROGRESS,
+                widgetType = WidgetType.PROGRESS,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_PROGRESS,
+                ctaText = "",
+                isShowEmpty = false,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = true,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            AnnouncementWidgetUiModel(
+                id = DATA_KEY_ANNOUNCEMENT,
+                widgetType = WidgetType.ANNOUNCEMENT,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_ANNOUNCEMENT,
+                ctaText = "",
+                isShowEmpty = false,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
         )
 
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
-        val announcementData = AnnouncementDataUiModel(dataKey = DATA_KEY_ANNOUNCEMENT, showWidget = true)
+        val announcementData =
+            AnnouncementDataUiModel(dataKey = DATA_KEY_ANNOUNCEMENT, showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
 
@@ -1680,22 +1964,24 @@ class SellerHomeViewModelTest {
     @Test
     fun `given widget data isShowWidget false, when get initial layout, should remove widget`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
-                ProgressWidgetUiModel(
-                        id = DATA_KEY_PROGRESS,
-                        widgetType = WidgetType.PROGRESS,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_PROGRESS,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
+            ProgressWidgetUiModel(
+                id = DATA_KEY_PROGRESS,
+                widgetType = WidgetType.PROGRESS,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_PROGRESS,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
         )
 
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = false)
@@ -1728,22 +2014,24 @@ class SellerHomeViewModelTest {
     @Test
     fun `given widget data isShowWidget true and isShowEmpty true, when get initial layout, should not remove widget`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
-                ProgressWidgetUiModel(
-                        id = DATA_KEY_PROGRESS,
-                        widgetType = WidgetType.PROGRESS,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_PROGRESS,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
+            ProgressWidgetUiModel(
+                id = DATA_KEY_PROGRESS,
+                widgetType = WidgetType.PROGRESS,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_PROGRESS,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
         )
 
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
@@ -1776,22 +2064,24 @@ class SellerHomeViewModelTest {
     @Test
     fun `given widget data isShowWidget true but isShowEmpty false and data is empty, when get initial layout, should remove widget`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
-                ProgressWidgetUiModel(
-                        id = DATA_KEY_PROGRESS,
-                        widgetType = WidgetType.PROGRESS,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_PROGRESS,
-                        ctaText = "",
-                        isShowEmpty = false,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
+            ProgressWidgetUiModel(
+                id = DATA_KEY_PROGRESS,
+                widgetType = WidgetType.PROGRESS,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_PROGRESS,
+                ctaText = "",
+                isShowEmpty = false,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
         )
 
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
@@ -1824,25 +2114,28 @@ class SellerHomeViewModelTest {
     @Test
     fun `given widget data isShowWidget true but isShowEmpty false and data is not empty, when get initial layout, should not remove widget`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
-                ProgressWidgetUiModel(
-                        id = DATA_KEY_PROGRESS,
-                        widgetType = WidgetType.PROGRESS,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_PROGRESS,
-                        ctaText = "",
-                        isShowEmpty = false,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
+            ProgressWidgetUiModel(
+                id = DATA_KEY_PROGRESS,
+                widgetType = WidgetType.PROGRESS,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_PROGRESS,
+                ctaText = "",
+                isShowEmpty = false,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
         )
 
-        val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, value = 1, showWidget = true)
+        val progressData =
+            ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, value = 1, showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
 
@@ -1872,26 +2165,34 @@ class SellerHomeViewModelTest {
     @Test
     fun `given any post list widget filter is not selected, postFilter should still getting post widget data`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
-                PostListWidgetUiModel(
-                        id = DATA_KEY_POST_LIST,
-                        widgetType = WidgetType.POST_LIST,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_POST_LIST,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        postFilter = listOf(WidgetFilterUiModel("", "", false)))
+            PostListWidgetUiModel(
+                id = DATA_KEY_POST_LIST,
+                widgetType = WidgetType.POST_LIST,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_POST_LIST,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                postFilter = listOf(WidgetFilterUiModel("", "", false)),
+                maxData = 6,
+                maxDisplay = 3
+            )
         )
 
-        val postData = PostListDataUiModel(DATA_KEY_POST_LIST, postPagers = listOf(PostListPagerUiModel()), showWidget = true)
+        val postData = PostListDataUiModel(
+            DATA_KEY_POST_LIST,
+            postPagers = listOf(PostListPagerUiModel()),
+            showWidget = true
+        )
         val shopId = "123456"
         val page = "seller-home"
 
@@ -1922,32 +2223,40 @@ class SellerHomeViewModelTest {
     @Test
     fun `given any table widget filter is not selected, table widget should still getting the widget data`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
-                TableWidgetUiModel(
-                        id = DATA_KEY_TABLE,
-                        widgetType = WidgetType.TABLE,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_TABLE,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        tableFilters = listOf(
-                                WidgetFilterUiModel(
-                                        name = "dummy-name",
-                                        value = "dummy-value",
-                                        isSelected = false
-                                )
-                        ))
+            TableWidgetUiModel(
+                id = DATA_KEY_TABLE,
+                widgetType = WidgetType.TABLE,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_TABLE,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                tableFilters = listOf(
+                    WidgetFilterUiModel(
+                        name = "dummy-name",
+                        value = "dummy-value",
+                        isSelected = false
+                    )
+                ),
+                maxData = 6,
+                maxDisplay = 3
+            )
         )
 
-        val tableData = TableDataUiModel(DATA_KEY_TABLE, dataSet = listOf(TablePageUiModel()), showWidget = true)
+        val tableData = TableDataUiModel(
+            DATA_KEY_TABLE,
+            dataSet = listOf(TablePageUiModel()),
+            showWidget = true
+        )
         val shopId = "123456"
         val page = "seller-home"
 
@@ -2023,212 +2332,255 @@ class SellerHomeViewModelTest {
 
     private fun provideCompleteSuccessWidgetLayout(): List<BaseWidgetUiModel<*>> {
         return listOf(
-                CardWidgetUiModel(
-                        id = DATA_KEY_CARD,
-                        widgetType = WidgetType.CARD,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_CARD,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                ProgressWidgetUiModel(
-                        id = DATA_KEY_PROGRESS,
-                        widgetType = WidgetType.PROGRESS,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_PROGRESS,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                LineGraphWidgetUiModel(
-                        id = DATA_KEY_LINE_GRAPH,
-                        widgetType = WidgetType.LINE_GRAPH,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_LINE_GRAPH,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                AnnouncementWidgetUiModel(
-                        id = DATA_KEY_ANNOUNCEMENT,
-                        widgetType = WidgetType.ANNOUNCEMENT,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_ANNOUNCEMENT,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                CarouselWidgetUiModel(
-                        id = DATA_KEY_CAROUSEL,
-                        widgetType = WidgetType.CAROUSEL,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_CAROUSEL,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                PostListWidgetUiModel(
-                        id = DATA_KEY_POST_LIST,
-                        widgetType = WidgetType.POST_LIST,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_POST_LIST,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        postFilter = listOf()),
-                TableWidgetUiModel(
-                        id = DATA_KEY_TABLE,
-                        widgetType = WidgetType.TABLE,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_TABLE,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        tableFilters = listOf(
-                                WidgetFilterUiModel(
-                                        name = "dummy-name",
-                                        value = "dummy-value",
-                                        isSelected = true
-                                ), WidgetFilterUiModel(
-                                name = "dummy-name",
-                                value = "dummy-value",
-                                isSelected = false
-                        )
-                        )),
-                PieChartWidgetUiModel(
-                        id = DATA_KEY_PIE_CHART,
-                        widgetType = WidgetType.PIE_CHART,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_PIE_CHART,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                BarChartWidgetUiModel(
-                        id = DATA_KEY_BAR_CHART,
-                        widgetType = WidgetType.BAR_CHART,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_BAR_CHART,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", "")),
-                MultiLineGraphWidgetUiModel(
-                        id = DATA_KEY_MULTI_LINE,
-                        widgetType = WidgetType.MULTI_LINE_GRAPH,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_MULTI_LINE,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        isComparePeriodeOnly = false
+            CardWidgetUiModel(
+                id = DATA_KEY_CARD,
+                widgetType = WidgetType.CARD,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_CARD,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            ProgressWidgetUiModel(
+                id = DATA_KEY_PROGRESS,
+                widgetType = WidgetType.PROGRESS,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_PROGRESS,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            LineGraphWidgetUiModel(
+                id = DATA_KEY_LINE_GRAPH,
+                widgetType = WidgetType.LINE_GRAPH,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_LINE_GRAPH,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            AnnouncementWidgetUiModel(
+                id = DATA_KEY_ANNOUNCEMENT,
+                widgetType = WidgetType.ANNOUNCEMENT,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_ANNOUNCEMENT,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            CarouselWidgetUiModel(
+                id = DATA_KEY_CAROUSEL,
+                widgetType = WidgetType.CAROUSEL,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_CAROUSEL,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            PostListWidgetUiModel(
+                id = DATA_KEY_POST_LIST,
+                widgetType = WidgetType.POST_LIST,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_POST_LIST,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                postFilter = listOf(),
+                maxData = 6,
+                maxDisplay = 3
+            ),
+            TableWidgetUiModel(
+                id = DATA_KEY_TABLE,
+                widgetType = WidgetType.TABLE,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_TABLE,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                tableFilters = listOf(
+                    WidgetFilterUiModel(
+                        name = "dummy-name",
+                        value = "dummy-value",
+                        isSelected = true
+                    ), WidgetFilterUiModel(
+                        name = "dummy-name",
+                        value = "dummy-value",
+                        isSelected = false
+                    )
                 ),
-                RecommendationWidgetUiModel(
-                        id = DATA_KEY_RECOMMENDATION,
-                        widgetType = WidgetType.RECOMMENDATION,
-                        title = "",
-                        subtitle = "",
-                        tooltip = TooltipUiModel("", "", true, listOf()),
-                        appLink = "",
-                        dataKey = DATA_KEY_RECOMMENDATION,
-                        ctaText = "",
-                        isShowEmpty = true,
-                        data = null,
-                        isLoaded = false,
-                        isLoading = false,
-                        isFromCache = false,
-                        isNeedToBeRemoved = false,
-                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                )
+                maxData = 6,
+                maxDisplay = 3
+            ),
+            PieChartWidgetUiModel(
+                id = DATA_KEY_PIE_CHART,
+                widgetType = WidgetType.PIE_CHART,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_PIE_CHART,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            BarChartWidgetUiModel(
+                id = DATA_KEY_BAR_CHART,
+                widgetType = WidgetType.BAR_CHART,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_BAR_CHART,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", "")
+            ),
+            MultiLineGraphWidgetUiModel(
+                id = DATA_KEY_MULTI_LINE,
+                widgetType = WidgetType.MULTI_LINE_GRAPH,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_MULTI_LINE,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                isComparePeriodeOnly = false
+            ),
+            RecommendationWidgetUiModel(
+                id = DATA_KEY_RECOMMENDATION,
+                widgetType = WidgetType.RECOMMENDATION,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_RECOMMENDATION,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+            ),
+            MilestoneWidgetUiModel(
+                id = DATA_KEY_MILESTONE,
+                widgetType = WidgetType.MILESTONE,
+                title = "",
+                subtitle = "",
+                tooltip = TooltipUiModel("", "", true, listOf()),
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_MILESTONE,
+                ctaText = "",
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                isNeedToBeRemoved = false,
+                emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+            )
         )
     }
 
     private fun everyGetWidgetData_shouldSuccess(
-            cardData: CardDataUiModel,
-            lineGraphDataUiModel: LineGraphDataUiModel,
-            progressDataUiModel: ProgressDataUiModel,
-            postListDataUiModel: PostListDataUiModel,
-            carouselDataUiModel: CarouselDataUiModel,
-            tableDataUiModel: TableDataUiModel,
-            pieChartDataUiModel: PieChartDataUiModel,
-            barChartDataUiModel: BarChartDataUiModel,
-            multiLineGraphDataUiModel: MultiLineGraphDataUiModel,
-            announcementDataUiModel: AnnouncementDataUiModel,
-            recommendationDataUiModel: RecommendationDataUiModel
+        cardData: CardDataUiModel,
+        lineGraphDataUiModel: LineGraphDataUiModel,
+        progressDataUiModel: ProgressDataUiModel,
+        postListDataUiModel: PostListDataUiModel,
+        carouselDataUiModel: CarouselDataUiModel,
+        tableDataUiModel: TableDataUiModel,
+        pieChartDataUiModel: PieChartDataUiModel,
+        barChartDataUiModel: BarChartDataUiModel,
+        multiLineGraphDataUiModel: MultiLineGraphDataUiModel,
+        announcementDataUiModel: AnnouncementDataUiModel,
+        recommendationDataUiModel: RecommendationDataUiModel,
+        milestoneDataUiModel: MilestoneDataUiModel
     ) {
         coEvery {
             getCardDataUseCase.executeOnBackground()
@@ -2263,5 +2615,8 @@ class SellerHomeViewModelTest {
         coEvery {
             getRecommendationDataUseCase.executeOnBackground()
         } returns listOf(recommendationDataUiModel)
+        coEvery {
+            getMilestoneDataUseCase.executeOnBackground()
+        } returns listOf(milestoneDataUiModel)
     }
 }

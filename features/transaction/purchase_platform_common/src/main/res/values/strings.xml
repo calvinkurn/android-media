@@ -1,7 +1,7 @@
 <resources>
     <string name="promo_funnel_label">Makin hemat pakai promo</string>
     <string name="label_note_for_seller">Catatan untuk Penjual (Opsional)</string>
-    <string name="label_button_add_note">Tulis catatan untuk barang ini</string>
+    <string name="label_button_add_note">Tulis Catatan</string>
     <string name="promo_checkout_inactive_label">Promo gagal ditampilkan</string>
     <string name="promo_checkout_inactive_desc">Coba refresh beberapa saat lagi</string>
     <string name="text_button_negative">Kembali</string>

@@ -234,8 +234,8 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
             }
             REQUEST_CODE_AUTOCOMPLETE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    val latitude = data.getStringExtra("BUNDLE_LATITUDE")
-                    val longitude = data.getStringExtra("BUNDLE_LONGITUDE")
+                    val latitude = data.getStringExtra("BUNDLE_LATITUDE") ?: ""
+                    val longitude = data.getStringExtra("BUNDLE_LONGITUDE") ?: ""
                     moveCamera(getLatLng(latitude, longitude))
                 }
             }

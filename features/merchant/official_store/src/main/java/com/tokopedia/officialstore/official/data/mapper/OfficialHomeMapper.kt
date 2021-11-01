@@ -20,6 +20,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -27,11 +28,12 @@ class OfficialHomeMapper (
         private val context: Context,
         private val dispatchers: CoroutineDispatchers
 ){
-    private val listOfficialStore = mutableListOf<Visitable<*>>()
+    val listOfficialStore = mutableListOf<Visitable<*>>()
     companion object {
         private const val BANNER_POSITION = 0
         private const val BENEFIT_POSITION = 1
         private const val FEATURE_SHOP_POSITION = 2
+        private const val RECOM_WIDGET_POSITION = 3
     }
 
     fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?) {
@@ -59,6 +61,8 @@ class OfficialHomeMapper (
         }
     }
 
+    //this is old featured brand from external api
+    //now doubles with featured brand on dynamic channel
     fun mappingFeaturedShop(featuredShop: OfficialStoreFeaturedShop, adapter: OfficialHomeAdapter?, categoryName: String?, listener: FeaturedShopListener) {
         listOfficialStore.run {
             val index = indexOfFirst { it is OfficialFeaturedShopDataModel }
@@ -82,56 +86,72 @@ class OfficialHomeMapper (
 
     fun mappingDynamicChannel(officialStoreChannels: List<OfficialStoreChannel>, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
         if (officialStoreChannels.isNotEmpty()) {
-
-            val availableScreens: Set<String>
-            var availableLegoBannerScreens = setOf<String>()
-            if (remoteConfig?.getBoolean(RemoteConfigKey.HOME_USE_GLOBAL_COMPONENT) == true) {
-                availableScreens = setOf(
-                        DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
-                        DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
-                        DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
-                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP,
-                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND
-                )
-                availableLegoBannerScreens = setOf(
-                        DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
-                        DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE
-                )
-            } else {
-                availableScreens = setOf(
-                        DynamicChannelIdentifiers.LAYOUT_BANNER_CAROUSEL,
-                        DynamicChannelIdentifiers.LAYOUT_SPRINT_LEGO,
-                        DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
-                        DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE,
-                        DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
-                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP,
-                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND
-                )
-            }
-
             val views = mutableListOf<Visitable<*>>()
-
             officialStoreChannels.forEachIndexed { position, officialStore ->
-                if (availableScreens.contains(officialStore.channel.layout)) {
-                    when(officialStore.channel.layout) {
-                        DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> {
-                            views.add(MixLeftDataModel(
-                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
-                        }
-                        DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> {
-                            views.add(MixTopDataModel(
-                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
-                        }
-                        DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND -> {
-                            views.add(FeaturedBrandDataModel(
-                                    OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)))
-                        }
-                        else -> views.add(DynamicChannelDataModel(officialStore))
+                when (officialStore.channel.layout) {
+                    DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> {
+                        views.add(
+                            MixLeftDataModel(
+                                OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                    officialStore.channel,
+                                    position
+                                )
+                            )
+                        )
                     }
-                } else if (availableLegoBannerScreens.contains(officialStore.channel.layout)) {
-                    views.add(DynamicLegoBannerDataModel(
-                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)
-                    ))
+                    DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> {
+                        views.add(
+                            MixTopDataModel(
+                                OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                    officialStore.channel,
+                                    position
+                                )
+                            )
+                        )
+                    }
+                    DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND -> {
+                        views.add(
+                            FeaturedBrandDataModel(
+                                OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                    officialStore.channel,
+                                    position
+                                )
+                            )
+                        )
+                    }
+                    DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP -> {
+                        views.add(
+                            FeaturedShopDataModel(
+                                channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                    officialStore.channel,
+                                    position
+                                ),
+                                state = FeaturedShopDataModel.STATE_LOADING,
+                                page = FeaturedShopDataModel.PAGE_OS
+                            )
+                        )
+                    }
+                    DynamicChannelIdentifiers.LAYOUT_BEST_SELLING -> {
+                        val channel = officialStore.channel
+                        views.add(
+                            BestSellerDataModel(
+                                id = channel.id,
+                                widgetParam = channel.widgetParam,
+                                pageName = channel.pageName
+                            )
+                        )
+                    }
+                    DynamicChannelIdentifiers.LAYOUT_6_IMAGE, DynamicChannelIdentifiers.LAYOUT_LEGO_3_IMAGE -> {
+                        views.add(
+                            DynamicLegoBannerDataModel(
+                                OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                    officialStore.channel,
+                                    position
+                                )
+                            )
+                        )
+                    }
+                    else -> views.add(DynamicChannelDataModel(officialStore))
                 }
             }
             listOfficialStore.removeAll { it is DynamicChannelDataModel || it is DynamicLegoBannerDataModel || it is HomeComponentVisitable }
@@ -224,5 +244,52 @@ class OfficialHomeMapper (
                 coroutineDispatcher = dispatchers.io,
                 productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
         )
+    }
+
+    inline fun <reified T> findWidgetList(predicate: (T?) -> Boolean = {true}, actionOnFound: (List<IndexedValue<T>>) -> Unit) {
+        val listFound = mutableListOf<IndexedValue<T>>()
+        listOfficialStore.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
+            it.forEach { indexedValue ->
+                if (indexedValue.value is T) {
+                    (indexedValue as? IndexedValue<T>)?.let { findValue ->
+                        listFound.add(findValue)
+                    }
+                }
+            }
+        }
+        actionOnFound.invoke(listFound)
+    }
+
+    fun updateFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.forEach {
+            if (it is FeaturedShopDataModel && it.channelModel.id == newData.channelModel.id) {
+                newData.channelModel.verticalPosition = it.channelModel.verticalPosition
+                newList.add(newData.copy())
+            } else newList.add(it)
+        }
+        action.invoke(newList.toMutableList())
+    }
+
+    fun removeFeaturedShopDC(newData: FeaturedShopDataModel, action: (listSubmitted: MutableList<Visitable<*>>) -> Unit) {
+        val newList = mutableListOf<Visitable<*>>()
+        listOfficialStore.forEach {
+            if (it !is FeaturedShopDataModel || ((it is FeaturedShopDataModel && it.channelModel.id != newData.channelModel.id)))  {
+                newList.add(it)
+            }
+        }
+        action.invoke(newList.toMutableList())
+    }
+
+    fun mappingRecomWidget(data: BestSellerDataModel, adapter: OfficialHomeAdapter?) {
+        listOfficialStore.run {
+            val index = indexOfFirst { it is BestSellerDataModel }
+
+            removeAll{ it is BestSellerDataModel }
+            if(index == -1) add(RECOM_WIDGET_POSITION, data)
+            else set(index, data)
+
+            adapter?.submitList(this.toMutableList())
+        }
     }
 }

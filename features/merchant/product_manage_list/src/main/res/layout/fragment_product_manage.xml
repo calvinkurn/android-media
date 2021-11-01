@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout"
+    android:id="@+id/constraint_layout_product_manage"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -29,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:orientation="vertical"
             app:elevation="0dp">
 
             <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
@@ -39,21 +40,15 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
-            <com.tokopedia.design.text.SearchInputView
-                android:id="@+id/searchBar"
+            <com.tokopedia.unifycomponents.SearchBarUnify
+                android:id="@+id/search_bar_product_manage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_lvl2"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:layout_marginRight="@dimen/spacing_lvl2"
-                android:background="@drawable/bg_corner"
-                android:clickable="true"
-                android:focusable="true"
-                android:textColorHint="@color/Unify_N200"
-                android:textSize="@dimen/fontSize_lvl2"
-                android:visibility="visible"
-                app:layout_scrollFlags="scroll|snap"
-                app:siv_search_icon="@drawable/unify_search_ic" />
+                android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                app:search_bar_placeholder="@string/product_manage_search_hint"
+                app:search_bar_show_icon="false"/>
 
             <include
                 android:id="@+id/shimmerSortFilter"

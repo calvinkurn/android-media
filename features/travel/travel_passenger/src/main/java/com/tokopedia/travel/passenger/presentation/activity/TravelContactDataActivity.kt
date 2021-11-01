@@ -14,8 +14,8 @@ class TravelContactDataActivity : BaseSimpleActivity(), HasComponent<TravelPasse
 
     override fun getNewFragment(): Fragment =
             TravelContactDataFragment.getInstance(
-                    intent.getParcelableExtra(EXTRA_INITIAL_CONTACT_DATA),
-                    intent.getStringExtra(EXTRA_TRAVEL_PRODUCT)
+                    intent.getParcelableExtra(EXTRA_INITIAL_CONTACT_DATA) ?: TravelContactData(),
+                    intent.getStringExtra(EXTRA_TRAVEL_PRODUCT) ?: ""
             )
 
     override fun getComponent(): TravelPassengerComponent {

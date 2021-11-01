@@ -174,7 +174,6 @@ internal class ShopListFragment:
         observeShopCountLiveData()
         observeTrackingShopItemImpressionEvent()
         observeTrackingProductPreviewImpressionEvent()
-        observeTrackingEmptySearchEvent()
         observePerformanceMonitoringEvent()
         observeRoutePageEvent()
         observeTrackingImpressionShopRecommendation()
@@ -190,6 +189,7 @@ internal class ShopListFragment:
         observeShimmeringLayoutVisibility()
         observeQuickFilterVisibility()
         observeActiveFilterCount()
+        observeGeneralSearchTracking()
     }
 
     private fun observeSearchShopLiveData() {
@@ -368,22 +368,6 @@ internal class ShopListFragment:
     private fun trackEventProductPreviewImpression(trackingObjectList: List<Any>) {
         val keyword = searchShopViewModel?.getSearchParameterQuery()
         SearchTracking.eventImpressionSearchResultShopProductPreview(trackingObjectList, keyword)
-    }
-
-    private fun observeTrackingEmptySearchEvent() {
-        searchShopViewModel?.getEmptySearchTrackingEventLiveData()?.observe(viewLifecycleOwner, EventObserver { isTrackEmptySearch ->
-            trackEventEmptySearch(isTrackEmptySearch)
-        })
-    }
-
-    private fun trackEventEmptySearch(isTrackEmptySearch: Boolean) {
-        if (isTrackEmptySearch) {
-            activity?.let { activity ->
-                val keyword = searchShopViewModel?.getSearchParameterQuery()
-                val selectedFilterMap = searchShopViewModel?.getActiveFilterMapForEmptySearchTracking() ?: mapOf()
-                SearchTracking.eventSearchNoResult(activity, keyword, screenName, selectedFilterMap)
-            }
-        }
     }
 
     private fun observePerformanceMonitoringEvent() {
@@ -637,5 +621,11 @@ internal class ShopListFragment:
     override fun configure(shouldRemove: Boolean) {
         if (shouldRemove) removeQuickFilterElevation(searchShopQuickSortFilter)
         else applyQuickFilterElevation(context, searchShopQuickSortFilter)
+    }
+
+    private fun observeGeneralSearchTracking() {
+        searchShopViewModel
+                ?.generalSearchTrackingLiveData
+                ?.observe(viewLifecycleOwner, SearchTracking::trackEventGeneralSearchShop)
     }
 }

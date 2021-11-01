@@ -23,7 +23,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.tkpd.tkpdreputation.R
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
@@ -168,7 +167,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
 
     override fun onGoToReportReview(shopId: String?, reviewId: String?, adapterPosition: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
-        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toIntOrZero())
+        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         startActivity(intent)
     }
@@ -196,7 +195,7 @@ class ReviewProductFragment : BaseListFragment<ReviewProductModel, ReviewProduct
         RouteManager.route(
                 context,
                 bundle,
-                ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY,
+                ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY_OLD,
                 productId
         )
         reputationTracking.eventImageClickOnReview(

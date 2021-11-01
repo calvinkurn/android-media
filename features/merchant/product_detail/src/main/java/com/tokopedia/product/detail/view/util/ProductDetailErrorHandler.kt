@@ -8,6 +8,13 @@ import com.tokopedia.network.utils.ErrorHandler
  */
 object ProductDetailErrorHandler {
 
-    fun getErrorMessage(context: Context, e: Throwable?): String = ErrorHandler.getErrorMessage(context, e);
+    fun getErrorMessage(
+        context: Context,
+        e: Throwable
+    ): String {
+        val builder: ErrorHandler.Builder = ErrorHandler.Builder()
+        builder.withErrorCode(false)
+        return ErrorHandler.getErrorMessage(context, e, builder)
+    }
 
 }

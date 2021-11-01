@@ -2,9 +2,9 @@ package com.tokopedia.tokopoints.view.catalogdetail
 
 import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
@@ -12,7 +12,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.ViewFlipper
-import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -26,6 +25,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
@@ -46,7 +46,7 @@ import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.CATALOG_CLAIM
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.webview.TkpdWebView
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import rx.Observable
@@ -162,7 +162,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description, it.data.redeemMessage)
             is ValidationError<*, *> -> {
                 if (it.data is ValidateMessageDialog) {
-                    showErrorDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
+                    showErrorDialog(it.data.desc, it.data.messageCode)
                 }
             }
         }
@@ -250,76 +250,42 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         startActivity(intent)
     }
 
-    private fun showErrorDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
-        val adb = AlertDialog.Builder(activityContext)
-        val labelPositive: String
-        var labelNegative: String? = null
-        when (resCode) {
-            CommonConstant.CouponRedemptionCode.LOW_POINT -> labelPositive = getString(R.string.tp_label_ok)
-            CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                labelPositive = getString(R.string.tp_label_complete_profile)
-                labelNegative = getString(R.string.tp_label_later)
-            }
-            CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> labelPositive = getString(R.string.tp_label_ok)
-            else -> labelPositive = getString(R.string.tp_label_ok)
-        }
-        if (title == null || title.isEmpty()) {
-            adb.setTitle(R.string.tp_label_exchange_failed)
-        } else {
-            adb.setTitle(title)
-        }
-        adb.setMessage(MethodChecker.fromHtml(message))
-        if (labelNegative != null && !labelNegative.isEmpty()) {
-            adb.setNegativeButton(labelNegative) { dialogInterface: DialogInterface?, i: Int ->
+    private fun showErrorDialog( message: String, resCode: Int) {
+        val dialogUnify: DialogUnify?
+        val dialogUnifyType = DialogUnify.SINGLE_ACTION
+        val labelPositive: String = getString(R.string.tp_label_ok)
+        dialogUnify = context?.let { DialogUnify(it, dialogUnifyType, DialogUnify.NO_IMAGE) }
+        dialogUnify?.setTitle(getString(R.string.tp_label_exchange_failed))
+        dialogUnify?.setDescription(MethodChecker.fromHtml(message))
+        if (labelPositive.isNotEmpty()) {
+            dialogUnify?.setPrimaryCTAText(labelPositive)
+            dialogUnify?.setPrimaryCTAClickListener {
                 when (resCode) {
-                    CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                            "")
-                    CommonConstant.CouponRedemptionCode.SUCCESS -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
-                            title)
-                    else -> {
-                    }
-                }
-            }
-        }
-        adb.setPositiveButton(labelPositive) { dialogInterface: DialogInterface, i: Int ->
-            when (resCode) {
-                CommonConstant.CouponRedemptionCode.LOW_POINT -> {
-                    dialogInterface.cancel()
-                    AnalyticsTrackerUtil.sendEvent(context,
+                    CommonConstant.CouponRedemptionCode.LOW_POINT -> {
+                        dialogUnify.dismiss()
+                        AnalyticsTrackerUtil.sendEvent(
+                            context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
                             AnalyticsTrackerUtil.ActionKeys.CLICK_BELANJA,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> {
-                    dialogInterface.cancel()
-                    AnalyticsTrackerUtil.sendEvent(context,
+                            ""
+                        )
+                    }
+                    CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> {
+                        dialogUnify.dismiss()
+                        AnalyticsTrackerUtil.sendEvent(
+                            context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
                             AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
-                            "")
+                            ""
+                        )
+                    }
+                    else -> dialogUnify.dismiss()
                 }
-                CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
-                    startActivity(intent)
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
-                            "")
-                }
-                else -> dialogInterface.cancel()
             }
         }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
+        dialogUnify?.show()
     }
 
     override fun onRealCodeReFresh(realCode: String) {
@@ -370,27 +336,16 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun onPreValidateError(title: String, message: String) {
-        val adb = AlertDialog.Builder(activityContext)
-        adb.setTitle(title)
-        adb.setMessage(message)
-        adb.setPositiveButton(R.string.tp_label_ok
-        ) { dialogInterface: DialogInterface?, i: Int -> }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-    }
-
-    private fun decorateDialog(dialog: AlertDialog) {
-        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400))
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
+        val dialogUnify = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION,DialogUnify.NO_IMAGE) }
+        dialogUnify?.setTitle(title)
+        dialogUnify?.setDescription(message)
+        context?.let {
+            dialogUnify?.setPrimaryCTAText(it?.getString(R.string.tp_label_ok))
         }
-        if (dialog.getButton(AlertDialog.BUTTON_NEGATIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).isAllCaps = false
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(activityContext,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N200))
+        dialogUnify?.setPrimaryCTAClickListener {
+            dialogUnify.dismiss()
         }
+        dialogUnify?.show()
     }
 
     //setting catalog values to ui
@@ -410,17 +365,21 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         btnAction2?.text = data.buttonStr
         btnAction2?.setBackgroundResource(R.drawable.bg_button_buy_orange_tokopoints)
         ImageHandler.loadImageFitCenter(imgBanner?.context, imgBanner, data.imageUrlMobile)
-        val tvHowToUse: TkpdWebView = requireView().findViewById(R.id.how_to_use_content)
-        val tvTnc: TkpdWebView = requireView().findViewById(R.id.tnc_content)
+        val tvHowToUse: Typography = requireView().findViewById(R.id.how_to_use_content)
+        val tvTnc: Typography = requireView().findViewById(R.id.tnc_content)
         if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
-            tvTnc.loadData(data.tnc, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+            tvTnc.text = HtmlUrlHelper(
+                data.tnc!!.replace("(\r\n|\n)".toRegex(), "<br />"),tvTnc.context).spannedString
+            tvTnc.movementMethod = getMovementMethod()
         } else {
             view?.findViewById<Typography>(R.id.tnc)?.hide()
             view?.findViewById<View>(R.id.tp_mid_separator)?.hide()
             tvTnc.hide()
         }
         if (!data.howToUse.isNullOrEmpty() && data.howToUse != "<br>") {
-            tvHowToUse.loadData(data.howToUse, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+            tvHowToUse.text = HtmlUrlHelper(
+                data.howToUse!!.replace("(\r\n|\n)".toRegex(), "<br />"),tvTnc.context).spannedString
+            tvHowToUse.movementMethod = getMovementMethod()
         } else {
             view?.findViewById<Typography>(R.id.how_to_use)?.hide()
             tvHowToUse.hide()
@@ -428,6 +387,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val pointValue: Typography = requireView().findViewById(R.id.text_point_value_coupon)
         pointValue.text = "Gratis"
         updateQuotaValue(data.upperTextDesc as MutableList<String>?)
+        handleQuotaColor()
         //Quota text handling
         if (data.disableErrorMessage.isNullOrEmpty()) {
             disabledError?.hide()
@@ -551,6 +511,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             quota?.visibility = View.GONE
         } else {
             quotaContainer?.show()
+            handleQuotaColor()
             quota?.visibility = View.VISIBLE
             val upperText = StringBuilder()
             for (i in data.indices) {
@@ -562,6 +523,16 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                 }
             }
             quota?.text = MethodChecker.fromHtml(upperText.toString())
+        }
+    }
+
+    private fun handleQuotaColor(){
+        if (context.isDarkMode()){
+            quota?.background?.setColorFilter(
+                ContextCompat.getColor(activityContext,com.tokopedia.unifyprinciples.R.color.dark_R700),
+                PorterDuff.Mode.SRC_IN
+            )
+            quota?.setTextColor(ContextCompat.getColor(activityContext,com.tokopedia.unifyprinciples.R.color.dark_N100))
         }
     }
 

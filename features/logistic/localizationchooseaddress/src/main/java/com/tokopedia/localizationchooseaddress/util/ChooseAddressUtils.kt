@@ -23,20 +23,29 @@ import com.tokopedia.user.session.UserSessionInterface
 
 object ChooseAddressUtils {
 
+    private const val locationParamsFormat: String =
+        "user_lat=%s&user_long=%s&user_addressId=%s&user_cityId=%s&user_districtId=%s&user_postCode=%s&warehouse_ids=%s"
+    private const val locationRequestInterval = 10 * 1000L
+    private const val locationRequestFastestInterval = 2 * 1000L
+
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
-        return if (isRollOutUser(context)) {
-            if (hasLocalizingAddressOnCache(context)) {
-                val chooseAddressPref = ChooseAddressSharePref(context)
-                chooseAddressPref.getLocalCacheData()
-            } else {
-                if (isLoginUser(context)) {
-                    ChooseAddressConstant.emptyAddress
-                } else {
-                    ChooseAddressConstant.defaultAddress
-                }
-            }
+        return if (hasLocalizingAddressOnCache(context)) {
+            val chooseAddressPref = ChooseAddressSharePref(context)
+            chooseAddressPref.getLocalCacheData()
         } else {
+            if (isLoginUser(context)) {
+                ChooseAddressConstant.emptyAddress
+            } else {
+                ChooseAddressConstant.defaultAddress
+            }
+        }
+    }
+
+    fun getLocalizingAddressDataDirectly(context: Context): LocalCacheModel? {
+        return if (isLoginUser(context)) {
             ChooseAddressConstant.emptyAddress
+        } else {
+            ChooseAddressConstant.defaultAddress
         }
     }
 
@@ -49,14 +58,6 @@ object ChooseAddressUtils {
     fun isLoginUser(context: Context): Boolean {
         val userSession: UserSessionInterface = UserSession(context)
         return userSession.isLoggedIn
-    }
-
-    /**
-     * Rollence key
-     */
-    fun isRollOutUser(context: Context?): Boolean {
-        val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
-        return rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY
     }
 
     /**
@@ -77,11 +78,14 @@ object ChooseAddressUtils {
             if (latestChooseAddressData.long != localizingAddressStateData.long) validate = true
             if (latestChooseAddressData.label != localizingAddressStateData.label) validate = true
             if (latestChooseAddressData.postal_code != localizingAddressStateData.postal_code) validate = true
+            if (latestChooseAddressData.shop_id != localizingAddressStateData.shop_id) validate = true
+            if (latestChooseAddressData.warehouse_id != localizingAddressStateData.warehouse_id) validate = true
         }
         return validate
     }
 
-    fun setLocalizingAddressData(addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String, postalCode: String): LocalCacheModel {
+    fun setLocalizingAddressData(addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
+                                 postalCode: String, shopId: String, warehouseId: String): LocalCacheModel {
         return LocalCacheModel(
                 address_id = addressId,
                 city_id = cityId,
@@ -89,16 +93,17 @@ object ChooseAddressUtils {
                 lat = lat,
                 long = long,
                 label = label,
-                postal_code = postalCode
+                postal_code = postalCode,
+                shop_id = shopId,
+                warehouse_id = warehouseId
         )
     }
 
-    fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String, postalCode: String) {
-        if (isRollOutUser(context)) {
-            val chooseAddressPref = ChooseAddressSharePref(context)
-            val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode)
-            chooseAddressPref.setLocalCache(localData)
-        }
+    fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
+                                             postalCode: String, shopId: String, warehouseId: String) {
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode, shopId, warehouseId)
+        chooseAddressPref.setLocalCache(localData)
     }
 
     /**
@@ -142,8 +147,8 @@ object ChooseAddressUtils {
 
             val locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            locationRequest.interval = 10 * 1000
-            locationRequest.fastestInterval = 2 * 1000
+            locationRequest.interval = locationRequestInterval
+            locationRequest.fastestInterval = locationRequestFastestInterval
             val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
             val mLocationSettingsRequest = builder.build()
             builder.setAlwaysShow(true)
@@ -177,12 +182,16 @@ object ChooseAddressUtils {
     }
 
     fun LocalCacheModel.convertToLocationParams(): String {
-        return "user_lat=" + lat +
-                "&user_long=" + long +
-                "&user_addressId=" + address_id +
-                "&user_cityId=" + city_id +
-                "&user_districtId=" + district_id +
-                "&user_postCode=" + postal_code
+        return String.format(
+            locationParamsFormat,
+            lat,
+            long,
+            address_id,
+            city_id,
+            district_id,
+            postal_code,
+            warehouse_id
+        )
     }
 
     fun setLabel(data: ChosenAddressModel) : String {

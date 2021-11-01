@@ -5,8 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
-import android.os.Build
-import android.view.View
+import android.view.LayoutInflater
 import android.webkit.*
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.applink.RouteManager
@@ -14,9 +13,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.databinding.BottomSheetWebViewBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.TkpdWebView
 import timber.log.Timber
@@ -29,8 +28,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
     private var context: Context? = null
 
     private var bottomSheetUnify: BottomSheetUnify? = null
-    private var webView: TkpdWebView? = null
-    private var progressBar: LoaderUnify? = null
+    private var binding: BottomSheetWebViewBinding? = null
     private var isDone = false
 
     companion object {
@@ -46,7 +44,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
     fun show(fragment: OrderSummaryPageFragment, userSessionInterface: UserSessionInterface) {
         val context: Context = fragment.activity ?: return
         this.context = context
-        fragment.fragmentManager?.let {
+        fragment.parentFragmentManager.let {
             SplitCompat.installActivity(context)
             bottomSheetUnify = BottomSheetUnify().apply {
                 isDragable = true
@@ -58,23 +56,25 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
                 clearContentPadding = true
                 setTitle(title)
 
-                val child = View.inflate(fragment.context, R.layout.bottom_sheet_web_view, null)
-                setupChild(userSessionInterface, child)
+                binding = BottomSheetWebViewBinding.inflate(LayoutInflater.from(fragment.context))
+                setupChild(userSessionInterface)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
-                setChild(child)
+                setChild(binding?.root)
+                setOnDismissListener {
+                    this@OvoActivationWebViewBottomSheet.context = null
+                    binding = null
+                }
                 show(it, null)
             }
         }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun setupChild(userSession: UserSessionInterface, child: View) {
-        progressBar = child.findViewById(R.id.progress_bar)
-        webView = child.findViewById(R.id.web_view)
-        webView?.clearCache(true)
-        val webSettings = webView?.settings
+    private fun setupChild(userSession: UserSessionInterface) {
+        binding?.webView?.clearCache(true)
+        val webSettings = binding?.webView?.settings
         webSettings?.apply {
             javaScriptEnabled = true
             cacheMode = WebSettings.LOAD_NO_CACHE
@@ -82,10 +82,8 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
             builtInZoomControls = false
             displayZoomControls = true
         }
-        webView?.webViewClient = OvoActivationWebViewClient()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            webSettings?.mediaPlaybackRequiresUserGesture = false
-        }
+        binding?.webView?.webViewClient = OvoActivationWebViewClient()
+        webSettings?.mediaPlaybackRequiresUserGesture = false
 
         loadOvoActivationWebView(userSession)
     }
@@ -93,9 +91,9 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
     private fun loadOvoActivationWebView(userSession: UserSessionInterface) {
         // Load auth only if tokopedia url
         if (activationUrl.contains(TOKOPEDIA_URL)) {
-            webView?.loadAuthUrl(generateUrl(userSession), userSession)
+            binding?.webView?.loadAuthUrl(generateUrl(userSession), userSession)
         } else {
-            webView?.loadUrl(activationUrl)
+            binding?.webView?.loadUrl(activationUrl)
         }
     }
 
@@ -122,8 +120,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
             bottomSheetUnify?.dismiss()
             listener.onActivationResult(isSuccess)
             context = null
-            webView = null
-            progressBar = null
+            binding = null
             bottomSheetUnify = null
         }
     }
@@ -176,12 +173,12 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
             } else if (url != null && !URLUtil.isNetworkUrl(url)) {
                 onMoveToIntent(url)
             }
-            progressBar?.visible()
+            binding?.progressBar?.visible()
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            progressBar?.gone()
+            binding?.progressBar?.gone()
         }
     }
 

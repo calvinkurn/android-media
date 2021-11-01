@@ -6,16 +6,22 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topupbills.telco.data.TelcoCatalogDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoProduct
+import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductMccmListViewHolder
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductTitleViewHolder
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 
-class TelcoProductAdapterFactory(val productType: Int, val listener: TelcoProductViewHolder.OnClickListener)
-    : BaseAdapterTypeFactory() {
+class TelcoProductAdapterFactory(
+    val productType: Int,
+    val listener: TelcoProductViewHolder.ActionListener,
+    val mccmListener: TelcoProductMccmListViewHolder.OnClickListener?,
+    val isSingleMCCM: Boolean = false
+) : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             TelcoProductTitleViewHolder.LAYOUT -> TelcoProductTitleViewHolder(parent)
-            TelcoProductViewHolder.LAYOUT -> TelcoProductViewHolder(parent, productType, listener)
+            TelcoProductViewHolder.LAYOUT -> TelcoProductViewHolder(parent, productType, isSingleMCCM, listener)
+            TelcoProductMccmListViewHolder.LAYOUT -> TelcoProductMccmListViewHolder(parent, mccmListener)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -25,6 +31,10 @@ class TelcoProductAdapterFactory(val productType: Int, val listener: TelcoProduc
     }
 
     fun type(telcoCatalogDataCollection: TelcoCatalogDataCollection): Int {
-        return TelcoProductTitleViewHolder.LAYOUT
+        return if (telcoCatalogDataCollection.isMccm()) {
+            TelcoProductMccmListViewHolder.LAYOUT
+        } else {
+            TelcoProductTitleViewHolder.LAYOUT
+        }
     }
 }

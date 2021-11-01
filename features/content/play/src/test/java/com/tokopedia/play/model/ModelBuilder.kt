@@ -8,14 +8,17 @@ import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.VariantSheetUiModel
+import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantCategory
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.variant_common.model.GetProductVariantResponse
 
 
 /**
@@ -958,25 +961,25 @@ class ModelBuilder {
               }
         }""".trimIndent()
 
-    fun buildChannel() = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
+    fun buildChannel(): ChannelDetailsWithRecomResponse = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
 
-    fun buildSocketCredential() = gson.fromJson(socketCredential, SocketCredential::class.java)
+    fun buildSocketCredential(): SocketCredential = gson.fromJson(socketCredential, SocketCredential::class.java)
 
-    fun buildChannelWithShop() = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
+    fun buildChannelWithShop(): ChannelDetailsWithRecomResponse = gson.fromJson(channelJsonWithRecom, ChannelDetailsWithRecomResponse::class.java)
 
-    fun buildShopInfo() = gson.fromJson(shopInfoJson, ShopInfo::class.java)
+    fun buildShopInfo(): ShopInfo = gson.fromJson(shopInfoJson, ShopInfo::class.java)
 
-    fun buildNewChat() = gson.fromJson(newChatJson, PlayChat::class.java)
+    fun buildNewChat(): PlayChat = gson.fromJson(newChatJson, PlayChat::class.java)
 
-    fun buildTotalLike() = gson.fromJson(totalLikeCount, TotalLikeContent.Response::class.java)
+    fun buildTotalLike(): TotalLikeContent.Response = gson.fromJson(totalLikeCount, TotalLikeContent.Response::class.java)
 
-    fun buildIsLike() = gson.fromJson(isLike, IsLikedContent.Data::class.java)
+    fun buildIsLike(): IsLikedContent.Data = gson.fromJson(isLike, IsLikedContent.Data::class.java)
 
-    fun buildProductTagging() = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
+    fun buildProductTagging(): ProductTagging = gson.fromJson(channelTagItemsJson, ProductTagging::class.java)
 
-    fun buildProductVariant() = gson.fromJson(productVariant, ProductDetailVariantCommonResponse::class.java)
+    fun buildProductVariant(): GetProductVariantResponse = gson.fromJson(productVariant, GetProductVariantResponse::class.java)
 
-    fun buildProduct() = gson.fromJson(product, Product::class.java)
+    fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
     fun buildAddToCartModelResponseSuccess() = AddToCartDataModel(data = DataModel(cartId = "123", success = 1))
     fun buildAddToCartModelResponseFail() = AddToCartDataModel(
@@ -1036,10 +1039,10 @@ class ModelBuilder {
     fun buildVariantSheetUiModel(
             product: PlayProductUiModel.Product = buildProductLineUiModel(),
             action: ProductAction = ProductAction.Buy,
-            parentVariant: ProductVariantCommon? = null,
+            parentVariant: ProductVariant? = null,
             stockWording: String? = "Stok tersedia",
             listOfVariantCategory: List<VariantCategory> = emptyList(),
-            mapOfSelectedVariants: MutableMap<String, Int> = mutableMapOf()
+            mapOfSelectedVariants: MutableMap<String, String> = mutableMapOf()
     ) = VariantSheetUiModel(
             product = product,
             action = action,

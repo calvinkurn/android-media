@@ -5,12 +5,13 @@ plugins {
 gradleEnterprise {
     server = "http://172.21.57.32"
     buildScan {
+        captureTaskInputFiles = true
+        def isCiBuild = System.getenv('BUILD_URL')
         publishAlways()
-        tag (System.getenv('CI') ? 'CI' : 'LOCAL')
-        if (System.getenv('CI')) {
-            if (System.getenv('BUILD_URL')) {
-                link 'Jenkins build', System.getenv('BUILD_URL')
-            }
+        uploadInBackground = !isCiBuild
+        tag(isCiBuild ? 'CI' : 'LOCAL')
+        if (isCiBuild) {
+            link 'Jenkins build', System.getenv('BUILD_URL')
             if (System.getenv('BUILD_NUMBER')) {
                 value 'CI build number', System.getenv('BUILD_NUMBER')
             }
@@ -43,7 +44,7 @@ gradleEnterprise {
     }
 }
 
-
+rootProject.name = "android-tokopedia-core"
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
@@ -53,7 +54,7 @@ buildCache {
     remote(HttpBuildCache) {
         url = "${ci_url}"
         push = isCiServer
-//        allowUntrustedServer = true
+        enabled = enableRemoteCache
         credentials {
             username = "${ci_username}"
             password = "${ci_password}"
@@ -61,9 +62,9 @@ buildCache {
     }
 }
 
-
-
+apply from: 'buildconfig/aar/settings-helper.gradle'
 apply from: 'tools/dynamic_feature_inclusion.gradle'
+//apply from: "buildconfig/appcompile/compile-testing.gradle"
 apply from: "buildconfig/appcompile/compile-libraries.gradle"
 //apply from: "buildconfig/appcompile/compile-libraries-no-op.gradle"
 apply from: "buildconfig/appcompile/compile-customerapp.gradle"

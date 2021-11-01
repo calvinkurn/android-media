@@ -117,7 +117,7 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
     }
 
     private fun assertBroadcastSpamHandlerIsVisible() {
-        onView(withId(R.id.recycler_view)).check(
+        onView(withId(R.id.recycler_view_chatroom)).check(
             atPositionIsInstanceOf(0, BroadcastSpamHandlerUiModel::class.java)
         )
         onView(withId(R.id.title_bc_handle)).check(matches(isDisplayed()))
@@ -126,7 +126,7 @@ class TopchatRoomBuyerBroadcastTest : TopchatRoomTest() {
     }
 
     private fun assertBroadcastSpamHandlerIsHidden() {
-        onView(withId(R.id.recycler_view)).check(
+        onView(withId(R.id.recycler_view_chatroom)).check(
             atPositionIsInstanceOf(0, BroadCastUiModel::class.java)
         )
         onView(withId(R.id.title_bc_handle)).check(doesNotExist())

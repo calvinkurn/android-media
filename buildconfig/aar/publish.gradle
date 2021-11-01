@@ -1,0 +1,62 @@
+apply plugin: 'maven-publish'
+
+android {
+    packagingOptions {
+        pickFirst 'META-INF/*.kotlin_module'
+    }
+}
+
+// TO publish:
+// ./gradlew publishAarPublicationToMavenRepository -PuseAARForDevBuild=false
+publishing {
+    publications {
+        aar(MavenPublication) {
+            project.tasks.publishAarPublicationToMavenLocal.dependsOn("assembleDebug")
+            groupId rootProject.ext.localAARPublishConfig.groupId
+            def pathTrim = project.path
+            if (pathTrim.startsWith(":")) {
+                pathTrim = pathTrim.replaceFirst(":", "")
+            }
+            pathTrim = pathTrim.replace(":", "_")
+            artifactId pathTrim
+            version rootProject.ext.localAARPublishConfig.version
+            artifact("$buildDir/outputs/aar/${project.getName()}-debug.aar")
+            pom.withXml {
+                def dependencies = asNode().appendNode('dependencies')
+                configurations.implementation.allDependencies.each { addDependencyNode(dependencies, it) }
+                configurations.debugImplementation.allDependencies.each { addDependencyNode(dependencies, it) }
+                configurations.api.allDependencies.each { addDependencyNode(dependencies, it) }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url = "$rootDir/localMavenRepository"
+        }
+        project.tasks.publishAarPublicationToMavenRepository.dependsOn("assembleDebug")
+    }
+}
+
+private void addDependencyNode(Node dependencies,Dependency it) {
+    if (it.group == null || it.group == rootProject.ext.localAARPublishConfig.groupId) {
+        println("ignoring dependency ${it.group}:${it.name}:${it.version}")
+        return
+    }
+
+    def dependency = dependencies.appendNode('dependency')
+    if (it.group.contains(rootProject.name)) {
+        dependency.appendNode('groupId', rootProject.ext.localAARPublishConfig.groupId)
+        dependency.appendNode('version', rootProject.ext.localAARPublishConfig.version)
+        def nameTrim = it.dependencyProject.path
+        if (nameTrim.startsWith(":")) {
+            nameTrim = nameTrim.replaceFirst(":", "")
+        }
+        def moduleAarName = nameTrim.replace(":", "_")
+        dependency.appendNode('artifactId', moduleAarName)
+    } else {
+        dependency.appendNode('groupId', it.group)
+        dependency.appendNode('version', it.version)
+        dependency.appendNode('artifactId', it.name)
+    }
+}

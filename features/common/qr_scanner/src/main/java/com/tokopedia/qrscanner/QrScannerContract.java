@@ -31,6 +31,10 @@ public interface QrScannerContract {
         boolean getRemoteConfigForOvoPay();
 
         void goToEventRedeemPage(String url);
+
+        boolean getRemoteConfigPeduliLindungi();
+
+        String getCallbackUrlFromPeduliLindungi();
     }
 
     interface Presenter extends CustomerPresenter<View> {

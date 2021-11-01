@@ -23,7 +23,7 @@ class BuyerOrderDetailBottomSheetManager(
         return ReceiveConfirmationBottomSheet(context, button, bottomSheetManager, viewModel, navigator)
     }
 
-    private fun createSecondaryActionButtonBottomSheet(actionButtonClickListener: ActionButtonClickListener): SecondaryActionButtonBottomSheet {
+    private fun createSecondaryActionButtonBottomSheet(actionButtonClickListener: ActionButtonClickListener?): SecondaryActionButtonBottomSheet {
         return SecondaryActionButtonBottomSheet(context, actionButtonClickListener)
     }
 
@@ -40,7 +40,7 @@ class BuyerOrderDetailBottomSheetManager(
         bottomSheetReceiveConfirmation.show(fragmentManager)
     }
 
-    fun showSecondaryActionButtonBottomSheet(secondaryActionButtons: List<ActionButtonsUiModel.ActionButton>, actionButtonClickListener: ActionButtonClickListener) {
+    fun showSecondaryActionButtonBottomSheet(secondaryActionButtons: List<ActionButtonsUiModel.ActionButton>, actionButtonClickListener: ActionButtonClickListener?) {
         val secondaryActionButtonBottomSheet = secondaryActionButtonBottomSheet
                 ?: createSecondaryActionButtonBottomSheet(actionButtonClickListener)
         this.secondaryActionButtonBottomSheet = secondaryActionButtonBottomSheet

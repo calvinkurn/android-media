@@ -11,7 +11,7 @@
         android:focusable="true"
         app:behavior_hideable="true"
         app:behavior_skipCollapsed="true"
-        app:layout_behavior="com.tokopedia.play.view.custom.behavior.LockableBottomSheetBehavior"
+        app:layout_behavior="com.tokopedia.play_common.util.behavior.LockableBottomSheetBehavior"
         tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout"
         >
 
@@ -67,7 +67,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:unifyButtonType="transaction"
+                app:unifyButtonType="main"
                 />
 
             <View

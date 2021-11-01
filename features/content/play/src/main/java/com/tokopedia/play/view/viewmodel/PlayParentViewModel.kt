@@ -31,7 +31,7 @@ class PlayParentViewModel constructor(
         private val playChannelMapper: PlayChannelDetailsWithRecomMapper,
         private val dispatchers: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
-        private val pageMonitoring: PlayPltPerformanceCallback,
+        pageMonitoring: PlayPltPerformanceCallback,
 ) : ViewModel() {
 
     class Factory @Inject constructor(
@@ -163,6 +163,13 @@ class PlayParentViewModel constructor(
             channelId = channelId,
             source = source
     )
+
+    fun refreshChannel() {
+        startingChannelId?.let {
+            mNextKey = getNextChannelIdKey(it, source)
+            loadNextPage()
+        }
+    }
 
     companion object {
 

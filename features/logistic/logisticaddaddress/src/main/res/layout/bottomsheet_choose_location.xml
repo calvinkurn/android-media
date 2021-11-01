@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/unify_space_16"
     android:id="@+id/bottomsheet_location"
-    android:background="@color/light_N0"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
@@ -16,8 +16,8 @@
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:visibility="visible">
@@ -27,8 +27,8 @@
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_24" />
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp" />
 
     </LinearLayout>
 
@@ -57,9 +57,9 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/btn_info"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_5"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="5dp"
             app:srcCompat="@drawable/ic_help_address"
             android:layout_gravity="center"
             tools:ignore="ContentDescription" />
@@ -74,7 +74,7 @@
             app:typographyType="body_3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_address"
-            android:textColor="@color/Neutral_N700_44"/>
+            android:textColor="@color/Unify_N700_44"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_primary"
@@ -131,7 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
             android:gravity="center"
-            android:textColor="@color/light_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_2" />
 
         <com.tokopedia.unifycomponents.UnifyButton

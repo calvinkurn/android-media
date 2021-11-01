@@ -1,8 +1,8 @@
 package com.tokopedia.hotel.roomlist.presentation.activity.mock
 
 import android.content.Context
-import com.tokopedia.hotel.test.R
 import com.tokopedia.hotel.hoteldetail.presentation.activity.mock.HotelDetailMockResponseConfig
+import com.tokopedia.hotel.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 

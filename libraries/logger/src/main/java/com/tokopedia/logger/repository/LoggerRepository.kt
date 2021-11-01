@@ -2,10 +2,14 @@ package com.tokopedia.logger.repository
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
+import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.datasource.db.LoggerDao
+import com.tokopedia.logger.model.EmbraceBody
+import com.tokopedia.logger.model.LoggerCloudModelWrapper
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.model.scalyr.ScalyrEvent
@@ -19,6 +23,7 @@ import kotlin.coroutines.CoroutineContext
 class LoggerRepository(private val logDao: LoggerDao,
                        private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
                        private val loggerCloudNewRelicImpl: LoggerCloudNewRelicImpl,
+                       private val loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl,
                        private val scalyrConfigs: List<ScalyrConfig>,
                        private val newRelicConfig: NewRelicConfig,
                        private val encrypt: ((String) -> (String))? = null,
@@ -63,17 +68,23 @@ class LoggerRepository(private val logDao: LoggerDao,
                 val jobList = mutableListOf<Deferred<Boolean>>()
 
                 val mappedList = mapLogs(logs)
-                val scalyrEventListList = mappedList.first
-                val newRelicConfigList = mappedList.second
+                val scalyrMessageList = mappedList.scalyrMessageList
+                val newRelicMessageList = mappedList.newRelicMessageList
+                val embraceMessageList = mappedList.embraceMessageList
 
-                if (scalyrEventListList.isNotEmpty()) {
-                    val jobScalyr = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs, scalyrEventListList) }
+                if (scalyrMessageList.isNotEmpty()) {
+                    val jobScalyr = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs, scalyrMessageList) }
                     jobList.add(jobScalyr)
                 }
 
-                if (newRelicConfigList.isNotEmpty()) {
-                    val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfig, logs, newRelicConfigList) }
+                if (newRelicMessageList.isNotEmpty()) {
+                    val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfig, logs, newRelicMessageList) }
                     jobList.add(jobNewRelic)
+                }
+
+                if (embraceMessageList.isNotEmpty()) {
+                    val jobEmbrace = async { sendEmbraceLogToServer(logs, embraceMessageList) }
+                    jobList.add(jobEmbrace)
                 }
 
                 val isSuccess = jobList.awaitAll().any { it }
@@ -92,9 +103,10 @@ class LoggerRepository(private val logDao: LoggerDao,
         return loggerCloudScalyrDataSource.sendLogToServer(config, scalyrEventList)
     }
 
-    private fun mapLogs(logs: List<Logger>): Pair<List<ScalyrEvent>, List<String>> {
+    private fun mapLogs(logs: List<Logger>): LoggerCloudModelWrapper {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         val messageNewRelicList = mutableListOf<String>()
+        val messageEmbraceList = mutableListOf<EmbraceBody>()
         //make the timestamp equals to timestamp when hit the api
         //convert the milli to nano, based on scalyr requirement.
         var counter = 0
@@ -105,11 +117,11 @@ class LoggerRepository(private val logDao: LoggerDao,
             ts += counter
             counter++
             var message = log.message
-            if (decrypt!= null) {
+            if (decrypt != null) {
                 message = decrypt.invoke(message)
             }
             val obj = JSONObject(message)
-            val tagValue = obj.getString (Constants.TAG_LOG) ?: ""
+            val tagValue = obj.getString(Constants.TAG_LOG) ?: ""
             val priorityValue = obj.getString(Constants.PRIORITY_LOG).toIntOrNull()
                     ?: 0
             val priorityName = when (priorityValue) {
@@ -124,8 +136,11 @@ class LoggerRepository(private val logDao: LoggerDao,
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
                 messageNewRelicList.add(addEventNewRelic(message))
             }
+            LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
+                messageEmbraceList.add(EmbraceBody(tagValue, jsonToMapEmbrace(message)))
+            }
         }
-        return Pair(scalyrEventList, messageNewRelicList)
+        return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicList, messageEmbraceList)
     }
 
     suspend fun sendNewRelicLogToServer(config: NewRelicConfig, logs: List<Logger>, messageList: List<String>): Boolean {
@@ -134,6 +149,13 @@ class LoggerRepository(private val logDao: LoggerDao,
         }
 
         return loggerCloudNewRelicImpl.sendToLogServer(config, messageList)
+    }
+
+    suspend fun sendEmbraceLogToServer(logs: List<Logger>, embraceBodyList: List<EmbraceBody>): Boolean {
+        if (logs.isEmpty()) {
+            return false
+        }
+        return loggerCloudEmbraceImpl.sendToLogServer(embraceBodyList)
     }
 
     private fun addEventNewRelic(message: String): String {
@@ -148,6 +170,10 @@ class LoggerRepository(private val logDao: LoggerDao,
         } else {
             str
         }
+    }
+
+    private fun jsonToMapEmbrace(message: String): HashMap<String, Any> {
+        return Gson().fromJson(message, object : TypeToken<HashMap<String, Any>>() {}.type)
     }
 
     override val coroutineContext: CoroutineContext

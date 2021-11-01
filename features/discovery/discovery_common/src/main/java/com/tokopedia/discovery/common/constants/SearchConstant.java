@@ -18,6 +18,8 @@ public interface SearchConstant {
 
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
+    int CPM_TEMPLATE_ID = 4;
+    int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
     interface RecyclerView {
         int VIEW_LIST = 3;
@@ -83,15 +85,21 @@ public interface SearchConstant {
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
         String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
         String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
-        String HEADLINE = "headline";
-        String HEADLINE_TEMPLATE_VALUE = "3,4";
-        String HEADLINE_ITEM_VALUE = "1";
         String SEARCH_PRODUCT_PARAMS = "params";
         String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
         String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
         String SEARCH_PRODUCT_SKIP_GLOBAL_NAV = "skip_global_nav";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL = "skip_inspiration_carousel";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET = "skip_inspiration_widget";
+    }
+
+    interface HeadlineAds {
+        String HEADLINE = "headline";
+        String HEADLINE_TEMPLATE_VALUE = "3,4";
+        int HEADLINE_ITEM_VALUE_FIRST_PAGE = 2;
+        int HEADLINE_ITEM_VALUE_LOAD_MORE = 1;
+        int HEADLINE_PRODUCT_COUNT = 3;
+        String INFINITESEARCH = "infinitesearch";
     }
 
     interface SearchShop {
@@ -172,6 +180,8 @@ public interface SearchConstant {
         String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
         String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
+        String TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS = "annotation_product_color_chips";
+        String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
     }
 
     interface TopAdsComponent {
@@ -186,10 +196,6 @@ public interface SearchConstant {
         String TYPE_GUIDED = "guided";
         String TYPE_CURATED = "curated";
         String TYPE_RELATED = "related";
-    }
-
-    interface ImageUrl {
-        String POWER_MERCHANT_PRO_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/search/PM_Pro_Illustration.png";
     }
 
     interface CustomDimension {

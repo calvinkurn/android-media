@@ -28,10 +28,10 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingLoading
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingSuccess
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoErrorViewHolder
 import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
+import com.tokopedia.seller.menu.databinding.FragmentSellerMenuBinding
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
@@ -42,7 +42,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_seller_menu.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHolder.ShopInfoListener,
@@ -84,6 +84,10 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         ))
     }
 
+    private var binding by autoClearedNullable<FragmentSellerMenuBinding>()
+
+    private val swipeRefreshLayout by lazy { binding?.swipeRefreshLayout }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         setHasOptionsMenu(true)
@@ -92,7 +96,8 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_seller_menu, container, false)
+        binding = FragmentSellerMenuBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -170,7 +175,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     }
 
     private fun setupSwipeRefresh() {
-        swipeRefreshLayout.setOnRefreshListener {
+        swipeRefreshLayout?.setOnRefreshListener {
             showShopInfoLoading()
             viewModel.getShopAccountInfo()
         }
@@ -204,13 +209,13 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun observeShopInfo() {
         observe(viewModel.settingShopInfoLiveData) {
             when (it) {
-                is Success -> showShopInfo(it.data.shopInfo, it.data.shopScore, it.data.shopAge)
+                is Success -> showShopInfo(SettingResponseState.SettingSuccess(it.data.shopInfo), it.data.shopScore, it.data.shopAge)
                 is Fail -> {
-                    showShopInfo(SettingError)
+                    showShopInfo(SettingError(it.throwable))
                     ShopScoreReputationErrorLogger.logToCrashlytic(ShopScoreReputationErrorLogger.SHOP_INFO_SETTING_ERROR, it.throwable)
                 }
             }
-            swipeRefreshLayout.isRefreshing = false
+            swipeRefreshLayout?.isRefreshing = false
         }
     }
 
@@ -219,7 +224,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
             when (it) {
                 is Success -> adapter.showProductSection(it.data)
             }
-            swipeRefreshLayout.isRefreshing = false
+            swipeRefreshLayout?.isRefreshing = false
         }
     }
 
@@ -234,7 +239,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     })
                 }
             }
-            swipeRefreshLayout.isRefreshing = false
+            swipeRefreshLayout?.isRefreshing = false
         }
     }
 
@@ -244,12 +249,13 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
     }
 
-    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Long = 0, shopAge: Long = 0) {
+    private fun <T : Any> showShopInfo(settingResponseState: SettingResponseState<T>, shopScore: Long = 0, shopAge: Long = 0) {
         when (settingResponseState) {
-            is SettingSuccess -> {
-                if (settingResponseState is SettingShopInfoUiModel) {
-                    adapter.showShopInfo(settingResponseState, shopScore, shopAge)
-                    sellerMenuTracker.sendEventViewShopAccount(settingResponseState)
+            is SettingResponseState.SettingSuccess<T> -> {
+                val data = settingResponseState.data
+                if (data is SettingShopInfoUiModel) {
+                    adapter.showShopInfo(data, shopScore, shopAge)
+                    sellerMenuTracker.sendEventViewShopAccount(data)
                 }
             }
             is SettingLoading -> {
@@ -274,7 +280,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         context?.let { context ->
             val menuList = SellerMenuList.create(context, userSession, adminPermissionMapper)
 
-            with(listMenu) {
+            binding?.listMenu?.run {
                 adapter = this@SellerMenuFragment.adapter
                 layoutManager = LinearLayoutManager(context)
             }
@@ -318,7 +324,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     }
                 }
                 smoothScroller.targetPosition = positionShopAccount
-                listMenu?.layoutManager?.startSmoothScroll(smoothScroller)
+                binding?.listMenu?.layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
     }
@@ -327,8 +333,10 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
-                setSupportActionBar(seller_menu_toolbar)
-                seller_menu_toolbar?.title = getString(R.string.title_seller_menu)
+                binding?.sellerMenuToolbar?.let { toolbar ->
+                    setSupportActionBar(toolbar)
+                    toolbar.title = getString(R.string.title_seller_menu)
+                }
             }
         }
     }

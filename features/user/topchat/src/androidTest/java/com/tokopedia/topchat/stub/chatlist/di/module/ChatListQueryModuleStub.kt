@@ -23,13 +23,6 @@ class ChatListQueryModuleStub(
     @ChatListScope
     @Provides
     @IntoMap
-    @StringKey(ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE)
-    fun provideRawQueryDeleteChatListMessage(@TopchatContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_delete)
-
-    @ChatListScope
-    @Provides
-    @IntoMap
     @StringKey(ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ)
     fun provideRawQueryMutationMarkChatAsRead(@TopchatContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_chat_mark_read)

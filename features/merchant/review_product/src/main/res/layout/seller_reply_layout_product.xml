@@ -15,10 +15,10 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/dp_10"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_10">
+            android:paddingBottom="10dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="10dp">
 
             <LinearLayout
                 android:id="@+id/container_like"
@@ -28,10 +28,10 @@
 
                 <ImageView
                     android:id="@+id/icon_like"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_marginEnd="5dp"
                     android:contentDescription="@string/content_description_like"
                     app:srcCompat="@drawable/ic_like_normal" />
 
@@ -63,11 +63,11 @@
 
                 <ImageView
                     android:id="@+id/reply_chevron"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_8"
+                    android:layout_width="16dp"
+                    android:layout_height="8dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/dp_5"
-                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:contentDescription="@string/content_description_reply_chevron"
                     app:srcCompat="@drawable/ic_arrow_down_grey" />
             </LinearLayout>
@@ -78,11 +78,11 @@
             android:id="@+id/reply_review_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:background="@color/Unify_N0"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -101,7 +101,7 @@
                     <TextView
                         android:textColor="@color/Unify_N700_68"
                         style="@style/TextView.Small.BlackSecondary"
-                        android:layout_marginEnd="@dimen/dp_5"
+                        android:layout_marginEnd="5dp"
                         android:text="@string/product_review_label_by" />
 
                     <TextView
@@ -124,13 +124,13 @@
                     <TextView
                         android:id="@+id/seller_label"
                         style="@style/TextView.Micro.Green.Bold"
-                        android:layout_marginEnd="@dimen/dp_5"
+                        android:layout_marginEnd="5dp"
                         android:background="@drawable/label_seller_review_product"
                         android:gravity="center_horizontal"
-                        android:paddingBottom="@dimen/dp_2"
-                        android:paddingLeft="@dimen/dp_10"
-                        android:paddingRight="@dimen/dp_10"
-                        android:paddingTop="@dimen/dp_2"
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="2dp"
                         android:text="@string/seller"
                         android:textSize="@dimen/sp_12" />
 
@@ -147,7 +147,7 @@
                 <TextView
                     android:id="@+id/seller_reply"
                     style="@style/TextView.Micro.BlackSecondary"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="10dp"
                     android:enabled="true"
                     android:focusable="true"
                     android:fontFamily="sans-serif"

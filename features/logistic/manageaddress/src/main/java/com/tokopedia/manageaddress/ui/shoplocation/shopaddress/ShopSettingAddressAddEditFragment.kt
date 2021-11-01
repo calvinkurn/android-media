@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.address.view
+package com.tokopedia.manageaddress.ui.shoplocation.shopaddress
 
 import android.app.Activity
 import android.content.Intent
@@ -17,8 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
-import com.tokopedia.shop.settings.address.presenter.ShopSettingAddressAddEditPresenter
-import com.tokopedia.shop.settings.address.view.listener.ShopSettingAddressAddEditView
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.listener.ShopSettingAddressAddEditView
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_shop_address_add.*
 import javax.inject.Inject
@@ -149,7 +148,8 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private fun gotoDistrictActivity() {
         if (activity != null){
             startActivityForResult(RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS),
-                DISTRICT_RECOMMENDATION_REQUEST_CODE)
+                DISTRICT_RECOMMENDATION_REQUEST_CODE
+            )
         }
     }
 
@@ -170,7 +170,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                 selectedCityId = it.getInt(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, -1)
                 selectedDistrictId = it.getInt(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, -1)
                 zipCodes.clear()
-                zipCodes.addAll(it.getStringArrayList(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES) ?: listOf())
+                zipCodes.addAll(it.getStringArrayList(
+                    INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES
+                ) ?: listOf())
                 updateAutoTextZipCodes()
             }
         }

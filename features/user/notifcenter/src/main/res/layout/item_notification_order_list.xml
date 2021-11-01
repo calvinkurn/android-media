@@ -14,6 +14,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_order_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/notif_dp_12"
+        android:paddingEnd="@dimen/notif_dp_12"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:orientation="horizontal" />
+
     <View
         android:layout_width="0dp"
         android:layout_height="@dimen/notif_dp_1"
@@ -21,37 +34,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <com.tokopedia.notifcenter.widget.ItemOrderListLinearLayout
-        android:id="@+id/ll_first_card"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/notif_dp_10"
-        android:layout_marginTop="@dimen/notif_dp_6"
-        android:layout_marginBottom="@dimen/notif_dp_6"
-        android:minHeight="@dimen/unify_space_32"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ll_second_card"
-        app:layout_constraintHorizontal_weight="6.75"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RtlSymmetry" />
-
-    <com.tokopedia.notifcenter.widget.ItemOrderListLinearLayout
-        android:id="@+id/ll_second_card"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/notif_dp_6"
-        android:layout_marginEnd="@dimen/notif_dp_10"
-        android:layout_marginBottom="@dimen/notif_dp_6"
-        android:minHeight="@dimen/unify_space_32"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="3.25"
-        app:layout_constraintStart_toEndOf="@+id/ll_first_card"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RtlSymmetry" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

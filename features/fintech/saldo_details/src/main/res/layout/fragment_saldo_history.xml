@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_N0"
-    android:orientation="vertical"
-    android:padding="@dimen/unify_space_2">
+    android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/deposit_summary_title_tv"
@@ -19,139 +18,63 @@
         android:paddingEnd="@dimen/sd_dp_18"
         android:paddingRight="@dimen/sd_dp_18"
         android:text="@string/sp_transaction_history_heading"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4" />
 
-    <LinearLayout
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/cardUnifyDateContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:padding="@dimen/sd_dp_18"
-        android:weightSum="2">
-
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:padding="@dimen/unify_space_8">
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/start_date_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/start_date_heading_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="6sp"
-                android:text="@string/sp_start_date"
-                android:textColor="@color/Unify_N700_44"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="small" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/start_date_calendar_icon"
+                android:id="@+id/iconCalender"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="@dimen/unify_space_24"
                 android:layout_height="@dimen/unify_space_24"
-                android:layout_marginTop="@dimen/unify_space_8"
-                app:icon_color_light_disabled="@color/Unify_N200"
-                app:icon_color_light_enable="@color/Unify_N200"
-                app:icon_color_night_disabled="@color/Unify_N500"
-                app:icon_color_night_enable="@color/Unify_N500"
                 app:icon_name="CALENDAR"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/start_date_heading_tv" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:icon_color_light_enable="@color/Unify_N500"
+                app:icon_color_night_enable="@color/Unify_N500"/>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/start_date_tv"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvSelectedDateRange"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_16"
-                android:drawablePadding="@dimen/sd_dp_15"
-                android:lineSpacingExtra="@dimen/unify_space_8"
-                android:textColor="@color/Unify_G400"
-                app:layout_constraintBottom_toBottomOf="@+id/start_date_calendar_icon"
-                app:layout_constraintStart_toEndOf="@+id/start_date_calendar_icon"
-                app:layout_constraintTop_toTopOf="@id/start_date_calendar_icon"
-                app:typographyType="body_2"
-                tools:text="08 Apr 2021" />
+                android:textColor="@color/Unify_N700_68"
+                tools:text="1 Des 2020 - 31 Des 2020"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/selectDateIcon"
+                app:layout_constraintStart_toEndOf="@id/iconCalender"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="@dimen/unify_space_8"/>
 
-            <com.tokopedia.unifycomponents.DividerUnify
-                android:layout_width="0dp"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="@dimen/unify_space_8"
-                android:background="@color/Unify_N700"
-                app:layout_constraintEnd_toEndOf="@+id/start_date_tv"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/start_date_calendar_icon" />
-
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/selectDateIcon"
+                android:layout_width="@dimen/unify_space_24"
+                android:layout_height="@dimen/unify_space_24"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:icon_color_light_enable="@color/Unify_N500"
+                app:icon_color_night_enable="@color/Unify_N500"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View
-            android:layout_width="4dp"
-            android:layout_height="2dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/unify_space_8"
-            android:layout_marginEnd="@dimen/unify_space_32"
-            android:background="@color/Unify_N700_68" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/end_date_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/end_date_heading_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="6sp"
-                android:text="@string/sp_end_date"
-                android:textColor="@color/Unify_N700_44"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="small" />
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/end_date_calendar_icon"
-                android:layout_width="@dimen/unify_space_24"
-                android:layout_height="@dimen/unify_space_24"
-                android:layout_marginTop="@dimen/unify_space_8"
-                app:icon_color_light_disabled="@color/Unify_N200"
-                app:icon_color_light_enable="@color/Unify_N200"
-                app:icon_color_night_disabled="@color/Unify_N500"
-                app:icon_color_night_enable="@color/Unify_N500"
-                app:icon_name="CALENDAR"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/end_date_heading_tv" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/end_date_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_16"
-                android:drawablePadding="@dimen/sd_dp_15"
-                android:lineSpacingExtra="@dimen/unify_space_8"
-                android:textColor="@color/Unify_G400"
-                app:layout_constraintBottom_toBottomOf="@+id/end_date_calendar_icon"
-                app:layout_constraintStart_toEndOf="@+id/end_date_calendar_icon"
-                app:layout_constraintTop_toTopOf="@id/end_date_calendar_icon"
-                app:typographyType="body_2"
-                tools:text="08 Apr 2021" />
-
-            <com.tokopedia.unifycomponents.DividerUnify
-                android:layout_width="0dp"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="@dimen/unify_space_8"
-                app:layout_constraintEnd_toEndOf="@+id/end_date_tv"
-                app:layout_constraintStart_toStartOf="parent"
-                android:background="@color/Unify_N700"
-                app:layout_constraintTop_toBottomOf="@+id/end_date_calendar_icon" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
-
+    </com.tokopedia.unifycomponents.CardUnify>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -160,8 +83,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <com.tokopedia.unifycomponents.TabsUnify
-            android:id="@+id/transaction_history_tab_layout"
-            style="?tabTheme"
+            android:id="@+id/saldoTransactionTabsUnify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabGravity="fill"
@@ -170,13 +92,8 @@
             app:tabSelectedTextColor="@color/Unify_G400"
             app:tabTextColor="@color/Unify_N700_44" />
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/transaction_history_tab_view_separator"
-            android:layout_width="match_parent"
-            android:layout_height="1dp" />
-
-        <com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager
-            android:id="@+id/transaction_history_view_pager"
+        <com.tokopedia.saldodetails.commom.design.HeightWrappingViewPager
+            android:id="@+id/transactionHistoryViewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

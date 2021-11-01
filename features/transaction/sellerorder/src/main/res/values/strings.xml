@@ -259,7 +259,9 @@
     <string name="som_list_bulk_print_dialog_print_button">Ya, Cetak Label</string>
     <string name="som_list_bulk_print_dialog_cancel_print_button">Batal</string>
     <string name="som_list_bulk_print_button">Cetak Label Sekaligus</string>
+    <string name="som_list_bulk_request_pickup_button">Request Pick-up Sekaligus</string>
     <string name="som_print_awb_error_message">Terjadi kesalahan, silahkan coba lagi.</string>
+    <string name="som_print_awb_error_message_unsupported_operation">Oops, perangkatmu tidak mendukung fitur cetak label.</string>
 
     <string name="som_detail_som_print_not_available">Fitur ini hanya tersedia di aplikasi Tokopedia Seller</string>
     <string name="som_detail_other_bottomsheet_title">Lainnya</string>
@@ -274,4 +276,31 @@
 
     <string name="som_request_pickup_bottomsheet_title">Jadwal Pickup</string>
     <string name="label_welcome_to_som_page">Selamat datang di halaman penjualan</string>
+
+    <!-- Bulk Request Pickup -->
+    <string name="som_list_bulk_request_pickup_loading">Sedang request pick-up %s pesanan</string>
+    <string name="som_list_bulk_request_pickup_desc_loading">Nggak pakai lama, Toped sedang request pick-up pesanan kamu sekaligus.</string>
+
+    <string name="som_list_bulk_request_pickup_title_success">Berhasil request pick-up %s pesanan</string>
+    <string name="som_list_bulk_request_pickup_desc_success">Yay, sekarang kamu cukup tunggu hingga semua pesanan dipick-up.</string>
+    <string name="som_list_bulk_request_pickup_partial_all_fail_success">Ada %1s pesanan yang tidak bisa dipick-up dan %2s pesanan yang belum terproses, nih.</string>
+    <string name="som_list_bulk_request_pickup_partial_partial_fail_success">Ada %s pesanan yang belum terproses, nih.</string>
+
+    <string name="som_list_bulk_request_pickup_title_not_eligible_fail">Yaah, gagal request pick-up %s pesanan</string>
+
+    <string name="som_list_bulk_request_pickup_title_fail">Yaah, gagal request pick-up</string>
+
+    <string name="som_list_bulk_request_pickup_desc_fail_error">Sedang ada gangguan. Coba lagi atau cek ulang pesananmu, ya.</string>
+    <string name="som_list_bulk_request_pickup_desc_fail_all_validation">Tidak ada pesanan yang siap di pickup.</string>
+    <string name="som_list_bulk_request_pickup_desc_fail_partial">Ada pesanan yang tidak bisa dipick-up.</string>
+
+    <string name="som_list_bulk_request_pickup_desc_partial_success_not_eligible">Ada %s pesanan yang tidak bisa dipick-up, nih.</string>
+
+    <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_retry_pickup_order">Pick-up %s Pesanan</string>
+
+    <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_can_retry">Coba Lagi</string>
+    <string name="som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry">Kembali</string>
+
+    <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_cant_retry">Oke Deh</string>
+    <string name="som_total_price">Total Harga Paket</string>
 </resources>

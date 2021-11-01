@@ -3,7 +3,6 @@ package com.tokopedia.hotel.booking
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -18,6 +17,7 @@ import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
 import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -102,7 +102,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -122,7 +122,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(HotelCart.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -141,7 +141,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -160,7 +160,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(HotelCheckoutResponse.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         //when
@@ -178,7 +178,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -193,7 +193,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(FlightCancelVoucher::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         //when
@@ -208,7 +208,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -226,7 +226,7 @@ class HotelBookingViewModelTest {
                 mapOf<Type, List<GraphqlError>>(TokopointsSumCoupon.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlFailResponse
 
         //when

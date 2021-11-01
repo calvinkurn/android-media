@@ -1,0 +1,49 @@
+{
+  "readme": "Choose another otp method",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "Input OTP google_authenticator",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "eventCategory": "otp page",
+      "event": "clickOtp",
+      "eventAction": "click gunakan metode lain",
+      "sessionIris": ".*",
+      "eventLabel": ".+ - google_authenticator"
+    },
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    }
+  ]
+}

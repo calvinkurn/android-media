@@ -2,11 +2,12 @@ package com.tokopedia.localizationchooseaddress.domain.model
 
 data class DefaultChosenAddressModel(
         var addressData: DefaultChosenAddress = DefaultChosenAddress(),
+        var tokonow: TokonowModel = TokonowModel(),
         var keroAddrError: KeroDefaultAddressError = KeroDefaultAddressError()
 )
 
 data class DefaultChosenAddress(
-        var addressId: Int = 0,
+        var addressId: Long = 0,
         var receiverName: String = "",
         var addressName: String = "",
         var address1: String = "",

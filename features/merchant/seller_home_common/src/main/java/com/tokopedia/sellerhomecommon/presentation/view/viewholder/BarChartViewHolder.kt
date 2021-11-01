@@ -14,34 +14,33 @@ import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcBarChartWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.*
-import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.shc_bar_chart_widget.view.*
-import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
-import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
-import kotlinx.android.synthetic.main.shc_partial_common_widget_state_loading.view.*
-import kotlinx.android.synthetic.main.shc_partial_line_graph_state_empty.view.*
 
 /**
  * Created By @ilhamsuaib on 09/07/20
  */
 
 class BarChartViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<BarChartWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_bar_chart_widget
+        private const val ANIMATION_DURATION = 200
     }
 
-    private val emptyState: CardUnify? = itemView?.findViewById(R.id.bar_chart_empty_state)
-    private val emptyStateTitle: Typography? = itemView?.findViewById(R.id.tv_shc_bar_chart_empty_state_title)
-    private val emptyStateDesc: Typography? = itemView?.findViewById(R.id.tv_shc_bar_chart_empty_state_desc)
-    private val emptyStateCta: Typography? = itemView?.findViewById(R.id.tv_shc_bar_chart_empty_state_cta)
+    private val binding by lazy {
+        ShcBarChartWidgetBinding.bind(itemView)
+    }
+    private val emptyStateBinding by lazy { binding.shcBarChartEmptyState }
+    private val errorStateBinding by lazy { binding.shcBarChartErrorState }
+    private val loadingStateBinding by lazy { binding.shcBarChartLoadingState }
 
     private var showAnimation: ValueAnimator? = null
     private var hideAnimation: ValueAnimator? = null
@@ -54,15 +53,16 @@ class BarChartViewHolder(
 
     private fun observeState(element: BarChartWidgetUiModel) {
         if (!listener.getIsShouldRemoveWidget()) {
-            itemView.toggleWidgetHeight(true)
+            binding.root.toggleWidgetHeight(true)
         }
         showAnimation?.end()
         hideAnimation?.end()
-        with(itemView) {
+        with(binding) {
             tvShcBarChartTitle.text = element.title
         }
 
         setupTooltip(element)
+        setTagNotification(element.tag)
 
         val data = element.data
 
@@ -77,65 +77,81 @@ class BarChartViewHolder(
     }
 
     private fun setOnLoading() {
-        with(itemView) {
-            shimmerWidgetCommon.visible()
-            commonWidgetErrorState.gone()
+        with(binding) {
+            loadingStateBinding.shimmerWidgetCommon.visible()
+            errorStateBinding.commonWidgetErrorState.gone()
             tvShcBarChartValue.gone()
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
-            emptyState?.gone()
+            emptyStateBinding.shcBarChartEmptyState.gone()
         }
     }
 
     private fun setonError(element: BarChartWidgetUiModel) {
-        with(itemView) {
-            shimmerWidgetCommon.gone()
-            commonWidgetErrorState.visible()
+        with(binding) {
+            loadingStateBinding.shimmerWidgetCommon.gone()
+            errorStateBinding.commonWidgetErrorState.visible()
             tvShcBarChartValue.gone()
             tvShcBarChartSubValue.gone()
             barChartShc.gone()
-            emptyState?.gone()
+            emptyStateBinding.shcBarChartEmptyState.gone()
 
-            ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+            ImageHandler.loadImageWithId(
+                errorStateBinding.imgWidgetOnError,
+                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+            )
         }
     }
 
     private fun setOnSuccess(element: BarChartWidgetUiModel) {
-        with(itemView) {
-            shimmerWidgetCommon.gone()
-            commonWidgetErrorState.gone()
+        loadingStateBinding.shimmerWidgetCommon.gone()
+        errorStateBinding.commonWidgetErrorState.gone()
 
-            showEmptyState = showEmpty(element)
+        showEmptyState = showEmpty(element)
 
-            showBarChart(element)
+        showBarChart(element)
 
-            if (element.isEmpty()) {
-                if (element.isShowEmpty) {
-                    if (element.shouldShowEmptyStateIfEmpty()) {
-                        setupEmptyState(element)
-                    } else {
-                        animateHideEmptyState()
-                    }
+        if (element.isEmpty()) {
+            if (element.isShowEmpty) {
+                if (element.shouldShowEmptyStateIfEmpty()) {
+                    setupEmptyState(element)
                 } else {
-                    if (listener.getIsShouldRemoveWidget()) {
-                        listener.removeWidget(adapterPosition, element)
-                    } else {
-                        listener.onRemoveWidget(adapterPosition)
-                        itemView.toggleWidgetHeight(false)
-                    }
+                    animateHideEmptyState()
                 }
             } else {
-                animateHideEmptyState()
+                if (listener.getIsShouldRemoveWidget()) {
+                    listener.removeWidget(adapterPosition, element)
+                } else {
+                    listener.onRemoveWidget(adapterPosition)
+                    itemView.toggleWidgetHeight(false)
+                }
+            }
+        } else {
+            animateHideEmptyState()
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(binding) {
+            notifTagBarChart.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagBarChart.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
             }
         }
     }
 
     private fun getBarChartConfig(element: BarChartWidgetUiModel): BarChartConfigModel {
-        val labelTextColor = itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        val labelTextColor =
+            itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
         val data = getBarChartData(element.data?.chartData)
         return BarChartConfig.create {
-            xAnimationDuration { 200 }
-            yAnimationDuration { 200 }
+            xAnimationDuration { ANIMATION_DURATION }
+            yAnimationDuration { ANIMATION_DURATION }
             barBorderRadius { itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1) }
 
             xAxis {
@@ -163,35 +179,38 @@ class BarChartViewHolder(
 
     private fun getBarChartTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, R.layout.shc_partial_chart_tooltip)
-                .setOnDisplayContent { view, data, x, y ->
-                    (data as? BarChartMetricValue)?.let {
-                        view.tvShcTooltipTitle.text = it.xLabel
-                        view.tvShcTooltipValue.text = it.yLabel
-                    }
+            .setOnDisplayContent { view, data, x, y ->
+                (data as? BarChartMetricValue)?.let {
+                    view.findViewById<Typography>(R.id.tvShcTooltipTitle).text = it.xLabel
+                    view.findViewById<Typography>(R.id.tvShcTooltipValue).text = it.yLabel
                 }
+            }
     }
 
-    private fun openAppLink(appLink: String, dataKey: String, value: String) {
+    private fun openAppLink(appLink: String) {
         RouteManager.route(itemView.context, appLink)
     }
 
     private fun getBarChartData(data: BarChartUiModel?): BarChartData {
         return BarChartData(
-                yAxis = getAxisLabels(data?.yAxis),
-                xAxisLabels = getAxisLabels(data?.xAxis),
-                metrics = getBarChartMetric(data?.metrics, data?.xAxis.orEmpty())
+            yAxis = getAxisLabels(data?.yAxis),
+            xAxisLabels = getAxisLabels(data?.xAxis),
+            metrics = getBarChartMetric(data?.metrics, data?.xAxis.orEmpty())
         )
     }
 
-    private fun getBarChartMetric(metrics: List<BarChartMetricsUiModel>?, xLabels: List<BarChartAxisUiModel>): List<BarChartMetric> {
+    private fun getBarChartMetric(
+        metrics: List<BarChartMetricsUiModel>?,
+        xLabels: List<BarChartAxisUiModel>
+    ): List<BarChartMetric> {
         return metrics?.map {
             BarChartMetric(
-                    title = it.title,
-                    barHexColor = it.barHexColor,
-                    values = it.value.mapIndexed { i, item ->
-                        val xLabel = getXLabel(xLabels, i)
-                        return@mapIndexed BarChartMetricValue(item.value, item.valueFmt, xLabel)
-                    }
+                title = it.title,
+                barHexColor = it.barHexColor,
+                values = it.value.mapIndexed { i, item ->
+                    val xLabel = getXLabel(xLabels, i)
+                    return@mapIndexed BarChartMetricValue(item.value, item.valueFmt, xLabel)
+                }
             )
         }.orEmpty()
     }
@@ -208,9 +227,10 @@ class BarChartViewHolder(
         return axisList?.map { AxisLabel(it.value.toFloat(), it.valueFmt) }.orEmpty()
     }
 
-    private fun setupTooltip(element: BarChartWidgetUiModel) = with(itemView) {
+    private fun setupTooltip(element: BarChartWidgetUiModel) = with(binding) {
         val tooltip = element.tooltip
-        val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+        val shouldShowTooltip =
+            (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
         if (shouldShowTooltip) {
             tvShcBarChartTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
             tvShcBarChartTitle.setOnClickListener {
@@ -223,19 +243,30 @@ class BarChartViewHolder(
 
     private fun showBarChart(element: BarChartWidgetUiModel) {
         val data = element.data
-        with(itemView) {
+        with(binding) {
             tvShcBarChartValue.visible()
             tvShcBarChartSubValue.visible()
             barChartShc.visible()
 
             tvShcBarChartValue.text = element.data?.chartData?.summary?.valueFmt.orEmpty()
-            tvShcBarChartSubValue.text = element.data?.chartData?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
+            tvShcBarChartSubValue.text =
+                element.data?.chartData?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
 
             barChartShc.init(getBarChartConfig(element))
             barChartShc.setData(getBarChartData(data?.chartData))
             barChartShc.invalidateChart()
 
-            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
+            setupSeeMoreCta(element)
+
+            root.addOnImpressionListener(element.impressHolder) {
+                listener.sendBarChartImpressionEvent(element)
+            }
+        }
+    }
+
+    private fun setupSeeMoreCta(element: BarChartWidgetUiModel) {
+        with(binding) {
+            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
             val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
             btnShcBarChartMore.visibility = ctaVisibility
             btnShcBarChartNext.visibility = ctaVisibility
@@ -243,17 +274,18 @@ class BarChartViewHolder(
 
             if (isCtaVisible) {
                 btnShcBarChartMore.setOnClickListener {
-                    openAppLink(element.appLink, element.dataKey, element.data?.chartData?.summary?.valueFmt.orEmpty())
+                    onSeeMoreClicked(element)
                 }
                 btnShcBarChartNext.setOnClickListener {
-                    openAppLink(element.appLink, element.dataKey, element.data?.chartData?.summary?.valueFmt.orEmpty())
+                    onSeeMoreClicked(element)
                 }
             }
-
-            addOnImpressionListener(element.impressHolder) {
-                listener.sendBarChartImpressionEvent(element)
-            }
         }
+    }
+
+    private fun onSeeMoreClicked(element: BarChartWidgetUiModel) {
+        listener.sendBarChartSeeMoreClickEvent(element)
+        openAppLink(element.appLink)
     }
 
     private fun showEmpty(element: BarChartWidgetUiModel): Boolean {
@@ -262,9 +294,9 @@ class BarChartViewHolder(
 
     private fun setupEmptyState(element: BarChartWidgetUiModel) {
         with(element.emptyState) {
-            emptyStateTitle?.text = title
-            emptyStateDesc?.text = description
-            emptyStateCta?.run {
+            emptyStateBinding.tvShcBarChartEmptyStateTitle.text = title
+            emptyStateBinding.tvShcBarChartEmptyStateDesc.text = description
+            emptyStateBinding.tvShcBarChartEmptyStateCta.run {
                 text = ctaText
                 setOnClickListener {
                     if (RouteManager.route(itemView.context, appLink)) {
@@ -279,7 +311,7 @@ class BarChartViewHolder(
 
     private fun View?.animatePop(from: Float, to: Float): ValueAnimator {
         val animator = ValueAnimator.ofFloat(from, to)
-        animator.duration = 200L
+        animator.duration = ANIMATION_DURATION.toLong()
         animator.addUpdateListener { valueAnimator ->
             this?.context?.let {
                 scaleX = (valueAnimator.animatedValue as? Float).orZero()
@@ -292,20 +324,20 @@ class BarChartViewHolder(
 
     private fun animateShowEmptyState() {
         if (hideAnimation?.isRunning == true) hideAnimation?.end()
-        if (emptyState?.isVisible == true) return
-        emptyState?.show()
-        showAnimation = emptyState?.animatePop(0f, 1f)
+        if (emptyStateBinding.shcBarChartEmptyState.isVisible) return
+        emptyStateBinding.shcBarChartEmptyState.show()
+        showAnimation = emptyStateBinding.shcBarChartEmptyState.animatePop(0f, 1f)
     }
 
     private fun animateHideEmptyState() {
         if (showAnimation?.isRunning == true) showAnimation?.end()
-        if (emptyState?.isVisible != true) return
-        hideAnimation = emptyState.animatePop(1f, 0f)
+        if (!emptyStateBinding.shcBarChartEmptyState.isVisible) return
+        hideAnimation = emptyStateBinding.shcBarChartEmptyState.animatePop(1f, 0f)
         hideAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                emptyState.gone()
+                emptyStateBinding.shcBarChartEmptyState.gone()
                 hideAnimation?.removeListener(this)
             }
 
@@ -324,14 +356,18 @@ class BarChartViewHolder(
      */
     private fun setMarginFromLongestYAxisValue(element: BarChartWidgetUiModel) {
         element.data?.chartData?.yAxis?.lastOrNull()?.valueFmt?.length?.let { valueLength ->
-            val pxPerChar = itemView.resources?.getDimensionPixelOffset(R.dimen.shc_dimen_6dp).orZero()
-            val startMargin = itemView.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).orZero()
+            val pxPerChar =
+                itemView.resources?.getDimensionPixelOffset(R.dimen.shc_dimen_6dp).orZero()
+            val startMargin =
+                itemView.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+                    .orZero()
             val textMarginPx = pxPerChar * valueLength
-            val emptyStateLayoutParams = (emptyState?.layoutParams as? ConstraintLayout.LayoutParams)?.apply {
-                setMargins(startMargin + textMarginPx, topMargin, rightMargin, bottomMargin)
-            }
+            val emptyStateLayoutParams =
+                (emptyStateBinding.shcBarChartEmptyState.layoutParams as? ConstraintLayout.LayoutParams)?.apply {
+                    setMargins(startMargin + textMarginPx, topMargin, rightMargin, bottomMargin)
+                }
             emptyStateLayoutParams?.let {
-                emptyState?.layoutParams = it
+                emptyStateBinding.shcBarChartEmptyState.layoutParams = it
             }
         }
     }
@@ -339,7 +375,7 @@ class BarChartViewHolder(
     interface Listener : BaseViewHolderListener {
 
         fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {}
-        fun sendBarChartEmptyStateCtaClick(element: BarChartWidgetUiModel) {}
-
+        fun sendBarChartEmptyStateCtaClick(model: BarChartWidgetUiModel) {}
+        fun sendBarChartSeeMoreClickEvent(model: BarChartWidgetUiModel) {}
     }
 }

@@ -51,6 +51,7 @@ object ApplinkConstInternalGlobal {
     const val PARAM_ENABLE_SKIP_2FA = "enable_skip_2fa"
     const val PARAM_IS_LOGIN_REGISTER_FLOW = "isLoginRegisterFlow"
     const val PARAM_IS_SUCCESS_REGISTER = "isSuccessRegister"
+    const val PARAM_LD = "redirectionApplink"
 
     // WithdrawActivity
     // tokopedia-android-internal://global/withdraw
@@ -135,6 +136,11 @@ object ApplinkConstInternalGlobal {
     const val PARAM_PROJECT_ID = "projectId"
 
     const val PARAM_CALL_BACK = "callBack"
+
+    // UserIdentificationInfoSimpleActivity
+    // tokopedia-android-internal://global/user-identification-only
+    @JvmField
+    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}"
 
     // InboxTalkActivity
     // tokopedia-android-internal://global/inbox-talk
@@ -260,6 +266,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/change-password
     const val CHANGE_PASSWORD = "$INTERNAL_GLOBAL/change-password"
 
+    // LinkAccountActivity
+    // tokopedia-android-internal://global/link-account
+    const val LINK_ACCOUNT = "$INTERNAL_GLOBAL/link-account"
+
     // HasPasswordActivity
     // tokopedia-android-internal://global/has-password
     const val HAS_PASSWORD = "$INTERNAL_GLOBAL/has-password"
@@ -271,9 +281,16 @@ object ApplinkConstInternalGlobal {
     // WebViewActivity (Web View in library)
     // Solution for sellerapp that does not have AppLinkWebsiteActivity
     // Activity can have title by putting "title=.."
+    const val WEBVIEW_BASE = "$INTERNAL_GLOBAL/webview"
+    const val BROWSER = "$INTERNAL_GLOBAL/browser"
+
     const val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
 
+    const val WEBVIEW_DOWNLOAD = "$INTERNAL_GLOBAL/webviewdownload"
+    const val WEBVIEW_BACK_HOME = "$INTERNAL_GLOBAL/webviewbackhome"
+
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
+    const val IMAGE_PICKER_V2 = "$INTERNAL_GLOBAL/image-picker/v2/"
 
     const val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
@@ -453,6 +470,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/new-home-account
     const val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
 
+    // FundsAndInvestmentActivity
+    // tokopedia-android-internal://global/funds-and-investment
+    const val FUNDS_AND_INVESTMENT = "$INTERNAL_GLOBAL/funds-and-investment"
+
     // ChooseAccountFingerprintActivity
     // tokopedia-android-internal://global/choose-account-fingerprint
     const val CHOOSE_ACCOUNT_FINGERPRINT = "$INTERNAL_GLOBAL/choose-account-fingerprint"
@@ -478,4 +499,20 @@ object ApplinkConstInternalGlobal {
     // OvoRegisterInitialActivity
     // tokopedia-android-internal://global/ovo-reg-init
     const val OVO_REG_INIT = "$INTERNAL_GLOBAL/ovo-reg-init"
+
+    // TelephonyActivity
+    // tokopedia-android-internal://global/telephony-masking
+    const val TELEPHONY_MASKING = "$INTERNAL_GLOBAL/telephony-masking"
+
+    // GlobalSharingActivity
+    // tokopedia-android-internal://global/global-sharing
+    const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
+
+
+    // LinkAccountWebViewActivity
+    // tokopedia-android-internal://global/link-account-webview
+    const val LINK_ACCOUNT_WEBVIEW = "$INTERNAL_GLOBAL/link-account-webview"
+
+    //TkpdYoutubeVideoActivity
+    const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"
 }

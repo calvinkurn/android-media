@@ -50,5 +50,5 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
 
-    implementation project(rootProject.ext.features.profile)
+    implementation projectOrAar(rootProject.ext.features.profile)
 }

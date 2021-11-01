@@ -29,7 +29,7 @@ import org.junit.Test
 import com.tokopedia.home_account.test.R
 import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
 import com.tokopedia.home_account.view.custom.SwipeRecyclerView
-import com.tokopedia.home_account.view.viewholder.ProductItemViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.ProductItemViewHolder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 class HomeAccountNewTopAdsVerificationTest {

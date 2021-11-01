@@ -5,19 +5,20 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.CpmDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
-import com.tokopedia.topads.sdk.domain.model.Cpm
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
 import io.mockk.every
 import io.mockk.slot
 import org.junit.Test
 import rx.Subscriber
 
-private const val searchProductHeadlineAdsTopJSON = "searchproduct/headlineads/headline-ads-top.json"
-private const val searchProductHeadlineAdsAdditionalPosition14JSON = "searchproduct/headlineads/headline-ads-additional-position-14.json"
-private const val searchProductHeadlineAdsAdditionalPosition24JSON = "searchproduct/headlineads/headline-ads-additional-position-24.json"
-private const val searchProductHeadlineAdsAdditionalPositionNegativeJSON = "searchproduct/headlineads/headline-ads-additional-position-negative.json"
+private const val headlineAdsSingleFirstPage = "searchproduct/headlineads/headline-ads-single-first-page.json"
+private const val headlineAdsMultipleFirstPage = "searchproduct/headlineads/headline-ads-multiple-first-page.json"
+private const val headlineAdsMultipleSecondPage = "searchproduct/headlineads/headline-ads-multiple-second-page.json"
 
 internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() {
 
@@ -26,13 +27,14 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
     @Test
     fun `Single headline ads at top`() {
-        val searchProductModel = searchProductHeadlineAdsTopJSON.jsonToObject<SearchProductModel>()
+        val searchProductModel = headlineAdsSingleFirstPage.jsonToObject<SearchProductModel>()
         `Given search product API will return search product model`(searchProductModel)
         `Given visitable list will be captured`()
 
         `When load data`()
 
-        `Then verify CPM at the top of list`()
+        val expectedCpmModel = searchProductModel.cpmModel
+        `Then verify CPM at the top of list`(expectedCpmModel, expectedCpmModel.data.first())
     }
 
     private fun `Given search product API will return search product model`(searchProductModel: SearchProductModel) {
@@ -55,67 +57,73 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         productListPresenter.loadData(mapOf())
     }
 
-    private fun `Then verify CPM at the top of list`() {
-        visitableList.first().shouldBeInstanceOf<CpmDataView>()
+    private fun `Then verify CPM at the top of list`(
+        expectedCpmModel: CpmModel,
+        expectedCpmData: CpmData,
+    ) {
+        visitableList.first().assertCpmModel(expectedCpmModel, expectedCpmData)
+    }
+
+    private fun Visitable<*>.assertCpmModel(expectedCpmModel: CpmModel, expectedCpmData: CpmData) {
+        this.shouldBeInstanceOf<CpmDataView>()
+
+        val cpmDataView = this as CpmDataView
+        val actualCpmModel = cpmDataView.cpmModel
+
+        actualCpmModel.header.shouldBe(expectedCpmModel.header)
+        actualCpmModel.status.shouldBe(expectedCpmModel.status)
+        actualCpmModel.error.shouldBe(expectedCpmModel.error)
+        actualCpmModel.data.shouldBe(listOf(expectedCpmData))
     }
 
     @Test
-    fun `Additional headline ads in page 1`() {
-        val searchProductModel = searchProductHeadlineAdsAdditionalPosition14JSON.jsonToObject<SearchProductModel>()
-        val additionalCpmIndex = 16
-        val expectedCpmPosition = 14
-        val expectedAdditionalCpmLayout = 2
+    fun `Multiple headline ads in page 1`() {
+        val searchProductModel = headlineAdsMultipleFirstPage.jsonToObject<SearchProductModel>()
 
         `Given search product API will return search product model`(searchProductModel)
         `Given visitable list will be captured`()
 
         `When load data`()
 
-        `Then verify CPM at the top and at additional position between product cards`(additionalCpmIndex)
-        `Then verify CPM data`(additionalCpmIndex, expectedCpmPosition, expectedAdditionalCpmLayout)
+        val expectedCpmModel = searchProductModel.cpmModel
+        val expectedCpmData = expectedCpmModel.data[1]
+        `Then verify CPM at the top of list`(expectedCpmModel, expectedCpmModel.data.first())
+        `Then verify CPM after last product cards`(expectedCpmModel, expectedCpmData)
     }
 
-    private fun `Then verify CPM at the top and at additional position between product cards`(additionalCpmIndex: Int) {
-        visitableList.first().shouldBeInstanceOf<CpmDataView>()
-        visitableList[additionalCpmIndex - 1].shouldBeInstanceOf<SeparatorDataView>()
-        visitableList[additionalCpmIndex].shouldBeInstanceOf<CpmDataView>()
-        visitableList[additionalCpmIndex + 1].shouldBeInstanceOf<SeparatorDataView>()
+    private fun `Then verify CPM after last product cards`(
+        expectedCpmModel: CpmModel,
+        expectedCpmData: CpmData,
+    ) {
+        val firstSeparatorIndex = visitableList.indexOfLast { it is ProductItemDataView } + 1
 
+        visitableList[firstSeparatorIndex].shouldBeInstanceOf<SeparatorDataView>()
+        visitableList[firstSeparatorIndex + 1].assertCpmModel(expectedCpmModel, expectedCpmData)
+        visitableList[firstSeparatorIndex + 2].shouldBeInstanceOf<SeparatorDataView>()
     }
-
-    private fun `Then verify CPM data`(additionalCpmIndex: Int, expectedAdditionalCpmPosition: Int, expectedAdditionalCpmLayout: Int) {
-        val firstCpm = (visitableList.first() as CpmDataView).getCpm()
-        firstCpm.position shouldBe 1
-        firstCpm.layout shouldBe 1
-
-        val additionalCpm = (visitableList[additionalCpmIndex] as CpmDataView).getCpm()
-        additionalCpm.position shouldBe expectedAdditionalCpmPosition
-        additionalCpm.layout shouldBe expectedAdditionalCpmLayout
-    }
-
-    private fun CpmDataView.getCpm(): Cpm = this.cpmModel.data[0].cpm
 
     @Test
-    fun `Additional headline ads in page 2`() {
-        val searchProductModel = searchProductHeadlineAdsAdditionalPosition24JSON.jsonToObject<SearchProductModel>()
-        val additionalCpmIndex = 26
-        val expectedCpmPosition = 24
-        val expectedAdditionalCpmLayout = 2
+    fun `headline ads at end of page 2`() {
+        val searchProductModel = headlineAdsMultipleFirstPage.jsonToObject<SearchProductModel>()
+        val searchProductModelPage2 = headlineAdsMultipleSecondPage.jsonToObject<SearchProductModel>()
 
         `Given search product API will return search product model`(searchProductModel)
-        `Given search product load more API will return search product model`()
+        `Given search product load more API will return search product model`(searchProductModelPage2)
         `Given visitable list will be captured`()
         `Given view already load data`()
 
         `When load more data`()
 
-        `Then verify CPM at the top and at additional position between product cards`(additionalCpmIndex)
-        `Then verify CPM data`(additionalCpmIndex, expectedCpmPosition, expectedAdditionalCpmLayout)
+        val expectedCpmModel = searchProductModelPage2.cpmModel
+        val expectedCpmData = expectedCpmModel.data.first()
+        `Then verify CPM after last product cards`(expectedCpmModel, expectedCpmData)
     }
 
-    private fun `Given search product load more API will return search product model`() {
+    private fun `Given search product load more API will return search product model`(
+        searchModelPage2: SearchProductModel,
+    ) {
         every { searchProductLoadMoreUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<SearchProductModel>>().complete("searchproduct/with-topads.json".jsonToObject())
+            secondArg<Subscriber<SearchProductModel>>().complete(searchModelPage2)
         }
     }
 
@@ -125,21 +133,5 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
     private fun `When load more data`() {
         productListPresenter.loadMoreData(mapOf())
-    }
-
-    @Test
-    fun `Headline ads with invalid position`() {
-        val searchProductModel = searchProductHeadlineAdsAdditionalPositionNegativeJSON.jsonToObject<SearchProductModel>()
-
-        `Given search product API will return search product model`(searchProductModel)
-        `Given visitable list will be captured`()
-
-        `When load data`()
-
-        `Then assert visitable list does not contain CPM`()
-    }
-
-    private fun `Then assert visitable list does not contain CPM`() {
-        visitableList.any { it is CpmDataView } shouldBe false
     }
 }

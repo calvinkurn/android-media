@@ -31,7 +31,7 @@
             android:id="@+id/travel_homepage_destination_subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/travel_homepage_dp_4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"

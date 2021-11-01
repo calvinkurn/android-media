@@ -26,7 +26,7 @@ fun clickOnViewChild(viewId: Int) = object : ViewAction {
 
     override fun getDescription() = "Click on a child view with specified id."
 
-    override fun perform(uiController: UiController, view: View) = click().perform(uiController, view.findViewById<View>(viewId))
+    override fun perform(uiController: UiController, view: View) = click().perform(uiController, view.findViewById(viewId))
 }
 
 fun orientationChangeAction(orientation: Int) = object : ViewAction {

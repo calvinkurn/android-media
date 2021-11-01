@@ -23,6 +23,7 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
 import com.tokopedia.shop.settings.common.view.bottomsheet.MenuBottomSheet
+import com.tokopedia.shop.settings.databinding.FragmentNoteListBinding
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.activity.ShopSettingsNotesAddEditActivity
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter
@@ -30,21 +31,18 @@ import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter
 import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteViewHolder
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 
 class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNoteFactory>(), ShopSettingNoteListPresenter.View,
         ShopNoteViewHolder.OnShopNoteViewHolderListener {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list, container, false)
-    }
-
-    override fun getRecyclerViewResourceId() = com.tokopedia.baselist.R.id.recycler_view
-
-    override fun getSwipeRefreshLayoutResourceId() = com.tokopedia.baselist.R.id.swipe_refresh_layout
 
     @Inject
     lateinit var shopSettingNoteListPresenter: ShopSettingNoteListPresenter
+
+    private var binding by autoClearedNullable<FragmentNoteListBinding>()
+
     private var shopNoteModels: ArrayList<ShopNoteUiModel>? = null
     private var shopNoteAdapter: ShopNoteAdapter? = null
     private var progressDialog: ProgressDialog? = null
@@ -58,6 +56,15 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     interface OnShopSettingsNoteFragmentListener {
         fun goToReorderFragment(shopNoteUiModels: ArrayList<ShopNoteUiModel>)
     }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentNoteListBinding.inflate(inflater, container, false)
+        return binding?.root as View
+    }
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
+    override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
 
     override fun initInjector() {
         activity?.let {
@@ -179,14 +186,14 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     private fun goToAddNote(isTerms: Boolean) {
         if (isTerms) { // can only has 1 term
-            if (shopNoteModels != null && shopNoteModels!!.size > 0 && shopNoteModels!![0].terms) {
+            if (shopNoteModels != null && shopNoteModels!!.size > DEFAULT_NUMBER_OF_NOTES && shopNoteModels!![0].terms) {
                 view?.let {
                     Toaster.make(it, getString(R.string.can_only_have_one_term), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
                 return
             }
         } else { // can only has 3 notes maks
-            if (shopNoteModels != null && getNonTermsCount(shopNoteModels!!) >= 3) {
+            if (shopNoteModels != null && getNonTermsCount(shopNoteModels!!) >= MAXIMUM_NUMBER_OF_NOTES) {
                 view?.let {
                     Toaster.make(it, getString(R.string.can_only_have_three_note), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
@@ -325,9 +332,11 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     companion object {
 
-        private val REQUEST_CODE_ADD_NOTE = 818
-        private val REQUEST_CODE_EDIT_NOTE = 819
-        val MIN_DATA_TO_REORDER = 2
+        private const val REQUEST_CODE_ADD_NOTE = 818
+        private const val REQUEST_CODE_EDIT_NOTE = 819
+        private const val MAXIMUM_NUMBER_OF_NOTES = 3
+        private const val DEFAULT_NUMBER_OF_NOTES = 0
+        const val MIN_DATA_TO_REORDER = 2
 
         @JvmStatic
         fun newInstance(): ShopSettingsNotesListFragment {

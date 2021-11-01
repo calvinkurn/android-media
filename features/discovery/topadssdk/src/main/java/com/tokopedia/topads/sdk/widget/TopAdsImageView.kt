@@ -72,9 +72,9 @@ class TopAdsImageView : AppCompatImageView {
      * @param depId Required in case of category and intermediate page else optional
      * @param productID Required for filtering. Ads service will look for ads related to the product id.
      * */
-    fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "", productID: String = "") {
+    fun getImageData(source: String, adsCount: Int, dimenId: Int, query: String = "", depId: String = "", pageToken: String = "", productID: String = "", page:String = "") {
         initViewModel()
-        val queryParams = topAdsImageViewViewModel.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID)
+        val queryParams = topAdsImageViewViewModel.getQueryParams(query, source, pageToken, adsCount, dimenId, depId, productID, page)
         topAdsImageViewViewModel.getImageData(queryParams)
         topAdsImageViewViewModel.getResponse().observe(context as LifecycleOwner, Observer {
             when (it) {

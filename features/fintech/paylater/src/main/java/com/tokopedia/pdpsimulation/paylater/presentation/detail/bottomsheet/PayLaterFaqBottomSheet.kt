@@ -11,7 +11,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterPartnerFaq
+import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
+import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
+import com.tokopedia.pdpsimulation.paylater.domain.model.Faq
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterPaymentFaqAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
@@ -35,8 +37,11 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
     }
 
     private val childLayoutRes = R.layout.paylater_card_faq_bottomsheet_widget
-    private var faqData: ArrayList<PayLaterPartnerFaq>? = null
+    private var faqData: ArrayList<Faq>? = null
     private var faqUrl: String = ""
+    private var parterName: String? = ""
+    private var tenure: Int? = 0
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +54,8 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
         arguments?.let {
             faqData = it.getParcelableArrayList(FAQ_DATA) ?: arrayListOf()
             faqUrl = it.getString(FAQ_SEE_MORE_URL) ?: ""
+            parterName = it.getString(PARTNER_NAME) ?: ""
+            tenure = it.getInt(TENURE, 0)
         }
     }
 
@@ -56,11 +63,22 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
         if (faqUrl.isEmpty()) btnSeeMore.gone()
         initAdapter()
         initListeners()
+        sendImpressionAnalytic()
+    }
+
+    private fun sendImpressionAnalytic() {
+        pdpSimulationCallback?.sendAnalytics(
+            PdpSimulationEvent.PayLater.FaqImpression(
+                parterName ?: "", tenure ?: 0
+            )
+        )
     }
 
     private fun initBottomSheet() {
-        val childView = LayoutInflater.from(context).inflate(childLayoutRes,
-                null, false)
+        val childView = LayoutInflater.from(context).inflate(
+            childLayoutRes,
+            null, false
+        )
         setChild(childView)
         setTitle(getString(R.string.pay_later_find_out_more_heading))
     }
@@ -72,31 +90,32 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
         isHideable = true
         showCloseIcon = true
         showHeader = true
-        customPeekHeight = (getScreenHeight() / 2).toDp()
+        customPeekHeight = (getScreenHeight()).toDp()
     }
 
 
     private fun initAdapter() {
         faqData?.let {
             rvPaylaterFaq.adapter = PayLaterPaymentFaqAdapter(it)
-            rvPaylaterFaq.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rvPaylaterFaq.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         }
     }
 
     private fun initListeners() {
         btnSeeMore.setOnClickListener {
+            pdpSimulationCallback?.sendAnalytics(
+                PdpSimulationEvent.PayLater.FaqClickWebImpression(
+                    parterName ?: "",
+                    tenure ?: 0,
+                    faqUrl
+                )
+            )
             openUrlWebView(faqUrl)
         }
     }
 
-    private fun populateFaqData(): ArrayList<PayLaterPartnerFaq> {
-        val faqList = ArrayList<PayLaterPartnerFaq>()
-        for (i in 1..5)
-            faqList.add(PayLaterPartnerFaq("Berapa lama proses persetujuan aplikasi kredit online Kredivo?",
-                    "Kredivo-mu sudah aktif. Kamu tinggal pilih Kredivo di halaman pembayaran untuk menggunakannya", false))
-        return faqList
-    }
 
     private fun openUrlWebView(urlString: String) {
         val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
@@ -109,11 +128,18 @@ class PayLaterFaqBottomSheet : BottomSheetUnify() {
         private const val TAG = "PayLaterFaqBottomSheet"
         const val FAQ_DATA = "faqData"
         const val FAQ_SEE_MORE_URL = "faqUrl"
+        const val PARTNER_NAME = "partnerName"
+        const val TENURE = "tenure"
 
-        fun show(bundle: Bundle, childFragmentManager: FragmentManager) {
+        fun show(
+            bundle: Bundle,
+            pdpSimulationCallback: PdpSimulationCallback,
+            childFragmentManager: FragmentManager
+        ) {
             val payLaterFaqBottomSheet = PayLaterFaqBottomSheet().apply {
                 arguments = bundle
             }
+            payLaterFaqBottomSheet.pdpSimulationCallback = pdpSimulationCallback
             payLaterFaqBottomSheet.show(childFragmentManager, TAG)
         }
     }

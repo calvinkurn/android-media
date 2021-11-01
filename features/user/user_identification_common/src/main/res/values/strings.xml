@@ -54,6 +54,7 @@
     <string name="form_final_subtitle_fail">Foto KTP belum terlihat jelas.\nAmbil ulang foto sekarang.</string>
 
     <string name="title_kyc_info">Verifikasi Data Diri</string>
+    <string name="title_kyc_info_simple">Dokumen Data Diri</string>
 
     <string name="error_text_image_file_too_big">Foto melebihi ukuran maksimum 10 MB</string>
     <string name="error_text_image_cant_be_accessed">Foto ktp tidak dapat diakses</string>
@@ -73,8 +74,5 @@
     <string name="user_identification_final_ktp_not_valid">Foto KTP belum terlihat jelas.</string>
     <string name="user_identification_final_retake_ktp">Ambil ulang foto sekarang.</string>
     <string name="kyc_data_security">Tokopedia menjamin keamanan datamu</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

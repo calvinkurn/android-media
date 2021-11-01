@@ -1,12 +1,14 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply from: "../../../compile-unit-test.gradle"
 apply from: "../../../compile-instrument-test.gradle"
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-    mavenCentral()
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 buildscript {
     repositories {
@@ -19,16 +21,15 @@ buildscript {
     }
 }
 android {
+    buildFeatures {
+        viewBinding true
+    }
     packagingOptions {
         exclude 'META-INF/**'
     }
     defaultConfig {
         multiDexEnabled true
-        if (project.hasProperty("benchmark")) {
-            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
-        } else {
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 }
 
@@ -36,30 +37,40 @@ dependencies {
 
     implementation rootProject.ext.firebase.crashlytics
 
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.features.sessioncommon)
-    implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.userIdentificationCommon)
-    implementation project(rootProject.ext.features.commonWallet)
-    implementation project(rootProject.ext.features.searchbar)
-    implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.features.recommendationWidgetCommon)
-    implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.discoveryCommon)
-    implementation project(rootProject.ext.features.internalReview)
-    implementation project(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.supportV13
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.libraries.trackingOptimizer)
-    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.screenRecorder)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
+    implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
-    implementation project(rootProject.ext.libraries.baseAdapter)
-    implementation project(rootProject.ext.libraries.adapterDelegate)
-    implementation project(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.features.sessioncommon)
+    implementation projectOrAar(rootProject.ext.features.navigationCommon)
+    implementation projectOrAar(rootProject.ext.features.userIdentificationCommon)
+    implementation projectOrAar(rootProject.ext.features.commonWallet)
+    implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.discoveryCommon)
+    implementation projectOrAar(rootProject.ext.features.internalReview)
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.principles
@@ -68,23 +79,37 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.coach_mark
-
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.unifyDependencies.empty_state
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
+    implementation rootProject.ext.miscDependencies.rxAndroid
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     //test
@@ -95,26 +120,24 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation project(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.analytics)
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation(rootProject.ext.testDependencies.espressoIdlingResource)
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation rootProject.ext.testDependencies.benchmark
-    androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 
 }
 
@@ -122,7 +145,7 @@ project.ext {
     artifactId = 'home-account-user'
     groupId = 'com.tokopedia.user'
     versionName = "0.0.1"
-    artifactName ="home-account-user-release"
+    artifactName = "home-account-user-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -1,28 +1,29 @@
 package com.tokopedia.atc_common.domain.usecase
 
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper.Companion.PARAM_KEY_CHOSEN_ADDRESS
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.query.QUERY_ADD_TO_CART
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Created by Irfan Khoirul on 2019-07-10.
  */
 
-class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val queryString: String,
-                                           private val graphqlUseCase: GraphqlUseCase,
+@Deprecated("Use coroutine version", replaceWith = ReplaceWith("AddToCartUseCase", imports = ["com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase"]))
+class AddToCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                            private val addToCartDataMapper: AddToCartDataMapper,
-                                           private val chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper) : UseCase<AddToCartDataModel>() {
+                                           private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
@@ -42,7 +43,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
 
         @JvmStatic
         @JvmOverloads
-        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AddToCartRequestParams.ATC_FROM_OTHERS,
+        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS,
                 /*tracking data*/ productName: String = "", category: String = "", price: String = "", userId: String = ""): RequestParams {
             return RequestParams.create()
                     .apply {
@@ -78,7 +79,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                         PARAM_WAREHOUSE_ID to addToCartRequestParams.warehouseId,
                         PARAM_ATC_FROM_EXTERNAL_SOURCE to addToCartRequestParams.atcFromExternalSource,
                         PARAM_IS_SCP to addToCartRequestParams.isSCP,
-                        PARAM_KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+                        KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
                 )
         )
     }
@@ -86,7 +87,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
     override fun createObservable(requestParams: RequestParams?): Observable<AddToCartDataModel> {
         val addToCartRequest = requestParams?.getObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequestParams
 
-        val graphqlRequest = GraphqlRequest(queryString, AddToCartGqlResponse::class.java, getParams(addToCartRequest))
+        val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART, AddToCartGqlResponse::class.java, getParams(addToCartRequest))
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {

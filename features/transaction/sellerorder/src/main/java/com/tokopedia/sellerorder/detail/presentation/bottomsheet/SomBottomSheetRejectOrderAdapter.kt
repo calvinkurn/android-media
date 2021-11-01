@@ -5,12 +5,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
-import kotlinx.android.synthetic.main.bottomsheet_reject_item.view.*
+import com.tokopedia.sellerorder.databinding.BottomsheetRejectItemBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by fwidjaja on 2019-10-08.
  */
-class SomBottomSheetRejectOrderAdapter(private var listener: ActionListener, private var hasRadioBtn: Boolean): RecyclerView.Adapter<SomBottomSheetRejectOrderAdapter.ViewHolder>() {
+class SomBottomSheetRejectOrderAdapter(
+    private var listener: ActionListener,
+    private var hasRadioBtn: Boolean
+) : RecyclerView.Adapter<SomBottomSheetRejectOrderAdapter.ViewHolder>() {
     var mapKey = HashMap<String, String>()
 
     interface ActionListener {
@@ -26,20 +30,24 @@ class SomBottomSheetRejectOrderAdapter(private var listener: ActionListener, pri
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val arrayValues = mapKey.values.toMutableList()
-        val arrayKeys = mapKey.keys.toMutableList()
-        holder.itemView.label_reject.text = arrayValues[position]
+        holder.binding?.run {
+            val arrayValues = mapKey.values.toMutableList()
+            val arrayKeys = mapKey.keys.toMutableList()
+            labelReject.text = arrayValues[position]
 
-        if (!hasRadioBtn) {
-            holder.itemView.rb_reject.visibility = View.GONE
-        } else {
-            holder.itemView.rb_reject.visibility = View.VISIBLE
-        }
+            if (!hasRadioBtn) {
+                rbReject.visibility = View.GONE
+            } else {
+                rbReject.visibility = View.VISIBLE
+            }
 
-        holder.itemView.setOnClickListener {
-            listener.onBottomSheetItemClick(arrayKeys[position])
+            root.setOnClickListener {
+                listener.onBottomSheetItemClick(arrayKeys[position])
+            }
         }
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val binding by viewBinding<BottomsheetRejectItemBinding>()
+    }
 }

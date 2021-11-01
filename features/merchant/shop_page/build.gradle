@@ -1,8 +1,14 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
@@ -22,53 +28,53 @@ android {
         multiDexEnabled true
     }
 
-    viewBinding {
-        enabled true
+    buildFeatures {
+        viewBinding true
     }
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.medialoader)
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.playWidget)
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.linker)
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.trackingOptimizer)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.webview)
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.imagePickerCommon)
-    implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.merchantVoucher)
-    implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.affiliateCommon)
-    implementation project(rootProject.ext.features.feedComponent)
-    implementation project(rootProject.ext.features.kolCommon)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.libraries.remoteResourceRequest)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.stickyLogin)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.features.carouselProductCard)
-    implementation project(rootProject.ext.features.discoveryCommon)
-    implementation project(rootProject.ext.features.youtubeCommon)
-    implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.logger)
-    implementation project(rootProject.ext.libraries.adapterDelegate)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.playWidget)
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
+    implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
+    implementation projectOrAar(rootProject.ext.features.merchantVoucher)
+    implementation projectOrAar(rootProject.ext.features.reputationCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.affiliateCommon)
+    implementation projectOrAar(rootProject.ext.features.feedComponent)
+    implementation projectOrAar(rootProject.ext.features.kolCommon)
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.features.stickyLogin)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.features.carouselProductCard)
+    implementation projectOrAar(rootProject.ext.features.discoveryCommon)
+    implementation projectOrAar(rootProject.ext.features.youtubeCommon)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
-    implementation project(rootProject.ext.libraries.youtubeutil)
-    implementation project(rootProject.ext.libraries.videoplayer)
+    implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
+    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
 
-    implementation project(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 
     implementation rootProject.ext.networkDependencies.glide
 
@@ -76,7 +82,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.sortFilter
@@ -87,19 +92,26 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.swipeRefresh
+    implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.miscDependencies.exoPlayerCore
-    implementation rootProject.ext.miscDependencies.exoPlayerUi
-    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
     implementation (rootProject.ext.miscDependencies.flexBoxLayout){
         exclude group: 'com.android.support'
     }
@@ -107,30 +119,24 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
-
-
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.features.promoMvcWidget)
-    implementation project(rootProject.ext.libraries.imagePreview)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
+    implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.features.filter)
-    implementation project(rootProject.ext.features.searchbar)
-    implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.filter)
+    implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
     implementation rootProject.ext.unifyDependencies.coach_mark
 
     // UI Test
@@ -140,10 +146,9 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    implementation rootProject.ext.testDependencies.espressoIdlingResource
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
 }
 
 project.ext {

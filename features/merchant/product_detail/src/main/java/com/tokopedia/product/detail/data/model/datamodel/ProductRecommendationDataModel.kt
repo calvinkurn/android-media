@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
@@ -37,6 +38,7 @@ data class ProductRecommendationDataModel(
             recomWidgetData?.title == newData.recomWidgetData?.title
                     && recomWidgetData?.recommendationFilterChips == newData.recomWidgetData?.recommendationFilterChips
                     && areRecomItemTheSame(newData.recomWidgetData)
+                    && areRecomQtyItemTheSame(newData.recomWidgetData)
         } else {
             false
         }
@@ -57,6 +59,10 @@ data class ProductRecommendationDataModel(
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM)
                 return bundle
             }
+            if (!areRecomQtyItemTheSame(newData.recomWidgetData)) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_UPDATE_QTY_RECOM_TOKONOW)
+                return bundle
+            }
             null
         } else {
             null
@@ -71,6 +77,24 @@ data class ProductRecommendationDataModel(
         }
 
         return recomWidgetData?.recommendationItemList?.hashCode() == newRecomWidgetData?.recommendationItemList?.hashCode()
+    }
+
+    private fun areRecomQtyItemTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
+        if (recomWidgetData?.recommendationItemList?.size == newRecomWidgetData?.recommendationItemList?.size && isOldAndItemIsTokonow(newRecomWidgetData)) {
+            val itemSize = recomWidgetData?.recommendationItemList?.size ?: 0
+            for (i in 0 until itemSize) {
+                if (recomWidgetData?.recommendationItemList?.get(i)?.quantity != newRecomWidgetData?.recommendationItemList?.get(i)?.quantity
+                        || recomWidgetData?.recommendationItemList?.get(i)?.currentQuantity != newRecomWidgetData?.recommendationItemList?.get(i)?.currentQuantity) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun isOldAndItemIsTokonow(newRecomWidgetData: RecommendationWidget?): Boolean {
+        return recomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
+                && newRecomWidgetData?.layoutType == LAYOUTTYPE_HORIZONTAL_ATC
     }
 
     private fun areFilterTheSame(newRecomWidgetData: RecommendationWidget?): Boolean {
@@ -91,5 +115,15 @@ data class ProductRecommendationDataModel(
             }
         }
         return areSame
+    }
+
+    fun cloneData(data : ProductRecommendationDataModel) : ProductRecommendationDataModel {
+        return ProductRecommendationDataModel(
+                type = data.type,
+                name = data.name,
+                recomWidgetData = data.recomWidgetData?.copy(),
+                filterData = data.filterData,
+                cardModel = data.cardModel,
+                position = data.position)
     }
 }

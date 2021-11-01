@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics
 
+import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -59,6 +60,11 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
     private const val KODE_POST_PAGE = "kode pos page"
 
     private const val BUSINESS_UNIT_LOGISTIC = "logistics & fulfillment"
+
+    @JvmStatic
+    fun sendScreenName(screenName: String?) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
 
     /*Search Page*/
     fun onClickFieldCariLokasi(userId: String) {

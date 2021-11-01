@@ -1,6 +1,5 @@
 package com.tokopedia.entertainment.search.adapter.viewholder
 
-import android.content.Intent
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -11,11 +10,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.search.Link
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.SearchLocationModel
-import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.ent_search_city_adapter_item.view.*
@@ -118,7 +116,6 @@ class SearchLocationListViewHolder(val view: View, val onClicked: (() -> Unit),
             val intent = RouteManager.getIntent(holder.view.context,
                     Link.EVENT_CATEGORY + "?id_city={id_city}&query_text={query_text}",
                     id_city, query_text)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
             holder.view.context.startActivity(intent)
         }
     }

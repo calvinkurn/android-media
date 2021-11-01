@@ -34,6 +34,7 @@ import javax.inject.Inject
 
 private const val CLICK_MULAI_IKLAN = "click-mulai iklan otomatis"
 private const val CLICK_BUAT_IKLAN_MANUAL = "click-buat iklan manual"
+private const val CLICK_BUAT_IKLAN_MANUAL_ONBOARDING = "click - mulai iklan manual di onboarding"
 
 class AdCreationChooserFragment : BaseDaggerFragment() {
     @Inject
@@ -141,6 +142,8 @@ class AdCreationChooserFragment : BaseDaggerFragment() {
 
         btn_start_manual_ads?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN_MANUAL, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateOnboardingEvent(
+                CLICK_BUAT_IKLAN_MANUAL_ONBOARDING, "")
              if (adStatus == AUTO) {
                 val sheet = ManualAdsConfirmationCommonSheet.newInstance()
                 sheet.show(childFragmentManager, "")

@@ -54,6 +54,8 @@
     <string name="som_title">Seller Order Management</string>
 
     <string name="user_identification_common_title">Verifikasi Data Diri</string>
+    <string name="user_identification_form_title">Kirim Dokumen</string>
+    <string name="user_identification_info_simple">Dokumen Data Diri</string>
     <string name="talk_title">Diskusi Produk</string>
 
     <string name="title_topchat">Chat</string>
@@ -61,7 +63,7 @@
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
     <string name="title_otp">Verifikasi</string>
-    <string name="title_loginphone">Login Phone</string>
+    <string name="title_choose_account">Choose Account</string>
 
     <!--Transaction-->
     <string name="title_one_click_checkout">Beli Langsung</string>
@@ -95,6 +97,9 @@
     <!-- Shop Page -->
     <string name="title_shop_page">Shop Page</string>
 
+    <!-- Review Shop -->
+    <string name="title_review_shop">Review Shop</string>
+
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
 
@@ -105,6 +110,9 @@
     <string name="payment_title_activity_change_detail_account">Ubah Detail Rekening</string>
     <string name="payment_title_activity_dest_bank">Pilih Bank Tujuan</string>
     <string name="payment_title_upload_proof">Unggah Bukti Pembayaran</string>
+
+    <string name="title_gopay_kyc">GoPay Kyc</string>
+
 
     <!-- Payment Withdraw-->
     <string name="payment_title_withdraw">Penarikan Saldo</string>
@@ -122,6 +130,7 @@
     <string name="title_review_detail">Review Detail</string>
     <string name="title_create_review">Create Review</string>
     <string name="title_review_reminder">Review Reminder</string>
+    <string name="title_review_credibility">Review Credibility</string>
   
     <!-- Inactive Phone -->
     <string name="title_update_inactive_phone">Inactive Phone</string>
@@ -136,4 +145,6 @@
 
     <!--Revamped Buyer Order Detail-->
     <string name="title_revamped_buyer_order_detail">Detail Pesanan</string>
+
+    <string name="title_feed_create_post">Create Post</string>
 </resources>

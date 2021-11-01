@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
-import android.net.Uri
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
@@ -18,7 +17,9 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.CapturingSlot
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.After
 import org.junit.Before
 import rx.schedulers.Schedulers
@@ -127,6 +128,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.topadsClickUrl shouldBe topAdsProduct.productClickUrl
         productItem.topadsImpressionUrl shouldBe topAdsProduct.product.image.s_url
         productItem.topadsWishlistUrl shouldBe topAdsProduct.productWishlistUrl
+        productItem.topadsTag shouldBe topAdsProduct.tag
         productItem.minOrder shouldBe topAdsProduct.product.productMinimumOrder
         productItem.position shouldBe position
     }
@@ -141,11 +143,13 @@ internal open class ProductListPresenterTestFixtures {
             productItem.topadsClickUrl shouldBe organicProduct.ads.productClickUrl
             productItem.topadsImpressionUrl shouldBe organicProduct.ads.productViewUrl
             productItem.topadsWishlistUrl shouldBe organicProduct.ads.productWishlistUrl
+            productItem.topadsTag shouldBe organicProduct.ads.tag
         }
         else {
             productItem.topadsClickUrl shouldBe ""
             productItem.topadsImpressionUrl shouldBe ""
             productItem.topadsWishlistUrl shouldBe ""
+            productItem.topadsTag shouldBe 0
         }
 
         productItem.productID shouldBe organicProduct.id

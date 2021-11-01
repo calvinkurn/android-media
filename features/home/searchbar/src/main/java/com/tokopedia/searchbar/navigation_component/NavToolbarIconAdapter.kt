@@ -8,13 +8,16 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.R
@@ -25,9 +28,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.unifycomponents.NotificationUnify
-import kotlinx.android.synthetic.main.toolbar_viewholder_icon.view.*
-import kotlinx.android.synthetic.main.toolbar_viewholder_icon_animated.view.*
-import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.*
 
 internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
                                      private val topNavComponentListener: TopNavComponentListener)
@@ -150,11 +150,20 @@ internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
 }
 
 internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
-    val iconImage = view.nav_icon_image
+    val iconImage = view.findViewById<IconNotification>(R.id.nav_icon_image)
+    val iconImageContainer = view.findViewById<View>(R.id.nav_icon_container)
     val context = itemView.context
 
+    companion object {
+        private const val ICON_NONE_COUNTER_PERCENTAGE_X_POSITION = 0.85f
+        private const val ICON_NONE_COUNTER_PERCENTAGE_Y_POSITION = -0.25f
+
+        private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 1f
+        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.45f
+    }
+
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
-        iconImage.tag = iconToolbar.id.toString()
+        iconImage.tag = iconToolbar.name
 
         if (iconToolbar.imageRes != null) {
             val unwrappedDrawable: Drawable? = ContextCompat.getDrawable(context, iconToolbar.imageRes)
@@ -195,12 +204,13 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             }
         }
 
-        iconImage.setOnClickListener {
+        iconImageContainer.setOnClickListener {
             if (!iconToolbar.disableDefaultGtmTracker) {
                 NavToolbarTracking.clickNavToolbarComponent(
                         pageName = topNavComponentListener.getPageName(),
                         componentName = iconToolbar.name,
-                        userId = topNavComponentListener.getUserId()
+                        userId = topNavComponentListener.getUserId(),
+                        counter = iconToolbar.badgeCounter
                 )
             }
             iconToolbar.onIconClicked.invoke()
@@ -213,13 +223,17 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         }
 
         (iconImage.notificationRef.parent as? ViewGroup)?.layoutTransition = LayoutTransition()
+        iconImage.notificationRef.tag =
+            String.format(
+                context.getString(R.string.tag_counter_id), iconToolbar.name
+            )
 
         when {
             iconToolbar.badgeCounter.isZero() -> {
                 iconImage.notificationRef.gone()
             }
             iconToolbar.badgeCounter == ICON_COUNTER_NONE_TYPE -> {
-                iconImage.setNotifXY(0.85f, -0.25f)
+                iconImage.setNotifXY(ICON_NONE_COUNTER_PERCENTAGE_X_POSITION, ICON_NONE_COUNTER_PERCENTAGE_Y_POSITION)
                 iconImage.notificationRef.setNotification(
                         notif = iconToolbar.badgeCounter.toString(),
                         notificationType = NotificationUnify.NONE_TYPE,
@@ -229,7 +243,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 iconImage.notificationRef.visible()
             }
             else -> {
-                iconImage.setNotifXY(1f, -0.85f)
+                iconImage.setNotifXY(ICON_DEFAULT_PERCENTAGE_X_POSITION, ICON_DEFAULT_PERCENTAGE_Y_POSITION)
                 iconImage.notificationRef.setNotification(
                         notif = iconToolbar.badgeCounter.toString(),
                         notificationType = NotificationUnify.COUNTER_TYPE,
@@ -247,15 +261,19 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
 }
 
 internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
-    val iconImage = view.nav_icon_lottieav
-    val iconBadge = view.nav_icon_badge_lottieav
+    val iconImage = view.findViewById<LottieAnimationView>(R.id.nav_icon_lottieav)
+    val iconBadge = view.findViewById<TextView>(R.id.nav_icon_badge_lottieav)
     val context = itemView.context
 
+    companion object {
+        private const val INITIAL_LOTTIE_PROGRESS = 0f
+        private const val PADDING_ZERO = 0
+    }
+
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
-        iconImage.tag = iconToolbar.id.toString()
-        iconBadge.tag = constructCounterTagById(iconToolbar.id)
+        iconImage.tag = iconToolbar.name
         iconImage.cancelAnimation()
-        iconImage.progress = 0f
+        iconImage.progress = INITIAL_LOTTIE_PROGRESS
         iconToolbar.imageRes?.let { iconImage.setAnimation(iconToolbar.imageRes) }
         iconImage.setOnClickListener {
             if (!iconToolbar.disableDefaultGtmTracker) {
@@ -281,19 +299,26 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
             iconBadge.text = iconToolbar.badgeCounter.toString()
         }
 
-        if (iconToolbar.paddingEndRes != 0) {
-            iconImage.setPadding(0, 0, itemView.resources.getDimensionPixelOffset(iconToolbar.paddingEndRes), 0)
+        if (iconToolbar.paddingEndRes != PADDING_ZERO) {
+            iconImage.setPadding(PADDING_ZERO, PADDING_ZERO, itemView.resources.getDimensionPixelOffset(iconToolbar.paddingEndRes), 0)
         }
     }
 
-    private fun constructCounterTagById(id: Int) =
+    private fun constructCounterTagById(id: String) =
             context.getString(R.string.tag_counter_id) + id
 }
 
 internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
-    val iconImage = view.nav_icon_idle
-    val iconAnimatedImage = view.nav_icon_view
+    val iconImage = view.findViewById<IconNotification>(R.id.nav_icon_idle)
+    val iconAnimatedImage = view.findViewById<View>(R.id.nav_icon_view)
     val context = itemView.context
+
+    companion object {
+        private const val ICON_PERCENTAGE_X_POSITION = 1f
+        private const val ICON_PERCENTAGE_Y_POSITION = -0.8f
+        private const val ANIMATION_DELAY = 1000L
+        private const val PADDING_ZERO = 0
+    }
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
         iconAnimatedImage.tag = iconToolbar.id.toString()
@@ -337,10 +362,10 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
             iconImage.notificationGravity = Gravity.TOP or Gravity.RIGHT
             iconImage.notificationRef.visible()
         }
-        iconImage.setNotifXY(1f, -0.8f)
+        iconImage.setNotifXY(ICON_PERCENTAGE_X_POSITION, ICON_PERCENTAGE_Y_POSITION)
 
-        if (iconToolbar.paddingEndRes != 0) {
-            iconAnimatedImage.setPadding(0, 0, itemView.resources.getDimensionPixelOffset(iconToolbar.paddingEndRes), 0)
+        if (iconToolbar.paddingEndRes != PADDING_ZERO) {
+            iconAnimatedImage.setPadding(PADDING_ZERO, PADDING_ZERO, itemView.resources.getDimensionPixelOffset(iconToolbar.paddingEndRes), 0)
         }
 
         iconAnimatedImage.gone()
@@ -378,7 +403,7 @@ internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNa
                 Handler().postDelayed({
                     iconAnimatedImage.gone()
                     iconImage.show()
-                }, 1000)
+                }, ANIMATION_DELAY)
             } else {
                 iconAnimatedImage.gone()
                 iconImage.show()

@@ -14,23 +14,6 @@ public class Title {
     @SerializedName("value")
     @Expose
     private String value;
-    @SerializedName("textColor")
-    @Expose
-    private String textColor;
-    @SerializedName("backgroundColor")
-    @Expose
-    private String backgroundColor;
-    @SerializedName("imageUrl")
-    @Expose
-    private String imageUrl;
-
-    public Title(String label, String value, String textColor, String backgroundColor, String imageUrl) {
-        this.label = label;
-        this.value = value;
-        this.textColor = textColor;
-        this.backgroundColor = backgroundColor;
-        this.imageUrl = imageUrl;
-    }
 
     public String label() {
         return label;
@@ -40,25 +23,11 @@ public class Title {
         return value;
     }
 
-    public String textColor() {
-        return textColor;
-    }
-
-    public String backgroundColor() {
-        return backgroundColor;
-    }
-
-    public String imageUrl() {
-        return imageUrl;
-    }
     @Override
     public String toString() {
         return "[Title:{"
                 + "label="+label +" "
-                + "value="+value +" "
-                + "textColor="+textColor +" "
-                + "backgroundColor="+backgroundColor +" "
-                + "imageUrl="+imageUrl
+                + "value="+value
                 + "}]";
     }
 }

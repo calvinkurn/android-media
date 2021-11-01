@@ -15,6 +15,7 @@ class MVCSummaryUseCase @Inject constructor(val gqlWrapper: GqlUseCaseWrapper) {
     fun getQueryParams(shopId: String): HashMap<String, Any> {
         val variables = HashMap<String, Any>()
         variables[TokopointsCatalogMVCParams.SHOP_ID] = shopId
+        variables[TokopointsCatalogMVCParams.API_VERSION] = "2.0.0"
         return variables
     }
 }

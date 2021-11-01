@@ -1,22 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/play_widget_channel_medium_promo_height"
-    >
+    android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_promo_additional_context"
-        android:layout_width="@dimen/play_widget_card_medium_promo_additional_context_width"
-        android:layout_height="@dimen/play_widget_card_medium_promo_additional_context_height"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_giveaway"
+        android:layout_width="@dimen/play_giveaway_icon_size"
+        android:layout_height="@dimen/play_giveaway_icon_size"
+        android:background="@drawable/bg_play_widget_giveaway_badge"
+        android:padding="@dimen/spacing_lvl1"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="GIFT"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
-        app:srcCompat="@drawable/ic_play_widget_live_only_promo"
-        />
+        tools:ignore="RtlSymmetry"
+        tools:visibility="visible" />
+
+    <FrameLayout
+        android:id="@+id/fl_bg_only_live"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:background="@drawable/bg_play_widget_live_promo_badge"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tv_only_live"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_giveaway" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_only_live"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:text="@string/play_widget_only_live_promo"
+        android:textColor="@color/Unify_Static_White"
+        android:textSize="@dimen/fontSize_lvl10"
+        app:layout_constraintEnd_toEndOf="@id/fl_bg_only_live"
+        app:layout_constraintStart_toStartOf="@id/fl_bg_only_live"
+        app:layout_constraintTop_toTopOf="@id/fl_bg_only_live"
+        app:typographyWeight="bold" />
 
     <LinearLayout
         android:id="@+id/ll_promo_detail"
@@ -27,12 +54,9 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/iv_promo_additional_context"
-        app:layout_constraintVertical_bias="1"
-        tools:layout_height="20dp"
-        >
+        app:layout_constraintTop_toBottomOf="@id/tv_only_live"
+        tools:layout_height="20dp">
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/promo_image"
@@ -45,8 +69,7 @@
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="PROMO"
-            tools:visibility="visible"
-            />
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_promo_detail"
@@ -62,8 +85,7 @@
             android:visibility="visible"
             app:typographyType="small"
             app:typographyWeight="bold"
-            tools:text="Diskon 30%"
-            />
+            tools:text="Diskon 30%" />
 
     </LinearLayout>
 

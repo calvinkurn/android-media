@@ -9,6 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
+import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -23,7 +26,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.media.loader.loadImage
@@ -31,19 +33,22 @@ import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsOperationalHoursActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
 import com.tokopedia.shop.settings.common.view.bottomsheet.MenuBottomSheet
+import com.tokopedia.shop.settings.databinding.FragmentShopSettingsInfoBinding
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
-import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
-import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
 import java.util.*
 import javax.inject.Inject
 
@@ -67,6 +72,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     @Inject
     lateinit var shopSettingsInfoViewModel: ShopSettingsInfoViewModel
 
+    private var binding by autoClearedNullable<FragmentShopSettingsInfoBinding>()
+
     private var needReload: Boolean = false
     private var extraIsActionEdit: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
@@ -76,6 +83,27 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private var progressDialog: ProgressDialog? = null
     private var shopBadge: String = ""
+    private var viewContent: ConstraintLayout? = null
+    private var loadingView: LinearLayout? = null
+    private var btnChangeShopInfo: View? = null
+    private var vgShopStatusContainer: View? = null
+    private var tvPowerMerchantType: Typography? = null
+    private var ivLogoPowerMerchant: ImageView? = null
+    private var tvOfficialStore: Typography? = null
+    private var tvOfficialStoreExpiration: Typography? = null
+    private var ivLogoOfficialStore: ImageView? = null
+    private var tvShopName: Typography? = null
+    private var tvShopDomain: Typography? = null
+    private var ivShopLogo: ImageView? = null
+    private var tvShopSloganTitle: Typography? = null
+    private var tvShopSlogan: Typography? = null
+    private var tvShopDescriptionTitle: Typography? = null
+    private var tvShopDescription: Typography? = null
+    private var tvShopStatus: Typography? = null
+    private var containerRegularMerchant: View? = null
+    private var containerPowerMerchant: View? = null
+    private var containerOfficialStore: View? = null
+    private var tvRegularMerchantType: Typography? = null
 
     override fun getScreenName(): String? {
         return null
@@ -88,7 +116,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_settings_info, container, false)
+        binding = FragmentShopSettingsInfoBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     private fun showShopStatusManageMenu() {
@@ -184,25 +213,25 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        viewContent.visibility = View.GONE
-        loadingView.visibility = View.VISIBLE
+        viewContent?.visibility = View.GONE
+        loadingView?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        viewContent.visibility = View.VISIBLE
-        loadingView.visibility = View.GONE
+        viewContent?.visibility = View.VISIBLE
+        loadingView?.visibility = View.GONE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initView()
         setupToolbar()
-        btnChangeShopInfo.setOnClickListener {
+        btnChangeShopInfo?.setOnClickListener {
             moveToShopEditBasicInfoFragment()
             ShopSettingsTracking.clickChange(shopId, getShopType())
         }
 
-        vgShopStatusContainer.setOnClickListener {
+        vgShopStatusContainer?.setOnClickListener {
             showShopStatusManageMenu()
             ShopSettingsTracking.clickStatusToko(shopId, getShopType())
         }
@@ -220,14 +249,38 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         observeUpdateScheduleData()
     }
 
+    private fun initView() {
+        viewContent = binding?.viewContent?.viewMainContainer
+        loadingView = binding?.loadingView?.loadingMainContainer
+        btnChangeShopInfo = binding?.viewContent?.btnChangeShopInfo
+        vgShopStatusContainer = binding?.viewContent?.vgShopStatusContainer
+        tvPowerMerchantType = binding?.viewContent?.tvPowerMerchantType
+        ivLogoPowerMerchant = binding?.viewContent?.ivLogoPowerMerchant
+        tvOfficialStore = binding?.viewContent?.tvOfficialStore
+        tvOfficialStoreExpiration = binding?.viewContent?.tvOfficialStoreExpiration
+        ivLogoOfficialStore = binding?.viewContent?.ivLogoOfficialStore
+        tvShopName = binding?.viewContent?.tvShopName
+        tvShopDomain = binding?.viewContent?.tvShopDomain
+        ivShopLogo = binding?.viewContent?.ivShopLogo
+        tvShopSloganTitle = binding?.viewContent?.tvShopSloganTitle
+        tvShopSlogan = binding?.viewContent?.tvShopSlogan
+        tvShopDescriptionTitle = binding?.viewContent?.tvShopDescriptionTitle
+        tvShopDescription = binding?.viewContent?.tvShopDescription
+        tvShopStatus = binding?.viewContent?.tvShopStatus
+        containerRegularMerchant = binding?.viewContent?.containerRegularMerchant
+        containerPowerMerchant = binding?.viewContent?.containerPowerMerchant
+        containerOfficialStore = binding?.viewContent?.containerOfficialStore
+        tvRegularMerchantType = binding?.viewContent?.tvRegularMerchantType
+    }
+
     private fun observeShopBadgeData() {
         shopSettingsInfoViewModel.shopBadgeData.observe(viewLifecycleOwner, Observer {
             if (it is Success) {
                 shopBadge = it.data
-                if (tv_power_merchant_type.text.isNotEmpty()) {
-                    iv_logo_power_merchant.loadImage(shopBadge)
-                } else if (tv_official_store.text.isNotEmpty()) {
-                    iv_logo_official_store.loadImage(shopBadge)
+                if (tvPowerMerchantType?.text?.isNotEmpty() == true) {
+                    ivLogoPowerMerchant?.loadImage(shopBadge)
+                } else if (tvOfficialStore?.text?.isNotEmpty() == true) {
+                    ivLogoOfficialStore?.loadImage(shopBadge)
                 }
             }
         })
@@ -274,7 +327,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        activity?.findViewById<HeaderUnify>(R.id.header)?.apply {
+        (activity as? ShopSettingsInfoActivity)?.binding?.header?.apply {
             actionTextView?.hide()
         }
     }
@@ -446,8 +499,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
         shopBasicDataModel.let { shopBasicData ->
-            tvShopName.text = shopBasicData.name
-            tvShopDomain.text = shopBasicData.domain?.let {
+            tvShopName?.text = shopBasicData.name
+            tvShopDomain?.text = shopBasicData.domain?.let {
                 if (URLUtil.isNetworkUrl(it)) {
                     it
                 } else {
@@ -458,7 +511,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             val logoUrl = shopBasicData.logo
             //avoid crash in ImageUnify when image url is returned as base64
             try {
-                if (ivShopLogo.context.isValidGlideContext()) {
+                if (ivShopLogo?.context?.isValidGlideContext() == true) {
                     if (TextUtils.isEmpty(logoUrl)) {
                         ImageHandler.loadImage2(ivShopLogo, logoUrl, R.drawable.ic_shopdefault_empty)
                     } else {
@@ -468,51 +521,53 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
             }catch (e: Exception) {}
 
             if (shopBasicData.tagline.isNullOrBlank()) {
-                tvShopSloganTitle.visibility = View.GONE
-                tvShopSlogan.visibility = View.GONE
+                tvShopSloganTitle?.visibility = View.GONE
+                tvShopSlogan?.visibility = View.GONE
             } else {
-                tvShopSloganTitle.visibility = View.VISIBLE
-                tvShopSlogan.visibility = View.VISIBLE
-                tvShopSlogan.text = shopBasicData.tagline
+                tvShopSloganTitle?.visibility = View.VISIBLE
+                tvShopSlogan?.visibility = View.VISIBLE
+                tvShopSlogan?.text = shopBasicData.tagline
             }
 
             if (shopBasicData.description.isNullOrBlank()) {
-                tvShopDescriptionTitle.visibility = View.GONE
-                tvShopDescription.visibility = View.GONE
+                tvShopDescriptionTitle?.visibility = View.GONE
+                tvShopDescription?.visibility = View.GONE
             } else {
-                tvShopDescriptionTitle.visibility = View.VISIBLE
-                tvShopDescription.visibility = View.VISIBLE
-                tvShopDescription.text = shopBasicData.description
+                tvShopDescriptionTitle?.visibility = View.VISIBLE
+                tvShopDescription?.visibility = View.VISIBLE
+                tvShopDescription?.text = shopBasicData.description
             }
+
+            tvShopStatus?.text = if (shopBasicData.isOpen) getString(R.string.label_open) else getString(R.string.label_close)
         }
     }
 
     private fun showRegularMerchantMembership(shopStatusModel: PMStatusUiModel?) {
         shopStatusModel?.let {
-            container_regular_merchant.visibility = View.VISIBLE
-            container_power_merchant.visibility = View.GONE
-            container_official_store.visibility = View.GONE
-            tv_regular_merchant_type.text = getString(R.string.label_regular_merchant)
+            containerRegularMerchant?.visibility = View.VISIBLE
+            containerPowerMerchant?.visibility = View.GONE
+            containerOfficialStore?.visibility = View.GONE
+            tvRegularMerchantType?.text = getString(R.string.label_regular_merchant)
         }
     }
 
     private fun showPowerMerchant() {
-        container_power_merchant.visibility = View.VISIBLE
-        container_regular_merchant.visibility = View.GONE
-        container_official_store.visibility = View.GONE
-        iv_logo_power_merchant.visibility = View.VISIBLE
-        iv_logo_power_merchant.loadImage(shopBadge)
-        tv_power_merchant_type.text = getString(R.string.label_power_merchant)
+        containerPowerMerchant?.visibility = View.VISIBLE
+        containerRegularMerchant?.visibility = View.GONE
+        containerOfficialStore?.visibility = View.GONE
+        ivLogoPowerMerchant?.visibility = View.VISIBLE
+        ivLogoPowerMerchant?.loadImage(shopBadge)
+        tvPowerMerchantType?.text = getString(R.string.label_power_merchant)
     }
 
     private fun showOfficialStore(expirationDate: String) {
-        container_official_store.visibility = View.VISIBLE
-        container_regular_merchant.visibility = View.GONE
-        container_power_merchant.visibility = View.GONE
-        iv_logo_official_store.visibility = View.VISIBLE
-        iv_logo_official_store.loadImage(shopBadge)
-        tv_official_store.text = getString(R.string.label_official_store)
-        tv_official_store_expiration.text = "Berlaku hingga $expirationDate"
+        containerOfficialStore?.visibility = View.VISIBLE
+        containerRegularMerchant?.visibility = View.GONE
+        containerPowerMerchant?.visibility = View.GONE
+        ivLogoOfficialStore?.visibility = View.VISIBLE
+        ivLogoOfficialStore?.loadImage(shopBadge)
+        tvOfficialStore?.text = getString(R.string.label_official_store)
+        tvOfficialStoreExpiration?.text = "Berlaku hingga $expirationDate"
     }
 
     private fun onErrorGetShopBasicData(throwable: Throwable) {

@@ -66,7 +66,7 @@ class QuickEditVariantViewModel @Inject constructor(
     private var warehouseId: String? = null
     private var editVariantResult: EditVariantResult? = null
 
-    fun getData(productId: String) {
+    fun getData(productId: String, isBundle: Boolean = false) {
         hideErrorView()
         showProgressBar()
         setEmptyTicker()
@@ -74,7 +74,7 @@ class QuickEditVariantViewModel @Inject constructor(
         launchCatchError(block = {
             val access = getProductManageAccess()
             _productManageAccess.value = access
-            getProductVariants(productId, access)
+            getProductVariants(productId, access, isBundle)
         }) {
             setEmptyTicker()
             hideProgressBar()
@@ -82,13 +82,17 @@ class QuickEditVariantViewModel @Inject constructor(
         }
     }
 
-    private fun getProductVariants(productId: String, access: ProductManageAccess) {
+    private fun getProductVariants(productId: String, access: ProductManageAccess, isBundle: Boolean) {
         hideErrorView()
         showProgressBar()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 val warehouseId = getWarehouseId(userSession.shopId)
-                val requestParams = GetProductVariantUseCase.createRequestParams(productId, warehouseId = warehouseId)
+                val requestParams =
+                    GetProductVariantUseCase.createRequestParams(
+                        productId,
+                        warehouseId = warehouseId,
+                        isBundling = isBundle)
                 val response = getProductVariantUseCase.execute(requestParams)
                 val variant = response.getProductV3
                 mapToVariantsResult(variant, access)
@@ -133,7 +137,7 @@ class QuickEditVariantViewModel @Inject constructor(
         _showSaveBtn.value = shouldShow
     }
 
-    fun setVariantPrice(variantId: String, price: Int) {
+    fun setVariantPrice(variantId: String, price: Double) {
         updateVariant(variantId) { it.copy(price = price) }
     }
 

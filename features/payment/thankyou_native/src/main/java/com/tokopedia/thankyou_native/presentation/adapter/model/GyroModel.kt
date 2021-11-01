@@ -3,14 +3,13 @@ package com.tokopedia.thankyou_native.presentation.adapter.model
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
-
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 data class GyroRecommendation(
         var title : String,
         var description: String,
         var gyroVisitable : ArrayList<Visitable<*>>
 )
-
 
 open class GyroModel {
     var isVisited : Boolean = false

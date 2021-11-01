@@ -1,10 +1,18 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
 android {
+    buildFeatures {
+        viewBinding true
+    }
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -43,24 +51,36 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.locationmanager)
-    implementation project(rootProject.ext.libraries.adapterDelegate)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.irisSession)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.locationmanager)
+    implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.irisSession)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
 
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.swipeRefresh
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.miscDependencies.gson
 
     implementation rootProject.ext.playServicesDependencies.location
 
@@ -69,6 +89,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.miscDependencies.chips
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -90,7 +112,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
@@ -102,20 +124,21 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+
     androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
         exclude module: 'support-annotations'
     }
     androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test), {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
 
     androidTestUtil rootProject.ext.testDependencies.orchestrator
 }

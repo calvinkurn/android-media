@@ -79,7 +79,7 @@ class BuyerOrderDetailAction {
         return try {
             onView(matcher).check(matches(isDisplayingAtLeast(90)))
             true
-        } catch (e: Exception) {
+        } catch (t: Throwable) {
             false
         }
     }
@@ -144,7 +144,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun waitUntilToolbarChatIconVisible() {
-        waitUntilViewVisible(firstView(withTagStringValue(BuyerOrderDetailFragment.CHAT_ICON_TAG)))
+        waitUntilViewVisible(firstView(withId(R.id.buyerOrderDetailChatMenu)))
     }
 
     private fun waitUntilSecondaryActionButtonBottomSheetVisible(activity: AppCompatActivity) {
@@ -192,7 +192,7 @@ class BuyerOrderDetailAction {
     }
 
     private fun clickToolbarChatIcon() {
-        clickView(firstView(withTagStringValue(BuyerOrderDetailFragment.CHAT_ICON_TAG)))
+        clickView(firstView(withId(R.id.buyerOrderDetailChatMenu)))
     }
 
     private fun clickSeeDetail() {
@@ -246,6 +246,10 @@ class BuyerOrderDetailAction {
         val matcher = withId(R.id.btnFinishOrderLeft)
         waitUntilViewVisible(matcher)
         clickView(matcher)
+    }
+
+    fun login() {
+        Utils.login()
     }
 
     fun launchBuyerOrderDetailActivity(activityRule: ActivityTestRule<BuyerOrderDetailActivity>) {
@@ -339,26 +343,49 @@ class BuyerOrderDetailAction {
 }
 
 class BuyerOrderDetailMock {
-    enum class BuyerOrderDetailMockResponse(val id: Int) {
-        MOCK_RESPONSE_700(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_700),
-        MOCK_RESPONSE_601(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_601),
-        MOCK_RESPONSE_600(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_600),
-        MOCK_RESPONSE_530(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_530),
-        MOCK_RESPONSE_450(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_450),
-        MOCK_RESPONSE_400(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_400),
-        MOCK_RESPONSE_220(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_220),
-        MOCK_RESPONSE_10(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_10),
-        MOCK_RESPONSE_0(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_0)
+    data class BuyerOrderDetailMockResponseData(
+        val id: Int,
+        val name: String
+    )
+
+    enum class BuyerOrderDetailMockResponse(val mocks: List<BuyerOrderDetailMockResponseData>) {
+        MOCK_RESPONSE_700(
+            listOf(
+                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_700, "MPBOMDetail"),
+                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_add_to_cart, "add_to_cart_multi")
+            )
+        ),
+        MOCK_RESPONSE_601(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_601, "MPBOMDetail"))),
+        MOCK_RESPONSE_600(
+            listOf(
+                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_600, "MPBOMDetail"),
+                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_finish_order, "FinishOrderBuyer")
+            )
+        ),
+        MOCK_RESPONSE_530(
+            listOf(
+                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_530, "MPBOMDetail"),
+                BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_finish_order, "FinishOrderBuyer")
+            )
+        ),
+        MOCK_RESPONSE_450(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_450, "MPBOMDetail"))),
+        MOCK_RESPONSE_400(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_400, "MPBOMDetail"))),
+        MOCK_RESPONSE_220(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_220, "MPBOMDetail"))),
+        MOCK_RESPONSE_10(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_10, "MPBOMDetail"))),
+        MOCK_RESPONSE_0(listOf(BuyerOrderDetailMockResponseData(com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_0, "MPBOMDetail")))
     }
 
     fun mockOrderDetail(mockResponse: BuyerOrderDetailMockResponse) {
         val mockModelConfig = object : MockModelConfig() {
             override fun createMockModel(context: Context): MockModelConfig {
-                addMockResponse("MPBOMDetail", InstrumentationMockHelper.getRawString(context, mockResponse.id), FIND_BY_CONTAINS)
+                mockResponse.mocks.forEach {
+                    addMockResponse(it.name, InstrumentationMockHelper.getRawString(context, it.id), FIND_BY_CONTAINS)
+                }
                 return this
             }
         }
         setupGraphqlMockResponse(mockModelConfig)
+        Thread.sleep(5000)
     }
 
     infix fun actionTest(action: BuyerOrderDetailAction.() -> Unit) = BuyerOrderDetailAction().apply(action)

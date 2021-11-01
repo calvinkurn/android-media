@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:elevation="@dimen/dp_2">
+    android:elevation="2dp">
 
     <FrameLayout
         android:id="@+id/layout_grey_popup"
@@ -21,9 +21,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         android:visibility="gone"
         app:backgroundTint="@color/Unify_G400"
         app:srcCompat="@drawable/ic_feed_post_plus"
@@ -36,9 +36,9 @@
         android:layout_above="@id/fab_feed"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:visibility="invisible"
         app:backgroundTint="@color/Unify_N0"
         app:srcCompat="@drawable/ic_feed_post_byme" />
@@ -51,14 +51,14 @@
         android:layout_alignTop="@id/fab_feed_byme"
         android:layout_alignBottom="@id/fab_feed_byme"
         android:layout_gravity="center"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:layout_toStartOf="@id/fab_feed_byme"
         android:layout_toLeftOf="@id/fab_feed_byme"
         android:gravity="center"
         android:text="@string/feed_create_post_byme"
         android:textColor="@color/Unify_N0"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -68,9 +68,9 @@
         android:layout_above="@id/fab_feed_byme"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:visibility="invisible"
         app:backgroundTint="@color/Unify_N0"
         app:srcCompat="@drawable/ic_feed_post_shop" />
@@ -82,13 +82,13 @@
         android:layout_alignTop="@id/fab_feed_shop"
         android:layout_alignBottom="@id/fab_feed_shop"
         android:layout_gravity="center"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:layout_toStartOf="@id/fab_feed_shop"
         android:layout_toLeftOf="@id/fab_feed_shop"
         android:gravity="center"
         android:text="@string/feed_create_post_shop"
         android:textColor="@color/Unify_N0"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:textStyle="bold" />
 </RelativeLayout>

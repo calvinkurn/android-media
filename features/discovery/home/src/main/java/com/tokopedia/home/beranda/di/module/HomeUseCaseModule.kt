@@ -5,9 +5,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
-import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.common_wallet.pendingcashback.data.ResponsePendingCashback
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -25,7 +22,6 @@ import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessUnitDataQuery
 import com.tokopedia.home.beranda.di.module.query.QueryBusinessWidget.businessWidgetQuery
-import com.tokopedia.home.beranda.di.module.query.QueryCartHome.addToCartOneClickCheckout
 import com.tokopedia.home.beranda.di.module.query.QueryHome.atfQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHome.closeChannel
 import com.tokopedia.home.beranda.di.module.query.QueryHome.dynamicChannelQuery
@@ -49,12 +45,14 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
@@ -196,6 +194,13 @@ class HomeUseCaseModule {
         return GetDynamicChannelsUseCase(useCase, homeDynamicChannelDataMapper)
     }
 
+
+    @Provides
+    @HomeScope
+    fun provideWalletEligibilityUseCase(graphqlRepository: GraphqlRepository): GetWalletEligibilityUseCase{
+        return GetWalletEligibilityUseCase(graphqlRepository)
+    }
+
     @Provides
     @HomeScope
     fun provideGetHomeData(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetHomeDataUseCase{
@@ -256,12 +261,6 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideAddToCartOccUseCase(graphqlUseCase: GraphqlUseCase, chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper): AddToCartOccUseCase{
-        return AddToCartOccUseCase(addToCartOneClickCheckout, graphqlUseCase, AddToCartDataMapper(), chosenAddressAddToCartRequestHelper)
-    }
-
-    @Provides
-    @HomeScope
     fun provideCloseChannelUseCase(graphqlRepository: GraphqlRepository): CloseChannelUseCase{
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<CloseChannelMutation>(graphqlRepository)
         useCase.setGraphqlQuery(closeChannel)
@@ -272,12 +271,6 @@ class HomeUseCaseModule {
     @HomeScope
     fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {
         return InjectCouponTimeBasedUseCase(graphqlUseCase)
-    }
-
-    @Provides
-    @HomeScope
-    fun provideGetDisplayHeadlineAds(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<DisplayHeadlineAdsEntity>): GetDisplayHeadlineAds {
-        return GetDisplayHeadlineAds(graphqlUseCase)
     }
 
     @HomeScope
@@ -291,8 +284,10 @@ class HomeUseCaseModule {
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
-        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapperProviders)
+                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
+                          connectionUtil: PlayWidgetConnectionUtil
+    ): PlayWidgetTools {
+        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapperProviders, connectionUtil)
     }
 
     @HomeScope

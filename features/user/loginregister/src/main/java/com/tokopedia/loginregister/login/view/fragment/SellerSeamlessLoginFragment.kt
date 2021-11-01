@@ -29,6 +29,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.RemoteApi
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
+import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.router.LoginRouter
@@ -252,7 +253,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     private fun onErrorLoginToken(throwable: Throwable?){
         val errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
-        analytics.eventClickLoginSeamless("${SeamlessLoginAnalytics.LABEL_FAILED} $errorMessage")
+        analytics.eventClickLoginSeamless("${SeamlessLoginAnalytics.LABEL_FAILED} ${errorMessage.removeErrorCode()}")
         hideProgressBar()
         view?.run{
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)

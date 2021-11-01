@@ -20,26 +20,38 @@ data class ShopInfoByIDResponse(
 
 data class ShopInfoResultResponse(
     @Expose
+    @SerializedName("shopCore")
+    val coreInfo: ShopCoreInfoResponse? = ShopCoreInfoResponse(),
+    @Expose
     @SerializedName("closedInfo")
-    val closedInfo: ShopClosedInfoResponse
+    val closedInfo: ShopClosedInfoResponse = ShopClosedInfoResponse(),
+    @Expose
+    @SerializedName("shopSnippetURL")
+    val shopSnippetURL: String? = ""
+)
+
+data class ShopCoreInfoResponse(
+    @Expose
+    @SerializedName("url")
+    val url: String? = ""
 )
 
 data class ShopClosedInfoResponse(
     @Expose
     @SerializedName("detail")
-    val detail: ShopClosedInfoDetailResponse
+    val detail: ShopClosedInfoDetailResponse = ShopClosedInfoDetailResponse()
 )
 
 data class ShopClosedInfoDetailResponse(
     @Expose
     @SerializedName("startDate")
-    val startDate: String,
+    val startDate: String = "",
     @Expose
     @SerializedName("endDate")
-    val endDate: String,
+    val endDate: String = "",
     @Expose
     @SerializedName("status")
-    val status: Int
+    val status: Int = 0
 ) {
     companion object {
         private const val SHOP_STATUS_CLOSED = 2

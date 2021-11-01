@@ -70,5 +70,10 @@ data class FreeShipping(
 
         @SerializedName("eta_text")
         @Expose
-        val etaText: String = ""
+        val etaText: String = "",
+
+        @SerializedName("title")
+        @Expose
+        val title: String = ""
+
 )

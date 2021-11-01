@@ -16,7 +16,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 01/06/20.
  */
 
-class OtpValidateUseCase @Inject constructor(
+open class OtpValidateUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         dispatcher: CoroutineDispatchers
 ) : BaseOtpUseCase<OtpValidatePojo>(dispatcher) {
@@ -54,7 +54,7 @@ class OtpValidateUseCase @Inject constructor(
                 OtpValidatePojo::class.java,
                 parameter
         )
-        return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
     }.getSuccessData()
 
     companion object {

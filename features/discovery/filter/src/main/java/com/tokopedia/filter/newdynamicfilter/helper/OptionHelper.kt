@@ -3,21 +3,19 @@ package com.tokopedia.filter.newdynamicfilter.helper
 import android.text.TextUtils
 import android.widget.CheckBox
 import android.widget.CompoundButton
-
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Category
 import com.tokopedia.filter.common.data.LevelThreeCategory
 import com.tokopedia.filter.common.data.LevelTwoCategory
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView
-
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 object OptionHelper {
 
     const val VALUE_SEPARATOR = ","
     const val OPTION_SEPARATOR = "#"
+    const val EXCLUDE_PREFIX = "exclude_"
 
     @JvmStatic
     fun saveOptionShownInMainState(option: Option,
@@ -280,6 +278,14 @@ object OptionHelper {
                             constructUniqueId(Option.KEY_PRICE_MIN, "", combinedPriceFilterName)
                     )
             )
+        }
+    }
+
+    fun getKeyRemoveExclude(option: Option) = option.key.removePrefix(EXCLUDE_PREFIX)
+
+    fun copyOptionAsExclude(option: Option): Option {
+        return option.clone().also {
+            it.key = EXCLUDE_PREFIX + it.key
         }
     }
 }

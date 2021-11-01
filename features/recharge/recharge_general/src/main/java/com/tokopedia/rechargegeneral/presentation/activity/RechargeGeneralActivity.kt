@@ -3,7 +3,6 @@ package com.tokopedia.rechargegeneral.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
-import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
@@ -15,7 +14,6 @@ import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.rechargegeneral.di.DaggerRechargeGeneralComponent
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
-import timber.log.Timber
 
 /**
  * applink
@@ -32,8 +30,9 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         val menuId = bundle?.getString(PARAM_MENU_ID)?.toIntOrNull() ?: 0
         val operatorId = bundle?.getString(PARAM_OPERATOR_ID)?.toIntOrNull() ?: 0
         val productId = bundle?.getString(PARAM_PRODUCT_ID)?.toIntOrNull() ?: 0
+        val isAddSBM = bundle?.getString(PARAM_ADD_BILLS)?.toBoolean() ?: false
         val rechargeProductFromSlice = bundle?.getString(RECHARGE_PRODUCT_EXTRA,"") ?: ""
-        return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId, rechargeProductFromSlice)
+        return RechargeGeneralFragment.newInstance(categoryId, menuId, operatorId, productId, rechargeProductFromSlice, isAddSBM)
     }
 
     override fun getComponent(): RechargeGeneralComponent {
@@ -43,7 +42,7 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
     }
 
     override fun onBackPressed() {
-        (fragment as RechargeGeneralFragment).onBackPressed()
+        (fragment as? RechargeGeneralFragment)?.onBackPressed()
         super.onBackPressed()
     }
 
@@ -69,6 +68,7 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         val PARAM_MENU_ID = "menu_id"
         val PARAM_OPERATOR_ID = "operator_id"
         val PARAM_PRODUCT_ID = "product_id"
+        val PARAM_ADD_BILLS = "is_add_sbm"
         val PARAM_CLIENT_NUMBER = "client_number"
 
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"

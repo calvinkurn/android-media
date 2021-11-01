@@ -71,5 +71,8 @@
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     </LinearLayout>
-
+    <include
+        android:id="@+id/container_error"
+        layout="@layout/item_network_error_view"
+        android:visibility="gone" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

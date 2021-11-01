@@ -1,7 +1,5 @@
 package com.tokopedia.troubleshooter.notification.ui.activity
 
-import android.graphics.Color
-import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -13,7 +11,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIF
 
 class TroubleshootActivity : BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return TroubleshootFragment()
     }
 

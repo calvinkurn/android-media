@@ -138,7 +138,13 @@ data class DataItem(
         val boxColor: String? = "",
 
         @SerializedName("font_color", alternate = ["text_color"])
-        val  fontColor: String? = Constant.StaticFontColor.FONT_COLOR,
+        val  fontColor: String? = "",
+
+        @SerializedName("variant")
+        val variant: String? = "",
+
+        @SerializedName("color")
+        val color:String? = "",
 
         @SerializedName("button_text")
         var buttonText: String? = "",
@@ -199,6 +205,9 @@ data class DataItem(
 
         @SerializedName("shop_id")
         var shopId: String? = "",
+
+        @SerializedName("shop_ids")
+        var shopIds: List<Int>? = null,
 
         @SerializedName("basecode")
         val basecode: String? = "",
@@ -379,6 +388,20 @@ data class DataItem(
 
         @SerializedName("badges")
         var badges: List<Badges?>? = null,
+
+        @SerializedName("hasAddToCartButton")
+        var hasATC: Boolean = false,
+
+        @SerializedName("parent_id")
+        var parentProductId: String? = "",
+
+        @SerializedName("max_order")
+        var maxQuantity: Int = 0,
+
+        @SerializedName("min_order")
+        var minQuantity: Int = 0,
+
+        var quantity: Int = 0,
 
         var shopAdsClickURL: String? = "",
 

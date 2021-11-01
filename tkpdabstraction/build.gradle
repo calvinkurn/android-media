@@ -2,10 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-repositories {
-        google()
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-}
 buildscript {
     repositories {
         google()
@@ -21,17 +17,17 @@ project.ext {
     artifactId = 'abstraction'
     groupId = 'com.tokopedia.abstraction'
     versionName = "0.0.2"
-    artifactName ="tkpdabstraction-release"
+    artifactName = "tkpdabstraction-release"
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.inappupdate)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.logger)
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.libraries.inappupdate)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -48,7 +44,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.playServicesDependencies.core
-    implementation (rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -58,8 +54,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
-
-
 }
 
 apply from: '../publish_local.gradle'

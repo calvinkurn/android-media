@@ -40,7 +40,6 @@ interface SearchEventTracking {
             const val CLICK_CHANGE_GRID = "click - "
             const val CLICK_CATALOG = "click - catalog"
             const val CLICK_TAB = "click - tab"
-            const val NO_SEARCH_RESULT_WITH_TAB = "no search result - tab: %s"
             const val SORT_BY = "sort by"
             const val LONG_PRESS_PRODUCT = "click - long press product"
             const val ADD_WISHLIST = "add wishlist"
@@ -88,6 +87,7 @@ interface SearchEventTracking {
             const val IMPRESSION_DYNAMIC_PRODUCT_CAROUSEL = "impression - dynamic carousel product"
             const val CLICK_DYNAMIC_PRODUCT_CAROUSEL = "click - dynamic carousel product"
             const val CLICK_DYNAMIC_PRODUCT_CAROUSEL_SEE_MORE = "click - dynamic carousel search"
+            const val GENERAL_SEARCH_SHOP = "general search shop"
         }
     }
 
@@ -134,5 +134,6 @@ interface SearchEventTracking {
         const val SEARCH = "search"
         const val NONE = "none"
         const val OTHER = "other"
+        const val PHYSICAL_GOODS = "physical goods"
     }
 }

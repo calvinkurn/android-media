@@ -50,6 +50,7 @@
     <dimen name="home_searchbar_transition_range">50dp</dimen>
     <dimen name="home_revamp_searchbar_transition_range">16dp</dimen>
     <dimen name="keyboard_min_height">200dp</dimen>
+    <dimen name="home_category_widget_v2_title_container_height">46dp</dimen>
 
     <!--Banner Play-->
     <dimen name="home_play_banner_play_icon_size">34dp</dimen>
@@ -66,12 +67,21 @@
     <dimen name="default_toolbar_height">56dp</dimen>
     <dimen name="default_status_bar_height">24dp</dimen>
 
-<!--    default toolbar height + default status bar height + 16 margin-->
+    <!--    default toolbar height + default status bar height + 16 margin-->
     <dimen name="default_toolbar_status_height">96dp</dimen>
 
     <dimen name="home_background_no_choose_address">130dp</dimen>
     <dimen name="home_background_with_choose_address">160dp</dimen>
+    <dimen name="home_background_balance_small_with_choose_address">145dp</dimen>
+
     <dimen name="category_item_height">105dp</dimen>
     <dimen name="category_item_width">124dp</dimen>
+
+    <dimen name="bu_item_large_width">228dp</dimen>
+    <dimen name="bu_item_large_height">108dp</dimen>
+    <dimen name="bu_item_med_width">170dp</dimen>
+    <dimen name="bu_item_med_height">108dp</dimen>
+    <dimen name="bu_item_small_width">120dp</dimen>
+    <dimen name="bu_item_small_height">108dp</dimen>
 
 </resources>

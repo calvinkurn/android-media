@@ -37,16 +37,16 @@ data class Wholesale(
 
         @SerializedName("price")
         @Expose
-        val price: Float = 0f
+        val price: Double = 0.0
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
-        parcel.readFloat()) {
+        parcel.readDouble()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(minQty)
-        parcel.writeFloat(price)
+        parcel.writeDouble(price)
     }
 
     override fun describeContents(): Int {

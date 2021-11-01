@@ -44,7 +44,7 @@ class CarouselProductNotificationViewHolder constructor(
         }
     }
 
-    override fun isLongerContent(element: NotificationUiModel): Boolean = true
+    override fun isLongerContent(element: NotificationUiModel): Boolean = false
 
     override fun bind(element: NotificationUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
@@ -79,10 +79,6 @@ class CarouselProductNotificationViewHolder constructor(
 
     private fun bindScrollState(element: NotificationUiModel) {
         rv?.restoreSavedCarouselState(adapterPosition, carouselListener)
-    }
-
-    override fun showLongerContent(element: NotificationUiModel) {
-        notificationItemListener?.showProductBottomSheet(element)
     }
 
     companion object {

@@ -9,13 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.KeySharedModel
+import com.tokopedia.topads.common.data.response.KeySharedModel
 import com.tokopedia.topads.edit.data.SharedViewModel
+import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants
+import com.tokopedia.topads.edit.utils.Constants.BID_TYPE
 import com.tokopedia.topads.edit.utils.Constants.GROUP_STRATEGY
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
@@ -34,6 +37,7 @@ import kotlinx.android.synthetic.main.topads_edit_keyword_base_layout.*
 
 private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
 private const val CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
+private const val CLICK_BID_TYPE_EDIT = "click - edit ubah metode"
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
@@ -90,6 +94,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             view_pager.currentItem = POSITION1
         }
         autobid_layout.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_BID_TYPE_EDIT, "")
             autoBidSelectionSheet = AutoBidSelectionSheet.newInstance()
             autoBidSelectionSheet?.setChecked(autobid_selection.text.toString())
             autoBidSelectionSheet?.show(childFragmentManager, "")
@@ -97,6 +102,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                 handleAutoBidState(autoBidState)
             }
         }
+        sharedViewModel.setIsWhiteListedUser(arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER)?:false)
         arguments?.getString(GROUP_STRATEGY, "")?.let { handleAutoBidState(it) }
 
     }
@@ -170,6 +176,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         var addedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
         var editedKeywordsPos: ArrayList<KeySharedModel>? = arrayListOf()
         val strategies: ArrayList<String> = arrayListOf()
+        var bidSettings: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
         var bidGroup = 0
 
         if (bidStrategy.isEmpty()) {
@@ -180,6 +187,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
                 editedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_EDIT)
                 positivekeywordsAll = bundle.getParcelableArrayList(POSITIVE_KEYWORD_ALL)
                 bidGroup = bundle.getInt(Constants.PRICE_BID)
+                bidSettings = bundle.getParcelableArrayList(BID_TYPE)
 
             }
             if (fragments?.get(1) is EditNegativeKeywordsFragment) {
@@ -201,6 +209,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         dataMap[NEGATIVE_KEYWORDS_DELETED] = dataNegativeDeleted
         dataMap[STRATEGIES] = strategies
         dataMap[Constants.PRICE_BID] = bidGroup
+        dataMap[BID_TYPE] = bidSettings
 
         return dataMap
     }

@@ -8,6 +8,8 @@ import android.widget.*;
 import com.tokopedia.translator.R;
 import com.tokopedia.translator.repository.source.GetDataService;
 import com.tokopedia.translator.repository.source.RetrofitClientInstance;
+import com.tokopedia.unifycomponents.TextFieldUnify;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import retrofit2.Call;
@@ -76,13 +78,13 @@ public class TranslatorSettingView extends FrameLayout {
         view.findViewById(R.id.btn_save_key).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view1) {
-                final EditText editApiKey = view.findViewById(R.id.edit_key);
-                if (editApiKey == null || editApiKey.getText() == null || editApiKey.getText().toString().isEmpty()) {
+                final TextFieldUnify editApiKey = view.findViewById(R.id.edit_key);
+                if (editApiKey == null || editApiKey.getTextFieldInput().getText() == null || editApiKey.getTextFieldInput().getText().toString().isEmpty()) {
                     return;
                 }
 
                 GetDataService service = RetrofitClientInstance.Companion.getRetrofitInstance().create(GetDataService.class);
-                Call<String> call = service.checkApiKeyValidity(editApiKey.getText().toString(), "hello world");
+                Call<String> call = service.checkApiKeyValidity(editApiKey.getTextFieldInput().getText().toString(), "hello world");
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -94,9 +96,9 @@ public class TranslatorSettingView extends FrameLayout {
                                 CommonUtil.showToastWithUIUpdate(getContext()
                                         , "API-KEY has been saved successfully"
                                         , (TextView) findViewById(R.id.text_curr_key)
-                                        , editApiKey.getText().toString().trim());
+                                        , editApiKey.getTextFieldInput().getText().toString().trim());
 
-                                SharedPrefsUtils.INSTANCE.setStringPreference(getContext(), API_KEY, editApiKey.getText().toString().trim());
+                                SharedPrefsUtils.INSTANCE.setStringPreference(getContext(), API_KEY, editApiKey.getTextFieldInput().getText().toString().trim());
 
                             } catch (JSONException e) {
                                 CommonUtil.showToast(getContext()
@@ -114,7 +116,7 @@ public class TranslatorSettingView extends FrameLayout {
                                 , "Something went wrong, please try later");
                     }
                 });
-                SharedPrefsUtils.INSTANCE.setStringPreference(getContext(), API_KEY, editApiKey.getText().toString().trim());
+                SharedPrefsUtils.INSTANCE.setStringPreference(getContext(), API_KEY, editApiKey.getTextFieldInput().getText().toString().trim());
             }
         });
 
@@ -123,7 +125,7 @@ public class TranslatorSettingView extends FrameLayout {
         spOrigin.setClickable(false);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.supported_languages, android.R.layout.simple_spinner_item);
+                R.array.supported_languages, R.layout.tl_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -132,7 +134,7 @@ public class TranslatorSettingView extends FrameLayout {
         Spinner spDestination = view.findViewById(R.id.list_destination);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapterDest = ArrayAdapter.createFromResource(getContext(),
-                R.array.supported_languages, android.R.layout.simple_spinner_item);
+                R.array.supported_languages, R.layout.tl_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapterDest.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

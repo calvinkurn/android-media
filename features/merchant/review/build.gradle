@@ -10,7 +10,6 @@ buildscript {
         google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
-        jcenter()
         google()
     }
     dependencies {
@@ -24,11 +23,17 @@ android {
         main {
             res.srcDirs = [
                     pathSources,
+                    pathSources + 'historydetail',
                     pathSources + 'inboxreview',
                     pathSources + 'reviewdetail',
                     pathSources + 'reviewlist',
                     pathSources + 'reviewreply',
                     pathSources + 'createreputation',
+                    pathSources + 'credibility',
+                    pathSources + 'reading',
+                    pathSources + 'gallery',
+                    pathSources + 'imagepreview',
+                    pathSources + 'common'
             ]
         }
     }
@@ -38,37 +43,44 @@ android {
     defaultConfig {
         multiDexEnabled true
     }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.features.chatcommon)
-    implementation project(rootProject.ext.features.inboxCommon)
-    implementation project(rootProject.ext.features.medialoader)
-    implementation project(rootProject.ext.features.mediauploader)
-    implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.sellerMigrationCommon)
-    implementation project(rootProject.ext.features.shopCommon)
+    implementation projectOrAar(rootProject.ext.features.chatcommon)
+    implementation projectOrAar(rootProject.ext.features.inboxCommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.mediauploader)
+    implementation projectOrAar(rootProject.ext.features.reputationCommon)
+    implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.features.reviewInbox)
 
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.baseListSeller)
-    implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation project(rootProject.ext.libraries.core_legacy)
-    implementation project(rootProject.ext.libraries.datePickerRange)
-    implementation project(rootProject.ext.libraries.deviceInfo)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.imagePickerCommon)
-    implementation project(rootProject.ext.libraries.imagePreviewSlider)
-    implementation project(rootProject.ext.libraries.imagePreview)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.core_legacy)
+    implementation projectOrAar(rootProject.ext.libraries.datePickerRange)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
+    implementation projectOrAar(rootProject.ext.libraries.imagePreviewSlider)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
@@ -79,14 +91,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.miscDependencies.viewPager2
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 
-    implementation rootProject.ext.miscDependencies.rxAndroid
-    implementation rootProject.ext.miscDependencies.rxJava
-    implementation rootProject.ext.miscDependencies.gson
-
-    implementation rootProject.ext.networkDependencies.adapterRxJava
-    implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.retrofit
 
@@ -99,16 +105,10 @@ dependencies {
         transitive = true
     }
 
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
-
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
@@ -122,13 +122,14 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.sortFilter
+    implementation rootProject.ext.unifyDependencies.imageGallery
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     //Ui Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -136,10 +137,12 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
-    androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
-    androidTestImplementation project(rootProject.ext.features.loginregister)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
+    androidTestImplementation rootProject.ext.miscDependencies.exoPlayer
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
 }
 
 project.ext {

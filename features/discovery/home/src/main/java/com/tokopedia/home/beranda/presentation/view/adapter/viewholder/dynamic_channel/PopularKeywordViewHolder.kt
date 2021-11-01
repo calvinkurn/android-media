@@ -27,6 +27,7 @@ import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
+import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.home_popular_keyword.view.*
 import kotlinx.android.synthetic.main.home_popular_keyword.view.home_component_divider_footer
 import kotlinx.android.synthetic.main.home_popular_keyword.view.home_component_divider_header
@@ -66,6 +67,7 @@ class PopularKeywordViewHolder (val view: View,
 
     override fun bind(element: PopularKeywordListDataModel) {
         performanceMonitoring?.startTrace(performanceTraceName)
+        Embrace.getInstance().startEvent(performanceTraceName, null, false)
         homeCategoryListener.sendIrisTrackerHashMap(PopularKeywordTracking.getPopularKeywordImpressionIris(element.channel, element.popularKeywordList, adapterPosition) as HashMap<String, Any>)
 
         initStub(element)
@@ -96,6 +98,7 @@ class PopularKeywordViewHolder (val view: View,
         else recyclerView.visible()
         performanceMonitoring?.stopTrace()
         performanceMonitoring = null
+        Embrace.getInstance().endEvent(performanceTraceName)
     }
 
     private fun initStub(element: PopularKeywordListDataModel) {

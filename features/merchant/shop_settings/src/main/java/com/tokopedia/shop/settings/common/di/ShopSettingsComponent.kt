@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.mediauploader.di.MediaUploaderModule
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseShopSettingsInfoQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -16,8 +17,8 @@ import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddE
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesListFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderFragment
+import com.tokopedia.shop.settings.setting.view.fragment.ShopPageSettingFragment
 import dagger.Component
-import dagger.Provides
 import javax.inject.Named
 
 /**
@@ -26,7 +27,7 @@ import javax.inject.Named
 
 @ShopSettingsScope
 @Component(
-    modules = [ShopSettingsModule::class, ViewModelModule::class, ShopSettingsInfoViewModelModule::class],
+    modules = [MediaUploaderModule::class, ShopSettingsModule::class, ViewModelModule::class, ShopSettingsInfoViewModelModule::class, ShopSettingViewModelModule::class],
     dependencies = [BaseAppComponent::class]
 )
 interface ShopSettingsComponent {
@@ -45,6 +46,7 @@ interface ShopSettingsComponent {
 
     fun inject(fragment: ShopSettingsNotesAddEditFragment)
     fun inject(fragment: ShopSettingsEtalaseAddEditFragment)
+    fun inject(fragment: ShopPageSettingFragment)
 
     @GqlGetShopInfoUseCaseShopSettingsInfoQualifier
     fun gqlGetShopInfoShopSettingsInfo(): GQLGetShopInfoUseCase

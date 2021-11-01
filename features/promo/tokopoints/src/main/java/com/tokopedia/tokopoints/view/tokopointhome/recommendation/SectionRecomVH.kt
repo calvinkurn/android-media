@@ -8,10 +8,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.CarouselItemDecorationNew
+import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
+import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
 import com.tokopedia.tokopoints.view.recommwidget.RewardsRecommAdapter
-import com.tokopedia.tokopoints.view.tokopointhome.RecommendationWrapper
 import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
-import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecommendation
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
 class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : RecyclerView.ViewHolder(view) {
@@ -32,7 +32,8 @@ class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : Recy
             }
         }
 
-        (view.findViewById<View>(R.id.text_title_recomm) as TextView).text = data.title
+        (view.findViewById<View>(R.id.text_title_recomm) as TextView).text =
+            view.context.resources.getString(R.string.tp_recom_title)
 
         (view.findViewById<View>(R.id.text_sub_title_recomm) as TextView).text =
             view.context.resources.getString(R.string.tp_recom_subtitle)

@@ -483,7 +483,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
     private fun onVerificationCompleted(data: Intent) {
         if (data.hasExtra(ApplinkConstInternalGlobal.PARAM_UUID) ||
                 ::withdrawalRequest.isInitialized) {
-            val uuid: String = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID)
+            val uuid: String = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID) ?: ""
             submitWithdrawalRequest(withdrawalRequest, uuid)
         }
     }

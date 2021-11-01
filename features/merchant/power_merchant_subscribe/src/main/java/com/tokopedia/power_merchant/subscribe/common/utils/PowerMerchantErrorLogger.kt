@@ -14,6 +14,7 @@ object PowerMerchantErrorLogger {
     const val PM_SHOP_MODERATION_STATUS_ERROR = "PM shop moderation status error"
     const val PM_BASIC_INFO_ERROR = "PM basic info error"
     const val PM_ACTIVATION_ERROR = "PM activation error"
+    const val PM_BENEFIT_PACKAGE_ERROR = "PM Benefit Package Error"
     const val PM_CANCEL_DEACTIVATION_ERROR = "PM cancel activation error"
     const val PM_DEACTIVATION_ERROR = "PM deactivation error"
     const val PM_DEACTIVATION_QUESTIONNAIRE_ERROR = "PM deactivation questionnaire error"

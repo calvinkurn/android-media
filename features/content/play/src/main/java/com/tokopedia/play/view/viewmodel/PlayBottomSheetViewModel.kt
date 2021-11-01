@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -19,7 +20,6 @@ import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
@@ -91,7 +91,7 @@ class PlayBottomSheetViewModel @Inject constructor(
                         product.shopId,
                         product.minQty,
                         notes,
-                        AddToCartRequestParams.ATC_FROM_PLAY,
+                        AtcFromExternalSource.ATC_FROM_PLAY,
                         product.title,
                         price = when (product.price) {
                             is OriginalPrice -> product.price.priceNumber.toString()

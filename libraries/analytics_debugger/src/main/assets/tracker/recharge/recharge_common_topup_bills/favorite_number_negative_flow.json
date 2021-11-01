@@ -1,0 +1,26 @@
+{
+  "readme": "Tracker Seamless Favorite Number Page Unhappy Flow",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEventIris",
+      "userId": ".*",
+      "eventAction": "view empty favorite number",
+      "sessionIris": ".+",
+      "eventLabel": ".+"
+    },
+    {
+      "businessUnit": "recharge",
+      "eventCategory": "digital - pdp favorite number",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "digitalGeneralEvent",
+      "userId": ".*",
+      "eventAction": "click lanjut transaksi",
+      "sessionIris": ".+",
+      "eventLabel": ".+ - .+"
+    }
+  ]
+}

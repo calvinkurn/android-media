@@ -30,6 +30,7 @@ import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment.
 import com.tokopedia.tokopoints.view.model.CouponValueEntity
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil.EcommerceKeys.Companion.KUPON_ITEMNAME
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.DEFAULT_TIME_STRING
 import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
@@ -119,69 +120,6 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         }
     }
 
-    override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
-        super.onViewAttachedToWindow(vh)
-
-        if (vh is ViewHolder) {
-            val data = items[vh.getAdapterPosition()] ?: return
-
-            if (!vh.isVisited) {
-                val item = HashMap<String, String?>()
-                item["id"] = data.catalogId.toString()
-                item["name"] = data.title
-                item["position"] = vh.getAdapterPosition().toString()
-                item["creative"] = data.title
-                item["creative_url"] = data.imageUrlMobile
-                item["promo_code"] = data.code
-
-                val promotions = HashMap<String, List<Map<String, String?>>>()
-                promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
-
-                val promoView = HashMap<String, Map<String, List<Map<String, String?>>>>()
-                promoView["promoView"] = promotions
-
-                var eventLabel = ""
-                if (data.title != null && data.title.isNotEmpty()) {
-                    eventLabel = data.title
-                }
-                AnalyticsTrackerUtil.sendECommerceEvent(vh.value.context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                        AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                        eventLabel, promoView)
-
-                vh.isVisited = true
-            }
-        }
-    }
-
-    private fun sendClickEvent(context: Context, data: CouponValueEntity, position: Int) {
-        val item = HashMap<String, String?>()
-        item["id"] = data.catalogId.toString()
-        item["name"] = data.title
-        item["position"] = position.toString()
-        item["creative"] = data.title
-        item["creative_url"] = data.imageUrlMobile
-        item["promo_code"] = data.code
-
-        val promotions = HashMap<String, List<Map<String, String?>>>()
-        promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
-
-        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
-        promoClick["promoClick"] = promotions
-
-        var eventLabel = ""
-        if (data.title != null && data.title.isNotEmpty()) {
-            eventLabel = data.title
-        }
-        AnalyticsTrackerUtil.sendECommerceEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
-                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
-                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-                eventLabel, promoClick)
-    }
-
-
     override fun getItemViewHolder(parent: ViewGroup, inflater: LayoutInflater, viewType: Int): BaseVH {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.tp_item_my_coupon_stacked, parent, false)
@@ -195,16 +133,17 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
     }
 
     private fun setData(holder: ViewHolder, item: CouponValueEntity) {
+        val itemContext = holder.itemView.context
         ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner, item.imageUrlMobile)
 
         if (item.isNewCoupon) {
-            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G200))
-            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G200))
-            holder.cv2.setCardBackgroundColor(holder.itemView.getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            holder.cv2.setCardBackgroundColor(itemContext.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G200))
         } else {
-            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            holder.itemView.setBackgroundColor(MethodChecker.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
 
         if (item.usage != null) {
@@ -276,18 +215,17 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
             }
 
             if (TextUtils.isEmpty(item.upperLeftSection.textAttributes[0].color)) {
-                holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                holder.tvStackCount.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G400))
             } else {
                 try {
                     holder.tvStackCount.setTextColor(Color.parseColor(item.upperLeftSection.textAttributes[0].color))
                 } catch (iae: IllegalArgumentException) {
-                    holder.tvStackCount.setTextColor(ContextCompat.getColor(holder.tvStackCount.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                    holder.tvStackCount.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G400))
                 }
-
             }
 
             if (!TextUtils.isEmpty(item.upperLeftSection.backgroundColor)) {
-                val shape = getShape(item.upperLeftSection.backgroundColor, holder.tvStackCount.context)
+                val shape = getShape(item.upperLeftSection.backgroundColor, itemContext)
                 if (shape != null) {
                     holder.tvStackCount.background = shape
                 }
@@ -317,15 +255,15 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                             val seconds = timeToExpire.third
                             holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
                             try {
-                                holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                                holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_R500))
                             } catch (e: Exception) {
                             }
                             holder.progressTimer.progress = l.toInt() / 1000
                             try {
-                                holder.value.setPadding(holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                        holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                        holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
-                                        holder.label.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall))
+                                holder.value.setPadding(itemContext.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                        itemContext.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                                        itemContext.resources.getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                        itemContext.resources.getDimensionPixelSize(R.dimen.tp_padding_xsmall))
                             } catch (e: Exception) {
 
                             }
@@ -339,11 +277,11 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                 } else {
                     holder.progressTimer.hide()
                     holder.value.setPadding(0, 0, 0, 0)
-                    holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }
             } else {
                 holder.progressTimer.hide()
-                holder.value.setTextColor(ContextCompat.getColor(holder.value.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
             holder.itemView?.let {
                 holder.itemView.setOnClickListener { v ->
@@ -354,11 +292,11 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                         val bundle = Bundle()
                         bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.code)
                         if (item.isNewCoupon) {
-                            (holder.imgBanner.context as FragmentActivity).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.context, bundle), REQUEST_CODE_STACKED_ADAPTER)
+                            (itemContext as FragmentActivity).startActivityForResult(CouponDetailActivity.getCouponDetail(holder.imgBanner.context, bundle), REQUEST_CODE_STACKED_ADAPTER)
                         } else {
-                            holder.imgBanner.context.startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.context, bundle))
+                            itemContext.startActivity(CouponDetailActivity.getCouponDetail(itemContext, bundle))
                         }
-                        sendClickEvent(holder.imgBanner.context, item, holder.getAdapterPosition())
+                        sendClickEvent(itemContext, item, holder.getAdapterPosition())
                     }
                 }
             }
@@ -379,13 +317,13 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
     }
 
     private fun disableImages(holder: ViewHolder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), android.graphics.PorterDuff.Mode.SRC_IN)
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), android.graphics.PorterDuff.Mode.SRC_IN)
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), android.graphics.PorterDuff.Mode.SRC_IN)
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), android.graphics.PorterDuff.Mode.SRC_IN)
     }
 
     private fun enableImages(holder: ViewHolder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
     }
 
     private fun getShape(hex: String, context: Context): GradientDrawable? {
@@ -425,5 +363,67 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         }
     }
 
+
+    override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(vh)
+
+        if (vh is ViewHolder) {
+            val data = items[vh.getAdapterPosition()] ?: return
+
+            if (!vh.isVisited) {
+                val item = HashMap<String, String?>()
+                item["id"] = data.catalogId.toString()
+                item["name"] = String.format(KUPON_ITEMNAME, vh.adapterPosition + 1)
+                item["position"] = (vh.adapterPosition + 1).toString()
+                item["creative"] = data.title
+                item["creative_url"] = data.imageUrlMobile
+                item["promo_code"] = data.code
+
+                val promotions = HashMap<String, List<Map<String, String?>>>()
+                promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
+
+                val promoView = HashMap<String, Map<String, List<Map<String, String?>>>>()
+                promoView["promoView"] = promotions
+
+                var eventLabel = ""
+                if (data.title != null && data.title.isNotEmpty()) {
+                    eventLabel = data.title
+                }
+                AnalyticsTrackerUtil.sendECommerceEvent(vh.value.context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                    eventLabel, promoView)
+
+                vh.isVisited = true
+            }
+        }
+    }
+
+    private fun sendClickEvent(context: Context, data: CouponValueEntity, position: Int) {
+        val item = HashMap<String, String?>()
+        item["id"] = data.catalogId.toString()
+        item["name"] = String.format(KUPON_ITEMNAME, position + 1)
+        item["position"] = (position + 1).toString()
+        item["creative"] = data.title
+        item["creative_url"] = data.imageUrlMobile
+        item["promo_code"] = data.code
+
+        val promotions = HashMap<String, List<Map<String, String?>>>()
+        promotions["promotions"] = Arrays.asList<Map<String, String?>>(item)
+
+        val promoClick: HashMap<String, Map<String, List<Map<String, String?>>>> = HashMap()
+        promoClick["promoClick"] = promotions
+
+        var eventLabel = ""
+        if (data.title != null && data.title.isNotEmpty()) {
+            eventLabel = data.title
+        }
+        AnalyticsTrackerUtil.sendECommerceEvent(context,
+            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_PROMO,
+            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+            AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+            eventLabel, promoClick)
+    }
 
 }

@@ -30,10 +30,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper.mapRestrictionEngineResponseToModel
-import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
-import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
-import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
-import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
+import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.RequestParams
@@ -298,7 +295,13 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         return GetShopProductUiModel(
                 isHasNextPage,
                 productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu, etalaseType) },
-                totalProductData
+                totalProductData,
+                GetShopProductSuggestionUiModel(
+                        productListResponse.suggestion.text,
+                        productListResponse.suggestion.query,
+                        productListResponse.suggestion.responseCode,
+                        productListResponse.suggestion.keywordProcess,
+                )
         )
     }
     private fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData

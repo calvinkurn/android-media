@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 
 import android.content.Context
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -46,15 +47,14 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         })
 
         multiBannerViewModel.getPushBannerStatusData().observe(fragment.viewLifecycleOwner, Observer {
-            if (bannersItemList.isNotEmpty() && it != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS) {
-                (bannersItemList[it].bannerImageView as ImageUnify).loadImageFitCenter(bannersItemList[it].bannerItemData.registeredImageApp)
+            updateImage(it.first)
+            if(it.second.isNotEmpty()){
+                Toaster.make(customItemView, it.second, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR)
             }
         })
 
         multiBannerViewModel.getPushBannerSubscriptionData().observe(fragment.viewLifecycleOwner, Observer {
-            if (bannersItemList.isNotEmpty() && it != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS) {
-                (bannersItemList[it].bannerImageView as ImageUnify).loadImageFitCenter(bannersItemList[it].bannerItemData.registeredImageApp)
-            }
+            updateImage(it)
         })
         multiBannerViewModel.getShowLoginData().observe(fragment.viewLifecycleOwner, Observer {
             if (it) context.startActivity(RouteManager.getIntent(context, ApplinkConst.LOGIN))
@@ -78,6 +78,17 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         multiBannerViewModel.isPageRefresh().observe(fragment.viewLifecycleOwner, Observer {
             if (it) fragment.startActivityForResult(RouteManager.getIntent(fragment.context, ApplinkConst.LOGIN), PAGE_REFRESH_LOGIN)
         })
+    }
+
+    private fun updateImage(position: Int) {
+        if (bannersItemList.isNotEmpty() && position != Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
+            && !bannersItemList[position].bannerItemData.registeredImageApp.isNullOrEmpty()
+        ) {
+            (bannersItemList[position].bannerImageView as ImageUnify).apply {
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                setImageUrl(bannersItemList[position].bannerItemData.registeredImageApp ?: "")
+            }
+        }
     }
 
     private fun addBanners(data: List<DataItem>) {
@@ -108,7 +119,11 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     }
 
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(data, multiBannerViewModel.getComponentPosition())
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
+            data,
+            null,
+            Utils.getUserId(fragment.context)
+        )
     }
 
     private fun checkSubscriptionStatus(position: Int) {
@@ -118,7 +133,8 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     private fun setClickOnBanners(itemData: DataItem, index: Int) {
         bannersItemList[index].bannerImageView.setOnClickListener {
             multiBannerViewModel.onBannerClicked(index, context)
-            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(itemData, index)
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                ?.trackBannerClick(itemData, index, Utils.getUserId(fragment.context))
         }
     }
 }

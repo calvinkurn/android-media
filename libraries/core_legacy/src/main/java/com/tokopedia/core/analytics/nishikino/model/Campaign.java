@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author  by alvarisi on 6/8/2016.
+ * @author by alvarisi on 6/8/2016.
  */
 public class Campaign {
     private Map<String, Object> campaignMap = new HashMap<>();
@@ -54,7 +54,11 @@ public class Campaign {
     }
 
     public void setScreenName(String screenName) {
-        this.campaignMap.put("screenName", screenName);
+        if (screenName == null) {
+            this.campaignMap.put(AppEventTracking.GTM.SCREEN_NAME, "");
+        } else {
+            this.campaignMap.put(AppEventTracking.GTM.SCREEN_NAME, screenName);
+        }
     }
 
     public Map<String, Object> getCampaign() {
@@ -62,7 +66,7 @@ public class Campaign {
     }
 
     public Map<String, Object> getNullCampaignMap() {
-        for(Map.Entry<String, Object> item: campaignMap.entrySet()) {
+        for (Map.Entry<String, Object> item : campaignMap.entrySet()) {
             campaignMap.put(item.getKey(), null);
         }
         return campaignMap;

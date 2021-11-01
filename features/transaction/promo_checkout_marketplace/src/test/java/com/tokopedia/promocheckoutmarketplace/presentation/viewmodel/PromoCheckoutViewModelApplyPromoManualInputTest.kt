@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListRequest
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseApplyManualFailed
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideGetPromoListResponseEmptyStateCouponListEmpty
@@ -22,9 +23,7 @@ import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommenda
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -66,7 +65,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         val promoRequest = provideGetPromoListRequest()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, attemptedPromoCode)
@@ -83,7 +82,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         val promoRequest = provideGetPromoListRequest()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, attemptedPromoCode)
@@ -101,7 +100,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         val promoRequest = provideGetPromoListRequest()
         promoRequest.codes.add(attemptedPromoCode)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, attemptedPromoCode)
@@ -119,7 +118,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         val promoRequest = provideGetPromoListRequest()
         promoRequest.codes.add(attemptedPromoCode)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, attemptedPromoCode)
@@ -137,7 +136,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         val promoRequest = provideGetPromoListRequest()
         promoRequest.orders[0].codes.add(attemptedPromoCode)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, attemptedPromoCode)
@@ -154,7 +153,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         viewModel.setPromoListValue(provideNoCurrentSelectedExpandedGlobalPromoData())
         val promoRequest = providePromoRequestWithSelectedExpandedGlobalPromo()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, "GLOBAL PROMO")
@@ -171,7 +170,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         viewModel.setPromoListValue(provideNoCurrentSelectedExpandedMerchantPromoData())
         val promoRequest = providePromoRequestWithSelectedExpandedMerchantPromo()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, "MERCHANT PROMO")
@@ -188,7 +187,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         viewModel.setPromoListValue(provideNoCurrentSelectedCollapsedGlobalPromoData())
         val promoRequest = providePromoRequestWithSelectedCollapsedGlobalPromo()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, "GLOBAL PROMO")
@@ -205,7 +204,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         viewModel.setPromoListValue(provideNoCurrentSelectedCollapsedMerchantPromoData())
         val promoRequest = providePromoRequestWithSelectedCollapsedMerchantPromo()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, "MERCHANT PROMO")
@@ -224,7 +223,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         val promoRequest = provideGetPromoListRequest()
         promoRequest.codes.add(attemptedPromoCode)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), attemptedPromoCode)
@@ -240,7 +239,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseApplyManualFailed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "PROMO_CODE")
@@ -256,7 +255,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseApplyManualFailed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "PROMO_CODE")
@@ -272,7 +271,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateEmpty()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "PROMO CODE")
@@ -289,7 +288,7 @@ class PromoCheckoutViewModelApplyPromoManualInputTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.initPromoInput()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "PROMO CODE")

@@ -8,7 +8,7 @@ data class BalanceDrawerItemModel(
         val applinkContainer: String = "",
         val applinkActionText: String = "",
         val redirectUrl: String = "",
-        val iconImageUrl: String = "",
+        val iconImageUrl: String? = null,
         val defaultIconRes: Int? = null,
         var balanceTitleTextAttribute: BalanceTextAttribute? = null,
         var balanceSubTitleTextAttribute: BalanceTextAttribute? = null,
@@ -16,7 +16,10 @@ data class BalanceDrawerItemModel(
         var balanceSubTitleTagAttribute: BalanceTagAttribute? = null,
         val drawerItemType: Int = TYPE_TOKOPOINT,
         val mainPageTitle: String = "",
-        var state: Int = STATE_LOADING
+        var state: Int = STATE_LOADING,
+        val trackingAttribute: String = "",
+        var alternateBalanceDrawerItem: List<BalanceDrawerItemModel>? = null,
+        var balanceCoachmark: BalanceCoachmark? = null
 ) {
     companion object {
         const val TYPE_UNKNOWN = 0
@@ -37,6 +40,10 @@ data class BalanceDrawerItemModel(
 
         //is not linked for any type of wallet
         const val TYPE_WALLET_PENDING_CASHBACK = 8
+
+        const val TYPE_WALLET_APP_LINKED = 9
+
+        const val TYPE_WALLET_APP_NOT_LINKED = 11
 
         const val STATE_SUCCESS = 0
         const val STATE_LOADING = 1

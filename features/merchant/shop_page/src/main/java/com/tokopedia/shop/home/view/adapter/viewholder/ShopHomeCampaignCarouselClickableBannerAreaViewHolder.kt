@@ -13,7 +13,6 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
-import kotlinx.android.synthetic.main.item_shop_campaign_carousel_clickable_banner_area.view.*
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -30,8 +29,10 @@ open class ShopHomeCampaignCarouselClickableBannerAreaViewHolder(
         val LAYOUT = R.layout.item_shop_campaign_carousel_clickable_banner_area
     }
 
+    private val viewClickableArea: View? = itemView.findViewById(R.id.view_clickable_area)
+
     override fun bind(model: ShopHomeCampaignCarouselClickableBannerAreaUiModel) {
-        itemView.view_clickable_area?.apply {
+        viewClickableArea?.apply {
             layoutParams.width = model.width
             setOnClickListener {
                 shopHomeCampaignNplWidgetListener.onClickCampaignBannerAreaNplWidget(shopHomeNewProductLaunchCampaignUiModel)

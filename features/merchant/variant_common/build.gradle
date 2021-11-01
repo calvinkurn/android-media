@@ -1,6 +1,18 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
 
 buildscript {
     repositories {
@@ -14,24 +26,27 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
+
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.dagger
 
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.global_error
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

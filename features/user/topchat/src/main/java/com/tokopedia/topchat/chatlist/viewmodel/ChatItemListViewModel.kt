@@ -35,14 +35,13 @@ import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetada
 import com.tokopedia.topchat.chatlist.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.chatlist.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
+import com.tokopedia.topchat.common.Constant
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -51,7 +50,7 @@ import javax.inject.Inject
 
 interface ChatItemListContract {
     fun getChatListMessage(page: Int, filterIndex: Int, tab: String)
-    fun chatMoveToTrash(messageId: Int)
+    fun chatMoveToTrash(messageId: String)
     fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun loadChatBannedSellerStatus()
@@ -67,16 +66,17 @@ interface ChatItemListContract {
 }
 
 class ChatItemListViewModel @Inject constructor(
-        private val repository: GraphqlRepository,
-        private val queries: Map<String, String>,
-        private val chatWhitelistFeature: GetChatWhitelistFeature,
-        private val chatBannedSellerUseCase: ChatBanedSellerUseCase,
-        private val pinChatUseCase: MutationPinChatUseCase,
-        private val unpinChatUseCase: MutationUnpinChatUseCase,
-        private val getChatListUseCase: GetChatListMessageUseCase,
-        private val authorizeAccessUseCase: AuthorizeAccessUseCase,
-        private val userSession: UserSessionInterface,
-        private val dispatcher: CoroutineDispatcher
+    private val repository: GraphqlRepository,
+    private val queries: Map<String, String>,
+    private val chatWhitelistFeature: GetChatWhitelistFeature,
+    private val chatBannedSellerUseCase: ChatBanedSellerUseCase,
+    private val pinChatUseCase: MutationPinChatUseCase,
+    private val unpinChatUseCase: MutationUnpinChatUseCase,
+    private val getChatListUseCase: GetChatListMessageUseCase,
+    private val authorizeAccessUseCase: AuthorizeAccessUseCase,
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
+    private val userSession: UserSessionInterface,
+    private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
     var filter: String = PARAM_FILTER_ALL
@@ -201,23 +201,21 @@ class ChatItemListViewModel @Inject constructor(
         }
     }
 
-    override fun chatMoveToTrash(messageId: Int) {
-        queries[QUERY_DELETE_CHAT_MESSAGE]?.let { query ->
-            val params = mapOf(PARAM_MESSAGE_ID to messageId)
-
-            launchCatchError(block = {
-                val data = withContext(dispatcher) {
-                    val request = GraphqlRequest(query, ChatDeleteStatus::class.java, params)
-                    repository.getReseponse(listOf(request))
-                }.getSuccessData<ChatDeleteStatus>()
-
-                if (data.chatMoveToTrash.list.isNotEmpty()) {
-                    val deletedChat = data.chatMoveToTrash.list.first()
-                    _deleteChat.value = Success(deletedChat)
-                    clearFromPinUnpin(deletedChat.messageId.toString())
+    override fun chatMoveToTrash(messageId: String) {
+        launch {
+            try {
+                val result = moveChatToTrashUseCase.execute(messageId)
+                if(result.chatMoveToTrash.list.isNotEmpty()) {
+                    val deletedChat = result.chatMoveToTrash.list.first()
+                    if(deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
+                        _deleteChat.value = Success(deletedChat)
+                        clearFromPinUnpin(deletedChat.messageId.toString())
+                    } else {
+                        _deleteChat.value = Fail(Throwable(deletedChat.detailResponse))
+                    }
                 }
-            }) {
-                _deleteChat.value = Fail(it)
+            } catch (throwable: Throwable) {
+                _deleteChat.value = Fail(throwable)
             }
         }
     }
@@ -277,7 +275,7 @@ class ChatItemListViewModel @Inject constructor(
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 val request = GraphqlRequest(query, ChatChangeStateResponse::class.java, params)
-                repository.getReseponse(listOf(request))
+                repository.response(listOf(request))
             }.getSuccessData<ChatChangeStateResponse>()
             result(Success(data))
         }
@@ -291,7 +289,7 @@ class ChatItemListViewModel @Inject constructor(
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 val request = GraphqlRequest(query, BlastSellerMetaDataResponse::class.java, emptyMap())
-                repository.getReseponse(listOf(request))
+                repository.response(listOf(request))
             }.getSuccessData<BlastSellerMetaDataResponse>()
             getChatAdminAccessJob?.join()
             if (isAdminHasAccess) {
@@ -323,7 +321,7 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     fun getReplyTimeStampFrom(lastItem: ReplyParcelableModel): String {
-        return (lastItem.replyTime.toLongOrZero() / 1000000L).toString()
+        return (lastItem.replyTime.toLongOrZero() / ONE_MILLION).toString()
     }
 
     fun loadTopBotWhiteList() {
@@ -349,7 +347,7 @@ class ChatItemListViewModel @Inject constructor(
                 context.getString(R.string.filter_chat_unread),
                 context.getString(R.string.filter_chat_unreplied)
         )
-        if (arrayFilterParam.size > 3 && isTabSeller) {
+        if (arrayFilterParam.size > SELLER_FILTER_THRESHOLD && isTabSeller) {
             filters.add(context.getString(R.string.filter_chat_smart_reply))
         }
         return filters
@@ -369,6 +367,8 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     companion object {
+        private const val SELLER_FILTER_THRESHOLD = 3
+        private const val ONE_MILLION = 1_000_000L
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
                 PARAM_FILTER_UNREAD,

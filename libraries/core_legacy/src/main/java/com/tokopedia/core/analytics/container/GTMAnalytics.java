@@ -1,9 +1,11 @@
 package com.tokopedia.core.analytics.container;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -21,7 +23,11 @@ import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
+import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
@@ -32,6 +38,7 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -94,6 +101,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private String mGclid = "";
 
     private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
+    private static final String ANDROID_GA_EVENT_LOGGING = "android_ga_event_logging";
     private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
     private static long gtmSizeThresholdLog = 0;
 
@@ -886,6 +894,7 @@ public class GTMAnalytics extends ContextAnalytics {
             if (isGtmV5) name += " (v5)";
             GtmLogger.getInstance(context).save(name, values, AnalyticsSource.GTM);
             logEventSize(eventName, values);
+            logEventForVerification(eventName, values);
             if (tetraDebugger != null) {
                 tetraDebugger.send(values);
             }
@@ -942,6 +951,24 @@ public class GTMAnalytics extends ContextAnalytics {
         messageMap.put("name", eventName);
         messageMap.put("size", String.valueOf(size));
         ServerLogger.log(Priority.P1, "GTM_SIZE", messageMap);
+    }
+
+    private void logEventForVerification(String eventName, Map<String, Object> values){
+        if(remoteConfig.getBoolean(ANDROID_GA_EVENT_LOGGING)) {
+            if(values.containsKey(AppEventTracking.GTM.UTM_SOURCE) &&
+                    values.get(AppEventTracking.GTM.UTM_SOURCE) != null &&
+                    !TextUtils.isEmpty(values.get(AppEventTracking.GTM.UTM_SOURCE).toString())) {
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "event_verification");
+                messageMap.put("name", eventName);
+                messageMap.put("click_time", String.valueOf((System.currentTimeMillis() / 1000L)));
+                messageMap.put("clientId", TrackApp.getInstance().getGTM().getClientIDString());
+                messageMap.put("utm_source", values.get(AppEventTracking.GTM.UTM_SOURCE).toString());
+                messageMap.put("utm_medium", values.get(AppEventTracking.GTM.UTM_MEDIUM).toString());
+                messageMap.put("campaign", values.get(AppEventTracking.GTM.UTM_CAMPAIGN).toString());
+                ServerLogger.log(Priority.P1, "GA_EVENT_VERIFICATION", messageMap);
+            }
+        }
     }
 
     public void sendScreenAuthenticated(String screenName) {
@@ -1030,6 +1057,31 @@ public class GTMAnalytics extends ContextAnalytics {
         //
         bundle.putString(KEY_EVENT, keyEvent);
         pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
+    }
+
+    @Override
+    public void sendCampaign(Activity activity,
+                             String campaignUrl,
+                             String screenName,
+                             boolean isOriginalUrlAmp){
+        Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUrl), isOriginalUrlAmp);
+        if (!TrackingUtils.isValidCampaign(campaign.getCampaign())) return;
+
+        campaign.setScreenName(screenName);
+
+        // V5
+        sendCampaign(campaign.getCampaign());
+
+        // v4
+        pushEvent("campaignTrack", campaign.getCampaign());
+        sendGeneralEvent(campaign.getNullCampaignMap());
+
+        sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.CAMPAIGN,
+                AppEventTracking.Category.CAMPAIGN,
+                AppEventTracking.Action.DEEPLINK,
+                campaignUrl
+        ).getEvent());
     }
 
     public void sendCampaign(Map<String, Object> param) {

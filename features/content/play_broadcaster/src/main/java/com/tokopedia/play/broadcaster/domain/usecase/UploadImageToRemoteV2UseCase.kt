@@ -22,7 +22,7 @@ class UploadImageToRemoteV2UseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): UploadResult {
-        return uploaderUseCase.execute(params)
+        return uploaderUseCase(params)
     }
 
     companion object {

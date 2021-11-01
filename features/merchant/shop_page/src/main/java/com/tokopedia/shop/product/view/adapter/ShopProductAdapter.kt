@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.ALL_ETALASE
 import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_ETALASE_HIGHLIGHT_DATA_MODEL
 import com.tokopedia.shop.common.constant.ShopPageConstant.KEY_ETALASE_TITLE_DATA_MODEL
@@ -112,13 +113,13 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
     private fun setLayoutManagerSpanCount() {
         (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.spanCount = when (shopProductAdapterTypeFactory.productCardType) {
             ShopProductViewGridType.BIG_GRID -> {
-                1
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_big_grid) ?: 1
             }
             ShopProductViewGridType.SMALL_GRID -> {
-                2
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_small_grid) ?: 2
             }
             ShopProductViewGridType.LIST -> {
-                1
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_list) ?: 1
             }
         }
     }
@@ -611,6 +612,61 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         visitables.filterIsInstance<ShopProductChangeGridSectionUiModel>().firstOrNull()?.apply {
             this.gridType = gridType
             notifyChangedItem(visitables.indexOf(this))
+        }
+    }
+
+    fun addSuggestionSearchTextSection(suggestionText: String, suggestionQuery: String) {
+        visitables.remove(ShopProductSearchResultSuggestionUiModel(suggestionText, suggestionQuery))
+        visitables.add(ShopProductSearchResultSuggestionUiModel(suggestionText, suggestionQuery))
+        notifyDataSetChanged()
+    }
+
+    fun addEmptySearchResultState() {
+        visitables.add(ShopProductEmptySearchUiModel())
+    }
+
+    fun addEmptyShowcaseResultState() {
+        visitables.add(ShopProductEmptyShowcaseUiModel())
+    }
+
+    fun addProductSuggestion(productList: List<ShopProductUiModel>) {
+        shopProductUiModelList.addAll(productList)
+        visitables.add(ShopProductTitleEmptyUiModel())
+        visitables.addAll(productList)
+        mapDataModel()
+    }
+
+    fun clearShopPageProductResultEmptyState() {
+        visitables.firstOrNull{
+            it is ShopProductEmptySearchUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
+        }
+        visitables.firstOrNull{
+            it is ShopProductEmptyShowcaseUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
+        }
+        visitables.firstOrNull{
+            it is ShopProductTitleEmptyUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
+        }
+    }
+
+    fun clearShopPageChangeGridSection(){
+        visitables.firstOrNull{
+            it is ShopProductChangeGridSectionUiModel
+        }?.let {
+            val position = visitables.indexOf(it)
+            visitables.removeAt(position)
+            notifyRemovedItem(position)
         }
     }
 }

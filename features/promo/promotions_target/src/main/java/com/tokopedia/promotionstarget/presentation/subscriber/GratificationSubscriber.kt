@@ -107,15 +107,13 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         clearMaps(activity)
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
         super.onActivitySaveInstanceState(activity, outState)
-        if (activity != null) {
-            val waitingForLogin = activity.intent?.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
-            val refIdList = activity.intent?.getIntArrayExtra(TargetPromotionsDialog.PARAM_REFERENCE_ID)
-            if (waitingForLogin != null && waitingForLogin) {
-                outState?.putBoolean(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
-                outState?.putIntArray(TargetPromotionsDialog.PARAM_REFERENCE_ID, refIdList)
-            }
+        val waitingForLogin = activity.intent?.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
+        val refIdList = activity.intent?.getIntArrayExtra(TargetPromotionsDialog.PARAM_REFERENCE_ID)
+        if (waitingForLogin != null && waitingForLogin) {
+            outState.putBoolean(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, true)
+            outState.putIntArray(TargetPromotionsDialog.PARAM_REFERENCE_ID, refIdList)
         }
     }
 
@@ -127,9 +125,9 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
         mapOfDialogs.remove(activity)
     }
 
-    override fun onActivityResumed(activity: Activity?) {
+    override fun onActivityResumed(activity: Activity) {
         super.onActivityResumed(activity)
-        processOnActivityResumed(activity, activity?.intent)
+        processOnActivityResumed(activity, activity.intent)
     }
 
     private fun processOnActivityResumed(activity: Activity?, intent: Intent?) {

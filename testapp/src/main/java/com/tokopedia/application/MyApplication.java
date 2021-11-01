@@ -15,7 +15,6 @@ import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
@@ -29,7 +28,6 @@ import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.LinkerManager;
@@ -147,42 +145,7 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public Class<?> getDeeplinkClass() {
-        return null;
-    }
-
-    @Override
-    public Intent getInboxTalkCallingIntent(Context mContext) {
-        return null;
-    }
-
-    @Override
     public IAppNotificationReceiver getAppNotificationReceiver() {
-        return null;
-    }
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        return null;
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        return null;
-    }
-
-    @Override
-    public Intent getHomeIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Class<?> getHomeClass() {
-        return null;
-    }
-
-    @Override
-    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
         return null;
     }
 
@@ -378,12 +341,6 @@ public class MyApplication extends BaseMainApplication
     @Deprecated
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return null;
-    }
-
-    @Deprecated
-    @Override
-    public ApplinkDelegate applinkDelegate() {
         return null;
     }
 

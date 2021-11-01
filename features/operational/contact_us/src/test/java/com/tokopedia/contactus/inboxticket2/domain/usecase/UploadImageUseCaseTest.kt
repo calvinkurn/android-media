@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.inboxticket2.data.ImageUpload
 import com.tokopedia.contactus.inboxticket2.data.UploadImageResponse
+import com.tokopedia.contactus.inboxticket2.data.model.SecureImageParameter
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,7 +51,7 @@ class UploadImageUseCaseTest {
     @Test
     fun `check invocation of uploadFile with parameter list as null`() {
         runBlockingTest {
-            val list = contactUsUploadImageUseCase.uploadFile("", mockk(relaxed = true), mockk(relaxed = true))
+            val list = contactUsUploadImageUseCase.uploadFile("", mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true))
             assertEquals(list.size, 0)
         }
     }
@@ -58,18 +59,21 @@ class UploadImageUseCaseTest {
     @Test
     fun `check picObj value on invocation of upload file`() {
 
-        list.add(ImageUpload("", "", "", ""))
-        val listfile = listOf<String>("file1")
-        val response = mockk<UploadImageResponse>(relaxed = true)
+        runBlockingTest {
+            list.add(ImageUpload("", "", "", ""))
+            val listfile = listOf<String>("file1")
+            val response = mockk<UploadImageResponse>(relaxed = true)
+            
+            every { uploadImageUseCase.createObservable(any()).toBlocking().first().dataResultImageUpload } returns response
+            every { response.data.picObj } returns "picObj"
 
+            every { contactUsUploadImageUseCase.getModifiedPicObj(any(),any()) } returns "picObj"
 
-        every { uploadImageUseCase.createObservable(any()).toBlocking().first().dataResultImageUpload } returns response
-        every { response.data.picObj } returns "picObj"
+            contactUsUploadImageUseCase.uploadFile("", list, listfile, arrayListOf<SecureImageParameter>(
+                mockk(relaxed = true)))
 
-        contactUsUploadImageUseCase.uploadFile("", list, listfile)
-
-        assertEquals(list[0].picObj, "picObj")
-
+            assertEquals(list[0].picObj, "picObj")
+        }
 
     }
 

@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         minSdkVersion 29
-        targetSdkVersion 30
+        targetSdkVersion 31
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
@@ -15,7 +15,6 @@ android {
             abiFilters "armeabi-v7a", "x86"
         }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunnerArgument 'androidx.benchmark.suppressErrors','EMULATOR,LOW_BATTERY,ERRORS,UNLOCKED,ENG-BUILD,DEBUGGABLE'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -37,7 +36,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    androidTestImplementation 'androidx.benchmark:benchmark-macro-junit4:1.1.0-alpha02'
+    androidTestImplementation 'androidx.benchmark:benchmark-macro-junit4:1.1.0-alpha07'
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    implementation project(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
 }

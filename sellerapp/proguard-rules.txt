@@ -240,11 +240,6 @@
 -dontwarn com.tokopedia.sortfilter.SortFilter*
 
 
-#SELLERAPP ONLY:
-#from Apsara broadcaster 29/11/2019 document
--keep class com.alibaba.livecloud.** { *; }
--keep class com.alivc.** { *; }
-
 #robust
 #https://github.com/Meituan-Dianping/Robust/blob/master/app/proguard-rules.pro
 -optimizations !class/unboxing/enum,!code/simplification/arithmetic
@@ -265,3 +260,26 @@
 -keep class com.newrelic.** { *; }
 -dontwarn com.newrelic.**
 -keepattributes Exceptions, Signature, InnerClasses, LineNumberTable, SourceFile, EnclosingMethod
+
+# Embrace
+-keep class io.embrace.android.** { *; }
+-dontwarn com.jsoniter.extra.JacksonCompatibility*
+-dontwarn com.jsoniter.output.DynamicCodegen
+-dontwarn com.jsoniter.DynamicCodegen
+
+# View Binding
+-keep class * implements androidx.viewbinding.ViewBinding {
+    public static *** bind(android.view.View);
+    public static *** inflate(...);
+}
+
+# Window
+-keep class androidx.window.** { *; }
+
+# otaliastudios.zoom library
+-dontwarn com.otaliastudios.zoom.**
+-keep class com.otaliastudios.zoom.*{ *; }
+
+# Keep fragment class name
+-keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
+-keepnames class com.tokopedia.review_shop.shop.view.ReviewShopFragment

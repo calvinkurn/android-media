@@ -13,7 +13,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 
 abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
-    var params: RequestParams = RequestParams.EMPTY
+    var params: RequestParams = RequestParams.create()
     var isFirstLoad: Boolean = true
     protected var cacheStrategy: GraphqlCacheStrategy = getAlwaysCloudCacheStrategy()
 
@@ -23,16 +23,16 @@ abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
     protected fun getAlwaysCloudCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
-                .setSessionIncluded(true)
-                .build()
+            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+            .setSessionIncluded(true)
+            .build()
     }
 
     protected fun getCacheOnlyCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
-                .setSessionIncluded(true)
-                .build()
+            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+            .setSessionIncluded(true)
+            .build()
     }
 
     fun setUseCache(useCache: Boolean) {

@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetBuyerOrderDetailResponse(
@@ -38,6 +39,10 @@ data class GetBuyerOrderDetailResponse(
                 val paymentDate: String = "",
                 @SerializedName("products")
                 val products: List<Product> = listOf(),
+                @SerializedName("have_product_bundle")
+                val haveProductBundle: Boolean = false,
+                @SerializedName("bundle_detail")
+                val bundleDetail: BundleDetail? = BundleDetail(),
                 @SerializedName("shipment")
                 val shipment: Shipment = Shipment(),
                 @SerializedName("shop")
@@ -119,7 +124,7 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("id")
                     val id: String = "0",
                     @SerializedName("indicator_color")
-                    val indicatorColor: String = "#FFC400",
+                    val indicatorColor: String = "",
                     @SerializedName("status_name")
                     val statusName: String = ""
             )
@@ -163,8 +168,11 @@ data class GetBuyerOrderDetailResponse(
                     val categoryId: String = "0",
                     @SerializedName("notes")
                     val notes: String = "",
+                    @SerializedName("bundle_id")
+                    val bundleId: String? = "0",
                     @SerializedName("order_detail_id")
                     val orderDetailId: String = "0",
+                    @SuppressLint("Invalid Data Type")
                     @SerializedName("price")
                     val price: Double = 0.0,
                     @SerializedName("price_text")
@@ -182,8 +190,32 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("total_price")
                     val totalPrice: String = "0",
                     @SerializedName("total_price_text")
-                    val totalPriceText: String = ""
+                    val totalPriceText: String = "",
             )
+
+            data class BundleDetail(
+                    @SerializedName("bundle")
+                    val bundleList: List<Bundle> = listOf(),
+                    @SerializedName("product_bundling_icon")
+                    val bundleIcon: String? = "",
+                    @SerializedName("non_bundle")
+                    val nonBundleList: List<Product> = listOf()
+            ) {
+                data class Bundle(
+                        @SerializedName("bundle_id")
+                        val bundleId: String = "0",
+                        @SerializedName("bundle_name")
+                        val bundleName: String = "",
+                        @SerializedName("bundle_price")
+                        val bundlePrice: Double = 0.0,
+                        @SerializedName("bundle_quantity")
+                        val bundleQty: Int = 0,
+                        @SerializedName("bundle_subtotal_price")
+                        val bundleSubtotalPrice: Double = 0.0,
+                        @SerializedName("order_detail")
+                        val orderDetailList: List<Product> = listOf()
+                )
+            }
 
             data class Shipment(
                     @SerializedName("driver")

@@ -8,10 +8,15 @@ BUNDLETOOL=./tools/aab/bundletool.jar
 
 # Check bundle tool
 if [ ! -f $BUNDLETOOL ]; then
-    echo "Please download and put bundletool.jar in this folder"
-    echo "https://github.com/google/bundletool/releases"
-    echo "Download bundletool-all-[LAST-VERSION].jar file, rename it to bundletool.jar"
-    exit 1
+    { # try
+        bundletool version
+    } || { # catch
+        echo "Option 1: Please download and put bundletool.jar in this folder"
+        echo "https://github.com/google/bundletool/releases"
+        echo "Download bundletool-all-[LAST-VERSION].jar file, rename it to bundletool.jar"
+        echo "Option 2: install bundletool using homebrew: brew install bundletool"
+        exit 1
+    }
 fi
 
 #Check app name

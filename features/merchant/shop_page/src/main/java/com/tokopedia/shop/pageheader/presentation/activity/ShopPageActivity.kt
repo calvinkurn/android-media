@@ -15,6 +15,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE
@@ -111,6 +112,19 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
         performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE)
         performanceMonitoringShopHomeWebViewTab = PerformanceMonitoring.start(SHOP_HOME_WEB_VIEW_TRACE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode){
+            MvcView.REQUEST_CODE -> {
+                if (resultCode == MvcView.RESULT_CODE_OK){
+                    (fragment as? NewShopPageFragment)?.refreshData()
+                }
+            }
+            else ->{
+                super.onActivityResult(requestCode, resultCode, data)
+            }
+        }
     }
 
     private fun checkIfAppLinkToShopInfo() {

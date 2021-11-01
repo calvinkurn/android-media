@@ -40,9 +40,7 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.HelpFullBottomSheet.Cl
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -277,6 +275,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         val builder = ImagePickerBuilder.getOriginalImageBuilder(this);
         val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
+        intent.putParamPageSource(ImagePickerPageSource.INBOX_DETAIL_PAGE)
         startActivityForResult(intent, InboxBaseView.REQUEST_IMAGE_PICKER)
     }
 

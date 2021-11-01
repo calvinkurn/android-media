@@ -20,11 +20,11 @@ class EventCheckoutActivity : BaseSimpleActivity(), HasComponent<EventPDPCompone
             DaggerEventPDPComponent.builder()
                     .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
-    override fun getNewFragment(): Fragment? = EventCheckoutFragment.newInstance(
-            intent.getStringExtra(EXTRA_URL_PDP),
-            intent.getParcelableExtra(EXTRA_META_DATA),
-            intent.getStringExtra(EXTRA_PACKAGE_ID),
-            intent.getStringExtra(EXTRA_GATEWAY_CODE)
+    override fun getNewFragment(): Fragment = EventCheckoutFragment.newInstance(
+            intent.getStringExtra(EXTRA_URL_PDP) ?: "",
+            intent.getParcelableExtra(EXTRA_META_DATA) ?: MetaDataResponse(),
+            intent.getStringExtra(EXTRA_PACKAGE_ID) ?: "",
+            intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
     )
 
     companion object{

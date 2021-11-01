@@ -77,6 +77,8 @@ enum class ComponentNames(val componentName: String) {
 
     DiscoTDNBanner("tdn_banner"),
 
+    MerchantVoucher("merchant_voucher"),
+
     CarouselErrorLoad("carousel_error_load"),
     ProductListErrorLoad("product_list_error_load"),
 

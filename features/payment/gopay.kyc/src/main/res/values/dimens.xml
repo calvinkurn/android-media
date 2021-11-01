@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="go_pay_kyc_dp_1">1dp</dimen>
+    <dimen name="go_pay_kyc_dp_6">6dp</dimen>
+    <dimen name="go_pay_kyc_dp_10">10dp</dimen>
+    <dimen name="go_pay_kyc_dp_20">20dp</dimen>
+    <dimen name="go_pay_kyc_dp_40">40dp</dimen>
+    <dimen name="go_pay_kyc_dp_56">56dp</dimen>
+    <dimen name="go_pay_kyc_dp_72">72dp</dimen>
+    <dimen name="go_pay_kyc_dp_210">210dp</dimen>
+</resources>

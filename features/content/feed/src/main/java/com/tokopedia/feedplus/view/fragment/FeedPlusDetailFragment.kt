@@ -83,6 +83,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private lateinit var adapter: DetailFeedAdapter
     private lateinit var pagingHandler: PagingHandler
     private var detailId: String = ""
+    private var shopId: String = ""
+    private var activityId: String = ""
     private lateinit var shareData: LinkerData
 
     companion object {
@@ -130,6 +132,20 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 }
             }
         }
+        if (shopId.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_SHOP_ID)?.let {
+                    shopId = it
+                }
+            }
+        }
+        if (activityId.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_ACTIVITY_ID)?.let {
+                    activityId = it
+                }
+            }
+        }
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
         val typeFactory: FeedPlusDetailTypeFactory = FeedPlusDetailTypeFactoryImpl(this)
@@ -144,7 +160,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (!adapter.isLoading && pagingHandler.CheckNextPage()) {
                     pagingHandler.nextPage()
-                    presenter.getFeedDetail(detailId, pagingHandler.page)
+                    presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
                 }
             }
         }
@@ -192,7 +208,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpObservers()
-        presenter.getFeedDetail(detailId, pagingHandler.page)
+        presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
     }
 
     private fun setUpObservers() {
@@ -277,7 +293,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         dismissLoading()
         footer.hide()
         NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(context, error)) {
-            presenter.getFeedDetail(detailId, pagingHandler.page)
+            presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
         }
     }
 
@@ -371,15 +387,17 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     override fun onGoToProductDetail(feedDetailViewModel: FeedDetailItemModel, adapterPosition: Int) {
         if (activity != null && activity?.applicationContext != null && arguments != null) {
             activity?.startActivityForResult(
-                    getProductIntent(feedDetailViewModel.productId.toString()),
+                    getProductIntent(feedDetailViewModel.productId),
                     REQUEST_OPEN_PDP
             )
             analytics.eventDetailProductClick(
-                    ProductEcommerce(feedDetailViewModel.productId.toString(),
+                    ProductEcommerce(feedDetailViewModel.productId,
                             feedDetailViewModel.name,
                             feedDetailViewModel.price,
                             adapterPosition),
-                    userSession.userId?.toIntOrNull() ?: 0
+                    userSession.userId?.toIntOrNull() ?: 0,
+                feedDetailViewModel.shopId,
+                feedDetailViewModel.activityId
             )
         }
     }
@@ -406,7 +424,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         for (position in listDetail.indices) {
             if (listDetail[position] is FeedDetailItemModel) {
                 val model = listDetail[position] as FeedDetailItemModel
-                productList.add(ProductEcommerce(model.productId.toString(),
+                productList.add(ProductEcommerce(model.productId,
                         model.name,
                         model.price,
                         position

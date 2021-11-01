@@ -276,7 +276,7 @@
         android:padding="@dimen/layout_lvl2">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/hotel_e_voucher_powered_by"
@@ -289,5 +289,8 @@
             app:srcCompat="@drawable/ic_hotel_booking_com_logo" />
 
     </LinearLayout>
-
+    <include
+        android:id="@+id/container_error"
+        layout="@layout/item_network_error_view"
+        android:visibility="gone" />
 </RelativeLayout>

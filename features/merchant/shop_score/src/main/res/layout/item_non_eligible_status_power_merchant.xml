@@ -11,14 +11,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_12">
+        android:layout_marginBottom="12dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitleNonEligiblePowerMerchant"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:text="@string/title_non_eligible_status_power_merchant"
             android:textColor="@color/Unify_N700_96"
@@ -34,7 +34,7 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:text="@string/desc_non_eligible_power_merchant"
+            android:text="@string/desc_rm_not_eligible_all"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,9 +46,9 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:text="@string/title_shop_pm_potential"
+            android:text="@string/title_item_rm_section_not_eligible_all"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

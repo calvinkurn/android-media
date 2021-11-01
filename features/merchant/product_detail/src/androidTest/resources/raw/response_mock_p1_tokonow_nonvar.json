@@ -1,0 +1,446 @@
+[
+  {
+    "data": {
+      "pdpGetLayout": {
+        "basicInfo": {
+          "blacklistMessage": {
+            "button": "",
+            "description": "",
+            "title": "",
+            "url": ""
+          },
+          "catalogID": "0",
+          "category": {
+            "breadcrumbURL": "https://www.tokopedia.com/now/category/daging-seafood/daging-sapi/daging-iga",
+            "detail": [
+              {
+                "breadcrumbURL": "https://www.tokopedia.com/now/category/daging-seafood",
+                "id": "4652",
+                "isAdult": false,
+                "name": "Daging & Seafood"
+              },
+              {
+                "breadcrumbURL": "https://www.tokopedia.com/now/category/daging-seafood/daging-sapi",
+                "id": "5068",
+                "isAdult": false,
+                "name": "Daging Sapi"
+              },
+              {
+                "breadcrumbURL": "https://www.tokopedia.com/now/category/daging-seafood/daging-sapi/daging-iga",
+                "id": "5073",
+                "isAdult": false,
+                "name": "Daging Iga"
+              }
+            ],
+            "id": "5073",
+            "isAdult": false,
+            "lastUpdateCategory": "30/06/2021 10:00:05",
+            "name": "Daging Iga",
+            "title": "Daging Iga"
+          },
+          "isBlacklisted": false,
+          "isLeasing": false,
+          "isTokoNow": true,
+          "maxOrder": 100,
+          "menu": {
+            "id": "28945322",
+            "name": "pdptokonow",
+            "url": "https://www.tokopedia.com/11515028tknw/etalase/pdptokonow"
+          },
+          "minOrder": 2,
+          "needPrescription": false,
+          "productID": "1920777124",
+          "shopID": "11515028",
+          "shopName": "11515028tknw",
+          "sku": "",
+          "stats": {
+            "countReview": "0",
+            "countTalk": "0",
+            "rating": 0
+          },
+          "status": "ACTIVE",
+          "totalStockFmt": "100",
+          "txStats": {
+            "countSold": "0",
+            "itemSoldPaymentVerified": "0",
+            "paymentVerified": "1",
+            "transactionReject": "1",
+            "transactionSuccess": "0"
+          },
+          "url": "https://www.tokopedia.com/11515028tknw/pdp-d4g1ng-1g4-n0nv4r-h",
+          "weight": 1000,
+          "weightUnit": "GRAM"
+        },
+        "components": [
+          {
+            "data": [
+              {}
+            ],
+            "name": "product_snapshot",
+            "type": "product_snapshot"
+          },
+          {
+            "data": [
+              {
+                "media": [
+                  {
+                    "URL300": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2021/6/14/6e2a51ec-c50a-415f-8ba6-da26a2ae8c3d.jpg",
+                    "URLOriginal": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/6/14/6e2a51ec-c50a-415f-8ba6-da26a2ae8c3d.jpg",
+                    "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/6/14/6e2a51ec-c50a-415f-8ba6-da26a2ae8c3d.jpg",
+                    "description": "",
+                    "isAutoplay": false,
+                    "type": "image",
+                    "videoURLAndroid": ""
+                  },
+                  {
+                    "URL300": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2021/6/14/6cb34db7-4f55-495e-bced-3817cf7a13e6.jpg",
+                    "URLOriginal": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/6/14/6cb34db7-4f55-495e-bced-3817cf7a13e6.jpg",
+                    "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/6/14/6cb34db7-4f55-495e-bced-3817cf7a13e6.jpg",
+                    "description": "",
+                    "isAutoplay": false,
+                    "type": "image",
+                    "videoURLAndroid": ""
+                  },
+                  {
+                    "URL300": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2021/6/14/3fe37428-d601-4ed7-9774-8c427022a764.jpg",
+                    "URLOriginal": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2021/6/14/3fe37428-d601-4ed7-9774-8c427022a764.jpg",
+                    "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2021/6/14/3fe37428-d601-4ed7-9774-8c427022a764.jpg",
+                    "description": "",
+                    "isAutoplay": false,
+                    "type": "image",
+                    "videoURLAndroid": ""
+                  }
+                ],
+                "videos": []
+              }
+            ],
+            "name": "product_media",
+            "type": "product_media"
+          },
+          {
+            "data": [],
+            "name": "ticker_info",
+            "type": "ticker_info"
+          },
+          {
+            "data": [],
+            "name": "upcoming_deals",
+            "type": "teaser"
+          },
+          {
+            "data": [
+              {
+                "campaign": {
+                  "appLinks": "",
+                  "background": "",
+                  "campaignID": "0",
+                  "campaignIdentifier": 0,
+                  "campaignType": "0",
+                  "campaignTypeName": "",
+                  "discountedPrice": 0,
+                  "endDate": "",
+                  "endDateUnix": "0",
+                  "hideGimmick": false,
+                  "isActive": false,
+                  "isAppsOnly": false,
+                  "isCheckImei": false,
+                  "isUsingOvo": false,
+                  "originalPrice": 0,
+                  "paymentInfoWording": "",
+                  "percentageAmount": 0,
+                  "startDate": "",
+                  "stock": 0,
+                  "stockSoldPercentage": 0,
+                  "threshold": 0
+                },
+                "isCOD": false,
+                "isCashback": {
+                  "percentage": 0
+                },
+                "isOS": true,
+                "isPowerMerchant": true,
+                "isTradeIn": false,
+                "isWishlist": false,
+                "name": "PDP D4G1NG 1G4 N0NV4R H",
+                "preorder": {
+                  "duration": 0,
+                  "isActive": false,
+                  "preorderInDays": 0
+                },
+                "price": {
+                  "value": 1000
+                },
+                "stock": {
+                  "stockWording": "",
+                  "useStock": true,
+                  "value": "100"
+                },
+                "thematicCampaign": {
+                  "additionalInfo": "",
+                  "background": "",
+                  "campaignName": "",
+                  "icon": ""
+                },
+                "variant": {
+                  "isVariant": false,
+                  "parentID": "0"
+                },
+                "wholesale": []
+              }
+            ],
+            "name": "product_content",
+            "type": "product_content"
+          },
+          {
+            "data": [],
+            "name": "mini_social_proof_stock",
+            "type": "mini_social_proof_stock"
+          },
+          {
+            "data": [],
+            "name": "mvc",
+            "type": "mvc"
+          },
+          {
+            "data": [],
+            "name": "mini_variant_options",
+            "type": "variant"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "mini_shop_widget",
+            "type": "mini_shop_widget"
+          },
+          {
+            "data": [],
+            "name": "shipment",
+            "type": "shipment"
+          },
+          {
+            "data": [],
+            "name": "palugada",
+            "type": "custom_info"
+          },
+          {
+            "data": [],
+            "name": "cod",
+            "type": "custom_info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/Tradein@3x.png",
+                "isApplink": true,
+                "title": "Beli dengan Tukar Tambah"
+              }
+            ],
+            "name": "tradein",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "",
+                "isApplink": true,
+                "title": "Harga Grosir"
+              }
+            ],
+            "name": "wholesale",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "tokopedia://fintech/paylater?category=Daging+Iga&price=1000.000000&productURL=https%3A%2F%2Fwww.tokopedia.com%2F11515028tknw%2Fpdp-d4g1ng-1g4-n0nv4r-h&userID=132674703",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
+                "isApplink": true,
+                "title": "Paylater & Cicilan"
+              }
+            ],
+            "name": "installment_paylater",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-protection@3x.png",
+                "isApplink": false,
+                "title": "Proteksi Gadget"
+              }
+            ],
+            "name": "protection",
+            "type": "info"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "content": [],
+                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-orderprio@3x.png",
+                "isApplink": false,
+                "title": "Order Prioritas"
+              }
+            ],
+            "name": "order_prio",
+            "type": "info"
+          },
+          {
+            "data": [],
+            "name": "obat_keras",
+            "type": "custom_info"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [
+              {
+                "applink": "",
+                "description": "Kualitas produk terjamin, dan sampai dalam 2 jam sehingga tetap fresh",
+                "icon": "https://images.tokopedia.net/img/pdp/info/icon/tokonow/usp_icon@3x.png",
+                "isApplink": false,
+                "separator": "top",
+                "title": "Pasti Fresh"
+              }
+            ],
+            "name": "tokonow_usp",
+            "type": "custom_info"
+          },
+          {
+            "data": [
+              {
+                "content": [
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
+                    "subtitle": "Halal",
+                    "title": "Sertifikat"
+                  },
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
+                    "subtitle": "Baru",
+                    "title": "Kondisi"
+                  },
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
+                    "subtitle": "1.000 Gram",
+                    "title": "Berat"
+                  },
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
+                    "subtitle": "1 Buah",
+                    "title": "Min. Pemesanan"
+                  },
+                  {
+                    "applink": "tokopedia://category/5073",
+                    "isAnnotation": false,
+                    "showAtFront": false,
+                    "subtitle": "Daging Iga",
+                    "title": "Kategori"
+                  },
+                  {
+                    "applink": "",
+                    "isAnnotation": false,
+                    "showAtFront": true,
+                    "subtitle": "NONVAR NONVAR NONVARNONVARNONVARNONVARNONVARNONVARNONVARNONVAR NONVARNONVARNONVARNONVAR NONVAR NONVAR NONVAR NONVAR NONVAR",
+                    "title": "Deskripsi"
+                  }
+                ]
+              }
+            ],
+            "name": "product_detail",
+            "type": "product_detail"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "pdp_1",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "review",
+            "type": "review"
+          },
+          {
+            "data": [],
+            "name": "separator",
+            "type": "separator"
+          },
+          {
+            "data": [],
+            "name": "pdp_2",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "discussion",
+            "type": "discussion"
+          },
+          {
+            "data": [],
+            "name": "discussion_faq",
+            "type": "discussion_faq"
+          },
+          {
+            "data": [],
+            "name": "report",
+            "type": "report"
+          },
+          {
+            "data": [],
+            "name": "tdn_topads",
+            "type": "banner_ads"
+          },
+          {
+            "data": [],
+            "name": "pdp_3",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "pdp_4",
+            "type": "product_list"
+          },
+          {
+            "data": [],
+            "name": "pdp_5",
+            "type": "product_list"
+          }
+        ],
+        "name": "PDP TokoNow",
+        "pdpSession": "{\"sid\":11515028,\"sd\":\"11515028tknw\",\"ci\":5073,\"cp\":{},\"pr\":1000,\"whid\":11528233,\"mo\":1,\"pn\":\"PDP D4G1NG 1G4 N0NV4R H\",\"st\":100,\"cn\":\"new\",\"li\":16,\"w\":1,\"sf\":{\"iga\":false,\"itn\":true},\"v\":1,\"pi\":1920777124,\"ps\":\"ACTIVE\"}"
+      }
+    }
+  }
+]

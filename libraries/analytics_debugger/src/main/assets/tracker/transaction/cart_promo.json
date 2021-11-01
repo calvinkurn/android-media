@@ -6,7 +6,10 @@
       "eventCategory": "cart",
       "event": "clickATC",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "businessUnit": "purchase platform",
+      "currentSite": "tokopediamarketplace",
+      "userId":".*"
     },
     {
       "eventAction": "view promo already applied in cart list",

@@ -8,10 +8,8 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -22,6 +20,10 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
+import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
+import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
+import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
@@ -32,6 +34,7 @@ import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -96,7 +99,8 @@ class ChatbotPresenter @Inject constructor(
         private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
         private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
         private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
-        private val getResolutionLinkUseCase: GetResolutionLinkUseCase
+        private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
+        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
@@ -152,8 +156,8 @@ class ChatbotPresenter @Inject constructor(
                 networkMode = MODE_WEBSOCKET
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
-                    sendReadEvent(messageId)
                 }
+                sendReadEventWebSocket(messageId)
                 view.showErrorWebSocket(false)
 
             }
@@ -405,24 +409,26 @@ class ChatbotPresenter @Inject constructor(
                 listInterceptor)
     }
 
-    override fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String):
-            AttachInvoiceSentViewModel {
-        val invoiceLinkAttributePojo = invoiceLinkPojo.attributes
-        return AttachInvoiceSentViewModel(
-                senderId,
-                userSession.name,
-                invoiceLinkAttributePojo.title,
-                invoiceLinkAttributePojo.description,
-                invoiceLinkAttributePojo.imageUrl,
-                invoiceLinkAttributePojo.totalAmount,
-                SendableViewModel.generateStartTime()
-        )
+    override fun generateInvoice(
+        invoiceLinkPojo: InvoiceLinkPojo, senderId: String
+    ) : AttachInvoiceSentUiModel {
+        return AttachInvoiceSentUiModel.Builder()
+            .withInvoiceAttributesResponse(invoiceLinkPojo)
+            .withFromUid(senderId)
+            .withFrom(userSession.name)
+            .withAttachmentType(AttachmentType.Companion.TYPE_INVOICE_SEND)
+            .withReplyTime(SENDING_TEXT)
+            .withStartTime(SendableUiModel.generateStartTime())
+            .withIsRead(false)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .build()
     }
 
-    override fun uploadImages(it: ImageUploadViewModel,
+    override fun uploadImages(it: ImageUploadUiModel,
                               messageId: String,
                               opponentId: String,
-                              onError: (Throwable, ImageUploadViewModel) -> Unit) {
+                              onError: (Throwable, ImageUploadUiModel) -> Unit) {
         if (validateImageAttachment(it.imageUrl)) {
             isUploading = true
             uploadImageUseCase.unsubscribe()
@@ -437,17 +443,20 @@ class ChatbotPresenter @Inject constructor(
                     reqParam)
 
             uploadImageUseCase.execute(params,
-                    object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
-                        override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
-                            t.dataResultImageUpload.data?.run {
-                                sendUploadedImageToWebsocket(SendWebsocketParam
-                                        .generateParamSendImage(messageId,
-                                                this.picSrc,
-                                                it.startTime,
-                                                opponentId))
-                            }
-                            isUploading = false
+                object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
+                    override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
+                        t.dataResultImageUpload.data?.run {
+                            sendUploadedImageToWebsocket(
+                                ChatbotSendWebsocketParam
+                                    .generateParamSendImage(
+                                        messageId,
+                                        this.picSrc,
+                                        this.picObj,
+                                        it.startTime,
+                                        opponentId))
                         }
+                        isUploading = false
+                    }
 
                         override fun onCompleted() {
 
@@ -480,10 +489,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun validateImageAttachment(uri: String?): Boolean {
-        var MAX_FILE_SIZE = 5120
-        val MINIMUM_HEIGHT = 100
-        val MINIMUM_WIDTH = 300
-        val DEFAULT_ONE_MEGABYTE: Long = 1024
+
         if (uri == null) return false
         val file = File(uri)
         val options = BitmapFactory.Options()
@@ -596,5 +602,30 @@ class ChatbotPresenter @Inject constructor(
         val action = view.context?.getString(R.string.chatbot_action_text_for_no_transaction_found)
                 ?: ""
         return ChatActionBubbleViewModel(text, value, action)
+    }
+
+    override fun checkForSession(messageId: String) {
+        val params = getTopBotNewSessionUseCase.createRequestParams(messageId)
+        launchCatchError(
+            block = {
+                val response = getTopBotNewSessionUseCase.getTobBotUserSession(params)
+                val isNewSession = response.topBotGetNewSession.isNewSession
+                val isTypingBlocked = response.topBotGetNewSession.isTypingBlocked
+                handleNewSession(isNewSession)
+                handleReplyBox(isTypingBlocked)
+            },
+            onError = {
+                view.loadChatHistory()
+                view.enableTyping()
+            }
+        )
+    }
+
+    private fun handleReplyBox(isTypingBlocked: Boolean) {
+        if (isTypingBlocked) view.blockTyping() else view.enableTyping()
+    }
+
+    private fun handleNewSession(isNewSession: Boolean) {
+        if (isNewSession) view.startNewSession() else view.loadChatHistory()
     }
 }

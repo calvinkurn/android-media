@@ -19,7 +19,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?) {
         this.data = shippingCourierUiModels.toMutableList()
         if (preOrderModel?.display == true) {
-            preOrderModel?.let { this.data.add(0, it) }
+            preOrderModel.let { this.data.add(0, it) }
             if (shippingCourierUiModels[0].serviceData.serviceName == INSTAN_VIEW_TYPE) this.data.add(1, NotifierModel())
             if (shippingCourierUiModels[0].serviceData.serviceName == SAME_DAY_VIEW_TYPE) this.data.add(1, NotifierModelSameDay())
         } else {
@@ -37,7 +37,7 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         this.cartPosition = cartPosition
     }
 
-    override fun getItemViewType(position: Int): Int = when (data.get(position)) {
+    override fun getItemViewType(position: Int): Int = when (data[position]) {
         is PreOrderModel -> PreOrderViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolderInstant.LAYOUT
         is NotifierModelSameDay -> NotifierViewHolderSameDay.LAYOUT
@@ -60,8 +60,8 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is PreOrderViewHolder -> holder.bindData(data.get(position) as PreOrderModel)
-            is ShippingCourierViewHolder -> holder.bindData(data.get(position) as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount -1)
+            is PreOrderViewHolder -> holder.bindData(data[position] as PreOrderModel)
+            is ShippingCourierViewHolder -> holder.bindData(data[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount -1)
             is NotifierViewHolderSameDay -> holder.bindData()
             is NotifierViewHolderInstant -> holder.bindData()
         }

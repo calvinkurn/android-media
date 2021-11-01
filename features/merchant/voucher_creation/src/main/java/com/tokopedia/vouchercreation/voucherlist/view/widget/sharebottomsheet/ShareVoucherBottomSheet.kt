@@ -31,7 +31,7 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
 
     private var broadCastChatStatus = 0
 
-    private var broadCastChatQuota = 0
+    private var broadCastChatPromo = 0
 
     private var onItemClickListener: (Int) -> Unit = {}
 
@@ -56,8 +56,8 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
         this.broadCastChatStatus = status
     }
 
-    fun setBroadCastChatQuota(quota: Int) {
-        this.broadCastChatQuota = quota
+    fun setBroadCastChatPromo(promo: Int) {
+        this.broadCastChatPromo = promo
     }
 
     private fun initBottomSheet() {
@@ -83,6 +83,7 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
+        if (isAdded) return
         showNow(fm, TAG)
     }
 
@@ -94,7 +95,7 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
                         context?.getString(R.string.mvc_broadcast_chat_tkpd).toBlankOrString(),
                         SocmedType.BROADCAST,
                         broadCastChatStatus,
-                        broadCastChatQuota
+                        broadCastChatPromo
                 )
         )
         socmedList.addAll(

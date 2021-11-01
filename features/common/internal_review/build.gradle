@@ -35,14 +35,14 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.lottie
 
-    implementation project(rootProject.ext.features.reputationCommon)
+    implementation projectOrAar(rootProject.ext.features.reputationCommon)
 
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockitorCore
@@ -50,7 +50,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
 }
 

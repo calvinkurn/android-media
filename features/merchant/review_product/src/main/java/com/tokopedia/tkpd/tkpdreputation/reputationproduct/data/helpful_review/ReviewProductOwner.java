@@ -29,7 +29,7 @@ public class ReviewProductOwner implements Parcelable {
     private String userShopImage;
     @SerializedName("user_id")
     @Expose
-    private int userId;
+    private Long userId;
     @SerializedName("user_image")
     @Expose
     private String userImage;
@@ -43,7 +43,7 @@ public class ReviewProductOwner implements Parcelable {
         userLabelId = in.readInt();
         userLabel = in.readString();
         userShopImage = in.readString();
-        userId = in.readInt();
+        userId = in.readLong();
         userImage = in.readString();
         userName = in.readString();
     }
@@ -133,14 +133,14 @@ public class ReviewProductOwner implements Parcelable {
     /**
      * @return The userId
      */
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
     /**
      * @param userId The user_id
      */
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -184,7 +184,7 @@ public class ReviewProductOwner implements Parcelable {
         dest.writeInt(userLabelId);
         dest.writeString(userLabel);
         dest.writeString(userShopImage);
-        dest.writeInt(userId);
+        dest.writeLong(userId);
         dest.writeString(userImage);
         dest.writeString(userName);
     }

@@ -1261,4 +1261,88 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    // TokoNow
+
+    public void eventViewToasterErrorInCartPage(String errorMessage) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_CART_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_TOASTER_ERROR_IN_CART_PAGE,
+                errorMessage
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventLoadCartWithUnavailableProduct(String shopId, String errorGrouping) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_CART_IRIS,
+                EventCategory.CART,
+                EventAction.LOAD_CART_WITH_UNAVAILABLE_PRODUCT,
+                shopId + " - " + errorGrouping
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickCollapsedProductImage(String shopId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_CART,
+                EventCategory.CART,
+                EventAction.CLICK_ON_PRODUCT_IMAGE_ON_COLLAPSE_VIEW,
+                shopId
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickLihatSelengkapnyaOnNowProduct(String shopId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_CART,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_SELENGKAPNYA_FOR_NOW_PRODUCT,
+                shopId
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickLihatOnPlusLainnyaOnNowProduct(String shopId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_CART,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_ON_PLUS_LAINNYA_ON_NOW_PRODUCT,
+                shopId
+        );
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        sendGeneralEvent(gtmData);
+    }
+
+    // Bundling
+
+    // TrackerId: 21780
+    public void eventClickUbahInProductBundlingPackageProductCard(String bundlingId, String bundlingType) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD,
+                "bundling_id:" + bundlingId + "\nbundling_type:" + bundlingType
+        );
+    }
+
+    // TrackerId: 21781
+    public void eventClickMoreLikeThisOnBundleProduct(String bundlingId, String bundlingType) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE,
+                "bundling_id:" + bundlingId + "\nbundling_type:" + bundlingType
+        );
+    }
+
 }

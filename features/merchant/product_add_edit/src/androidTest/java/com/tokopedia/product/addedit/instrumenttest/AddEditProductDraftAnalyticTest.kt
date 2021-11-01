@@ -17,15 +17,12 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.draft.presentation.activity.AddEditProductDraftActivity
-import com.tokopedia.product.addedit.mock.AddEditProductEditingMockResponseConfig
-import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.deleteAllDraft
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.test.application.espresso_component.CommonMatcher
+import com.tokopedia.product.addedit.mock.AddEditProductAddingMockResponseConfig
+import com.tokopedia.product.addedit.stub.AddEditProductDraftActivityStub
+import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performClick
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.trackingoptimizer.constant.Constant
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
@@ -42,15 +39,15 @@ class AddEditProductDraftAnalyticTest {
     }
 
     @get:Rule
-    var activityRule: IntentsTestRule<AddEditProductDraftActivity> = IntentsTestRule(AddEditProductDraftActivity::class.java, false, false)
+    var activityRule: IntentsTestRule<AddEditProductDraftActivityStub> = IntentsTestRule(
+        AddEditProductDraftActivityStub::class.java, false, false)
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun beforeTest() {
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponse(AddEditProductEditingMockResponseConfig())
-        deleteAllDraft()
+        setupGraphqlMockResponse(AddEditProductAddingMockResponseConfig())
 
         InstrumentationAuthHelper.loginInstrumentationTestUser2()
         activityRule.launchActivity(Intent())
@@ -67,13 +64,10 @@ class AddEditProductDraftAnalyticTest {
         testAddDraft()
         testAddDraftWithoutData()
 
-        activityRule.activity.finish()
-
         doAnalyticDebuggerTest(PRODUCT_DRAFT_PAGE_CLICK_ADD_PRODUCT)
         doAnalyticDebuggerTest(PRODUCT_DRAFT_PAGE_CLICK_ADD_PRODUCT_WITHOUT_DRAFT)
         doAnalyticDebuggerTest(PRODUCT_PREVIEW_PAGE_CLICK_BACK)
         doAnalyticDebuggerTest(PRODUCT_DRAFT_PAGE_OPEN)
-
     }
 
     private fun testAddDraft() {
@@ -84,9 +78,7 @@ class AddEditProductDraftAnalyticTest {
 
     private fun testAddDraftWithoutData() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, Intent()))
-        onView(CommonMatcher
-                .firstView(withId(R.id.button_add_promo)))
-                .perform(click())
+        performClick(R.id.button_add_promo)
         pressBack()
     }
 

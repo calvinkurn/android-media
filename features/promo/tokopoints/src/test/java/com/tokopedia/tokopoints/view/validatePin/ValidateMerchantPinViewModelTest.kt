@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.validatePin
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate
+import com.tokopedia.tokopoints.view.model.ResultStatusEntity
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.ErrorMessage
 import com.tokopedia.tokopoints.view.util.Resources
@@ -62,13 +63,14 @@ class ValidateMerchantPinViewModelTest {
     @Test
     fun `swipe my coupon error case`(){
         val observer = mockk<Observer<Resources<CouponSwipeUpdate>>>()
+        val msgString = ArrayList<String>()
+        msgString.add("error message")
+        val dummyResponse = ResultStatusEntity(code = 1, messages = msgString)
         val data = mockk<CouponSwipeUpdate>{
-            every {  resultStatus } returns mockk{
-                every {  code } returns 1
-                every { messages[0] } returns "error message"
-                every { messages.size } returns 1
+            every {  resultStatus } returns
+               dummyResponse
             }
-        }
+
         coEvery{ useCase.execute("","")} returns mockk{
             every { swipeCoupon } returns data
         }

@@ -29,6 +29,7 @@ import org.junit.Test
 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_product.json"
 private const val TAG = "SearchProductTest"
+private const val ANALYTIC_VALIDATOR_QUERY_THANOS_ID = "7"
 
 internal class SearchProductTrackingTest {
 
@@ -67,7 +68,7 @@ internal class SearchProductTrackingTest {
     fun testTracking() {
         performUserJourney()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, ANALYTIC_VALIDATOR_QUERY_THANOS_ID, true),
                 hasAllSuccess())
     }
 

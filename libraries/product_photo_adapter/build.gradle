@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -14,11 +14,12 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 }
 
 project.ext {

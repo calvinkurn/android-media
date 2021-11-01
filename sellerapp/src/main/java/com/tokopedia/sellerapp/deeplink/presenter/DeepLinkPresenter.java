@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.deeplink.presenter;
 
+import android.app.Activity;
 import android.net.Uri;
 
 /**
@@ -8,7 +9,7 @@ import android.net.Uri;
 
 public interface DeepLinkPresenter {
 
-    void processDeepLinkAction(Uri uri);
+    void processDeepLinkAction(Activity activity, Uri uri);
 
-    void sendCampaignGTM(String campaignUri, String screenName);
+    void sendCampaignGTM(Activity activity, String campaignUri, String screenName);
 }
