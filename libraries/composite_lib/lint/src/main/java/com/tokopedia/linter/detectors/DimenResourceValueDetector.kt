@@ -21,7 +21,7 @@ class DimenResourceValueDetector : Detector(), XmlScanner {
         val ISSUE = Issue.create(
             id = "DimenResourceValue",
             briefDescription = "Please use actual value instead of dimen for better performance.",
-            explanation = "Please use actual value instead of dimen for better performance.",
+            explanation = "Using actual value is more readable and increase performance.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.WARNING,
