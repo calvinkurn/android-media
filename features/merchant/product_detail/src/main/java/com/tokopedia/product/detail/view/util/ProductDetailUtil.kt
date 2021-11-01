@@ -12,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.Transformation
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -315,7 +316,8 @@ internal fun String?.checkIfNumber(key: String): String {
         this.toLong()
         this
     } catch (t: Throwable) {
-        ProductDetailLogger.logLocalization("error $key, value : $this")
+        FirebaseCrashlytics.getInstance().recordException(Exception(t.localizedMessage, t))
+        ProductDetailLogger.logLocalization(t, "error $key, value : $this")
         ""
     }
 }
