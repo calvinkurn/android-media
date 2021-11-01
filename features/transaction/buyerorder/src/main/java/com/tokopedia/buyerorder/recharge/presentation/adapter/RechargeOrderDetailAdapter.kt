@@ -2,10 +2,7 @@ package com.tokopedia.buyerorder.recharge.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailDividerModel
-import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailModel
-import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailSectionModel
-import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailTopSectionModel
+import com.tokopedia.buyerorder.recharge.presentation.model.*
 
 /**
  * @author by furqan on 01/11/2021
@@ -26,6 +23,7 @@ class RechargeOrderDetailAdapter(private val typeFactory: RechargeOrderDetailTyp
         return mutableListOf<Visitable<RechargeOrderDetailTypeFactory>>().apply {
             setupTopSection(data.topSectionModel)
             setupDetailSection(data.detailsSection)
+            setupPaymentSection(data.paymentSectionModel)
         }
     }
 
@@ -36,6 +34,11 @@ class RechargeOrderDetailAdapter(private val typeFactory: RechargeOrderDetailTyp
 
     private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupDetailSection(detailModel: RechargeOrderDetailSectionModel) {
         add(detailModel)
+        addDivider()
+    }
+
+    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupPaymentSection(paymentModel: RechargeOrderDetailPaymentModel) {
+        add(paymentModel)
         addDivider()
     }
 

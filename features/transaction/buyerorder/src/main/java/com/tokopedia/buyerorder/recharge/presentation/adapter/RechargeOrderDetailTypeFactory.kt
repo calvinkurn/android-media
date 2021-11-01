@@ -4,12 +4,15 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargePaymentDetailBinding
 import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargeProductBinding
 import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargeTopStatusBinding
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailDividerViewHolder
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailPaymentViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailProductViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailTopSectionViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailDividerModel
+import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailPaymentModel
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailSectionModel
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailTopSectionModel
 
@@ -21,11 +24,14 @@ class RechargeOrderDetailTypeFactory(
         private val detailSectionListener: RechargeOrderDetailProductViewHolder.RechargeOrderDetailProductActionListener
 ) : BaseAdapterTypeFactory() {
 
-    fun type(detailSectionModel: RechargeOrderDetailSectionModel): Int =
-            RechargeOrderDetailProductViewHolder.LAYOUT
-
     fun type(dividerModel: RechargeOrderDetailDividerModel): Int =
             RechargeOrderDetailDividerViewHolder.LAYOUT
+
+    fun type(paymentModel: RechargeOrderDetailPaymentModel): Int =
+            RechargeOrderDetailPaymentViewHolder.LAYOUT
+
+    fun type(productModel: RechargeOrderDetailSectionModel): Int =
+            RechargeOrderDetailProductViewHolder.LAYOUT
 
     fun type(topSectionModel: RechargeOrderDetailTopSectionModel): Int =
             RechargeOrderDetailTopSectionViewHolder.LAYOUT
@@ -33,13 +39,17 @@ class RechargeOrderDetailTypeFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when (type) {
                 RechargeOrderDetailDividerViewHolder.LAYOUT -> RechargeOrderDetailDividerViewHolder(parent)
-                RechargeOrderDetailTopSectionViewHolder.LAYOUT -> {
-                    val binding = ItemOrderDetailRechargeTopStatusBinding.bind(parent)
-                    RechargeOrderDetailTopSectionViewHolder(binding, topSectionListener)
+                RechargeOrderDetailPaymentViewHolder.LAYOUT -> {
+                    val binding = ItemOrderDetailRechargePaymentDetailBinding.bind(parent)
+                    RechargeOrderDetailPaymentViewHolder(binding)
                 }
                 RechargeOrderDetailProductViewHolder.LAYOUT -> {
                     val binding = ItemOrderDetailRechargeProductBinding.bind(parent)
                     RechargeOrderDetailProductViewHolder(binding, detailSectionListener)
+                }
+                RechargeOrderDetailTopSectionViewHolder.LAYOUT -> {
+                    val binding = ItemOrderDetailRechargeTopStatusBinding.bind(parent)
+                    RechargeOrderDetailTopSectionViewHolder(binding, topSectionListener)
                 }
                 else -> super.createViewHolder(parent, type)
 

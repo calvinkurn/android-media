@@ -81,4 +81,17 @@
         app:typographyWeight="bold"
         tools:text="Rp100.000" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_recharge_order_detail_payment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tg_recharge_order_detail_total_price_label"
+        app:tickerShapeType="loose"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
