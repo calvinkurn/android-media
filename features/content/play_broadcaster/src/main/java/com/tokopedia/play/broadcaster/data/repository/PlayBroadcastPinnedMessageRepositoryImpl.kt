@@ -41,8 +41,8 @@ class PlayBroadcastPinnedMessageRepositoryImpl @Inject constructor(
         channelId: String,
         message: String
     ): PinnedMessageUiModel = withContext(dispatchers.io) {
-        if (id == null) addNewPinnedMessage(channelId, message)
-        else updatePinnedMessage(id, channelId, message)
+        val pinnedId = id ?: addNewPinnedMessage(channelId, message).id
+        updatePinnedMessage(pinnedId, channelId, message)
     }
 
     private suspend fun addNewPinnedMessage(
