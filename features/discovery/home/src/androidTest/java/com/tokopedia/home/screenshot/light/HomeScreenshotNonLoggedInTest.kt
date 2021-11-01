@@ -53,6 +53,7 @@ class HomeScreenshotNonLoggedInTest {
                     "dc".name(false)
             )
         }
+
         activityRule.activity.finishAndRemoveTask()
     }
 
