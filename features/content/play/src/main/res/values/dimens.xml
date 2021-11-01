@@ -107,6 +107,7 @@
 
     <!--Multiple Like-->
     <dimen name="play_like_bubble_original_size">12dp</dimen>
+    <dimen name="play_like_count_radius">16dp</dimen>
 
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>
