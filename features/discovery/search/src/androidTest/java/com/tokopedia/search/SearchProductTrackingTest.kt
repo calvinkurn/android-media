@@ -78,8 +78,8 @@ internal class SearchProductTrackingTest {
         performUserJourney()
 
         cassavaTestRule.validate(
-            ANALYTIC_VALIDATOR_QUERY_THANOS_ID,
-//            ANALYTIC_VALIDATOR_QUERY_FILE_NAME
+//            ANALYTIC_VALIDATOR_QUERY_THANOS_ID,
+            ANALYTIC_VALIDATOR_QUERY_FILE_NAME
         )
     }
 
