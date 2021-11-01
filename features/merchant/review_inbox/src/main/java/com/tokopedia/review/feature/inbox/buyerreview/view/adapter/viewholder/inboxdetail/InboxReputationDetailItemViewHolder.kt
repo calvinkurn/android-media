@@ -255,10 +255,10 @@ class InboxReputationDetailItemViewHolder(
     }
 
     private fun showOrHideGiveReviewLayout(element: InboxReputationDetailItemUiModel) {
-        giveReview?.showWithCondition(shouldShowGiveReview(element))
+        giveReview?.showWithCondition(!shouldHideGiveReview(element))
     }
 
-    private fun shouldShowGiveReview(element: InboxReputationDetailItemUiModel): Boolean {
+    private fun shouldHideGiveReview(element: InboxReputationDetailItemUiModel): Boolean {
         return element.tab == ReviewInboxConstants.TAB_BUYER_REVIEW || element.isReviewSkipped
                 || isOwnProduct(element)
                 || element.isReviewHasReviewed
