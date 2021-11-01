@@ -327,21 +327,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
         adapter = MainNavListAdapter(mainNavFactory)
 
-        var windowHeight = 0
         activity?.let {
             val displayMetrics = DisplayMetrics()
             activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-            windowHeight = displayMetrics.heightPixels
         }
 
         layoutManager = NpaLayoutManager(requireContext())
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
-    }
-
-    private fun populateAccountHeader(data: AccountHeaderDataModel) {
-        val dataList: List<Visitable<*>> = mutableListOf(data)
-        adapter.submitList(dataList)
     }
 
     private fun populateAdapterData(data: MainNavigationDataModel) {
