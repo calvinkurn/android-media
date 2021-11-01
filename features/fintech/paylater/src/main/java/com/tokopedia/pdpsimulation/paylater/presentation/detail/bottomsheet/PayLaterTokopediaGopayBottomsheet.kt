@@ -48,8 +48,6 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     }
 
 
-
-
     init {
         setShowListener {
             bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
