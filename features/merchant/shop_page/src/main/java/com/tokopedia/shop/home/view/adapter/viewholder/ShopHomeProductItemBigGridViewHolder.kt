@@ -43,7 +43,7 @@ open class ShopHomeProductItemBigGridViewHolder(
                 isHasAddToCartButton = false,
                 hasThreeDots = isShowTripleDot,
                 shopHomeProductViewModel = shopHomeProductViewModel,
-                isWideContent = true
+                isWideContent = false
         ))
         setListener()
     }

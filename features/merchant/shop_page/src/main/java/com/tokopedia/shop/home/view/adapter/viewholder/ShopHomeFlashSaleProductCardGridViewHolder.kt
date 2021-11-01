@@ -25,7 +25,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
                 isHasAddToCartButton = false,
                 hasThreeDots = false,
                 shopHomeProductViewModel = uiModel,
-                isWideContent = true
+                isWideContent = false
             )
         )
     }

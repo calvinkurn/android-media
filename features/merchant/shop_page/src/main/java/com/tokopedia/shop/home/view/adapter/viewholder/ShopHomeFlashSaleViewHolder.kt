@@ -159,12 +159,12 @@ class ShopHomeFlashSaleViewHolder(
         }
     }
 
-    private fun setupFlashSaleReminder(flashSaleItem: FlashSaleItem?) {
-        // hide reminder when campaign satus is ongoing
+    private fun setupFlashSaleReminder(flashSaleItem: ShopHomeFlashSaleUiModel.FlashSaleItem?) {
+        // hide reminder when campaign status is ongoing
         val statusCampaign = flashSaleItem?.statusCampaign ?: ""
         val isOngoing = isStatusCampaignOngoing(statusCampaign)
-        if(isOngoing) flashSaleReminderView.hide()
-        else flashSaleReminderView.show()
+        if(isOngoing) flashSaleReminderView?.hide()
+        else flashSaleReminderView?.show()
         // set reminder bell icon
         val isRemindMe = flashSaleItem?.isRemindMe?:false
         if (isRemindMe) reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_true)

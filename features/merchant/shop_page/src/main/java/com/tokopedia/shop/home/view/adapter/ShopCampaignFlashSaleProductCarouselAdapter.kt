@@ -34,11 +34,11 @@ class ShopCampaignFlashSaleProductCarouselAdapter(val listener: ShopHomeFlashSal
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             PRODUCT_CARD_LIST -> {
-                val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid)
+                val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_list)
                 ShopHomeFlashSaleProductListViewHolder(itemView, listener)
             }
             PRODUCT_CARD_BIG_GRID -> {
-                val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid)
+                val itemView = parent.inflateLayout(R.layout.item_shop_home_flash_sale_product_card_grid_big)
                 ShopHomeFlashSaleProductCardBigGridViewHolder(itemView, listener)
             }
             else -> {
