@@ -29,9 +29,9 @@ class InAppLocalDatabaseController private constructor(
             by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
                 DeleteExpireInAppUseCase(application, repositoryManager)
             }
-    private val saveNewInAppUseCase: SaveNewInAppUseCase
+    private val saveInAppUseCase: SaveInAppUseCase
             by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-                SaveNewInAppUseCase(application, repositoryManager)
+                SaveInAppUseCase(application, repositoryManager)
             }
 
     fun getInAppData(
@@ -56,11 +56,11 @@ class InAppLocalDatabaseController private constructor(
         })
     }
 
-    fun saveNewInApp(cmInApp: CMInApp, newInAppSavedListener: NewInAppSavedListener) {
+    fun saveInApp(cmInApp: CMInApp, inAppSaveListener: InAppSaveListener) {
         launchCatchError(block = {
-            val isSaved = saveNewInAppUseCase.saveInApp(cmInApp)
+            val isSaved = saveInAppUseCase.saveInApp(cmInApp)
             if (isSaved) {
-                newInAppSavedListener.onNewInAppSaved()
+                inAppSaveListener.onInAppSaved()
             }
         }, onError = {
             logThrowable(it, SAVE_ERROR_STR)
@@ -111,6 +111,6 @@ interface InAppFetchListener {
     fun onInAppListFetchCompleted(inAppList: List<CMInApp>?)
 }
 
-interface NewInAppSavedListener {
-    fun onNewInAppSaved()
+interface InAppSaveListener {
+    fun onInAppSaved()
 }

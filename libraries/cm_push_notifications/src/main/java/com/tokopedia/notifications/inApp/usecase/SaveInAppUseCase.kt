@@ -8,7 +8,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class SaveNewInAppUseCase(
+class SaveInAppUseCase(
     private val application: Application,
     private val repositoryManager: RepositoryManager
 ) {
@@ -34,37 +34,37 @@ class SaveNewInAppUseCase(
     }
 
     private fun canSaveInApp(cmInApp: CMInApp): Boolean {
-        return verifyInApp(SaveInAppVerificationTest.TEST_FOR_TEST_CAMPAIGN, cmInApp)
+        return verifyInApp(SaveInAppTestType.TEST_TYPE_TEST_CAMPAIGN, cmInApp)
     }
 
     private fun verifyInApp(
-        verificationTest: SaveInAppVerificationTest,
+        testType: SaveInAppTestType,
         cmInApp: CMInApp
     ): Boolean {
-        return when (verificationTest) {
-            SaveInAppVerificationTest.TEST_FOR_TEST_CAMPAIGN -> {
+        return when (testType) {
+            SaveInAppTestType.TEST_TYPE_TEST_CAMPAIGN -> {
                 if (testForTestCampaign(cmInApp)) {
                     true
                 } else {
-                    verifyInApp(SaveInAppVerificationTest.TEST_PERSISTENT_OFF, cmInApp)
+                    verifyInApp(SaveInAppTestType.TEST_TYPE_INTERACTION_FOR_PERSISTENT_OFF, cmInApp)
                 }
             }
-            SaveInAppVerificationTest.TEST_PERSISTENT_OFF -> {
-                if (testPersistentOff(cmInApp)) {
-                    verifyInApp(SaveInAppVerificationTest.TEST_PARENT_ID_WITH_SCREEN, cmInApp)
+            SaveInAppTestType.TEST_TYPE_INTERACTION_FOR_PERSISTENT_OFF -> {
+                if (testInteractionForPerstOff(cmInApp)) {
+                    verifyInApp(SaveInAppTestType.TEST_TYPE_SCREEN_WITH_PARENT_ID, cmInApp)
                 } else {
                     false
                 }
             }
-            SaveInAppVerificationTest.TEST_PARENT_ID_WITH_SCREEN -> {
-                if (testParentIdWithScreen(cmInApp)) {
-                    verifyInApp(SaveInAppVerificationTest.TEST_PARENT_ID, cmInApp)
+            SaveInAppTestType.TEST_TYPE_SCREEN_WITH_PARENT_ID -> {
+                if (testScreenWithParentId(cmInApp)) {
+                    verifyInApp(SaveInAppTestType.TEST_TYPE_SAME_PARENT_ID, cmInApp)
                 } else {
                     false
                 }
             }
-            SaveInAppVerificationTest.TEST_PARENT_ID -> {
-                testParentId(cmInApp)
+            SaveInAppTestType.TEST_TYPE_SAME_PARENT_ID -> {
+                testSameParentId(cmInApp)
             }
         }
     }
@@ -78,13 +78,13 @@ class SaveNewInAppUseCase(
         }
     }
 
-    private fun testPersistentOff(cmInApp: CMInApp): Boolean {
+    private fun testInteractionForPerstOff(cmInApp: CMInApp): Boolean {
         val dataFromParentIDPerstOff: List<CMInApp>? =
             inAppDataDao.getDataFromParentIdForPerstOff(cmInApp.parentId)
         return dataFromParentIDPerstOff.isNullOrEmpty()
     }
 
-    private fun testParentIdWithScreen(cmInApp: CMInApp): Boolean {
+    private fun testScreenWithParentId(cmInApp: CMInApp): Boolean {
         deleteInAppIfAlreadyExists(cmInApp.id)
 
         val newScreenData = cmInApp.screen
@@ -113,12 +113,12 @@ class SaveNewInAppUseCase(
         } ?: return true
     }
 
-    private fun testParentId(cmInApp: CMInApp): Boolean {
-        val dataForParentId: CMInApp? = inAppDataDao.getDataForParentId(cmInApp.parentId)
-        dataForParentId?.let {
-            return if (dataForParentId.freq != 0) {
+    private fun testSameParentId(cmInApp: CMInApp): Boolean {
+        val cmInAppWithSameParentId: CMInApp? = inAppDataDao.getDataForParentId(cmInApp.parentId)
+        cmInAppWithSameParentId?.let {
+            return if (cmInAppWithSameParentId.freq != 0) {
                 //to keep the frequency consistent with inApp popups having the same parentId
-                cmInApp.freq = dataForParentId.freq
+                cmInApp.freq = cmInAppWithSameParentId.freq
                 true
             } else {
                 false
@@ -143,26 +143,26 @@ class SaveNewInAppUseCase(
         )
     }
 
-    enum class SaveInAppVerificationTest {
-        TEST_FOR_TEST_CAMPAIGN {
+    enum class SaveInAppTestType {
+        TEST_TYPE_TEST_CAMPAIGN {
             override fun getStepNumber(): Int {
                 return 1
             }
 
         },
-        TEST_PERSISTENT_OFF {
+        TEST_TYPE_INTERACTION_FOR_PERSISTENT_OFF {
             override fun getStepNumber(): Int {
                 return 2
             }
 
         },
-        TEST_PARENT_ID_WITH_SCREEN {
+        TEST_TYPE_SCREEN_WITH_PARENT_ID {
             override fun getStepNumber(): Int {
                 return 3
             }
 
         },
-        TEST_PARENT_ID {
+        TEST_TYPE_SAME_PARENT_ID {
             override fun getStepNumber(): Int {
                 return 4
             }
