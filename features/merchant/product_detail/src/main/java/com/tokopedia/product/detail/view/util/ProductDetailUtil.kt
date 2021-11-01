@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -316,7 +317,12 @@ internal fun String?.checkIfNumber(key: String): String {
         this.toLong()
         this
     } catch (t: Throwable) {
-        FirebaseCrashlytics.getInstance().recordException(Exception(t.localizedMessage, t))
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(Exception(t.localizedMessage, t))
+        } else {
+            t.printStackTrace()
+        }
+
         ProductDetailLogger.logLocalization(t, "error $key, value : $this")
         ""
     }
