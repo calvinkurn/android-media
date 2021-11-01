@@ -1481,8 +1481,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun doClearAllPromo() {
         lastValidateUseRequest?.let {
             val codes = arrayListOf<String>()
-            it.codes.forEach { code -> code?.let { codes.add(code) } }
-            it.orders.forEach { order -> order?.codes?.let { code -> codes.addAll(code) } }
+            it.codes.forEach { code -> codes.add(code) }
+            it.orders.forEach { order -> codes.addAll(order.codes) }
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, codes)
             compositeSubscription.add(
                     // Do nothing on subscribe

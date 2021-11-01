@@ -674,20 +674,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (binding?.topLayout?.root?.visibility == View.VISIBLE) {
             if (show) {
                 binding?.topLayoutShadow?.show()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
-                }
+                binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
             } else {
                 binding?.topLayoutShadow?.gone()
             }
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (show) {
-                    binding?.appBarLayout?.elevation = HAS_ELEVATION.toFloat()
-                    binding?.topLayoutShadow?.gone()
-                } else {
-                    binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
-                }
+            if (show) {
+                binding?.appBarLayout?.elevation = HAS_ELEVATION.toFloat()
+                binding?.topLayoutShadow?.gone()
+            } else {
+                binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
             }
         }
     }
@@ -1047,8 +1043,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
 
                     it.voucherOrderUiModels.forEach {
-                        val promoCode = it?.code ?: ""
-                        if (promoCode.isNotBlank() && it?.messageUiModel?.state.equals("red") && !redStatePromo.contains(promoCode)) {
+                        val promoCode = it.code
+                        if (promoCode.isNotBlank() && it.messageUiModel.state == "red" && !redStatePromo.contains(promoCode)) {
                             redStatePromo.add(promoCode)
                         }
                     }
@@ -1066,8 +1062,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
 
                 it.voucherOrderUiModels.forEach {
-                    val promoCode = it?.code ?: ""
-                    if (promoCode.isNotBlank() && it?.messageUiModel?.state.equals("red") && !redStatePromo.contains(promoCode)) {
+                    val promoCode = it.code
+                    if (promoCode.isNotBlank() && it.messageUiModel.state == "red" && !redStatePromo.contains(promoCode)) {
                         redStatePromo.add(promoCode)
                     }
                 }
@@ -2201,19 +2197,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         var isPromoApplied = false
         val allPromoApplied = arrayListOf<String>()
         if (params.orders.isNotEmpty()) {
-            params.orders.forEach {
-                it?.let { orderItem ->
-                    if (orderItem.codes.isNotEmpty()) {
-                        orderItem.codes.forEach { merchantCode ->
-                            allPromoApplied.add(merchantCode)
-                        }
+            params.orders.forEach { orderItem ->
+                if (orderItem.codes.isNotEmpty()) {
+                    orderItem.codes.forEach { merchantCode ->
+                        allPromoApplied.add(merchantCode)
                     }
                 }
             }
-            params.codes.forEach {
-                it?.let { globalCode ->
-                    allPromoApplied.add(globalCode)
-                }
+            params.codes.forEach { globalCode ->
+                allPromoApplied.add(globalCode)
             }
         }
         if (params.orders.isNotEmpty() && allPromoApplied.isNotEmpty()) isPromoApplied = true
@@ -2223,19 +2215,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun getAllAppliedPromoCodes(params: ValidateUsePromoRequest): List<String> {
         val allPromoApplied = arrayListOf<String>()
         if (params.orders.isNotEmpty()) {
-            params.orders.forEach {
-                it?.let { orderItem ->
-                    if (orderItem.codes.isNotEmpty()) {
-                        orderItem.codes.forEach { merchantCode ->
-                            allPromoApplied.add(merchantCode)
-                        }
+            params.orders.forEach { orderItem ->
+                if (orderItem.codes.isNotEmpty()) {
+                    orderItem.codes.forEach { merchantCode ->
+                        allPromoApplied.add(merchantCode)
                     }
                 }
             }
-            params.codes.forEach {
-                it?.let { globalCode ->
-                    allPromoApplied.add(globalCode)
-                }
+            params.codes.forEach { globalCode ->
+                allPromoApplied.add(globalCode)
             }
         }
         return allPromoApplied
@@ -2704,10 +2692,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (cartAdapter.hasAvailableItemLeft()) {
             binding?.topLayout?.root?.show()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
-                    isShowToolbarShadow = true
-                }
+            if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
+                isShowToolbarShadow = true
             }
         } else {
             binding?.topLayout?.root?.gone()
@@ -2721,10 +2707,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (isShow) {
             binding?.topLayout?.root?.show()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
-                    isShowToolbarShadow = true
-                }
+            if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
+                isShowToolbarShadow = true
             }
         } else {
             binding?.topLayout?.root?.gone()

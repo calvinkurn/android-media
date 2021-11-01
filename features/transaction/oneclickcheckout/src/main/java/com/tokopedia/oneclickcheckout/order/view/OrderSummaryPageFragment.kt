@@ -1360,13 +1360,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     val codes = validateUsePromoRequest.codes
                     val promoCodes = ArrayList<String>()
                     for (code in codes) {
-                        if (code != null) {
-                            promoCodes.add(code)
-                        }
+                        promoCodes.add(code)
                     }
                     if (validateUsePromoRequest.orders.isNotEmpty()) {
-                        val orderCodes = validateUsePromoRequest.orders[0]?.codes
-                                ?: mutableListOf()
+                        val orderCodes = validateUsePromoRequest.orders[0].codes
                         for (code in orderCodes) {
                             promoCodes.add(code)
                         }
