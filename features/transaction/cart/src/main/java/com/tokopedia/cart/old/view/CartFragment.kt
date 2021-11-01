@@ -243,9 +243,6 @@ open class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
-        const val TOOLBAR_VARIANT_BASIC = RollenceKey.NAVIGATION_VARIANT_OLD
-        const val TOOLBAR_VARIANT_NAVIGATION = RollenceKey.NAVIGATION_VARIANT_REVAMP
-        const val TOOLBAR_VARIANT_NAVIGATION2 = RollenceKey.NAVIGATION_VARIANT_REVAMP2
         const val HEIGHT_DIFF_CONSTRAINT = 100
         const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
         const val PROMO_ANIMATION_DURATION = 500L
@@ -483,23 +480,7 @@ open class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         isNavToolbar = isNavRevamp()
     }
 
-    private fun isNavRevamp(): Boolean {
-        val EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV
-        val EXP_NAME2 = RollenceKey.NAVIGATION_EXP_TOP_NAV2
-        val fromActivity = arguments?.getBoolean(CartActivity.EXTRA_IS_FROM_CART_ACTIVITY, false)
-                ?: false
-        if (fromActivity) {
-            return RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION ||
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME2, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION2
-        } else {
-            return try {
-                return (context as? MainParentStateListener)?.isNavigationRevamp ?: false
-            } catch (e: Exception) {
-                e.printStackTrace()
-                false
-            }
-        }
-    }
+    private fun isNavRevamp(): Boolean = true
 
     override fun initView(view: View) {
         initToolbar(view)

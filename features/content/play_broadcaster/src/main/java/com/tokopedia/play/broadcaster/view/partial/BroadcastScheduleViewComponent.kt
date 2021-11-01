@@ -19,7 +19,6 @@ class BroadcastScheduleViewComponent(
         listener: Listener
 ) : ViewComponent(container, idRes) {
 
-    private val clScheduleHeader = findViewById<ConstraintLayout>(R.id.cl_schedule_header)
     private val clScheduleDesc = findViewById<ConstraintLayout>(R.id.cl_schedule_desc)
 
     private val tvHeader = findViewById<TextView>(R.id.tv_header)
