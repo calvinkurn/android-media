@@ -103,7 +103,6 @@ public class GraphqlClient {
                 new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession),
                 new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
                 authenticator,
-//                TkpdAuthenticator.Companion.createAuthenticator(context, (NetworkRouter) context.getApplicationContext(), userSession),
                     new StringResponseConverter(),
                     new GsonBuilder());
             sFingerprintManager = new FingerprintManager(userSession);
@@ -154,7 +153,7 @@ public class GraphqlClient {
     }
 
     @NotNull
-    protected static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
+    public static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));

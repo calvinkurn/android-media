@@ -2,11 +2,10 @@ package com.tokopedia.interceptors.authenticator
 
 import android.content.Context
 import android.util.Log
-import com.tokopedia.interceptors.refreshtoken.RefreshTokenUseCase
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSession
-import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
@@ -22,7 +21,7 @@ class TkpdAuthenticatorGql(
     val context: Context,
     val networkRouter: NetworkRouter,
     val userSession: UserSession,
-    val refreshTokenUseCaseGql: RefreshTokenUseCase
+    val refreshTokenUseCaseGql: RefreshTokenGql
 ): Authenticator {
 
     private fun isNeedRefresh() = userSession.isLoggedIn
@@ -52,13 +51,18 @@ class TkpdAuthenticatorGql(
         return result
     }
 
+    private fun createRefreshTokenUseCase() {
+//        val graphqlapi = GraphqlApiSuspend.getResponseSuspend()
+    }
+
     override fun authenticate(route: Route?, response: Response): Request? {
         if(isNeedRefresh()) {
             val path: String = getRefreshQueryPath(response.request(), response)
             return if(responseCount(response) == 0)
                 try {
                     val originalRequest = response.request()
-                    val newAccessToken = runBlocking { refreshTokenUseCaseGql("") }.loginToken.accessToken
+//                    val newAccessToken = runBlocking { refreshTokenUseCaseGql("") }.loginToken.accessToken
+                    val newAccessToken = refreshTokenUseCaseGql.refreshToken(context, userSession, networkRouter)?.accessToken ?: ""
                     if(newAccessToken.isNotEmpty()) {
                         null
                     } else {
@@ -127,7 +131,7 @@ class TkpdAuthenticatorGql(
             }
         }
 
-        fun createAuthenticator(context: Context, networkRouter: NetworkRouter, userSession: UserSession, refreshTokenUseCaseGql: RefreshTokenUseCase): TkpdAuthenticatorGql {
+        fun createAuthenticator(context: Context, networkRouter: NetworkRouter, userSession: UserSession, refreshTokenUseCaseGql: RefreshTokenGql): TkpdAuthenticatorGql {
             return TkpdAuthenticatorGql(context, networkRouter, userSession, refreshTokenUseCaseGql)
         }
     }
