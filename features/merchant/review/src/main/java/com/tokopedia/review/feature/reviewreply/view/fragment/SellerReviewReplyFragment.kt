@@ -3,7 +3,13 @@ package com.tokopedia.review.feature.reviewreply.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -414,6 +420,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
             feedbackUiModel?.let { feedback ->
                 binding?.feedbackItemReplyWidget?.setData(feedback, productReply)
                 binding?.reviewReplyBadRatingReason?.showBadRatingReason(feedback.badRatingReason)
+                binding?.badRatingReasonDisclaimer?.setDisclaimer(feedback.badRatingDisclaimer)
             }
         }
         binding?.reviewReplyTextBoxWidget?.setReplyAction()

@@ -5,10 +5,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.R
-import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
@@ -31,8 +34,6 @@ class InboxReviewFeedbackViewHolder(view: View,
     private var reviewInboxFeedbackImageAdapter: InboxReviewFeedbackImageAdapter? = null
     private val impressHolder = ImpressHolder()
     private val binding = ItemInboxReviewBinding.bind(view)
-
-    private val badRatingReason: ReviewBadRatingReasonWidget = itemView.findViewById(R.id.badRatingReasonReview)
 
     override fun bind(element: FeedbackInboxUiModel) {
         reviewInboxFeedbackImageAdapter = InboxReviewFeedbackImageAdapter(feedbackInboxReviewListener)
@@ -58,6 +59,7 @@ class InboxReviewFeedbackViewHolder(view: View,
             setImageAttachment(element)
             showKejarUlasanLabel(element.isKejarUlasan)
             setBadRatingReason(element.badRatingReason)
+            setBadRatingDisclaimer(element.ratingDisclaimer)
         }
     }
 
@@ -190,7 +192,11 @@ class InboxReviewFeedbackViewHolder(view: View,
     }
 
     private fun setBadRatingReason(reason: String) {
-        badRatingReason.showBadRatingReason(reason)
+        binding.badRatingReasonReview.showBadRatingReason(reason)
+    }
+
+    private fun setBadRatingDisclaimer(disclaimer: String) {
+        binding.badRatingReasonDisclaimer.setDisclaimer(disclaimer)
     }
 
 }

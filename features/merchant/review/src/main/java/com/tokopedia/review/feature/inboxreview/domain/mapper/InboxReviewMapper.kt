@@ -178,7 +178,8 @@ object InboxReviewMapper {
             variantName = data.variantName,
             sellerUser = data.sellerUser,
             isKejarUlasan = data.isKejarUlasan,
-            badRatingReason = data.badRatingReason
+            badRatingReason = data.badRatingReason,
+            badRatingDisclaimer = data.ratingDisclaimer
         )
     }
 
