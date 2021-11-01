@@ -244,7 +244,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 
     public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
-    
+
     public static final String PM_SWITCH_TO_WEB_VIEW = "android_pm_switch_to_web_view";
 
     public static final String SETTING_SHOW_DARK_MODE_TOGGLE = "android_show_dark_mode_toggle";
