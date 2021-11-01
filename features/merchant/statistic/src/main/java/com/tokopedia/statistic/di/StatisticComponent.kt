@@ -14,11 +14,11 @@ import dagger.Component
 
 @StatisticScope
 @Component(
-        dependencies = [BaseAppComponent::class],
-        modules = [
-            StatisticModule::class, StatisticUseCaseModule::class,
-            StatisticViewModelModule::class
-        ]
+    dependencies = [BaseAppComponent::class],
+    modules = [
+        StatisticModule::class, StatisticUseCaseModule::class,
+        StatisticViewModelModule::class
+    ]
 )
 interface StatisticComponent {
 
