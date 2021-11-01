@@ -4,25 +4,26 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargeDigitalRecommendationBinding
 import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargePaymentDetailBinding
 import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargeProductBinding
 import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargeTopStatusBinding
-import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailDividerViewHolder
-import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailPaymentViewHolder
-import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailProductViewHolder
-import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailTopSectionViewHolder
-import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailDividerModel
-import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailPaymentModel
-import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailSectionModel
-import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailTopSectionModel
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.*
+import com.tokopedia.buyerorder.recharge.presentation.model.*
+import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 
 /**
  * @author by furqan on 01/11/2021
  */
 class RechargeOrderDetailTypeFactory(
-        private val topSectionListener: RechargeOrderDetailTopSectionViewHolder.RechargeOrderDetailTopSectionActionListener,
-        private val detailSectionListener: RechargeOrderDetailProductViewHolder.RechargeOrderDetailProductActionListener
+        private val digitalRecommendationData: DigitalRecommendationData,
+        private val topSectionListener: RechargeOrderDetailTopSectionViewHolder.ActionListener,
+        private val detailSectionListener: RechargeOrderDetailProductViewHolder.ActionListener,
+        private val digitalRecommendationListener: RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener
 ) : BaseAdapterTypeFactory() {
+
+    fun type(digitalRecommendationModel: RechargeOrderDetailDigitalRecommendationModel): Int =
+            RechargeOrderDetailDigitalRecommendationViewHolder.LAYOUT
 
     fun type(dividerModel: RechargeOrderDetailDividerModel): Int =
             RechargeOrderDetailDividerViewHolder.LAYOUT
@@ -38,6 +39,10 @@ class RechargeOrderDetailTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when (type) {
+                RechargeOrderDetailDigitalRecommendationViewHolder.LAYOUT -> {
+                    val binding = ItemOrderDetailRechargeDigitalRecommendationBinding.bind(parent)
+                    RechargeOrderDetailDigitalRecommendationViewHolder(binding, digitalRecommendationData, digitalRecommendationListener)
+                }
                 RechargeOrderDetailDividerViewHolder.LAYOUT -> RechargeOrderDetailDividerViewHolder(parent)
                 RechargeOrderDetailPaymentViewHolder.LAYOUT -> {
                     val binding = ItemOrderDetailRechargePaymentDetailBinding.bind(parent)

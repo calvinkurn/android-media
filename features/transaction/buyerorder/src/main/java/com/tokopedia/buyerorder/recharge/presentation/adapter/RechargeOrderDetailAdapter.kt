@@ -7,7 +7,7 @@ import com.tokopedia.buyerorder.recharge.presentation.model.*
 /**
  * @author by furqan on 01/11/2021
  */
-class RechargeOrderDetailAdapter(private val typeFactory: RechargeOrderDetailTypeFactory) :
+class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         BaseAdapter<RechargeOrderDetailTypeFactory>(typeFactory) {
 
     fun updateItems(data: RechargeOrderDetailModel) {
@@ -24,6 +24,7 @@ class RechargeOrderDetailAdapter(private val typeFactory: RechargeOrderDetailTyp
             setupTopSection(data.topSectionModel)
             setupDetailSection(data.detailsSection)
             setupPaymentSection(data.paymentSectionModel)
+            setupDigitalRecommendationWidget()
         }
     }
 
@@ -39,6 +40,11 @@ class RechargeOrderDetailAdapter(private val typeFactory: RechargeOrderDetailTyp
 
     private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupPaymentSection(paymentModel: RechargeOrderDetailPaymentModel) {
         add(paymentModel)
+        addDivider()
+    }
+
+    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupDigitalRecommendationWidget() {
+        add(RechargeOrderDetailDigitalRecommendationModel())
         addDivider()
     }
 

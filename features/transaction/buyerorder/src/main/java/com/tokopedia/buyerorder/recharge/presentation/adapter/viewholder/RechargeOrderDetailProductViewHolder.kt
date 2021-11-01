@@ -11,7 +11,7 @@ import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailS
  */
 class RechargeOrderDetailProductViewHolder(
         private val binding: ItemOrderDetailRechargeProductBinding,
-        private val listener: RechargeOrderDetailProductActionListener?
+        private val listener: ActionListener?
 ) : AbstractViewHolder<RechargeOrderDetailSectionModel>(binding.root) {
 
     override fun bind(element: RechargeOrderDetailSectionModel) {
@@ -28,7 +28,7 @@ class RechargeOrderDetailProductViewHolder(
         }
     }
 
-    interface RechargeOrderDetailProductActionListener {
+    interface ActionListener {
         fun onCopyCodeClicked(label: String, value: String)
     }
 

@@ -62,6 +62,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.flightOrderList)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.features.digitalRecommendation)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

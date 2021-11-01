@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
  */
 class RechargeOrderDetailTopSectionViewHolder(
         val binding: ItemOrderDetailRechargeTopStatusBinding,
-        val listener: RechargeOrderDetailTopSectionActionListener?
+        val listener: ActionListener?
 ) : AbstractViewHolder<RechargeOrderDetailTopSectionModel>(binding.root) {
 
     override fun bind(element: RechargeOrderDetailTopSectionModel) {
@@ -44,7 +44,7 @@ class RechargeOrderDetailTopSectionViewHolder(
         }
     }
 
-    interface RechargeOrderDetailTopSectionActionListener {
+    interface ActionListener {
         fun onCopyInvoiceNumberClicked(invoiceRefNum: String)
     }
 

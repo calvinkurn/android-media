@@ -13,9 +13,13 @@ import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailDigitalRecommendationViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailProductViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailTopSectionViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.viewmodel.RechargeOrderDetailViewModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
+import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,8 +30,9 @@ import javax.inject.Inject
  * @author by furqan on 28/10/2021
  */
 class RechargeOrderDetailFragment : BaseDaggerFragment(),
-        RechargeOrderDetailTopSectionViewHolder.RechargeOrderDetailTopSectionActionListener,
-        RechargeOrderDetailProductViewHolder.RechargeOrderDetailProductActionListener {
+        RechargeOrderDetailTopSectionViewHolder.ActionListener,
+        RechargeOrderDetailProductViewHolder.ActionListener,
+        RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener {
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -37,8 +42,19 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         ViewModelProvider(this, viewModelFactory).get(RechargeOrderDetailViewModel::class.java)
     }
 
+    private val digitalRecommendationData: DigitalRecommendationData
+        get() = DigitalRecommendationData(
+                viewModelFactory,
+                viewLifecycleOwner,
+                DigitalRecommendationAdditionalTrackingData(
+                        userType = "",
+                        widgetPosition = "",
+                        pgCategories = emptyList()
+                ),
+                DigitalRecommendationPage.DIGITAL_GOODS
+        )
     private val typeFactory: RechargeOrderDetailTypeFactory by lazy {
-        RechargeOrderDetailTypeFactory(this, this)
+        RechargeOrderDetailTypeFactory(digitalRecommendationData, this, this, this)
     }
     private val adapter: RechargeOrderDetailAdapter by lazy {
         RechargeOrderDetailAdapter(typeFactory)
@@ -101,6 +117,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCopyCodeClicked(label: String, value: String) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun hideDigitalRecommendation() {
 //        TODO("Not yet implemented")
     }
 

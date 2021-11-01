@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
  * @author by furqan on 27/10/2021
  */
 @Parcelize
-class RechargeOrderDetailPaymentModel(
+data class RechargeOrderDetailPaymentModel(
         val paymentMethod: RechargeOrderDetailSimpleModel,
         val paymentDetails: List<RechargeOrderDetailSimpleModel>,
         val totalPriceLabel: String,
