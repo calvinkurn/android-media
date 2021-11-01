@@ -146,7 +146,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             Map<String, String> map = new HashMap<>();
             map.put("type", "init");
             map.put("error", Log.getStackTraceString(throwable));
-            ServerLogger.log(Priority.P1, "WorkManager", map);
+            ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
             throw new RuntimeException("WorkManager failed to initialize", throwable);
         }).build();
     }
