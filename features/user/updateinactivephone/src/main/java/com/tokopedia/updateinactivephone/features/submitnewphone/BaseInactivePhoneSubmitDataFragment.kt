@@ -72,9 +72,9 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
         }
     }
 
-    open fun gotoSuccessPage() {
+    open fun gotoSuccessPage(source: String) {
         activity?.let {
-            val intent = InactivePhoneSuccessPageActivity.createIntent(it, InactivePhoneConstant.SOURCE_INACTIVE_PHONE, inactivePhoneUserDataModel)
+            val intent = InactivePhoneSuccessPageActivity.createIntent(it, source, inactivePhoneUserDataModel)
             startActivity(intent)
             it.finish()
         }

@@ -74,7 +74,7 @@ fun convertBitmapToImageFile(bitmap: Bitmap, quality: Int, filePath: String): Fi
 const val REGEX_PHONE_NUMBER = """[+()\-\s]"""
 const val REGEX_PHONE_NUMBER_REGION = "^(\\+\\d{1,2})"
 
-fun String.removeRegionCodeAndCharacter(): String {
+fun String.reformatPhoneNumber(): String {
     val regionRegex = Regex(REGEX_PHONE_NUMBER_REGION)
     val symbolRegex = Regex(REGEX_PHONE_NUMBER)
     if (this.contains(regionRegex)) {

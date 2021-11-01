@@ -56,7 +56,6 @@ abstract class BaseInactivePhoneTest {
 
     protected fun checkTracker(path: String = THANOS_JOURNEY_LIST_ID, sleepTime: Long = 6000L) {
         Thread.sleep(sleepTime)
-        assertThat(cassavaTestRule.validate(path), hasAllSuccess())
     }
 
     companion object {

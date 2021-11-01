@@ -169,7 +169,7 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
 
     private fun onSuccessVerificationNewPhone(verifyNewPhoneDataModel: VerifyNewPhoneDataModel) {
         if (verifyNewPhoneDataModel.verify.isSuccess) {
-            gotoSuccessPage()
+            gotoSuccessPage(InactivePhoneConstant.EXPEDITED)
         }
     }
 
@@ -182,11 +182,26 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
 
     open fun gotoValidateNewPhoneNumber() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, inactivePhoneUserDataModel?.userIdEnc.orEmpty())
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, inactivePhoneUserDataModel?.newPhoneNumber.orEmpty())
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, inactivePhoneUserDataModel?.validateToken.orEmpty())
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_INACTIVE_PHONE)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, InactivePhoneConstant.OTP_TYPE_INACTIVE_PHONE_SMS)
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_USER_ID_ENC,
+            inactivePhoneUserDataModel?.userIdEnc.orEmpty()
+        )
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_MSISDN,
+            inactivePhoneUserDataModel?.newPhoneNumber.orEmpty()
+        )
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN,
+            inactivePhoneUserDataModel?.validateToken.orEmpty()
+        )
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_SOURCE,
+            SOURCE_INACTIVE_PHONE
+        )
+        intent.putExtra(
+            ApplinkConstInternalGlobal.PARAM_OTP_TYPE,
+            InactivePhoneConstant.OTP_TYPE_INACTIVE_PHONE_SMS
+        )
         startActivityForResult(intent, REQUEST_CODE_PHONE_VERIFICATION)
     }
 
@@ -215,7 +230,9 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
     private fun gotoOnboardingPage() {
         activity?.let {
             inactivePhoneUserDataModel?.let { _inactivePhoneUserDataModel ->
-                startActivity(InactivePhoneWithPinActivity.createIntent(it, _inactivePhoneUserDataModel))
+                startActivity(
+                    InactivePhoneWithPinActivity.createIntent(it, _inactivePhoneUserDataModel)
+                )
             }
 
             it.finish()

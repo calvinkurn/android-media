@@ -12,11 +12,11 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.common.FragmentTransactionInterface
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.REQUEST_CAPTURE_ID_CARD
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.features.imagepicker.InactivePhoneImagePickerActivity
@@ -29,12 +29,10 @@ import kotlin.math.roundToInt
 class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment() {
 
     private val permissionCheckerHelper = PermissionCheckerHelper()
-    private var fragmentTransactionInterface: FragmentTransactionInterface? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         checkPermission()
-        fragmentTransactionInterface = activity as FragmentTransactionInterface
     }
 
     override fun initView() {
@@ -108,9 +106,9 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
     private fun addTextWithBullet(text: String): Typography? {
         return context?.let {
             Typography(it).apply {
-                val radius = dpToPx(DP_4)
-                val gapWidth = dpToPx(DP_12)
-                val margin = dpToPx(DP_8)
+                val radius = DP_4.pxToDp(resources.displayMetrics)
+                val gapWidth = DP_12.pxToDp(resources.displayMetrics)
+                val margin = DP_8.pxToDp(resources.displayMetrics)
                 val span = SpannableString(text)
                 val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
 
@@ -128,11 +126,6 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
                 this.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             }
         }
-    }
-
-    private fun dpToPx(dp: Int): Int {
-        val displayMetrics = resources.displayMetrics
-        return (dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
     }
 
     private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {

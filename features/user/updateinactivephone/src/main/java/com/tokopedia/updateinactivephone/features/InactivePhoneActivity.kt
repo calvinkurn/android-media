@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -19,7 +18,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
-import com.tokopedia.updateinactivephone.common.utils.removeRegionCodeAndCharacter
+import com.tokopedia.updateinactivephone.common.utils.reformatPhoneNumber
 import com.tokopedia.updateinactivephone.databinding.ActivityInactivePhoneBinding
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
@@ -64,7 +63,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
 
         intent?.extras?.let {
             inactivePhoneUserDataModel = InactivePhoneUserDataModel(
-                oldPhoneNumber = it.getString(ApplinkConstInternalGlobal.PARAM_PHONE)?.removeRegionCodeAndCharacter().orEmpty(),
+                oldPhoneNumber = it.getString(ApplinkConstInternalGlobal.PARAM_PHONE)?.reformatPhoneNumber().orEmpty(),
                 email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL).orEmpty()
             )
         }
@@ -166,8 +165,8 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     }
 
     private fun isVersionValid(): Boolean {
-        val minimumVersionSeller = remoteConfig?.getLong(KEY_MINIMUM_VERSION_SELLER) ?: 0
-        val minimumVersionCustomer = remoteConfig?.getLong(KEY_MINIMUM_VERSION_CUSTOMER) ?: 0
+        val minimumVersionSeller = remoteConfig?.getLong(KEY_MINIMUM_VERSION_SELLER).orZero()
+        val minimumVersionCustomer = remoteConfig?.getLong(KEY_MINIMUM_VERSION_CUSTOMER).orZero()
 
         if (GlobalConfig.isSellerApp()) {
             if (GlobalConfig.VERSION_CODE < minimumVersionSeller) {
@@ -227,7 +226,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     }
 
     companion object {
-        private const val REQUEST_CODE_CHOOSE_ACCOUNT = 100;
+        private const val REQUEST_CODE_CHOOSE_ACCOUNT = 100
 
         private const val APPLINK_PLAY_STORE = "market://details?id="
         private const val URL_PLAY_STORE = "https://play.google.com/store/apps/details?id="

@@ -55,7 +55,7 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setLayoutCameraView()
 
-        viewBinding?.btnFlipCamera?.setOnClickListener { _ ->
+        viewBinding?.btnFlipCamera?.setOnClickListener {
             viewBinding?.cameraView?.toggleFacing()
         }
 

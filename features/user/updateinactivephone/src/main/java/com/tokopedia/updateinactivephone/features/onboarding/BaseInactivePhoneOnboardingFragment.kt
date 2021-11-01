@@ -55,5 +55,4 @@ abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
     fun updateDescription(description: String) {
         viewBinding?.textDescription?.text = description
     }
-
 }

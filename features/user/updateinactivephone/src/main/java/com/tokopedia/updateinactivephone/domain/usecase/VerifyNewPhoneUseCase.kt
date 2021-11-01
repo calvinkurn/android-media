@@ -19,7 +19,14 @@ open class VerifyNewPhoneUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String {
-        return query
+        return """
+            mutation verifyNewPhoneInactivePhoneUser(${'$'}msisdn : String!, ${'$'}userIDEnc: String!, ${'$'}validateToken: String!) {
+              verifyNewPhoneInactivePhoneUser(msisdn: ${'$'}msisdn, userIDEnc: ${'$'}userIDEnc, validateToken: ${'$'}validateToken) {
+                isSuccess
+            	errorMessage
+              }
+            }
+        """.trimIndent()
     }
 
     private fun createParams(params: InactivePhoneUserDataModel): Map<String, Any> = mapOf(
@@ -32,14 +39,5 @@ open class VerifyNewPhoneUseCase @Inject constructor(
         private const val PARAM_USER_ID_ENC = "userIDEnc"
         private const val PARAM_MSISDN = "msisdn"
         private const val PARAM_VALIDATE_TOKEN = "validateToken"
-
-        var query = """
-            mutation verifyNewPhoneInactivePhoneUser(${'$'}msisdn : String!, ${'$'}userIDEnc: String!, ${'$'}validateToken: String!) {
-              verifyNewPhoneInactivePhoneUser(msisdn: ${'$'}msisdn, userIDEnc: ${'$'}userIDEnc, validateToken: ${'$'}validateToken) {
-                isSuccess
-            	errorMessage
-              }
-            }
-        """.trimIndent()
     }
 }

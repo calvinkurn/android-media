@@ -114,7 +114,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
             when (it) {
                 is Success -> {
                     if (it.data.status.isSuccess) {
-                        gotoSuccessPage()
+                        gotoSuccessPage(InactivePhoneConstant.REGULAR)
                     } else {
                         view?.let { v ->
                             Toaster.build(v, it.data.status.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()

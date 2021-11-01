@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class InactivePhoneModule() {
+class InactivePhoneModule {
 
     @ActivityScope
     @Provides

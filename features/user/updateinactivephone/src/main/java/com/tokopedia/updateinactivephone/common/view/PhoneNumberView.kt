@@ -70,8 +70,8 @@ class PhoneNumberView @JvmOverloads constructor(
         if (attrs != null) {
             val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.PhoneNumberView, 0, 0)
             typedArray?.let {
-                val labelAttr = it.getString(R.styleable.PhoneNumberView_label) ?: ""
-                val messageAttr = it.getString(R.styleable.PhoneNumberView_message) ?: ""
+                val labelAttr = it.getString(R.styleable.PhoneNumberView_label).orEmpty()
+                val messageAttr = it.getString(R.styleable.PhoneNumberView_message).orEmpty()
 
                 label = labelAttr
                 message = messageAttr
