@@ -5,7 +5,7 @@ import com.tokopedia.updateinactivephone.features.submitnewphone.regular.Inactiv
 
 class InactivePhoneDataUploadFragmentStub : InactivePhoneDataUploadFragment() {
 
-    override fun gotoSuccessPage() {
+    override fun gotoSuccessPage(source: String) {
 
     }
 

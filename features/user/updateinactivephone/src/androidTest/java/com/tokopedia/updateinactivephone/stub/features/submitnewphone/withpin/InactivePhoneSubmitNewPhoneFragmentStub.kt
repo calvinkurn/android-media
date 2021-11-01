@@ -9,7 +9,7 @@ class InactivePhoneSubmitNewPhoneFragmentStub : InactivePhoneSubmitNewPhoneFragm
 
     }
 
-    override fun gotoSuccessPage() {
+    override fun gotoSuccessPage(source: String) {
 
     }
 
