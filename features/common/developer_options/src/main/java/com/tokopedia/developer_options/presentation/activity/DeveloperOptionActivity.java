@@ -431,18 +431,6 @@ public class DeveloperOptionActivity extends BaseActivity {
                 }
             }
         });
-
-        findViewById(R.id.btn_always_old_cart_checkout).setOnClickListener(v -> {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-            remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "false");
-            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
-        });
-
-        findViewById(R.id.btn_always_new_cart_checkout).setOnClickListener(v -> {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-            remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "true");
-            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
-        });
     }
 
     private void setupNewInboxAbButton() {
