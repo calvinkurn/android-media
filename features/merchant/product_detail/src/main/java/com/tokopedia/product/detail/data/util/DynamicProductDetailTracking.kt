@@ -1685,6 +1685,46 @@ object DynamicProductDetailTracking {
             )
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
+
+
+        /**
+         * 26-10-2021
+         * Only triggered when using
+         * oneliner - stock assurance
+         */
+        fun eventOneLinerImpression(
+            trackingQueue: TrackingQueue?,
+            componentTrackDataModel: ComponentTrackDataModel,
+            productInfo: DynamicProductInfoP1?,
+            userId: String
+        ) {
+            val productId = productInfo?.basic?.productID ?: ""
+
+            val mapEvent = DataLayer.mapOf(
+                ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
+                ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Tracking.KEY_ACTION, "view - pdp oneliner component",
+                ProductTrackingConstant.Tracking.KEY_LABEL, "",
+                ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE,
+                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId,
+                ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
+                    "promoView", DataLayer.mapOf(
+                        "promotions", DataLayer.listOf(
+                            DataLayer.mapOf(
+                                "id", "",
+                                "name", "product detail page - $productId",
+                                "creative", "layout:${productInfo?.layoutName};comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};",
+                                "position", componentTrackDataModel.adapterPosition
+                            )
+                        ))))
+            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+                ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
+
+            trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
+        }
     }
 
     object TradeIn {

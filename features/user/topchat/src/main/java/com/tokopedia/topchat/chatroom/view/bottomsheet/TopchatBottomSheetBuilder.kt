@@ -60,14 +60,14 @@ object TopchatBottomSheetBuilder {
     ): MutableList<TopchatItemMenu> {
         val menus = arrayListOf<TopchatItemMenu>()
         val replyMenu = TopchatItemMenu(
-            _title = ctx?.getString(R.string.title_topchat_reply) ?: "",
-            _icon = R.drawable.ic_topchat_reply_reference,
-            _id = MENU_ID_REPLY
+            title = ctx?.getString(R.string.title_topchat_reply) ?: "",
+            icon = R.drawable.ic_topchat_reply_reference,
+            id = MENU_ID_REPLY
         )
         val copyMenu = TopchatItemMenu(
-            _title = ctx?.getString(R.string.title_topchat_copy) ?: "",
-            _icon = com.tokopedia.iconunify.R.drawable.iconunify_copy,
-            _id = MENU_ID_COPY_TO_CLIPBOARD
+            title = ctx?.getString(R.string.title_topchat_copy) ?: "",
+            icon = com.tokopedia.iconunify.R.drawable.iconunify_copy,
+            id = MENU_ID_COPY_TO_CLIPBOARD
         )
         return menus.apply {
             add(replyMenu)

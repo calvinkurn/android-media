@@ -71,7 +71,7 @@ abstract class BitrateAdapter(context: Context) {
         mBitrateHistory.clear()
         val currentMillis = System.currentTimeMillis()
         mLossHistory.add(LossHistory(currentMillis, 0, 0))
-        mBitrateHistory.add(BitrateHistory(currentMillis, bitrate.toLong()))
+        mBitrateHistory.add(BitrateHistory(currentMillis, bitrate))
         mCurrentBitrate = bitrate
         mCurrentFps = mMaxFps
         runTask()
@@ -79,7 +79,7 @@ abstract class BitrateAdapter(context: Context) {
 
     fun stop() {
         if (mFullBitrate > 0) {
-            updateFps(mFullBitrate.toLong())
+            updateFps(mFullBitrate)
         }
         mCurrentBitrate = 0
         mStreamer = null

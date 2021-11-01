@@ -56,7 +56,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
-import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.remoteconfig.*
 import com.tokopedia.searchbar.data.HintData
@@ -203,16 +202,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initNavRevampAbTest() {
-        showOldToolbar = !isNavRevamp()
-    }
-
-    private fun isNavRevamp(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
+        showOldToolbar = false
     }
 
     private fun initInboxAbTest() {
