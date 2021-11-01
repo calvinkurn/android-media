@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.searchcategory
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
@@ -41,6 +42,9 @@ inline fun <reified T> String.jsonToObject(): T {
 
 fun Visitable<*>.assertOutOfCoverageDataView() {
     assertThat(this, instanceOf(TokoNowEmptyStateOocUiModel::class.java))
+
+    val tokoNowEmptyStateOocUiModel = this as TokoNowEmptyStateOocUiModel
+    assertThat(tokoNowEmptyStateOocUiModel.hostSource, shouldBe(SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH))
 }
 
 fun Visitable<*>.assertChooseAddressDataView() {
