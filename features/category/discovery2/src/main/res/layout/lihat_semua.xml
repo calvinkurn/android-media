@@ -94,7 +94,7 @@
                 tools:visibility="visible"
                 android:id="@+id/timer_lihat_semua"
                 app:layout_constraintHorizontal_bias="0"
-                app:timer_unify_single_type="hour"
+                app:timer_unify_single_type="auto"
                 android:layout_marginLeft="@dimen/dp_8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/sub_header_tv"
