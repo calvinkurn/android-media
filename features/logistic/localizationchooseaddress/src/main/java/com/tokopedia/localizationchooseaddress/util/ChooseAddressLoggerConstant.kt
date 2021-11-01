@@ -3,7 +3,7 @@ package com.tokopedia.localizationchooseaddress.util
 class ChooseAddressLoggerConstant {
 
     object Tag {
-        const val LOCALIZING_ADDRESS_ERROR = "localizing_address_error"
+        const val LOCALIZING_ADDRESS_ERROR = "LOCALIZING_ADDRESS_ERROR"
     }
 
     object Key {
