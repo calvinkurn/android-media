@@ -21,8 +21,7 @@ class OrderHistoryModuleStub {
 
     @OrderHistoryScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
     @OrderHistoryScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository

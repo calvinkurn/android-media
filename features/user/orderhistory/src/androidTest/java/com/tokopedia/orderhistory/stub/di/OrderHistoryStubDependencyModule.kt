@@ -1,6 +1,7 @@
 package com.tokopedia.orderhistory.stub.di
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.di.OrderHistoryScope
 import com.tokopedia.orderhistory.stub.common.GraphqlUseCaseStub
@@ -8,6 +9,7 @@ import com.tokopedia.orderhistory.stub.usecase.GetProductOrderHistoryUseCaseStub
 import com.tokopedia.orderhistory.usecase.GetProductOrderHistoryUseCase
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
 
 
 @Module
@@ -24,10 +26,10 @@ class OrderHistoryStubDependencyModule {
     @OrderHistoryScope
     @Provides
     fun provideGetProductOrderHistoryUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<ChatHistoryProductResponse>,
-            dispatchers: CoroutineDispatchers
+            repository: GraphqlRepository,
+            dispatchers: CoroutineDispatcher
     ): GetProductOrderHistoryUseCaseStub {
-        return GetProductOrderHistoryUseCaseStub(gqlUseCase, dispatchers)
+        return GetProductOrderHistoryUseCaseStub(repository, dispatchers)
     }
 
 }

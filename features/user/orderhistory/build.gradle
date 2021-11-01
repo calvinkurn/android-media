@@ -87,6 +87,9 @@ dependencies {
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+
 }
 
 project.ext {
