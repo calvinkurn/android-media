@@ -9,8 +9,9 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_manage_violation_item_number"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:minWidth="20dp"
+        android:minHeight="20dp"
         android:background="@drawable/bg_product_manage_violation_number"
         android:paddingVertical="1dp"
         android:paddingHorizontal="6dp"
