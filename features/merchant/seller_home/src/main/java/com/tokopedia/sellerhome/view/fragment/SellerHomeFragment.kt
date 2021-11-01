@@ -425,6 +425,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showRecommendationWidgetCoachMark(view: View) {
+        recommendationWidgetView = view
         val coachMarkItems by getCoachMarkItems()
 
         if (coachMarkItems.isNotEmpty()) {
@@ -1708,7 +1709,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun setRecommendationCoachMarkEligibility() {
         val isEligibleShowRecommendationCoachMark =
-            pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
         if (isEligibleShowRecommendationCoachMark) {
             scrollToRecommendationWidget()
         }
