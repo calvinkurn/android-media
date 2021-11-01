@@ -68,7 +68,6 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bottomSheetTitle.text = context?.getString(R.string.shop_page_label_purchase_tnc)
         initView(view)
         observeLiveData()
         arguments?.let {
