@@ -83,7 +83,7 @@ class CampaignStockViewModel @Inject constructor(
 
     fun getStockAllocation(
         productIds: List<String>,
-        isProductBundling: Boolean = false
+        isProductBundling: Boolean
     ) {
         if (productIds.isNotEmpty()) {
             productId = productIds.first()
@@ -364,7 +364,7 @@ class CampaignStockViewModel @Inject constructor(
     private suspend fun getNonVariantResult(
         productId: String,
         stockAllocationData: GetStockAllocationData,
-        isProductBundling: Boolean = false
+        isProductBundling: Boolean
     ): NonVariantStockAllocationResult {
         val warehouseId = getWarehouseId(userSession.shopId)
         otherCampaignStockDataUseCase.params =
@@ -401,7 +401,7 @@ class CampaignStockViewModel @Inject constructor(
     private suspend fun getVariantResult(
         productId: String,
         stockAllocationData: GetStockAllocationData,
-        isProductBundling: Boolean = false
+        isProductBundling: Boolean
     ): VariantStockAllocationResult {
         campaignReservedStock = stockAllocationData.summary.reserveStock.toIntOrZero()
 
@@ -442,9 +442,9 @@ class CampaignStockViewModel @Inject constructor(
                 }?.stock.toIntOrZero()
                 variant.copy(stock = stock)
             }
-            val getVariantResult = it.copy(variants = variants)
+            val variantResult = it.copy(variants = variants)
             val variantsEditResult =
-                ProductManageVariantMapper.mapVariantsToEditResult(productId, getVariantResult)
+                ProductManageVariantMapper.mapVariantsToEditResult(productId, variantResult)
             editVariantResult = variantsEditResult
             variantList = variants
         }

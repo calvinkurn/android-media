@@ -10,12 +10,13 @@ class AmplificationUseCase @Inject constructor(
         private val rawQuery: String
 ) {
 
-    fun execute(onSuccess: (response: AmplificationNotifier) -> Unit) {
+    fun execute(onSuccess: (response: AmplificationNotifier) -> Unit,
+                onError : (Throwable) -> Unit) {
         useCase.apply {
             setTypeClass(AmplificationNotifier::class.java)
             setRequestParams(RequestParams.EMPTY.parameters)
             setGraphqlQuery(rawQuery)
-            execute(onSuccess, {})
+            execute(onSuccess, onError)
         }
     }
 

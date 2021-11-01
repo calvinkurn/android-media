@@ -162,6 +162,7 @@ object TopadsFeedXMapper {
                 star = productRating,
                 totalSold = countSold.toIntOrNull()?:0,
                 discountFmt = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
+                priceDiscountFmt = priceFormat
                     )
         }
     }

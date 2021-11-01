@@ -363,14 +363,14 @@ class PlayEtalasePickerFragment @Inject constructor(
      * Observe
      */
     private fun observeSelectedProducts() {
-        viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSelectedProducts.observe(viewLifecycleOwner) {
             bottomActionView.setupBottomActionWithProducts(it)
             selectedProductPage.onSelectedProductsUpdated(it)
-        })
+        }
     }
 
     private fun observeUploadProduct() {
-        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner) {
             when (it) {
                 NetworkResult.Loading -> {
                     bottomActionView.setLoading(true)
@@ -381,7 +381,7 @@ class PlayEtalasePickerFragment @Inject constructor(
                     if (data != null) onUploadSuccess()
                 }
             }
-        })
+        }
     }
 
     /**

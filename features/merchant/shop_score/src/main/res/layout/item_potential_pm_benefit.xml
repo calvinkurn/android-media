@@ -20,7 +20,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
-        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginStart="12dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/iv_potential_pm_benefit"

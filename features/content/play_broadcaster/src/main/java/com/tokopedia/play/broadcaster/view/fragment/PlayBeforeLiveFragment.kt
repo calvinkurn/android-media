@@ -61,7 +61,7 @@ import javax.inject.Inject
  */
 class PlayBeforeLiveFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatchers,
+        dispatcher: CoroutineDispatchers,
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment() {
 
@@ -219,8 +219,6 @@ class PlayBeforeLiveFragment @Inject constructor(
             openEditCoverImagePage()
             analytic.clickEditCoverOnFinalSetupPage()
         }
-
-        btnStartLive.setMaxDurationDescription(prepareViewModel.maxDurationDesc)
         ivShareLink.setOnClickListener {
             doCopyShareLink()
             analytic.clickShareIconOnFinalSetupPage()
@@ -228,6 +226,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun setupObserve() {
+        observeConfigInfo()
         observeFollowers()
         observeCreateChannel()
         observeProductList()
@@ -249,36 +248,44 @@ class PlayBeforeLiveFragment @Inject constructor(
     /**
      * Observe
      */
+    private fun observeConfigInfo() {
+        parentViewModel.observableConfigInfo.observe(viewLifecycleOwner) {
+            if (it is NetworkResult.Success) {
+                btnStartLive.setMaxDurationDescription(it.data.durationConfig.maxDurationDesc)
+            }
+        }
+    }
+
     private fun observeFollowers() {
-        prepareViewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
+        prepareViewModel.observableFollowers.observe(viewLifecycleOwner) {
             followerView.setFollowersModel(it)
-        })
+        }
     }
 
     private fun observeProductList() {
-        parentViewModel.observableProductList.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableProductList.observe(viewLifecycleOwner) {
             tvSelectedProduct.text = getString(R.string.play_before_live_selected_product, it.size)
-        })
+        }
     }
 
     private fun observeCover() {
-        parentViewModel.observableCover.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableCover.observe(viewLifecycleOwner) {
             when (val croppedCover = it.croppedCover) {
                 is CoverSetupState.Cropped -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
                 is CoverSetupState.Cropping.Image -> ivImagePreview.loadImageRounded(croppedCover.coverImage.toString())
                 else -> ivImagePreview.setImageDrawable(null)
             }
-        })
+        }
     }
 
     private fun observeTitle() {
-        parentViewModel.observableTitle.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableTitle.observe(viewLifecycleOwner) {
             tvChannelTitle.text = it.title
-        })
+        }
     }
 
     private fun observeCreateChannel() {
-        prepareViewModel.observableCreateLiveStream.observe(viewLifecycleOwner, Observer {
+        prepareViewModel.observableCreateLiveStream.observe(viewLifecycleOwner) {
             when (it) {
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> parentViewModel.startLiveStream(withTimer = false)
@@ -288,7 +295,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
             }
-        })
+        }
     }
 
     private fun observeLiveInfo() {
@@ -296,9 +303,9 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun observeBroadcastSchedule() {
-        parentViewModel.observableBroadcastSchedule.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableBroadcastSchedule.observe(viewLifecycleOwner) {
             broadcastScheduleView.setSchedule(it)
-        })
+        }
     }
 
     private fun observeDeleteBroadcastSchedule() {
@@ -346,7 +353,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun populateSavedData(savedInstanceState: Bundle) {
         val setupDataString = savedInstanceState.getString(KEY_SETUP_DATA)
-        val setupData = GsonSingleton.instance.fromJson<SerializableHydraSetupData>(setupDataString, SerializableHydraSetupData::class.java)
+        val setupData = GsonSingleton.instance.fromJson(setupDataString, SerializableHydraSetupData::class.java)
         setupData?.let { parentViewModel.setHydraSetupData(setupData) }
     }
 
@@ -379,6 +386,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                 actionLabel = getString(R.string.play_ok),
                 actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
             )
+            else -> {}
         }
         analytic.viewErrorOnFinalSetupPage(state.error.reason)
         if (GlobalConfig.DEBUG) {

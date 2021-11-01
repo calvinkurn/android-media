@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout">
+
+    <com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
+        android:id="@+id/cl_reply_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_topchat_27"
+        app:layout_constraintBottom_toTopOf="@+id/view_border_radius"
+        app:layout_constraintEnd_toEndOf="@+id/fxChat"
+        app:layout_constraintStart_toStartOf="@+id/fxChat"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+        android:id="@+id/fxChat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/dp_topchat_10"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/dp_topchat_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</merge>

@@ -61,9 +61,6 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
-import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME
-import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME2
-import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
@@ -734,14 +731,7 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun isNavOld(): Boolean {
-        return try {
-            getAbTestPlatform().getString(AB_TEST_EXP_NAME, getAbTestPlatform().getString(AB_TEST_EXP_NAME2, AB_TEST_VARIANT_OLD)) == AB_TEST_VARIANT_OLD
-        } catch (e: Exception) {
-            e.printStackTrace()
-            true
-        }
-    }
+    private fun isNavOld(): Boolean = false
 
     private fun getAbTestPlatform(): AbTestPlatform {
         val remoteConfigInstance = RemoteConfigInstance(activity?.application)
@@ -795,19 +785,13 @@ class TokoNowHomeFragment: Fragment(),
             removeAllScrollListener()
 
             when(it) {
-                is Success -> {
-                    onSuccessGetHomeLayout(it.data)
-                }
-                is Fail -> {
-                    showFailedToFetchData()
-                    logHomeLayoutError(it.throwable)
-                }
+                is Success -> onSuccessGetHomeLayout(it.data)
+                is Fail -> onFailedGetHomeLayout(it.throwable)
             }
 
             rvHome?.post {
                 addScrollListener()
                 resetSwipeLayout()
-                stickyLoginLoadContent()
             }
         }
 
@@ -1009,6 +993,12 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
+    private fun onFailedGetHomeLayout(throwable: Throwable) {
+        showFailedToFetchData()
+        stickyLoginLoadContent()
+        logHomeLayoutError(throwable)
+    }
+
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         loadHeaderBackground()
@@ -1025,11 +1015,14 @@ class TokoNowHomeFragment: Fragment(),
     private fun onHideHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         hideHeaderBackground()
+        stickyLoginLoadContent()
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         showHeaderBackground()
+        stickyLoginLoadContent()
+        getProductAddToCartQuantity()
     }
 
     private fun checkAddressDataAndServiceArea() {
@@ -1353,6 +1346,7 @@ class TokoNowHomeFragment: Fragment(),
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
+            isThrowOnError = false
             if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                 ogImageUrl = shareModel.ogImgUrl
             }
