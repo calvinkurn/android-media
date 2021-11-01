@@ -82,6 +82,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         configAnimation()
     }
 
+    @SuppressLint("WrongConstant")
     override fun bind(element: AddToCartDoneRecommendationCarouselDataModel) {
         try{
             with(itemView) {
