@@ -29,7 +29,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -41,12 +40,14 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
@@ -114,6 +115,9 @@ import com.tokopedia.filter.common.helper.getFilterParams
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.common.helper.isSortHasDefaultValue
+import com.tokopedia.iris.Iris
+import com.tokopedia.search.result.presentation.model.LastFilterDataView
+import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.utils.removeQuickFilterElevation
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -154,7 +158,8 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchNavigationClickListener,
         TopAdsImageViewListener,
         ChooseAddressListener,
-        BannerListener {
+        BannerListener,
+        LastFilterListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -182,6 +187,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     var presenter: ProductListSectionContract.Presenter? = null
         @Inject set
+
+    @Inject
+    lateinit var iris: Iris
 
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
@@ -353,6 +361,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 topAdsImageViewListener = this,
                 chooseAddressListener = this,
                 bannerListener = this,
+                lastFilterListener = this,
                 topAdsConfig = topAdsConfig,
         )
 
@@ -1009,12 +1018,14 @@ class ProductListFragment: BaseDaggerFragment(),
         return filterController.getFilterViewState(option.uniqueId)
     }
 
-    override fun onQuickFilterSelected(option: Option) {
+    override fun onQuickFilterSelected(filter: Filter, option: Option) {
         val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
         val queryParams = filterController.getParameter().addFilterOrigin()
         refreshSearchParameter(queryParams)
+
+        updateLastFilter()
 
         reloadData()
 
@@ -1291,22 +1302,16 @@ class ProductListFragment: BaseDaggerFragment(),
         activity?.finish()
     }
 
-    override fun sendTrackingForNoResult(resultCode: String?, alternativeKeyword: String?, keywordProcess: String?) {
-        val searchParameter = searchParameter ?: return
+    @Suppress("UNCHECKED_CAST")
+    override val filterParamString: String
+        get() {
+            val searchParameterMap = (searchParameter?.getSearchParameterHashMap() ?: mapOf())
+                as Map<String?, String?>
 
-        @Suppress("UNCHECKED_CAST")
-        val searchParameterHashMap = searchParameter.getSearchParameterHashMap() as Map<String?, String?>
-        val filterMapParameter = getFilterParams(searchParameterHashMap)
+            val filterParam = getFilterParams(searchParameterMap)
 
-        SearchTracking.eventSearchNoResult(
-                queryKey,
-                screenName,
-                filterMapParameter,
-                alternativeKeyword,
-                resultCode,
-                keywordProcess
-        )
-    }
+            return UrlParamUtils.generateUrlParamString(filterParam)
+        }
 
     override fun setDefaultLayoutType(defaultView: Int) {
         when (defaultView) {
@@ -1504,18 +1509,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 option.title,
                 getUserId()
         )
-    }
-
-    override fun showPowerMerchantProPopUp() {
-        context?.let {
-            val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
-            dialog.setTitle(getString(R.string.search_power_merchant_pro_title))
-            dialog.setDescription(getString(R.string.search_power_merchant_pro_desc))
-            dialog.setPrimaryCTAText(getString(R.string.search_power_merchant_pro_button_text))
-            dialog.setPrimaryCTAClickListener { dialog.dismiss() }
-            dialog.setImageUrl(SearchConstant.ImageUrl.POWER_MERCHANT_PRO_ILLUSTRATION_URL)
-            dialog.show()
-        }
     }
 
     override val abTestRemoteConfig: RemoteConfig?
@@ -1803,6 +1796,8 @@ class ProductListFragment: BaseDaggerFragment(),
 
         refreshSearchParameter(applySortFilterModel.mapParameter)
 
+        updateLastFilter()
+
         reloadData()
     }
 
@@ -1816,6 +1811,20 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun applyFilter(applySortFilterModel: ApplySortFilterModel) {
         FilterTracking
                 .eventApplyFilter(filterTrackingData, screenName, applySortFilterModel.selectedFilterMapParameter)
+    }
+
+    private fun updateLastFilter() {
+        val mapParameter = searchParameter?.getSearchParameterMap() ?: mapOf()
+        val appliedSort = presenter?.dynamicFilterModel?.getAppliedSort(mapParameter)
+
+        val savedOptionFromFilter = filterController.getActiveSavedOptionList()
+        val savedOptionFromSort = appliedSort?.let { listOf(SavedOption.create(it)) } ?: listOf()
+        val savedOptionList = savedOptionFromFilter + savedOptionFromSort
+
+        presenter?.updateLastFilter(
+            mapParameter,
+            savedOptionList,
+        )
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {
@@ -1906,15 +1915,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun getFragment() = this
 
-    override val isChooseAddressWidgetEnabled: Boolean
-        get() = context?.let {
-            try {
-                ChooseAddressUtils.isRollOutUser(it)
-            } catch (e: Throwable) {
-                false
-            }
-        } ?: false
-
+    override val isChooseAddressWidgetEnabled: Boolean = true
 
     override val chooseAddressData: LocalCacheModel
         get() = context?.let {
@@ -1975,5 +1976,49 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String) {
         SearchTracking.trackEventClickDynamicProductCarouselSeeMore(type, queryKey, dynamicProductCarousel.keyword)
+    }
+
+    override fun onImpressedLastFilter(lastFilterDataView: LastFilterDataView) {
+        SearchTracking.trackEventLastFilterImpression(
+            iris,
+            queryKey,
+            lastFilterDataView.sortFilterParamsString(),
+            getDimension90()
+        )
+    }
+
+    private fun getDimension90(): String =
+        Dimension90Utils.getDimension90(getSearchParameterMap())
+
+    private fun getSearchParameterMap(): Map<String, Any> =
+        searchParameter?.getSearchParameterMap() ?: mapOf()
+
+    override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
+        SearchTracking.trackEventLastFilterClickApply(
+            queryKey,
+            lastFilterDataView.sortFilterParamsString(),
+            getDimension90(),
+        )
+
+        filterController.setFilter(lastFilterDataView.filterOptions())
+
+        val queryParams = filterController.getParameter() + lastFilterDataView.sortParameter()
+        refreshSearchParameter(queryParams)
+
+        reloadData()
+    }
+
+    override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
+        SearchTracking.trackEventLastFilterClickClose(
+            queryKey,
+            lastFilterDataView.sortFilterParamsString(),
+            getDimension90(),
+        )
+
+        val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()
+
+        productListAdapter?.removeLastFilterWidget()
+
+        presenter?.closeLastFilter(searchParameterMap)
     }
 }

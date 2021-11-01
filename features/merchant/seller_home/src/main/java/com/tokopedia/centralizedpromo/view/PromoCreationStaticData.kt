@@ -14,7 +14,8 @@ object PromoCreationStaticData {
         resourceProvider: CentralizedPromoResourceProvider,
         broadcastChatExtra: String,
         broadcastChatUrl: String,
-        freeShippingEnabled: Boolean
+        freeShippingEnabled: Boolean,
+        isVoucherCashbackEligible: Boolean
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
             PromoCreationUiModel(
@@ -36,7 +37,11 @@ object PromoCreationStaticData {
                 resourceProvider.getPromoCreationTitleMerchantVoucher(),
                 resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
                 "",
-                ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER
+                if (isVoucherCashbackEligible) {
+                    ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER
+                } else {
+                    ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                }
             )
         )
 

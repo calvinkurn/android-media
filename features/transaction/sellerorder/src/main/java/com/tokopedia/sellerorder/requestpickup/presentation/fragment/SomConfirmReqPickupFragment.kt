@@ -130,7 +130,9 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                         it.throwable,
                         ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA
                     )
-                    Utils.showToasterError(it.throwable.localizedMessage.orEmpty(), view)
+                    context?.run {
+                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                    }
                 }
             }
         }
@@ -152,7 +154,9 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                         it.throwable,
                         ERROR_PROCESSING_REQUEST_PICKUP
                     )
-                    Utils.showToasterError(it.throwable.localizedMessage.orEmpty(), view)
+                    context?.run {
+                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                    }
                 }
             }
         }

@@ -8,7 +8,6 @@ import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
 import com.tokopedia.home.beranda.data.datasource.remote.*
 import com.tokopedia.home.beranda.di.HomeScope
 import com.tokopedia.home.beranda.domain.interactor.*
-import com.tokopedia.home.common.HomeAceApi
 import dagger.Module
 import dagger.Provides
 
@@ -44,8 +43,4 @@ class HomeDataSourceModule {
     @HomeScope
     @Provides
     fun provideHomeDefaultDataSource() = HomeDefaultDataSource()
-
-    @HomeScope
-    @Provides
-    fun provideGeolocationRemoteDataSource(homeAceApi: HomeAceApi) = GeolocationRemoteDataSource(homeAceApi)
 }

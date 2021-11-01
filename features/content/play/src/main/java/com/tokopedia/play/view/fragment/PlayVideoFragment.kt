@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -50,9 +50,13 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.view.uimodel.PlayCastState
+import com.tokopedia.play.view.uimodel.recom.PlayerType
+import com.tokopedia.play.view.uimodel.recom.isCasting
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -319,6 +323,7 @@ class PlayVideoFragment @Inject constructor(
         observeStatusInfo()
         observePiPEvent()
         observeOnboarding()
+        observeCastState()
     }
 
     private fun showVideoThumbnail() {
@@ -341,11 +346,12 @@ class PlayVideoFragment @Inject constructor(
 
     //region observe
     private fun observeVideoMeta() {
-        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
             videoView.setOrientation(orientation, meta.videoStream.orientation)
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
-        })
+            videoLoadingViewOnStateChanged(videoPlayer = meta.videoPlayer)
+        }
     }
 
     private fun observeVideoProperty() {
@@ -377,14 +383,31 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner) {
             if (it.peekContent() == PiPState.Stop) removePiP()
-        })
+        }
     }
 
     private fun observeOnboarding() {
         playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
             if (!orientation.isLandscape) onboardingView?.showAnimated()
+        })
+    }
+
+    private fun observeCastState() {
+        playViewModel.observableCastState.observe(viewLifecycleOwner, {
+            when(it.currentState) {
+                PlayCastState.CONNECTING -> videoLoadingView.showLoadingCasting()
+                PlayCastState.CONNECTED -> videoLoadingView.showCasting()
+                PlayCastState.NO_DEVICE_AVAILABLE,
+                PlayCastState.NOT_CONNECTED-> {
+                    if(it.previousState == PlayCastState.CONNECTING || it.previousState == PlayCastState.CONNECTED) {
+                        videoLoadingView.hide()
+                        Toaster.toasterCustomBottomHeight = 100
+                        Toaster.build(view = requireView(), text = getString(R.string.play_disconnect_chromecast)).show()
+                    }
+                }
+            }
         })
     }
     //endregion
@@ -435,17 +458,26 @@ class PlayVideoFragment @Inject constructor(
         when (videoPlayer) {
             is PlayVideoPlayerUiModel.YouTube, PlayVideoPlayerUiModel.Unknown -> videoView.hide()
             is PlayVideoPlayerUiModel.General -> {
-                if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoView.setPlayer(videoPlayer.exoPlayer)
+                if (videoPlayer is PlayVideoPlayerUiModel.General.Complete) {
+                    when (val playerType = videoPlayer.playerType) {
+                        PlayerType.Client -> {
+                            videoView.setPlayer(videoPlayer.exoPlayer)
+                            videoView.hideThumbnail()
+                            handleVideoStateChanged(state)
+                        }
+                        is PlayerType.Cast -> videoView.showThumbnail(playerType.coverUrl)
+                    }
+                }
 
                 videoAnalyticHelper.onNewVideoState(state)
                 videoView.show()
-                handleVideoStateChanged(state)
             }
         }
     }
 
     private fun videoLoadingViewOnStateChanged(
             state: PlayViewerVideoState = playViewModel.viewerVideoState,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
         if (isFreezeOrBanned) {
@@ -453,10 +485,16 @@ class PlayVideoFragment @Inject constructor(
             return
         }
 
+        if (videoPlayer.isCasting()) {
+            videoLoadingView.showCasting()
+            return
+        }
+
         when (state) {
             PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
             is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = state.bufferSource)
             PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
+            PlayViewerVideoState.Unknown -> videoLoadingView.show(source = BufferSource.Unknown)
         }
     }
 

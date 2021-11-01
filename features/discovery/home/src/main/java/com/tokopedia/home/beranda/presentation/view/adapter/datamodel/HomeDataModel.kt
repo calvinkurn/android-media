@@ -153,8 +153,9 @@ data class HomeDataModel(
     }
 
     fun evaluateChooseAddressData() {
-        val homeHeaderOvoDataModel = _list.find { visitable -> visitable is HomeHeaderOvoDataModel }
-        val headerIndex = _list.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
+        val processList = _list.copy()
+        val homeHeaderOvoDataModel = processList.find { visitable -> visitable is HomeHeaderOvoDataModel }
+        val headerIndex = processList.indexOfFirst { visitable -> visitable is HomeHeaderOvoDataModel }
         (homeHeaderOvoDataModel as? HomeHeaderOvoDataModel)?.let {
             it.needToShowChooseAddress = homeChooseAddressData.isActive
             _list[headerIndex] = homeHeaderOvoDataModel

@@ -3,10 +3,10 @@ package com.tokopedia.tokopedianow.searchcategory.data
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.UrlParamUtils.generateUrlParamString
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse
-import com.tokopedia.tokopedianow.home.domain.query.GetRecentPurchase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetRecentPurchaseUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetRecentPurchaseUseCase.Companion.PARAM_CAT_ID
+import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
+import com.tokopedia.tokopedianow.home.domain.query.GetRepurchaseWidget
+import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase.Companion.PARAM_CAT_ID
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.CategoryFilterModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.DynamicChannelModel
@@ -45,21 +45,21 @@ internal fun createDynamicChannelRequest(type: String) = GraphqlRequest(
         mapOf(TYPE to type)
 )
 
-internal fun createRecentPurchaseRequest(params: Map<String, Any>): GraphqlRequest {
+internal fun createRepurchaseWidgetRequest(params: Map<String, Any>): GraphqlRequest {
     val warehouseID = params[WAREHOUSE_ID]?.toString() ?: ""
-    val queryParam = createRecentPurchaseQueryParam(params)
+    val queryParam = createRepurchaseQueryParam(params)
 
     return GraphqlRequest(
-        GetRecentPurchase.QUERY,
-        GetRecentPurchaseResponse::class.java,
+        GetRepurchaseWidget.QUERY,
+        GetRepurchaseResponse::class.java,
         mapOf(
-            GetRecentPurchaseUseCase.PARAM_WAREHOUSE_ID to warehouseID,
-            GetRecentPurchaseUseCase.PARAM_QUERY_PARAM to queryParam,
+            GetRepurchaseWidgetUseCase.PARAM_WAREHOUSE_ID to warehouseID,
+            GetRepurchaseWidgetUseCase.PARAM_QUERY_PARAM to queryParam,
         )
     )
 }
 
-private fun createRecentPurchaseQueryParam(params: Map<String, Any>): String {
+private fun createRepurchaseQueryParam(params: Map<String, Any>): String {
     val categoryID = params[CATEGORY_ID]?.toString() ?: ""
 
     val queryParamList = listOf(

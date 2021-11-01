@@ -10,6 +10,7 @@ import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.robot.Robot
 import com.tokopedia.play.robot.RobotWithValue
+import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
@@ -71,39 +72,37 @@ class PlayViewModelRobot(
         private val repo: PlayViewerRepository,
         playAnalytic: PlayNewAnalytic,
         timerFactory: TimerFactory,
+        castPlayerHelper: CastPlayerHelper
 ) : Robot {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
 
-    val viewModel: PlayViewModel
-
-    init {
-        viewModel = PlayViewModel(
-            playVideoBuilder,
-            videoStateProcessorFactory,
-            channelStateProcessorFactory,
-            videoBufferGovernorFactory,
-            getChannelStatusUseCase,
-            getSocketCredentialUseCase,
-            getReportSummariesUseCase,
-            getProductTagItemsUseCase,
-            trackProductTagBroadcasterUseCase,
-            trackVisitChannelBroadcasterUseCase,
-            playChannelReminderUseCase,
-            playSocketToModelMapper,
-            playUiModelMapper,
-            userSession,
-            dispatchers,
-            remoteConfig,
-            playPreference,
-            videoLatencyPerformanceMonitoring,
-            playChannelWebSocket,
-            playChannelSSE,
-            repo,
-            playAnalytic,
-            timerFactory
-        )
-    }
+    val viewModel: PlayViewModel = PlayViewModel(
+        playVideoBuilder,
+        videoStateProcessorFactory,
+        channelStateProcessorFactory,
+        videoBufferGovernorFactory,
+        getChannelStatusUseCase,
+        getSocketCredentialUseCase,
+        getReportSummariesUseCase,
+        getProductTagItemsUseCase,
+        trackProductTagBroadcasterUseCase,
+        trackVisitChannelBroadcasterUseCase,
+        playChannelReminderUseCase,
+        playSocketToModelMapper,
+        playUiModelMapper,
+        userSession,
+        dispatchers,
+        remoteConfig,
+        playPreference,
+        videoLatencyPerformanceMonitoring,
+        playChannelWebSocket,
+        playChannelSSE,
+        repo,
+        playAnalytic,
+        timerFactory,
+        castPlayerHelper
+    )
 
     fun createPage(channelData: PlayChannelData) {
         viewModel.createPage(channelData)
@@ -252,6 +251,7 @@ fun givenPlayViewModelRobot(
         repo: PlayViewerRepository = mockk(relaxed = true),
         playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
         timerFactory: TimerFactory = mockk(relaxed = true),
+        castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
@@ -279,6 +279,7 @@ fun givenPlayViewModelRobot(
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,
+        castPlayerHelper = castPlayerHelper
     ).apply(fn)
 }
 

@@ -1,27 +1,22 @@
 package com.tokopedia.tokopedianow.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.data.model.response.Header
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper.mapToCategoryList
-import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoHistory
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoResult
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateOoc
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addServerErrorState
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeAllProduct
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setDateFilter
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.setSortFilter
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
+import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoHistory
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoResult
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateOoc
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addServerErrorState
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.setDateFilter
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.setSortFilter
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 
 fun createRepurchaseLoadingLayout(): List<Visitable<*>> {
     val layoutList: MutableList<Visitable<*>> = mutableListOf()
@@ -90,12 +85,14 @@ fun createEmptyStateLayout(id: String): List<Visitable<*>> {
     val layoutList: MutableList<Visitable<*>> = mutableListOf()
     when(id) {
         RepurchaseStaticLayoutId.EMPTY_STATE_NO_HISTORY_SEARCH -> {
+            val title = R.string.tokopedianow_repurchase_empty_state_no_history_title_search
             val description = R.string.tokopedianow_repurchase_empty_state_no_history_desc_search
-            layoutList.addEmptyStateNoHistory(description)
+            layoutList.addEmptyStateNoHistory(title, description)
         }
         RepurchaseStaticLayoutId.EMPTY_STATE_NO_HISTORY_FILTER -> {
+            val title = R.string.tokopedianow_repurchase_empty_state_no_history_title_filter
             val description = R.string.tokopedianow_repurchase_empty_state_no_history_desc_filter
-            layoutList.addEmptyStateNoHistory(description)
+            layoutList.addEmptyStateNoHistory(title, description)
         }
         RepurchaseStaticLayoutId.EMPTY_STATE_OOC -> {
             layoutList.addEmptyStateOoc()

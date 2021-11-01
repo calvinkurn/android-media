@@ -20,12 +20,14 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil.clickTabLayoutPosition
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.mock.ShopPageAnalyticValidatorHomeTabMockResponseConfig
+import com.tokopedia.shop.mock.ShopPageMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
@@ -42,9 +44,6 @@ import org.junit.Rule
 import org.junit.Test
 
 
-/**
- * @author by yoasfs on 07/07/20
- */
 class ShopPageBuyerAnalyticTest {
 
     companion object {
@@ -68,8 +67,12 @@ class ShopPageBuyerAnalyticTest {
 
     @Before
     fun beforeTest() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB,
+                RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB
+        )
         gtmLogDBSource.deleteAll().toBlocking().first()
-        setupGraphqlMockResponse(ShopPageAnalyticValidatorHomeTabMockResponseConfig())
+        setupGraphqlMockResponse(ShopPageMockResponseConfig())
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
         val intent = Intent().apply {
             putExtra(SHOP_ID, SAMPLE_SHOP_ID)
@@ -163,6 +166,9 @@ class ShopPageBuyerAnalyticTest {
     }
 
     private fun testDisplayWidget() {
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withId(R.id.rvShopHomeMultiple)
+        )))
         Espresso.onView(AllOf.allOf(
                 withId(R.id.rvShopHomeMultiple),
                 isDisplayed())

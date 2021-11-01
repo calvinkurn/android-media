@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -32,6 +33,8 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
+import com.tokopedia.shop.score.common.plt.ShopPerformanceMonitoringContract
+import com.tokopedia.shop.score.common.plt.ShopScorePerformanceMonitoringListener
 import com.tokopedia.shop.score.databinding.FragmentShopPerformanceBinding
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
@@ -44,7 +47,7 @@ import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerforman
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -52,7 +55,7 @@ import kotlin.collections.ArrayList
 
 
 class ShopPerformancePageFragment : BaseDaggerFragment(),
-    ShopPerformanceListener {
+    ShopPerformanceListener, ShopPerformanceMonitoringContract {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -76,10 +79,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         )
     }
 
-    private val binding: FragmentShopPerformanceBinding? by viewBinding()
+    private var binding by autoClearedNullable<FragmentShopPerformanceBinding>()
 
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false
+
+    private var shopScorePerformanceMonitoringListener: ShopScorePerformanceMonitoringListener? = null
 
     private val shopScoreCoachMarkPrefs by lazy { context?.let { ShopScorePrefManager(it) } }
 
@@ -92,6 +97,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private var counterPenalty = 0L
     private var menu: Menu? = null
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        shopScorePerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -102,10 +112,13 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_shop_performance, container, false)
+        binding = FragmentShopPerformanceBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        startNetworkRequestPerformanceMonitoring()
+        stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
         setPageBackground()
         setupActionBar()
@@ -131,7 +144,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onBtnErrorStateClicked() {
-        loadData()
+        loadData(false)
         showPenaltyBadge()
     }
 
@@ -368,6 +381,37 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         bottomSheetProtectedParameter.show(childFragmentManager)
     }
 
+    override fun stopPreparePerformancePageMonitoring() {
+        shopScorePerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        shopScorePerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        shopScorePerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        shopScorePerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        binding?.rvShopPerformance?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                shopScorePerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                shopScorePerformanceMonitoringListener?.stopPerformanceMonitoring()
+                binding?.rvShopPerformance?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ShopScorePerformanceMonitoringListener? {
+        return if (context is ShopScorePerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
+    }
+
     private fun setPageBackground() {
         try {
             context?.let {
@@ -520,13 +564,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMark() {
-        coachMark?.isDismissed = false
-
-        binding?.rvShopPerformance?.post {
-            if (getCoachMarkItems().value.isNotEmpty()) {
-                coachMark?.showCoachMark(getCoachMarkItems().value)
+        try {
+            binding?.rvShopPerformance?.post {
+                coachMark?.isDismissed = false
+                if (getCoachMarkItems().value.isNotEmpty()) {
+                    coachMark?.showCoachMark(getCoachMarkItems().value)
+                }
             }
-        }
+        } catch (ignored: Exception) {}
     }
 
     private fun getPositionLastItemCoachMark(): Int? {
@@ -708,7 +753,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     impressMenuShopPerformance()
                 }
                 is Fail -> {
-                    shopPerformanceAdapter.hideLoading()
+                    hideLoading()
                     shopPerformanceAdapter.setShopPerformanceError(
                         ItemShopPerformanceErrorUiModel(
                             it.throwable
@@ -724,7 +769,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
             }
         }
-        loadData()
+        loadData(true)
     }
 
     private fun observeShopPerformancePage() {
@@ -732,6 +777,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             hideLoading()
             when (it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     shopPerformanceAdapter.setShopPerformanceData(it.data.first)
                     this.shopScoreWrapperResponse = it.data.second
                     val headerShopPerformanceUiModel =
@@ -771,25 +818,28 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun onSwipeRefreshShopPerformance() {
         binding?.shopPerformanceSwipeRefresh?.setOnRefreshListener {
-            loadData()
+            loadData(false)
             showPenaltyBadge()
             coachMark?.dismissCoachMark()
         }
     }
 
-    private fun loadData() {
-        shopPerformanceAdapter.clearAllElements()
+    private fun loadData(isFirstLoad: Boolean) {
         showLoading()
-        viewModel.getShopInfoPeriod()
+        viewModel.getShopInfoPeriod(isFirstLoad)
     }
 
     private fun showLoading() {
-        shopPerformanceAdapter.showLoading()
+        shopPerformanceAdapter.run {
+            removeShopPerformanceData()
+            removeShopPerformanceError()
+            setShopPerformanceLoading(LoadingModel())
+        }
         binding?.shopPerformanceSwipeRefresh?.isRefreshing = false
     }
 
     private fun hideLoading() {
-        shopPerformanceAdapter.hideLoading()
+        shopPerformanceAdapter.removeShopPerformanceLoading()
     }
 
     private fun setupActionBar() {

@@ -6,6 +6,7 @@ import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.robot.Robot
+import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
@@ -35,13 +36,13 @@ import kotlinx.coroutines.launch
  * Created by jegul on 10/02/21
  */
 class PlayViewModelRobot2(
-    private val playVideoBuilder: PlayVideoWrapper.Builder,
+    playVideoBuilder: PlayVideoWrapper.Builder,
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
     getChannelStatusUseCase: GetChannelStatusUseCase,
     getSocketCredentialUseCase: GetSocketCredentialUseCase,
-    private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    getReportSummariesUseCase: GetReportSummariesUseCase,
     getProductTagItemsUseCase: GetProductTagItemsUseCase,
     trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
@@ -55,40 +56,38 @@ class PlayViewModelRobot2(
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
     playChannelWebSocket: PlayChannelWebSocket,
     playChannelSSE: PlayChannelSSE,
-    private val repo: PlayViewerRepository,
+    repo: PlayViewerRepository,
     playAnalytic: PlayNewAnalytic,
     timerFactory: TimerFactory,
+    castPlayerHelper: CastPlayerHelper
 ) : Robot {
 
-    val viewModel: PlayViewModel
-
-    init {
-        viewModel = PlayViewModel(
-            playVideoBuilder,
-            videoStateProcessorFactory,
-            channelStateProcessorFactory,
-            videoBufferGovernorFactory,
-            getChannelStatusUseCase,
-            getSocketCredentialUseCase,
-            getReportSummariesUseCase,
-            getProductTagItemsUseCase,
-            trackProductTagBroadcasterUseCase,
-            trackVisitChannelBroadcasterUseCase,
-            playChannelReminderUseCase,
-            playSocketToModelMapper,
-            playUiModelMapper,
-            userSession,
-            dispatchers,
-            remoteConfig,
-            playPreference,
-            videoLatencyPerformanceMonitoring,
-            playChannelWebSocket,
-            playChannelSSE,
-            repo,
-            playAnalytic,
-            timerFactory,
-        )
-    }
+    val viewModel: PlayViewModel = PlayViewModel(
+        playVideoBuilder,
+        videoStateProcessorFactory,
+        channelStateProcessorFactory,
+        videoBufferGovernorFactory,
+        getChannelStatusUseCase,
+        getSocketCredentialUseCase,
+        getReportSummariesUseCase,
+        getProductTagItemsUseCase,
+        trackProductTagBroadcasterUseCase,
+        trackVisitChannelBroadcasterUseCase,
+        playChannelReminderUseCase,
+        playSocketToModelMapper,
+        playUiModelMapper,
+        userSession,
+        dispatchers,
+        remoteConfig,
+        playPreference,
+        videoLatencyPerformanceMonitoring,
+        playChannelWebSocket,
+        playChannelSSE,
+        repo,
+        playAnalytic,
+        timerFactory,
+        castPlayerHelper
+    )
 
     fun createPage(channelData: PlayChannelData) {
         viewModel.createPage(channelData)
@@ -104,6 +103,10 @@ class PlayViewModelRobot2(
 
     fun setLoggedIn(isUserLoggedIn: Boolean) {
         every { userSession.isLoggedIn } returns isUserLoggedIn
+    }
+
+    fun setUserId(userId: String) {
+        every { userSession.userId } returns userId
     }
 
     fun recordState(fn: PlayViewModelRobot2.() -> Unit): PlayViewerNewUiState {
@@ -179,6 +182,7 @@ fun createPlayViewModelRobot(
     repo: PlayViewerRepository = mockk(relaxed = true),
     playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     timerFactory: TimerFactory = mockk(relaxed = true),
+    castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
     fn: PlayViewModelRobot2.() -> Unit = {}
 ): PlayViewModelRobot2 {
     return PlayViewModelRobot2(
@@ -205,6 +209,6 @@ fun createPlayViewModelRobot(
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,
-
+        castPlayerHelper = castPlayerHelper
     ).apply(fn)
 }

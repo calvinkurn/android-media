@@ -58,7 +58,7 @@ class ItemDetailPerformanceViewHolder(
                 }
             }
             icItemPerformanceRight.setOnClickListener {
-                if (shopScore < SHOP_SCORE_NULL) {
+                if (shopScore == SHOP_SCORE_NULL) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(

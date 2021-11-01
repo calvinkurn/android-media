@@ -20,7 +20,6 @@
     <dimen name="pdp_dp_50">50dp</dimen>
     <dimen name="pdp_dp_96">96dp</dimen>
 
-    <dimen name="design_fab_image_size" tools:override="true">32dp</dimen>
     <dimen name="viewpager_next_item_visible">78dp</dimen>
     <dimen name="viewpager_current_item_horizontal_margin">84dp</dimen>
 </resources>

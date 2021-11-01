@@ -1,17 +1,13 @@
 package com.tokopedia.tkpd;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.customer_mid_app.R;
@@ -20,7 +16,7 @@ import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
-import com.tokopedia.loginregister.login.service.RegisterPushNotifService;
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -31,8 +27,6 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
-
-import io.embrace.android.embracesdk.Embrace;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -69,7 +63,6 @@ public class ConsumerSplashScreen extends SplashScreen {
             @Override
             public Boolean execute() {
                 initializationNewRelic();
-                initializationEmbrace();
                 CMPushNotificationManager.getInstance()
                         .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
 
@@ -92,17 +85,13 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
-    private void initializationEmbrace() {
-        Embrace.getInstance().start(this);
-    }
-
     private void syncFcmToken() {
         SyncFcmTokenService.Companion.startService(this);
     }
 
     private void registerPushNotif() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            RegisterPushNotifService.Companion.startService(getApplicationContext());
+            RegisterPushNotificationWorker.Companion.scheduleWorker(ConsumerSplashScreen.this.getApplicationContext());
         }
     }
 

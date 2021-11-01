@@ -11,10 +11,7 @@ import com.tokopedia.play.broadcaster.robot.andWhen
 import com.tokopedia.play.broadcaster.robot.thenVerify
 import com.tokopedia.play.broadcaster.testdouble.MockTitleDataStore
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
-import com.tokopedia.play.broadcaster.util.PlayBroadcasterResponseBuilder
-import com.tokopedia.play.broadcaster.util.TestDoubleModelBuilder
-import com.tokopedia.play.broadcaster.util.isEqualTo
-import com.tokopedia.play.broadcaster.util.isErrorType
+import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.every
@@ -72,13 +69,13 @@ class PlayTitleAndTagsViewModelTest {
         ).andWhen {
             getAddedTags()
         }.thenVerify {
-            it.isEqualTo(addedTags)
+            it.assertEqualTo(addedTags)
         }.andThen {
             toggleTag(recommendedTags.last())
         }.andWhen {
             getAddedTags()
         }.thenVerify {
-            it.isEqualTo((addedTags + recommendedTags.last()).toSet())
+            it.assertEqualTo((addedTags + recommendedTags.last()).toSet())
         }
     }
 
@@ -96,11 +93,11 @@ class PlayTitleAndTagsViewModelTest {
         ) {
             coEvery { mockTagsDataStore.uploadTags(any()) } returns false
         }.thenVerify {
-            mockTitleDataStore.isUploaded.isEqualTo(false)
+            mockTitleDataStore.isUploaded.assertEqualTo(false)
         }.andThen {
             finishSetup("title")
         }.thenVerify {
-            mockTitleDataStore.isUploaded.isEqualTo(false)
+            mockTitleDataStore.isUploaded.assertEqualTo(false)
         }
     }
 
@@ -118,11 +115,11 @@ class PlayTitleAndTagsViewModelTest {
         ) {
             coEvery { mockTagsDataStore.uploadTags(any()) } returns true
         }.thenVerify {
-            mockTitleDataStore.isUploaded.isEqualTo(false)
+            mockTitleDataStore.isUploaded.assertEqualTo(false)
         }.andThen {
             finishSetup("title")
         }.thenVerify {
-            mockTitleDataStore.isUploaded.isEqualTo(true)
+            mockTitleDataStore.isUploaded.assertEqualTo(true)
         }
     }
 
@@ -133,23 +130,23 @@ class PlayTitleAndTagsViewModelTest {
         ).andWhen {
             isTagValid("")
         }.thenVerify {
-            it.isEqualTo(false)
+            it.assertEqualTo(false)
         }.andWhen {
             isTagValid("a")
         }.thenVerify {
-            it.isEqualTo(false)
+            it.assertEqualTo(false)
         }.andWhen {
             isTagValid("abc")
         }.thenVerify {
-            it.isEqualTo(true)
+            it.assertEqualTo(true)
         }.andWhen {
             isTagValid(List(33){ "a"}.joinToString(""))
         }.thenVerify {
-            it.isEqualTo(false)
+            it.assertEqualTo(false)
         }.andWhen {
             isTagValid("h@lo")
         }.thenVerify {
-            it.isEqualTo(false)
+            it.assertEqualTo(false)
         }
     }
 
@@ -168,19 +165,19 @@ class PlayTitleAndTagsViewModelTest {
         }.andWhen {
             isTitleValid("")
         }.thenVerify {
-            it.isEqualTo(false)
+            it.assertEqualTo(false)
         }.andWhen {
             isTitleValid("a")
         }.thenVerify {
-            it.isEqualTo(true)
+            it.assertEqualTo(true)
         }.andWhen {
             isTitleValid("abcd")
         }.thenVerify {
-            it.isEqualTo(true)
+            it.assertEqualTo(true)
         }.andWhen {
             isTitleValid("abcde")
         }.thenVerify {
-            it.isEqualTo(false)
+            it.assertEqualTo(false)
         }
     }
 
@@ -201,7 +198,7 @@ class PlayTitleAndTagsViewModelTest {
         ).andWhen {
             getSavedTitle()
         }.thenVerify {
-            it.isEqualTo(savedTitle)
+            it.assertEqualTo(savedTitle)
         }
     }
 
