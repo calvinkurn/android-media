@@ -23,9 +23,9 @@ class AffiliatePortfolioViewModel@Inject constructor(
     fun createDefaultListForSm() {
         val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         tempList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
-        tempList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Instagram","",false)))
-        tempList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Tiktok","",false)))
-        tempList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Youtube","",false)))
+        tempList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Instagram","","Contoh: instagram.com/tokopedia",false)))
+        tempList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Tiktok","","Contoh: tiktok.com/tokopedia",false)))
+        tempList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Youtube","","Contoh: youtube.com/tokopedia",true)))
         tempList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media")))
         affiliatePortfolioData.value=tempList
     }

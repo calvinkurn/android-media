@@ -5,14 +5,14 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
-        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_24"
         android:layout_marginHorizontal="@dimen/dp_16"
         android:id="@+id/social_link_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:unify_text_field_message="Message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_text_field_input_type="text"
-        app:unify_text_field_label="Link Instagram" />
+        app:unify_text_field_input_type="text" />
 </androidx.constraintlayout.widget.ConstraintLayout>
