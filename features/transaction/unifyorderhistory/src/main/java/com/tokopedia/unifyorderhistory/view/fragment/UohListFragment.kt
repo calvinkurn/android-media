@@ -23,7 +23,9 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DEALS
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DIGITAL
@@ -421,6 +423,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         } else if (requestCode == EXTEND_ORDER_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 initialLoad()
+            }
+            val toasterMessage = data?.getStringExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_MESSAGE)
+            if (!toasterMessage.isNullOrBlank()) {
+                val toasterType = data.getIntExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE, Toaster.TYPE_NORMAL)
+                view?.let {
+                    Toaster.build(it, toasterMessage, type = toasterType)
+                }
             }
         }
     }
@@ -1734,8 +1743,14 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         RouteManager.route(context, applinkTrack)
                     }
                     button.actionType.equals(GQL_MP_EXTEND, true) -> {
-                        val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
-                        val intent = RouteManager.getIntentNoFallback(context, applinkTrack) ?: return
+                        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.orderUUID)
+                        val appLink = UriUtil.buildUriAppendParams(
+                                ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION,
+                                params
+                        )
+                        val intent = RouteManager.getIntentNoFallback(context, appLink)?.apply {
+                            putExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH, true)
+                        } ?: return
                         startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
                     }
                     button.actionType.equals(GQL_LS_FINISH, true) -> {
