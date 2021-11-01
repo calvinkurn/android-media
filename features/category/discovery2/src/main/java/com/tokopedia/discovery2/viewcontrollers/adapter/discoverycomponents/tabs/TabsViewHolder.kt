@@ -172,6 +172,22 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.fetchDynamicTabData()
     }
 
+    override fun onL2Expanded(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickExpandNavigationAccordion(id)
+    }
+
+    override fun onL2Collapsed(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCollapseNavigationAccordion(id)
+    }
+
+    override fun onL3Clicked(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCategoryOption(id)
+    }
+
+    override fun onL2Clicked(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCategoryOption(id)
+    }
+
     override fun onBottomSheetClosed() {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryTreeCloseClick(tabsViewModel.isUserLoggedIn())
     }

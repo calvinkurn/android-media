@@ -21,6 +21,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         const val ENCODING_UTF_8 = "UTF-8"
         const val BANNED = 1
         const val INDEX_ONE = "1"
+        const val LEVEL_3_CATEGORY = 3
         const val TABS_HORIZONTAL_SCROLL="tabs-horizontal-scroll"
         const val SEMUA="Semua"
         const val DEFAULT_TARGET_COMPONENT_ID="2,3,4,5,6"
@@ -98,7 +99,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                 if(component.type== TABS_HORIZONTAL_SCROLL) dataItems.add(
                     DataItem(
                         name = SEMUA,
-                        id = departmentId,
+                        id = if(data.basicInfo.tree == LEVEL_3_CATEGORY) data.basicInfo.parent.toString() else departmentId,
                         targetComponentId = dataItems.firstOrNull()?.targetComponentId
                             ?: DEFAULT_TARGET_COMPONENT_ID))
                 component.data.forEachIndexed { index, dataItem ->
@@ -108,7 +109,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                         positionForParentItem = index,
                         targetComponentId = dataItem.targetComponentId,
                         name = dataItem.categoryName,
-                        isSelected = pageIdentifier == dataItem.id.toString() ))
+                        isSelected = pageIdentifier == dataItem.id.toString() || data.basicInfo.id == dataItem.id))
                 }
                 componentsItem.data = dataItems
             }

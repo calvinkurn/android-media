@@ -109,11 +109,28 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
+    override fun trackTabsClick(
+        id: String,
+        parentPosition: Int,
+        dataItem: DataItem,
+        tabPosition1: Int
+    ) {
+        trackClickNavigationChips(dataItem, tabPosition1)
+    }
+
     override fun trackClickNavigationDropDown() {
         getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_NAVIGATION_DROPDOWN))
     }
 
+    override fun trackCategoryTreeDropDownClick(userLoggedIn: Boolean) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_NAVIGATION_DROPDOWN))
+    }
+
     override fun trackClickCloseNavigation() {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CLOSE_NAVIGATION))
+    }
+
+    override fun trackCategoryTreeCloseClick(userLoggedIn: Boolean) {
         getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CLOSE_NAVIGATION))
     }
 

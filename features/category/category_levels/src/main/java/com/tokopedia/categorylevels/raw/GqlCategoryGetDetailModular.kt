@@ -55,6 +55,7 @@ const val GQL_CATEGORY_GET_DETAIL_MODULAR: String = """query categoryGetDetailMo
             text
         } 
           ... on CategoryModularTab {
+            id
             categoryName
 	        targetComponentId
         }
