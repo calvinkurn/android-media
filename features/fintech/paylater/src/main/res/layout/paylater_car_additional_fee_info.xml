@@ -8,7 +8,6 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_24"
         android:text="@string/pay_later_cost_not_included"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -30,6 +30,8 @@ class PayLaterViewModel @Inject constructor(
 
 
     var refreshData = false
+    var sortPosition = 0
+    var partnerDisplayPosition = 0
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData

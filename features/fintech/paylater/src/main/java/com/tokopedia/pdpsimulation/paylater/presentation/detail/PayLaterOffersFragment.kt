@@ -92,7 +92,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
     private fun setFilterItem(list: List<PayLaterAllData>, filterData: ArrayList<SortFilterItem>) {
         for (i in list.indices) {
             list[i].text?.let { name ->
-                if (i == 0) {
+                if (i == payLaterViewModel.sortPosition) {
                     filterData.add(
                         SortFilterItem(
                             name,
@@ -107,7 +107,9 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                             name
                         )
                     )
-                    payLaterProductList[0].detail?.get(0)?.let { detail ->
+                    payLaterProductList[payLaterViewModel.sortPosition].detail?.get(
+                        payLaterViewModel.partnerDisplayPosition
+                    )?.let { detail ->
                         onPageSelectedByUser(detail)
                     }
                 } else {
@@ -134,6 +136,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         paymentOptionViewPager.post {
             payLaterProductList[position].detail?.let { detailList ->
                 pagerAdapter.setPaymentData(detailList)
+                payLaterViewModel.sortPosition = position
             }
 
             payLaterProductList[position].detail?.get(0)?.let { detail ->
@@ -194,7 +197,6 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
      */
     private fun payLaterAvailableDataLoad(paylaterProduct: PayLaterGetSimulation) {
         payLaterOffersGlobalError.gone()
-        sortFilter.visibility = View.VISIBLE
         if (paylaterProduct.productList == null || paylaterProduct.productList.isEmpty()) {
             emptyStateError.visible()
             payLaterOffersShimmerGroup.gone()
@@ -209,9 +211,10 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             emptyStateError.gone()
             payLaterOffersShimmerGroup.gone()
             payLaterDataGroup.visible()
+            sortFilter.visibility = View.VISIBLE
             generateSortFilter(paylaterProduct)
             paymentOptionViewPager.post {
-                payLaterProductList[0].detail?.let { detailList ->
+                payLaterProductList[payLaterViewModel.sortPosition].detail?.let { detailList ->
                     pagerAdapter.setPaymentData(detailList)
                 }
             }

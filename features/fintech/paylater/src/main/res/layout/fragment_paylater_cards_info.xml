@@ -200,7 +200,7 @@
                         android:id="@+id/duration"
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/unify_font_20"
+                        android:layout_marginTop="@dimen/unify_space_16"
                         android:background="@color/transparent"
                         android:paddingLeft="@dimen/unify_space_12"
                         android:paddingTop="@dimen/unify_space_12"
@@ -326,7 +326,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="@id/ivPaylaterPartner"
-                        app:layout_constraintTop_toTopOf="@id/ivPaylaterPartner" />
+                        app:layout_constraintTop_toTopOf="@id/ivPaylaterPartner"
+                        tools:layout_editor_absoluteX="-20dp" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </RelativeLayout>

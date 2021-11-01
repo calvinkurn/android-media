@@ -3,7 +3,6 @@ package com.tokopedia.pdpsimulation.paylater.presentation.detail
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
@@ -41,6 +41,10 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
 
     private val responseData by lazy {
         arguments?.getParcelable<Detail>(PAY_LATER_PARTNER_DATA)
+    }
+
+    private val position by lazy {
+        arguments?.getInt(PAYLATER_PARTNER_POSITION, 0)
     }
 
     @Inject
@@ -120,6 +124,7 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
                         if (!urlToRedirect.isNullOrEmpty()) {
                             payLaterViewModel.isPayLaterProductActive = true
                             payLaterViewModel.refreshData = true
+                            payLaterViewModel.partnerDisplayPosition = position ?: 0
                             RouteManager.route(
                                 activity,
                                 ApplinkConstInternalGlobal.WEBVIEW,
@@ -164,6 +169,7 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
             PayLaterTokopediaGopayBottomsheet.GOPAY_BOTTOMSHEET_DETAIL,
             responseData?.cta
         )
+        bundle.putInt(PAYLATER_PARTNER_POSITION, position ?: 0)
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
             it.openBottomSheet(bundle, PayLaterTokopediaGopayBottomsheet::class.java)
         }
@@ -239,7 +245,7 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
     @SuppressLint("SetTextI18n")
     private fun updateAdditionalPartnerDetail(data: Detail) {
         data.installationDescription?.let {
-            instructionDetail.text = Html.fromHtml(it)
+            instructionDetail.text = it.parseAsHtml()
         }
         whyText.text =
             resources.getString(R.string.pay_later_partner_why_gateway) + " ${data.gateway_detail?.name ?: ""}?"
@@ -317,7 +323,7 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
 
         updateSubHeader(gatewayType, data.gateway_detail?.subheader ?: "")
         tvSubTitlePaylaterPartner.text = data.gateway_detail?.subheader ?: ""
-        if (!data.gateway_detail?.smallSubHeader.isNullOrEmpty()) {
+        if (!data.serviceFeeInfo.isNullOrEmpty()) {
             serviceFeeInfoText.visible()
             serviceFeeInfoText.text = data.serviceFeeInfo
         } else {
@@ -445,6 +451,7 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
 
     companion object {
         const val PAY_LATER_PARTNER_DATA = "payLaterPartnerData"
+        const val PAYLATER_PARTNER_POSITION = "partnerPosition"
         const val PAY_LATER_BASE_TENURE = 1
         const val PARTER_NAME = "partnerName"
         const val TENURE = " tenure"

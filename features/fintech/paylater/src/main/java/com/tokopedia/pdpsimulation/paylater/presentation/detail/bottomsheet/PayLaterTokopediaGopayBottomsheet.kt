@@ -16,10 +16,11 @@ import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterPaymentOptionsFragment.Companion.PAYLATER_PARTNER_POSITION
 import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
-import kotlinx.android.synthetic.main.paylater_card_activation_purchase.*
+import kotlinx.android.synthetic.main.paylater_gopay_activation_bottomsheet.*
 import javax.inject.Inject
 
 class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
@@ -37,6 +38,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     private var tenure: Int? = 0
     private var montlyInstallment: Double? = 0.0
     private var productId: String? = ""
+    private var redirectPosition = 0
 
 
     private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
@@ -63,7 +65,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
         }
     }
 
-    private val childLayoutRes = R.layout.paylater_card_activation_purchase
+    private val childLayoutRes = R.layout.paylater_gopay_activation_bottomsheet
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,6 +90,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
             tenure = it.getInt(TENURE)
             montlyInstallment = it.getDouble(EMI_AMOUNT)
             productId = it.getString(PRODUCT_ID)
+            redirectPosition = it.getInt(PAYLATER_PARTNER_POSITION)
 
         }
     }
@@ -132,6 +135,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     private fun openRouteView(androidUrl: String?) {
         if (isWebLink) {
             payLaterViewModel.refreshData = true
+            payLaterViewModel.partnerDisplayPosition = redirectPosition
             val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + androidUrl
             RouteManager.route(context, webViewAppLink)
         } else {
