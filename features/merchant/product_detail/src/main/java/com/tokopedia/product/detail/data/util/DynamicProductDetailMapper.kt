@@ -286,9 +286,9 @@ object DynamicProductDetailMapper {
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return UserLocationRequest(
-            localData.district_id.checkIfNumber(),
-            localData.address_id.checkIfNumber(),
-            localData.postal_code,
+            localData.district_id.checkIfNumber("district_id"),
+            localData.address_id.checkIfNumber("address_id"),
+            localData.postal_code.checkIfNumber("postal_code"),
             latlong)
     }
 

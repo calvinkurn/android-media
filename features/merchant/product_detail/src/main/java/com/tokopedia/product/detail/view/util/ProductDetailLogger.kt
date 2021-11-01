@@ -9,6 +9,11 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 object ProductDetailLogger {
 
     private val GENERIC_ERROR_MESSAGES = listOf("terjadi kesalahan", "koneksi")
+    private const val LOCALIZATION_FORMAT_ERROR = "localization_format_error"
+
+    fun logLocalization(message:String) {
+        log(getMap(LOCALIZATION_FORMAT_ERROR, "", "", message, "")
+    }
 
     fun logThrowable(throwable: Throwable, errorType: String, productId: String, deviceId: String, extras: String = "") {
         if (throwable is MessageErrorException || (throwable is RuntimeException && isServerError(throwable))) {

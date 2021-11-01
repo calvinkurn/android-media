@@ -33,6 +33,7 @@ import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+
 object ProductDetailUtil {
 
     private const val MAX_CHAR = 140
@@ -307,13 +308,14 @@ internal fun View?.animateCollapse() = this?.run {
     startAnimation(animation)
 }
 
-internal fun String?.checkIfNumber(): String {
+internal fun String?.checkIfNumber(key: String): String {
     if (this == null) return ""
 
     return try {
         this.toLong()
         this
     } catch (t: Throwable) {
+        ProductDetailLogger.logLocalization("error $key, value : $this")
         ""
     }
 }
