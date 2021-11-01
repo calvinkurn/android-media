@@ -12,7 +12,7 @@ object ProductDetailLogger {
     private const val LOCALIZATION_FORMAT_ERROR = "localization_format_error"
 
     fun logLocalization(message:String) {
-        log(getMap(LOCALIZATION_FORMAT_ERROR, "", "", message, "")
+        log(getMap(LOCALIZATION_FORMAT_ERROR, "", "", message, ""))
     }
 
     fun logThrowable(throwable: Throwable, errorType: String, productId: String, deviceId: String, extras: String = "") {
