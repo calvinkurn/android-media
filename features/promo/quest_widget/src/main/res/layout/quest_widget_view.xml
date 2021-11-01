@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewFlipper
+<FrameLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/quest_widget_view_flipper"
@@ -11,7 +11,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/constraintLayoutQuestWidget"
+        android:visibility="gone">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_label"
@@ -42,14 +44,19 @@
         android:layout_height="wrap_content"
         android:id="@+id/rv_quest_widget"
         android:layout_marginTop="@dimen/dim_12dp"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:paddingStart="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="@id/tv_lihat"
         app:layout_constraintTop_toBottomOf="@id/tv_label"
         app:layout_constraintStart_toStartOf="@id/tv_label"
         />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/quest_widget_error" android:id="@+id/quest_widget_error"/>
+    <include layout="@layout/quest_widget_error" android:visibility="gone" android:id="@+id/quest_widget_error"/>
 
-    <include layout="@layout/quest_widget_login" android:id="@+id/quest_widget_login"/>
+    <include layout="@layout/quest_widget_login" android:visibility="gone" android:id="@+id/quest_widget_login"/>
 
-</ViewFlipper>
+</FrameLayout>

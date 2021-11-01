@@ -26,7 +26,7 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
             questWidgetListLiveData.postValue(LiveDataResult.loading())
             val response = questWidgetUseCase.getResponse(questWidgetUseCase.getQueryParams(channel, channelSlug, page))
             if (response != null) {
-                response.questWidgetList?.let { widgetData ->
+                response.questWidgetList.let { widgetData ->
                     val configList = ArrayList<Config>()
                     widgetData.questWidgetList.forEach { questWidgetListItem ->
                         configList.add(convertStringToConfig(questWidgetListItem.config))

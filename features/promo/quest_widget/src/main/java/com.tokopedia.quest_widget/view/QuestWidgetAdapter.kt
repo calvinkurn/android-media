@@ -1,6 +1,6 @@
 package com.tokopedia.quest_widget.view
 
-import android.view.LayoutInflater
+ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,13 +9,14 @@ import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
 
 class QuestWidgetAdapter(val data: List<QuestWidgetListItem>, val configList: ArrayList<Config>) : RecyclerView.Adapter<QuestWidgetViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuestWidgetViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.quest_widget_card, parent, false)
         return QuestWidgetViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: QuestWidgetViewHolder, position: Int) {
-        data[position].let { holder.questWidgetItemView.setData(it, configList[position]) }
+        holder.questWidgetItemView.setData(data[position], configList[position])
     }
 
     override fun getItemCount(): Int {

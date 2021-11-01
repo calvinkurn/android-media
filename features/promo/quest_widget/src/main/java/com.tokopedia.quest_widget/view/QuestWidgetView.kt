@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,7 @@ import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class QuestWidgetView @JvmOverloads constructor(
@@ -37,12 +39,14 @@ class QuestWidgetView @JvmOverloads constructor(
     }
 
     private lateinit var viewModel: QuestWidgetViewModel
-    private var tvLabel: TextView
-    private var tvLihat: TextView
+    private var tvLabel: Typography
+    private var tvLihat: Typography
     private var rvQuestWidget: RecyclerView
     private var shimmerQuestWidget: ConstraintLayout
-    private var quest_widget_view_flipper: ViewFlipper
-    lateinit var userSession: UserSessionInterface
+    private var constraintLayoutQuestWidget: ConstraintLayout
+    private var questWidgetError: LinearLayout
+    private var questWidgetLogin: LinearLayout
+    var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -55,7 +59,9 @@ class QuestWidgetView @JvmOverloads constructor(
         tvLihat = findViewById(R.id.tv_lihat)
         rvQuestWidget = findViewById(R.id.rv_quest_widget)
         shimmerQuestWidget = findViewById(R.id.quest_widget_shimmer)
-        quest_widget_view_flipper = findViewById(R.id.quest_widget_view_flipper)
+        constraintLayoutQuestWidget = findViewById(R.id.constraintLayoutQuestWidget)
+        questWidgetError = findViewById(R.id.quest_widget_error)
+        questWidgetLogin = findViewById(R.id.quest_widget_login)
 
         DaggerQuestComponent.builder()
             .build().inject(this)
@@ -65,19 +71,19 @@ class QuestWidgetView @JvmOverloads constructor(
         }
         userSession = UserSession(context)
 
-        quest_widget_view_flipper.displayedChild = LOADING
-
         viewModel.questWidgetListLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
-                    quest_widget_view_flipper.displayedChild = LOADING
+                    shimmerQuestWidget.show()
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
-                    quest_widget_view_flipper.displayedChild = DATA
+                    shimmerQuestWidget.hide()
+                    constraintLayoutQuestWidget.show()
                     setData(it.data)
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    quest_widget_view_flipper.displayedChild = ERROR
+                    shimmerQuestWidget.hide()
+                    questWidgetError.show()
                 }
             }
         })
@@ -106,7 +112,8 @@ class QuestWidgetView @JvmOverloads constructor(
             viewModel.getWidgetList(channel, channelSlug, page)
         }
         else{
-            quest_widget_view_flipper.displayedChild = LOGIN
+            questWidgetLogin.show()
+            shimmerQuestWidget.hide()
         }
     }
 }

@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.ViewFlipper
 import androidx.core.content.ContextCompat
 import com.example.quest_widget.R
 import com.tokopedia.kotlin.extensions.view.hide
@@ -23,6 +22,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ): CardUnify(context, attrs) {
 
+    private val TAG = QuestWidgetItemView::class.java.simpleName
     private var tvBannerTitle: Typography
     private var tvBannerDesc: Typography
     private var ivBannerIcon: ImageUnify
@@ -67,19 +67,20 @@ class QuestWidgetItemView @JvmOverloads constructor(
                     )
                 )
             }
-
-            val desc = item.actionButton?.shortText + (item.task?.get(0)?.progress?.current?.let {
-                item.task[0]?.progress?.target?.minus(
-                    it
-                )
-            })
-
-            tvBannerDesc.text =
-                desc + LAGITEXT + context.resources.getString(R.string.str_sisa) + item.label?.title
-        }else{
+        }
+        else{
             progressBar.hide()
             iconContainer.show()
         }
+
+        val desc = item.actionButton?.shortText + " " + (item.task?.get(0)?.progress?.current?.let {
+            item.task[0]?.progress?.target?.minus(
+                it
+            )
+        })
+
+        tvBannerDesc.text =
+            desc + LAGITEXT + " " +context.resources.getString(R.string.str_dot) + " " + item.label?.title
     }
 
     private fun calculateProgress(progress:Progress?):Float{
