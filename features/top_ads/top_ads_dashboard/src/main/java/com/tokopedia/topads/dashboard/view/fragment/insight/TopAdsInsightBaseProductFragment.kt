@@ -10,10 +10,7 @@ import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
@@ -146,7 +143,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     private fun calculateSetTitle(products: List<ProductRecommendation>?): Int {
         var totalClicks = 0
         products?.forEach {
-            totalClicks += it.searchCount
+            totalClicks += it.searchCount.toIntOrZero()
         }
         return totalClicks
     }
