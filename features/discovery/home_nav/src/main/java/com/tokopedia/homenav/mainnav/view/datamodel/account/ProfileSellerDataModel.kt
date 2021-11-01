@@ -9,6 +9,7 @@ data class ProfileSellerDataModel(
     var shopApplink: String = "",
     var adminRoleText: String? = null,
     var canGoToSellerAccount: Boolean = true,
+    var shopAvatar: String = "",
 
     /**
      * Status
