@@ -60,7 +60,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private var viewPager2PageChangeCallback: ViewPager2.OnPageChangeCallback? = null
     private val itemDecoration = HorizontalMarginItemDecoration(
             itemView.context,
-            R.dimen.viewpager_current_item_horizontal_margin
+            com.tokopedia.product.detail.R.dimen.viewpager_current_item_horizontal_margin
     )
 
     private var previousPosition = -1
@@ -75,6 +75,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
         private const val ANIMATION_DELAY_180 = 180L
         private const val ANIMATION_VALUE_QUARTER_FLOAT = 0.25f
         private const val ANIMATION_VALUE_HALF_FLOAT = 0.5f
+        private const val PAGE_LIMIT = 3
     }
 
     init {
@@ -94,7 +95,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
                 with(viewPager) {
                     clipToPadding = false
                     clipChildren = false
-                    offscreenPageLimit = 3
+                    offscreenPageLimit = PAGE_LIMIT
                 }
                 if(viewPager2PageChangeCallback == null){
                     viewPager2PageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -255,8 +256,8 @@ class AddToCartDoneRecommendationCarouselViewHolder(
 
     inner class ViewPager2PageTransformation : ViewPager2.PageTransformer {
         override fun transformPage(page: View, position: Float) {
-            val nextItemVisiblePx = itemView.resources.getDimension(R.dimen.viewpager_next_item_visible)
-            val currentItemHorizontalMarginPx = itemView.resources.getDimension(R.dimen.viewpager_current_item_horizontal_margin)
+            val nextItemVisiblePx = itemView.resources.getDimension(com.tokopedia.product.detail.R.dimen.viewpager_next_item_visible)
+            val currentItemHorizontalMarginPx = itemView.resources.getDimension(com.tokopedia.product.detail.R.dimen.viewpager_current_item_horizontal_margin)
             val pageTranslationX = nextItemVisiblePx + currentItemHorizontalMarginPx
             page.apply {
                 page.translationX = -pageTranslationX * position
