@@ -10,7 +10,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.salam.DeeplinkMapperSalam
-import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.Env
@@ -30,7 +29,6 @@ object DeeplinkMapperMarketplace {
             deeplink.startsWith(ApplinkConst.CHECKOUT) ->
                 deeplink.replace(ApplinkConst.CHECKOUT, ApplinkConstInternalMarketplace.CHECKOUT)
             deeplink.startsWith(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) -> DeepLinkMapperStatistic.getStatisticAppLink(uri)
-            deeplink.startsWith(ApplinkConst.SHOP_SCORE_DETAIL) -> DeepLinkMapperShopScore.getShopScoreApplink(context)
             deeplink.startsWith(ApplinkConst.PRODUCT_ADD) -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
             deeplink.startsWith(ApplinkConst.OCC) ->
                 deeplink.replace(ApplinkConst.OCC, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
