@@ -315,16 +315,17 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createBusinessUnitWidget(channel: DynamicHomeChannel.Channels, position: Int) {
         if (!isCache) {
             visitableList.add(NewBusinessUnitWidgetDataModel(
-                channel = channel,
-                position = position,
-                isCache = false)
+                isCache = false,
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, position))
             )
         }
     }
 
     private fun createBestSellingWidget(channel: DynamicHomeChannel.Channels){
+
         if(!isCache) {
-            visitableList.add(BestSellerDataModel(id = channel.id, pageName = channel.pageName, widgetParam = channel.widgetParam))
+            visitableList.add(BestSellerDataModel(id = channel.id, pageName = channel.pageName, widgetParam = channel.widgetParam, dividerType = channel.dividerType)
+            )
         }
     }
 

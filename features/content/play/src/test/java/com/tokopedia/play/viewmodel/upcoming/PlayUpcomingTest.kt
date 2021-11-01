@@ -12,9 +12,9 @@ import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.andWhenExpectEvent
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
-import com.tokopedia.play.util.isFalse
 import com.tokopedia.play.view.uimodel.action.ClickRemindMeUpcomingChannel
 import com.tokopedia.play.view.uimodel.action.ClickWatchNowUpcomingChannel
 import com.tokopedia.play.view.uimodel.action.ImpressUpcomingChannel
@@ -56,7 +56,7 @@ class PlayUpcomingTest {
 
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockPlayNewAnalytic: PlayNewAnalytic = mockk(relaxed = true)
-    private val fakePlayChannelSSE = FakePlayChannelSSE(mockUserSession, testDispatcher)
+    private val fakePlayChannelSSE = FakePlayChannelSSE(testDispatcher)
 
     @Before
     fun setUp() {
@@ -127,9 +127,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) }
 
             val value = viewModel.observableUpcomingInfo.value
-            value?.let {
-                it.isEqualTo(mockUpcomingInfo.copy(isReminderSet = true))
-            } ?: fail(Exception("No Upcoming Info"))
+            value?.isEqualTo(mockUpcomingInfo.copy(isReminderSet = true)) ?: fail(Exception("No Upcoming Info"))
 
             event.isEqualToIgnoringFields(mockEvent, RemindMeEvent::message)
         }
@@ -168,9 +166,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) }
 
             val value = viewModel.observableUpcomingInfo.value
-            value?.let {
-                it.isEqualTo(mockUpcomingInfo)
-            } ?: fail(Exception("No Upcoming Info"))
+            value?.isEqualTo(mockUpcomingInfo) ?: fail(Exception("No Upcoming Info"))
 
             event.isEqualToIgnoringFields(mockEvent, RemindMeEvent::message)
         }
@@ -199,7 +195,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) }
 
             val value = viewModel.observableUpcomingInfo.value
-            value?.isReminderSet?.isFalse() ?: fail(Exception("No Upcoming Info"))
+            value?.isReminderSet?.assertFalse() ?: fail(Exception("No Upcoming Info"))
 
             event.isEqualToIgnoringFields(mockEvent, OpenPageEvent::requestCode)
         }
@@ -225,7 +221,7 @@ class PlayUpcomingTest {
             submitAction(ClickWatchNowUpcomingChannel)
         } thenVerify {
             verify { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) }
-            fakePlayChannelSSE.isConnectionOpen().isFalse()
+            fakePlayChannelSSE.isConnectionOpen().assertFalse()
         }
     }
 
