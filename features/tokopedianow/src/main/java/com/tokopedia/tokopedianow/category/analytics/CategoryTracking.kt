@@ -119,6 +119,7 @@ object CategoryTracking {
         const val TOP_NAV_TOKONOW_CATEGORY_PAGE =  "top nav - tokonow category page"
         const val TOKONOW_CATEGORY_PAGE = "tokonow category page"
         const val TOKONOW_DASH_CATEGORY_PAGE = "tokonow - category page"
+        const val TOKONOW_DASH_SEARCH_PAGE = "tokonow - search page"
     }
 
     object Misc {

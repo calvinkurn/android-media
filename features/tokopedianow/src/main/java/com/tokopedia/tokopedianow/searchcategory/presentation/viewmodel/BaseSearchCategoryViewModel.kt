@@ -312,7 +312,7 @@ abstract class BaseSearchCategoryViewModel(
     private fun createVisitableListWithOutOfCoverageView() {
         visitableList.clear()
         visitableList.add(chooseAddressDataView)
-        visitableList.add(TokoNowEmptyStateOocUiModel(eventCategory = "tokonow - category page", hostSource = DEFAULT_VALUE_SOURCE_SEARCH))
+        visitableList.add(TokoNowEmptyStateOocUiModel(hostSource = DEFAULT_VALUE_SOURCE_SEARCH))
         visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW))
     }
 

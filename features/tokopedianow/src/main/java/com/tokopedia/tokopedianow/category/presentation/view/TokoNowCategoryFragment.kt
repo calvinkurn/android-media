@@ -21,6 +21,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLI
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_CLP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_CLP_RECOM_OOC
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_DASH_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.RECOM_LIST_PAGE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.RECOM_LIST_PAGE_NON_OOC
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
@@ -96,7 +97,7 @@ class TokoNowCategoryFragment:
     }
 
     override fun createTypeFactory() = CategoryTypeFactoryImpl(
-            tokoNowListener = createTokoNowListener(),
+            tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(TOKONOW_DASH_CATEGORY_PAGE),
             chooseAddressListener = this,
             titleListener = this,
             bannerListener = this,

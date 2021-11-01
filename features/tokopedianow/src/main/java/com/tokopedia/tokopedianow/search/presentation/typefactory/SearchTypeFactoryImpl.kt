@@ -3,8 +3,8 @@ package com.tokopedia.tokopedianow.search.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
@@ -29,7 +29,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSe
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 
 class SearchTypeFactoryImpl(
-    tokoNowListener: TokoNowView,
+    tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener,
     chooseAddressListener: ChooseAddressListener,
     titleListener: TitleListener,
     bannerListener: BannerComponentListener,
@@ -44,7 +44,7 @@ class SearchTypeFactoryImpl(
     private val recomWidgetBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?,
     private val broadMatchListener: BroadMatchListener,
 ): BaseSearchCategoryTypeFactoryImpl(
-    tokoNowListener,
+    tokoNowEmptyStateOocListener,
     chooseAddressListener,
     titleListener,
     bannerListener,
