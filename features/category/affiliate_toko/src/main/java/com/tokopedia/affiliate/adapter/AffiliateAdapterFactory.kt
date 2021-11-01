@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.interfaces.ShareButtonInterface
@@ -12,7 +13,8 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 class AffiliateAdapterFactory(
         private var shareButtonInterface: ShareButtonInterface? = null,
         var productClickInterface : ProductClickInterface? = null,
-        private var promotionClickInterface : PromotionClickInterface? = null)
+        private var promotionClickInterface : PromotionClickInterface? = null,
+        private var onFoucusChangeInterface: PortfolioUrlTextUpdateInterface?=null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -22,7 +24,7 @@ class AffiliateAdapterFactory(
             AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
             AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
-            AffiliatePortfolioItemVH.LAYOUT->AffiliatePortfolioItemVH(parent)
+            AffiliatePortfolioItemVH.LAYOUT->AffiliatePortfolioItemVH(parent,onFoucusChangeInterface)
             AffiliateHeaderItemVH.LAYOUT->AffiliateHeaderItemVH(parent)
             AffiliatePortfolioButtonItemVH.LAYOUT->AffiliatePortfolioButtonItemVH(parent)
             else -> super.createViewHolder(parent, type)

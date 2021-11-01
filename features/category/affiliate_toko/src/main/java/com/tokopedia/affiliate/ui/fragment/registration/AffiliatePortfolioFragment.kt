@@ -15,6 +15,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
 import com.tokopedia.affiliate.viewmodel.AffiliatePortfolioViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -22,9 +23,9 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import kotlinx.android.synthetic.main.affiliate_portfolio_fragment_layout.*
 import javax.inject.Inject
 
-class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewModel>() {
+class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewModel>(),PortfolioUrlTextUpdateInterface{
     private lateinit var affiliatePortfolioViewModel: AffiliatePortfolioViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(onFoucusChangeInterface=this))
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
     override fun getViewModelType(): Class<AffiliatePortfolioViewModel> {
@@ -56,15 +57,26 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     }
 
     private fun afterViewCreated() {
+        initClickListener()
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         social_link_rv.layoutManager=layoutManager
         social_link_rv.adapter=adapter
         affiliatePortfolioViewModel.createDefaultListForSm()
     }
 
+    private fun initClickListener() {
+        portfolio_cnf_btn.setOnClickListener {
+            affiliatePortfolioViewModel.checkDataAndMakeApiCall()
+        }
+    }
+
     private fun initObserver() {
         affiliatePortfolioViewModel.getPortfolioUrlList().observe(this,{data ->
             setDataToRV(data)
+        })
+        affiliatePortfolioViewModel.getUpdateItemIndex().observe(this,{
+            index->
+            adapter.notifyItemChanged(index)
         })
     }
 
@@ -85,5 +97,10 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         fun getFragmentInstance(): Fragment {
             return AffiliatePortfolioFragment()
         }
+    }
+
+    override fun onUrlUpdate(position: Int, text: String) {
+        portfolio_cnf_btn.isEnabled=true
+        affiliatePortfolioViewModel.updateList(position,text)
     }
 }

@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.unifycomponents.UnifyButton
+        android:enabled="false"
         android:id="@+id/portfolio_cnf_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

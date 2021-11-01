@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.viewmodel
 
+import android.webkit.URLUtil.isValidUrl
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -19,15 +20,33 @@ class AffiliatePortfolioViewModel@Inject constructor(
     private val userSessionInterface: UserSessionInterface)
     :BaseViewModel() {
     private var affiliatePortfolioData = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
-
+    private var updateListItem = MutableLiveData<Int>()
+    private val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
     fun createDefaultListForSm() {
-        val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        tempList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
-        tempList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Instagram","","Contoh: instagram.com/tokopedia",false)))
-        tempList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Tiktok","","Contoh: tiktok.com/tokopedia",false)))
-        tempList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Youtube","","Contoh: youtube.com/tokopedia",true)))
-        tempList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media")))
-        affiliatePortfolioData.value=tempList
+        itemList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Instagram","","Contoh: instagram.com/tokopedia",false)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Tiktok","","Contoh: tiktok.com/tokopedia",false)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Youtube","","Contoh: youtube.com/tokopedia",false)))
+        itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media")))
+        affiliatePortfolioData.value=itemList
+    }
+    fun updateList(position: Int, text: String) {
+        (itemList[position] as? AffiliatePortfolioUrlModel)?.portfolioItm?.text=text
+    }
+    fun checkDataAndMakeApiCall() {
+        itemList.forEachIndexed {i,item->
+            if(item is AffiliatePortfolioUrlModel)
+            {
+                if(!isValidUrl(item.portfolioItm.text)){
+                    item.portfolioItm.isError=true
+                    item.portfolioItm.content="Link tidak valid."
+                    updateListItem.value=i
+                    return
+                }
+
+            }
+        }
     }
     fun getPortfolioUrlList() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliatePortfolioData
+    fun getUpdateItemIndex() : LiveData<Int> = updateListItem
 }
