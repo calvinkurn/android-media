@@ -125,7 +125,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             (fragment.activity as DiscoveryActivity).let {
                 if (it.isFromCategory()) {
                     tabsViewModel.components.getComponentsItem()?.get(tab.position).apply {
-                        it.getAnalytics().setOldTabPageIdentifier(this?.data?.firstOrNull()?.id ?: "")
+                        (fragment as DiscoveryFragment).getDiscoveryAnalytics().setOldTabPageIdentifier(this?.data?.firstOrNull()?.id ?: "")
                         it.getViewModel().pageIdentifier =
                             this?.data?.firstOrNull()?.id ?: ""
                     }
