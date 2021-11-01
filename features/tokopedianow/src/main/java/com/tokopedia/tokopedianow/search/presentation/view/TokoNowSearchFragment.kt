@@ -19,13 +19,13 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_DASH_SEARCH_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_RECOM_OOC
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_SRP_RECOM_OOC
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_DASH_SEARCH_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKOOW_SEARCH_RESULT_PAGE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.RECOM_LIST_PAGE
