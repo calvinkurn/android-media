@@ -309,7 +309,7 @@ internal fun View?.animateCollapse() = this?.run {
 }
 
 internal fun String?.checkIfNumber(key: String): String {
-    if (this == null) return ""
+    if (this == null || this.isEmpty()) return ""
 
     return try {
         this.toLong()
