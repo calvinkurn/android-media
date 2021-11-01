@@ -5,6 +5,8 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginHorizontal="@dimen/dp_16"
         android:id="@+id/social_link_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

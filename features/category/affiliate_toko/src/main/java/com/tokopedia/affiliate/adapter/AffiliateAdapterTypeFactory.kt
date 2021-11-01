@@ -8,4 +8,7 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliateShareModel): Int
     fun type(viewModel: AffiliatePromotionCardModel): Int
     fun type(viewModel: AffiliatePromotionErrorCardModel): Int
+    fun type(viewModel: AffiliatePortfolioUrlModel): Int
+    fun type(viewModel:AffiliateHeaderModel):Int
+    fun type(viewModel: AffiliatePortfolioButtonModel):Int
 }

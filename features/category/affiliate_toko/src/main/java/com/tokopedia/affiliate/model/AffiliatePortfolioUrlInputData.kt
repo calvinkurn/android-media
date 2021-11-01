@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.model
 
-class PortfolioUrlInputData (
+class AffiliatePortfolioUrlInputData (
     var title:String?,
     var text:String?,
     var isError:Boolean

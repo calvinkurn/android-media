@@ -5,6 +5,8 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginHorizontal="@dimen/dp_16"
         android:id="@+id/add_social_media_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
