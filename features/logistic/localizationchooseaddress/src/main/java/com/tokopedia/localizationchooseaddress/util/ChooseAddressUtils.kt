@@ -33,9 +33,8 @@ object ChooseAddressUtils {
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
         return if (hasLocalizingAddressOnCache(context)) {
             val chooseAddressPref = ChooseAddressSharePref(context)
-            val addressId = "-6.6661312"
             LocalCacheModel(
-                addressId.checkIfNumber("address_id"),
+                chooseAddressPref.getLocalCacheData()?.address_id.checkIfNumber("address_id"),
                 chooseAddressPref.getLocalCacheData()?.city_id ?: "",
                 chooseAddressPref.getLocalCacheData()?.district_id.checkIfNumber("district_id"),
                 chooseAddressPref.getLocalCacheData()?.lat ?: "",
