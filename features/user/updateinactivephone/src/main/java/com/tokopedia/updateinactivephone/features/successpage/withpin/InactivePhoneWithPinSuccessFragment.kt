@@ -43,7 +43,7 @@ open class InactivePhoneWithPinSuccessFragment : BaseInactivePhoneSuccessFragmen
     }
 
     companion object {
-        private const val IMAGE_HEADER_URL = ""
+        private const val IMAGE_HEADER_URL = "https://images.tokopedia.net/img/android/user/inactive_phone_expedited_success_page.png"
         fun instance(bundle: Bundle): InactivePhoneWithPinSuccessFragment {
             return InactivePhoneWithPinSuccessFragment().apply {
                 arguments = bundle
