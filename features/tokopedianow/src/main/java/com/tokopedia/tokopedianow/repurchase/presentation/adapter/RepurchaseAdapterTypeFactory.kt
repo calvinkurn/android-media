@@ -3,9 +3,8 @@ package com.tokopedia.tokopedianow.repurchase.presentation.adapter
 import android.view.View
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactoryImpl
 import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.*
@@ -30,17 +29,7 @@ class RepurchaseAdapterTypeFactory(
     private val sortFilterListener: RepurchaseSortFilterViewHolder.SortFilterListener,
     private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener,
     private val tokonowRecomBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener? = null
-) : BaseAdapterTypeFactory(), RepurchaseTypeFactory, TokoNowTypeFactory {
-
-    // region Common TokoNow Component
-    override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowRepurchaseUiModel): Int = TokoNowRepurchaseViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int = TokoNowChooseAddressWidgetViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int = TokoNowRecommendationCarouselViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowEmptyStateNoResultUiModel): Int = TokoNowEmptyStateNoResultViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
-    // endregion
+) : TokoNowTypeFactoryImpl(), RepurchaseTypeFactory {
 
     // region Repurchase Component
     override fun type(uiModel: RepurchaseProductUiModel): Int = RepurchaseProductViewHolder.LAYOUT

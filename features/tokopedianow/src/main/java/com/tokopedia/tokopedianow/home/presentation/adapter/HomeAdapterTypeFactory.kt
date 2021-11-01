@@ -2,14 +2,12 @@ package com.tokopedia.tokopedianow.home.presentation.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
-import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactoryImpl
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*

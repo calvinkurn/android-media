@@ -2,11 +2,9 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
-import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactoryImpl
 import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
@@ -46,7 +44,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val outOfCoverageListener: OutOfCoverageListener,
     private val recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
     private val recommendationCarouselBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?
-): BaseAdapterTypeFactory(), BaseSearchCategoryTypeFactory, TokoNowTypeFactory {
+): TokoNowTypeFactoryImpl(), BaseSearchCategoryTypeFactory {
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = BaseChooseAddressViewHolder.LAYOUT
 
