@@ -2,11 +2,9 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Typeface.BOLD
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -176,7 +174,7 @@ class AccountHeaderViewHolder(itemView: View,
                 getIconUnifyDrawable(
                         itemView.context,
                         IconUnify.REPLAY,
-                        ContextCompat.getColor(itemView.context, R.color.Unify_Y400)
+                        ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
                 )
         )
 
@@ -185,7 +183,7 @@ class AccountHeaderViewHolder(itemView: View,
                 getIconUnifyDrawable(
                         itemView.context,
                         IconUnify.REPLAY,
-                        ContextCompat.getColor(itemView.context, R.color.Unify_Y400)
+                        ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
                 )
         )
 
@@ -237,7 +235,7 @@ class AccountHeaderViewHolder(itemView: View,
                     if (profileSaldo.saldo.isEmpty()) {
                         sectionSaldo.gone()
                     } else {
-                        tvSaldo.text = itemView.context.getString(R.string.account_saldo_fmt, profileSaldo.saldo)
+                        tvSaldo.text = profileSaldo.saldo
                         sectionSaldo.visible()
                     }
                 }
@@ -273,19 +271,15 @@ class AccountHeaderViewHolder(itemView: View,
                     element.profileWalletAppDataModel.let { walletAppModel ->
                         when {
                             walletAppModel.isWalletAppLinked -> {
-                                if(walletAppModel.gopayBalance.isEmpty() && walletAppModel.gopayPointsBalance.isEmpty()) {
-                                    sectionWallet.gone()
-                                } else {
-                                    val gopayBalance = if(walletAppModel.gopayBalance.isNotEmpty()) walletAppModel.gopayBalance else DEFAULT_BALANCE_VALUE
-                                    val gopayPointsBalance = if(walletAppModel.gopayPointsBalance.isNotEmpty()) walletAppModel.gopayPointsBalance else DEFAULT_BALANCE_POINTS_VALUE
+                                val gopayBalance = if(walletAppModel.gopayBalance.isNotEmpty()) walletAppModel.gopayBalance else DEFAULT_BALANCE_VALUE
+                                val gopayPointsBalance = if(walletAppModel.gopayPointsBalance.isNotEmpty()) walletAppModel.gopayPointsBalance else DEFAULT_BALANCE_POINTS_VALUE
 
-                                    tvOvo.text = String.format(
-                                        itemView.context.getString(R.string.mainnav_wallet_app_format),
-                                        gopayBalance,
-                                        gopayPointsBalance
-                                    )
-                                    usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
-                                }
+                                tvOvo.text = String.format(
+                                    itemView.context.getString(R.string.mainnav_wallet_app_format),
+                                    gopayBalance,
+                                    gopayPointsBalance
+                                )
+                                usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
                             }
                             !walletAppModel.isWalletAppLinked -> {
                                 if (walletAppModel.walletAppActivationCta.isNotEmpty()) {
@@ -321,8 +315,8 @@ class AccountHeaderViewHolder(itemView: View,
                                 profileMembership.tokopointPointAmount
                             )
                             val span = SpannableString(spanText)
-                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                             tvOvo.setText(span, TextView.BufferType.SPANNABLE)
                             usrOvoBadge.setImageUrl(profileMembership.tokopointBadgeUrl)
                         }

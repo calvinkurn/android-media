@@ -45,25 +45,17 @@ class AccountHeaderMapper(
                     )
                 }
                 tokopointsStatusFilteredPojo?.tokopointsStatusFiltered?.let {
-                    if (tokopointsStatusFilteredPojo.tokopointsStatusFiltered.statusFilteredData.points.pointsAmount.isMoreThanZero()) {
-                        data.setTokopointData(it.statusFilteredData.points.externalCurrencyAmountStr, it.statusFilteredData.points.pointsAmountStr, it.statusFilteredData.points.iconImageURL)
-                    }
+                    data.setTokopointData(it.statusFilteredData.points.externalCurrencyAmountStr, it.statusFilteredData.points.pointsAmountStr, it.statusFilteredData.points.iconImageURL)
                 }
                 walletAppData?.let {
                     data.setWalletAppData(it)
                 }
                 saldoPojo?.let {
                     val totalSaldo = it.saldo.buyerUsable + it.saldo.sellerUsable
-                    if (totalSaldo > 0 ||
-                        isGetTokopointsError ||
-                        tokopointsStatusFilteredPojo?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.isZero() ||
-                        (isEligibleForWalletApp && data.profileWalletAppDataModel.gopayPointsBalance.isEmpty() && data.profileWalletAppDataModel.gopayBalance.isEmpty())
-                    ) {
-                        val saldoValue = convertPriceValueToIdrFormat(totalSaldo, false) ?: ""
-                        data.setSaldoData(
-                            saldo =saldoValue
-                        )
-                    }
+                    val saldoValue = convertPriceValueToIdrFormat(totalSaldo, false) ?: ""
+                    data.setSaldoData(
+                        saldo = saldoValue
+                    )
                 }
                 userMembershipPojo?.let {
                     data.setUserBadge(
