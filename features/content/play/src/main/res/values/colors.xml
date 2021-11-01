@@ -58,4 +58,6 @@
     <color name="play_dms_multiplelike_red">#F94D63</color>
     <color name="play_dms_multiplelike_green">#00AA5B</color>
     <color name="play_dms_multiplelike_purple">#9342ED</color>
+
+    <color name="play_dms_product_count_background">#FFC400</color>
 </resources>
