@@ -78,8 +78,8 @@ class GraphqlCloudDataStore @Inject constructor(
             header[QUERY_HASHING_HEADER] = queryHashingHeaderValue.toString()
         }
         return if(!requests[0].url.isNullOrEmpty()){
-            api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
-        } else api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
+            api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        } else api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
     }
 
     override suspend fun getResponse(
@@ -163,9 +163,9 @@ class GraphqlCloudDataStore @Inject constructor(
                                             "hash" to queryHashValues.toString()
                                     ))
                             if(!requests[0].url.isNullOrEmpty()){
-                                api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
+                                api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
                             } else {
-                                api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
+                                api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
                             }
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
