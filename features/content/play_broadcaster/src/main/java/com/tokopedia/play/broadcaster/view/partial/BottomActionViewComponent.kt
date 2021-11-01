@@ -23,7 +23,6 @@ class BottomActionViewComponent(
         private val listener: Listener
 ) : ViewComponent(container, R.id.bottom_sheet_action) {
 
-    private val clInventory: ConstraintLayout = findViewById(R.id.cl_inventory)
     private val ivInventory: ImageView = findViewById(R.id.iv_inventory)
     private val btnAction: UnifyButton = findViewById(R.id.btn_action)
     private val tvBadgeCount: TextView = findViewById(R.id.tv_badge_count)

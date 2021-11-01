@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope

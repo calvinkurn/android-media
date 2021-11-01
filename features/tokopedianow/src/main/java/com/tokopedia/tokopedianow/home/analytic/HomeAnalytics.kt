@@ -342,7 +342,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
 
-    fun onImpressRecentPurchase(userId: String, data: TokoNowProductCardUiModel, products: List<TokoNowProductCardUiModel>) {
+    fun onImpressRepurchase(userId: String, data: TokoNowProductCardUiModel, products: List<TokoNowProductCardUiModel>) {
         val productList = arrayListOf<Bundle>().apply {
             products.forEachIndexed { position, item ->
                 add(
@@ -371,7 +371,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_VIEW, dataLayer)
     }
 
-    fun onClickRecentPurchase(position: Int, userId: String, data: TokoNowProductCardUiModel) {
+    fun onClickRepurchase(position: Int, userId: String, data: TokoNowProductCardUiModel) {
         val products = arrayListOf(
             productCardItemDataLayer(
                 position = position.toString(),
@@ -395,7 +395,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_CLICK, dataLayer)
     }
 
-    fun onRecentPurchaseAddToCart(position: Int, quantity: Int, userId: String, data: TokoNowProductCardUiModel) {
+    fun onRepurchaseAddToCart(position: Int, quantity: Int, userId: String, data: TokoNowProductCardUiModel) {
         val products = arrayListOf(
             productCardItemDataLayer(
                 position = position.toString(),

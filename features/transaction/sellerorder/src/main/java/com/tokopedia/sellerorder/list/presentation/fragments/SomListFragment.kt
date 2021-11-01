@@ -2145,9 +2145,15 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             tickerPagerAdapter.setPagerDescriptionClickEvent(this)
             this.tickerPagerAdapter = tickerPagerAdapter
         }
-        binding?.tickerSomList?.addPagerView(tickerPagerAdapter, activeTickers)
-        tickerIsReady = activeTickers.isNotEmpty()
-        animateOrderTicker(true)
+        binding?.tickerSomList?.let { tickerView ->
+            val visibility = tickerView.visibility
+            tickerView.addPagerView(tickerPagerAdapter, activeTickers)
+            tickerView.post {
+                tickerView.visibility = visibility
+                tickerIsReady = activeTickers.isNotEmpty()
+                animateOrderTicker(true)
+            }
+        }
     }
 
     protected open fun renderOrderList(data: List<SomListOrderUiModel>) {
@@ -2456,12 +2462,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun getOrdersProducts(orders: List<SomListOrderUiModel>): List<SomListBulkProcessOrderProductUiModel> {
         val products = orders.map { it.orderProduct }.flatten().groupBy { it.productId }
-
         return products.filter { it.value.isNotEmpty() }.map {
             SomListBulkProcessOrderProductUiModel(
                 productName = it.value.first().productName,
                 picture = it.value.first().picture,
-                amount = it.value.size
+                amount = it.value.sumOf { prod -> prod.quantity }
             )
         }
     }

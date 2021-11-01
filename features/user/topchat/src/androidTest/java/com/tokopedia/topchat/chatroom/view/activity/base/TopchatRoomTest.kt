@@ -2,14 +2,15 @@ package com.tokopedia.topchat.chatroom.view.activity.base
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
@@ -48,8 +49,10 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
+import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -86,6 +89,9 @@ abstract class TopchatRoomTest {
     protected val applicationContext: Context
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
+
+    protected val rvChatRoomId = R.id.recycler_view_chatroom
+    protected val flexBoxBubbleId = R.id.fxChat
 
     @Inject
     protected lateinit var getChatUseCase: GetChatUseCaseStub
@@ -131,6 +137,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var toggleFavouriteShopUseCaseStub: ToggleFavouriteShopUseCaseStub
+
+    @Inject
+    protected lateinit var cacheManager: TopchatCacheManager
 
     protected open lateinit var activity: TopChatRoomActivityStub
 
@@ -573,6 +582,12 @@ abstract class TopchatRoomTest {
         assertThat(isKeyboardOpened, `is`(false))
     }
 
+    protected fun assertLongClickMenu(matcher: Matcher<in View>) {
+        onView(withId(R.id.rvMenu)).check(
+            matches(matcher)
+        )
+    }
+
     protected fun assertChatMenuVisibility(visibilityMatcher: Matcher<in View>) {
         onView(withId(R.id.fl_chat_menu)).check(
             matches(visibilityMatcher)
@@ -839,6 +854,22 @@ abstract class TopchatRoomTest {
                 arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
             )
         }
+    }
+
+    protected fun getClipboardMsg(): CharSequence? {
+        val clipboard: ClipboardManager =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        return clipboard.primaryClip?.getItemAt(0)?.text
+    }
+
+    protected fun getBubbleMsgAtPosition(position: Int): CharSequence {
+        val rv = activity.findViewById<RecyclerView>(rvChatRoomId)
+        (rv.layoutManager as? LinearLayoutManager)?.let {
+            val child = it.getChildAt(position)
+            val flexBox = child?.findViewById<FlexBoxChatLayout>(flexBoxBubbleId)
+            return flexBox?.message?.text ?: ""
+        }
+        return ""
     }
 
     protected fun waitForIt(timeMillis: Long) {

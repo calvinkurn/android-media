@@ -57,7 +57,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
@@ -111,7 +111,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var binding by autoCleared<FragmentTalkInboxBinding>()
+    private var binding by autoClearedNullable<FragmentTalkInboxBinding>()
 
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var talkInboxListener: TalkInboxListener? = null
@@ -173,12 +173,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     override fun startRenderPerformanceMonitoring() {
         talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        binding.talkInboxRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+        binding?.talkInboxRecyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding.talkInboxRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding?.talkInboxRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -254,7 +254,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     override fun onPageClickedAgain() {
-        getRecyclerView(view).scrollToPosition(0)
+        getRecyclerView(view)?.scrollToPosition(0)
     }
 
     override fun onPause() {
@@ -264,12 +264,12 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         }
     }
 
-    override fun getRecyclerView(view: View?): RecyclerView {
-        return binding.talkInboxRecyclerView
+    override fun getRecyclerView(view: View?): RecyclerView? {
+        return binding?.talkInboxRecyclerView
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return binding.talkInboxSwipeToRefresh
+        return binding?.talkInboxSwipeToRefresh
     }
 
     override fun onAttach(context: Context) {
@@ -287,9 +287,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentTalkInboxBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -447,18 +447,18 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun renderOldData(data: List<TalkInboxOldUiModel>, hasNext: Boolean) {
         hideEmpty()
-        binding.talkInboxRecyclerView.show()
+        binding?.talkInboxRecyclerView?.show()
         renderList(data, hasNext)
     }
 
     private fun renderData(data: List<TalkInboxUiModel>, hasNext: Boolean) {
         hideEmpty()
-        binding.talkInboxRecyclerView.show()
+        binding?.talkInboxRecyclerView?.show()
         renderList(data, hasNext)
     }
 
     private fun initErrorPage() {
-        binding.inboxPageError.apply {
+        binding?.inboxPageError?.apply {
             talkConnectionErrorRetryButton.setOnClickListener {
                 loadInitialData()
             }
@@ -467,17 +467,17 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun showFullPageError() {
-        binding.inboxPageError.root.show()
+        binding?.inboxPageError?.root?.show()
     }
 
     private fun hideFullPageError() {
-        binding.inboxPageError.root.hide()
+        binding?.inboxPageError?.root?.hide()
     }
 
     private fun showErrorToaster() {
         view?.let {
             Toaster.build(
-                binding.talkInboxContainer,
+                binding?.talkInboxContainer ?: it,
                 getString(R.string.inbox_toaster_connection_error),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
@@ -487,21 +487,21 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun showEmptyInbox() {
-        with(binding.talkInboxEmpty) {
-            talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
+        binding?.talkInboxEmpty?.let {
+            it.talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
             if (isSellerApp() || (isSellerView() && isNewInbox())) {
-                talkInboxEmptyImage.loadImage(EMPTY_SELLER_DISCUSSION)
-                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_subtitle)
+                it.talkInboxEmptyImage.loadImage(EMPTY_SELLER_DISCUSSION)
+                it.talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_subtitle)
             } else {
-                talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
-                talkInboxEmptySubtitle.text = ""
+                it.talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
+                it.talkInboxEmptySubtitle.text = ""
             }
-            root.show()
+            it.root.show()
         }
     }
 
     private fun showEmptyFilter(title: String, subtitle: String) {
-        with(binding) {
+        binding?.apply {
             talkInboxEmpty.talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
             talkInboxEmpty.talkInboxEmptyTitle.text = title
             talkInboxEmpty.talkInboxEmptySubtitle.text = subtitle
@@ -511,7 +511,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun showEmptySeller(imageUrl: String, title: String, subtitle: String) {
-        with(binding) {
+        binding?.apply {
             talkInboxEmpty.talkInboxEmptyImage.loadImage(imageUrl)
             talkInboxEmpty.talkInboxEmptyTitle.text = title
             talkInboxEmpty.talkInboxEmptySubtitle.text = subtitle
@@ -521,23 +521,23 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun hideEmpty() {
-        binding.talkInboxEmpty.root.hide()
+        binding?.talkInboxEmpty?.root?.hide()
     }
 
     private fun showFullPageLoading() {
         if (isNewInbox()) {
-            binding.unifiedInboxPageLoading.root.show()
+            binding?.unifiedInboxPageLoading?.root?.show()
             return
         }
-        binding.inboxPageLoading.root.show()
+        binding?.inboxPageLoading?.root?.show()
     }
 
     private fun hideFullPageLoading() {
         if (isNewInbox()) {
-            binding.unifiedInboxPageLoading.root.hide()
+            binding?.unifiedInboxPageLoading?.root?.hide()
             return
         }
-        binding.inboxPageLoading.root.hide()
+        binding?.inboxPageLoading?.root?.hide()
     }
 
     private fun getDataFromArgument() {
@@ -547,7 +547,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun initSortFilter() {
-        binding.talkInboxSortFilter.apply {
+        binding?.talkInboxSortFilter?.apply {
             sortFilterItems.removeAllViews()
             sortFilterPrefix.removeAllViews()
             if (isSellerApp() || (isSellerView() && isNewInbox())) {
@@ -565,11 +565,11 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             val filter = activity?.intent?.data?.getQueryParameter(FILTER_PARAM)
             if (filter == FILTER_UNREAD) {
                 val unrespondedFilter =
-                    binding.talkInboxSortFilter.chipItems?.getOrNull(INDEX_UNRESPONDED_FILTER)
+                    binding?.talkInboxSortFilter?.chipItems?.getOrNull(INDEX_UNRESPONDED_FILTER)
                 val problemFilter =
-                    binding.talkInboxSortFilter.chipItems?.getOrNull(INDEX_PROBLEM_FILTER)
+                    binding?.talkInboxSortFilter?.chipItems?.getOrNull(INDEX_PROBLEM_FILTER)
                 val autoRepliedFilterChip =
-                    binding.talkInboxSortFilter.chipItems?.getOrNull(INDEX_AUTOREPLY_FILTER)
+                    binding?.talkInboxSortFilter?.chipItems?.getOrNull(INDEX_AUTOREPLY_FILTER)
                 unrespondedFilter?.toggle()
                 selectFilter(TalkInboxFilter.TalkInboxUnrespondedFilter(), shouldTrack = false)
                 if (unrespondedFilter?.type == ChipsUnify.TYPE_SELECTED) {
@@ -643,7 +643,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setupSettingsIcon() {
-        binding.talkInboxSettingsIcon.apply {
+        binding?.talkInboxSettingsIcon?.apply {
             setOnClickListener {
                 goToSellerSettings()
             }
@@ -652,7 +652,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun updateSettingsIconVisibility() {
-        binding.talkInboxSettingsIcon.apply {
+        binding?.talkInboxSettingsIcon?.apply {
             if (isSellerApp() || (isSellerView() && isNewInbox())) {
                 show()
                 return
@@ -698,11 +698,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun isNewNav(): Boolean {
-        return getAbTestPlatform()?.getString(
-            RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP || getAbTestPlatform()?.getString(
-            RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2
+        return true
     }
 
     private fun isSellerView(): Boolean {
@@ -724,7 +720,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun setFilterCounter() {
         if (isSellerApp() || isSellerView() && isNewInbox()) {
-            with(binding) {
+            binding?.apply {
                 if (getUnrespondedCount() != 0L) {
                     talkInboxSortFilter.chipItems?.getOrNull(0)?.title =
                         getString(R.string.inbox_unresponded) + " (${getUnrespondedCount()})"
@@ -770,24 +766,27 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun getCoachMarkItems(): ArrayList<CoachMark2Item> {
         val coachMarkItem = ArrayList<CoachMark2Item>()
-        with(binding) {
+        binding?.apply {
             if (talkInboxSortFilter.chipItems != null) {
                 coachMarkItem.addAll(
                     listOf(
                         getCoachMarkItem(
                             talkInboxSortFilter.chipItems?.getOrNull(0)?.refChipUnify,
                             getString(R.string.inbox_coach_mark_filter_title),
-                            getString(R.string.inbox_coach_mark_filter_subtitle)
+                            getString(R.string.inbox_coach_mark_filter_subtitle),
+                            this
                         ),
                         getCoachMarkItem(
                             talkInboxSortFilter.chipItems?.getOrNull(1)?.refChipUnify,
                             getString(R.string.inbox_coach_mark_reported_title),
-                            getString(R.string.inbox_coach_mark_reported_subtitle)
+                            getString(R.string.inbox_coach_mark_reported_subtitle),
+                            this
                         ),
                         getCoachMarkItem(
                             talkInboxSortFilter.chipItems?.getOrNull(2)?.refChipUnify,
                             getString(R.string.inbox_coach_mark_smart_reply_title),
-                            getString(R.string.inbox_coach_mark_smart_reply_subtitle)
+                            getString(R.string.inbox_coach_mark_smart_reply_subtitle),
+                            this
                         )
                     )
                 )
@@ -797,13 +796,14 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun setSettingsChipMargins() {
-        binding.talkInboxSortFilter.chipItems?.getOrNull(3)?.refChipUnify?.chip_text?.hide()
+        binding?.talkInboxSortFilter?.chipItems?.getOrNull(3)?.refChipUnify?.chip_text?.hide()
     }
 
     private fun getCoachMarkItem(
         anchorView: View?,
         title: String,
-        subtitle: String
+        subtitle: String,
+        binding: FragmentTalkInboxBinding
     ): CoachMark2Item {
         return CoachMark2Item(
             anchorView ?: binding.talkInboxSortFilter,
@@ -816,13 +816,13 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         if (isNewInbox() || GlobalConfig.isSellerApp()) {
             (activity as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
-                setSupportActionBar(binding.headerTalkInbox)
+                setSupportActionBar(binding?.headerTalkInbox)
             }
         }
     }
 
     private fun setupToolbar() {
-        binding.headerTalkInbox.apply {
+        binding?.headerTalkInbox?.apply {
             setTitle(R.string.title_talk_discuss)
             if (GlobalConfig.isSellerApp()) {
                 addRightIcon(0).apply {
@@ -842,7 +842,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                     }
                 }
                 show()
-                binding.talkInboxSettingsIcon.hide()
+                binding?.talkInboxSettingsIcon?.hide()
             }
         }
     }

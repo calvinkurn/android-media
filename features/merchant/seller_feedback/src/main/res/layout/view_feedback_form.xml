@@ -86,22 +86,22 @@
             app:typographyType="body_2" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_questions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/layout_questions"
             app:layout_constraintTop_toBottomOf="@id/background_header">
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker_seller_feedback"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:closeButtonVisibility="gone"
-                app:tickerShapeType="loose"
-                app:tickerType="information"
                 android:layout_marginTop="@dimen/spacing_lvl5"
+                app:closeButtonVisibility="gone"
                 app:layout_constraintEnd_toStartOf="@id/guideline_right"
                 app:layout_constraintStart_toEndOf="@id/guideline_left"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerShapeType="loose"
+                app:tickerType="information" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_form_first"
@@ -137,6 +137,17 @@
                 app:chipType="normal"
                 app:layout_constraintStart_toEndOf="@id/chip_feedback"
                 app:layout_constraintTop_toTopOf="@id/chip_feedback" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chips_feature_reqeust"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                app:chipSize="medium"
+                app:chipText="@string/feedback_form_feature_reqeust"
+                app:chipType="normal"
+                app:layout_constraintStart_toEndOf="@id/chip_report_error"
+                app:layout_constraintTop_toTopOf="@id/chip_report_error" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_form_second"
@@ -219,8 +230,8 @@
                 android:id="@+id/rv_image_feedback"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/dp_64"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"

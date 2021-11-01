@@ -1,6 +1,5 @@
 package com.tokopedia.play.robot.play
 
-import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
@@ -37,13 +36,13 @@ import kotlinx.coroutines.launch
  * Created by jegul on 10/02/21
  */
 class PlayViewModelRobot2(
-    private val playVideoBuilder: PlayVideoWrapper.Builder,
+    playVideoBuilder: PlayVideoWrapper.Builder,
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
     getChannelStatusUseCase: GetChannelStatusUseCase,
     getSocketCredentialUseCase: GetSocketCredentialUseCase,
-    private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    getReportSummariesUseCase: GetReportSummariesUseCase,
     getProductTagItemsUseCase: GetProductTagItemsUseCase,
     trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
@@ -57,42 +56,38 @@ class PlayViewModelRobot2(
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
     playChannelWebSocket: PlayChannelWebSocket,
     playChannelSSE: PlayChannelSSE,
-    private val repo: PlayViewerRepository,
+    repo: PlayViewerRepository,
     playAnalytic: PlayNewAnalytic,
     timerFactory: TimerFactory,
     castPlayerHelper: CastPlayerHelper
 ) : Robot {
 
-    val viewModel: PlayViewModel
-
-    init {
-        viewModel = PlayViewModel(
-            playVideoBuilder,
-            videoStateProcessorFactory,
-            channelStateProcessorFactory,
-            videoBufferGovernorFactory,
-            getChannelStatusUseCase,
-            getSocketCredentialUseCase,
-            getReportSummariesUseCase,
-            getProductTagItemsUseCase,
-            trackProductTagBroadcasterUseCase,
-            trackVisitChannelBroadcasterUseCase,
-            playChannelReminderUseCase,
-            playSocketToModelMapper,
-            playUiModelMapper,
-            userSession,
-            dispatchers,
-            remoteConfig,
-            playPreference,
-            videoLatencyPerformanceMonitoring,
-            playChannelWebSocket,
-            playChannelSSE,
-            repo,
-            playAnalytic,
-            timerFactory,
-            castPlayerHelper
-        )
-    }
+    val viewModel: PlayViewModel = PlayViewModel(
+        playVideoBuilder,
+        videoStateProcessorFactory,
+        channelStateProcessorFactory,
+        videoBufferGovernorFactory,
+        getChannelStatusUseCase,
+        getSocketCredentialUseCase,
+        getReportSummariesUseCase,
+        getProductTagItemsUseCase,
+        trackProductTagBroadcasterUseCase,
+        trackVisitChannelBroadcasterUseCase,
+        playChannelReminderUseCase,
+        playSocketToModelMapper,
+        playUiModelMapper,
+        userSession,
+        dispatchers,
+        remoteConfig,
+        playPreference,
+        videoLatencyPerformanceMonitoring,
+        playChannelWebSocket,
+        playChannelSSE,
+        repo,
+        playAnalytic,
+        timerFactory,
+        castPlayerHelper
+    )
 
     fun createPage(channelData: PlayChannelData) {
         viewModel.createPage(channelData)
@@ -108,6 +103,10 @@ class PlayViewModelRobot2(
 
     fun setLoggedIn(isUserLoggedIn: Boolean) {
         every { userSession.isLoggedIn } returns isUserLoggedIn
+    }
+
+    fun setUserId(userId: String) {
+        every { userSession.userId } returns userId
     }
 
     fun recordState(fn: PlayViewModelRobot2.() -> Unit): PlayViewerNewUiState {

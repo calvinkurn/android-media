@@ -3,12 +3,11 @@ package com.tokopedia.product.manage.feature.filter.presentation.adapter.viewhol
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.ItemChecklistBinding
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.SelectAdapter.Companion.CHECKLIST_FILTER_PAYLOAD
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
-import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistWidget
-import kotlinx.android.synthetic.main.item_checklist.view.*
-import kotlinx.android.synthetic.main.widget_checklist.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class CheckListViewHolder(view: View, private val checklistClickListener: ChecklistClickListener) : AbstractViewHolder<ChecklistUiModel>(view) {
 
@@ -16,14 +15,15 @@ class CheckListViewHolder(view: View, private val checklistClickListener: Checkl
         val LAYOUT = R.layout.item_checklist
     }
 
-    private var checklistWidget: ChecklistWidget = itemView.checklistWidget
+    private val binding by viewBinding<ItemChecklistBinding>()
 
     override fun bind(element: ChecklistUiModel) {
         itemView.setOnClickListener {
             checklistClickListener.onChecklistClick(element)
-            checklistWidget.checklist.isChecked = !checklistWidget.checklist.isChecked
+            binding?.checklistWidget?.checklist?.isChecked =
+                binding?.checklistWidget?.checklist?.isChecked == false
         }
-        checklistWidget.bind(element, checklistClickListener)
+        binding?.checklistWidget?.bind(element, checklistClickListener)
     }
 
     override fun bind(element: ChecklistUiModel?, payloads: MutableList<Any>) {
@@ -31,7 +31,7 @@ class CheckListViewHolder(view: View, private val checklistClickListener: Checkl
 
         when (payloads.getOrNull(0) as? Int) {
             CHECKLIST_FILTER_PAYLOAD -> {
-                checklistWidget.updateChecklist(element, checklistClickListener)
+                binding?.checklistWidget?.updateChecklist(element, checklistClickListener)
             }
         }
     }
