@@ -1,6 +1,8 @@
 package com.tokopedia.feedcomponent.util
 
+import android.content.Context
 import android.graphics.Rect
+import android.net.wifi.WifiManager
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,14 +28,14 @@ object FeedScrollListenerNew {
     private const val PAYLOAD_POST_TOPADS_VISIBLE= 77
     private const val TYPE_VIDEO = "video"
     fun  onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
-        if (canAutoplayVideo(recyclerView)) {
+        if (true) {
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
             val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
             val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
             for (i in firstPosition..lastPosition) {
                 val item = getCardViewModel(list, i)
                 val topadsItem = getTopadsCardViewModel(list,i)
-                if (isVideoCard(list, i)) {
+                if (isVideoCard(list, i) && isWifiEnabled(recyclerView.context)) {
                     if (item != null) {
                         getVideoModelScrollListener(layoutManager, recyclerView, i, item)
                     }
@@ -41,7 +43,7 @@ object FeedScrollListenerNew {
                     if (item != null) {
                         getImagePostScrollListener(layoutManager, recyclerView, i, item)
                     }
-                } else if (isVODCard(list, i)){
+                } else if (isVODCard(list, i) && isWifiEnabled(recyclerView.context)){
                     if (item != null) {
                         getVODModelScrollListener(layoutManager, recyclerView, i, item)
                     }
@@ -229,5 +231,9 @@ object FeedScrollListenerNew {
     private fun canAutoplayVideo(recyclerView: RecyclerView): Boolean {
         val config: RemoteConfig = FirebaseRemoteConfigImpl(recyclerView.context)
         return config.getBoolean(RemoteConfigKey.CONFIG_AUTOPLAY_VIDEO_WIFI, false)
+    }
+    fun isWifiEnabled(context: Context) : Boolean {
+        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        return wifiManager.isWifiEnabled
     }
 }

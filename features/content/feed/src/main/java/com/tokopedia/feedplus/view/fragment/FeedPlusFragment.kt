@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -2664,6 +2665,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
 
                 view.count = view.count + 1
+            Log.v("Hit View", "onSuccessAddViewVODPost view ${item.feedXCard.views.count}")
+
             adapter.notifyItemChanged(rowNumber, PAYLOAD_ANIMATE_LIKE)
         }
     }
@@ -2853,7 +2856,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         context?.let {
             if (!TextUtils.isEmpty(link)) {
                 if (RouteManager.isSupportApplink(it, link)) {
-
+                    RouteManager.route(it, link)
                 } else {
                     RouteManager.route(
                         it,

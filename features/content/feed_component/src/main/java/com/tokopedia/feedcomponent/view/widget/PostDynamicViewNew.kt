@@ -74,6 +74,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
+import java.util.*
+import kotlin.collections.ArrayList
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val TYPE_FEED_X_CARD_VOD: String = "FeedXCardPlay"
@@ -105,7 +107,8 @@ private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 private val handlerFeed = Handler(Looper.getMainLooper())
 private var secondCountDownTimer: CountDownTimer? = null
-private var addViewCountDownTImer: CountDownTimer? = null
+private var addViewTimer: Timer? = null
+private var isPaused = false
 
 
 /**
@@ -250,6 +253,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
 
     fun bindLike(feedXCard: FeedXCard) {
+        Log.v("Hit View", "bindViews view ${feedXCard.views.count}")
+
         if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
             bindViews(feedXCard)
         } else {
@@ -446,6 +451,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
     private fun bindViews(feedXCard: FeedXCard){
+        Log.v("Hit View", "bindViews view ${feedXCard.views.count}")
+
         val view = feedXCard.views
         if (feedXCard.like.isLiked) {
             val colorGreen =
@@ -1328,12 +1335,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val tags = feedMedia.tagging
         val postProductList = feedXCard.tags
         secondCountDownTimer = null
-        addViewCountDownTImer = null
+        addViewTimer = Timer()
         val tagProducts = mutableListOf<FeedXProduct>()
         isVODViewFrozen = false
         var count1 = 0
         var shouldTrack = true
-        var isPaused = false
+        isPaused = false
         vod_lanjut_menonton_btn?.gone()
         vod_frozen_view?.gone()
 
@@ -1373,7 +1380,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
                 }
                 vod_full_screen_icon?.setOnClickListener {
-                    videoPlayer?.getExoPlayer()?.currentPosition?.let { it1 -> listener?.onFullScreenCLick(positionInFeed, feedXCard.appLink, it1,shouldTrack) }
+                    videoPlayer?.getExoPlayer()?.currentPosition?.let {
+                        it1 -> listener?.onFullScreenCLick(positionInFeed, feedXCard.appLink, it1,shouldTrack) }
                 }
                 vod_lanjut_menonton_btn?.setOnClickListener {
                     videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(positionInFeed, feedXCard.appLink,it2,false)}
@@ -1414,23 +1422,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             }.start()
                         }
 
-                        if (addViewCountDownTImer != null) {
-                            addViewCountDownTImer?.cancel()
-                            addViewCountDownTImer?.start()
-                        } else {
-                            addViewCountDownTImer = object : CountDownTimer(TIME_FIVE_SEC, TIME_SECOND) {
-                                override fun onTick(millisUntilFinished: Long) {
-
+                        addViewTimer?.schedule(object : TimerTask() {
+                            override fun run() {
+                                if (!isPaused) {
+                                    Log.v("Hit View", "hit view ${feedXCard.views.count} c= ${feedXCard.playChannelID}")
+                                    listener?.addVODView(feedXCard.playChannelID, positionInFeed)
+                                    shouldTrack = false
+                                    isPaused = true
                                 }
+                            }
+                        }, TIME_FIVE_SEC)
 
-                                override fun onFinish() {
-                                    if(!isPaused) {
-                                        listener?.addVODView(feedXCard.playChannelID, positionInFeed)
-                                        shouldTrack = false
-                                    }
-                                }
-                            }.start()
-                        }
+
+
                        if(!isPaused) {
                            object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
                                override fun onTick(millisUntilFinished: Long) {
@@ -1667,13 +1671,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
         if (videoPlayer != null) {
+            if (model is DynamicPostUiModel)
+            Log.v("Hit View", "detach view ${model?.feedXCard?.views.count}")
+
+            isPaused = true
             if (secondCountDownTimer != null) {
                 secondCountDownTimer?.cancel()
                 secondCountDownTimer = null
             }
-            if (addViewCountDownTImer != null) {
-                addViewCountDownTImer?.cancel()
-                addViewCountDownTImer = null
+            if (addViewTimer != null) {
+                addViewTimer = null
             }
             videoPlayer?.pause()
             videoPlayer?.setVideoStateListener(null)

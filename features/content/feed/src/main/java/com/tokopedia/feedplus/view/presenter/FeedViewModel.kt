@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.presenter
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -12,10 +13,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
-import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_INTEREST
+import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
@@ -40,7 +38,6 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.domain.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -80,7 +77,7 @@ class FeedViewModel @Inject constructor(
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val sendReportUseCase: SendReportUseCase,
     private val addWishListUseCase: AddWishListUseCase,
-    private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase
+    private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase
 
 ) : BaseViewModel(baseDispatcher.main) {
 
@@ -180,8 +177,10 @@ class FeedViewModel @Inject constructor(
         })
     }
     fun trackVisitChannel(channelId: String,rowNumber: Int) {
+        Log.v("Hit View", "track ${channelId}")
+
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
-            trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
+            trackVisitChannelBroadcasterUseCase.setRequestParams(FeedBroadcastTrackerUseCase.createParams(channelId))
             val trackResponse = trackVisitChannelBroadcasterUseCase.executeOnBackground()
             val data = ViewsKolModel()
             data.rowNumber = rowNumber
