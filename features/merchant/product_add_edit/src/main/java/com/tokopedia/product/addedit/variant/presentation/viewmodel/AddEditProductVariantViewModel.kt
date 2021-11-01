@@ -5,11 +5,15 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
+import com.tokopedia.product.addedit.common.util.StringValidationUtil.isAllowedString
+import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValidationUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
 import com.tokopedia.product.addedit.variant.data.model.GetVariantCategoryCombinationResponse
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
@@ -27,7 +31,6 @@ import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -35,9 +38,10 @@ import javax.inject.Inject
 import kotlin.collections.HashMap
 
 class AddEditProductVariantViewModel @Inject constructor(
-        coroutineDispatcher: CoroutineDispatcher,
-        private val getVariantCategoryCombinationUseCase: GetVariantCategoryCombinationUseCase
-) : BaseViewModel(coroutineDispatcher) {
+        private val coroutineDispatcher: CoroutineDispatchers,
+        private val getVariantCategoryCombinationUseCase: GetVariantCategoryCombinationUseCase,
+        private val titleValidationUseCase: GetProductTitleValidationUseCase
+) : BaseViewModel(coroutineDispatcher.main) {
 
     var clickedVariantPhotoItemPosition: Int? = null
 
@@ -58,11 +62,14 @@ class AddEditProductVariantViewModel @Inject constructor(
     private val mSelectedVariantUnitValuesLevel1 = MutableLiveData<MutableList<UnitValue>>()
     private val mSelectedVariantUnitValuesLevel2 = MutableLiveData<MutableList<UnitValue>>()
 
+    var productInputModel = MutableLiveData<ProductInputModel>()
+
     private val mGetVariantCategoryCombinationResult = MutableLiveData<Result<GetVariantCategoryCombinationResponse>>()
     val getVariantCategoryCombinationResult: LiveData<Result<GetVariantCategoryCombinationResponse>>
         get() = mGetVariantCategoryCombinationResult
 
-    var productInputModel = MutableLiveData<ProductInputModel>()
+    private val mVariantTitleValidationStatus = MutableLiveData<VariantTitleValidationStatus>()
+    val variantTitleValidationStatus: LiveData<VariantTitleValidationStatus> get() = mVariantTitleValidationStatus
 
     private var mIsVariantPhotosVisible = MutableLiveData<Boolean>()
     val isVariantPhotosVisible: LiveData<Boolean> get() = mIsVariantPhotosVisible
@@ -108,7 +115,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun getVariantCategoryCombination(categoryId: Int, selections: List<SelectionInputModel>) {
         if (categoryId <= 0) return // only execute valid ID
-        var productVariants = mutableListOf<String>()
+        val productVariants = mutableListOf<String>()
         var type = ADD_MODE
         isEditMode.value?.let { isEdit ->
             if (isEdit) {
@@ -119,7 +126,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             }
         }
         launchCatchError(block = {
-            val result = withContext(Dispatchers.IO) {
+            val result = withContext(coroutineDispatcher.io) {
                 getVariantCategoryCombinationUseCase.setParams(categoryId, productVariants, type)
                 getVariantCategoryCombinationUseCase.executeOnBackground()
             }
@@ -127,6 +134,32 @@ class AddEditProductVariantViewModel @Inject constructor(
         }, onError = {
             mGetVariantCategoryCombinationResult.value = Fail(it)
         })
+    }
+
+    fun validateVariantTitle(productName: String) {
+        when {
+            productName.length < 3 -> {
+                mVariantTitleValidationStatus.value = VariantTitleValidationStatus.MINIMUM_CHAR
+            }
+            !isAllowedString(productName) -> {
+                mVariantTitleValidationStatus.value = VariantTitleValidationStatus.SYMBOL_ERROR
+            }
+            else -> validateIllegalVariantTitle(productName)
+        }
+    }
+
+    fun validateIllegalVariantTitle(productName: String) {
+        launchCatchError(block = {
+            val result = withContext(coroutineDispatcher.io) {
+                titleValidationUseCase.setParam(productName)
+                titleValidationUseCase.executeOnBackground()
+            }
+            if (result.getProductTitleValidation.blacklistKeyword.isEmpty()) {
+                mVariantTitleValidationStatus.value = VariantTitleValidationStatus.NO_ERROR
+            } else {
+                mVariantTitleValidationStatus.value = VariantTitleValidationStatus.ILLEGAL_WORD
+            }
+        }, onError = { /* no-op */ })
     }
 
     fun addCustomVariantUnitValue(layoutPosition: Int, selectedVariantUnit: Unit, customVariantUnitValue: UnitValue) {
