@@ -12,6 +12,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_ATC_CLP_PRODUCT_TOKONOW
@@ -36,7 +37,6 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
 
@@ -57,6 +57,9 @@ class TokoNowCategoryFragment:
     private lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
 
     override val toolbarPageName = "TokoNow Category"
+
+    override val oocPageName: String
+        get() = "tokonow - category page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,6 +111,7 @@ class TokoNowCategoryFragment:
             recommendationCarouselListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
+        recomWidgetBindPageNameListener = this
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -340,9 +344,9 @@ class TokoNowCategoryFragment:
             }
 
             "${uri.scheme}://" +
-                "${uri.host}/" +
-                "${uri.path}?" +
-                UrlParamUtils.generateUrlParamString(queryParamsMap)
+                    "${uri.host}/" +
+                    "${uri.path}?" +
+                    UrlParamUtils.generateUrlParamString(queryParamsMap)
         } else {
             originalApplink
         }
@@ -353,5 +357,9 @@ class TokoNowCategoryFragment:
         val categorySlug = uri.lastPathSegment ?: return
 
         CategoryTracking.sendOpenScreenTracking(categorySlug)
+    }
+
+    override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
+        CategoryTracking.sendOOCOpenScreenTracking()
     }
 }

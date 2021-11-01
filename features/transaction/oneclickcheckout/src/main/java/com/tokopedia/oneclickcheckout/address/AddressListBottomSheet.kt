@@ -12,10 +12,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -263,7 +260,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         onChangeData(OccState.Loading)
         OccIdlingResource.increment()
         compositeSubscription.add(
-            useCase.execute(query, addressState, getLocalCacheAddressId().toIntOrZero(), true)
+            useCase.execute(query, addressState, getLocalCacheAddressId().toLongOrZero(), true)
                     .subscribe(object : rx.Observer<AddressListModel> {
                         override fun onError(e: Throwable?) {
                             onChangeData(OccState.Failed(Failure(e)))
@@ -291,7 +288,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
             isLoadingMore = true
             OccIdlingResource.increment()
             compositeSubscription.add(
-                useCase.loadMore(savedQuery, ++this.page, addressState, getLocalCacheAddressId().toIntOrZero(), true)
+                useCase.loadMore(savedQuery, ++this.page, addressState, getLocalCacheAddressId().toLongOrZero(), true)
                         .subscribe(object : rx.Observer<AddressListModel> {
                             override fun onError(e: Throwable?) {
                                 onChangeData(OccState.Failed(Failure(e)))

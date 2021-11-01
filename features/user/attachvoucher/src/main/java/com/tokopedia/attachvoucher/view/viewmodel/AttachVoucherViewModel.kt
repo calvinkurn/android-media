@@ -1,17 +1,30 @@
 package com.tokopedia.attachvoucher.view.viewmodel
 
+import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.attachvoucher.data.FilterParam
+import com.tokopedia.attachvoucher.data.GetVoucherParam
 import com.tokopedia.attachvoucher.data.VoucherUiModel
+import com.tokopedia.attachvoucher.mapper.VoucherMapper
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AttachVoucherViewModel @Inject constructor(
-        private val getVouchersUseCase: GetVoucherUseCase
-) : ViewModel() {
+        private val getVouchersUseCase: GetVoucherUseCase,
+        private val dispatcher: CoroutineDispatchers,
+) : BaseViewModel(dispatcher.main) {
 
     val hasNext: Boolean get() = getVouchersUseCase.hasNext
+    var isLoading = false
     var currentPage = 0
 
     private var _filter: MutableLiveData<Int> = MutableLiveData()
@@ -33,16 +46,44 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     fun loadVouchers(page: Int) {
-        currentPage = page
-        if (getVouchersUseCase.isLoading) {
-            getVouchersUseCase.cancelCurrentLoad()
+        if (isLoading) {
+            cancelCurrentLoad()
         }
-        getVouchersUseCase.getVouchers(
-                page,
-                filter.value ?: NO_FILTER,
-                ::onSuccessGetVouchers,
-                ::onErrorGetVouchers
-        )
+
+        startLoading()
+        currentPage = page
+
+        launchCatchError(block = {
+            val param = generateParams(page, filter.value ?: NO_FILTER)
+            val vouchers = getVouchersUseCase(param)
+            onSuccessGetVouchers(vouchers)
+            stopLoading()
+        }, onError = {
+            onErrorGetVouchers(it)
+            stopLoading()
+        })
+    }
+
+    private fun stopLoading() {
+        isLoading = false
+    }
+
+    private fun startLoading() {
+        isLoading = true
+    }
+
+    fun cancelCurrentLoad() {
+        cancel()
+        stopLoading()
+    }
+
+    private fun generateParams(page: Int, filter: Int): FilterParam {
+        val paramMVFilter = GetVoucherParam(GetVoucherUseCase.MVFilter.VoucherStatus.paramOnGoing, GetVoucherUseCase.MVFilter.PerPage.default, page)
+
+        if (filter != GetVoucherUseCase.MVFilter.VoucherType.noFilter) {
+            paramMVFilter.voucher_type = filter
+        }
+        return FilterParam(paramMVFilter)
     }
 
     fun hasNoFilter(): Boolean {
@@ -59,6 +100,7 @@ class AttachVoucherViewModel @Inject constructor(
 
     companion object {
         const val NO_FILTER = GetVoucherUseCase.MVFilter.VoucherType.noFilter
+        const val PARAM_FILTER = "Filter"
     }
 
 }

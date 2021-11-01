@@ -623,5 +623,20 @@ object ReadReviewTracking {
             )
         )
     }
+
+    fun trackOnGoToCredibility(feedbackId: String, userId: String, statistics: String, productId: String, currentUserId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_CLICK_PDP,
+                ReviewTrackingConstant.EVENT_ACTION to ReadReviewTrackingConstants.EVENT_ACTION_CLICK_USER_NAME,
+                ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
+                ReviewTrackingConstant.EVENT_LABEL to String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_USER_NAME, feedbackId, userId, statistics),
+                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
+                ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
+                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,
+                ReadReviewTrackingConstants.KEY_USER_ID to currentUserId
+            )
+        )
+    }
 }
 

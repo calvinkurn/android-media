@@ -54,7 +54,10 @@ import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.UnifyButton;
@@ -69,8 +72,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV;
-import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP;
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT;
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT;
 
 public class DeveloperOptionActivity extends BaseActivity {
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
@@ -99,9 +102,6 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
-
-    String EXP_TOP_NAV = NAVIGATION_EXP_TOP_NAV;
-    String VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP;
 
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
@@ -251,8 +251,6 @@ public class DeveloperOptionActivity extends BaseActivity {
                 .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
 
         userSession.setFirstTimeUserOnboarding(false);
-
-        RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
     }
 
     /**
@@ -332,8 +330,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         tvFakeResponse = findViewById(R.id.tv_fake_response);
 
         UnifyButton buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
-        UnifyButton alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
         UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
+        UnifyButton alwaysOsExperiment = findViewById(R.id.buttonAlwaysExpOsBottomNavigation);
         alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
         System.out.println("++ line 332");
         UnifyButton alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
@@ -344,7 +342,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
         UnifyButton btnApplyRollence = findViewById(R.id.btn_apply_rollence);
 
-        findViewById(R.id.pdp_dev_btn).setOnClickListener(v->{
+        findViewById(R.id.pdp_dev_btn).setOnClickListener(v -> {
             Intent intent = new Intent(this, ProductDetailDevActivity.class);
             startActivity(intent);
         });
@@ -375,27 +373,23 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        String EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV;
-        String VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
-        String VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
-
         String EXP_BALANCE_WIDGET = RollenceKey.BALANCE_EXP;
         String BALANCE_WIDGET_VARIANT_OLD = RollenceKey.BALANCE_VARIANT_OLD;
         String BALANCE_WIDGET_VARIANT_REVAMP = RollenceKey.BALANCE_VARIANT_NEW;
 
-        alwaysOldButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_OLD);
-                Toast.makeText(DeveloperOptionActivity.this, "Navigation: Old", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         alwaysNewNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
+                RemoteConfigInstance.getInstance().getABTestPlatform().deleteKeyLocally(NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT);
                 Toast.makeText(DeveloperOptionActivity.this, "Navigation: Revamped", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alwaysOsExperiment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT, NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT);
+                Toast.makeText(DeveloperOptionActivity.this, "Navigation: OS Removed", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -415,7 +409,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        btnApplyRollence.setOnClickListener(new View.OnClickListener(){
+        btnApplyRollence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (inputRollenceKey.getTextFieldInput().getText().length() < 1) {
@@ -427,6 +421,18 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+        findViewById(R.id.btn_always_old_cart_checkout).setOnClickListener(v -> {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+            remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "false");
+            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.btn_always_new_cart_checkout).setOnClickListener(v -> {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+            remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "true");
+            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -728,7 +734,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     public Object getOrNull(String[] list, int index) {
-        if (index >= 0 && index <= list.length - 1)  {
+        if (index >= 0 && index <= list.length - 1) {
             return list[index];
         } else {
             return null;

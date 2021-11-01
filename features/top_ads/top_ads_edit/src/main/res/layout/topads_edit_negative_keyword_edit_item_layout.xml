@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_14"
-    android:layout_marginRight="@dimen/dp_14"
+    android:layout_marginLeft="14dp"
+    android:layout_marginRight="14dp"
     android:clickable="true"
     android:orientation="vertical"
-    app:cardCornerRadius="@dimen/dp_8"
+    app:cardCornerRadius="8dp"
     app:cardUseCompatPadding="true"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout9"
@@ -20,7 +20,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/keyword_name"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/topads_heading_color"
             android:textStyle="bold"
@@ -34,7 +34,7 @@
             android:id="@+id/sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             android:text="@string/topads_edit_select_sort"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/keyword_name"
@@ -43,9 +43,9 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/drop_down_arrow"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="8dp"
             android:tint="@color/tkpd_green_header"
             app:layout_constraintBottom_toBottomOf="@+id/sort"
             app:layout_constraintStart_toEndOf="@id/sort"
@@ -54,10 +54,10 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/delete"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/drop_down_arrow" />
 

@@ -141,7 +141,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     }
 
     private fun observeLeaderboardInfo() {
-        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {
            when (it) {
                NetworkResult.Loading -> {
                    showError(false)
@@ -163,7 +163,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                    }
                }
            }
-        })
+        }
     }
 
     private fun needRebindLeaderboard(): Boolean {

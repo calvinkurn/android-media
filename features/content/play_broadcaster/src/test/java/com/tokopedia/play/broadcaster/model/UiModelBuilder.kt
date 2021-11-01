@@ -8,10 +8,11 @@ import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
-import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import java.io.File
+import java.util.*
 
 /**
  * Created by jegul on 25/09/20
@@ -67,5 +68,75 @@ class UiModelBuilder {
     ) = PlayCoverUiModel(
             croppedCover = croppedCover,
             state = state
+    )
+
+    fun buildConfigurationUiModel(
+        streamAllowed: Boolean = true,
+        channelId: String = "",
+        channelType: ChannelType = ChannelType.Draft,
+        remainingTime: Long = 0L,
+        durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
+        productTagConfig: ProductTagConfigUiModel = buildProductTagConfigUiModel(),
+        coverConfig: CoverConfigUiModel = buildCoverConfigUiModel(),
+        countDown: Long = 0L,
+        scheduleConfig: BroadcastScheduleConfigUiModel = buildBroadcastScheduleConfigUiModel(),
+        tnc: List<TermsAndConditionUiModel> = emptyList(),
+    ) = ConfigurationUiModel(
+        streamAllowed = streamAllowed,
+        channelId = channelId,
+        channelType = channelType,
+        remainingTime = remainingTime,
+        durationConfig = durationConfig,
+        productTagConfig = productTagConfig,
+        coverConfig = coverConfig,
+        countDown = countDown,
+        scheduleConfig = scheduleConfig,
+        tnc = tnc,
+    )
+
+    fun buildDurationConfigUiModel(
+        duration: Long = 0L,
+        pauseDuration: Long = 0L,
+        maxDurationDesc: String = "",
+        errorMessage: String = "",
+    ) = DurationConfigUiModel(
+        duration = duration,
+        pauseDuration = pauseDuration,
+        maxDurationDesc = maxDurationDesc,
+        errorMessage = errorMessage,
+    )
+
+    fun buildProductTagConfigUiModel(
+        maxProduct: Int = 0,
+        minProduct: Int = 0,
+        maxProductDesc: String = "",
+        errorMessage: String = ""
+    ) = ProductTagConfigUiModel(
+        maxProduct = maxProduct,
+        minProduct = minProduct,
+        maxProductDesc = maxProductDesc,
+        errorMessage = errorMessage,
+    )
+
+    fun buildCoverConfigUiModel(
+        maxChars: Int = 0,
+    ) = CoverConfigUiModel(
+        maxChars = maxChars,
+    )
+
+    fun buildBroadcastScheduleConfigUiModel(
+        minimum: Date = Date(),
+        maximum: Date = Date(),
+        default: Date = Date(),
+    ) = BroadcastScheduleConfigUiModel(
+        minimum = minimum,
+        maximum = maximum,
+        default = default,
+    )
+
+    fun buildTermsAndConditionUiModel(
+        desc: String,
+    ) = TermsAndConditionUiModel(
+        desc = desc,
     )
 }

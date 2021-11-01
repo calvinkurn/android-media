@@ -1,49 +1,30 @@
 package com.tokopedia.loginfingerprint.domain.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.RemoveFingerprintPojo
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
+
+/**
+ * Created by Yoris on 07/10/21.
+ */
 
 class RemoveFingerprintUsecase @Inject constructor(
-    private val graphqlUseCase: GraphqlUseCase<RemoveFingerprintPojo>,
-    private var dispatchers: CoroutineDispatchers,
-    private val fingerprintPreferenceManager: FingerprintPreference
-): CoroutineScope {
+    @ApplicationContext private val repository: GraphqlRepository,
+    private val fingerprintPreference: FingerprintPreference
+) : CoroutineUseCase<Unit, RemoveFingerprintPojo>(Dispatchers.IO){
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
-
-    fun removeFingerprint(
-        onSuccess: (RemoveFingerprintPojo) -> Unit,
-        onError: (Throwable) -> Unit) {
-        launchCatchError(dispatchers.io, {
-            val data =
-                graphqlUseCase.apply {
-                    setTypeClass(RemoveFingerprintPojo::class.java)
-                    setRequestParams(mapOf(
-                        BiometricConstant.PARAM_BIOMETRIC_ID to fingerprintPreferenceManager.getUniqueId()
-                    ))
-                    setGraphqlQuery(query)
-                }.executeOnBackground()
-            withContext(dispatchers.main) {
-                onSuccess(data)
-            }
-        }, {
-            withContext(dispatchers.main) {
-                onError(it)
-            }
-        })
+    override suspend fun execute(params: Unit): RemoveFingerprintPojo {
+        val mappedParams = mapOf(BiometricConstant.PARAM_BIOMETRIC_ID to fingerprintPreference.getUniqueId())
+        return repository.request(graphqlQuery(), mappedParams)
     }
 
-    companion object {
-        val query: String = """
+    override fun graphqlQuery(): String = """
             mutation remove_fingerprint {
                 flushFingerprintByUniqueID {
                         is_success
@@ -51,5 +32,4 @@ class RemoveFingerprintUsecase @Inject constructor(
                         message                   
                 }
             }""".trimIndent()
-    }
 }

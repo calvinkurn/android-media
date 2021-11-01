@@ -253,10 +253,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 }
                 REQUEST_CODE_CART_DIGITAL -> {
                     data?.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { throwable ->
-                        view?.let {
-                            val errMsg = ErrorHandler.getErrorMessage(context, throwable as Throwable)
-                            Toaster.build(it, errMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-                        }
+                        showErrorMessage(throwable as Throwable)
                     }
                 }
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
@@ -424,12 +421,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun showErrorMessage(error: Throwable) {
-        view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
-                    ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-        }
-    }
+    abstract fun showErrorMessage(error: Throwable)
 
     private fun processExpressCheckout(checkOtp: Boolean = false) {
         // Check if promo code is valid

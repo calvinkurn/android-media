@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
