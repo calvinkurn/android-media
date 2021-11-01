@@ -15,9 +15,7 @@ import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieTask
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
@@ -32,6 +30,8 @@ import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import java.net.URLDecoder
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -60,6 +60,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupLottieAnimation()
+
         viewModel = ViewModelProvider(
             this,
             viewModelFactory
@@ -79,14 +81,15 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        showFullLoading()
+        playLottieAnim(LOTTIE_BG_ANIMATION)
+
         initObserver()
 
         if(otpData != null && modeListData != null) {
             analytics.trackClickMethodOtpButton(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
         }
 
-        setupLottieAnimation()
-        playLottieAnim(LOTTIE_BG_ANIMATION)
         requestOtp()
     }
 
@@ -114,12 +117,12 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             }
         })
 
-//        viewModel.bokuVerificationResponse.observe(viewLifecycleOwner, {
-//            when(it) {
-//                is Success -> handleBokuResult(it.data)
-//                is Fail -> onErrorVerification(it.throwable)
-//            }
-//        })
+        viewModel.bokuVerificationResponse.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> handleBokuResult(it.data)
+                is Fail -> onErrorVerification(it.throwable)
+            }
+        })
 
         viewModel.validationResponse.observe(viewLifecycleOwner, {
             when(it) {
@@ -163,6 +166,16 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun showFullLoading() {
+        binding?.fragmentSilentVerifLoader?.show()
+        binding?.fragmentSilentVerifContainer?.invisible()
+    }
+
+    private fun hideFullLoading() {
+        binding?.fragmentSilentVerifLoader?.hide()
+        binding?.fragmentSilentVerifContainer?.visible()
+    }
+
     private fun playLottieAnim(type: String) {
         try {
             if(lottieTaskList.isNotEmpty()) {
@@ -172,6 +185,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                         binding?.fragmentSilentVerifAnimation?.visibility = View.VISIBLE
                         binding?.fragmentSilentVerifAnimation?.playAnimation()
                         binding?.fragmentSilentVerifAnimation?.repeatCount = LottieDrawable.INFINITE
+                        hideFullLoading()
                     }
                 } else {
                     lottieTaskList[1].addListener { result ->
@@ -183,28 +197,28 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
                         Handler().postDelayed({
                             renderFinalSuccess()
-                        }, 1000)
+                        }, 1500)
                     }
                 }
+            } else {
+                hideFullLoading()
             }
         } catch (e: Exception) {
-
+            hideFullLoading()
         }
     }
 
     private fun renderInitialSuccess() {
         binding?.fragmentSilentVerifTitle?.hide()
         binding?.fragmentSilentVerifSubtitle?.hide()
-        binding?.fragmentSilentVerifSuccessImg?.hide()
         playLottieAnim(LOTTIE_SUCCESS_ANIMATION)
     }
 
     private fun renderFinalSuccess() {
         context?.run {
+            binding?.fragmentSilentVerifTitle?.show()
             binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_success)
-            binding?.fragmentSilentVerifSubtitle?.text = getString(R.string.fragment_silent_verif_subtitle_success)
-            binding?.fragmentSilentVerifSuccessImg?.show()
-            binding?.fragmentSilentVerifSuccessAnim?.hide()
+            binding?.fragmentSilentVerifSubtitle?.hide()
         }
     }
 
@@ -240,17 +254,35 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun mapBokuResult(query: String): Map<String, String> {
+        try {
+            val queriesMap: MutableMap<String, String> = LinkedHashMap()
+            val pairs = query.split("&").toTypedArray()
+            for (pair in pairs) {
+                val idx = pair.indexOf("=")
+                queriesMap[URLDecoder.decode(pair.substring(0, idx), "UTF-8")] =
+                    URLDecoder.decode(pair.substring(idx + 1), "UTF-8")
+            }
+            return queriesMap
+        }catch (e: Exception) {
+            onErrorVerification(Throwable(message = "Invalid Response"))
+        }
+        return mapOf()
+    }
+
     private fun handleBokuResult(resultCode: String) {
-        when {
-            resultCode == VALID_SCORE -> {
+        try {
+            val result = mapBokuResult(resultCode)
+            if (result.containsKey(KEY_ERROR_DESC) &&
+                result.containsValue(VALUE_SUCCESS) &&
+                result.containsKey(KEY_CARRIER)
+            ) {
                 onSuccessBokuVerification()
+            } else {
+                onErrorVerification(Throwable("Verification Failed"))
             }
-            resultCode.startsWith(BOKU_ERROR_PREFIX) -> {
-                onFailedBokuVerification(resultCode)
-            }
-            else -> {
-                onErrorVerification(Throwable(message = "Error boku validation"))
-            }
+        }catch (e: Exception) {
+            onErrorVerification(Throwable("Verification Failed"))
         }
     }
 
@@ -268,20 +300,16 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun onFailedBokuVerification(resultCode: String) {
-        when(resultCode) {
-
-        }
-    }
-
     private fun onErrorVerification(throwable: Throwable) {
         showErrorState()
     }
 
     companion object {
+        private const val KEY_ERROR_CODE = "ErrorCode"
+        private const val KEY_ERROR_DESC = "ErrorDescription"
+        private const val KEY_CARRIER = "Carrier"
 
-        private const val VALID_SCORE = "10"
-        private const val BOKU_ERROR_PREFIX = "-50"
+        private const val VALUE_SUCCESS = "Success"
 
         private const val LOTTIE_SUCCESS_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_success.json"
         private const val LOTTIE_BG_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_animation_bg.json"
