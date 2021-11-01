@@ -247,7 +247,7 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun observeChannelList() {
-        viewModel.observableChannelIdsResult.observe(this, Observer {
+        viewModel.observableChannelIdsResult.observe(this) {
             when (it.state) {
                 PageResultState.Loading -> {
                     fragmentErrorViewOnStateChanged(shouldShow = false)
@@ -265,7 +265,7 @@ class PlayActivity : BaseActivity(),
                 }
             }
             swipeContainerView.setChannelIds(it.currentValue)
-        })
+        }
     }
 
     private fun observeFirstChannelEvent() {

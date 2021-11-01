@@ -1,0 +1,33 @@
+package com.tokopedia.buyerorderdetail.domain.models
+
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+data class OrderExtensionRespondInfoResponse(
+    @Expose
+    @SerializedName("data")
+    val `data`: Data = Data(),
+    @Expose
+    @SerializedName("status")
+    val status: String = ""
+) {
+    data class Data(
+        @Expose
+        @SerializedName("message")
+        val message: String = "",
+        @Expose
+        @SerializedName("message_code")
+        val messageCode: Int = 0,
+        @Expose
+        @SerializedName("new_deadline")
+        val newDeadline: String = "",
+        @Expose
+        @SerializedName("reason")
+        val reason: String = "",
+        @SerializedName("reject_text")
+        val rejectText: String = "",
+        @SerializedName("text")
+        val text: String = ""
+    )
+}

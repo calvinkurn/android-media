@@ -560,7 +560,11 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(TRACK) }, DF_BASE, R.string.title_order_management_history))
 
             // Revamped buyer order detail (features/ordermanagement/buyer_order_detail)
-            add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL) }, DF_BASE, R.string.title_revamped_buyer_order_detail))
+            add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL) ||
+                    it.startsWith(BUYER_ORDER_EXTENSION) ||
+                    it.startsWith(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION)
+                    }, DF_BASE, R.string.title_revamped_buyer_order_detail)
+            )
 
             // Tokopedia NOW!
             add(DFP({
