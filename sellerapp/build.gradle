@@ -317,6 +317,7 @@ dependencies {
     }
 
     implementation projectOrAar(rootProject.ext.libraries.pageInfoPusher)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.preReleaseInspector)

@@ -37,6 +37,8 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
@@ -62,6 +64,8 @@ import com.tokopedia.utils.permission.SlicePermission;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SecretKey;
@@ -379,6 +383,10 @@ public class SellerMainApplication extends SellerRouterApplication implements
     @Override
     public Configuration getWorkManagerConfiguration() {
         return new Configuration.Builder().setInitializationExceptionHandler(throwable -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("type", "init");
+            map.put("error", Log.getStackTraceString(throwable));
+            ServerLogger.log(Priority.P1, "WorkManager", map);
             throw new RuntimeException("WorkManager failed to initialize", throwable);
         }).build();
     }

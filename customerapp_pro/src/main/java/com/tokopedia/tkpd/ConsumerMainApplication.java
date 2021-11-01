@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Configuration;
@@ -16,10 +17,15 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.intl.BuildConfig;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import kotlin.Pair;
 
@@ -137,6 +143,10 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public Configuration getWorkManagerConfiguration() {
         return new Configuration.Builder().setInitializationExceptionHandler(throwable -> {
+            Map<String, String> map = new HashMap<>();
+            map.put("type", "init");
+            map.put("error", Log.getStackTraceString(throwable));
+            ServerLogger.log(Priority.P1, "WorkManager", map);
             throw new RuntimeException("WorkManager failed to initialize", throwable);
         }).build();
     }
