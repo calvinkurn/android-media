@@ -13,6 +13,7 @@ import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailProductViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailTopSectionViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.viewmodel.RechargeOrderDetailViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -25,7 +26,8 @@ import javax.inject.Inject
  * @author by furqan on 28/10/2021
  */
 class RechargeOrderDetailFragment : BaseDaggerFragment(),
-        RechargeOrderDetailTopSectionViewHolder.RechargeOrderDetailTopSectionActionListener {
+        RechargeOrderDetailTopSectionViewHolder.RechargeOrderDetailTopSectionActionListener,
+        RechargeOrderDetailProductViewHolder.RechargeOrderDetailProductActionListener {
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -36,7 +38,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private val typeFactory: RechargeOrderDetailTypeFactory by lazy {
-        RechargeOrderDetailTypeFactory(this)
+        RechargeOrderDetailTypeFactory(this, this)
     }
     private val adapter: RechargeOrderDetailAdapter by lazy {
         RechargeOrderDetailAdapter(typeFactory)
@@ -95,6 +97,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCopyInvoiceNumberClicked(invoiceRefNum: String) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onCopyCodeClicked(label: String, value: String) {
 //        TODO("Not yet implemented")
     }
 
