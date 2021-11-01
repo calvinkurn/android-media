@@ -6,8 +6,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -15,13 +18,18 @@ import javax.inject.Inject
 
 open class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
+    private var reminderTickerUseCase: GetReminderTickerUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _messageId = MutableLiveData<Result<String>>()
     val messageId: LiveData<Result<String>>
         get() = _messageId
+
+    private val _srwTickerReminder = MutableLiveData<Result<ReminderTickerUiModel>>()
+    val srwTickerReminder: LiveData<Result<ReminderTickerUiModel>>
+        get() = _srwTickerReminder
 
     fun getMessageId(
         toUserId: String,
@@ -40,4 +48,18 @@ open class TopChatViewModel @Inject constructor(
             _messageId.value = Fail(it)
         })
     }
+
+    fun getTickerReminder() {
+        launchCatchError(
+            block = {
+                val existingMessageIdParam = GetReminderTickerUseCase.Param(
+                    featureId = SRW_TICKER
+                )
+                val result = reminderTickerUseCase(existingMessageIdParam)
+                _srwTickerReminder.value = Success(result.getReminderTicker)
+            },
+            onError = { }
+        )
+    }
+
 }

@@ -145,7 +145,9 @@ import android.content.*
 
 import android.content.ClipData
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
@@ -726,7 +728,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         replyCompose?.setReplyListener(this)
         when {
             !isSeller() -> presenter.getSmartReplyWidget(messageId)
-            isSeller() -> presenter.adjustInterlocutorWarehouseId(messageId)
+            isSeller() -> {
+                presenter.adjustInterlocutorWarehouseId(messageId)
+                viewModel.getTickerReminder()
+            }
         }
     }
 
@@ -2358,6 +2363,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 is Fail -> onError(it.throwable)
             }
         })
+        viewModel.srwTickerReminder.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> onSuccessGetTickerReminder(it.data)
+            }
+        })
+    }
+
+    private fun onSuccessGetTickerReminder(
+        data: ReminderTickerUiModel
+    ) {
+        if (!data.enable) return
+        val eligiblePosition = adapter.findSrwTickerPosition(data.regexMessage)
+        adapter.addElement(eligiblePosition, data)
+        Toast.makeText(context, "Position found: $eligiblePosition", Toast.LENGTH_SHORT).show()
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
