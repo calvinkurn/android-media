@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.category.navbottomsheet.view.CategoryNavBottomSheet
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
@@ -121,10 +122,13 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onTabSelected(tab: TabLayout.Tab) {
         selectedTab = tab
         if (tabsViewModel.setSelectedState(tab.position, true)) {
-            if ((fragment.activity as DiscoveryActivity).isFromCategory()) {
-                tabsViewModel.components.getComponentsItem()?.get(tab.position).apply {
-                    (fragment.activity as DiscoveryActivity).getViewModel().pageIdentifier =
-                        this?.data?.firstOrNull()?.id ?: ""
+            (fragment.activity as DiscoveryActivity).let {
+                if (it.isFromCategory()) {
+                    tabsViewModel.components.getComponentsItem()?.get(tab.position).apply {
+                        it.getAnalytics().setOldTabPageIdentifier(this?.data?.firstOrNull()?.id ?: "")
+                        it.getViewModel().pageIdentifier =
+                            this?.data?.firstOrNull()?.id ?: ""
+                    }
                 }
             }
             tabsViewModel.onTabClick()
@@ -170,6 +174,12 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.reInitTabTargetComponents()
         tabsViewModel.reInitTabComponentData()
         tabsViewModel.fetchDynamicTabData()
+        (fragment.activity as DiscoveryActivity).let {
+            if (it.isFromCategory()) {
+                RouteManager.route(itemView.context, appLink)
+                it.finish()
+            }
+        }
     }
 
     override fun onL2Expanded(id: String?, name: String?) {
