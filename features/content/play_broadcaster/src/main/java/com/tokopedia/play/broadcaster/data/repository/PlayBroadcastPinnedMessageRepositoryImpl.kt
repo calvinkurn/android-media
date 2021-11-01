@@ -56,7 +56,7 @@ class PlayBroadcastPinnedMessageRepositoryImpl @Inject constructor(
         return@withContext PinnedMessageUiModel(
             id = response.data.messageIds.first(),
             message = message,
-            isActive = true,
+            isActive = false, //because add does not immediately activate the pinned
             editStatus = PinnedMessageEditStatus.Nothing,
         )
     }
