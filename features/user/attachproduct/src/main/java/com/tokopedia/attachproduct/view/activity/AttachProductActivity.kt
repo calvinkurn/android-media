@@ -16,7 +16,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import java.util.*
 
-class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activity {
+open class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activity {
 
     private var warehouseId = "0"
     private var shopId = ""

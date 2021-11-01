@@ -7,7 +7,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class AttachProductUseCase @Inject constructor(private val repository: GraphqlRepository,
+open class AttachProductUseCase @Inject constructor(private val repository: GraphqlRepository,
                            private val graphQuery: String,
                            private val dispatcher: CoroutineDispatcher):
         CoroutineUseCase<Map<String, Any>, AceSearchProductResponse>(dispatcher) {
