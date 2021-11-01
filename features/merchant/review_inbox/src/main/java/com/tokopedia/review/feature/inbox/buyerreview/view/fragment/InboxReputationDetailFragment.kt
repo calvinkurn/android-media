@@ -327,7 +327,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         val listLocation: ArrayList<String> = ArrayList()
         val listDesc: ArrayList<String> = ArrayList()
         list.forEach {
-            listLocation.add(it.fileLoc)
+            listLocation.add(it.picSrcLarge)
             listDesc.add(it.description)
         }
         startActivity(

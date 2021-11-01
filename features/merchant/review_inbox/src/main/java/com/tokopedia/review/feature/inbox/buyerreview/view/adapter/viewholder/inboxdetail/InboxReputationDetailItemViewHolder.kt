@@ -352,7 +352,8 @@ class InboxReputationDetailItemViewHolder(
                 ImageUpload(
                     it.uriThumbnail,
                     it.uriLarge,
-                    it.description, it.attachmentId.toString()
+                    it.description,
+                    it.attachmentId.toString()
                 )
             )
         }

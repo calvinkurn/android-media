@@ -58,7 +58,7 @@ class ImageUploadAdapter constructor(var context: Context) :
     }
 
     private fun bindImage(holder: ViewHolder, position: Int) {
-        holder.image.loadImage(list[position].fileLoc)
+        holder.image.loadImage(list[position].picSrc)
         holder.image.setOnClickListener(listener?.onImageClicked(position, list[position]))
         setBorder(holder, position)
     }
