@@ -20,9 +20,8 @@ class DimenResourceValueDetector : Detector(), XmlScanner {
     companion object {
         val ISSUE = Issue.create(
             id = "DimenResourceValue",
-            briefDescription = "Reusing dimen from other module decrease build performance.",
-            explanation = "Reusing dimen from other module decrease build performance. " +
-                "Please use dimen value instead.",
+            briefDescription = "Please use actual value instead of dimen for better performance.",
+            explanation = "Please use actual value instead of dimen for better performance.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.WARNING,
@@ -32,7 +31,7 @@ class DimenResourceValueDetector : Detector(), XmlScanner {
             )
         )
 
-        private const val ERROR_MESSAGE = "Reusing dimen from other module decrease build performance."
+        private const val ERROR_MESSAGE = "Please use actual value instead of dimen for better performance."
     }
 
     private var resourceIds = arrayListOf<String>()
@@ -60,7 +59,7 @@ class DimenResourceValueDetector : Detector(), XmlScanner {
 
     private fun reportError(context: XmlContext, node: Node, resName: String) {
         val dimen = "${SdkConstants.DIMEN_PREFIX}$resName"
-        val hint = "Replace \"$dimen\" with dimen value."
+        val hint = "Change \"$dimen\" with actual value."
 
         val quickFix = LintFix.create()
             .replace()
