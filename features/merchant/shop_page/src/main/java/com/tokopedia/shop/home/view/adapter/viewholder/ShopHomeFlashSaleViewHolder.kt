@@ -67,7 +67,7 @@ class ShopHomeFlashSaleViewHolder(
         setupCtaSeeAll(productSize)
         setupFlashSaleBackgroundView(flashSaleItem?.productList ?: listOf())
         setupFlashSaleCountDownTimer(element)
-        setupFlashSaleReminder(flashSaleItem?.isRemindMe?:false, flashSaleItem?.totalNotify?:0)
+        setupFlashSaleReminder(flashSaleItem)
         setupProductCardCarousel(element)
         setupWidgetImpressionListener(element)
         // todo set placeholder
@@ -159,11 +159,18 @@ class ShopHomeFlashSaleViewHolder(
         }
     }
 
-    private fun setupFlashSaleReminder(isRemindMe: Boolean, totalNotify: Int) {
+    private fun setupFlashSaleReminder(flashSaleItem: FlashSaleItem?) {
+        // hide reminder when campaign satus is ongoing
+        val statusCampaign = flashSaleItem?.statusCampaign ?: ""
+        val isOngoing = isStatusCampaignOngoing(statusCampaign)
+        if(isOngoing) flashSaleReminderView.hide()
+        else flashSaleReminderView.show()
         // set reminder bell icon
+        val isRemindMe = flashSaleItem?.isRemindMe?:false
         if (isRemindMe) reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_true)
         else reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_false)
         // set reminder wording
+        val totalNotify = flashSaleItem?.totalNotify?:0
         val reminderWording = getTotalNotifyWording(totalNotify)
         reminderCountView?.text = reminderWording
     }
