@@ -21,6 +21,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.test.application.annotations.InstrumentationTest
 import com.tokopedia.test.application.espresso_component.CommonAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -32,6 +33,7 @@ import org.junit.Test
 /**
  * Created by devarafikry on 02/07/21.
  */
+@InstrumentationTest
 class HomeFragmentDynamicChannelErrorUiTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
