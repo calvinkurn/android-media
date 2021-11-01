@@ -50,7 +50,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/pcv_video"
-        app:layout_constraintEnd_toStartOf="@id/view_like"
+        app:layout_constraintEnd_toStartOf="@id/view_share_link"
         app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
@@ -72,7 +72,7 @@
         android:id="@+id/view_topmost_like"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginBottom="@dimen/play_offset_44"
+        android:layout_marginBottom="@dimen/spacing_lvl8"
         app:layout_constraintBottom_toBottomOf="@id/view_like"
         />
 
@@ -86,6 +86,15 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/view_like"
         app:layout_constraintEnd_toEndOf="@id/view_size"
+        />
+
+    <include
+        android:id="@+id/view_share_link"
+        layout="@layout/view_share_link"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/view_like"
+        app:layout_constraintEnd_toStartOf="@id/view_like"
         />
 
     <include
@@ -184,7 +193,7 @@
         android:visibility="gone"
         app:controller_layout_id="@layout/layout_play_player_control"
         app:layout_constraintBottom_toBottomOf="@id/view_size"
-        app:layout_constraintEnd_toStartOf="@id/view_like"
+        app:layout_constraintEnd_toStartOf="@id/view_share_link"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:show_timeout="-1"
         tools:visibility="visible"

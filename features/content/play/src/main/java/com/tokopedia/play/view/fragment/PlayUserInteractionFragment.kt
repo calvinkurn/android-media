@@ -109,6 +109,7 @@ class PlayUserInteractionFragment @Inject constructor(
         ToolbarViewComponent.Listener,
         VideoControlViewComponent.Listener,
         LikeViewComponent.Listener,
+        ShareLinkViewComponent.Listener,
         SendChatViewComponent.Listener,
         QuickReplyViewComponent.Listener,
         PinnedViewComponent.Listener,
@@ -129,6 +130,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
+    private val shareLinkView by viewComponent { ShareLinkViewComponent(it, R.id.view_share_link, this) }
     private val sendChatView by viewComponentOrNull { SendChatViewComponent(it, R.id.view_send_chat, this) }
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
@@ -315,6 +317,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onCopyButtonClicked(view: ToolbarViewComponent) {
+        playViewModel.submitAction(ClickShareAction)
+
+        analytic.clickCopyLink()
+    }
+
+    override fun onShareIconClick(view: ShareLinkViewComponent) {
         playViewModel.submitAction(ClickShareAction)
 
         analytic.clickCopyLink()
@@ -798,6 +806,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 immersiveBoxView.hide()
                 playButtonView.hide()
                 toolbarView.setIsShareable(false)
+                shareLinkView.setIsShareable(false)
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
@@ -1497,6 +1506,7 @@ class PlayUserInteractionFragment @Inject constructor(
         toolbarView.setPartnerName(partner.name)
 
         toolbarView.setIsShareable(share.shouldShow)
+        shareLinkView.setIsShareable(share.shouldShow)
     }
 
     private fun renderLikeView(
