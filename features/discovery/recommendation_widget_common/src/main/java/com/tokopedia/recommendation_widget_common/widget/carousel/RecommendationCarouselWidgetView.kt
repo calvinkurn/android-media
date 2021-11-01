@@ -484,7 +484,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onWidgetResume() {
-        getMiniCartData()
+//        getMiniCartData()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
