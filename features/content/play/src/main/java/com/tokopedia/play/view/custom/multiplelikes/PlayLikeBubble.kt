@@ -2,9 +2,6 @@ package com.tokopedia.play.view.custom.multiplelikes
 
 import android.graphics.*
 import androidx.annotation.ColorInt
-import com.tokopedia.play.animation.multiplelikes.PlayLikeBubbleMove
-import kotlin.math.max
-import kotlin.math.min
 
 class Bubble(
     val icon: Bitmap,
