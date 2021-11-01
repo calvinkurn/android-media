@@ -661,8 +661,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             autoSelectTabProduct = true
             telcoClientNumberWidget.run {
                 setAutoCompleteList(favNumbers)
-                setInputNumber(favNumbers[0].clientNumber)
-                setContactName(favNumbers[0].clientName)
                 setFavoriteNumber(favNumbers)
                 showOnBoarding()
             }

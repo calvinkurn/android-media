@@ -174,7 +174,7 @@ class TopupBillsFavoriteNumberFragment:
 
         topUpBillsViewModel.seamlessFavNumberData.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessGetFavoriteNumber(it.data.favoriteNumbers)
+                is Success -> onSuccessGetFavoriteNumber(it.data.first.favoriteNumbers)
                 is Fail -> onFailedGetFavoriteNumber(it.throwable)
             }
             savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { filterData(it) })

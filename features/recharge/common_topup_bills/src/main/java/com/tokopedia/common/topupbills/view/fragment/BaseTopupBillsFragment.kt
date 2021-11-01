@@ -156,7 +156,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         topupBillsViewModel.seamlessFavNumberData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {
-                    is Success -> processSeamlessFavoriteNumbers(it.data)
+                    is Success -> processSeamlessFavoriteNumbers(it.data.first, it.data.second)
                     is Fail -> onSeamlessFavoriteNumbersError(it.throwable)
                 }
             }
@@ -407,10 +407,14 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 topupBillsViewModel.createFavoriteNumbersParams(categoryId))
     }
 
-    fun getSeamlessFavoriteNumbers(categoryIds: List<String>) {
+    fun getSeamlessFavoriteNumbers(
+        categoryIds: List<String>,
+        shouldRefreshInputNumber: Boolean = true
+    ) {
         topupBillsViewModel.getSeamlessFavoriteNumbers(
                 CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
-                topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds)
+                topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds),
+                shouldRefreshInputNumber
         )
     }
 
@@ -464,7 +468,10 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 
-    abstract fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber)
+    abstract fun processSeamlessFavoriteNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    )
 
     abstract fun onEnquiryError(error: Throwable)
 

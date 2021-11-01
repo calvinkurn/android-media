@@ -35,6 +35,7 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_NUMBER_LIST
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -48,6 +49,8 @@ import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
+import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -320,6 +323,20 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     if (data != null) {
                         val orderClientNumber =
                             data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
+
+                        var actionType = TopupBillsSearchNumberFragment
+                            .InputNumberActionType.values()[orderClientNumber.inputNumberActionTypeIndex]
+
+                        if (actionType == TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE) {
+                            getFavoriteNumber(
+                                categoryIds = listOf(
+                                    TelcoCategoryType.CATEGORY_PULSA.toString(),
+                                    TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                                    TelcoCategoryType.CATEGORY_ROAMING.toString()
+                                ),
+                                oldCategoryId = TelcoComponentType.FAV_NUMBER_PREPAID
+                            )
+                        }
                         handleCallbackAnySearchNumber(
                             orderClientNumber.clientName,
                             orderClientNumber.clientNumber,
@@ -455,10 +472,19 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         setFavNumbers(data)
     }
 
-    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+    override fun processSeamlessFavoriteNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    ) {
         if (data.favoriteNumbers.isNotEmpty()) {
             getClientInputNumber().run {
                 setInputType(InputType.TYPE_CLASS_TEXT)
+            }
+        }
+        if (shouldRefreshInputNumber) {
+            getClientInputNumber().run {
+                setInputNumber(data.favoriteNumbers[0].clientNumber)
+                setContactName(data.favoriteNumbers[0].clientName)
             }
         }
         setSeamlessFavNumbers(data)
