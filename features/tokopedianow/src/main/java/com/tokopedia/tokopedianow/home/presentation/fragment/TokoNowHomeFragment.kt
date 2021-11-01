@@ -151,7 +151,7 @@ class TokoNowHomeFragment: Fragment(),
         const val DEFAULT_QUANTITY = 0
         const val SHARE_URL = "https://www.tokopedia.com/now"
         const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
-        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
+        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/tokonow/og_tokonow.jpg"
         const val PAGE_SHARE_NAME = "TokoNow"
         const val SHARE = "Share"
 
