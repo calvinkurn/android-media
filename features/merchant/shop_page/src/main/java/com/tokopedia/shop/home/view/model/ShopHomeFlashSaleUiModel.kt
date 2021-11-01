@@ -28,6 +28,8 @@ class ShopHomeFlashSaleUiModel(
         val timeCounter: String = "",
         var totalNotify: Int = 0,
         val totalNotifyWording: String = "",
+        var totalProduct: Int = 0,
+        val totalProductWording: String = "",
         val productList: List<ShopHomeProductUiModel> = listOf(),
         var isRemindMe: Boolean = false
     )
