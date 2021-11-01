@@ -16,7 +16,7 @@ class Bubble(
     private val startTime = System.currentTimeMillis()
     private val paint = Paint().apply {
         this.color = color
-        this.alpha = if (reduceOpacity) 120 else 255
+        this.alpha = if (reduceOpacity) HALF_OPACITY else FULL_OPACITY
     }
     private val matrix = Matrix()
 
@@ -32,7 +32,7 @@ class Bubble(
     private val xStart = xPos - bouncingLimit
     private val xEnd = xPos + bouncingLimit
 
-    private var scale = 0.01f
+    private var scale = INITIAL_SCALE
 
     private var direction = listOf(Direction.Left, Direction.Right).random()
 
@@ -115,5 +115,10 @@ class Bubble(
         private const val UPPER_LIMIT_BOUNCING_DISTANCE = 40
         private const val LOWER_BOUNCING_MULTIPLIER_X = 3
         private const val UPPER_BOUNCING_MULTIPLIER_X = 8
+
+        private const val INITIAL_SCALE = 0.01f
+
+        private const val HALF_OPACITY = 120
+        private const val FULL_OPACITY = 255
     }
 }

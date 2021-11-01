@@ -12,7 +12,7 @@ class PlayLikeBubblesManager(
     private var mView: PlayLikeBubblesView? = null
     private val bubbles = mutableListOf<Bubble>()
 
-    private var timeInterval = getTimeByFps(60)
+    private var timeInterval = getTimeByFps(FULL_FPS)
 
     private var timerJob: Job? = null
 
@@ -113,6 +113,8 @@ class PlayLikeBubblesManager(
     companion object {
         private const val DEFAULT_DELAY = 300L
 
-        private const val MAX_BUBBLES_ON_SCREEN = 50
+        private const val MAX_BUBBLES_ON_SCREEN = 30
+
+        private const val FULL_FPS = 60
     }
 }
