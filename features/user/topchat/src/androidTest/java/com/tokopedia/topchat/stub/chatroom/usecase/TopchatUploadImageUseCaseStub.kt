@@ -2,7 +2,7 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.data.ImageUploadUiModel
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.ChatImageServerUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.TopchatUploadImageUseCase
 import javax.inject.Inject

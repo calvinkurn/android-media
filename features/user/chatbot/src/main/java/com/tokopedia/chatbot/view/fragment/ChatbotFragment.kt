@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -104,6 +105,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -128,7 +130,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener,
         TypingListener, ChatOptionListListener, CsatOptionListListener,
-        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener {
+        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener{
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -291,7 +293,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 this,
-                this
+                this,
+                getUserSession()
         )
     }
 
@@ -689,6 +692,19 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             return
         }
 
+        presenter.checkUploadSecure(messageId, data)
+
+    }
+
+    override fun uploadUsingSecureUpload(data: Intent) {
+        val path = ImagePickerResultExtractor.extract(data).imageUrlOrPathList.getOrNull(0)
+        processImagePathToUpload(data)?.let {
+            getViewState()?.onImageUpload(it)
+            presenter.uploadImageSecureUpload(it, messageId, opponentId, onErrorImageUpload(), path, context)
+        }
+    }
+
+    override fun uploadUsingOldMechanism(data: Intent) {
         processImagePathToUpload(data)?.let {
             getViewState()?.onImageUpload(it)
             presenter.uploadImages(it, messageId, opponentId, onErrorImageUpload())
