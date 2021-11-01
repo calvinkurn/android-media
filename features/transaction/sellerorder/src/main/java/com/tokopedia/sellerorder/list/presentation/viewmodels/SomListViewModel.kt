@@ -27,6 +27,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -65,8 +66,6 @@ class SomListViewModel @Inject constructor(
         private const val DELAY_GET_MULTI_SHIPPING_STATUS = 1000L
         private const val DELAY_BULK_REQUEST_PICK_UP = 500L
     }
-
-    private var retryCount = 0
 
     private var retryRequestPickup = 0
     private var retryRequestPickupUser = 0
@@ -129,24 +128,19 @@ class SomListViewModel @Inject constructor(
                         value = canShowOrder
                     }
                 }
-                is Fail -> {
+                else -> {
                     value = false
                 }
             }
         }
     }
 
-    private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? =
-        null
-    val bulkAcceptOrderStatusResult =
-        MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
+    private var lastBulkAcceptOrderStatusSuccessResult: Success<SomListBulkAcceptOrderStatusUiModel>? = null
+    val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
 
-    private val _bulkAcceptOrderStatusResult =
-        MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>().apply {
+    private val _bulkAcceptOrderStatusResult = MediatorLiveData<Pair<Int, Result<SomListBulkAcceptOrderStatusUiModel>>>().apply {
             addSource(_bulkAcceptOrderResult) {
-                when (it) {
-                    is Success -> getBulkAcceptOrderStatus(it.data.data.batchId, 0L)
-                }
+                if (it is Success) getBulkAcceptOrderStatus(0L, 0)
             }
         }
 
@@ -176,57 +170,17 @@ class SomListViewModel @Inject constructor(
     init {
         bulkAcceptOrderStatusResult.apply {
             addSource(_bulkAcceptOrderStatusResult) {
-                when (it) {
-                    is Success -> {
-                        lastBulkAcceptOrderStatusSuccessResult = it.apply {
-                            data.data.shouldRecheck = false
-                        }
-                        if (it.data.data.success + it.data.data.fail == it.data.data.totalOrder) {
-                            bulkAcceptOrderStatusResult.postValue(
-                                lastBulkAcceptOrderStatusSuccessResult
-                            )
-                        } else if (retryCount < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
-                            retryCount++
-                            getBulkAcceptOrderStatus(
-                                (_bulkAcceptOrderResult.value as Success).data.data.batchId,
-                                DELAY_GET_ACCEPT_ORDER_STATUS
-                            )
-                        } else {
-                            bulkAcceptOrderStatusResult.postValue(
-                                lastBulkAcceptOrderStatusSuccessResult
-                            )
-                        }
-                    }
-                    is Fail -> {
-                        lastBulkAcceptOrderStatusSuccessResult?.apply {
-                            if (this is Success) data.data.shouldRecheck = true
-                        }
-                        if (retryCount < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
-                            retryCount++
-                            getBulkAcceptOrderStatus(
-                                (_bulkAcceptOrderResult.value as Success).data.data.batchId,
-                                DELAY_GET_ACCEPT_ORDER_STATUS
-                            )
-                        } else {
-                            bulkAcceptOrderStatusResult.postValue(
-                                lastBulkAcceptOrderStatusSuccessResult
-                            )
-                        }
-                    }
-                }
+                onReceiveBulkAcceptOrderStatusResult(it)
             }
         }
 
         bulkRequestPickupFinalResultMediator.addSource(bulkRequestPickupStatusResult) {
             when (it) {
                 is Success -> {
-                    val requestPickupUiModel =
-                        (_bulkRequestPickupResult.value as? Success)?.data
-                    val orderIdListFail =
-                        it.data.listError.map { listError -> listError.orderId }
+                    val requestPickupUiModel = (_bulkRequestPickupResult.value as? Success)?.data
+                    val orderIdListFail = it.data.listError.map { listError -> listError.orderId }
                     val totalNotEligible = requestPickupUiModel?.errors?.size?.toLong().orZero()
-                    val totalOrderIds =
-                        requestPickupUiModel?.data?.totalOnProcess.orZero() + totalNotEligible
+                    val totalOrderIds = requestPickupUiModel?.data?.totalOnProcess.orZero() + totalNotEligible
 
                     // case 3 When All Orders Success
                     if (it.data.success == it.data.total_order && totalOrderIds == it.data.total_order && it.data.success > 0) {
@@ -363,19 +317,49 @@ class SomListViewModel @Inject constructor(
         }
     }
 
-    private fun getBulkAcceptOrderStatus(batchId: String, wait: Long) {
+    private fun getSuccessBulkAcceptOrderResult() = _bulkAcceptOrderResult.value as Success
+
+    private fun getBulkAcceptOrderStatus(wait: Long, retryCount: Int) {
         launchCatchError(block = {
             delay(wait)
+            val batchId = getSuccessBulkAcceptOrderResult().data.data.batchId
             bulkAcceptOrderStatusUseCase.setParams(
                 SomListBulkGetBulkAcceptOrderStatusParam(
                     batchId = batchId,
                     shopId = userSession.shopId
                 )
             )
-            _bulkAcceptOrderStatusResult.postValue(Success(bulkAcceptOrderStatusUseCase.executeOnBackground()))
+            _bulkAcceptOrderStatusResult.postValue(retryCount + 1 to Success(bulkAcceptOrderStatusUseCase.executeOnBackground()))
         }, onError = {
-            _bulkAcceptOrderStatusResult.postValue(Fail(it))
+            _bulkAcceptOrderStatusResult.postValue(retryCount + 1 to Fail(it))
         })
+    }
+
+    private fun onReceiveBulkAcceptOrderStatusResult(result: Pair<Int, Result<SomListBulkAcceptOrderStatusUiModel>>) {
+        when (val resultData = result.second) {
+            is Success -> {
+                lastBulkAcceptOrderStatusSuccessResult = resultData.apply {
+                    data.data.shouldRecheck = false
+                }
+                if (resultData.data.data.success + resultData.data.data.fail == resultData.data.data.totalOrder) {
+                    bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
+                } else if (result.first < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
+                    getBulkAcceptOrderStatus(DELAY_GET_ACCEPT_ORDER_STATUS, result.first)
+                } else {
+                    bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
+                }
+            }
+            is Fail -> {
+                lastBulkAcceptOrderStatusSuccessResult?.run {
+                    data.data.shouldRecheck = true
+                }
+                if (result.first < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
+                    getBulkAcceptOrderStatus(DELAY_GET_ACCEPT_ORDER_STATUS, result.first)
+                } else {
+                    bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
+                }
+            }
+        }
     }
 
     private fun getMultiShippingStatus(batchId: String, wait: Long) {
@@ -403,14 +387,13 @@ class SomListViewModel @Inject constructor(
 
     private fun updateLoadOrderStatus(job: Job) {
         job.invokeOnCompletion {
-            launchCatchError(context = dispatcher.main, block = {
-                _isLoadingOrder.value = isRefreshingOrder()
-            }, onError = {
-                _isLoadingOrder.value = false
-            })
+            launch(context = dispatcher.main) { _isLoadingOrder.value = isRefreshingOrder() }
         }
     }
 
+    private fun resetGetBulkAcceptOrderStatusState() {
+        lastBulkAcceptOrderStatusSuccessResult = null
+    }
 
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
@@ -426,8 +409,7 @@ class SomListViewModel @Inject constructor(
 
     fun bulkAcceptOrder(orderIds: List<String>) {
         launchCatchError(block = {
-            retryCount = 0
-            lastBulkAcceptOrderStatusSuccessResult = null
+            resetGetBulkAcceptOrderStatusState()
             bulkAcceptOrderUseCase.setParams(orderIds, userSession.userId)
             _bulkAcceptOrderResult.postValue(Success(bulkAcceptOrderUseCase.executeOnBackground()))
         }, onError = {
@@ -436,16 +418,8 @@ class SomListViewModel @Inject constructor(
     }
 
     fun retryGetBulkAcceptOrderStatus() {
-        launchCatchError(block = {
-            val bulkAcceptResult = _bulkAcceptOrderResult.value
-            if (bulkAcceptResult is Success) {
-                retryCount = 0
-                lastBulkAcceptOrderStatusSuccessResult = null
-                getBulkAcceptOrderStatus(bulkAcceptResult.data.data.batchId, 0L)
-            }
-        }, onError = {
-            _bulkAcceptOrderStatusResult.postValue(Fail(it))
-        })
+        resetGetBulkAcceptOrderStatusState()
+        getBulkAcceptOrderStatus(0L, 0)
     }
 
     fun getTickers() {
@@ -462,17 +436,17 @@ class SomListViewModel @Inject constructor(
             somListGetFilterListUseCase.isFirstLoad = false
             launchCatchError(context = dispatcher.main, block = {
                 if (_canShowOrderData.value == true) {
-                    _filterResult.value = Success(
-                        somListGetFilterListUseCase.executeOnBackground(true)
-                            .apply { refreshOrder = refreshOrders })
+                    val result = somListGetFilterListUseCase.executeOnBackground(true)
+                    result.refreshOrder = refreshOrders
+                    _filterResult.value = Success(result)
                 }
             }, onError = {})
         }
         launchCatchError(context = dispatcher.main, block = {
             if (_canShowOrderData.value == true) {
-                _filterResult.value = Success(
-                    somListGetFilterListUseCase.executeOnBackground(false)
-                        .apply { refreshOrder = refreshOrders })
+                val result = somListGetFilterListUseCase.executeOnBackground(false)
+                result.refreshOrder = refreshOrders
+                _filterResult.value = Success(result)
             }
         }, onError = {
             _filterResult.value = Fail(it)
@@ -520,8 +494,7 @@ class SomListViewModel @Inject constructor(
                 getFiltersJob?.join()
                 withContext(dispatcher.main) {
                     refreshOrderJobs.remove(refreshOrder)
-                    _refreshOrderResult.value =
-                        Success(OptionalOrderData(orderId, result.second.firstOrNull()))
+                    _refreshOrderResult.value = Success(OptionalOrderData(orderId, result.second.firstOrNull()))
                 }
             }, onError = {
                 withContext(dispatcher.main) {
