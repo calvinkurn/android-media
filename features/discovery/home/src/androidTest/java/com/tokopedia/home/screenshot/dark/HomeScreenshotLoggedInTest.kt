@@ -73,6 +73,7 @@ class HomeScreenshotLoggedInTest {
         Thread.sleep(10000)
         turnOffAnimation(activityRule.activity)
         doScreenshotForEachViewholder()
+
         activityRule.activity.finishAndRemoveTask()
     }
 
