@@ -9,8 +9,6 @@ import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
 import android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -200,20 +198,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     override fun isAllowShake(): Boolean = false
-
-    override fun onStop() {
-        supportFragmentManager
-            .beginTransaction()
-            .remove(initialStateFragment)
-            .remove(suggestionFragment)
-            .commit()
-
-        super.onStop()
-    }
-
-    private fun FragmentTransaction.remove(fragment: Fragment?): FragmentTransaction {
-        return if (fragment != null) remove(fragment) else this
-    }
 
     override fun finish() {
         super.finish()
