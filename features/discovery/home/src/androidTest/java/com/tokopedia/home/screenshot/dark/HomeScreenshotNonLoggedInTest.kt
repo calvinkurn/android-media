@@ -38,7 +38,6 @@ class HomeScreenshotNonLoggedInTest {
             setupGraphqlMockResponse(HomeMockResponseConfig())
             setupDarkModeTest(true)
             setupAbTestRemoteConfig()
-
             disableCoachMark(context)
         }
     }

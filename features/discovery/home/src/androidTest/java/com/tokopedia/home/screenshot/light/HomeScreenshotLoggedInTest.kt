@@ -62,7 +62,6 @@ class HomeScreenshotLoggedInTest {
             takeScreenShotVisibleViewInScreen(
                     activityRule.activity.window.decorView,
                     fileName(),
-
                     "dc".name(true)
             )
         }

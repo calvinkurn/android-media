@@ -50,7 +50,6 @@ class HomeScreenshotLoggedInTest {
             setupDarkModeTest(true)
             setupAbTestRemoteConfig()
             disableCoachMark(context)
-
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
         }
     }
