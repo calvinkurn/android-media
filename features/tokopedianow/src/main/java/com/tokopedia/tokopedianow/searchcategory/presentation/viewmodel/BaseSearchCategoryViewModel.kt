@@ -48,11 +48,6 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAG
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
@@ -245,16 +240,7 @@ abstract class BaseSearchCategoryViewModel(
 
     abstract val tokonowSource: String
 
-    private fun isABTestNavigationRevamp() =
-            getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP
-                || getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP2
-
-    private fun getNavigationExpVariant() =
-            abTestPlatformWrapper
-                    .getABTestRemoteConfig()
-                    ?.getString(NAVIGATION_EXP_TOP_NAV, abTestPlatformWrapper
-                    .getABTestRemoteConfig()
-                    ?.getString(NAVIGATION_EXP_TOP_NAV2, NAVIGATION_VARIANT_OLD))
+    private fun isABTestNavigationRevamp() = true
 
     open fun onViewCreated() {
         val shopId = chooseAddressData?.shop_id ?: ""
