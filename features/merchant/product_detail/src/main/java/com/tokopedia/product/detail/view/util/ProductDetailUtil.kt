@@ -323,7 +323,7 @@ internal fun String?.checkIfNumber(key: String): String {
             t.printStackTrace()
         }
 
-        ProductDetailLogger.logLocalization(t, "error $key, value : $this")
+        ProductDetailLogger.logLocalization("error $key, value : $this , error: ${t.message}")
         ""
     }
 }
