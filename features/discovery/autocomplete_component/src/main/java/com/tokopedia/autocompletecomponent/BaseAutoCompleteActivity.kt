@@ -202,13 +202,21 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     override fun isAllowShake(): Boolean = false
 
     override fun onStop() {
-        supportFragmentManager
-            .beginTransaction()
-            .remove(initialStateFragment)
-            .remove(suggestionFragment)
-            .commit()
+        removeFragments()
 
         super.onStop()
+    }
+
+    private fun removeFragments() {
+        try {
+            supportFragmentManager
+                .beginTransaction()
+                .remove(initialStateFragment)
+                .remove(suggestionFragment)
+                .commitAllowingStateLoss()
+        } catch (throwable: Throwable) {
+
+        }
     }
 
     private fun FragmentTransaction.remove(fragment: Fragment?): FragmentTransaction {
