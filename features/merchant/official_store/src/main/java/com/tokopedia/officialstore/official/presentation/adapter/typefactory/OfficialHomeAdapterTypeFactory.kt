@@ -15,10 +15,15 @@ import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
+import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 class OfficialHomeAdapterTypeFactory(
         private val dcEventHandler: DynamicChannelEventHandler,
         private val featuredShopListener: FeaturedShopListener,
+        private val recommendationWidgetListener: RecommendationWidgetListener,
         private val homeComponentListener: HomeComponentListener,
         private val legoBannerListener: DynamicLegoBannerListener,
         private val mixLeftComponentListener: MixLeftComponentListener,
@@ -26,7 +31,7 @@ class OfficialHomeAdapterTypeFactory(
         private val featuredBrandListener: FeaturedBrandListener,
         private val featuredShopDCListener: com.tokopedia.home_component.listener.FeaturedShopListener,
         private val recycledViewPool: RecyclerView.RecycledViewPool? = null
-) : OfficialHomeTypeFactory, BaseAdapterTypeFactory() {
+) : OfficialHomeTypeFactory, BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
     override fun type(officialLoadingDataModel: OfficialLoadingDataModel): Int {
         return OfficialLoadingContentViewHolder.LAYOUT
@@ -122,8 +127,13 @@ class OfficialHomeAdapterTypeFactory(
         return FeaturedBrandViewHolder.LAYOUT
     }
 
+    override fun type(bestSellerDataModel: BestSellerDataModel): Int {
+        return BestSellerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
+            BestSellerViewHolder.LAYOUT-> BestSellerViewHolder(view, recommendationWidgetListener)
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
             OfficialLoadingMoreViewHolder.LAYOUT -> OfficialLoadingMoreViewHolder(view)
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(view)

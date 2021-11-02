@@ -20,6 +20,7 @@ import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.design.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
+import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
 import com.tokopedia.saldodetails.commom.utils.SaldoRollence
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment
@@ -31,6 +32,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
 import kotlinx.android.synthetic.main.fragment_saldo_history.*
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -148,7 +150,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     }
 
     private fun initListeners() {
-        cardUnifyDateContainer.setOnClickListener {
+        cardUnifyDateContainer.setSafeOnClickListener {
             openCalender()
         }
         saldoTransactionTabsUnify.tabLayout.onTabSelected {
@@ -184,11 +186,19 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     fun showSaleTabCoachMark() {
         getPenjualanTabView()?.also {
             it.postDelayed({
+                showCoachMark(it)
+            }, DELAY_COACHMARK)
+        }
+    }
+
+    private fun showCoachMark(view: View) {
+        try {
+            if (context != null && activity?.isFinishing == false) {
                 coachMark2 = CoachMark2(requireContext())
                 val list = arrayListOf<CoachMark2Item>().apply {
                     add(
                         CoachMark2Item(
-                            it,
+                            view,
                             getString(R.string.saldo_penjualan_coachmark_title),
                             getString(R.string.saldo_penjualan_coachmark_desc),
                             CoachMarkContentPosition.BOTTOM.position
@@ -200,7 +210,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
                     coachMark2 = null
                     updatePenjualanCoachMarkDisplayed()
                 }
-            }, DELAY_COACHMARK)
+            }
+        } catch (e: Exception) {
 
         }
     }

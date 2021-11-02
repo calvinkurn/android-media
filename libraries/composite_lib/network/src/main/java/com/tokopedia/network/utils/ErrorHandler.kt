@@ -41,7 +41,7 @@ open class ErrorHandler {
             val errorIdentifier = getRandomString(4)
 
             if (builder.sendToScalyr) {
-                sendToScalyr(errorIdentifier, builder.className, builder.errorCode, Log.getStackTraceString(e))
+                sendToScalyr(errorIdentifier, builder.className, errorCode, Log.getStackTraceString(e))
             }
 
             if(errorCode == DEFAULT_ERROR_CODE){
@@ -63,7 +63,7 @@ open class ErrorHandler {
             val errorIdentifier = getRandomString(4)
 
             if (builder.sendToScalyr) {
-                sendToScalyr(errorIdentifier, builder.className, builder.errorCode, Log.getStackTraceString(e))
+                sendToScalyr(errorIdentifier, builder.className, errorCode, Log.getStackTraceString(e))
             }
             if (!builder.errorCode) {
                 return "$errorMessageString";
@@ -131,11 +131,11 @@ open class ErrorHandler {
             }
         }
 
-        private fun sendToScalyr(errorIdentifier: String, className: String, errorCode: Boolean, stackTraceString: String?) {
+        private fun sendToScalyr(errorIdentifier: String, className: String, errorCode: String, stackTraceString: String?) {
             val mapParam = mapOf(
                     "identifier" to errorIdentifier,
                     "class" to className,
-                    "error_code" to if(errorCode) errorCode else "",
+                    "error_code" to errorCode,
                     "stack_trace" to stackTraceString.orEmpty()
             )
             ServerLogger.log(Priority.P1, ERROR_HANDLER, mapParam as Map<String, String>)

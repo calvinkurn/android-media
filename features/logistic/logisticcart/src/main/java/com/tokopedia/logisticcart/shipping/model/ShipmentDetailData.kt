@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Irfan Khoirul on 25/01/18.

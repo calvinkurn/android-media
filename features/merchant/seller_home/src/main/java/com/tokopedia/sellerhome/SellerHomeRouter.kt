@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 
 /**
@@ -8,7 +9,13 @@ import androidx.fragment.app.Fragment
 
 interface SellerHomeRouter {
 
-    fun getSomListFragment(tabPage: String?, orderType: Int, searchKeyword: String, orderId: String): Fragment
+    fun getSomListFragment(
+        context: Context,
+        tabPage: String?,
+        orderType: String,
+        searchKeyword: String,
+        orderId: String
+    ): Fragment
 
     fun getProductManageFragment(filterOptions: ArrayList<String>, searchKeyword: String): Fragment
 

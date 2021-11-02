@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.interactor
 
+import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
@@ -8,12 +9,23 @@ import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
+import com.tokopedia.homenav.mainnav.data.mapper.AccountHeaderMapper
+import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
+import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
+import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.usecases.*
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
+import com.tokopedia.navigation_common.model.wallet.WalletStatus
+import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
@@ -83,6 +95,56 @@ fun createViewModel (
             getProfileDataCacheUseCase = getProfileDataCacheUseCaseMock,
             getShopInfoUseCase = getShopInfoUseCaseMock,
             accountAdminInfoUseCase = accountAdminInfoUseCaseMock
+    )
+}
+
+fun createProfileDataUseCase (
+    userSession: UserSessionInterface? = null,
+    getUserInfoUseCase: GetUserInfoUseCase? = null,
+    getSaldoUseCase: GetSaldoUseCase? = null,
+    getUserMembershipUseCase: GetUserMembershipUseCase? = null,
+    getTokopointStatusFiltered: GetTokopointStatusFiltered? = null,
+    getShopInfoUseCase: GetShopInfoUseCase? = null,
+    getWalletEligibilityUseCase: GetWalletEligibilityUseCase? = null,
+    getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase? = null
+): UseCase<AccountHeaderDataModel> {
+    val userSessionMock = getOrUseDefault(userSession) {
+        every { it.isLoggedIn } returns true
+        every { it.hasShop() } returns true
+    }
+    val accountHeaderMapper = AccountHeaderMapper(userSessionMock.get())
+
+    val getUserInfoUseCaseMock = getOrUseDefault(getUserInfoUseCase) {
+        coEvery { it.executeOnBackground() }.answers { Success(UserPojo()) }
+    }
+    val getSaldoUseCaseMock = getOrUseDefault(getSaldoUseCase) {
+        coEvery { it.executeOnBackground() }.answers { Success(SaldoPojo()) }
+    }
+    val getUserMembershipUseCaseMock = getOrUseDefault(getUserMembershipUseCase) {
+        coEvery { it.executeOnBackground() }.answers { Success(MembershipPojo()) }
+    }
+    val getTokopointStatusFilteredMock = getOrUseDefault(getTokopointStatusFiltered) {
+        coEvery { it.executeOnBackground() }.answers { Success(TokopointsStatusFilteredPojo()) }
+    }
+    val getShopInfoUseCaseMock = getOrUseDefault(getShopInfoUseCase) {
+        coEvery { it.executeOnBackground() }.answers { Success(com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData()) }
+    }
+    val getWalletEligibilityUseCaseMock = getOrUseDefault(getWalletEligibilityUseCase) {
+        coEvery { it.executeOnBackground() }.answers { WalletStatus() }
+    }
+    val getWalletAppBalanceMock = getOrUseDefault(getWalletAppBalanceUseCase) {
+        coEvery { it.executeOnBackground() }.answers { WalletAppData() }
+    }
+
+    return GetProfileDataUseCase(
+        accountHeaderMapper = accountHeaderMapper,
+        getUserInfoUseCase = getUserInfoUseCaseMock.get(),
+        getSaldoUseCase = getSaldoUseCaseMock.get(),
+        getUserMembershipUseCase = getUserMembershipUseCaseMock.get(),
+        getTokopointStatusFiltered = getTokopointStatusFilteredMock.get(),
+        getShopInfoUseCase = getShopInfoUseCaseMock.get(),
+        getWalletAppBalanceUseCase = getWalletAppBalanceMock.get(),
+        getWalletEligibilityUseCase = getWalletEligibilityUseCaseMock.get()
     )
 }
 

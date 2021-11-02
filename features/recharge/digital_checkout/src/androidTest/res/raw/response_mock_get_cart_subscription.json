@@ -95,6 +95,7 @@
           "discounted_amount": 12500,
           "discounted_price": "Rp 12.500",
           "title_description": "",
+          "discount_amount_label": "PROMOO",
           "promo_code_id": 0,
           "promo_id": 0,
           "message_success": ""
@@ -148,7 +149,7 @@
         ],
         "atc_source": "",
         "admin_fee_text": "Rp 0",
-        "admin_fee": 0
+        "admin_fee": 3000
       }
     }
   }

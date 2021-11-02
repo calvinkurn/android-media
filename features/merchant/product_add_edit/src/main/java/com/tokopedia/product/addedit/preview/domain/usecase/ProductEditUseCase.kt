@@ -22,7 +22,7 @@ class ProductEditUseCase @Inject constructor(private val graphqlRepository: Grap
         val variables = HashMap<String, Any>()
         variables[PARAM_INPUT] = params.getObject(PARAM_INPUT)
         val gqlRequest = GraphqlRequest(query, ProductAddEditV3Response::class.java, variables)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = graphqlRepository.response(listOf(gqlRequest))
         val gqlErrors = gqlResponse.getError(GraphqlError::class.java) ?: listOf()
         if (gqlErrors.isNullOrEmpty()) {
             val data: ProductAddEditV3Response =

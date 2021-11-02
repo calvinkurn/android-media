@@ -129,11 +129,15 @@ interface HomeCategoryListener {
 
     fun getRechargeBUWidget(source: WidgetSource)
 
-    fun isNewNavigation(): Boolean
-
     fun onChooseAddressUpdated()
 
     fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
 
     fun onChooseAddressServerDown()
+
+    fun needToRotateTokopoints(): Boolean
+
+    fun setRotateTokopointsDone(boolean: Boolean)
+
+    fun isEligibleForNewGopay(): Boolean
 }

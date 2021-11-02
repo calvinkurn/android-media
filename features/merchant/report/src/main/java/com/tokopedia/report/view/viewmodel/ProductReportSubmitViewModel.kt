@@ -2,8 +2,8 @@ package com.tokopedia.report.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.report.domain.interactor.SubmitReportUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.cancel
@@ -21,7 +21,7 @@ class ProductReportSubmitViewModel @Inject constructor(private val useCase: Subm
         private const val KEY_UPLOAD_IDS = "upload_ids"
     }
 
-    fun submitReport(productId: Int, categoryId: Int, input: Map<String, Any>,
+    fun submitReport(productId: Long, categoryId: Int, input: Map<String, Any>,
                      onSuccess: (Boolean) -> Unit, onFail: (Throwable?) -> Unit){
         val uploadIdList: ArrayList<String> = ArrayList()
         launchCatchError(block = {

@@ -45,7 +45,7 @@ class AddToCartOccMultiExternalUseCase @Inject constructor(@ApplicationContext p
         }
 
         val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART_OCC_EXTERNAL_MULTI, AddToCartOccMultiExternalGqlResponse::class.java, getParams(sentParams))
-        val addToCartOccExternalGqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest)).getSuccessData<AddToCartOccMultiExternalGqlResponse>()
+        val addToCartOccExternalGqlResponse = graphqlRepository.response(listOf(graphqlRequest)).getSuccessData<AddToCartOccMultiExternalGqlResponse>()
 
         val result = addToCartExternalDataMapper.map(addToCartOccExternalGqlResponse)
         if (!result.isStatusError()) {

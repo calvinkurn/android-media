@@ -14,6 +14,7 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     val title: String
     val subtitle: String
     val tooltip: TooltipUiModel?
+    val tag: String
     val appLink: String
     val dataKey: String
     val ctaText: String

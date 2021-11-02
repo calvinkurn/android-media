@@ -231,6 +231,14 @@
     <string name="error_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
     <string name="action_end_button">Selesai</string>
     <string name="action_shipment_dismiss">Mengerti</string>
+    <string name="text_shipment_on_demand">Kurir akan menjemput pesanan di alamatmu untuk dianter ke pembeli.</string>
+    <string name="text_shipment_conventional">Bawa pesanan ke gerai pengiriman terdekat dan minta resi dari petugas</string>
+    <string name="title_shipment_on_demand">Dijemput Kurir</string>
+    <string name="title_shipment_conventional">Antar ke Kantor Agen</string>
+    <string name="title_standard_shipment">Ubah jadi pengaturan standar?</string>
+    <string name="description_standard_shipment">Layanan pengiriman untuk produk ini akan disamakan dengan yang ada di Pengaturan Pengiriman tokomu.</string>
+    <string name="primary_button_standard_shipment">Ya, Ubah</string>
+    <string name="secondary_button_standard_shipment">Batal</string>
 
     <!--Product Add Validation-->
     <string name="error_invalid_category_id">Kategori tidak valid</string>
@@ -341,8 +349,10 @@
     <!-- Admin Revamp -->
     <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>
     <string name="ticker_add_product_main_location_desc">Produk akan ditambahkan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>
-    <string name="ticker_edit_variant_main_location">Hanya mengatur stok varian di lokasi utama. Atur stok varian di lokasi lain lewat desktop, ya.</string>
-    <string name="ticker_variant_only_main_location">Stok akan dilokasikan ke lokasi utamamu. Kamu bisa alokasikan produk lewat Atur Sekaligus di desktop, ya.</string>
+    <string name="ticker_edit_variant_main_location">Harga akan berlaku untuk lokasi utama dan TokoCabang (jika ada), sedangkan stok hanya akan dialokasikan ke lokasi utama.</string>
+    <string name="ticker_variant_only_main_location">Harga akan berlaku untuk lokasi utama dan TokoCabang (jika ada), sedangkan stok hanya akan dialokasikan ke lokasi utama. Kamu bisa atur produk lewat Atur Sekaligus. </string>
+    <string name="message_edit_product_price_only_main_location">Harga akan dialokasikan ke lokasi utama dan digunakan untuk Toko Cabang (jika ada). Kamu bisa atur produk lewat Atur Sekaligus, ya. </string>
+    <string name="message_add_product_price_only_main_location">Harga akan berlaku untuk lokasi utama dan Toko Cabang (jika ada). Kamu bisa atur produk lewat Atur Sekaligus. </string>
     <string name="message_edit_product_stock_only_main_location">Hanya menampilkan dan mengubah stok di lokasi utama. Alokasikan stok lokasi lain di desktop, ya.</string>
     <string name="message_add_product_stock_only_main_location">Stok akan dialokasikan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>
 

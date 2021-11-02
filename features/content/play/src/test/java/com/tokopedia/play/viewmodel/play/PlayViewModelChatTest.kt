@@ -2,11 +2,15 @@ package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.helper.ClassBuilder
+import com.tokopedia.play.helper.NoValueException
+import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChatModelBuilder
-import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.throwsException
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import org.junit.Rule
@@ -51,7 +55,7 @@ class PlayViewModelChatTest {
         } andWhen {
             sendChat(message)
         } thenVerify {
-            newChatResult
+            viewModel.observableNewChat.getOrAwaitValue().peekContent()
                     .isEqualTo(
                         chatBuilder.build(
                                 messageId = "",
@@ -82,8 +86,9 @@ class PlayViewModelChatTest {
         } andWhen {
             sendChat(message)
         } thenVerify {
-            newChatResult
-                    .hasNoValue()
+            throwsException<NoValueException> {
+                viewModel.observableNewChat.getOrAwaitValue().peekContent()
+            }
         }
     }
 }

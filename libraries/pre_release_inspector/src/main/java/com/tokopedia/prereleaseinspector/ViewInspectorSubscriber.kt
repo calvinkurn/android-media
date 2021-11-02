@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 
 class ViewInspectorSubscriber() : Application.ActivityLifecycleCallbacks {
 
-    override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
     }
 
     override fun onActivityResumed(activity: Activity) {

@@ -27,6 +27,7 @@ class FeaturedBrandViewHolder (itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_component_featured_brand
+        private const val FEATURED_BRAND_SPACING = 10
     }
     private lateinit var recyclerView: RecyclerView
     private lateinit var layoutManager: GridLayoutManager
@@ -73,7 +74,7 @@ class FeaturedBrandViewHolder (itemView: View,
     private fun setHeaderComponent(element: FeaturedBrandDataModel) {
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                featuredBrandListener?.onSeeAllClicked(element.channelModel, adapterPosition)
+                featuredBrandListener?.onSeeAllClicked(element.channelModel, adapterPosition, link)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {

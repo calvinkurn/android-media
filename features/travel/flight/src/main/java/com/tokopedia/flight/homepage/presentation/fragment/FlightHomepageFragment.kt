@@ -24,6 +24,7 @@ import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPicker
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
+import com.tokopedia.flight.databinding.FragmentFlightHomepageBinding
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectClassBottomSheet
 import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectPassengerBottomSheet
@@ -51,7 +52,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
-import kotlinx.android.synthetic.main.fragment_flight_homepage.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
@@ -71,6 +72,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     private var applinkErrorTextResource = -1
     private var isSearchFromWidget: Boolean = false
     private var bannerWidthInPixels = 0
+    private var binding by autoClearedNullable<FragmentFlightHomepageBinding>()
 
     override fun getScreenName(): String = FlightHomepageFragment::class.java.simpleName
 
@@ -167,19 +169,21 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         flightHomepageViewModel.autoSearch.observe(viewLifecycleOwner, Observer {
             if (it) {
                 isSearchFromWidget = true
-                flightHomepageSearchForm.autoSearch()
+                binding?.flightHomepageSearchForm?.autoSearch()
             }
         })
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_homepage, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentFlightHomepageBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        flightHomepageSearchForm.listener = this
+        binding?.flightHomepageSearchForm?.listener = this
 
         if (applinkErrorTextResource != -1) {
             showMessageErrorInSnackbar(applinkErrorTextResource)
@@ -252,7 +256,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                 override fun onDateSelected(dateSelected: Date) {
                     val errorResourceId = flightHomepageViewModel.validateDepartureDate(dateSelected)
                     if (errorResourceId == -1) {
-                        flightHomepageSearchForm.setDepartureDate(dateSelected)
+                        binding?.flightHomepageSearchForm?.setDepartureDate(dateSelected)
                     } else {
                         showMessageErrorInSnackbar(errorResourceId)
                     }
@@ -313,7 +317,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE_SEARCH) {
-            flightHomepageSearchForm.init()
+            binding?.flightHomepageSearchForm?.init()
         }
 
     }
@@ -323,30 +327,34 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun renderVideoBannerView(bannerData: TravelCollectiveBannerModel) {
-        flightHomepageVideoBanner.listener = this
-        flightHomepageVideoBanner.setData(bannerData)
-        flightHomepageVideoBanner.build()
-        flightHomepageViewModel.sendTrackingVideoBannerImpression(flightHomepageVideoBanner.getData())
+        binding?.flightHomepageVideoBanner?.listener = this
+        binding?.flightHomepageVideoBanner?.setData(bannerData)
+        binding?.flightHomepageVideoBanner?.build()
+        binding?.flightHomepageVideoBanner?.getData()?.let {
+            flightHomepageViewModel.sendTrackingVideoBannerImpression(
+                it
+            )
+        }
     }
 
     private fun hideVideoBannerView() {
-        flightHomepageVideoBanner.hideTravelVideoBanner()
+        binding?.flightHomepageVideoBanner?.hideTravelVideoBanner()
     }
 
     private fun renderBannerTitle(title: String) {
         if (title.isNotEmpty()) {
-            flightHomepageBannerTitle.text = title
-            flightHomepageBannerTitle.visibility = View.VISIBLE
+            binding?.flightHomepageBannerTitle?.text = title
+            binding?.flightHomepageBannerTitle?.visibility = View.VISIBLE
         } else {
-            flightHomepageBannerTitle.visibility = View.GONE
+            binding?.flightHomepageBannerTitle?.visibility = View.GONE
         }
     }
 
     private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
         if (bannerList.isNotEmpty()) {
             showBannerView()
-            flightHomepageAllPromo.setOnClickListener { onAllBannerClicked() }
-            flightHomepageBanner?.apply {
+            binding?.flightHomepageAllPromo?.setOnClickListener { onAllBannerClicked() }
+            binding?.flightHomepageBanner?.apply {
                 freeMode = false
                 centerMode = true
                 slideToScroll = 1
@@ -390,17 +398,17 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun showBannerView() {
-        flightHomepageBannerLayout.visibility = View.VISIBLE
+        binding?.flightHomepageBannerLayout?.visibility = View.VISIBLE
     }
 
     private fun hideBannerView() {
-        flightHomepageBannerLayout.visibility = View.GONE
+        binding?.flightHomepageBannerLayout?.visibility = View.GONE
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        flightHomepageTicker.setHtmlDescription(travelTickerModel.message)
-        flightHomepageTicker.tickerType = Ticker.TYPE_WARNING
-        flightHomepageTicker.setDescriptionClickEvent(object : TickerCallback {
+        binding?.flightHomepageTicker?.setHtmlDescription(travelTickerModel.message)
+        binding?.flightHomepageTicker?.tickerType = Ticker.TYPE_WARNING
+        binding?.flightHomepageTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 if (linkUrl.isNotEmpty()) {
                     RouteManager.route(context, linkUrl.toString())
@@ -411,7 +419,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
         })
         if (travelTickerModel.url.isNotEmpty()) {
-            flightHomepageTicker.setOnClickListener {
+            binding?.flightHomepageTicker?.setOnClickListener {
                 RouteManager.route(requireContext(), travelTickerModel.url)
             }
         }
@@ -420,11 +428,11 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun showTickerView() {
-        flightHomepageTicker.visibility = View.VISIBLE
+        binding?.flightHomepageTicker?.visibility = View.VISIBLE
     }
 
     private fun hideTickerView() {
-        flightHomepageTicker.visibility = View.GONE
+        binding?.flightHomepageTicker?.visibility = View.GONE
     }
 
     private fun onBannerClicked(position: Int) {
@@ -455,16 +463,16 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
     private fun renderSearchForm(homepageData: FlightHomepageModel) {
         homepageData.departureAirport?.let {
-            flightHomepageSearchForm.setOriginAirport(it)
+            binding?.flightHomepageSearchForm?.setOriginAirport(it)
         }
         homepageData.arrivalAirport?.let {
-            flightHomepageSearchForm.setDestinationAirport(it)
+            binding?.flightHomepageSearchForm?.setDestinationAirport(it)
         }
         homepageData.flightPassengerViewModel?.let {
-            flightHomepageSearchForm.setPassengerView(it)
+            binding?.flightHomepageSearchForm?.setPassengerView(it)
         }
         homepageData.flightClass?.let {
-            flightHomepageSearchForm.setClassView(it)
+            binding?.flightHomepageSearchForm?.setClassView(it)
         }
     }
 
@@ -493,11 +501,11 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 val departureErrorResourceId = flightHomepageViewModel.validateDepartureDate(dateIn)
                 if (departureErrorResourceId == -1) {
-                    flightHomepageSearchForm.setDepartureDate(dateIn)
+                    binding?.flightHomepageSearchForm?.setDepartureDate(dateIn)
 
                     val returnErrorResourceId = flightHomepageViewModel.validateReturnDate(dateIn, dateOut)
                     if (returnErrorResourceId == -1) {
-                        flightHomepageSearchForm.setReturnDate(dateOut)
+                        binding?.flightHomepageSearchForm?.setReturnDate(dateOut)
                     } else {
                         showMessageErrorInSnackbar(returnErrorResourceId)
                     }

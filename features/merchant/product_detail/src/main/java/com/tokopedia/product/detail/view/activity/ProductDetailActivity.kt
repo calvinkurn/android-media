@@ -48,6 +48,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val PARAM_AFFILIATE_STRING = "aff"
         private const val PARAM_AFFILIATE_UNIQUE_ID = "aff_unique_id"
         private const val PARAM_LAYOUT_ID = "layoutID"
+        const val PARAM_EXT_PARAM = "extParam"
         const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY = "isVariant"
         private const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_VALUE = "variant"
         private const val PRODUCT_PERFORMANCE_MONITORING_NON_VARIANT_VALUE = "non-variant"
@@ -86,6 +87,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var affiliateUniqueId: String? = null
     private var deeplinkUrl: String? = null
     private var layoutId: String? = null
+    private var extParam: String? = null
     private var userSessionInterface: UserSessionInterface? = null
     private var productDetailComponent: ProductDetailComponent? = null
     var remoteConfig: RemoteConfig? = null
@@ -98,7 +100,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     //Temporary (disscussion/talk, review/ulasan)
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
-    private var performanceMonitoringFull: PerformanceMonitoring? = null
 
     var productDetailLoadTimeMonitoringListener: ProductDetailLoadTimeMonitoringListener? = null
 
@@ -120,11 +121,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     fun stopMonitoringP2Login() {
         performanceMonitoringP2Login?.stopTrace()
         Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
-    }
-
-    fun stopMonitoringFull() {
-        performanceMonitoringFull?.stopTrace()
-        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P3_TRACE)
     }
 
     fun startMonitoringPltNetworkRequest() {
@@ -219,10 +215,22 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-            productKey, isFromDeeplink,
-            isFromAffiliate ?: false, trackerAttribution,
-            trackerListName, affiliateString = affiliateString, affiliateUniqueId = affiliateUniqueId, deeplinkUrl, layoutId, getSource())
+    override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(
+        productId,
+        warehouseId,
+        shopDomain,
+        productKey,
+        isFromDeeplink,
+        isFromAffiliate ?: false,
+        trackerAttribution,
+        trackerListName,
+        affiliateString = affiliateString,
+        affiliateUniqueId = affiliateUniqueId,
+        deeplinkUrl,
+        layoutId,
+        extParam,
+        getSource()
+    )
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
@@ -257,6 +265,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
             affiliateUniqueId = uri.getQueryParameter(PARAM_AFFILIATE_UNIQUE_ID)
             isFromAffiliate = !uri.getQueryParameter(IS_FROM_EXPLORE_AFFILIATE).isNullOrEmpty()
+            extParam = uri.getQueryParameter(PARAM_EXT_PARAM)
         }
         bundle?.let {
             warehouseId = it.getString("warehouse_id")
@@ -316,9 +325,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         if (userSessionInterface?.isLoggedIn == true) {
             performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
             Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE, null, false)
-
-            performanceMonitoringFull = PerformanceMonitoring.start(ProductDetailConstant.PDP_P3_TRACE)
-            Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P3_TRACE, null, false)
         }
     }
 

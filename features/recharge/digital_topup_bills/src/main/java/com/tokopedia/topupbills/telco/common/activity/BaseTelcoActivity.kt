@@ -63,13 +63,13 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         return false
     }
 
-    override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
         showBottomMenus()
         return false
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId ?: "" == R.id.action_overflow_menu) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId ?: "" == R.id.action_overflow_menu) {
             showBottomMenus()
             return true
         }

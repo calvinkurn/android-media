@@ -4,18 +4,11 @@
   "query": [
     {
       "eventCategory": "wishlist page",
-      "ecommerce": "",
-      "event": "addToCart",
+      "event": "add_to_cart",
       "eventAction": "click - beli on wishlist",
       "sessionIris": ".*",
-      "eventLabel": ".*"
-    },
-    {
-      "eventCategory": "wishlist page",
-      "event": "clickWishlist",
-      "eventAction": "click - cek keranjang on wishlist",
-      "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "items": ".*"
     }
   ]
 }

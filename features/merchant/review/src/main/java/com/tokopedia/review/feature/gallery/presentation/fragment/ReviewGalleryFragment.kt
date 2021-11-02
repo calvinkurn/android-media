@@ -1,62 +1,67 @@
 package com.tokopedia.review.feature.gallery.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
-import com.tokopedia.review.common.data.ToggleProductReviewLike
-import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
-import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
-import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
+import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.gallery.analytics.ReviewGalleryTracking
-import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
-import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryImagesAdapter
-import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryLayoutManager
-import com.tokopedia.review.feature.gallery.presentation.di.DaggerReviewGalleryComponent
-import com.tokopedia.review.feature.gallery.presentation.di.ReviewGalleryComponent
-import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageListener
-import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageSwipeListener
-import com.tokopedia.review.feature.gallery.presentation.listener.SnapPagerScrollListener
+import com.tokopedia.review.feature.gallery.data.Detail
+import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
+import com.tokopedia.review.feature.gallery.di.DaggerReviewGalleryComponent
+import com.tokopedia.review.feature.gallery.di.ReviewGalleryComponent
+import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
+import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
+import com.tokopedia.review.feature.gallery.presentation.uimodel.ReviewGalleryRoutingUiModel
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
-import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryExpandedReviewBottomSheet
-import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryReviewDetailWidget
-import com.tokopedia.review.feature.reading.data.LikeDislike
-import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryLoadingView
+import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
+import com.tokopedia.review.feature.reading.data.ProductRating
+import com.tokopedia.review.feature.reading.data.ProductReviewDetail
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
+import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
+import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryComponent>, ReviewReportBottomSheetListener,
-        ReviewGalleryImageSwipeListener, ReviewGalleryImageListener, OnBackPressedListener {
+class ReviewGalleryFragment :
+    BaseListFragment<ReviewGalleryUiModel, ReviewGalleryAdapterTypeFactory>(),
+    HasComponent<ReviewGalleryComponent>, ReviewPerformanceMonitoringContract,
+    ReadReviewHeaderListener, ReviewGalleryHeaderListener {
 
     companion object {
-        const val REPORT_REVIEW_ACTIVITY_CODE = 200
-        private const val DEFAULT_VALUE_INDEX = 0
-        private const val POSITION_INDEX_COUNTER = 1
-        fun newInstance(cacheManagerId: String): ReviewGalleryFragment {
+        const val REVIEW_GALLERY_SPAN_COUNT = 2
+        const val KEY_REVIEW_GALLERY_ROUTING_DATA = "reviewGalleryData"
+        const val IMAGE_PREVIEW_ACTIVITY_CODE = 200
+        fun createNewInstance(productId: String): ReviewGalleryFragment {
             return ReviewGalleryFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ReviewGalleryActivity.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                    putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
                 }
             }
         }
@@ -65,23 +70,74 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     @Inject
     lateinit var viewModel: ReviewGalleryViewModel
 
-    private var closeButton: IconUnify? = null
-    private var menuButton: IconUnify? = null
-    private var imagesRecyclerView: RecyclerView? = null
-    private var reviewDetail: ReviewGalleryReviewDetailWidget? = null
-    private var coordinatorLayout: CoordinatorLayout? = null
-    private val adapter by lazy {
-        ReviewGalleryImagesAdapter(this)
-    }
-    private var expandedReviewBottomSheet: ReviewGalleryExpandedReviewBottomSheet? = null
+    private var reviewGalleryCoordinatorLayout: CoordinatorLayout? = null
+    private var reviewHeader: ReadReviewHeader? = null
+    private var loadingView: ReviewGalleryLoadingView? = null
+    private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
+    private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
-    private var productReview: ProductReview = ProductReview()
-    private var index: Int = 0
-    private var shopId: String = ""
-    private var productId: String = ""
-    private var areComponentsHidden = false
-    private var isLikeValueChange: Boolean = false
-    private var isProductReview: Boolean = true
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getProductIdFromArguments()
+        ReviewGalleryTracking.trackOpenScreen(viewModel.getProductId())
+    }
+
+    override fun stopPreparePerfomancePageMonitoring() {
+        reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
+                getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ReviewPerformanceMonitoringListener? {
+        return if (context is ReviewPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindViews(view)
+        showFullPageLoading()
+        observeReviewImages()
+        observeRatingAndTopics()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_review_gallery, container, false)
+    }
+
+    override fun getComponent(): ReviewGalleryComponent? {
+        return activity?.run {
+            DaggerReviewGalleryComponent.builder()
+                .reviewComponent(ReviewInstance.getComponent(application))
+                .build()
+        }
+    }
 
     override fun getScreenName(): String {
         return ""
@@ -91,259 +147,142 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         component?.inject(this)
     }
 
-    override fun getComponent(): ReviewGalleryComponent? {
-        return activity?.run {
-            DaggerReviewGalleryComponent.builder()
-                    .reviewComponent(ReviewInstance.getComponent(application))
-                    .build()
+    override fun onItemClicked(t: ReviewGalleryUiModel) {
+        ReviewGalleryTracking.trackClickImage(
+            t.attachmentId,
+            t.feedbackId,
+            viewModel.getProductId()
+        )
+        goToImagePreview(t)
+    }
+
+    override fun loadData(page: Int) {
+        getReviewImages(page)
+    }
+
+    override fun getAdapterTypeFactory(): ReviewGalleryAdapterTypeFactory {
+        return ReviewGalleryAdapterTypeFactory()
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.review_gallery_recyclerview
+    }
+
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return view?.findViewById(R.id.review_gallery_swipe_refresh)
+    }
+
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        return GridLayoutManager(context, REVIEW_GALLERY_SPAN_COUNT, RecyclerView.VERTICAL, false)
+    }
+
+    override fun openStatisticsBottomSheet() {
+        ReviewGalleryTracking.trackClickSatisfactionScore(
+            getSatisfactionRate(),
+            getRating(),
+            getTotalReview(),
+            viewModel.getProductId()
+        )
+        val satisfactionRateInt = getSatisfactionRate().filter {
+            it.isDigit()
+        }
+        if (statisticsBottomSheet == null) {
+            statisticsBottomSheet = ReadReviewStatisticsBottomSheet.createInstance(
+                getReviewStatistics(),
+                "$satisfactionRateInt${ReadReviewFragment.PRODUCT_SATISFACTION_RATE}"
+            )
+        }
+        activity?.supportFragmentManager?.let {
+            statisticsBottomSheet?.show(
+                it,
+                ReadReviewStatisticsBottomSheet.READ_REVIEW_STATISTICS_BOTTOM_SHEET_TAG
+            )
         }
     }
 
-    override fun onImageSwiped(previousIndex: Int, index: Int) {
-        if (index != RecyclerView.NO_POSITION) {
-            if(isProductReview)
-                ReviewGalleryTracking.trackSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, productId)
-            else
-                ReviewGalleryTracking.trackShopReviewSwipeImage(productReview.feedbackID, previousIndex, index, productReview.imageAttachments.size, shopId)
-            reviewDetail?.setPhotoCount(index + POSITION_INDEX_COUNTER, productReview.imageAttachments.size)
-        }
+    override fun onSeeAllClicked() {
+        ReviewGalleryTracking.trackClickSeeAll(viewModel.getProductId())
+        goToReadingPage()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        getDataFromArguments()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_review_gallery, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        bindViews(view)
-        setupCloseButton()
-        setupThreeDots()
-        setupRecyclerView()
-        setupReviewDetail()
-        observeToggleLikeReviewResult()
-    }
-
-    override fun onReportOptionClicked(reviewId: String, shopId: String) {
-        goToReportReview(reviewId, shopId)
-    }
-
-    override fun onImageClicked() {
-        if (areComponentsHidden) {
-            showComponents()
-        } else {
-            hideComponentsButImage()
-        }
-    }
-
-    override fun disableScroll() {
-        (imagesRecyclerView?.layoutManager as? ReviewGalleryLayoutManager)?.setScrollEnabled(false)
-    }
-
-    override fun enableScroll() {
-        (imagesRecyclerView?.layoutManager as? ReviewGalleryLayoutManager)?.setScrollEnabled(true)
-    }
-
-    override fun onImageLoadFailed(index: Int) {
-        showErrorToaster(getString(R.string.review_reading_connection_error), getString(R.string.review_refresh)) {
-            adapter.reloadImageAtIndex(index)
-        }
-    }
-
-    override fun onBackPressed() {
-        finishActivity()
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        showFullPageLoading()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REPORT_REVIEW_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
-            showToaster(getString(R.string.review_reading_success_submit_report))
+        if (requestCode == IMAGE_PREVIEW_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
+            showFullPageLoading()
+            clearAllData()
+            loadInitialData()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun getDataFromArguments() {
-        arguments?.getString(ReviewGalleryActivity.EXTRA_CACHE_MANAGER_ID)?.let {
-            context?.let { context ->
-                with(SaveInstanceCacheManager(context, it)) {
-                    productReview = get(ReadReviewFragment.PRODUCT_REVIEW_KEY, ProductReview::class.java)
-                            ?: ProductReview()
-                    index = get(ReadReviewFragment.INDEX_KEY, Int::class.java) ?: DEFAULT_VALUE_INDEX
-                    shopId = get(ReadReviewFragment.SHOP_ID_KEY, String::class.java) ?: ""
-                    productId = get(ReadReviewFragment.PRODUCT_ID_KEY, String::class.java) ?: ""
-                    isProductReview =get(ReadReviewFragment.IS_PRODUCT_REVIEW_KEY, Boolean::class.java) ?: true
-                }
-            }
-        }
+    override fun loadInitialData() {
+        getProductIdFromArguments()
+        super.loadInitialData()
+    }
+
+    private fun getProductIdFromArguments() {
+        viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }
 
     private fun bindViews(view: View) {
-        closeButton = view.findViewById(R.id.review_gallery_close_button)
-        menuButton = view.findViewById(R.id.review_gallery_menu_button)
-        imagesRecyclerView = view.findViewById(R.id.review_gallery_recyclerview)
-        reviewDetail = view.findViewById(R.id.review_gallery_review_detail)
-        coordinatorLayout = view.findViewById(R.id.review_gallery_coordinator_layout)
+        reviewGalleryCoordinatorLayout = view.findViewById(R.id.review_gallery_coordinator_layout)
+        reviewHeader = view.findViewById(R.id.review_gallery_header)
+        loadingView = view.findViewById(R.id.review_gallery_shimmering)
     }
 
-    private fun setupCloseButton() {
-        closeButton?.setOnClickListener {
-            finishActivity()
-        }
-    }
-
-    private fun setupThreeDots() {
-        menuButton?.setOnClickListener { activity?.supportFragmentManager?.let { ReviewReportBottomSheet.newInstance(productReview.feedbackID, shopId, this).show(it, ReviewReportBottomSheet.TAG) } }
-    }
-
-    private fun setupRecyclerView() {
-        imagesRecyclerView?.apply {
-            adapter = this@ReviewGalleryFragment.adapter
-            layoutManager = ReviewGalleryLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        }
-        addPagerSnapHelperToRecyclerView()
-        adapter.setData(productReview.imageAttachments.map { it.imageUrl })
-        if (index != 0) {
-            imagesRecyclerView?.scrollToPosition(index - 1)
-        }
-    }
-
-    private fun addPagerSnapHelperToRecyclerView() {
-        val helper = PagerSnapHelper()
-        helper.attachToRecyclerView(imagesRecyclerView)
-        imagesRecyclerView?.addOnScrollListener(SnapPagerScrollListener(helper, this))
-    }
-
-    private fun setupReviewDetail() {
-        with(productReview) {
-            reviewDetail?.apply {
-                setPhotoCount(index, imageAttachments.size)
-                setRating(productRating)
-                setReviewerName(user.fullName)
-                setTimeStamp(reviewCreateTimestamp)
-                setReviewMessage(message) { openExpandedReviewBottomSheet() }
-                setLikeCount(likeDislike.totalLike)
-                setLikeButtonClickListener {
-                    if(isProductReview)
-                        ReviewGalleryTracking.trackOnLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), productId)
-                    else
-                        ReviewGalleryTracking.trackOnShopReviewLikeReviewClicked(productReview.feedbackID, isLiked(productReview.likeDislike.likeStatus), shopId)
-                    viewModel.toggleLikeReview(productReview.feedbackID, shopId, productId, productReview.likeDislike.likeStatus)
-                }
-                setLikeButtonImage(likeDislike.isLiked())
-            }
-            setThreeDotsVisibility(isReportable)
-        }
-    }
-
-    private fun observeToggleLikeReviewResult() {
-        viewModel.toggleLikeReview.observe(viewLifecycleOwner, {
+    private fun observeRatingAndTopics() {
+        viewModel.rating.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> onSuccessLikeReview(it.data)
-                is Fail -> onFailLikeReview(it.throwable)
+                is Success -> onSuccessGetRating(it.data)
+                is Fail -> onFailGetRating(it.throwable)
             }
         })
     }
 
-    private fun onSuccessLikeReview(toggleLikeReviewResponse: ToggleProductReviewLike) {
-        with(toggleLikeReviewResponse) {
-            updateLikeCount(totalLike)
-            updateLikeButton(isLiked())
-            updateLikeStatus(likeStatus)
-            isLikeValueChange = true
+    private fun observeReviewImages() {
+        viewModel.reviewImages.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> onSuccessGetReviewImages(it.data)
+                is Fail -> onFailGetReviewImages(it.throwable)
+            }
+        })
+    }
+
+    private fun onSuccessGetRating(rating: ProductRating) {
+        reviewHeader?.apply {
+            setRatingData(rating)
+            setListener(this@ReviewGalleryFragment)
+            setSeeAll(this@ReviewGalleryFragment)
+            show()
         }
     }
 
-    private fun onFailLikeReview(throwable: Throwable) {
+    private fun onFailGetRating(throwable: Throwable) {
         logToCrashlytics(throwable)
     }
 
-    private fun setThreeDotsVisibility(isReportable: Boolean) {
-        menuButton?.showWithCondition(isReportable)
+    private fun onSuccessGetReviewImages(productrevGetReviewImage: ProductrevGetReviewImage) {
+        hideFullPageLoading()
+        swipeToRefresh.isRefreshing = false
+        renderList(mapToUiModel(productrevGetReviewImage), productrevGetReviewImage.hasNext)
     }
 
-    private fun updateLikeButton(isLiked: Boolean) {
-        reviewDetail?.setLikeButtonImage(isLiked)
-    }
-
-    private fun updateLikeCount(totalLike: Int) {
-        reviewDetail?.setLikeCount(totalLike)
-    }
-
-    private fun updateLikeStatus(likeStatus: Int) {
-        productReview.likeDislike = productReview.likeDislike.copy(likeStatus = likeStatus)
-    }
-
-    private fun goToReportReview(reviewId: String, shopId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
-        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
-        intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
-        startActivityForResult(intent, REPORT_REVIEW_ACTIVITY_CODE)
-    }
-
-    private fun hideComponentsButImage() {
-        closeButton?.invisible()
-        menuButton?.invisible()
-        reviewDetail?.invisible()
-        areComponentsHidden = true
-    }
-
-    private fun showComponents() {
-        closeButton?.show()
-        if (productReview.isReportable) {
-            menuButton?.show()
-        }
-        reviewDetail?.show()
-        areComponentsHidden = false
-    }
-
-    private fun openExpandedReviewBottomSheet() {
-        if(isProductReview)
-            ReviewGalleryTracking.trackOnSeeAllClicked(productReview.feedbackID, productId)
-        else
-            ReviewGalleryTracking.trackOnShopReviewSeeAllClicked(productReview.feedbackID, productId)
-        if (expandedReviewBottomSheet == null) {
-            with(productReview) {
-                expandedReviewBottomSheet = ReviewGalleryExpandedReviewBottomSheet.createInstance(productRating, reviewCreateTimestamp, user.fullName, message)
-                configBottomSheet()
+    private fun onFailGetReviewImages(throwable: Throwable) {
+        if (isFirstPage()) showFullPageError()
+        showToasterError(throwable.message ?: getString(R.string.review_reading_connection_error)) {
+            if (isFirstPage()) loadInitialData() else {
+                loadData(currentPage)
             }
         }
-        activity?.supportFragmentManager?.let { expandedReviewBottomSheet?.show(it, ReviewGalleryExpandedReviewBottomSheet.REVIEW_GALLERY_EXPANDED_REVIEW_BOTTOM_SHEET_TAG) }
+        logToCrashlytics(throwable)
     }
 
-    private fun configBottomSheet() {
-        expandedReviewBottomSheet?.apply {
-            showKnob = true
-            showCloseIcon = false
-            clearContentPadding = true
-            isDragable = true
-            isHideable = true
-        }
-    }
-
-    private fun finishActivity() {
-        activity?.apply {
-            if (isLikeValueChange) setResult(Activity.RESULT_OK)
-            finish()
-        }
-    }
-
-    private fun showErrorToaster(message: String, actionText: String = "", onClickListener: View.OnClickListener = View.OnClickListener {  }) {
-        coordinatorLayout?.let {
-            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, actionText, onClickListener).show()
-        }
-    }
-
-    private fun showToaster(message: String) {
-        coordinatorLayout?.let {
-            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_NORMAL).show()
-        }
-    }
-
-    private fun isLiked(likeStatus: Int): Boolean {
-        return likeStatus == LikeDislike.LIKED
+    private fun getReviewImages(page: Int) {
+        viewModel.setPage(page)
     }
 
     private fun logToCrashlytics(throwable: Throwable) {
@@ -352,5 +291,131 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         } else {
             throwable.printStackTrace()
         }
+    }
+
+    private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewImage): List<ReviewGalleryUiModel> {
+        return productrevGetReviewImage.reviewImages.map {
+                getReviewGalleryUiModelBasedOnDetail(
+                    productrevGetReviewImage.detail,
+                    it.feedbackId,
+                    it.imageId,
+                    it.imageNumber
+                )
+        }
+    }
+
+    private fun getReviewGalleryUiModelBasedOnDetail(
+        detail: Detail,
+        feedbackId: String,
+        attachmentId: String,
+        imageNumber: Int
+    ): ReviewGalleryUiModel {
+        var reviewGalleryUiModel = ReviewGalleryUiModel()
+        detail.reviewDetail.firstOrNull { it.feedbackId == feedbackId }?.apply {
+            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+                rating = this.rating,
+                variantName = this.variantName,
+                reviewerName = this.user.fullName,
+                isLiked = this.isLiked,
+                totalLiked = this.totalLike,
+                review = this.review,
+                reviewTime = this.createTimestamp,
+                isReportable = this.isReportable,
+                userStats = this.userStats,
+                isAnonymous = this.isAnonymous,
+                userId = this.user.userId,
+                userImage = this.user.image
+            )
+        }
+        detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
+            reviewGalleryUiModel = reviewGalleryUiModel.copy(
+                imageUrl = this.fullsizeURL,
+                fullImageUrl = this.fullsizeURL,
+                attachmentId = this.attachmentId
+            )
+        }
+        reviewGalleryUiModel = reviewGalleryUiModel.copy(
+            feedbackId = feedbackId,
+            imageNumber = imageNumber
+        )
+        return reviewGalleryUiModel
+    }
+
+    private fun getReviewStatistics(): List<ProductReviewDetail> {
+        return (viewModel.rating.value as? Success)?.data?.detail ?: listOf()
+    }
+
+    private fun getSatisfactionRate(): String {
+        return (viewModel.rating.value as? Success)?.data?.satisfactionRate ?: ""
+    }
+
+    private fun getRating(): String {
+        return (viewModel.rating.value as? Success)?.data?.ratingScore ?: ""
+    }
+
+    private fun getTotalReview(): String {
+        return (viewModel.rating.value as? Success)?.data?.totalRatingTextAndImage.toString()
+    }
+
+    private fun goToReadingPage() {
+        RouteManager.route(context, ApplinkConst.PRODUCT_REVIEW, viewModel.getProductId())
+    }
+
+    private fun showFullPageLoading() {
+        loadingView?.apply {
+            showLoading()
+            show()
+        }
+    }
+
+    private fun hideFullPageLoading() {
+        loadingView?.hide()
+    }
+
+    private fun showFullPageError() {
+        loadingView?.apply {
+            showError()
+            show()
+        }
+    }
+
+    private fun showToasterError(message: String, action: () -> Unit) {
+        reviewGalleryCoordinatorLayout?.let {
+            Toaster.build(
+                it,
+                message,
+                Toaster.toasterLength,
+                Toaster.TYPE_ERROR,
+                getString(R.string.review_refresh)
+            ) { action.invoke() }.show()
+        }
+    }
+
+    private fun goToImagePreview(reviewGalleryUiModel: ReviewGalleryUiModel) {
+        context?.let {
+            val cacheManager = SaveInstanceCacheManager(it, true)
+            cacheManager.put(
+                KEY_REVIEW_GALLERY_ROUTING_DATA, ReviewGalleryRoutingUiModel(
+                    viewModel.getProductId(),
+                    currentPage,
+                    getImageCount(),
+                    adapter.data,
+                    reviewGalleryUiModel.imageNumber,
+                    viewModel.getShopId()
+                )
+            )
+            startActivityForResult(
+                ReviewImagePreviewActivity.getIntent(it, cacheManager.id ?: "", true),
+                IMAGE_PREVIEW_ACTIVITY_CODE
+            )
+        }
+    }
+
+    private fun getImageCount(): Long {
+        return (viewModel.reviewImages.value as? Success)?.data?.detail?.imageCount ?: 0L
+    }
+
+    private fun isFirstPage(): Boolean {
+        return currentPage + 1 == defaultInitialPage
     }
 }

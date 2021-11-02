@@ -39,7 +39,7 @@ abstract class BaseVoucherGameActivity: BaseSimpleActivity(), TopupBillsMenuBott
                 .build()
     }
 
-    override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
         showBottomMenus()
         return false
     }
@@ -52,9 +52,9 @@ abstract class BaseVoucherGameActivity: BaseSimpleActivity(), TopupBillsMenuBott
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (shouldShowOptionMenu()) {
-            if (item?.itemId ?: "" == R.id.action_overflow_menu) {
+            if (item.itemId == R.id.action_overflow_menu) {
                 showBottomMenus()
                 return true
             }

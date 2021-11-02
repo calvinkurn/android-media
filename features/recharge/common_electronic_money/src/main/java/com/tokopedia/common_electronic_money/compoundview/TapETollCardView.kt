@@ -93,7 +93,8 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
 
     fun showErrorState(errorMessageTitle: String, errorMessageLabel: String,
                        imageUrl:String, isButtonShow: Boolean,
-                       mandiriGetSocketTimeout: Boolean
+                       mandiriGetSocketTimeout: Boolean,
+                       tapCashWriteFailed: Boolean
     ) {
         textTitle.text = errorMessageTitle
         textLabel.text = errorMessageLabel
@@ -112,6 +113,11 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
                 text = resources.getString(R.string.emoney_nfc_tap_card_button_socket_label)
                 setOnClickListener {
                     listener.goToHome()
+                }
+            } else if(tapCashWriteFailed){
+                text = resources.getString(R.string.emoney_nfc_tapcash_complaint)
+                setOnClickListener {
+                    listener.goToHelpTapcash()
                 }
             } else {
                 setOnClickListener {
@@ -152,5 +158,6 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
     interface OnTapEtoll {
         fun tryAgainTopup(issuerId: Int)
         fun goToHome()
+        fun goToHelpTapcash()
     }
 }

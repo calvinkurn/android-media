@@ -11,8 +11,9 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.TooltipLevelItemDecoration
+import com.tokopedia.shop.score.databinding.ItemFaqShopScoreBinding
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
-import kotlinx.android.synthetic.main.item_faq_shop_score.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
     RecyclerView.Adapter<ItemFaqAdapter.ItemFaqViewHolder>() {
@@ -21,9 +22,12 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
 
     fun updateArrowItemFaq(position: Int) {
         itemFaqList.mapIndexed { index, itemFaqUiModel ->
-            if (index == position) {
-                itemFaqUiModel.isShow = !itemFaqUiModel.isShow
-                notifyItemChanged(position, PAYLOAD_TOGGLE_FAQ)
+            if (itemFaqUiModel.isShow) {
+                itemFaqUiModel.isShow = false
+                notifyItemChanged(index, PAYLOAD_TOGGLE_FAQ)
+            } else if (index == position) {
+                itemFaqUiModel.isShow = true
+                notifyItemChanged(index, PAYLOAD_TOGGLE_FAQ)
             }
         }
     }
@@ -65,65 +69,66 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
 
     inner class ItemFaqViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        private val binding: ItemFaqShopScoreBinding? by viewBinding()
         private var cardTooltipLevelAdapter: CardTooltipLevelAdapter? = null
         private var itemParameterFaqAdapter: ItemParameterFaqAdapter? = null
 
         fun bind(data: ItemFaqUiModel) {
-            with(itemView) {
-                tv_title_faq_shop_score?.text = data.title
-                tv_desc_faq_shop_score?.showWithCondition(data.isShow)
-                tv_desc_faq_shop_score?.text = MethodChecker.fromHtml(data.desc_first)
-                tv_desc_parameter_performance_faq?.text = data.desc_second
+            binding?.run {
+                tvTitleFaqShopScore.text = data.title
+                tvDescFaqShopScore.showWithCondition(data.isShow)
+                tvDescFaqShopScore.text = MethodChecker.fromHtml(data.desc_first)
+                tvDescParameterPerformanceFaq.text = data.desc_second
 
                 initAdapterCardLevel(data)
                 initAdapterParameterFaq(data)
 
-                card_shop_score_parameter_faq?.showWithCondition(
+                cardShopScoreParameterFaq.showWithCondition(
                     data.isShow && data.isCalculationScore
                 )
-                tv_desc_parameter_performance_faq?.showWithCondition(
+                tvDescParameterPerformanceFaq.showWithCondition(
                     data.isShow && data.isCalculationScore
                 )
-                rv_card_level_faq?.showWithCondition(
+                rvCardLevelFaq.showWithCondition(
                     data.isShow && data.isCalculationScore
                 )
-                rv_shop_score_parameter_faq?.showWithCondition(
+                rvShopScoreParameterFaq.showWithCondition(
                     data.isShow && data.isCalculationScore
                 )
 
                 if (data.isShow) {
-                    ic_info_toggle_faq?.rotation = REVERSE_ROTATION
+                    icInfoToggleFaq.rotation = REVERSE_ROTATION
                 } else {
-                    ic_info_toggle_faq?.rotation = NO_ROTATION
+                    icInfoToggleFaq.rotation = NO_ROTATION
                 }
 
-                ic_info_toggle_faq?.setOnClickListener {
+                icInfoToggleFaq.setOnClickListener {
                     itemFaqListener.onArrowClicked(adapterPosition)
                 }
             }
         }
 
         fun bindPayload(data: ItemFaqUiModel) {
-            with(itemView) {
-                tv_desc_faq_shop_score?.showWithCondition(data.isShow)
+            binding?.run {
+                tvDescFaqShopScore.showWithCondition(data.isShow)
 
-                card_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                tv_desc_parameter_performance_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                rv_card_level_faq?.showWithCondition(data.isShow && data.isCalculationScore)
-                rv_shop_score_parameter_faq?.showWithCondition(data.isShow && data.isCalculationScore)
+                cardShopScoreParameterFaq.showWithCondition(data.isShow && data.isCalculationScore)
+                tvDescParameterPerformanceFaq.showWithCondition(data.isShow && data.isCalculationScore)
+                rvCardLevelFaq.showWithCondition(data.isShow && data.isCalculationScore)
+                rvShopScoreParameterFaq.showWithCondition(data.isShow && data.isCalculationScore)
 
                 if (data.isShow) {
-                    ic_info_toggle_faq?.rotation = REVERSE_ROTATION
+                    icInfoToggleFaq.rotation = REVERSE_ROTATION
                 } else {
-                    ic_info_toggle_faq?.rotation = NO_ROTATION
+                    icInfoToggleFaq.rotation = NO_ROTATION
                 }
             }
         }
 
         private fun initAdapterCardLevel(data: ItemFaqUiModel) {
-            with(itemView) {
+            binding?.run {
                 cardTooltipLevelAdapter = CardTooltipLevelAdapter()
-                rv_card_level_faq?.apply {
+                rvCardLevelFaq.run {
                     if (itemDecorationCount.isZero()) {
                         addItemDecoration(TooltipLevelItemDecoration())
                     }
@@ -139,9 +144,9 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
         }
 
         private fun initAdapterParameterFaq(data: ItemFaqUiModel) {
-            with(itemView) {
+            binding?.run {
                 itemParameterFaqAdapter = ItemParameterFaqAdapter()
-                rv_shop_score_parameter_faq?.apply {
+                rvShopScoreParameterFaq.run {
                     layoutManager = LinearLayoutManager(context)
                     adapter = itemParameterFaqAdapter
                     isNestedScrollingEnabled = false

@@ -21,7 +21,8 @@ class EmoneyInquiry(
         val attributesEmoneyInquiry: AttributesEmoneyInquiry? = null,
         @SerializedName("error")
         @Expose
-        val error: EmoneyInquiryError? = null
+        val error: EmoneyInquiryError? = null,
+        val isCheckSaldoTapcash : Boolean = false
 )
 
 class AttributesEmoneyInquiry(
@@ -53,7 +54,7 @@ class AttributesEmoneyInquiry(
 class EmoneyInquiryError(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("title")
         @Expose
         val title: String = "",

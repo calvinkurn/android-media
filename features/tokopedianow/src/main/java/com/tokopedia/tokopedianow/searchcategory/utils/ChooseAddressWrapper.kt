@@ -9,11 +9,7 @@ import javax.inject.Inject
 
 open class ChooseAddressWrapper @Inject constructor (@ApplicationContext private val context: Context) {
 
-    open fun isChooseAddressEnabled() = try {
-        ChooseAddressUtils.isRollOutUser(context)
-    } catch (throwable: Throwable) {
-        false
-    }
+    open fun isChooseAddressEnabled() = true
 
     open fun getChooseAddressData() = try {
         ChooseAddressUtils.getLocalizingAddressData(context)

@@ -50,7 +50,7 @@ class SellerReviewReplyViewModel @Inject constructor(
     val insertTemplateReply: LiveData<Result<InsertTemplateReplyUiModel>>
         get() = _insertTemplateReply
 
-    fun getTemplateListReply(shopId: Long) {
+    fun getTemplateListReply(shopId: String) {
         launchCatchError(block = {
             val reviewTemplateList = withContext(dispatcherProvider.io) {
                 getTemplateList(shopId)
@@ -77,7 +77,7 @@ class SellerReviewReplyViewModel @Inject constructor(
         })
     }
 
-    fun insertTemplateReviewReply(shopID: Long, title: String, message: String) {
+    fun insertTemplateReviewReply(shopID: String, title: String, message: String) {
         launchCatchError(block = {
             val responseInsertTemplate = withContext(dispatcherProvider.io) {
                 insertTemplateReviewReplyUseCase.params = InsertTemplateReviewReplyUseCase.createParams(
@@ -106,7 +106,7 @@ class SellerReviewReplyViewModel @Inject constructor(
         })
     }
 
-    private suspend fun getTemplateList(shopId: Long): List<ReplyTemplateUiModel> {
+    private suspend fun getTemplateList(shopId: String): List<ReplyTemplateUiModel> {
         getReviewTemplateListUseCase.params = GetReviewTemplateListUseCase.createParams(shopId)
         return SellerReviewReplyMapper.mapToItemTemplateUiModel(getReviewTemplateListUseCase.executeOnBackground())
     }

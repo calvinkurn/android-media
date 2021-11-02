@@ -1,6 +1,5 @@
 package com.tokopedia.entertainment.home.adapter.viewholder
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,9 @@ import com.tokopedia.entertainment.home.adapter.listener.TrackingListener
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
 import java.text.SimpleDateFormat
@@ -53,6 +55,9 @@ class EventCarouselEventViewHolder(itemView: View,
         @kotlin.jvm.JvmField
         var LAYOUT: Int = R.layout.ent_layout_viewholder_event_carouse
         val TAG = EventCarouselEventViewHolder::class.java.simpleName
+
+        const val EMPTY_DATE = "0"
+        const val RESET_SPACE = 0
     }
 
     class InnerItemAdapter(val carouselListener: TrackingListener,
@@ -79,8 +84,26 @@ class EventCarouselEventViewHolder(itemView: View,
             Glide.with(holder.view).load(item.imageUrl).into(holder.view.event_image)
             holder.view.event_location.text = item.location
             holder.view.event_title.text = item.title
-            holder.view.event_date.text = formatedSchedule(item.date)
-            holder.view.event_price.text = item.price
+            holder.view.event_date.apply {
+                val dateFormated = formatedSchedule(item.date)
+                if (dateFormated.isNullOrEmpty()){
+                    gone()
+                } else {
+                    show()
+                    text = dateFormated
+                }
+            }
+
+            holder.view.event_price.apply {
+                if (item.isFree){
+                    text = resources.getString(R.string.ent_free_price)
+                    holder.view.tg_event_home_start_from.gone()
+                    setMargin(RESET_SPACE, RESET_SPACE, RESET_SPACE, RESET_SPACE)
+                } else {
+                    text = item.price
+                    holder.view.tg_event_home_start_from.show()
+                }
+            }
             holder.view.setOnClickListener {
                 carouselListener.clickTopEventProduct(item, productNames,
                         position + 1)
@@ -94,14 +117,10 @@ class EventCarouselEventViewHolder(itemView: View,
 
         private fun formatedSchedule(schedule: String): String? {
             return try {
-                val date: Date
-                date = if (schedule.contains("-")) {
-                    val arr = schedule.split("-").toTypedArray()
-                    sdf.parse(arr[0].trim { it <= ' ' })
-                } else {
-                    sdf.parse(schedule)
-                }
-                newsdf.format(date).toUpperCase()
+                if(!schedule.equals(EMPTY_DATE)) {
+                    val date = Date(schedule.toLong() * 1000)
+                    newsdf.format(date).toUpperCase()
+                } else ""
             } catch (e: Exception) {
                 ""
             }

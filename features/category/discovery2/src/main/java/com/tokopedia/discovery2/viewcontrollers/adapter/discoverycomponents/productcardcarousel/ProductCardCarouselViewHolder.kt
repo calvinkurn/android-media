@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
@@ -111,6 +112,15 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             mProductCarouselComponentViewModel.getProductLoadState().observe(lifecycle, {
                 if (it) handleErrorState()
             })
+            mProductCarouselComponentViewModel.atcFailed.observe(lifecycle, { position ->
+                if (position >= 0) {
+                    mDiscoveryRecycleAdapter.getViewModelAtPosition(position)?.let { discoveryBaseViewModel ->
+                        if (discoveryBaseViewModel is MasterProductCardItemViewModel) {
+                            discoveryBaseViewModel.handleATCFailed()
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -127,6 +137,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             mProductCarouselComponentViewModel.getProductCardMaxHeight().removeObservers(it)
             mProductCarouselComponentViewModel.getProductLoadState().removeObservers(it)
             mProductCarouselComponentViewModel.getProductCardHeaderData().removeObservers(it)
+            mProductCarouselComponentViewModel.atcFailed.removeObservers(it)
         }
     }
 

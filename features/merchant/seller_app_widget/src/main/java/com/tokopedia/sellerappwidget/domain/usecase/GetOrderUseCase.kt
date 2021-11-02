@@ -20,7 +20,7 @@ class GetOrderUseCase(
 
     override suspend fun executeOnBackground(): OrderUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GetOrderResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
         val errors: List<GraphqlError>? = gqlResponse.getError(GetOrderResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetOrderResponse>()

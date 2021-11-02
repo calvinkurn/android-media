@@ -5,9 +5,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
-abstract class FlowUseCase<P, out R: Any> constructor(
+abstract class FlowUseCase<Input, Output> constructor(
     private val dispatcher: CoroutineDispatcher
-) : GqlUseCase<P, Flow<R>>() {
+) : GqlUseCase<Input, Flow<Output>>() {
 
     /*
     * Executes the use case based on dispatcher's flow
@@ -15,7 +15,7 @@ abstract class FlowUseCase<P, out R: Any> constructor(
     * @param params the input parameters to run the use case with
     * @return a flowable generic class comes from R
     * */
-    suspend operator fun invoke(params: P): Flow<R> {
+    suspend operator fun invoke(params: Input): Flow<Output> {
         return execute(params)
             .flowOn(dispatcher)
     }

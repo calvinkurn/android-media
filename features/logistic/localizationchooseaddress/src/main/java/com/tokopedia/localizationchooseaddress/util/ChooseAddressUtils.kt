@@ -17,9 +17,9 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.ui.preference.CoachMarkStateSharePref
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 
 object ChooseAddressUtils {
 
@@ -29,31 +29,34 @@ object ChooseAddressUtils {
     private const val locationRequestFastestInterval = 2 * 1000L
 
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
-        return if (isRollOutUser(context)) {
-            if (hasLocalizingAddressOnCache(context)) {
-                val chooseAddressPref = ChooseAddressSharePref(context)
-                chooseAddressPref.getLocalCacheData()
-            } else {
-                if (isLoginUser(context)) {
-                    ChooseAddressConstant.emptyAddress
-                } else {
-                    ChooseAddressConstant.defaultAddress
-                }
-            }
+        return if (hasLocalizingAddressOnCache(context)) {
+            val chooseAddressPref = ChooseAddressSharePref(context)
+            LocalCacheModel(
+                chooseAddressPref.getLocalCacheData()?.address_id.checkIfNumber("address_id"),
+                chooseAddressPref.getLocalCacheData()?.city_id ?: "",
+                chooseAddressPref.getLocalCacheData()?.district_id.checkIfNumber("district_id"),
+                chooseAddressPref.getLocalCacheData()?.lat ?: "",
+                chooseAddressPref.getLocalCacheData()?.long ?: "",
+                chooseAddressPref.getLocalCacheData()?.postal_code ?: "",
+                chooseAddressPref.getLocalCacheData()?.label ?: "",
+                chooseAddressPref.getLocalCacheData()?.shop_id ?: "",
+                chooseAddressPref.getLocalCacheData()?.warehouse_id ?: ""
+            )
         } else {
-            ChooseAddressConstant.emptyAddress
-        }
-    }
-
-    fun getLocalizingAddressDataDirectly(context: Context): LocalCacheModel? {
-        return if (isRollOutUser(context)) {
             if (isLoginUser(context)) {
                 ChooseAddressConstant.emptyAddress
             } else {
                 ChooseAddressConstant.defaultAddress
             }
-        } else {
+        }
+
+    }
+
+    fun getLocalizingAddressDataDirectly(context: Context): LocalCacheModel? {
+        return if (isLoginUser(context)) {
             ChooseAddressConstant.emptyAddress
+        } else {
+            ChooseAddressConstant.defaultAddress
         }
     }
 
@@ -66,14 +69,6 @@ object ChooseAddressUtils {
     fun isLoginUser(context: Context): Boolean {
         val userSession: UserSessionInterface = UserSession(context)
         return userSession.isLoggedIn
-    }
-
-    /**
-     * Rollence key
-     */
-    fun isRollOutUser(context: Context?): Boolean {
-        val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
-        return rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY
     }
 
     /**
@@ -94,6 +89,8 @@ object ChooseAddressUtils {
             if (latestChooseAddressData.long != localizingAddressStateData.long) validate = true
             if (latestChooseAddressData.label != localizingAddressStateData.label) validate = true
             if (latestChooseAddressData.postal_code != localizingAddressStateData.postal_code) validate = true
+            if (latestChooseAddressData.shop_id != localizingAddressStateData.shop_id) validate = true
+            if (latestChooseAddressData.warehouse_id != localizingAddressStateData.warehouse_id) validate = true
         }
         return validate
     }
@@ -115,11 +112,9 @@ object ChooseAddressUtils {
 
     fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
                                              postalCode: String, shopId: String, warehouseId: String) {
-        if (isRollOutUser(context)) {
-            val chooseAddressPref = ChooseAddressSharePref(context)
-            val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode, shopId, warehouseId)
-            chooseAddressPref.setLocalCache(localData)
-        }
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode, shopId, warehouseId)
+        chooseAddressPref.setLocalCache(localData)
     }
 
     /**
@@ -217,4 +212,18 @@ object ChooseAddressUtils {
             "${data.addressName} ${data.receiverName}"
         }
     }
+
+    internal fun String?.checkIfNumber(key: String): String {
+        if (this == null || this.isEmpty()) return ""
+
+        return try {
+            this.toLong()
+            this
+        } catch (t: Throwable) {
+            Timber.d(t)
+            ChooseAddressLogger.logOnLocalizing(t,key, this)
+            ""
+        }
+    }
+
 }

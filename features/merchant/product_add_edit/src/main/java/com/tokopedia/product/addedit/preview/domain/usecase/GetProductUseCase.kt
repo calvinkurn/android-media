@@ -23,7 +23,7 @@ class GetProductUseCase @Inject constructor(
     override suspend fun executeOnBackground(): Product {
 
         val graphqlRequest = GraphqlRequest(query, GetProductV3Response::class.java, params.parameters)
-        val graphqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest))
+        val graphqlResponse: GraphqlResponse = graphqlRepository.response(listOf(graphqlRequest))
         val errors: List<GraphqlError>? = graphqlResponse.getError(GetProductV3Response::class.java)
         if (errors.isNullOrEmpty()) {
             val data = graphqlResponse.getData<GetProductV3Response>(GetProductV3Response::class.java)

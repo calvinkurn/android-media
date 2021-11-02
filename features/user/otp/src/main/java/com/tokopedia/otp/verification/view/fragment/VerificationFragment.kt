@@ -84,11 +84,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private lateinit var countDownTimer: CountDownTimer
 
     private var isRunningCountDown = false
-    private var isFirstSendOtp = true
+    internal var isFirstSendOtp = true
     protected var isMoreThanOneMethod = true
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
-    private val delayAnimateText: Long = 350
 
     private var handler: Handler = Handler()
 
@@ -97,7 +96,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             tempOtp?.let {
                 viewBound.pin?.value = it.subSequence(0, indexTempOtp++)
                 if (indexTempOtp <= it.length) {
-                    handler?.postDelayed(this, delayAnimateText)
+                    handler?.postDelayed(this, DELAY_ANIMATE_TEXT.toLong())
                 }
             }
         }
@@ -393,7 +392,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         indexTempOtp = 0
         viewBound.pin?.value = ""
         handler?.removeCallbacks(characterAdder)
-        handler?.postDelayed(characterAdder, delayAnimateText)
+        handler?.postDelayed(characterAdder, DELAY_ANIMATE_TEXT.toLong())
     }
 
     private fun isCountdownFinished(): Boolean {
@@ -587,6 +586,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     companion object {
         private const val INTERVAL = 1000
         private const val COUNTDOWN_LENGTH = 30
+        private const val DELAY_ANIMATE_TEXT = 350
 
         const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
 

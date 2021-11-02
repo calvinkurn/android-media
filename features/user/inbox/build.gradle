@@ -90,6 +90,7 @@ dependencies {
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
     androidTestImplementation rootProject.ext.debugToolsDependencies.chuck
     androidTestImplementation projectOrAar(rootProject.ext.features.shopCommon)
+    androidTestImplementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 }
 
 project.ext {

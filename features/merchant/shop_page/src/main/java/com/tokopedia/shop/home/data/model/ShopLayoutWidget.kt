@@ -27,15 +27,15 @@ data class ShopLayoutWidget(
 
     data class Widget(
             @SerializedName("widgetID")
-            val widgetID: String = "",
+            var widgetID: String = "",
             @SerializedName("widgetMasterID")
-            val widgetMasterID: String = "",
+            var widgetMasterID: String = "",
             @SerializedName("layoutOrder")
             val layoutOrder: Int = -1,
             @SerializedName("name")
-            val name: String = "",
+            var name: String = "",
             @SerializedName("type")
-            val type: String = "",
+            var type: String = "",
             @SerializedName("header")
             val header: Header = Header(),
             @SerializedName("data")
@@ -55,7 +55,9 @@ data class ShopLayoutWidget(
                 @SerializedName("isATC")
                 val isAtc: Int = 0,
                 @SerializedName("etalaseID")
-                val etalaseId: String = ""
+                val etalaseId: String = "",
+                @SerializedName("isShowEtalaseName")
+                val isShowEtalaseName: Int = 1
         )
 
         data class Data(
@@ -69,10 +71,14 @@ data class ShopLayoutWidget(
                 val videoUrl: String = "",
                 @SerializedName("linkUrl")
                 val linkUrl: String = "",
+                @SerializedName("linkID")
+                val linkId: Long = 0,
                 @SerializedName("productID")
                 val productID: String = "",
                 @SerializedName("name")
                 val name: String = "",
+                @SerializedName("Name")
+                val showcaseName: String = "",
                 @SerializedName("campaignID")
                 val campaignId: String = "",
                 @SerializedName("description")

@@ -7,17 +7,18 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
@@ -51,11 +52,11 @@ class PlayBroadcastUiMapper(
 
     override fun mapProductList(
             productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-            isSelectedHandler: (Long) -> Boolean,
+            isSelectedHandler: (String) -> Boolean,
             isSelectableHandler: (Boolean) -> SelectableState
     ) = productsResponse.data.map {
         ProductContentUiModel(
-                id = it.id.toLong(),
+                id = it.id,
                 name = it.name,
                 imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                 originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
@@ -129,7 +130,7 @@ class PlayBroadcastUiMapper(
 
     override fun mapProductTag(productTag: ProductTagging): List<ProductData> = productTag.productList.map {
         ProductData(
-                id = it.id,
+                id = it.id.toString(),
                 name = it.name,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
@@ -153,30 +154,34 @@ class PlayBroadcastUiMapper(
         }
 
         return ConfigurationUiModel(
-                streamAllowed = config.streamAllowed,
-                channelId = channelStatus.first,
-                channelType =  channelStatus.second,
-                remainingTime = remainingTime,
-                durationConfig = DurationConfigUiModel(
-                        duration = maxDuration,
-                        maxDurationDesc = config.maxDurationDesc,
-                        pauseDuration = TimeUnit.SECONDS.toMillis(config.maxPauseDuration),
-                        errorMessage = config.maxDurationDesc),
-                productTagConfig = ProductTagConfigUiModel(
-                        maxProduct = config.maxTaggedProduct,
-                        minProduct = config.minTaggedProduct,
-                        maxProductDesc = config.maxTaggedProductDesc,
-                        errorMessage = config.maxTaggedProductDesc
-                ),
-                coverConfig = CoverConfigUiModel(
-                        maxChars = config.maxTitleLength
-                ),
-                countDown = config.countdownSec,
-                scheduleConfig = BroadcastScheduleConfigUiModel(
-                        minimum = config.scheduledTime.minimum.toDateWithFormat(DATE_FORMAT_RFC3339),
-                        maximum = config.scheduledTime.maximum.toDateWithFormat(DATE_FORMAT_RFC3339),
-                        default = config.scheduledTime.default.toDateWithFormat(DATE_FORMAT_RFC3339)
-                )
+            streamAllowed = config.streamAllowed,
+            channelId = channelStatus.first,
+            channelType = channelStatus.second,
+            remainingTime = remainingTime,
+            durationConfig = DurationConfigUiModel(
+                duration = maxDuration,
+                maxDurationDesc = config.maxDurationDesc,
+                pauseDuration = TimeUnit.SECONDS.toMillis(config.maxPauseDuration),
+                errorMessage = config.maxDurationDesc
+            ),
+            productTagConfig = ProductTagConfigUiModel(
+                maxProduct = config.maxTaggedProduct,
+                minProduct = config.minTaggedProduct,
+                maxProductDesc = config.maxTaggedProductDesc,
+                errorMessage = config.maxTaggedProductDesc
+            ),
+            coverConfig = CoverConfigUiModel(
+                maxChars = config.maxTitleLength
+            ),
+            countDown = config.countdownSec,
+            scheduleConfig = BroadcastScheduleConfigUiModel(
+                minimum = config.scheduledTime.minimum.toDateWithFormat(DATE_FORMAT_RFC3339),
+                maximum = config.scheduledTime.maximum.toDateWithFormat(DATE_FORMAT_RFC3339),
+                default = config.scheduledTime.default.toDateWithFormat(DATE_FORMAT_RFC3339)
+            ),
+            tnc = config.tnc.map {
+                TermsAndConditionUiModel(desc = it.description)
+            },
         )
     }
 
@@ -191,7 +196,7 @@ class PlayBroadcastUiMapper(
 
     override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
         ProductData(
-                id = it.productID.toLongOrZero(),
+                id = it.productID,
                 name = it.productName,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
@@ -293,9 +298,23 @@ class PlayBroadcastUiMapper(
         )
     }
 
+    override fun mapLiveInfo(
+        activeIngestUrl: String,
+        config: PlayLivePusherConfig
+    ): PlayLiveInfoUiModel {
+        return PlayLiveInfoUiModel(
+            activeIngestUrl,
+            config.videoWidth,
+            config.videoHeight,
+            config.fps,
+            config.videoBitrate
+        )
+    }
+
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"
 
         private const val TOTAL_FOLLOWERS = 3
     }
+
 }

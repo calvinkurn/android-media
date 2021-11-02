@@ -1,8 +1,9 @@
 package com.tokopedia.play.model
 
 import com.tokopedia.play.view.storage.PlayChannelData
+import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
  * Created by jegul on 09/02/21
@@ -12,39 +13,39 @@ class PlayChannelDataModelBuilder {
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val partnerInfoBuilder = PlayPartnerInfoModelBuilder()
     private val likeModelBuilder = PlayLikeModelBuilder()
-    private val totalViewBuilder = PlayTotalViewModelBuilder()
-    private val shareInfoBuilder = PlayShareInfoModelBuilder()
+    private val channelReportBuilder = PlayChannelReportModelBuilder()
     private val cartInfoBuilder = PlayCartInfoModelBuilder()
     private val pinnedBuilder = PlayPinnedModelBuilder()
     private val quickReplyBuilder = PlayQuickReplyModelBuilder()
     private val videoInfoBuilder = PlayVideoModelBuilder()
     private val statusInfoBuilder = PlayStatusInfoModelBuilder()
+    private val upcomingInfoBuilder = PlayUpcomingInfoModelBuilder()
 
     fun buildChannelData(
-            id: String = "1",
-            channelInfo: PlayChannelInfoUiModel = channelInfoBuilder.buildChannelInfo(),
-            partnerInfo: PlayPartnerInfo = partnerInfoBuilder.buildPlayPartnerInfo(),
-            likeInfo: PlayLikeInfoUiModel = likeModelBuilder.buildCompleteData(),
-            totalViewInfo: PlayTotalViewUiModel = totalViewBuilder.buildCompleteData(),
-            shareInfo: PlayShareInfoUiModel = shareInfoBuilder.build(),
-            cartInfo: PlayCartInfoUiModel = cartInfoBuilder.buildCompleteData(),
-            pinnedInfo: PlayPinnedInfoUiModel = pinnedBuilder.buildInfo(),
-            quickReplyInfo: PlayQuickReplyInfoUiModel = quickReplyBuilder.build(),
-            videoMetaInfo: PlayVideoMetaInfoUiModel = videoInfoBuilder.buildVideoMeta(),
-            statusInfo: PlayStatusInfoUiModel = statusInfoBuilder.build(),
-            leaderboardInfo: PlayLeaderboardInfoUiModel = PlayLeaderboardInfoUiModel()
+        id: String = "1",
+        channelDetail: PlayChannelDetailUiModel = channelInfoBuilder.buildChannelDetail(),
+        partnerInfo: PlayPartnerInfo = partnerInfoBuilder.buildPlayPartnerInfo(),
+        likeInfo: PlayLikeInfoUiModel = likeModelBuilder.buildLikeInfo(),
+        channelReportInfo: PlayChannelReportUiModel = channelReportBuilder.buildChannelReport(),
+        cartInfo: PlayCartInfoUiModel = cartInfoBuilder.build(),
+        pinnedInfo: PlayPinnedInfoUiModel = pinnedBuilder.buildInfo(),
+        quickReplyInfo: PlayQuickReplyInfoUiModel = quickReplyBuilder.build(),
+        videoMetaInfo: PlayVideoMetaInfoUiModel = videoInfoBuilder.buildVideoMeta(),
+        statusInfo: PlayStatusInfoUiModel = statusInfoBuilder.build(),
+        leaderboardInfo: PlayLeaderboardWrapperUiModel = PlayLeaderboardWrapperUiModel.Unknown,
+        upcomingInfo: PlayUpcomingUiModel = upcomingInfoBuilder.buildUpcomingInfo()
     ) = PlayChannelData(
             id = id,
-            channelInfo = channelInfo,
+            channelDetail = channelDetail,
             partnerInfo = partnerInfo,
             likeInfo = likeInfo,
-            totalViewInfo = totalViewInfo,
-            shareInfo = shareInfo,
             cartInfo = cartInfo,
             pinnedInfo = pinnedInfo,
             quickReplyInfo = quickReplyInfo,
             videoMetaInfo = videoMetaInfo,
             statusInfo = statusInfo,
-            leaderboardInfo = leaderboardInfo
+            leaderboardInfo = leaderboardInfo,
+            channelReportInfo = channelReportInfo,
+            upcomingInfo = upcomingInfo
     )
 }

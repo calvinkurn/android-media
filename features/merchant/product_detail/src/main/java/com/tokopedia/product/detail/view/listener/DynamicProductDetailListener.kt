@@ -2,12 +2,15 @@ package com.tokopedia.product.detail.view.listener
 
 import android.app.Application
 import android.util.SparseIntArray
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -32,6 +35,7 @@ interface DynamicProductDetailListener {
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int)
+
     /**
      * ProductSnapshotViewHolder
      */
@@ -74,6 +78,7 @@ interface DynamicProductDetailListener {
     fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String)
     fun onReviewClick()
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
+    fun shouldShowRatingAndReviewCount(): Boolean
 
     /**
      * ProductMerchantVoucherViewHolder
@@ -94,7 +99,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductRecommendationViewHolder
      */
-    fun onSeeAllRecomClicked(pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onSeeAllRecomClicked(recommendationWidget: RecommendationWidget, pageName: String, applink: String, componentTrackDataModel: ComponentTrackDataModel)
     fun eventRecommendationClick(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
     fun eventRecommendationImpression(recomItem: RecommendationItem, chipValue: String, position: Int, pageName: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onThreeDotsClick(recomItem: RecommendationItem, adapterPosition: Int, carouselPosition: Int)
@@ -138,8 +143,11 @@ interface DynamicProductDetailListener {
     /**
      * ProductTickerViewHolder
      */
-    fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
-    fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
+    fun onTickerShopClicked(tickerTitle: String, tickerType: Int,
+                            componentTrackDataModel: ComponentTrackDataModel?,
+                            tickerDescription: String, applink: String, actionType: String,
+                            tickerActionBs: TickerActionBs?)
+
     fun onTickerGoToRecomClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
 
     /**
@@ -175,4 +183,12 @@ interface DynamicProductDetailListener {
      */
     fun onCategoryCarouselImageClicked(url: String, categoryTitle: String, categoryId: String, componentTrackDataModel: ComponentTrackDataModel?)
     fun onCategoryCarouselSeeAllClicked(url:String, componentTrackDataModel: ComponentTrackDataModel?)
+
+    /**
+     * ProductBundlingViewHolder
+     */
+    fun onImpressionProductBundling(bundleId: String, bundleType: String, componentTrackDataModel:ComponentTrackDataModel)
+    fun onClickCheckBundling(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onClickProductInBundling(bundleId: String, bundleProductId: String, componentTrackDataModel: ComponentTrackDataModel)
+
 }

@@ -47,7 +47,10 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
         })
 
         multiBannerViewModel.getPushBannerStatusData().observe(fragment.viewLifecycleOwner, Observer {
-            updateImage(it)
+            updateImage(it.first)
+            if(it.second.isNotEmpty()){
+                Toaster.make(customItemView, it.second, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR)
+            }
         })
 
         multiBannerViewModel.getPushBannerSubscriptionData().observe(fragment.viewLifecycleOwner, Observer {
@@ -118,7 +121,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
             data,
-            multiBannerViewModel.getComponentPosition(),
+            null,
             Utils.getUserId(fragment.context)
         )
     }

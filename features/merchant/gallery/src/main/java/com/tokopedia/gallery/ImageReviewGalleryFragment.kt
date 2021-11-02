@@ -6,19 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.gallery.adapter.GalleryAdapter
 import com.tokopedia.gallery.adapter.TypeFactory
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSliderCallback
-import com.tokopedia.gallery.domain.GetImageReviewUseCase
-import com.tokopedia.gallery.presenter.ReviewGalleryPresenter
-import com.tokopedia.gallery.presenter.ReviewGalleryPresenterContract
+import com.tokopedia.gallery.di.DaggerGalleryComponent
+import com.tokopedia.gallery.di.GalleryComponent
 import com.tokopedia.gallery.tracking.ImageReviewGalleryTracking
+import com.tokopedia.gallery.viewmodel.GalleryViewModel
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
-import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import java.util.*
+import javax.inject.Inject
 
-class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(), BottomSheetImageReviewSliderCallback, GalleryView {
+class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(),
+    BottomSheetImageReviewSliderCallback, GalleryView, HasComponent<GalleryComponent> {
 
     companion object {
         fun createInstance(): Fragment {
@@ -26,7 +35,9 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
         }
     }
 
-    private var presenter: ReviewGalleryPresenterContract? = null
+    @Inject
+    lateinit var viewModel: GalleryViewModel
+
     private var activity: ImageReviewGalleryActivity? = null
 
     override val isAllowLoadMore: Boolean
@@ -37,7 +48,11 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
         activity = getActivity() as ImageReviewGalleryActivity?
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_review_gallery_pdp, container, false)
     }
 
@@ -51,6 +66,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupBottomSheet()
+        observeReviewImages()
     }
 
     private fun setupBottomSheet() {
@@ -73,7 +89,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
                 return
             }
             it.bottomSheetImageReviewSlider?.onLoadingData()
-            presenter?.loadData(it.productId.toLongOrNull() ?: 0L, page)
+            viewModel.setPage(it.productId, page)
         }
     }
 
@@ -97,10 +113,16 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
 
     }
 
+    override fun getComponent(): GalleryComponent? {
+        return activity?.run {
+            DaggerGalleryComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+        }
+    }
+
     override fun initInjector() {
-        presenter = ReviewGalleryPresenter(
-                GetImageReviewUseCase(context, GraphqlUseCase()),
-                this)
+        component?.inject(this)
     }
 
     override fun getScreenName(): String? {
@@ -114,9 +136,17 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
         }
     }
 
-    override fun handleItemResult(imageReviewItemList: List<ImageReviewItem>, isHasNextPage: Boolean) {
+    override fun handleItemResult(
+        imageReviewItemList: List<ImageReviewItem>,
+        isHasNextPage: Boolean
+    ) {
         renderList(imageReviewItemList, isHasNextPage)
-        activity?.let { it.bottomSheetImageReviewSlider?.onLoadDataSuccess(imageReviewItemList, isHasNextPage) }
+        activity?.let {
+            it.bottomSheetImageReviewSlider?.onLoadDataSuccess(
+                imageReviewItemList,
+                isHasNextPage
+            )
+        }
     }
 
     override fun handleErrorResult(e: Throwable) {
@@ -135,7 +165,15 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     override fun onSeeAllButtonClicked() {
         activity?.let {
             it.finish()
-            ImageReviewGalleryActivity.moveTo(it, it.productId)
+            if (shouldGoToNewGallery()) {
+                RouteManager.route(
+                    context,
+                    ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY,
+                    it.productId
+                )
+            } else {
+                ImageReviewGalleryActivity.moveTo(it, it.productId)
+            }
         }
     }
 
@@ -150,5 +188,25 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
         return R.id.image_review_gallery_swipe_refresh_layout
+    }
+
+    private fun shouldGoToNewGallery(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING,
+                RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
+            ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun observeReviewImages() {
+        viewModel.reviewImages.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> handleItemResult(it.data.reviewItems, it.data.hasNext)
+                is Fail -> handleErrorResult(it.throwable)
+            }
+        })
     }
 }

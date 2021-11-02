@@ -17,7 +17,9 @@ data class BalanceDrawerItemModel(
         val drawerItemType: Int = TYPE_TOKOPOINT,
         val mainPageTitle: String = "",
         var state: Int = STATE_LOADING,
-        val trackingAttribute: String = ""
+        val trackingAttribute: String = "",
+        var alternateBalanceDrawerItem: List<BalanceDrawerItemModel>? = null,
+        var balanceCoachmark: BalanceCoachmark? = null
 ) {
     companion object {
         const val TYPE_UNKNOWN = 0

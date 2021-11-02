@@ -67,7 +67,7 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         val graphqlRequest = GraphqlRequest(ReputationForm.GQL_QUERY, ProductRevGetForm::class.java, requestParams.parameters)
 
-        val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
+        val response = graphqlRepository.response(listOf(graphqlRequest), cacheStrategy)
 
         val data: ProductRevGetForm? = response.getData(ProductRevGetForm::class.java)
         val error= response.getError(ProductRevGetForm::class.java)

@@ -5,9 +5,11 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.getColoredIndicator
+import com.tokopedia.shop.score.databinding.ItemShopScorePenaltyBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemDetailPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
-import kotlinx.android.synthetic.main.item_shop_score_penalty.view.*
+import com.tokopedia.utils.view.binding.viewBinding
+
 
 class ItemPenaltyViewHolder(
     view: View,
@@ -18,25 +20,27 @@ class ItemPenaltyViewHolder(
         val LAYOUT = R.layout.item_shop_score_penalty
     }
 
+    private val binding: ItemShopScorePenaltyBinding? by viewBinding()
+
     override fun bind(element: ItemPenaltyUiModel?) {
         if (element == null) return
 
-        with(itemView) {
+        binding?.run {
             element.colorPenalty?.let {
-                penaltyIndicator?.background = getColoredIndicator(context, it)
-                tv_title_status_penalty?.setTextColor(ContextCompat.getColor(context, it))
+                penaltyIndicator.background = getColoredIndicator(root.context, it)
+                tvTitleStatusPenalty.setTextColor(ContextCompat.getColor(root.context, it))
             }
-            tv_title_status_penalty?.text = element.statusPenalty
-            tv_end_date_status_penalty?.text = element.endDate
-            tv_date_status_penalty?.text = element.startDate
-            tv_title_type_penalty?.text = element.typePenalty
+            tvTitleStatusPenalty.text = element.statusPenalty
+            tvEndDateStatusPenalty.text = element.endDate
+            tvDateStatusPenalty.text = element.startDate
+            tvTitleTypePenalty.text = element.typePenalty
 
-            tv_invoice_transaction_penalty?.text = element.invoicePenalty
+            tvInvoiceTransactionPenalty.text = element.invoicePenalty
 
-            ic_transaction_penalty_to_detail?.setOnClickListener {
+            icTransactionPenaltyToDetail.setOnClickListener {
                 itemDetailPenaltyListener.onItemPenaltyClick(element)
             }
-            setOnClickListener {
+            root.setOnClickListener {
                 itemDetailPenaltyListener.onItemPenaltyClick(element)
             }
         }

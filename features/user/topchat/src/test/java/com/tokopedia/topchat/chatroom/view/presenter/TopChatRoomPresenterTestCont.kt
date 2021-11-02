@@ -7,24 +7,19 @@ import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
-import com.tokopedia.topchat.chatroom.data.UploadImageDummy
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exImageUploadId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exMessageId
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exOpponentId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSendMessage
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exStartTime
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.imageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.replyChatViewModelApiSuccess
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.source
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.toShopId
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.toUserId
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.websocket.RxWebSocket
@@ -33,7 +28,6 @@ import io.mockk.*
 import junit.framework.Assert
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert
-import org.junit.Assert.assertTrue
 import org.junit.Test
 import rx.Observable
 import rx.Subscriber
@@ -154,7 +148,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         val wsChatPojo = mockkParseResponse(wsResponseProductAttachment)
-        val wsChatVisitable = mockkWsMapper(wsChatPojo) as ProductAttachmentViewModel
+        val wsChatVisitable = mockkWsMapper(wsChatPojo) as ProductAttachmentUiModel
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -225,9 +219,16 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `check upload image using service`() {
         //Given
-        val image = ImageUploadViewModel(
-            "123", "123", "123", "test", "123"
-        )
+        val image = ImageUploadUiModel.Builder()
+            .withMsgId(exMessageId)
+            .withFromUid("123123")
+            .withAttachmentId("123987")
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
+            .withStartTime("123")
+            .withIsDummy(true)
+            .withImageUrl("https://ecs.tokopedia.com/image.jpg")
+            .build()
         setFinalStatic(Build::class.java.getField("MODEL"), "samsung")
         every {
             UploadImageChatService.enqueueWork(
@@ -253,7 +254,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `check upload image problematic device`() {
         //Given
-        val image = mockk<ImageUploadViewModel>(relaxed = true)
+        val image = mockk<ImageUploadUiModel>(relaxed = true)
         every {
             remoteConfig.getBoolean(any(), any())
         } returns true
@@ -284,7 +285,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `check upload image failed to get remote config`() {
         //Given
-        val image = mockk<ImageUploadViewModel>()
+        val image = mockk<ImageUploadUiModel>()
         val exception = mockk<Exception>("Oops!")
         every {
             remoteConfig.getBoolean(any(), any())
@@ -305,6 +306,10 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         // Given
         val mockOnSuccess: (ChatroomViewModel, ChatReplies) -> Unit = mockk()
         val mockOnError: (Throwable) -> Unit = mockk()
+        val roomMetaDataSlot = slot<(RoomMetaData) -> Unit>()
+        every {
+            getChatUseCase.getFirstPageChat(any(), any(), any(), capture(roomMetaDataSlot))
+        } just Runs
 
         // When
         presenter.getExistingChat(exMessageId, mockOnError, mockOnSuccess)
@@ -314,28 +319,8 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
             getChatUseCase.getFirstPageChat(
                 exMessageId,
                 mockOnSuccess,
-                mockOnError
-            )
-        }
-    }
-
-    @Test
-    fun `Get message usecase called when no message id provided`() {
-        // Given
-        val mockOnSuccess: (String) -> Unit = mockk()
-        val mockOnError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.getMessageId(toUserId, toShopId, source, mockOnError, mockOnSuccess)
-
-        // Then
-        verify(exactly = 1) {
-            getExistingMessageIdUseCase.getMessageId(
-                toShopId,
-                toUserId,
-                source,
-                mockOnSuccess,
-                mockOnError
+                mockOnError,
+                roomMetaDataSlot.captured
             )
         }
     }
@@ -434,7 +419,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 any()
             )
         } answers {
-            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
             onSuccess.invoke(exImageUploadId, imageUploadViewModel)
         }
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
@@ -442,7 +427,8 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         val wsChatPojo = mockkParseResponse(wsResponseImageAttachment, false)
         val wsChatVisitable = mockkWsMapper(wsChatPojo)
         val websocketParam = TopChatWebSocketParam.generateParamSendImage(
-            exMessageId, exImageUploadId, imageUploadViewModel.startTime)
+            exMessageId, exImageUploadId, imageUploadViewModel
+        )
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -475,7 +461,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 any()
             )
         } answers {
-            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
             onSuccess.invoke(
                 exImageUploadId,
                 imageUploadViewModel
@@ -519,7 +505,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
             uploadImageUseCase.upload(
                 imageUploadViewModel, captureLambda(), any())
         } answers {
-            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
             onSuccess.invoke(exImageUploadId, imageUploadViewModel)
         }
         coEvery {
@@ -564,7 +550,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 imageUploadViewModel,
                 any(), captureLambda())
         } answers {
-            val onError = lambda<(Throwable, ImageUploadViewModel) -> Unit>()
+            val onError = lambda<(Throwable, ImageUploadUiModel) -> Unit>()
             onError.invoke(errorUploadImage, imageUploadViewModel)
         }
 
@@ -584,10 +570,16 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `should have dummy image when upload image by service`() {
         // Given
-        val imageViewModel = ImageUploadViewModel(
-            exMessageId, "fromUid", "attachmentId",
-            "fileLoc", "startTime"
-        )
+        val imageViewModel = ImageUploadUiModel.Builder()
+            .withMsgId(exMessageId)
+            .withFromUid("123123")
+            .withAttachmentId("123987")
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
+            .withStartTime("123")
+            .withIsDummy(true)
+            .withImageUrl("https://ecs.tokopedia.com/image.jpg")
+            .build()
         setFinalStatic(Build::class.java.getField("MODEL"), "samsung")
         every {
             UploadImageChatService.enqueueWork(any(), any(), any())
@@ -653,98 +645,37 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     fun `on success send attachment and message through Websocket`() {
         // Given
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
-        val dummyMessage = MessageViewModel(
-            exMessageId, userSession.userId, userSession.name, exStartTime, exSendMessage
-        )
         val paramSendMessage = "paramSendMessage"
+        val paramSendAttachment = "paramSendAttachment"
         val paramStopTyping = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         every {
-            topChatRoomWebSocketMessageMapper.mapToDummyMessage(
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } returns dummyMessage
-        every {
             TopChatWebSocketParam.generateParamSendMessage(
-                any(),
-                any(),
-                any(),
-                any()
+                any(), any(), any(), any(),
+                any(), any(), any()
             )
         } returns paramSendMessage
+        every {
+            sendAbleProductPreview.generateMsgObj(
+                any(), any(), any(), any()
+            )
+        } returns paramSendAttachment
 
         // When
+        presenter.connectWebSocket(exMessageId)
         presenter.connectWebSocket(exMessageId)
         presenter.addAttachmentPreview(sendAbleProductPreview)
         presenter.sendAttachmentsAndMessage(
-            exMessageId,
-            exSendMessage,
-            exStartTime,
-            exOpponentId, mockOnSendingMessage
+            exSendMessage, null
         )
 
         // Then
-        verify(exactly = 1) {
-            sendAbleProductPreview.generateMsgObj(
-                exMessageId,
-                exOpponentId,
-                exSendMessage,
-                listInterceptor,
-                LocalCacheModel()
-            )
-        }
         verify(exactly = 1) { view.sendAnalyticAttachmentSent(sendAbleProductPreview) }
-        verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
         verify(exactly = 1) { RxWebSocket.send(paramSendMessage, listInterceptor) }
+        verify(exactly = 1) { RxWebSocket.send(paramSendAttachment, listInterceptor) }
         verify(exactly = 1) { RxWebSocket.send(paramStopTyping, listInterceptor) }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
-    }
-
-    @Test
-    fun `on success send message through API`() {
-        // Given
-        val slot = slot<Subscriber<ReplyChatViewModel>>()
-        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
-        val dummyMessage = MessageViewModel(
-            exMessageId, userSession.userId, userSession.name, exStartTime, exSendMessage
-        )
-        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
-        every {
-            topChatRoomWebSocketMessageMapper.mapToDummyMessage(
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } returns dummyMessage
-        every { replyChatUseCase.execute(any(), capture(slot)) } answers {
-            val subs = slot.captured
-            subs.onNext(replyChatViewModelApiSuccess)
-        }
-
-        // When
-        presenter.connectWebSocket(exMessageId)
-        websocketServer.onNext(wsOpen)
-        websocketServer.onCompleted()
-        presenter.sendAttachmentsAndMessage(
-            exMessageId,
-            exSendMessage,
-            exStartTime,
-            exOpponentId,
-            mockOnSendingMessage
-        )
-
-        // Then
-        verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
-        verify(exactly = 1) { view.onReceiveMessageEvent(replyChatViewModelApiSuccess.chat) }
-        verify(exactly = 1) { view.removeDummy(dummyMessage) }
     }
 
     @Test
@@ -812,6 +743,22 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         verify {
             onError.invoke(throwable)
         }
+    }
+
+    @Test
+    fun `resend SRW from bubble attachment header`() {
+        // Given
+        val attachment = HeaderCtaButtonAttachment()
+        val stopTypingParam = TopChatWebSocketParam.generateParamStopTyping(exMessageId)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        presenter.sendSrwFrom(attachment)
+
+        // Then
+        verify { RxWebSocket.send(stopTypingParam, listInterceptor) }
     }
 
     private fun mockkParseResponse(

@@ -72,7 +72,7 @@ open class WishlistViewModel @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = wishlistCoroutineDispatcherProvider.main + masterJob
 
-    private var tempSelectedProductIdInPdp: Int? = null
+    private var tempSelectedProductIdInPdp: Long? = null
     private var tempSelectedPositionInPdp: Int? = null
     private var tempSelectedParentPositionInPDP: Int? = null
 
@@ -496,7 +496,7 @@ open class WishlistViewModel @Inject constructor(
      *
      * This function will update selected recommendation item with new wishlist state
      */
-    open fun updateRecommendationItemWishlist(productId: Int, parentPosition: Int, childPosition: Int, newWishlistState: Boolean){
+    open fun updateRecommendationItemWishlist(productId: Long, parentPosition: Int, childPosition: Int, newWishlistState: Boolean){
         val newWishlistData: MutableList<WishlistDataModel> = wishlistData.value.copy()
 
         if (parentPosition == DEFAULT_PARENT_POSITION_EMPTY_RECOM) {
@@ -925,7 +925,7 @@ open class WishlistViewModel @Inject constructor(
             }
 
             override fun onSuccessAddWishlist(productId: String?) {
-                updateRecommendationItemWishlist(productId?.toInt()?:-1, parentPosition, childPosition, !currentWishlistState)
+                updateRecommendationItemWishlist(productId?.toLong() ?: 0, parentPosition, childPosition, !currentWishlistState)
                 addWishlistRecommendationActionData.value = Event(
                         AddWishlistRecommendationData(
                                 message = "",
@@ -959,7 +959,7 @@ open class WishlistViewModel @Inject constructor(
             }
 
             override fun onSuccessRemoveWishlist(productId: String?) {
-                updateRecommendationItemWishlist(productId?.toInt()?:-1, parentPosition, childPosition, !currentWishlistState)
+                updateRecommendationItemWishlist(productId?.toLong()?:0, parentPosition, childPosition, !currentWishlistState)
                 removeWishlistRecommendationActionData.value = Event(
                         RemoveWishlistRecommendationData(
                                 message = "",
@@ -972,7 +972,7 @@ open class WishlistViewModel @Inject constructor(
 
     private fun getWishlistPositionOnMark() = listVisitableMarked.map { it.key }
 
-    fun onProductClick(productId: Int, parentPosition: Int, position: Int) {
+    fun onProductClick(productId: Long, parentPosition: Int, position: Int) {
         this.tempSelectedParentPositionInPDP = parentPosition
         this.tempSelectedPositionInPdp = position
         this.tempSelectedProductIdInPdp = productId
@@ -986,7 +986,7 @@ open class WishlistViewModel @Inject constructor(
         )
     }
 
-    fun onPDPActivityResultForWishlist(productId: Int, wishlistState: Boolean) {
+    fun onPDPActivityResultForWishlist(productId: Long, wishlistState: Boolean) {
         if (tempSelectedParentPositionInPDP != null &&
                 tempSelectedPositionInPdp != null &&
                 tempSelectedProductIdInPdp != null) {

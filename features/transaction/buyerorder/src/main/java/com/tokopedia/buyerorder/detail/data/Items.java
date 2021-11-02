@@ -7,29 +7,11 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Items implements Serializable {
-    @SerializedName("detail_id")
-    @Expose
-    private String orderDetailId;
 
     @SerializedName("categoryID")
     @Expose
     private int categoryID;
 
-    @SerializedName("categoryL1")
-    @Expose
-    private int categoryL1;
-    @SerializedName("categoryL2")
-    @Expose
-    private int categoryL2;
-
-    @SerializedName("categoryL3")
-    @Expose
-    private int categoryL3;
-
-
-    @SerializedName("id")
-    @Expose
-    private String id;
     @SerializedName("title")
     @Expose
     private String title;
@@ -46,13 +28,6 @@ public class Items implements Serializable {
     @Expose
     private String price;
 
-    @SerializedName("unformattedPrice")
-    @Expose
-    private String unformattedPrice;
-
-    @SerializedName("freeShipping")
-    private FreeShipping freeShipping;
-
     @SerializedName("imageUrl")
     @Expose
     private String imageUrl;
@@ -60,10 +35,6 @@ public class Items implements Serializable {
     @SerializedName("quantity")
     @Expose
     private int quantity;
-
-    @SerializedName("promotionAmount")
-    @Expose
-    private String promotionAmount;
 
     @SerializedName("actionButtons")
     @Expose
@@ -73,30 +44,13 @@ public class Items implements Serializable {
     @Expose
     private String metaData;
 
-    @SerializedName("description")
-    @Expose
-    private String description;
-
-    @SerializedName("productUrl")
-    @Expose
-    private String productUrl;
-
     @SerializedName("totalPrice")
     @Expose
     private String totalPrice;
 
-    @SerializedName("weight")
-    @Expose
-    private String weight;
-
-    @SerializedName("trackingURL")
-    @Expose
-    private String trackingUrl;
-
     @SerializedName("trackingNumber")
     @Expose
     private String trackingNumber;
-
 
     @SerializedName("invoiceID")
     @Expose
@@ -106,17 +60,10 @@ public class Items implements Serializable {
 
     private boolean isActionButtonLoaded;
 
-    public String getOrderDetailId() {
-        return orderDetailId;
-    }
-
-    public void setOrderDetailId(String orderDetailId) {
-        this.orderDetailId = orderDetailId;
-    }
-
     public int getCategoryID() {
         return categoryID;
     }
+
     public void setCategoryID(int categoryID) {
         this.categoryID = categoryID;
     }
@@ -145,13 +92,6 @@ public class Items implements Serializable {
         this.tapActions = tapActions;
     }
 
-    public void setFreeShipping(FreeShipping freeShipping) {
-        this.freeShipping = freeShipping;
-    }
-
-    public FreeShipping getFreeShipping() {
-        return freeShipping;
-    }
     public String getPrice() {
         return price;
     }
@@ -174,14 +114,6 @@ public class Items implements Serializable {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public String getPromotionAmount() {
-        return promotionAmount;
-    }
-
-    public void setPromotionAmount(String promotionAmount) {
-        this.promotionAmount = promotionAmount;
     }
 
     public List<ActionButton> getActionButtons() {
@@ -216,72 +148,12 @@ public class Items implements Serializable {
         isActionButtonLoaded = actionButtonLoaded;
     }
 
-    public int getCategoryL1() {
-        return categoryL1;
-    }
-
-    public int getCategoryL2() {
-        return categoryL2;
-    }
-
-    public int getCategoryL3() {
-        return categoryL3;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getProductUrl() {
-        return productUrl;
-    }
-
-    public void setProductUrl(String productUrl) {
-        this.productUrl = productUrl;
-    }
-
     public String getTotalPrice() {
         return totalPrice;
     }
 
     public void setTotalPrice(String totalPrice) {
         this.totalPrice = totalPrice;
-    }
-
-    public String getUnformattedPrice() {
-        return unformattedPrice;
-    }
-
-    public void setUnformattedPrice(String unformattedPrice) {
-        this.unformattedPrice = unformattedPrice;
-    }
-
-    public String getWeight() {
-        return weight;
-    }
-
-    public void setWeight(String weight) {
-        this.weight = weight;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTrackingUrl() {
-        return trackingUrl;
-    }
-
-    public void setTrackingUrl(String trackingUrl) {
-        this.trackingUrl = trackingUrl;
     }
 
     public String getTrackingNumber() {
@@ -302,6 +174,6 @@ public class Items implements Serializable {
 
     @Override
     public String toString() {
-        return "ClassPojo [title = " + title + ", tapActions = " + tapActions + ", price = " + price + ", imageUrl = " + imageUrl + ", quantity = " + quantity + ", promotionAmount = " + promotionAmount + ", actionButtons = " + actionButtons + ", metaData = " + metaData + ", freeShipping =" + freeShipping + "]";
+        return "ClassPojo [title = " + title + ", tapActions = " + tapActions + ", price = " + price + ", imageUrl = " + imageUrl + ", quantity = " + quantity + ", actionButtons = " + actionButtons + ", metaData = " + metaData + "]";
     }
 }

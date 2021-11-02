@@ -9,6 +9,7 @@ import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
@@ -23,6 +24,7 @@ interface ProductListSectionContract {
         fun setProductList(list: List<Visitable<*>>)
         fun addRecommendationList(list: List<Visitable<*>>)
         fun showNetworkError(startRow: Int, throwable: Throwable?)
+        val filterParamString: String
         val queryKey: String
         fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
@@ -46,7 +48,6 @@ interface ProductListSectionContract {
         fun launchLoginActivity(productId: String?)
         fun showAdultRestriction()
         fun redirectSearchToAnotherPage(applink: String?)
-        fun sendTrackingForNoResult(resultCode: String?, alternativeKeyword: String?, keywordProcess: String?)
         fun setDefaultLayoutType(defaultView: Int)
         fun showRefreshLayout()
         fun hideRefreshLayout()
@@ -74,7 +75,7 @@ interface ProductListSectionContract {
         fun startRenderPerformanceMonitoring()
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
         fun trackBroadMatchImpression(broadMatchItemDataView: BroadMatchItemDataView)
-        fun onQuickFilterSelected(option: Option)
+        fun onQuickFilterSelected(filter: Filter, option: Option)
         fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
@@ -109,7 +110,6 @@ interface ProductListSectionContract {
         fun trackEventClickSeeMoreBroadMatch(broadMatchItemDataView: BroadMatchDataView)
         fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String)
         fun modifyApplinkToSearchResult(applink: String): String
-        fun showPowerMerchantProPopUp()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -118,6 +118,7 @@ interface ProductListSectionContract {
         val userId: String
         val isUserLoggedIn: Boolean
         val deviceId: String
+        val dynamicFilterModel: DynamicFilterModel?
         fun onPriceFilterTickerDismissed()
         val isTickerHasDismissed: Boolean
         fun hasNextPage(): Boolean
@@ -133,6 +134,7 @@ interface ProductListSectionContract {
         fun openFilterPage(searchParameter: Map<String, Any>?)
         val isBottomSheetFilterEnabled: Boolean
         fun onBottomSheetFilterDismissed()
+        fun onApplySortFilter(mapParameter: Map<String, Any>)
         fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
@@ -148,5 +150,10 @@ interface ProductListSectionContract {
                 clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
                 searchParameter: Map<String, Any>
         )
+        fun updateLastFilter(
+            searchParameter: Map<String, Any>,
+            savedOptionList: List<SavedOption>,
+        )
+        fun closeLastFilter(searchParameter: Map<String, Any>)
     }
 }

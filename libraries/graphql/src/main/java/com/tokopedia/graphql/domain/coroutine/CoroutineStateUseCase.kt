@@ -7,9 +7,9 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-abstract class CoroutineStateUseCase<P, out R: Any> constructor(
+abstract class CoroutineStateUseCase<Input, Output : Any> constructor(
     private val dispatcher: CoroutineDispatcher
-) : GqlUseCase<P, R>() {
+) : GqlUseCase<Input, Output>() {
 
     /*
     * Executes the use case with state synchronously
@@ -17,7 +17,7 @@ abstract class CoroutineStateUseCase<P, out R: Any> constructor(
     * @param params the input parameters to run the use case with
     * @return an generic class with state comes from R
     * */
-    suspend fun invoke(params: P): Result<R> {
+    suspend operator fun invoke(params: Input): Result<Output> {
         return try {
             withContext(dispatcher) {
                 Success(execute(params))

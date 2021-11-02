@@ -21,9 +21,9 @@ class HotelDetailAllFacilityActivity : HotelBaseActivity() {
 
     override fun getNewFragment(): Fragment =
             HotelDetailAllFacilityFragment.getInstance(
-                    intent.getStringExtra(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_NAME),
-                    intent.getParcelableExtra(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_DETAIL),
-                    intent.getStringExtra(HotelDetailAllFacilityFragment.EXTRA_TAB_TITLE)
+                    intent.getStringExtra(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_NAME) ?: "",
+                    intent.getParcelableExtra(HotelDetailAllFacilityFragment.EXTRA_PROPERTY_DETAIL) ?: HotelDetailAllFacilityModel(),
+                    intent.getStringExtra(HotelDetailAllFacilityFragment.EXTRA_TAB_TITLE) ?: ""
             )
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,12 +1,11 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
 import android.text.TextUtils
-import android.text.format.DateUtils
 import android.view.View
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.chat_common.data.BaseChatViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
@@ -17,13 +16,11 @@ import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import java.text.SimpleDateFormat
-import java.util.*
 
 abstract class CustomChatbotMessageViewHolder(
         itemView: View?,
         protected val listener: ChatLinkHandlerListener,
-) : BaseChatViewHolder<MessageViewModel>(itemView) {
+) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
     protected open val customChatLayout: CustomChatbotChatLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.customChatLayout)
     protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.cl_msg_container)
@@ -33,14 +30,14 @@ abstract class CustomChatbotMessageViewHolder(
 
     private val movementMethod = ChatLinkHandlerMovementMethod(listener)
 
-    override fun bind(message: MessageViewModel) {
+    override fun bind(message: MessageUiModel) {
         verifyReplyTime(message)
         ChatbotMessageViewHolderBinder.bindChatMessage(message.message, customChatLayout, movementMethod, message.isSender)
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
     }
 
-    protected fun verifyReplyTime(chat: MessageViewModel) {
+    protected fun verifyReplyTime(chat: MessageUiModel) {
         try {
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()
@@ -50,7 +47,7 @@ abstract class CustomChatbotMessageViewHolder(
         }
     }
 
-    override fun setHeaderDate(element: BaseChatViewModel?) {
+    override fun setHeaderDate(element: BaseChatUiModel?) {
         if (date == null) return
         val time = element?.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(

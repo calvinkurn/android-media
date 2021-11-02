@@ -50,13 +50,13 @@ class GetNotificationUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetNotificationsResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val actualNotification = getNotificationUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertEquals(getExpectedNotification(), actualNotification)
@@ -67,14 +67,14 @@ class GetNotificationUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetNotificationsResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val actualNotification: NotificationUiModel? = getNotificationUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertNull(actualNotification)

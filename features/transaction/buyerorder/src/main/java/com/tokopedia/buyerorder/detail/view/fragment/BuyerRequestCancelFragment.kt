@@ -19,18 +19,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.constants.BuyerOrderIntentCode
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_INSTANT_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_REGULER_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUYER_CANCEL_REASON_SCREEN_NAME
-import com.tokopedia.buyerorder.common.util.BuyerConsts.INSTANT_CANCEL_BUYER_REQUEST
 import com.tokopedia.buyerorder.common.util.BuyerConsts.LAINNYA
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_BACK
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
@@ -40,7 +39,6 @@ import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.detail.analytics.BuyerAnalytics
-import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData.Data.GetCancellationReason.TickerInfo
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
@@ -48,14 +46,15 @@ import com.tokopedia.buyerorder.detail.data.requestcancel.BuyerRequestCancelData
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
 import com.tokopedia.buyerorder.detail.view.activity.BuyerRequestCancelActivity
 import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomSheetAdapter
+import com.tokopedia.buyerorder.detail.view.adapter.BuyerProductBundlingBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
+import com.tokopedia.buyerorder.detail.view.adapter.divider.BuyerBundlingProductItemDivider
+import com.tokopedia.buyerorder.detail.view.adapter.typefactory.BuyerProductBundlingAdapterFactory
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.trackingoptimizer.gson.GsonSingleton
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -65,7 +64,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel.view.*
 import kotlinx.android.synthetic.main.fragment_buyer_request_cancel.*
-import java.io.Serializable
 import javax.inject.Inject
 
 /**
@@ -107,13 +105,14 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var listOfSubReason = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem.SubReasonsItem>()
     private var currentReasonStr = ""
     private var userSession: UserSession? = null
-
-    private val productListTypeToken by lazy {
-        object : TypeToken<List<Items>>() {}.type
-    }
+    private var isBundlingProduct: Boolean = false
 
     private val buyerCancellationViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[BuyerCancellationViewModel::class.java]
+    }
+
+    private val buyerProductBundlingAdapterFactory by lazy {
+        BuyerProductBundlingAdapterFactory()
     }
 
     companion object {
@@ -123,8 +122,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 arguments = Bundle().apply {
                     putString(BuyerConsts.PARAM_SHOP_NAME, bundle.getString(BuyerConsts.PARAM_SHOP_NAME))
                     putString(BuyerConsts.PARAM_INVOICE, bundle.getString(BuyerConsts.PARAM_INVOICE))
-                    putSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, bundle.getSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT))
-                    putString(BuyerConsts.PARAM_JSON_LIST_PRODUCT, bundle.getString(BuyerConsts.PARAM_JSON_LIST_PRODUCT))
                     putString(BuyerConsts.PARAM_ORDER_ID, bundle.getString(BuyerConsts.PARAM_ORDER_ID))
                     putString(BuyerConsts.PARAM_URI, bundle.getString(BuyerConsts.PARAM_URI))
                     putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, bundle.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED))
@@ -190,11 +187,12 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.let { BuyerAnalytics.sendScreenName(it, BUYER_CANCEL_REASON_SCREEN_NAME) }
+        activity?.let { BuyerAnalytics.sendScreenName(BUYER_CANCEL_REASON_SCREEN_NAME) }
         observingCancelReasons()
         observingInstantCancel()
         observingRequestCancel()
         observeBuyerRequestCancelReasonValidationResult()
+        observeBuyerNormalProducts()
 
         btn_req_cancel?.isEnabled = false
         tf_choose_sub_reason?.textFieldInput?.isFocusable = false
@@ -357,7 +355,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private fun showProductsBottomSheet() {
         buyerListOfProductsBottomSheetAdapter = BuyerListOfProductsBottomSheetAdapter().apply {
-            listProducts = listProduct
+            listProducts = this@BuyerRequestCancelFragment.listProduct
             notifyDataSetChanged()
         }
 
@@ -369,6 +367,32 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
 
         val bottomSheet = BottomSheetUnify().apply {
+            setChild(viewBottomSheet)
+            setTitle(BuyerConsts.TITLE_LIST_OF_PRODUCT_BOTTOMSHEET)
+            showCloseIcon = true
+            setCloseClickListener { dismiss() }
+        }
+
+        fragmentManager?.let { bottomSheet.show(it, getString(R.string.show_bottomsheet)) }
+    }
+
+    private fun showProductBundleBottomSheet(normalProductList: List<BuyerNormalProductUiModel>) {
+        val buyerProductBundlingAdapter = BuyerProductBundlingBottomSheetAdapter(
+                normalProductItems = normalProductList.orEmpty(),
+                adapterTypeFactory = buyerProductBundlingAdapterFactory
+        )
+        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_buyer_request_cancel, null).apply {
+            rv_cancel?.run {
+                context?.let {
+                    layoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
+                    adapter = buyerProductBundlingAdapter
+                    addItemDecoration(BuyerBundlingProductItemDivider(it))
+                }
+            }
+        }
+
+        val bottomSheet = BottomSheetUnify().apply {
+            clearContentPadding = true
             setChild(viewBottomSheet)
             setTitle(BuyerConsts.TITLE_LIST_OF_PRODUCT_BOTTOMSHEET)
             showCloseIcon = true
@@ -423,7 +447,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         }
 
         // list product
-        if (listProduct.isNotEmpty()) {
+        if (listProduct.isNotEmpty() && !isBundlingProduct) {
             label_product_name?.text = listProduct.first().productName
             label_price?.text = listProduct.first().productPrice
             iv_product?.loadImage(listProduct.first().picture)
@@ -589,7 +613,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     GraphqlHelper.loadRawString(resources, R.raw.buyer_request_cancel), it.userId, orderId, "$reasonCode", reasonCancel)
         }
     }
-    
+
     private fun observingRequestCancel() {
         buyerCancellationViewModel.requestCancelResult.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -606,7 +630,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-                    showToaster(getString(R.string.fail_cancellation), Toaster.TYPE_ERROR)
+                    showToaster(getString(R.string.buyer_fail_cancellation), Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -618,6 +642,32 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tf_choose_sub_reason_editable?.setError(it.isError)
             btn_req_cancel?.isEnabled = it.isButtonEnable
         })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun observeBuyerNormalProducts() {
+        buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.observe(viewLifecycleOwner) { normalProductList ->
+            isBundlingProduct = normalProductList != null
+            normalProductList?.let { products ->
+                if (products.isNotEmpty()) {
+                    label_product_name?.text = products.firstOrNull()?.productName.orEmpty()
+                    label_price?.text = products.firstOrNull()?.productPrice.orEmpty()
+                    iv_product?.loadImage(products.firstOrNull()?.productThumbnailUrl.orEmpty())
+                }
+                label_see_all_products?.run {
+                    val totalItems = products.count().orZero()
+                    if (totalItems > 1) {
+                        text = "${getString(R.string.see_all_placeholder)} ($totalItems)"
+                        setOnClickListener {
+                            showProductBundleBottomSheet(products)
+                        }
+                        show()
+                    } else {
+                        gone()
+                    }
+                }
+            }
+        }
     }
 
     private fun submitInstantCancel() {
@@ -633,7 +683,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     renderInstantCancellation()
                 }
                 is Fail -> {
-                    showToaster(getString(R.string.fail_cancellation), Toaster.TYPE_ERROR)
+                    showToaster(getString(R.string.buyer_fail_cancellation), Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -661,7 +711,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         val intent = Intent()
         intent.putExtra(RESULT_CODE_INSTANT_CANCEL, resultCode)
         intent.putExtra(RESULT_MSG_INSTANT_CANCEL, resultMsg)
-        activity?.setResult(INSTANT_CANCEL_BUYER_REQUEST, intent)
+        activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_INSTANT_CANCEL_BUYER, intent)
         activity?.finish()
     }
 
@@ -723,7 +773,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId)
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, statusInfo)
             intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, listProduct.first().productPrice)
-            intent.putExtra(ApplinkConst.Chat.SOURCE, MarketPlaceDetailFragment.TX_ASK_SELLER)
+            intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
             startActivity(intent)
         }
     }
@@ -743,7 +793,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
         dialog?.setPrimaryCTAClickListener {
                 dialog.dismiss()
-                activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
+                activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_CANCEL_ORDER_DISABLE)
                 activity?.finish()
         }
         dialog?.show()
@@ -783,4 +833,15 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun showKeyboard(context: Context) {
         (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
+
+    /**
+     * Filter product ui model to have unique id + price combination.
+     * This means we can show the same product, only if the price are different
+     *
+     * @return  filtered list
+     */
+    private fun List<BuyerNormalProductUiModel>.filterSameIdAndPrice(): List<BuyerNormalProductUiModel> {
+        return distinctBy { it.productId to it.productPrice }
+    }
+
 }

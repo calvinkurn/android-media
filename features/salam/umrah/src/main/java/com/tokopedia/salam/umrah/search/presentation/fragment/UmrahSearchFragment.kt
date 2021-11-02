@@ -110,8 +110,8 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
                 REQUEST_FILTER -> {
                     data?.let {
                         selectedFilter.apply {
-                            departureCity = it.getStringExtra(EXTRA_DEPARTURE_CITY_ID)
-                            departurePeriod = it.getStringExtra(EXTRA_DEPARTURE_PERIOD)
+                            departureCity = it.getStringExtra(EXTRA_DEPARTURE_CITY_ID) ?: ""
+                            departurePeriod = it.getStringExtra(EXTRA_DEPARTURE_PERIOD) ?: ""
                             priceMinimum = it.getIntExtra(EXTRA_PRICE_MIN, 0)
                             priceMaximum = it.getIntExtra(EXTRA_PRICE_MAX, 0)
                             durationDaysMinimum = it.getIntExtra(EXTRA_DURATION_DAYS_MIN, 0)
@@ -216,7 +216,7 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHideFAB()
-        umrahSearchViewModel.searchResult.observe(this, Observer {
+        umrahSearchViewModel.searchResult.observe(this.viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessGetResult(it.data)
@@ -378,7 +378,7 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
 
     private fun openSortBottomSheets() {
         umrahSearchSortAdapter.setSelectedOption(umrahSearchViewModel.getSortValue())
-        sortBottomSheets.show(fragmentManager!!, "")
+        sortBottomSheets.show(requireFragmentManager(), "")
     }
 
     private fun loadSortData() {

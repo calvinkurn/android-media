@@ -1,15 +1,16 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheet
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
-import kotlinx.android.synthetic.main.bottom_sheet_pm_notification.view.*
+import com.tokopedia.power_merchant.subscribe.databinding.BottomSheetPmNotificationBinding
 
-class PMNotificationBottomSheet : BaseBottomSheet() {
+class PMNotificationBottomSheet : BaseBottomSheet<BottomSheetPmNotificationBinding>() {
 
     companion object {
         private const val EXTRA_TITLE = "extra_title"
@@ -37,9 +38,11 @@ class PMNotificationBottomSheet : BaseBottomSheet() {
     private var primaryCtaClickListener: (() -> Unit)? = null
     private var secondaryCtaClickListener: (() -> Unit)? = null
 
+    override fun bind(view: View) = BottomSheetPmNotificationBinding.bind(view)
+
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_pm_notification
 
-    override fun setupView() = childView?.run {
+    override fun setupView() = binding?.run {
         setupPrimaryCta()
         setupSecondaryCta()
 
@@ -51,12 +54,12 @@ class PMNotificationBottomSheet : BaseBottomSheet() {
         imagePmNotification.loadImageWithoutPlaceholder(imageUrl)
     }
 
-    private fun setupPrimaryCta() = childView?.run {
+    private fun setupPrimaryCta() = binding?.run {
         btnPrimaryCta.text = primaryCtaText
         btnPrimaryCta.setOnClickListener { primaryCtaClickListener?.invoke() }
     }
 
-    private fun setupSecondaryCta() = childView?.run {
+    private fun setupSecondaryCta() = binding?.run {
         if (secondaryCtaText.isNullOrBlank()) {
             btnSecondaryCta.gone()
             return@run

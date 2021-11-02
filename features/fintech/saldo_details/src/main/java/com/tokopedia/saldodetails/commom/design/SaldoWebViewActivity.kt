@@ -9,8 +9,8 @@ import com.tokopedia.webview.BaseSessionWebViewFragment
 
 class SaldoWebViewActivity : BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment? {
-        return BaseSessionWebViewFragment.newInstance(intent.getStringExtra(URL))
+    override fun getNewFragment(): Fragment {
+        return BaseSessionWebViewFragment.newInstance(intent.getStringExtra(URL) ?: "")
     }
 
     companion object {

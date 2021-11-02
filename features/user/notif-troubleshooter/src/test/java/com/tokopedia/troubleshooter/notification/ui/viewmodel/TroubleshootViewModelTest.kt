@@ -104,7 +104,7 @@ class TroubleshootViewModelTest {
         val expectedValue = NotificationTroubleshoot().notificationSendTroubleshoot
 
         coEvery {
-            troubleshootUseCase(any())
+            troubleshootUseCase(Unit)
         } returns NotificationTroubleshoot()
 
         viewModel.troubleshoot()
@@ -116,7 +116,7 @@ class TroubleshootViewModelTest {
     @Test fun `it should cannot troubleshoot`() = runBlockingTest {
         val expectedValue = Throwable()
 
-        coEvery { troubleshootUseCase(any()) } throws expectedValue
+        coEvery { troubleshootUseCase(Unit) } throws expectedValue
 
         viewModel.troubleshoot()
 

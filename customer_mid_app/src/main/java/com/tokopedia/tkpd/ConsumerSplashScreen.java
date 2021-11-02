@@ -1,17 +1,13 @@
 package com.tokopedia.tkpd;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.customer_mid_app.R;
@@ -20,7 +16,7 @@ import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
-import com.tokopedia.loginregister.login.service.RegisterPushNotifService;
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -49,17 +45,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     public void onCreate(Bundle savedInstanceState) {
         SplashScreenPerformanceTracker.startMonitoring();
         super.onCreate(savedInstanceState);
-        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
-                .start(this.getApplication());
-        setUserIdNewRelic();
         executeInBackground();
-    }
-
-    private void setUserIdNewRelic() {
-        UserSessionInterface userSession = new UserSession(this);
-        if (userSession.isLoggedIn()) {
-            NewRelic.setUserId(userSession.getUserId());
-        }
     }
 
     private void checkInstallReferrerInitialised() {
@@ -76,6 +62,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             @NotNull
             @Override
             public Boolean execute() {
+                initializationNewRelic();
                 CMPushNotificationManager.getInstance()
                         .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
 
@@ -89,13 +76,22 @@ public class ConsumerSplashScreen extends SplashScreen {
                 RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this);
     }
 
+    private void initializationNewRelic() {
+        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
+                .start(this.getApplication());
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
+            NewRelic.setUserId(userSession.getUserId());
+        }
+    }
+
     private void syncFcmToken() {
         SyncFcmTokenService.Companion.startService(this);
     }
 
     private void registerPushNotif() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            RegisterPushNotifService.Companion.startService(getApplicationContext());
+            RegisterPushNotificationWorker.Companion.scheduleWorker(ConsumerSplashScreen.this.getApplicationContext());
         }
     }
 

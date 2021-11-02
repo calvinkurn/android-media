@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.ui.dataview.DealsTickerDataView
+import com.tokopedia.deals.databinding.ItemDealsTickerBinding
 import com.tokopedia.unifycomponents.ticker.Ticker
-import kotlinx.android.synthetic.main.item_deals_ticker.view.*
 
 /**
  * @author by astidhiyaa on 19/05/21
@@ -19,7 +19,8 @@ class DealsTickerViewHolder(itemView: View)
     }
 
     fun bind(tickerData: DealsTickerDataView){
-        with(itemView.dealsTicker){
+        val binding = ItemDealsTickerBinding.bind(itemView)
+        with(binding.dealsTicker){
             setHtmlDescription(tickerData.message)
             tickerType = Ticker.TYPE_WARNING
         }

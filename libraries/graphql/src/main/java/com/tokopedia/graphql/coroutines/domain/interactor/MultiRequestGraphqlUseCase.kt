@@ -30,7 +30,7 @@ class MultiRequestGraphqlUseCase constructor(private val graphqlRepository: Grap
         if (requests.isEmpty()) {
             throw RuntimeException("Please set valid request parameter before executing the use-case");
         }
-        return graphqlRepository.getReseponse(requests, cacheStrategy)
+        return graphqlRepository.response(requests, cacheStrategy)
     }
 
     fun addRequest(request: GraphqlRequest) {

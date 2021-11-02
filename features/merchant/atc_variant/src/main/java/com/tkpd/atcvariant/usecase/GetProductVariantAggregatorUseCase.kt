@@ -27,6 +27,9 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
         val QUERY = """
         query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}shopID : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean) {
             pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, shopID: ${'$'}shopID, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow) {
+                    isCashback{
+                        percentage
+                    }
                     basicInfo {
                           shopID
                           shopName
@@ -45,6 +48,11 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                             }
                           }
                     }
+                    uniqueSellingPoint{
+                       bebasOngkirExtra{
+                          icon
+                       }
+                    }
                     bebasOngkir {
                           products{
                             productID
@@ -58,6 +66,20 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                     }
                     shopInfo {
                         shopType
+                    }
+                    restrictionInfo {
+                      message
+                      restrictionData {
+                        productID
+                        isEligible
+                        action {
+                          actionType
+                          title
+                          description
+                          attributeName
+                          badgeURL
+                        }
+                      }
                     }
                     variantData { 
                       errorCode
@@ -86,6 +108,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                         priceFmt
                         sku
                         optionID
+                        optionName
                         productName
                         productURL
                         picture {
@@ -100,6 +123,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                           stockWordingHTML
                           minimumOrder
                           maximumOrder
+                          stockFmt
+                          stockCopy
                         }
                         isCOD
                         isWishlist
@@ -232,7 +257,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
                 .build()
 
-        val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val response = graphqlRepository.response(listOf(request), cacheStrategy)
         val error: List<GraphqlError>? = response.getError(ProductVariantAggregatorResponse::class.java)
         val data = response.getSuccessData<ProductVariantAggregatorResponse>()
 
@@ -256,7 +281,11 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 simpleBasicInfo = data.basicInfo,
                 shopType = data.shopInfo.shopType,
                 boData = data.bebasOngkir,
-                rates = data.ratesEstimate
+                rates = data.ratesEstimate,
+                reData = data.restrictionInfo,
+                uspImageUrl = data.uniqueSellingPoint.uspBoe.uspIcon,
+                cashBackPercentage = data.isCashback.percentage,
+                isCod = data.isCod
         )
     }
 }

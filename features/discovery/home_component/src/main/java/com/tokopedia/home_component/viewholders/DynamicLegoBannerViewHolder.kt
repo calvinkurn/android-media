@@ -100,6 +100,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     isLego4UsingRollenceVariant,
                     isLego2UsingRollenceVariant)
             var marginValue = 0
+            var marginBottom = 0
             recyclerView.clearDecorations()
 
             //setup for lego 4 banner rollence
@@ -120,6 +121,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                         GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), SPAN_SPACING_20, false))
                 marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
+                marginBottom = marginValue
             }
             //end setup for lego 4 banner rollence
             val marginLayoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
@@ -128,7 +130,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
             marginLayoutParams.topToBottom = R.id.home_component_header_view
             recyclerView.layoutParams = marginLayoutParams
             recyclerView.setPadding(
-                0,0,0, marginValue
+                0,0,0, marginBottom
             )
 
         } else {

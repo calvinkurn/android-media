@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.activity
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
@@ -9,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
@@ -16,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.cast.PlayCastNotificationAction
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.PlayFullScreenHelper
@@ -113,6 +117,8 @@ class PlayActivity : BaseActivity(),
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
 
+        CastContext.getSharedInstance(applicationContext)
+        
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
@@ -133,12 +139,18 @@ class PlayActivity : BaseActivity(),
         orientationManager.enable()
         volumeControlStream = AudioManager.STREAM_MUSIC
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        PlayCastNotificationAction.showRedirectButton(applicationContext, false)
     }
 
     override fun onPause() {
         super.onPause()
         orientationManager.disable()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        PlayCastNotificationAction.showRedirectButton(applicationContext, true)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -189,6 +201,10 @@ class PlayActivity : BaseActivity(),
         }
     }
 
+    override fun onPageSelected(position: Int) {
+        activeFragment?.setFragmentActive(position)
+    }
+
     override fun onShouldLoadNextPage() {
         viewModel.loadNextPage()
     }
@@ -231,7 +247,7 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun observeChannelList() {
-        viewModel.observableChannelIdsResult.observe(this, Observer {
+        viewModel.observableChannelIdsResult.observe(this) {
             when (it.state) {
                 PageResultState.Loading -> {
                     fragmentErrorViewOnStateChanged(shouldShow = false)
@@ -249,7 +265,7 @@ class PlayActivity : BaseActivity(),
                 }
             }
             swipeContainerView.setChannelIds(it.currentValue)
-        })
+        }
     }
 
     private fun observeFirstChannelEvent() {
@@ -264,7 +280,7 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    if (isTaskRoot) {
+                    if (isCustomTaskRoot()) {
                         val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
                         startActivity(intent)
                         finish()
@@ -275,6 +291,18 @@ class PlayActivity : BaseActivity(),
                 }
             }
         } else super.onBackPressed()
+    }
+
+    private fun isCustomTaskRoot(): Boolean {
+        val activityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val appTasks = activityManager.appTasks
+        for(task in appTasks) {
+            val baseIntent = task.taskInfo.baseIntent
+            val categories = baseIntent.categories ?: return true
+
+            return !categories.contains(Intent.CATEGORY_LAUNCHER)
+        }
+        return true
     }
 
     override fun requestEnableNavigation() {

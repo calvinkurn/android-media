@@ -9,6 +9,7 @@ apply plugin: 'newrelic'
 
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply from: '../tools/dynamic_feature_inclusion.gradle'
+apply plugin: 'kotlin-parcelize'
 
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
@@ -174,6 +175,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation platform(rootProject.ext.firebase.bom)
+
+    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
 
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
@@ -363,6 +366,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.tokopatch)
+    implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
 
     implementation rootProject.ext.supportLibDependencies.exifinterface
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
@@ -387,9 +391,6 @@ dependencies {
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
 
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -397,6 +398,9 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.playServicesDependencies.tagManagerImpl
+
+    //Adding this to df_base_sellerapp/build.gradle was giving error - https://github.com/Meituan-Dianping/Robust/issues/444
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -5,19 +5,21 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.DealsTabsListener
 import com.tokopedia.deals.common.ui.dataview.DealsTabsDataView
+import com.tokopedia.deals.databinding.ItemDealsTabsBinding
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_deals_tabs.view.*
 
 class DealsTabsViewHolder (itemView: View, private val tabsListener: DealsTabsListener)
     : BaseViewHolder(itemView) {
 
     fun bind(tabs: DealsTabsDataView) {
-        with(itemView) {
+        val binding = ItemDealsTabsBinding.bind(itemView)
+        with(binding){
             if (tabs.title.isNullOrEmpty()) {
-                shimmering.show()
+                shimmering.root.show()
             } else {
 
             }
+
         }
      }
 

@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
@@ -93,7 +94,7 @@ class ProductListHeaderViewHolder(
     }
 
     private fun setupShopName(shopName: String) {
-        tvBuyerOrderDetailShopName?.text = shopName
+        tvBuyerOrderDetailShopName?.text = MethodChecker.fromHtml(shopName)
     }
 
     private fun hideShopBadge() {

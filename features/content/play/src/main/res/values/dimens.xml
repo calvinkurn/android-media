@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="play_chat_vertical_max_height">90dp</dimen>
+    <dimen name="play_chat_vertical_max_height">114dp</dimen>
+    <dimen name="play_chat_vertical_min_height">44dp</dimen>
     <dimen name="play_player_control_spacing_right">12dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_6">6dp</dimen>
@@ -99,6 +100,13 @@
     <dimen name="play_interactive_loader_4_width">133dp</dimen>
 
     <dimen name="play_anchor_size">0.1dp</dimen>
+
+    <dimen name="play_real_time_notif_icon_size">14dp</dimen>
+    <dimen name="play_real_time_notif_width">193dp</dimen>
+    <dimen name="play_real_time_notif_radius">12dp</dimen>
+
+    <!--Multiple Like-->
+    <dimen name="play_like_bubble_original_size">12dp</dimen>
 
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>

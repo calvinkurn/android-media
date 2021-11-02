@@ -58,7 +58,7 @@ class PlayWebSocketImpl(
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             mWebSocket = null
-            webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Error))
+            webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Error(t)))
         }
     }
 

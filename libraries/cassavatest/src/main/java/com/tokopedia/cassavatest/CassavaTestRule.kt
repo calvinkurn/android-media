@@ -2,6 +2,7 @@ package com.tokopedia.cassavatest
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsMapParser
 import com.tokopedia.analyticsdebugger.cassava.validator.core.Validator
 import com.tokopedia.analyticsdebugger.cassava.validator.core.ValidatorEngine
 import com.tokopedia.analyticsdebugger.cassava.validator.core.toDefaultValidator
@@ -19,13 +20,16 @@ import org.junit.runners.model.Statement
  * @param sendValidationResult if True, will send validation result to Thanos API.
  *                             Default is True, can be False for development purpose
  */
-class CassavaTestRule(private val isFromNetwork: Boolean = false,
-                      private val sendValidationResult: Boolean = true)
-    : TestRule {
+class CassavaTestRule(
+    private val isFromNetwork: Boolean = false,
+    private val sendValidationResult: Boolean = true
+) : TestRule {
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val dao = TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
     private val daoSource = GtmLogDBSource(context)
+    private val analyticsParser = AnalyticsMapParser()
+    private val engine = ValidatorEngine(daoSource, analyticsParser)
 
     override fun apply(base: Statement?, description: Description?): Statement {
         return object : Statement() {
@@ -44,7 +48,7 @@ class CassavaTestRule(private val isFromNetwork: Boolean = false,
         val cassavaQuery = getQuery(context, queryId, isFromNetwork)
         val validators = cassavaQuery.query.map { it.toDefaultValidator() }
         return runBlocking {
-            val validationResult = ValidatorEngine(daoSource).computeCo(validators, cassavaQuery.mode.value)
+            val validationResult = engine.computeCo(validators, cassavaQuery.mode.value)
             if (isFromNetwork && sendValidationResult)
                 sendTestResult(queryId, validationResult)
             validationResult
@@ -54,7 +58,7 @@ class CassavaTestRule(private val isFromNetwork: Boolean = false,
     fun validate(query: List<Map<String, Any>>, mode: String = MODE_EXACT): List<Validator> {
         val validators = query.map { it.toDefaultValidator() }
         return runBlocking {
-            ValidatorEngine(daoSource).computeCo(validators, mode)
+            engine.computeCo(validators, mode)
         }
     }
 

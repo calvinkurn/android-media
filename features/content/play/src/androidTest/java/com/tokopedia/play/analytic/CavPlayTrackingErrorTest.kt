@@ -33,7 +33,7 @@ class CavPlayTrackingErrorTest {
             setup(intentsTestRule)
             setMockModel(PlayErrorMockModelConfig())
             launch("1")
-            setJsonAbsolutePath("tracker/content/play/play_error_analytic.json")
+            setJsonAbsolutePath("play_error_analytic.json")
         } test {
             fakeLaunch()
             checkIsDisplayed()

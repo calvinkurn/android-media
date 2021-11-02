@@ -65,6 +65,10 @@ abstract class ProductDraftListCountViewModelTestFixture {
         coEvery { getProductManageAccessUseCase.execute(any()) } returns response
     }
 
+    protected fun onClearAllDraft_thenThrow(ex: Exception) {
+        coEvery { clearAllDraftProductsCountUseCase.getData(any()) } throws ex
+    }
+
     protected fun verifyGetAllDraftCountCalled() {
         verify { getAllDraftProductsCountUseCase.getData(RequestParams.EMPTY) }
     }

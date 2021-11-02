@@ -25,7 +25,7 @@
     <string name="sp_saldo_withdraw_warning_positiv_button">Mengerti</string>
     <string name="sp_empty_state_error">Terjadi Kesalahan, Mohon ulangi beberapa saat lagi</string>
     <string name="sp_title_max_day">Kamu hanya dapat memilih rentang waktu maks. 31 hari.</string>
-    <string name="sp_transaction_history_heading">Riwayat Transaksi</string>
+    <string name="sp_transaction_history_heading">Riwayat transaksi</string>
 
     <string name="sp_alert_not_verified_yet_title">Akun Anda Belum Terverifikasi</string>
     <string name="sp_alert_not_verified_yet_body">Untuk melakukan penarikan saldo Anda harus mengverifikasi akun Anda.</string>

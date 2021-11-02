@@ -9,3 +9,9 @@ fun Intent.putImagePickerBuilder(imagePickerBuilder: ImagePickerBuilder) {
 fun Intent.putImageEditorBuilder(imageEditorBuilder: ImageEditorBuilder) {
     putExtra(EXTRA_IMAGE_EDITOR_BUILDER, imageEditorBuilder)
 }
+
+fun Intent.putParamPageSource(sourcePage: ImagePickerPageSource? = null) {
+    sourcePage?.let {
+        putExtra(EXTRA_SOURCE_PAGE, sourcePage.value)
+    }
+}

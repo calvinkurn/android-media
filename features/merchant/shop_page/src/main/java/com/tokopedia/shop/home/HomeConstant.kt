@@ -14,6 +14,8 @@ object WidgetType {
     const val DYNAMIC = "dynamic"
     const val CAMPAIGN = "campaign"
     const val PERSONALIZATION = "perso"
+    const val SHOWCASE = "etalase"
+    const val PROMO = "promo"
 }
 
 object WidgetName {
@@ -30,4 +32,13 @@ object WidgetName {
     const val REMINDER = "reminder"
     const val NEW_PRODUCT_LAUNCH_CAMPAIGN = "promo_campaign"
     const val VOUCHER_STATIC = "voucher_static"
+
+    // showcase widget name list
+    const val SHOWCASE_SLIDER_SMALL = "etalase_slider_kecil"
+    const val SHOWCASE_SLIDER_MEDIUM = "etalase_slider_medium"
+    const val SHOWCASE_SLIDER_TWO_ROWS = "etalase_slider_kecil_2_baris"
+    const val SHOWCASE_GRID_SMALL = "etalase_banner_3_x_2"
+    const val SHOWCASE_GRID_MEDIUM = "etalase_banner_besar_2x2"
+    const val SHOWCASE_GRID_BIG = "etalase_banner_besar_2x1"
+    const val IS_SHOW_ETALASE_NAME = 1
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -128,6 +129,7 @@ data class DynamicHomeChannelCommon(
             @Expose
             @SerializedName("url")
             val url: String = "",
+            @SuppressLint("Invalid Data Type")
             @Expose
             @SerializedName("price")
             val price: String = "0",

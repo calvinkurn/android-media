@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -14,7 +15,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.widget_shop_home_multiple_image_column.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
@@ -38,6 +39,8 @@ class ShopHomeMultipleImageColumnViewHolder(
     }
 
     private var shopHomeMultipleImageColumnAdapter: ShopHomeMultipleImageColumnAdapter? = null
+    private val rvShopHomeMultiple: RecyclerView? = itemView.findViewById(R.id.rvShopHomeMultiple)
+    private val textViewTitle: Typography? = itemView.findViewById(R.id.textViewTitle)
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         shopHomeMultipleImageColumnAdapter = ShopHomeMultipleImageColumnAdapter(listener)
@@ -52,14 +55,14 @@ class ShopHomeMultipleImageColumnViewHolder(
             }
         }
 
-        itemView.rvShopHomeMultiple.apply {
+        rvShopHomeMultiple?.apply {
             layoutManager = gridLayoutManager
             if (itemDecorationCount == 0) {
                 addItemDecoration(PaddingItemDecorationShopPage(element.name))
             }
             adapter = shopHomeMultipleImageColumnAdapter
         }
-        itemView.textViewTitle?.apply {
+        textViewTitle?.apply {
             if (element.header.title.isEmpty()) {
                 hide()
                 if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {

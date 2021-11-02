@@ -75,6 +75,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testLabelVariantWithCategoryAndCostPerUnit())
     it.add(testAddToCartButtonNonVariant())
     it.add(testAddToCartButtonNonVariantWithQuantity())
+    it.add(testAddToCartButtonNonVariantIgnoreHasAddToCartFlag())
     it.add(testAddToCartVariantWithNoQuantity())
     it.add(testAddToCartVariantWithQuantity())
     it.add(testAddToCartVariantWithQuantityAbove99())
@@ -2272,6 +2273,55 @@ private fun testAddToCartButtonNonVariantWithQuantity(): ProductCardModelMatcher
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
+private fun testAddToCartButtonNonVariantIgnoreHasAddToCartFlag(): ProductCardModelMatcher {
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
+    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
+    val nonVariant = NonVariant(
+        quantity = 30,
+        minQuantity = 1,
+        maxQuantity = 100
+    )
+    val productCardModel = ProductCardModel(
+        productName = "Add to Cart Button Non Variant Ignore hasAddToCart flag",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+            badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+        },
+        shopLocation = "DKI Jakarta",
+        countSoldRating = "4.3",
+        freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        isTopAds = true,
+        labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+            labelGroups.add(labelProductStatus)
+            labelGroups.add(labelPrice)
+            labelGroups.add(labelGimmick)
+        },
+        hasAddToCartButton = true,
+        nonVariant = nonVariant
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
+        it[R.id.textTopAds] = isDisplayed()
+        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.quantityEditorNonVariant] = isQuantityEditorDisplayedWithValue(nonVariant.quantity)
+        it[R.id.buttonDeleteCart] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
 private fun testAddToCartVariantWithNoQuantity(): ProductCardModelMatcher {
     val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
@@ -2424,3 +2474,4 @@ private fun testAddToCartVariantWithQuantityAbove99(): ProductCardModelMatcher {
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
+

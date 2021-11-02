@@ -12,6 +12,7 @@ object GQLQueryConstant {
 }
 
 object DynamicChannelIdentifiers {
+    val LAYOUT_BEST_SELLING = "best_selling"
     val LAYOUT_UNKNOWN = "unknown"
     val LAYOUT_BANNER_CAROUSEL = "banner_carousel"
     val LAYOUT_BANNER_ = "banner_organic"
