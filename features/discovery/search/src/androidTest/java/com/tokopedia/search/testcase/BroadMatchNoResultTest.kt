@@ -58,7 +58,7 @@ internal class BroadMatchNoResultTest {
     }
 
     @Test
-    fun testBroadMatchLowResult() {
+    fun testBroadMatchNoResult() {
         performUserJourney()
     }
 
