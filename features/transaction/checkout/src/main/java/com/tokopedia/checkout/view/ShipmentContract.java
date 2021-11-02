@@ -163,10 +163,6 @@ public interface ShipmentContract {
 
         void logOnErrorCheckout(Throwable throwable, String request);
 
-        boolean isBundleToggleChanged();
-
-        void recreateActivity();
-
     }
 
     interface AnalyticsActionListener {
