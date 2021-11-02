@@ -373,7 +373,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             viewModel.getShopProduct(
                     shopInfo.shopCore.shopID,
                     page,
-                    ShopPageConstant.DEFAULT_PER_PAGE,
+                    ShopUtil.getProductPerPage(context),
                     selectedEtalaseId,
                     keyword,
                     selectedEtalaseType,
@@ -985,7 +985,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 viewModel.getShopProduct(
                         shopId ?: "",
                         defaultInitialPage,
-                        ShopPageConstant.DEFAULT_PER_PAGE,
+                        ShopUtil.getProductPerPage(context),
                         selectedEtalaseId,
                         keyword,
                         selectedEtalaseType,
@@ -1367,6 +1367,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel.getFilterResultCount(
                 shopId.orEmpty(),
+                ShopUtil.getProductPerPage(context),
                 keyword,
                 selectedEtalaseId,
                 tempShopProductFilterParameter,

@@ -330,6 +330,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     fun getFilterResultCount(
             shopId: String,
+            productPerPage: Int,
             searchKeyword: String,
             etalaseId: String,
             tempShopProductFilterParameter: ShopProductFilterParameter,
@@ -339,6 +340,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             val filterResultProductCount = withContext(dispatcherProvider.io) {
                 getFilterResultCountData(
                         shopId,
+                        productPerPage,
                         searchKeyword,
                         etalaseId,
                         tempShopProductFilterParameter,
@@ -353,6 +355,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     private suspend fun getFilterResultCountData(
             shopId: String,
+            productPerPage: Int,
             searchKeyword: String,
             etalaseId: String,
             tempShopProductFilterParameter: ShopProductFilterParameter,
@@ -360,7 +363,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     ): Int {
         val filter = ShopProductFilterInput(
                 ShopPageConstant.START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
+                productPerPage,
                 searchKeyword,
                 etalaseId,
                 tempShopProductFilterParameter.getSortId().toIntOrZero(),

@@ -282,7 +282,7 @@ class ShopPageProductListViewModel @Inject constructor(
                 widgetUserAddressLocalData.long
         ))
         val productListResponse = useCase.executeOnBackground()
-        val isHasNextPage = isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
+        val isHasNextPage = isHasNextPage(page, perPage, productListResponse.totalData)
         val totalProductData = productListResponse.totalData
         return GetShopProductUiModel(
                 isHasNextPage,
@@ -305,6 +305,7 @@ class ShopPageProductListViewModel @Inject constructor(
     fun getProductListData(
             shopId: String,
             page: Int,
+            productPerPage: Int,
             selectedEtalaseId: String,
             shopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
@@ -315,7 +316,7 @@ class ShopPageProductListViewModel @Inject constructor(
                         getShopProductUseCase,
                         shopId,
                         page,
-                        ShopPageConstant.DEFAULT_PER_PAGE,
+                        productPerPage,
                         selectedEtalaseId,
                         "",
                         shopProductFilterParameter.getSortId().toIntOrZero(),
@@ -402,13 +403,14 @@ class ShopPageProductListViewModel @Inject constructor(
 
     fun setInitialProductList(
             shopId: String,
+            productPerPage: Int,
             initialProductListData: ShopProduct.GetShopProduct
     ) {
         productListData.postValue(Success(
                 GetShopProductUiModel(
                         ShopUtil.isHasNextPage(
                                 START_PAGE,
-                                ShopPageConstant.DEFAULT_PER_PAGE,
+                                productPerPage,
                                 initialProductListData.totalData
                         ),
                         initialProductListData.data.map {
@@ -438,12 +440,13 @@ class ShopPageProductListViewModel @Inject constructor(
 
     fun getFilterResultCount(
             shopId: String,
+            productPerPage: Int,
             tempShopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val filterResultProductCount = withContext(dispatcherProvider.io) {
-                getFilterResultCountData(shopId, tempShopProductFilterParameter, widgetUserAddressLocalData)
+                getFilterResultCountData(shopId, productPerPage, tempShopProductFilterParameter, widgetUserAddressLocalData)
             }
             shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
         }) {}
@@ -451,12 +454,13 @@ class ShopPageProductListViewModel @Inject constructor(
 
     private suspend fun getFilterResultCountData(
             shopId: String,
+            productPerPage: Int,
             tempShopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ): Int {
         val filter = ShopProductFilterInput(
                 START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
+                productPerPage,
                 "",
                 "",
                 tempShopProductFilterParameter.getSortId().toIntOrZero(),

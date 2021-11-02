@@ -147,6 +147,7 @@ class OldShopHomeViewModel @Inject constructor(
 
     fun getShopPageHomeData(
             shopId: String,
+            productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             initialProductListData: ShopProduct.GetShopProduct?,
             widgetUserAddressLocalData: LocalCacheModel
@@ -166,7 +167,7 @@ class OldShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io,
                     block = {
                         if(initialProductListData == null)
-                            getProductListData(shopId, ShopPageConstant.START_PAGE, shopProductFilterParameter,widgetUserAddressLocalData)
+                            getProductListData(shopId, ShopPageConstant.START_PAGE, productPerPage, shopProductFilterParameter,widgetUserAddressLocalData)
                         else
                             null
                     },
@@ -195,6 +196,7 @@ class OldShopHomeViewModel @Inject constructor(
                     _productListData.postValue(Success(mapToShopHomeProductUiModel(
                             shopId,
                             1,
+                            productPerPage,
                             initialProductListData
                     )))
                 }
@@ -212,12 +214,13 @@ class OldShopHomeViewModel @Inject constructor(
     fun getNewProductList(
             shopId: String,
             page: Int,
+            productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io) {
-                getProductListData(shopId, page, shopProductFilterParameter, widgetUserAddressLocalData)
+                getProductListData(shopId, page, productPerPage, shopProductFilterParameter, widgetUserAddressLocalData)
             }
             _productListData.postValue(Success(listProductData))
         }) {
@@ -332,6 +335,7 @@ class OldShopHomeViewModel @Inject constructor(
     private suspend fun getProductListData(
             shopId: String,
             page: Int,
+            productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ): GetShopHomeProductUiModel {
@@ -351,11 +355,11 @@ class OldShopHomeViewModel @Inject constructor(
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
-        return mapToShopHomeProductUiModel(shopId, page, productListResponse)
+        return mapToShopHomeProductUiModel(shopId, page, productPerPage, productListResponse)
     }
 
-    private fun mapToShopHomeProductUiModel(shopId: String, page: Int, productListResponse: ShopProduct.GetShopProduct) : GetShopHomeProductUiModel {
-        val isHasNextPage = ShopUtil.isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
+    private fun mapToShopHomeProductUiModel(shopId: String, page: Int, productPerPage: Int, productListResponse: ShopProduct.GetShopProduct) : GetShopHomeProductUiModel {
+        val isHasNextPage = ShopUtil.isHasNextPage(page, productPerPage, productListResponse.totalData)
         val productListUiModelData = productListResponse.data.map {
             ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
                     it,
@@ -502,12 +506,13 @@ class OldShopHomeViewModel @Inject constructor(
 
     fun getFilterResultCount(
             shopId: String,
+            productPerPage: Int,
             tempShopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val filterResultProductCount = withContext(dispatcherProvider.io) {
-                getFilterResultCountData(shopId, tempShopProductFilterParameter, widgetUserAddressLocalData)
+                getFilterResultCountData(shopId, productPerPage, tempShopProductFilterParameter, widgetUserAddressLocalData)
             }
             _shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
         }) {}
@@ -515,12 +520,13 @@ class OldShopHomeViewModel @Inject constructor(
 
     private suspend fun getFilterResultCountData(
             shopId: String,
+            productPerPage: Int,
             tempShopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ): Int {
         val filter = ShopProductFilterInput(
                 ShopPageConstant.START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
+                productPerPage,
                 "",
                 ALL_SHOWCASE_ID,
                 tempShopProductFilterParameter.getSortId().toIntOrZero(),

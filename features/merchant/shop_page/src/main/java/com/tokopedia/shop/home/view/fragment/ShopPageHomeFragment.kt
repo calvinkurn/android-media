@@ -129,7 +129,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.min
 
-class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
+class wShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
         ShopHomeDisplayWidgetListener,
         ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
         ShopHomeEndlessProductListener,
@@ -1029,6 +1029,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeAdapter.updateProductGridListPlaceholderStateToLoadingState()
             viewModel?.getProductGridListWidgetData(
                     shopId,
+                    ShopUtil.getProductPerPage(context),
                     shopProductFilterParameter ?: ShopProductFilterParameter(),
                     initialProductListData,
                     ShopUtil.getShopPageWidgetUserAddressLocalData(context)
@@ -1114,6 +1115,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             viewModel?.getNewProductList(
                     shopId,
                     page,
+                    ShopUtil.getProductPerPage(context),
                     shopProductFilterParameter ?: ShopProductFilterParameter(),
                     ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
             )
@@ -2332,6 +2334,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel?.getFilterResultCount(
                 shopId,
+                ShopUtil.getProductPerPage(context),
                 tempShopProductFilterParameter,
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         )
