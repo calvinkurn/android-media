@@ -71,6 +71,6 @@
     <string name="pay_later_supervised_by">Semua mitra penyedia terdaftar dan diawasi oleh</string>
     <string name="pay_later_its_not_final_price">Ini belum harga final, ya</string>
     <string name="pay_later_cost_not_included">Simulasi pembayaran belum termasuk biaya saat pengiriman seperti Proteksi dan ongkir.</string>
-    <string name="connect_gopay">Sambungin Gojek dulu, ya</string>
+    <string name="pay_later_connect_gopay">Sambungin Gojek dulu, ya</string>
 
 </resources>
