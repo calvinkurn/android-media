@@ -221,7 +221,7 @@
         android:layout_marginEnd="@dimen/play_offset_12"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_toolbar"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
         />
 
     <androidx.mediarouter.app.MediaRouteButton
@@ -229,7 +229,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@id/view_pip_control"
-        app:layout_constraintTop_toBottomOf="@id/view_toolbar"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
         app:layout_goneMarginEnd="@dimen/spacing_lvl2"
         app:mediaRouteButtonTint="@color/Neutral_N0"
         />
@@ -247,8 +247,8 @@
         />
 
     <include
-        android:id="@+id/view_toolbar"
-        layout="@layout/view_toolbar"
+        android:id="@+id/view_toolbar_room"
+        layout="@layout/view_toolbar_room"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -267,7 +267,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/play_offset_12"
         app:layout_constraintStart_toStartOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/view_toolbar"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
         />
 
     <androidx.recyclerview.widget.RecyclerView

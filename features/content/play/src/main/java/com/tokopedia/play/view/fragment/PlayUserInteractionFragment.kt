@@ -106,7 +106,7 @@ class PlayUserInteractionFragment @Inject constructor(
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
         PlayFragmentContract,
-        ToolbarViewComponent.Listener,
+        ToolbarRoomViewComponent.Listener,
         VideoControlViewComponent.Listener,
         LikeViewComponent.Listener,
         ShareLinkViewComponent.Listener,
@@ -126,7 +126,7 @@ class PlayUserInteractionFragment @Inject constructor(
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
-    private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
+    private val toolbarView by viewComponent { ToolbarRoomViewComponent(it, R.id.view_toolbar_room, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
@@ -256,7 +256,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onNoAction(bottomSheet: PlayMoreActionBottomSheet) {
-        toolbarView.hideActionMore()
+
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -300,26 +300,8 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Toolbar View Component Listener
      */
-    override fun onBackButtonClicked(view: ToolbarViewComponent) {
+    override fun onBackButtonClicked(view: ToolbarRoomViewComponent) {
         doLeaveRoom()
-    }
-
-    override fun onMoreButtonClicked(view: ToolbarViewComponent) {
-        showMoreActionBottomSheet()
-    }
-
-    override fun onFollowButtonClicked(view: ToolbarViewComponent) {
-        playViewModel.submitAction(ClickFollowAction)
-    }
-
-    override fun onPartnerNameClicked(view: ToolbarViewComponent) {
-        playViewModel.submitAction(ClickPartnerNameAction)
-    }
-
-    override fun onCopyButtonClicked(view: ToolbarViewComponent) {
-        playViewModel.submitAction(ClickShareAction)
-
-        analytic.clickCopyLink()
     }
 
     override fun onShareIconClick(view: ShareLinkViewComponent) {
@@ -805,7 +787,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
-                toolbarView.setIsShareable(false)
                 shareLinkView?.setIsShareable(false)
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
@@ -1502,10 +1483,6 @@ class PlayUserInteractionFragment @Inject constructor(
         partner: PlayPartnerUiState,
         share: PlayShareUiState
     ) {
-        toolbarView.setFollowStatus(partner.followStatus)
-        toolbarView.setPartnerName(partner.name)
-
-        toolbarView.setIsShareable(share.shouldShow)
         shareLinkView?.setIsShareable(share.shouldShow)
     }
 
