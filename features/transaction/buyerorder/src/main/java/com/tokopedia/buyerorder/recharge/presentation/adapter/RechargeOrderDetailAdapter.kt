@@ -29,6 +29,7 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
             setupDigitalRecommendationWidget()
             setupSBMStaticButton()
             setupLanggananStaticButton()
+            setupAboutOrdersSection(data.helpUrl)
         }
     }
 
