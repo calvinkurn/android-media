@@ -8,9 +8,8 @@ data class Transcoding(
     @Expose @SerializedName("status") val status: String? = ""
 ) {
 
-    fun status(): TranscodingState {
-        if (status == null) return TranscodingState.UNKNOWN
-        return TranscodingState.valueOf(status)
+    fun isCompleted(): Boolean {
+        return status == "completed"
     }
 
 }
