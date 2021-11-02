@@ -15,7 +15,9 @@ import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetai
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailDigitalRecommendationViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailProductViewHolder
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailStaticButtonViewHolder
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailTopSectionViewHolder
+import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailStaticButtonModel
 import com.tokopedia.buyerorder.recharge.presentation.viewmodel.RechargeOrderDetailViewModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
@@ -32,7 +34,8 @@ import javax.inject.Inject
 class RechargeOrderDetailFragment : BaseDaggerFragment(),
         RechargeOrderDetailTopSectionViewHolder.ActionListener,
         RechargeOrderDetailProductViewHolder.ActionListener,
-        RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener {
+        RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
+        RechargeOrderDetailStaticButtonViewHolder.ActionListener {
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -54,7 +57,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 DigitalRecommendationPage.DIGITAL_GOODS
         )
     private val typeFactory: RechargeOrderDetailTypeFactory by lazy {
-        RechargeOrderDetailTypeFactory(digitalRecommendationData, this, this, this)
+        RechargeOrderDetailTypeFactory(digitalRecommendationData,
+                this,
+                this,
+                this,
+                this)
     }
     private val adapter: RechargeOrderDetailAdapter by lazy {
         RechargeOrderDetailAdapter(typeFactory)
@@ -122,6 +129,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     override fun hideDigitalRecommendation() {
         adapter.removeDigitalRecommendation()
+    }
+
+    override fun onClickStaticButton(staticButtonModel: RechargeOrderDetailStaticButtonModel) {
+//        TODO("Not yet implemented")
     }
 
     private fun setupViews() {

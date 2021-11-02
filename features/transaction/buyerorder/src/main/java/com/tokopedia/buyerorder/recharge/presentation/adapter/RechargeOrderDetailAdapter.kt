@@ -2,6 +2,8 @@ package com.tokopedia.buyerorder.recharge.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 
 /**
@@ -25,6 +27,8 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
             setupDetailSection(data.detailsSection)
             setupPaymentSection(data.paymentSectionModel)
             setupDigitalRecommendationWidget()
+            setupSBMStaticButton()
+            setupLanggananStaticButton()
         }
     }
 
@@ -48,6 +52,32 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         addDivider()
     }
 
+    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupSBMStaticButton() {
+        add(RechargeOrderDetailStaticButtonModel(
+                iconUrl = "",
+                iconRes = R.drawable.ic_recharge_order_detail_sbm,
+                title = "",
+                titleRes = R.string.recharge_order_detail_sbm_label,
+                subtitle = "",
+                subtitleRes = R.string.recharge_order_detail_sbm_detail,
+                actionUrl = ApplinkConst.DIGITAL_SMARTBILLS
+        ))
+        addDivider()
+    }
+
+    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupLanggananStaticButton() {
+        add(RechargeOrderDetailStaticButtonModel(
+                iconUrl = "",
+                iconRes = R.drawable.ic_recharge_order_detail_mybills,
+                title = "",
+                titleRes = R.string.recharge_order_detail_mybills_label,
+                subtitle = "",
+                subtitleRes = R.string.recharge_order_detail_mybills_detail,
+                actionUrl = ACTION_URL_LANGGANAN
+        ))
+        addDivider()
+    }
+
     private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.addDivider() {
         add(RechargeOrderDetailDividerModel())
     }
@@ -61,6 +91,10 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
             visitables.removeAt(index) // remove digital recommendation
             notifyItemRemoved(index)
         }
+    }
+
+    companion object {
+        private const val ACTION_URL_LANGGANAN = "https://www.tokopedia.com/langganan"
     }
 
 }

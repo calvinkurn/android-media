@@ -4,10 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargeDigitalRecommendationBinding
-import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargePaymentDetailBinding
-import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargeProductBinding
-import com.tokopedia.buyerorder.databinding.ItemOrderDetailRechargeTopStatusBinding
+import com.tokopedia.buyerorder.databinding.*
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.*
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
@@ -19,7 +16,8 @@ class RechargeOrderDetailTypeFactory(
         private val digitalRecommendationData: DigitalRecommendationData,
         private val topSectionListener: RechargeOrderDetailTopSectionViewHolder.ActionListener,
         private val detailSectionListener: RechargeOrderDetailProductViewHolder.ActionListener,
-        private val digitalRecommendationListener: RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener
+        private val digitalRecommendationListener: RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
+        private val staticButtonListener: RechargeOrderDetailStaticButtonViewHolder.ActionListener
 ) : BaseAdapterTypeFactory() {
 
     fun type(digitalRecommendationModel: RechargeOrderDetailDigitalRecommendationModel): Int =
@@ -33,6 +31,9 @@ class RechargeOrderDetailTypeFactory(
 
     fun type(productModel: RechargeOrderDetailSectionModel): Int =
             RechargeOrderDetailProductViewHolder.LAYOUT
+
+    fun type(staticButtonModel: RechargeOrderDetailStaticButtonModel): Int =
+            RechargeOrderDetailStaticButtonViewHolder.LAYOUT
 
     fun type(topSectionModel: RechargeOrderDetailTopSectionModel): Int =
             RechargeOrderDetailTopSectionViewHolder.LAYOUT
@@ -51,6 +52,10 @@ class RechargeOrderDetailTypeFactory(
                 RechargeOrderDetailProductViewHolder.LAYOUT -> {
                     val binding = ItemOrderDetailRechargeProductBinding.bind(parent)
                     RechargeOrderDetailProductViewHolder(binding, detailSectionListener)
+                }
+                RechargeOrderDetailStaticButtonViewHolder.LAYOUT -> {
+                    val binding = ItemOrderDetailRechargeStaticButtonBinding.bind(parent)
+                    RechargeOrderDetailStaticButtonViewHolder(binding, staticButtonListener)
                 }
                 RechargeOrderDetailTopSectionViewHolder.LAYOUT -> {
                     val binding = ItemOrderDetailRechargeTopStatusBinding.bind(parent)
