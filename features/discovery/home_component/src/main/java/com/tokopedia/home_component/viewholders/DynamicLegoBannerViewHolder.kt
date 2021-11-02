@@ -22,6 +22,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
 import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
@@ -106,7 +107,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
             //need to be deleted after rollence duration end
             if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLego4UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_10, false))
+                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context), false))
                 marginValue = 0
             }
             //setup for lego 2 banner rollence
@@ -118,7 +119,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
             } else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
                     || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_20, false))
+                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), SPAN_SPACING_20, false))
                 marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
                 marginBottom = marginValue
             }
@@ -158,7 +159,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
     private fun getRecyclerViewDefaultSpanCount(element: DynamicLegoBannerDataModel): Int {
         return when (element.channelModel.channelConfig.layout) {
-            DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE, DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> SPAN_COUNT_2
+            DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context)
+            DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE -> SPAN_COUNT_2
             else -> SPAN_COUNT_3
         }
     }

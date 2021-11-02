@@ -59,12 +59,14 @@ class PlayCartTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        }
+        robot.use {
+            val state = robot.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            }
 
-        state.cart.shouldShow.assertTrue()
+            state.cart.shouldShow.assertTrue()
+        }
     }
 
     @Test
@@ -81,12 +83,14 @@ class PlayCartTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        }
+        robot.use {
+            val state = robot.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            }
 
-        state.cart.count.isInstanceOf(PlayCartCount.Hide::class.java)
+            state.cart.count.isInstanceOf(PlayCartCount.Hide::class.java)
+        }
     }
 
     @Test
@@ -105,14 +109,16 @@ class PlayCartTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        }
+        robot.use {
+            val state = robot.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            }
 
-        state.cart.count.isInstanceOf(PlayCartCount.Show::class.java)
-        (state.cart.count as PlayCartCount.Show).countText
-            .isEqualTo(cartCount.toString())
+            state.cart.count.isInstanceOf(PlayCartCount.Show::class.java)
+            (state.cart.count as PlayCartCount.Show).countText
+                .isEqualTo(cartCount.toString())
+        }
     }
 
     @Test
@@ -131,14 +137,16 @@ class PlayCartTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        }
+        robot.use {
+            val state = robot.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            }
 
-        state.cart.count.isInstanceOf(PlayCartCount.Show::class.java)
-        (state.cart.count as PlayCartCount.Show).countText
-            .isEqualTo("99+")
+            state.cart.count.isInstanceOf(PlayCartCount.Show::class.java)
+            (state.cart.count as PlayCartCount.Show).countText
+                .isEqualTo("99+")
+        }
     }
 
     @Test
@@ -151,19 +159,21 @@ class PlayCartTest {
             dispatchers = testDispatcher
         )
 
-        val event = robot.recordEvent {
-            setLoggedIn(true)
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
+        robot.use {
+            val event = robot.recordEvent {
+                setLoggedIn(true)
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
 
-            submitAction(ClickCartAction)
-        }
+                submitAction(ClickCartAction)
+            }
 
-        event.last()
-            .isEqualTo(
-                OpenPageEvent(
-                    applink = ApplinkConst.CART
+            event.last()
+                .isEqualTo(
+                    OpenPageEvent(
+                        applink = ApplinkConst.CART
+                    )
                 )
-            )
+        }
     }
 }

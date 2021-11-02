@@ -61,15 +61,12 @@ class OrderHistoryViewModelTest {
     @Test
     fun `loadProductHistory when shop id is not null`() {
         viewModel.loadProductHistory(Dummy.shopId)
-        verify(exactly = 1) { productHistoryUseCase.loadProductHistory(Dummy.shopId, any(), any()) }
+        coVerify(exactly = 1) { productHistoryUseCase(any()) }
     }
 
     @Test
     fun `onSuccess loadProductHistory`() {
-        every { productHistoryUseCase.loadProductHistory(Dummy.shopId, captureLambda(), any()) } answers {
-            val onSuccess = lambda<(ChatHistoryProductResponse) -> Unit>()
-            onSuccess.invoke(Dummy.successGetProductResponse)
-        }
+        coEvery { productHistoryUseCase(any()) } returns Dummy.successGetProductResponse
 
         val observer = mockk<Observer<Result<ChatHistoryProductResponse>>>(relaxed = true)
         viewModel.product.observeForever(observer)
@@ -80,10 +77,7 @@ class OrderHistoryViewModelTest {
 
     @Test
     fun `onError loadProductHistory`() {
-        every { productHistoryUseCase.loadProductHistory(Dummy.shopId, any(), captureLambda()) } answers {
-            val onError = lambda<(Throwable) -> Unit>()
-            onError.invoke(Dummy.errorGetProduct)
-        }
+        coEvery { productHistoryUseCase(any()) } throws Dummy.errorGetProduct
 
         val observer = mockk<Observer<Result<ChatHistoryProductResponse>>>(relaxed = true)
         viewModel.product.observeForever(observer)
