@@ -62,4 +62,8 @@ open class TopChatViewModel @Inject constructor(
         )
     }
 
+    fun removeTicker() {
+        _srwTickerReminder.value = null
+    }
+
 }

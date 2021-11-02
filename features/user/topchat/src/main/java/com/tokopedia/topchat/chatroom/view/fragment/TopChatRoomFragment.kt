@@ -2376,6 +2376,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (!data.enable) return
         val eligiblePosition = adapter.findSrwTickerPosition(data.regexMessage)
         adapter.addElement(eligiblePosition, data)
+        viewModel.removeTicker()
         Toast.makeText(context, "Position found: $eligiblePosition", Toast.LENGTH_SHORT).show()
     }
 
