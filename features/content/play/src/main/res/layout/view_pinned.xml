@@ -11,10 +11,9 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icon_pinned"
-        android:layout_width="@dimen/dp_12"
-        android:layout_height="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_2"
-        android:layout_gravity="top"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         app:icon_color_light_enable="@color/Unify_Y300"
         app:icon_color_night_enable="@color/Unify_Y300"
         app:icon_name="PUSH_PIN_FILLED"
