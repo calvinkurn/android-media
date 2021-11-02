@@ -1033,20 +1033,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        try {
-            val items = mutableListOf<Visitable<*>>()
-            val iterator = data.items.iterator()
-
-            while(iterator.hasNext()) {
-                iterator.next()?.let {
-                    items.add(it.layout)
-                }
-            }
-
-            adapter.submitList(items)
-        } catch (e: Exception) {
-
-        }
+        adapter.submitList(data.items)
     }
 
     private fun addLoadMoreListener() {
