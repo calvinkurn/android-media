@@ -333,9 +333,12 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.POWER_MERCHANT }))
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SHOP_SETTINGS }))
             add(DFP({
-                val cleanAppLinkPattern = SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID.replace("(?=\\{)[^\\}]+\\}".toRegex(),".*")
-                val regexMatcher = cleanAppLinkPattern.toRegex()
-                regexMatcher.matches(it)
+                val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
+                val cleanInternalAppLinkPattern = SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID.replace(regexPatternToReplace,".*")
+                val cleanExternalAppLinkPattern = SHOP_SETTINGS_CUSTOMER_APP.replace(regexPatternToReplace,".*")
+                val regexMatcherInternalAppLink = cleanInternalAppLinkPattern.toRegex()
+                val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
+                regexMatcherInternalAppLink.matches(it) || regexMatcherExternalAppLink.matches(it)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL)
