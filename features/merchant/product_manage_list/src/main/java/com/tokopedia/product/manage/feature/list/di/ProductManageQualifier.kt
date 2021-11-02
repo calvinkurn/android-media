@@ -6,4 +6,4 @@ import javax.inject.Qualifier
  * Created by zulfikarrahman on 5/8/18.
  */
 @Qualifier
-annotation class GMProductManageQualifier 
+annotation class ProductManageQualifier

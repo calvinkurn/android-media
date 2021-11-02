@@ -8,9 +8,9 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 import javax.inject.Named
 
-class PopupManagerAddProductUseCase @Inject constructor(@Named(GQL_POPUP_NAME)
+class GetShopManagerPopupsUseCase @Inject constructor(@Named(GQL_POPUP_NAME)
                                                         private val query: String,
-                                                        repository: GraphqlRepository)
+                                                      repository: GraphqlRepository)
     : GraphqlUseCase<PopupManagerResponse>(repository) {
 
     companion object {
