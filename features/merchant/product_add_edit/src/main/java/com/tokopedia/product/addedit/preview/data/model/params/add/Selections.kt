@@ -14,6 +14,9 @@ data class Selection (
     @SerializedName("unitID")
     @Expose
     var unitId: String = "",
+    @SerializedName("name")
+    @Expose
+    var name: String = "",
     @SerializedName("options")
     @Expose
     var options: List<Option> = emptyList()

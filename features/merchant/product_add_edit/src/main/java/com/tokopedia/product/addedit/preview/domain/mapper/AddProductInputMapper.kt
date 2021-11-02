@@ -98,6 +98,7 @@ class AddProductInputMapper @Inject constructor() {
         Selection(
                 it.variantId,
                 it.unitID,
+                it.variantName,
                 mapVariantOptions(it.options)
         )
     }
