@@ -60,17 +60,22 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         terms_condition_rv.layoutManager=layoutManager
         terms_condition_rv.adapter=adapter
-
+        affiliateTermsAndConditionViewModel.createListForTermsAndCondition()
     }
 
     private fun initClickListener() {
+        checkbox_terms.setOnCheckedChangeListener { _, isChecked ->
+                terms_accept_btn.isEnabled=isChecked
+        }
         terms_accept_btn.setOnClickListener {
 
         }
     }
 
     private fun initObserver() {
-
+        affiliateTermsAndConditionViewModel.getTermsAndConditionList().observe(this,{data->
+            setDataToRV(data)
+        })
     }
 
     private fun setDataToRV(data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?) {

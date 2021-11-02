@@ -18,16 +18,21 @@ class AffiliateHeaderItemVH(itemView: View)
     }
 
     override fun bind(element: AffiliateHeaderModel?) {
-        val header= element?.headerItem?.userName?.let { name->
-            getString(R.string.affiliate_header_text).replace("{name}",
-                name
-            )
-        }
-        itemView.findViewById<Typography>(R.id.header).text=header
         val subheadView=itemView.findViewById<Typography>(R.id.sub_header)
         subheadView.isVisible= element?.headerItem?.isForPortfolio == true
-        if(element?.headerItem?.isForPortfolio == true) {
+        var header:String?=""
+        if(element?.headerItem?.isForPortfolio==true) {
+            header = element.headerItem.userName?.let { name ->
+                getString(R.string.affiliate_header_text).replace(
+                    "{name}",
+                    name
+                )
+            }
             subheadView.text=getString(R.string.affiliate_subheader_text)
         }
+        else{
+            header=getString(R.string.affiliate_understand_terms)
+        }
+        itemView.findViewById<Typography>(R.id.header).text=header
     }
 }
