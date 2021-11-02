@@ -146,7 +146,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun fetchData() {
         mOrderId?.let { viewModel.getTrackingData(it) }
-        if (mTrackingUrl != null && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
+        if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
             mOrderId?.let { viewModel.retryAvailability(it) }
         }
     }
