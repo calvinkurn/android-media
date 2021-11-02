@@ -16,11 +16,11 @@ fun File.fileBody(
     progressCallback: ProgressCallback? = null
 ): MultipartBody.Part {
     val contentType = MediaType.parse(type)
-    val requestBody = UploadRequestBody(this.readBytes(), contentType, progressCallback)
+    val requestBody = UploadRequestBody(this, contentType, progressCallback)
     return MultipartBody.Part.createFormData(bodyName, this.name, requestBody)
 }
 
-fun ByteArray.fileBody(
+fun ByteArray.byteBody(
     fileName: String,
     type: String,
     bodyName: String
