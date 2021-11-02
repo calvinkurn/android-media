@@ -1,7 +1,10 @@
 package com.tokopedia.otp.silentverification.view.fragment
 
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
+import android.net.Network
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -15,19 +18,23 @@ import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieTask
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.databinding.FragmentSilentVerificationBinding
 import com.tokopedia.otp.silentverification.di.SilentVerificationComponent
 import com.tokopedia.otp.silentverification.domain.model.RequestSilentVerificationResult
+import com.tokopedia.otp.silentverification.helper.NetworkClientHelper
+import com.tokopedia.otp.silentverification.view.NetworkRequestListener
 import com.tokopedia.otp.silentverification.view.viewmodel.SilentVerificationViewModel
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
@@ -47,17 +54,17 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     @Inject
     lateinit var analytics: TrackingOtpUtil
 
+    @Inject
+    lateinit var networkClientHelper: NetworkClientHelper
+
     private lateinit var viewModel: SilentVerificationViewModel
     private val binding by viewBinding(FragmentSilentVerificationBinding::bind)
-
-    override fun getScreenName(): String = SILENT_VERIFICATION_SCREEN
-
     private var otpData: OtpData? = null
     private var modeListData: ModeListData? = null
-
     private var lottieTaskList: ArrayList<LottieTask<LottieComposition>> = arrayListOf()
-
     private var tokenId = ""
+
+    override fun getScreenName(): String = SILENT_VERIFICATION_SCREEN
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,8 +107,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             viewModel.requestSilentVerification(
                 otpType = otpType.toString(),
                 mode = modeListData?.modeText ?: "",
-                msisdn = msisdn,
-                otpDigit = modeListData?.otpDigit ?: 0
+                msisdn = msisdn
             )
         }
     }
@@ -121,14 +127,14 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         viewModel.bokuVerificationResponse.observe(viewLifecycleOwner, {
             when(it) {
                 is Success -> handleBokuResult(it.data)
-                is Fail -> onErrorVerification(it.throwable)
+                is Fail -> onVerificationError(it.throwable)
             }
         })
 
         viewModel.validationResponse.observe(viewLifecycleOwner, {
             when(it) {
-                is Success -> onSuccessValidate(it.data)
-                is Fail -> onErrorVerification(it.throwable)
+                is Success -> onValidateSuccess(it.data)
+                is Fail -> onVerificationError(it.throwable)
             }
         })
     }
@@ -233,7 +239,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         activity?.finish()
     }
 
-    private fun onSuccessValidate(data: OtpValidateData) {
+    private fun onValidateSuccess(data: OtpValidateData) {
         tokenId = ""
         if(data.success) {
             analytics.trackSilentVerificationResult(TrackingOtpConstant.Label.LABEL_SUCCESS)
@@ -250,9 +256,9 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         activity?.let {
             if (data.evUrl.isNotEmpty() && data.tokenId.isNotEmpty() && data.errorMessage.isEmpty()) {
                 tokenId = data.tokenId
-                viewModel.verify(requireActivity(), data.evUrl)
+                verify(data.evUrl)
             } else {
-                onErrorVerification(Throwable(data.errorMessage))
+                onVerificationError(Throwable(data.errorMessage))
             }
         }
     }
@@ -268,7 +274,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             }
             return queriesMap
         }catch (e: Exception) {
-            onErrorVerification(Throwable(message = "Invalid Response"))
+            onVerificationError(Throwable(message = "Invalid Response"))
         }
         return mapOf()
     }
@@ -277,14 +283,14 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         try {
             val result = mapBokuResult(resultCode)
             if (result[KEY_ERROR_CODE] == "0" &&
-                result[KEY_ERROR_DESC].equals("Success", true)
+                result[KEY_ERROR_DESC].equals(VALUE_SUCCESS, true)
             ) {
                 onSuccessBokuVerification()
             } else {
-                onErrorVerification(Throwable("Verification Failed"))
+                onVerificationError(Throwable("Verification Failed"))
             }
         }catch (e: Exception) {
-            onErrorVerification(Throwable("Verification Failed"))
+            onVerificationError(Throwable("Verification Failed"))
         }
     }
 
@@ -295,16 +301,30 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                     otpType = otpType.toString(),
                     msisdn = msisdn,
                     mode = modeListData?.modeText ?: "",
-                    userId = userId.toIntOrZero(),
+                    userId = userId,
                     tokenId = tokenId
                 )
             }
         }
     }
 
-    private fun onErrorVerification(throwable: Throwable) {
-        Toaster.build(requireView(), throwable.message ?: "Error", Toaster.LENGTH_LONG).show()
+    private fun onVerificationError(throwable: Throwable) {
+        throwable.printStackTrace()
         showErrorState()
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    fun verify(url: String) {
+        context?.run {
+            networkClientHelper.makeNetworkRequest(this, object: NetworkRequestListener {
+                override fun onSuccess(network: Network) {
+                    viewModel.verifyBoku(network, url)
+                }
+                override fun onError(throwable: Throwable) {
+                    onVerificationError(Throwable("Network Unavailable"))
+                }
+            })
+        }
     }
 
     companion object {

@@ -1,27 +1,20 @@
 package com.tokopedia.otp.silentverification.view.viewmodel
 
-import android.annotation.TargetApi
-import android.content.Context
-import android.net.ConnectivityManager
 import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
-import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.otp.silentverification.domain.model.RequestSilentVerificationResult
+import com.tokopedia.otp.silentverification.domain.usecase.GetEvUrlUseCase
 import com.tokopedia.otp.silentverification.domain.usecase.RequestSilentVerificationOtpUseCase
 import com.tokopedia.otp.silentverification.domain.usecase.ValidateSilentVerificationUseCase
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import okhttp3.*
-import java.io.IOException
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -31,6 +24,7 @@ import javax.inject.Inject
 class SilentVerificationViewModel @Inject constructor(
     val requestSilentVerificationOtpUseCase: RequestSilentVerificationOtpUseCase,
     val validateSilentVerificationUseCase: ValidateSilentVerificationUseCase,
+    val getEvUrlUsecase: GetEvUrlUseCase,
     val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -50,15 +44,13 @@ class SilentVerificationViewModel @Inject constructor(
     fun requestSilentVerification(
         otpType: String,
         mode: String,
-        msisdn: String,
-        otpDigit: Int
+        msisdn: String
     ) {
         launchCatchError(block = {
             val params = mapOf(
                 RequestSilentVerificationOtpUseCase.PARAM_OTP_TYPE to otpType,
                 RequestSilentVerificationOtpUseCase.PARAM_MODE to mode,
                 RequestSilentVerificationOtpUseCase.PARAM_MSISDN to msisdn
-//                RequestSilentVerificationOtpUseCase.PARAM_OTP_DIGIT to otpDigit
             )
             val result = requestSilentVerificationOtpUseCase(params)
             _requestSilentVerificationResponse.value = Success(result.data)
@@ -71,7 +63,7 @@ class SilentVerificationViewModel @Inject constructor(
         otpType: String,
         msisdn: String,
         mode: String,
-        userId: Int,
+        userId: String,
         tokenId: String
     ) {
         launchCatchError(block = {
@@ -89,69 +81,18 @@ class SilentVerificationViewModel @Inject constructor(
         })
     }
 
-    fun getEvUrl(evurl: String, network: Network) {
-        try {
-            val okHttpClient: OkHttpClient =
-                OkHttpClient.Builder()
-                    .socketFactory(network.socketFactory)
-                    .writeTimeout(10, TimeUnit.SECONDS)
-                    .readTimeout(10, TimeUnit.SECONDS)
-                    .build()
-            val req: Request = Request.Builder()
-                .url(evurl)
-                .build()
-            okHttpClient.newCall(req).enqueue(object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    val result = response.body()?.string() ?: ""
-                    println("verify:$result")
-                    _bokuVerificationResponse.postValue(Success(result))
-                }
-
-                override fun onFailure(call: Call, e: IOException) {
-                    println("verify:onFailure: ${e.message}")
-                    _bokuVerificationResponse.postValue(Fail(e))
-                    e.printStackTrace()
-                }
-            })
-        } catch (ex: Exception) {
-            println("verify:exception ev url")
-            ex.printStackTrace()
-            _bokuVerificationResponse.postValue(Fail(ex))
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    fun verify(context: Context, url: String) {
+    fun verifyBoku(network: Network, url: String) {
         launchCatchError(block = {
-            val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val request = NetworkRequest.Builder()
-                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                .build()
-
-            connectivityManager.requestNetwork(
-                request,
-                object : ConnectivityManager.NetworkCallback() {
-                    override fun onAvailable(network: Network) {
-                        println("verify:onAvailable")
-                        getEvUrl(url, network)
-                    }
-
-                    override fun onUnavailable() {
-                        super.onUnavailable()
-                        println("verify:onUnavailable")
-                        _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
-                    }
-
-                    override fun onLost(network: Network) {
-                        super.onLost(network)
-                        println("verify:onLost")
-                        _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
-                    }
-                })
+            getEvUrlUsecase.apply {
+                setNetworkSocketFactory(network)
+                setUrl(url)
+            }
+            val result = withContext(dispatcher.io) {
+                getEvUrlUsecase.executeOnBackground()
+            }
+            _bokuVerificationResponse.postValue(Success(result))
         }, onError = {
-            println("verify:catcherror")
+            it.printStackTrace()
             _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
         })
     }
