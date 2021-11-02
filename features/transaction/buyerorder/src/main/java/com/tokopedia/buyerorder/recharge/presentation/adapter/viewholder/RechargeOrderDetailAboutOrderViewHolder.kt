@@ -51,6 +51,7 @@ class RechargeOrderDetailAboutOrderViewHolder(
 
     private fun createActionButton(context: Context, actionButton: RechargeOrderDetailActionButtonModel): UnifyButton {
         val button = UnifyButton(context)
+        button.text = actionButton.label
         button.buttonSize = UnifyButton.Size.MEDIUM
         button.setMargin(0,
                 context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),

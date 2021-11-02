@@ -25,4 +25,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="circular" />
 
+    <FrameLayout
+        android:id="@+id/container_recharge_order_detail_sticky_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        android:elevation="@dimen/unify_space_8"
+        android:paddingHorizontal="@dimen/unify_space_16"
+        android:paddingVertical="@dimen/unify_space_8"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_recharge_order_detail_sticky"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unifyButtonSize="medium" />
+
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

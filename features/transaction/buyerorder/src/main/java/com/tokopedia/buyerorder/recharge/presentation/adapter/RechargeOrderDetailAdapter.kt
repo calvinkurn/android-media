@@ -98,6 +98,13 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         }
     }
 
+    fun lastVisibleIsActionButton(lastVisibleItemPosition: Int): Boolean =
+            if (visitables.size > lastVisibleItemPosition) {
+                visitables[lastVisibleItemPosition] is RechargeOrderDetailAboutOrderModel
+            } else {
+                false
+            }
+
     companion object {
         private const val ACTION_URL_LANGGANAN = "tokopedia://webview?titlebar=false&url=https://m.tokopedia.com/langganan"
     }

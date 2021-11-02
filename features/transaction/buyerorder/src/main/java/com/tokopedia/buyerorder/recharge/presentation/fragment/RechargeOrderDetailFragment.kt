@@ -1,5 +1,7 @@
 package com.tokopedia.buyerorder.recharge.presentation.fragment
 
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.databinding.FragmentRechargeOrderDetailBinding
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
@@ -69,6 +73,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
     private var orderId: String = ""
     private var orderCategory: String = ""
+    private var isPrimaryButtonExists: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -87,6 +92,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         savedInstanceState?.let {
             orderId = it.getString(EXTRA_ORDER_ID) ?: ""
             orderCategory = it.getString(EXTRA_ORDER_CATEGORY) ?: ""
+            isPrimaryButtonExists = it.getBoolean(EXTRA_IS_PRIMARY_BUTTON_EXISTS)
         }
 
         arguments?.let {
@@ -117,6 +123,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
         outState.putString(EXTRA_ORDER_ID, orderId)
         outState.putString(EXTRA_ORDER_CATEGORY, orderCategory)
+        outState.putBoolean(EXTRA_IS_PRIMARY_BUTTON_EXISTS, isPrimaryButtonExists)
     }
 
     override fun onCopyInvoiceNumberClicked(invoiceRefNum: String) {
@@ -151,6 +158,35 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         with(binding) {
             rvRechargeOrderDetail.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             rvRechargeOrderDetail.adapter = adapter
+
+            rvRechargeOrderDetail.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    val layoutManager = rvRechargeOrderDetail.layoutManager as LinearLayoutManager
+                    val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+
+                    if (!adapter.lastVisibleIsActionButton(lastVisibleItemPosition) && isPrimaryButtonExists) {
+                        binding.containerRechargeOrderDetailStickyButton.show()
+                    } else {
+                        binding.containerRechargeOrderDetailStickyButton.hide()
+                    }
+                }
+            })
+        }
+    }
+
+    private fun setupStickyButton(primaryActionButton: RechargeOrderDetailActionButtonModel?) {
+        primaryActionButton?.let {
+            with(binding) {
+                btnRechargeOrderDetailSticky.text = primaryActionButton.label
+                btnRechargeOrderDetailSticky.setOnClickListener {
+                    context?.let { ctx ->
+                        onStickyActionButtonClicked(ctx, primaryActionButton.uri)
+                    }
+                }
+            }
+            isPrimaryButtonExists = true
         }
     }
 
@@ -160,6 +196,9 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     adapter.updateItems(it.data)
+                    setupStickyButton(it.data.actionButtonList.actionButtons.firstOrNull {
+                        it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
+                    })
                     showRecyclerView()
                 }
                 is Fail -> {
@@ -185,9 +224,31 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         binding.rechargeOrderDetailLoader.hide()
     }
 
+    private fun onStickyActionButtonClicked(context: Context, uri: String) {
+        if (uri.isNotEmpty() && uri.startsWith(TOKOPEDIA_PREFIX)) {
+            var mUri = uri
+            val url = Uri.parse(mUri)
+
+            if (mUri.contains(IDEM_POTENCY_KEY)) {
+                mUri = mUri.replace(url.getQueryParameter(IDEM_POTENCY_KEY)
+                        ?: "", "")
+                mUri = mUri.replace("${IDEM_POTENCY_KEY}=", "")
+            }
+            RouteManager.route(context, mUri)
+        } else if (uri.isNotEmpty()) {
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uri)
+        }
+    }
+
     companion object {
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
         private const val EXTRA_ORDER_CATEGORY = "EXTRA_ORDER_CATEGORY"
+        private const val EXTRA_IS_PRIMARY_BUTTON_EXISTS = "EXTRA_IS_PRIMARY_BUTTON_EXISTS"
+
+        private const val PRIMARY_ACTION_BUTTON_TYPE = "primary"
+
+        private const val TOKOPEDIA_PREFIX = "tokopedia"
+        private const val IDEM_POTENCY_KEY = "idem_potency_key"
 
         fun getInstance(orderId: String,
                         orderCategory: String): RechargeOrderDetailFragment =
