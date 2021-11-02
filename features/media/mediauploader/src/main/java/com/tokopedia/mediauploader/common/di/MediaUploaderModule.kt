@@ -10,6 +10,7 @@ import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
+import com.tokopedia.mediauploader.video.VideoUploaderManager
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
 import com.tokopedia.mediauploader.video.domain.*
 import com.tokopedia.user.session.UserSession
@@ -32,11 +33,23 @@ class MediaUploaderModule {
     @MediaUploaderQualifier
     fun provideUploaderUseCase(
         imageUploader: ImageUploaderManager,
-        simpleUploader: SimpleUploaderManager,
-        largeUploader: LargeUploaderManager
+        videoUploader: VideoUploaderManager
     ): UploaderUseCase {
         return UploaderUseCase(
             imageUploader,
+            videoUploader
+        )
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideVideoUploaderManager(
+        policyUseCase: GetVideoPolicyUseCase,
+        simpleUploader: SimpleUploaderManager,
+        largeUploader: LargeUploaderManager
+    ): VideoUploaderManager {
+        return VideoUploaderManager(
+            policyUseCase,
             simpleUploader,
             largeUploader
         )
@@ -93,13 +106,9 @@ class MediaUploaderModule {
     @Provides
     @MediaUploaderQualifier
     fun provideSimpleUploaderManager(
-        videoPolicyUseCase: GetVideoPolicyUseCase,
         simpleUploaderUseCase: GetSimpleUploaderUseCase
     ): SimpleUploaderManager {
-        return SimpleUploaderManager(
-            videoPolicyUseCase,
-            simpleUploaderUseCase
-        )
+        return SimpleUploaderManager(simpleUploaderUseCase)
     }
 
     // --- large video ---

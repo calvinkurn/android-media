@@ -82,50 +82,62 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private fun initObservable() {
         viewModel.uploading.observe(this, { status ->
             when (status) {
-                is UploadState.Idle -> {
-                    appendInfo("\nready to upload\n")
-                    btnUpload.isEnabled = true
-                    btnPickUp.hide()
-                    btnRemove.show()
-                }
-                is UploadState.Uploading -> {
-                    appendInfo("\nuploading...\n")
-                    btnUpload.text = "Uploading..."
-
-                    // hide pick-up and show remove button
-                    btnPickUp.hide()
-                    btnRemove.show()
-
-                    // disabled upload button and change caption
-                    btnUpload.isEnabled = false
-                    btnAbort.show()
-                }
-                is UploadState.Stopped -> {
-                    appendInfo("\nclick button to retry\n")
-                    btnUpload.text = "Retry"
-
-                    btnUpload.isEnabled = true
-                }
-                is UploadState.Aborted -> {
-                    txtInfo.text = "Tidak ada info file."
-                    imgPreview.setImageDrawable(null)
-
-                    btnUpload.text = "Upload"
-
-                    btnPickUp.show()
-                    btnRemove.hide()
-
-                    btnUpload.isEnabled = false
-                    btnAbort.hide()
-                }
-                is UploadState.Finished -> {
-                    appendInfo("\nuploaded\n")
-                    btnUpload.text = "Upload"
-                    btnUpload.isEnabled = false
-                    btnAbort.hide()
-                }
+                is UploadState.Idle -> stateLargeUploadIdle()
+                is UploadState.Uploading -> stateLargeUploading()
+                is UploadState.Stopped -> stateLargeUploadStopped()
+                is UploadState.Aborted -> stateLargeUploadAborted()
+                is UploadState.Finished -> stateLargeUploadFinished()
             }
         })
+    }
+
+    private fun stateLargeUploadIdle() {
+        appendInfo("\nready to upload\n")
+        btnUpload.isEnabled = true
+        btnPickUp.hide()
+        btnRemove.show()
+
+        progressBar.setValue(0, true)
+    }
+
+    private fun stateLargeUploading() {
+        appendInfo("\nuploading...\n")
+        btnUpload.text = "Uploading..."
+
+        // hide pick-up and show remove button
+        btnPickUp.hide()
+        btnRemove.show()
+
+        // disabled upload button and change caption
+        btnUpload.isEnabled = false
+        btnAbort.show()
+    }
+
+    private fun stateLargeUploadStopped() {
+        appendInfo("\nclick button to retry\n")
+        btnUpload.text = "Retry"
+
+        btnUpload.isEnabled = true
+    }
+
+    private fun stateLargeUploadAborted() {
+        txtInfo.text = "Tidak ada info file."
+        imgPreview.setImageDrawable(null)
+
+        btnUpload.text = "Upload"
+
+        btnPickUp.show()
+        btnRemove.hide()
+
+        btnUpload.isEnabled = false
+        btnAbort.hide()
+    }
+
+    private fun stateLargeUploadFinished() {
+        appendInfo("\nuploaded\n")
+        btnUpload.text = "Upload"
+        btnUpload.isEnabled = false
+        btnAbort.hide()
     }
 
     private fun abortButtonClicked() {
@@ -137,7 +149,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             btnAbort.setOnClickListener {
                 launch {
                     uploaderUseCase.abortUpload {
-                        this.cancel()
+                        coroutineContext.cancelChildren()
                         btnAbort.hide()
                     }
                 }
@@ -148,6 +160,8 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     @SuppressLint("LogNotTimber")
     private fun mediaUploader() {
         if (mediaFilePath.isEmpty()) return
+
+        abortButtonClicked()
 
         val param = uploaderUseCase.createParams(
             sourceId = if (isUploadImage) {
