@@ -29,7 +29,6 @@ class BiometricCassava {
     fun validate_fingerprint() {
         runTest {
             launchFrom(activityRule, "")
-            check_fp_dialog_displayed()
             on_fingerprint_valid(activityRule)
             on_fingerprint_invalid(activityRule)
             on_fingerprint_error(activityRule)

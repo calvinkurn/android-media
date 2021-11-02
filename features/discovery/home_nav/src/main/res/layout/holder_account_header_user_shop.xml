@@ -64,7 +64,7 @@
         android:id="@+id/btn_try_again_shop_info"
         android:layout_width="@dimen/dp_25"
         android:layout_height="@dimen/dp_25"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginLeft="4dp"
         android:background="@drawable/ic_oval_bg"
         android:contentDescription="@string/account_header_store_title"
         android:padding="5dp"

@@ -166,6 +166,9 @@ class ShopPageBuyerAnalyticTest {
     }
 
     private fun testDisplayWidget() {
+        ViewActionUtil.waitUntilViewIsDisplayed((AllOf.allOf(
+                withId(R.id.rvShopHomeMultiple)
+        )))
         Espresso.onView(AllOf.allOf(
                 withId(R.id.rvShopHomeMultiple),
                 isDisplayed())

@@ -53,10 +53,10 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleList"
                 app:layout_constraintHorizontal_weight="2"
-                android:paddingStart="@dimen/dp_4"
+                android:paddingStart="4dp"
                 android:layout_marginEnd="@dimen/home_component_margin_default"
-                android:layout_marginTop="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_2"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="2dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

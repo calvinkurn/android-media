@@ -1,7 +1,8 @@
 package com.tokopedia.mediauploader.domain
 
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.data.entity.*
-import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.common.state.UploadResult
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

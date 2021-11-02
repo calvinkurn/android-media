@@ -20,8 +20,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_capture"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
         app:srcCompat="@drawable/imagepicker_insta_circle_filled" />
 
