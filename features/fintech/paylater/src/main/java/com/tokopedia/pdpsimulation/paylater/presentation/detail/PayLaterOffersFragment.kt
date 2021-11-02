@@ -147,6 +147,11 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     }
 
+    /**
+     * Method is to calculate which partner to display when a particular tenure is selected
+     * @param payLaterAllData contain all the partners detail for a particular tenure
+     * @return position of the partner which i have to display when i select a particular tenure
+     */
     private fun viewPagerPartnerDisplay(payLaterAllData: PayLaterAllData): Int {
         return when {
             payLaterAllData.detail.isEmpty() -> return 0
