@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -17,6 +17,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity
@@ -75,6 +76,7 @@ class RechargeHomepageInstrumentTest {
         check_single_banner_section()
         check_product_banner_section()
         check_reminder_section()
+        check_swipe_banner_section()
 
         assertThat(
                 getAnalyticsWithQuery(gtmLogDBSource, context, SUBHOME_ANALYTIC_VALIDATOR_QUERY),
@@ -208,6 +210,20 @@ class RechargeHomepageInstrumentTest {
         Thread.sleep(1000)
         onView(withId(R.id.iv_recharge_home_product_banner_close_button)).perform(click())
         Thread.sleep(1000)
+    }
+
+    private fun check_swipe_banner_section(){
+        Thread.sleep(2000)
+
+        if (getBannerItemCount() > 0) {
+            onView(withId(R.id.recharge_home_swipe_banner)).perform(ViewActions.swipeRight())
+            onView(withId(R.id.recharge_home_swipe_banner)).perform(click())
+        }
+    }
+
+    private fun getBannerItemCount(): Int {
+        val carousel = activityRule.activity.findViewById(R.id.recharge_home_swipe_banner) as CarouselUnify
+        return carousel.indicatorCount.toInt()
     }
 
     companion object {

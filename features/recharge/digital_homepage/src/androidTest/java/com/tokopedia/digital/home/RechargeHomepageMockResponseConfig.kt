@@ -40,6 +40,9 @@ class RechargeHomepageMockResponseConfig: MockModelConfig() {
         var KEY_CONTAINS_SECTION_PRODUCT_BANNER = """"sectionIDs": [
         10
       ],""".trimIndent()
+        var KEY_CONTAINS_SECTION_SWIPE_BANNER = """"sectionIDs": [
+        933
+      ],""".trimIndent()
     }
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
@@ -88,6 +91,10 @@ class RechargeHomepageMockResponseConfig: MockModelConfig() {
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_PRODUCT_BANNER,
+                getRawString(context, R.raw.recharge_homepage_product_banner_mock_response),
+                FIND_BY_CONTAINS)
+        addMockResponse(
+                KEY_CONTAINS_SECTION_SWIPE_BANNER,
                 getRawString(context, R.raw.recharge_homepage_product_banner_mock_response),
                 FIND_BY_CONTAINS)
         return this
