@@ -103,4 +103,12 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         portfolio_cnf_btn.isEnabled=true
         affiliatePortfolioViewModel.updateList(position,text)
     }
+
+    override fun onError(position: Int) {
+        affiliatePortfolioViewModel.updateListErrorState(position)
+    }
+
+    override fun onUrlSuccess(position: Int) {
+        affiliatePortfolioViewModel.updateListSuccess(position)
+    }
 }

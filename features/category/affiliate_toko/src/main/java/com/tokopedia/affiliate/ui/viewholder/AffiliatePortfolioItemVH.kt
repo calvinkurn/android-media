@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.ui.viewholder
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.webkit.URLUtil.isValidUrl
 import androidx.annotation.LayoutRes
@@ -17,22 +19,31 @@ class AffiliatePortfolioItemVH(itemView: View,private val onFocusChangeInterface
         @LayoutRes
         var LAYOUT = R.layout.affiliate_input_portfolio_text_field_item
     }
-    val urlEtView=itemView.findViewById<TextFieldUnify2>(R.id.social_link_et)
+    private val urlEtView: TextFieldUnify2 =itemView.findViewById<TextFieldUnify2>(R.id.social_link_et)
     override fun bind(element: AffiliatePortfolioUrlModel?) {
         element?.portfolioItm?.title?.let { urlEtView.setLabel(it) }
+        element?.portfolioItm?.text?.let { urlEtView.editText.setText(it) }
         setState(element)
+        urlEtView.editText.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                onFocusChangeInterface?.onUrlUpdate(adapterPosition,
+                    s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
         urlEtView.addOnFocusChangeListener={_, hasFocus->
             if(!hasFocus){
                 if(isValidUrl(urlEtView.getEditableValue().toString())) {
-                    setState(element)
-                    onFocusChangeInterface?.onUrlUpdate(
-                        adapterPosition,
-                        urlEtView.getEditableValue().toString()
-                    )
+                    onFocusChangeInterface?.onUrlSuccess(adapterPosition)
                 }
-                else{
-                    urlEtView.isInputError=true
-                    urlEtView.setMessage("Link tidak valid.")
+                else if (urlEtView.getEditableValue().toString().isNotEmpty()){
+                    onFocusChangeInterface?.onError(adapterPosition)
                 }
             }
         }
@@ -40,8 +51,15 @@ class AffiliatePortfolioItemVH(itemView: View,private val onFocusChangeInterface
 
     private fun setState(element: AffiliatePortfolioUrlModel?) {
         urlEtView.isInputError = element?.portfolioItm?.isError==true
-        element?.portfolioItm?.content?.let { message->
-            urlEtView.setMessage(message)
+        if(element?.portfolioItm?.isError==true) {
+            element?.portfolioItm?.errorContent?.let { message ->
+                urlEtView.setMessage(message)
+            }
+        }
+        else{
+            element?.portfolioItm?.successContent?.let { message ->
+                urlEtView.setMessage(message)
+            }
         }
     }
 }

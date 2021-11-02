@@ -4,6 +4,9 @@ import android.webkit.URLUtil.isValidUrl
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.INSTAGRAM
+import com.tokopedia.affiliate.TIKTOK
+import com.tokopedia.affiliate.YOUTUBE
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.AffiliateHeaderItemData
 import com.tokopedia.affiliate.model.AffiliatePortfolioButtonData
@@ -24,9 +27,9 @@ class AffiliatePortfolioViewModel@Inject constructor(
     private val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
     fun createDefaultListForSm() {
         itemList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Instagram","","Contoh: instagram.com/tokopedia",false)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Tiktok","","Contoh: tiktok.com/tokopedia",false)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Youtube","","Contoh: youtube.com/tokopedia",false)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Instagram","","Contoh: instagram.com/tokopedia","Link tidak valid.",false,type = INSTAGRAM)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Tiktok","","Contoh: tiktok.com/tokopedia","Link tidak valid.",false,type = TIKTOK)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Youtube","","Contoh: youtube.com/tokopedia","Link tidak valid.",false,type = YOUTUBE)))
         itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media")))
         affiliatePortfolioData.value=itemList
     }
@@ -37,9 +40,8 @@ class AffiliatePortfolioViewModel@Inject constructor(
         itemList.forEachIndexed {i,item->
             if(item is AffiliatePortfolioUrlModel)
             {
-                if(!isValidUrl(item.portfolioItm.text)){
+                if(!item.portfolioItm.text.isNullOrEmpty()&&!isValidUrl(item.portfolioItm.text)){
                     item.portfolioItm.isError=true
-                    item.portfolioItm.content="Link tidak valid."
                     updateListItem.value=i
                     return
                 }
@@ -47,6 +49,15 @@ class AffiliatePortfolioViewModel@Inject constructor(
             }
         }
     }
+    fun updateListErrorState(position: Int) {
+        (itemList[position] as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = true
+        updateListItem.value=position
+    }
+    fun updateListSuccess(position: Int) {
+        (itemList[position] as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = false
+        updateListItem.value=position
+    }
+
     fun getPortfolioUrlList() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliatePortfolioData
     fun getUpdateItemIndex() : LiveData<Int> = updateListItem
 }
