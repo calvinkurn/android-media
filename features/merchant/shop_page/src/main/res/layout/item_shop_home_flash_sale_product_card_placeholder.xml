@@ -68,7 +68,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/tgp_cta_see_all"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tgp_cta_see_all"
-                app:srcCompat="@drawable/ic_chevron_right" />
+                app:srcCompat="@drawable/ic_fs_chevron_right" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
