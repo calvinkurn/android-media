@@ -13,10 +13,7 @@ import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
-import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailDigitalRecommendationViewHolder
-import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailProductViewHolder
-import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailStaticButtonViewHolder
-import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.RechargeOrderDetailTopSectionViewHolder
+import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.*
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailStaticButtonModel
 import com.tokopedia.buyerorder.recharge.presentation.viewmodel.RechargeOrderDetailViewModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
@@ -35,7 +32,8 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         RechargeOrderDetailTopSectionViewHolder.ActionListener,
         RechargeOrderDetailProductViewHolder.ActionListener,
         RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
-        RechargeOrderDetailStaticButtonViewHolder.ActionListener {
+        RechargeOrderDetailStaticButtonViewHolder.ActionListener,
+        RechargeOrderDetailAboutOrderViewHolder.ActionListener {
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -58,6 +56,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         )
     private val typeFactory: RechargeOrderDetailTypeFactory by lazy {
         RechargeOrderDetailTypeFactory(digitalRecommendationData,
+                this,
                 this,
                 this,
                 this,
@@ -132,6 +131,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onClickStaticButton(staticButtonModel: RechargeOrderDetailStaticButtonModel) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onClickHelp(helpUrl: String) {
 //        TODO("Not yet implemented")
     }
 

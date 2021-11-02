@@ -78,6 +78,10 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         addDivider()
     }
 
+    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupAboutOrdersSection(helpUrl: String) {
+        add(RechargeOrderDetailAboutOrderModel(helpUrl))
+    }
+
     private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.addDivider() {
         add(RechargeOrderDetailDividerModel())
     }

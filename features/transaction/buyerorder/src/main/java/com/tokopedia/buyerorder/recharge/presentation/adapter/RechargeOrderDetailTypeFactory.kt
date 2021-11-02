@@ -17,8 +17,12 @@ class RechargeOrderDetailTypeFactory(
         private val topSectionListener: RechargeOrderDetailTopSectionViewHolder.ActionListener,
         private val detailSectionListener: RechargeOrderDetailProductViewHolder.ActionListener,
         private val digitalRecommendationListener: RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
-        private val staticButtonListener: RechargeOrderDetailStaticButtonViewHolder.ActionListener
+        private val staticButtonListener: RechargeOrderDetailStaticButtonViewHolder.ActionListener,
+        private val aboutOrderListener: RechargeOrderDetailAboutOrderViewHolder.ActionListener
 ) : BaseAdapterTypeFactory() {
+
+    fun type(aboutOrderModel: RechargeOrderDetailAboutOrderModel): Int =
+            RechargeOrderDetailAboutOrderViewHolder.LAYOUT
 
     fun type(digitalRecommendationModel: RechargeOrderDetailDigitalRecommendationModel): Int =
             RechargeOrderDetailDigitalRecommendationViewHolder.LAYOUT
@@ -40,6 +44,10 @@ class RechargeOrderDetailTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when (type) {
+                RechargeOrderDetailAboutOrderViewHolder.LAYOUT -> {
+                    val binding = ItemOrderDetailRechargeAboutOrdersBinding.bind(parent)
+                    RechargeOrderDetailAboutOrderViewHolder(binding, aboutOrderListener)
+                }
                 RechargeOrderDetailDigitalRecommendationViewHolder.LAYOUT -> {
                     val binding = ItemOrderDetailRechargeDigitalRecommendationBinding.bind(parent)
                     RechargeOrderDetailDigitalRecommendationViewHolder(binding, digitalRecommendationData, digitalRecommendationListener)
