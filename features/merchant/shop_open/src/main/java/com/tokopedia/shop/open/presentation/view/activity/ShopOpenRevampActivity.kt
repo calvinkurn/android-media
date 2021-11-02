@@ -110,7 +110,7 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         transaction
                 .replace(R.id.shop_open_container, fragment)
                 .addToBackStack(tag)
-                .commit()
+                .commitAllowingStateLoss()
     }
 
     private fun setBackgroundColor() {
@@ -133,3 +133,4 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         }
     }
 }
+

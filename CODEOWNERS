@@ -20,7 +20,6 @@
 /features/discovery/image_search/                   	@tokopedia/android-miniondave-dev
 /features/discovery/similarsearch/                  	@tokopedia/android-miniondave-dev
 /features/discovery/autocomplete/                   	@tokopedia/android-miniondave-dev
-/features/digital/digital_browse/                   	@tokopedia/@android-minionmark-dev
 /features/discovery/global_nav_widget/              	@tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget_samples/      	@tokopedia/android-miniondave-dev
 /features/home/dynamicbanner/                          	@tokopedia/android-miniondave-dev
@@ -56,6 +55,7 @@
 /features/merchant/review_product/                      @tokopedia/android-minionstuart-dev
 /features/merchant/reputation_common/                   @tokopedia/android-minionstuart-dev
 /features/merchant/review/                              @tokopedia/android-minionstuart-dev
+/features/merchant/review_shop/                         @tokopedia/android-minionken-dev
 /features/merchant/review_inbox/                        @tokopedia/android-minionstuart-dev
 /features/merchant/seller_migration_common/             @tokopedia/android-minionstuart-dev
 /features/merchant/seller_active_common/                @tokopedia/android-minionstuart-dev
@@ -79,6 +79,7 @@
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
 /features/tokopedianow/                                 @tokopedia/android-minionken-dev
+/features/merchant/product_bundle/                      @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionskywalker-dev
@@ -109,6 +110,7 @@
 /features/content/play_common/                          @tokopedia/android-minionmark-dev
 /features/content/play_broadcaster/                     @tokopedia/android-minionmark-dev
 /features/content/play_widget/                          @tokopedia/android-minionmark-dev
+
 /features/recharge/common_digital                       @tokopedia/android-minionmark-dev
 /features/recharge/common_electronic_money              @tokopedia/android-minionmark-dev
 /features/recharge/common_topup_bills                   @tokopedia/android-minionmark-dev
@@ -116,6 +118,7 @@
 /features/recharge/digital_emoney                       @tokopedia/android-minionmark-dev
 /features/recharge/digital_checkout                     @tokopedia/android-minionmark-dev
 /features/recharge/digital_homepage                     @tokopedia/android-minionmark-dev
+/features/recharge/digital_recommendation               @tokopedia/android-minionmark-dev
 /features/recharge/digital_topup_bills                  @tokopedia/android-minionmark-dev
 /features/recharge/digitalproduct                       @tokopedia/android-minionmark-dev
 /features/recharge/recharge_component                   @tokopedia/android-minionmark-dev
@@ -146,7 +149,7 @@
 
 /features/payment/payment/                      		@tokopedia/android-minionbob-dev
 /features/transaction/atc_common/               		@tokopedia/android-minionbob-dev
-/features/transaction/buyerorder/                       @tokopedia/android-minionbob-dev
+/features/transaction/unifyorderhistory/                @tokopedia/android-minionbob-dev
 /features/transaction/purchase_platform_common/ 		@tokopedia/android-minionbob-dev
 /features/transaction/cart/        		                @tokopedia/android-minionbob-dev
 /features/transaction/cart_common/        		        @tokopedia/android-minionbob-dev
@@ -212,7 +215,6 @@
 /features/user/home_account/                        	@tokopedia/android-minionkevin-dev
 /features/user/loginfingerprint/                        @tokopedia/android-minionkevin-dev
 /features/user/liveness/                                @tokopedia/android-minionkevin-dev
-/features/user/profilecommon/                           @tokopedia/android-minionkevin-dev
 /features/user/additional_check/                        @tokopedia/android-minionkevin-dev
 /features/user/home_account/                            @tokopedia/android-minionkevin-dev
 /features/user/telephony_masking/                       @tokopedia/android-minionkevin-dev
@@ -352,6 +354,10 @@
 /customer_mid_app/                                      @tokopedia/android-core-dev
 /sellerapp/                                         	@tokopedia/android-minionstuart-dev
 /testapp/                                               @tokopedia/android-core-dev
+
+/testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
+
+/features/transaction/buyerorder/                      @tokopedia/android-minionstuart-dev @tokopedia/android-minionmark-dev
 
 
 /customerapp/src/main/java/com/tokopedia/tkpd/ConsumerMainApplication.java                      @tokopedia/android-gatekeeperloadtime-dev

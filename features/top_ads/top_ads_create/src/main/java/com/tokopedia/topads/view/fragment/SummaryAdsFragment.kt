@@ -505,6 +505,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             EXACT_POSITIVE
 
         key.id = typeInt.toString()
+        key.typeInt = typeInt
         key.name = stepperModel?.selectedKeywordStage?.get(index)?.keyword ?: ""
         if (stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest?.toDouble() ?: 0.0 != 0.0)
             key.priceBid = stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest

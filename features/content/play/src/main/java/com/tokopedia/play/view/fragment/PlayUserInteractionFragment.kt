@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -24,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayPiPAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
@@ -57,6 +59,7 @@ import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
 import com.tokopedia.play.view.storage.multiplelikes.MultipleLikesIconCacheStorage
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -85,6 +88,7 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -96,6 +100,8 @@ class PlayUserInteractionFragment @Inject constructor(
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic,
         private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
+        private val castPlayer: CastPlayer,
+        private val castAnalyticHelper: CastAnalyticHelper
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -114,7 +120,8 @@ class PlayUserInteractionFragment @Inject constructor(
         PinnedVoucherViewComponent.Listener,
         InteractiveViewComponent.Listener,
         InteractiveWinnerBadgeViewComponent.Listener,
-        RealTimeNotificationViewComponent.Listener
+        RealTimeNotificationViewComponent.Listener,
+        CastViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -133,9 +140,11 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
+    private val castView by viewComponentOrNull(isEagerInit = true) { CastViewComponent(it, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
-    private val likeBubbleView by viewComponent { LikeBubbleViewComponent(it, R.id.view_like_bubble, multipleLikesIconCacheStorage) }
+    private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
+        it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
 
     /**
      * Interactive
@@ -481,6 +490,13 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onHideNotification(view: RealTimeNotificationViewComponent) {
         chatListView?.setMask(MASK_NO_CUT_HEIGHT, true)
     }
+
+    /**
+     * Cast View Component Listener
+     */
+    override fun onCastClicked() {
+        analytic.clickCast()
+    }
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
@@ -623,6 +639,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeUiEvent()
 
         observeLoggedInInteractionEvent()
+        observeCastState()
     }
 
     private fun invalidateSystemUiVisibility() {
@@ -653,7 +670,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * Observe
      */
     private fun observeVideoMeta() {
-        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
             changeLayoutBasedOnVideoOrientation(meta.videoStream.orientation)
             triggerImmersive(false)
 
@@ -665,13 +682,14 @@ class PlayUserInteractionFragment @Inject constructor(
             videoSettingsViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
             gradientBackgroundViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
             pipViewOnStateChanged(videoPlayer = meta.videoPlayer)
+            playButtonViewOnStateChanged(videoPlayer = meta.videoPlayer)
 
             pinnedViewOnStateChanged()
             quickReplyViewOnStateChanged()
 
             changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
             if (meta.videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
-        })
+        }
     }
 
     private fun observeVideoProperty() {
@@ -769,6 +787,7 @@ class PlayUserInteractionFragment @Inject constructor(
             videoSettingsViewOnStateChanged(bottomInsets = map)
             immersiveBoxViewOnStateChanged(bottomInsets = map)
             pipViewOnStateChanged(bottomInsets = map)
+            castViewOnStateChanged(bottomInsets = map)
         })
     }
 
@@ -921,7 +940,31 @@ class PlayUserInteractionFragment @Inject constructor(
             }
         }
     }
+
+    private fun observeCastState() {
+        playViewModel.observableCastState.observe(viewLifecycleOwner) {
+            castViewOnStateChanged()
+            pipViewOnStateChanged()
+            sendCastAnalytic(it)
+        }
+    }
     //endregion
+
+    private fun sendCastAnalytic(cast: PlayCastUiModel) {
+        when {
+            cast.connectFailed() -> {
+                analytic.connectCast(false)
+            }
+            cast.currentState == PlayCastState.CONNECTED -> {
+                val channelData = playViewModel.latestCompleteChannelData
+                analytic.connectCast(true, channelData.id, channelData.channelDetail.channelInfo.channelType)
+                castAnalyticHelper.startRecording()
+            }
+            cast.previousState == PlayCastState.CONNECTED -> {
+                castAnalyticHelper.stopRecording()
+            }
+        }
+    }
 
     private fun triggerImmersive(shouldImmersive: Boolean) {
         cancelAllAnimations()
@@ -1201,9 +1244,10 @@ class PlayUserInteractionFragment @Inject constructor(
     //region OnStateChanged
     private fun playButtonViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
-            state: PlayViewerVideoState
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
+            state: PlayViewerVideoState = playViewModel.observableVideoProperty.value?.state ?: PlayViewerVideoState.Unknown
     ) {
-        if (!channelType.isVod) {
+        if (!channelType.isVod || (videoPlayer is PlayVideoPlayerUiModel.General.Complete && videoPlayer.playerType != PlayerType.Client)) {
             playButtonView.hide()
             return
         }
@@ -1227,7 +1271,7 @@ class PlayUserInteractionFragment @Inject constructor(
             videoControlView.setPlayer(null)
             videoControlView.hide()
         }
-        else if (channelType.isVod && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoControlView.show()
+        else if (channelType.isVod && videoPlayer.isGeneral() && !bottomInsets.isAnyShown) videoControlView.show()
         else videoControlView.hide()
     }
 
@@ -1245,7 +1289,7 @@ class PlayUserInteractionFragment @Inject constructor(
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
         if (isFreezeOrBanned) videoSettingsView.hide()
-        else if (videoOrientation.isHorizontal && videoPlayer.isGeneral && !bottomInsets.isAnyShown) videoSettingsView.show()
+        else if (videoOrientation.isHorizontal && videoPlayer.isGeneral() && !bottomInsets.isAnyShown) videoSettingsView.show()
         else videoSettingsView.hide()
     }
 
@@ -1381,7 +1425,8 @@ class PlayUserInteractionFragment @Inject constructor(
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral || isFreezeOrBanned) {
+        val isCastVisible = castView?.isShown() ?: false
+        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned || playViewModel.isCastAllowed || isCastVisible) {
             pipView?.hide()
             return
         }
@@ -1496,6 +1541,19 @@ class PlayUserInteractionFragment @Inject constructor(
         rtnView?.setLifespan(rtn.lifespanInMs)
         if (rtn.shouldShow) rtnView?.show()
         else rtnView?.invisible()
+    }
+
+    private fun castViewOnStateChanged(
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
+            val currentVisibility = castView?.isHidden() ?: true
+            if(currentVisibility)
+                analytic.impressCast(playViewModel.latestCompleteChannelData.channelDetail.channelInfo.id, playViewModel.channelType)
+
+            castView?.show()
+        }
+        else castView?.hide()
     }
     //endregion
 

@@ -4,25 +4,34 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcProgressCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
 import com.tokopedia.unifycomponents.NotificationUnify
-import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
-import kotlinx.android.synthetic.main.shc_partial_progress_widget.view.*
-import kotlinx.android.synthetic.main.shc_partial_progress_widget_error.view.*
-import kotlinx.android.synthetic.main.shc_partial_shimmering_progress_widget.view.*
 
 /**
  * Created By @ilhamsuaib on 20/05/20
  */
 
-class ProgressViewHolder(view: View?, private val listener: Listener) :
-    AbstractViewHolder<ProgressWidgetUiModel>(view) {
+class ProgressViewHolder(
+    view: View?,
+    private val listener: Listener
+) : AbstractViewHolder<ProgressWidgetUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = R.layout.shc_progress_card_widget
     }
+
+    private val binding by lazy {
+        ShcProgressCardWidgetBinding.bind(itemView)
+    }
+    private val errorStateBinding by lazy { binding.shcProgressErrorState }
+    private val commonErrorStateBinding by lazy {
+        errorStateBinding.shcProgressCommonErrorState
+    }
+    private val loadingStateBinding by lazy { binding.shcProgressLoadingState }
 
     override fun bind(element: ProgressWidgetUiModel) {
         observeState(element)
@@ -65,8 +74,9 @@ class ProgressViewHolder(view: View?, private val listener: Listener) :
         element.data?.run {
             with(element) {
                 setTagNotification(element.tag)
-                itemView.tvProgressTitle.text = title
-                itemView.tvProgressDescription.text = data?.subtitle?.parseAsHtml()
+                binding.shcProgressSuccessState.tvProgressTitle.text = title
+                binding.shcProgressSuccessState.tvProgressDescription.text =
+                    data?.subtitle?.parseAsHtml()
                 setupProgressBar(subtitle, valueTxt, maxValueTxt, value, maxValue, colorState)
                 setupDetails(this)
                 addImpressionTracker(this)
@@ -78,7 +88,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) :
 
     private fun setTagNotification(tag: String) {
         val isTagVisible = tag.isNotBlank()
-        with(itemView) {
+        with(binding.shcProgressSuccessState) {
             notifTagProgress.showWithCondition(isTagVisible)
             if (isTagVisible) {
                 notifTagProgress.setNotification(
@@ -117,8 +127,10 @@ class ProgressViewHolder(view: View?, private val listener: Listener) :
     private fun showErrorState(element: ProgressWidgetUiModel) {
         hideProgressLayout()
         hideShimmeringLayout()
-        itemView.tvProgressTitleOnError.text = element.title
-        itemView.imgWidgetOnError.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+        errorStateBinding.tvProgressTitleOnError.text = element.title
+        commonErrorStateBinding.imgWidgetOnError.loadImage(
+            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+        )
         showErrorLayout()
     }
 
@@ -129,7 +141,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) :
         currentProgress: Int,
         maxProgress: Int,
         state: ShopScorePMWidget.State
-    ) = with(itemView.shopScoreProgress) {
+    ) = with(binding.shcProgressSuccessState.shopScoreProgress) {
         setProgressTitle(progressTitle)
         setCurrentProgressText(currentProgressText)
         setMaxProgressText(maxProgressText)
@@ -139,7 +151,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) :
     }
 
     private fun setupDetails(element: ProgressWidgetUiModel) {
-        with(itemView) {
+        with(binding.shcProgressSuccessState) {
             if (element.ctaText.isNotEmpty() && element.appLink.isNotEmpty()) {
                 tvProgressSeeDetails.text = element.ctaText
                 tvProgressSeeDetails.visibility = View.VISIBLE
@@ -158,27 +170,27 @@ class ProgressViewHolder(view: View?, private val listener: Listener) :
     }
 
     private fun showShimmeringLayout() {
-        itemView.shcProgressOnLoadingStateLayout.visible()
+        loadingStateBinding.shcProgressOnLoadingStateLayout.visible()
     }
 
     private fun hideShimmeringLayout() {
-        itemView.shcProgressOnLoadingStateLayout.gone()
+        loadingStateBinding.shcProgressOnLoadingStateLayout.gone()
     }
 
     private fun showProgressLayout() {
-        itemView.sahProgressOnSuccessLayout.visible()
+        binding.shcProgressSuccessState.sahProgressOnSuccessLayout.visible()
     }
 
     private fun hideProgressLayout() {
-        itemView.sahProgressOnSuccessLayout.gone()
+        binding.shcProgressSuccessState.sahProgressOnSuccessLayout.gone()
     }
 
     private fun showErrorLayout() {
-        itemView.sahProgressOnErrorLayout.visible()
+        errorStateBinding.sahProgressOnErrorLayout.visible()
     }
 
     private fun hideErrorLayout() {
-        itemView.sahProgressOnErrorLayout.gone()
+        errorStateBinding.sahProgressOnErrorLayout.gone()
     }
 
     interface Listener : BaseViewHolderListener {

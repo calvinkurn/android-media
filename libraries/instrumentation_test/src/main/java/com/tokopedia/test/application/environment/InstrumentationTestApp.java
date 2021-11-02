@@ -18,7 +18,6 @@ import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cachemanager.CacheManager;
@@ -74,7 +73,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     public void onCreate() {
         SplashScreenPerformanceTracker.isColdStart = true;
         GlobalConfig.DEBUG = true;
-        GlobalConfig.VERSION_NAME = "3.115";
+        GlobalConfig.VERSION_NAME = "3.150";
         SplitCompat.install(this);
         FpmLogger.init(this);
         PersistentCacheManager.init(this);
@@ -189,11 +188,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public ApplinkDelegate applinkDelegate() {
         return null;
     }
 

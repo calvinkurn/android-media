@@ -17,7 +17,7 @@ class PlayProductTagUiMapper @Inject constructor() {
 
     fun mapProductTag(input: Product): PlayProductUiModel {
         return PlayProductUiModel.Product(
-                id = input.id.toString(),
+                id = input.id,
                 shopId = input.shopId,
                 imageUrl = input.image,
                 title = input.name,

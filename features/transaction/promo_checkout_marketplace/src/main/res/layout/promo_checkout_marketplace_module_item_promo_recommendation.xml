@@ -6,20 +6,20 @@
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/promo_checkout_marketplace_module_ic_promo_recommendation"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_8">
+        android:paddingLeft="12dp"
+        android:paddingTop="8dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="8dp">
 
         <ImageView
             android:id="@+id/image_check_promo_recommendation"
@@ -45,8 +45,8 @@
                 android:id="@+id/label_promo_recommendation_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
-                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginStart="6dp"
+                android:layout_marginLeft="6dp"
                 android:ellipsize="end"
                 android:textColor="@color/Unify_N0"
                 app:typographyType="body_2"
@@ -57,8 +57,8 @@
                 android:id="@+id/label_promo_recommendation_sub_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
-                android:layout_marginLeft="@dimen/dp_6"
+                android:layout_marginStart="6dp"
+                android:layout_marginLeft="6dp"
                 android:textColor="@color/Unify_N0"
                 app:typographyType="body_3"
                 tools:text="Kamu bisa hemat Rpxx.000" />
@@ -85,8 +85,8 @@
         android:layout_width="@dimen/dp_80"
         android:layout_height="@dimen/dp_80"
         android:layout_gravity="center_vertical|end"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:scaleType="fitCenter"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"

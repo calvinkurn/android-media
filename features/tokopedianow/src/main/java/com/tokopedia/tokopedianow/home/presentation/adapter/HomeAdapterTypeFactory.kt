@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.*
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProgressBarViewHolder
 
 class HomeAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -32,7 +33,7 @@ class HomeAdapterTypeFactory(
     // region Common TokoNow Component
     override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
     override fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int = TokoNowChooseAddressWidgetViewHolder.LAYOUT
-    override fun type(uiModel: TokoNowRecentPurchaseUiModel): Int = TokoNowRecentPurchaseViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowRepurchaseUiModel): Int = TokoNowRepurchaseViewHolder.LAYOUT
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
     override fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int = TokoNowRecommendationCarouselViewHolder.LAYOUT
     override fun type(uiModel: TokoNowEmptyStateNoResultUiModel): Int = TokoNowEmptyStateNoResultViewHolder.LAYOUT
@@ -44,11 +45,9 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeProductRecomUiModel): Int = HomeProductRecomViewHolder.LAYOUT
     override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
     override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
-    override fun type(uiModel: HomeSharingEducationWidgetUiModel): Int =
-        HomeSharingEducationWidgetViewHolder.LAYOUT
-
-    override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int =
-        HomeEducationalInformationWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeSharingEducationWidgetUiModel): Int = HomeSharingEducationWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int = HomeEducationalInformationWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeProgressBarUiModel): Int = HomeProgressBarViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -89,27 +88,11 @@ class HomeAdapterTypeFactory(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             // region Common TokoNow Component
-            TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(
-                view,
-                tokoNowCategoryGridListener
-            )
-            TokoNowRecentPurchaseViewHolder.LAYOUT -> TokoNowRecentPurchaseViewHolder(
-                view,
-                tokoNowProductCardListener
-            )
-            TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(
-                view,
-                tokoNowView,
-                tokoNowChooseAddressWidgetListener
-            )
-            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(
-                view,
-                tokoNowView
-            )
-            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(
-                view,
-                serverErrorListener
-            )
+            TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
+            TokoNowRepurchaseViewHolder.LAYOUT -> TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener)
+            TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowView, tokoNowChooseAddressWidgetListener)
+            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowView)
+            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
             // endregion
 
             // region TokoNow Home Component
@@ -121,15 +104,9 @@ class HomeAdapterTypeFactory(
             )
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
-            HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(
-                view,
-                homeSharingEducationListener
-            )
-            HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(
-                view,
-                tokoNowView,
-                homeEducationalInformationListener
-            )
+            HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(view, homeSharingEducationListener)
+            HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, tokoNowView, homeEducationalInformationListener)
+            HomeProgressBarViewHolder.LAYOUT -> HomeProgressBarViewHolder(view)
             // endregion
 
             // region Global Home Component

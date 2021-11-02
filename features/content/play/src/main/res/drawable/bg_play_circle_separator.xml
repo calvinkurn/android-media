@@ -4,7 +4,7 @@
     <solid android:color="@color/Unify_Static_White"
         />
     <size
-        android:height="@dimen/dp_4"
-        android:width="@dimen/dp_4"
+        android:height="4dp"
+        android:width="4dp"
         />
 </shape>
