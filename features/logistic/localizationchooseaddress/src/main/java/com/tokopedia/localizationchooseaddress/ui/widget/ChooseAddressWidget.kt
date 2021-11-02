@@ -189,6 +189,9 @@ class ChooseAddressWidget : ConstraintLayout,
                         )
                     }
                 }
+                if (chooseAddressWidgetListener?.needToTrackTokoNow() == true) {
+                    chooseAddressWidgetListener?.onClickChooseAddressTokoNowTracked()
+                }
                 val chooseAddressBottomSheet = ChooseAddressBottomSheet()
                 chooseAddressBottomSheet.setListener(this)
                 chooseAddressBottomSheet.show(fragment?.childFragmentManager)
@@ -302,6 +305,21 @@ class ChooseAddressWidget : ConstraintLayout,
          */
         fun getEventLabelHostPage(): String {
             return ""
+        }
+
+        /**
+         * To differentiate page that needs to track TokoNow or not
+         * By default, this method will return false
+         */
+        fun needToTrackTokoNow(): Boolean {
+            return false
+        }
+
+        /**
+         * custom tracker for choose address widget of TokoNow page
+         * By default, this method will be empty
+         */
+        fun onClickChooseAddressTokoNowTracked() {
         }
 
         /**

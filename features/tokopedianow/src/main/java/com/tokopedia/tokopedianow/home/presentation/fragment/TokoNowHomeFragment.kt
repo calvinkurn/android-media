@@ -342,6 +342,8 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
+    override fun onClickChooseAddressWidgetTracked() { }
+
     override fun onCategoryRetried() {
         val item = adapter.getItem(TokoNowCategoryGridUiModel::class.java)
         if (item is TokoNowCategoryGridUiModel) {

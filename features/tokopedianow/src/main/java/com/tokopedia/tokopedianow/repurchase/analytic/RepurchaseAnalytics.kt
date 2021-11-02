@@ -31,7 +31,9 @@ import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_DATE_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_MOST_PURCHASE_FILTER
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_CART_NAV
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_CATEGORY_FILTER
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_CHANGE_ADDRESS
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_DATE_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_MOST_PURCHASE_FILTER
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT
@@ -60,12 +62,38 @@ class RepurchaseAnalytics {
         const val EVENT_ACTION_CLICK_DATE_FILTER = "click date filter"
         const val EVENT_ACTION_CLICK_APPLY_DATE_FILTER = "click terapkan on date filter"
         const val EVENT_ACTION_CLICK_SUBMIT_SEARCH = "submit search from cari product"
+        const val EVENT_ACTION_CLICK_CART_NAV = "click cart nav"
+        const val EVENT_ACTION_CLICK_CHANGE_ADDRESS = "click change address"
     }
 
     object VALUE {
         const val REPURCHASE_TOKONOW = "repurchase page tokonow"
         const val SHOP_NAME = "Tokopedia NOW!"
         const val SHOP_TYPE = "tokonow"
+    }
+
+    fun onClickChangeAddress(userId: String) {
+        val dataLayer = getDataLayer(
+            event = EVENT_CLICK_TOKONOW,
+            action = EVENT_ACTION_CLICK_CHANGE_ADDRESS,
+            category = EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW
+        )
+        dataLayer[KEY_USER_ID] = userId
+        hitCommonTracker(
+            dataLayer
+        )
+    }
+
+    fun onClickCartNav(userId: String) {
+        val dataLayer = getDataLayer(
+            event = EVENT_CLICK_TOKONOW,
+            action = EVENT_ACTION_CLICK_CART_NAV,
+            category = EVENT_CATEGORY_REPURCHASE_PAGE_TOKONOW
+        )
+        dataLayer[KEY_USER_ID] = userId
+        hitCommonTracker(
+            dataLayer
+        )
     }
 
     fun onClickSimilarProduct(userId: String) {

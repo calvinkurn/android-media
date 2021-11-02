@@ -49,8 +49,11 @@ class TokoNowChooseAddressWidgetViewHolder(
                     tokoNowChooseAddressWidgetListener?.onChooseAddressWidgetRemoved()
                 }
 
-                override fun onLocalizingAddressLoginSuccess() {
+                override fun onClickChooseAddressTokoNowTracked() {
+                    tokoNowChooseAddressWidgetListener?.onClickChooseAddressWidgetTracked()
                 }
+
+                override fun needToTrackTokoNow(): Boolean = true
 
                 override fun getLocalizingAddressHostFragment(): Fragment = fragment
 
@@ -61,6 +64,8 @@ class TokoNowChooseAddressWidgetViewHolder(
                 override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
 
                 override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
+
+                override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */ }
             })
         }
     }
@@ -101,5 +106,6 @@ class TokoNowChooseAddressWidgetViewHolder(
 
     interface TokoNowChooseAddressWidgetListener {
         fun onChooseAddressWidgetRemoved()
+        fun onClickChooseAddressWidgetTracked()
     }
 }

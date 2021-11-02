@@ -229,6 +229,10 @@ class TokoNowRepurchaseFragment:
         }
     }
 
+    override fun onClickChooseAddressWidgetTracked() {
+        analytics.onClickChangeAddress(userSession.userId)
+    }
+
     override fun getFragmentPage(): Fragment = this
 
     override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
@@ -485,7 +489,9 @@ class TokoNowRepurchaseFragment:
         navToolbar?.setIcon(icons)
     }
 
-    private fun onClickCartButton() {}
+    private fun onClickCartButton() {
+        analytics.onClickCartNav(userSession.userId)
+    }
 
     private fun getAbTestPlatform(): AbTestPlatform {
         val remoteConfigInstance = RemoteConfigInstance(activity?.application)
