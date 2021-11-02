@@ -235,6 +235,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                         it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
                     })
                     showRecyclerView()
+                    rechargeViewModel.fetchTopAdsData()
                 }
                 is Fail -> {
 

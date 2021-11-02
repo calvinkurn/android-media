@@ -40,7 +40,6 @@ class RechargeOrderDetailViewModel @Inject constructor(
         launchCatchError(block = {
             val orderDetailDeferred = fetchOrderDetailDataAsync(requestParams)
             _orderDetailData.postValue(orderDetailDeferred.await())
-            fetchTopAdsData()
         }) {
             it.printStackTrace()
         }
@@ -64,19 +63,19 @@ class RechargeOrderDetailViewModel @Inject constructor(
                 }
             }
 
+    fun fetchTopAdsData() {
+        launchCatchError(block = {
+            val data = getRecommendationUseCaseCoroutine.getData(GetRecommendationRequestParam())
+            val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first())
+            _topadsData.postValue(Success(bestSellerDataModel))
+        }) {
+            _topadsData.postValue(Fail(it))
+        }
+    }
+
     private fun fetchOrderDetailDataAsync(requestParams: RechargeOrderDetailRequest) =
             async {
                 orderDetailUseCase.execute(requestParams)
             }
-
-    private suspend fun fetchTopAdsData() {
-        try {
-            val data = getRecommendationUseCaseCoroutine.getData(GetRecommendationRequestParam())
-            val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first())
-            _topadsData.postValue(Success(bestSellerDataModel))
-        } catch (t: Throwable) {
-            _topadsData.postValue(Fail(t))
-        }
-    }
 
 }
