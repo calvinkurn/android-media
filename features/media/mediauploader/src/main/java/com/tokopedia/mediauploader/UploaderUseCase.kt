@@ -8,6 +8,7 @@ import com.tokopedia.mediauploader.common.util.request
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
+import com.tokopedia.mediauploader.video.VideoUploaderManager
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
 import java.io.File
@@ -15,8 +16,7 @@ import javax.inject.Inject
 
 class UploaderUseCase @Inject constructor(
     private val imageUploaderManager: ImageUploaderManager,
-    private val videoSimpleUploaderManager: SimpleUploaderManager,
-    private val videoLargeUploaderManager: LargeUploaderManager
+    private val videoUploaderManager: VideoUploaderManager
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
     private var progressUploader: ProgressCallback? = null
@@ -34,27 +34,16 @@ class UploaderUseCase @Inject constructor(
         return if (file.name.isImage()) {
             imageUploader()
         } else {
-            if (file.length() <= THRESHOLD_LARGE_FILE_SIZE) {
-                simpleUploader()
-            } else {
-                largeUploader()
-            }
+            videoUploader()
         }
     }
 
-    private suspend fun largeUploader() = request(
-        file = file,
-        sourceId = sourceId,
-        uploaderManager = videoLargeUploaderManager,
-        execute = { videoLargeUploaderManager(file, sourceId) }
-    )
-
-    private suspend fun simpleUploader() = request(
+    private suspend fun videoUploader() = request(
         file = file,
         sourceId = sourceId,
         loader = progressUploader,
-        uploaderManager = videoSimpleUploaderManager,
-        execute = { videoSimpleUploaderManager(file, sourceId) }
+        uploaderManager = videoUploaderManager,
+        execute = { videoUploaderManager(file, sourceId) }
     )
 
     private suspend fun imageUploader() = request(
@@ -85,14 +74,12 @@ class UploaderUseCase @Inject constructor(
     // Public Method
     suspend fun abortUpload(abort: () -> Unit) {
         try {
-            videoLargeUploaderManager.abortUpload { abort() }
+            videoUploaderManager.abortUpload { abort() }
         } catch (t: Throwable) {}
     }
 
     companion object {
         const val PARAM_SOURCE_ID = "source_id"
         const val PARAM_FILE_PATH = "file_path"
-
-        private const val THRESHOLD_LARGE_FILE_SIZE = 20 * 1024 * 1024 // 20 MB
     }
 }
