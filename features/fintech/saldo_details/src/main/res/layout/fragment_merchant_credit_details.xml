@@ -9,6 +9,7 @@
     app:card_type="shadow">
 
         <RelativeLayout
+            android:id="@+id/merchant_detail_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_2"
@@ -30,7 +31,7 @@
                 android:layout_marginTop="@dimen/unify_space_2"
                 android:layout_toEndOf="@+id/mcl_logo"
                 android:text="@string/modal_toko"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_5"
                 tools:text="Modal Toko" />
 
@@ -61,8 +62,8 @@
                 android:layout_marginTop="@dimen/unify_space_4"
                 android:layout_toEndOf="@+id/mcl_blocked_status"
                 android:gravity="end"
-                android:textColor="@color/Unify_N700_68"
-                app:typographyType="small"
+                android:textColor="@color/Unify_G500"
+                app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Pelajari" />
 
@@ -76,8 +77,8 @@
                 android:textColor="@color/Unify_N700_44"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone"
+                app:typographyType="body_2"
                 tools:text="description"
-                app:typographyType="body_3"
                 tools:visibility="visible" />
 
             <LinearLayout

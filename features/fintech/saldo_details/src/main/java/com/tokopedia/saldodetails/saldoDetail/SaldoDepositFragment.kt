@@ -21,7 +21,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
-import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -41,7 +40,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
-import com.tokopedia.saldodetails.commom.design.UserStatusInfoBottomSheet
+import com.tokopedia.saldodetails.commom.design.SaldoInstructionsBottomSheet
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.utils.ErrorMessage
 import com.tokopedia.saldodetails.commom.utils.Success
@@ -116,8 +115,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private var drawButton: UnifyButton? = null
 
     private var topSlideOffBar: RelativeLayout? = null
-    private var holdBalanceLayout: RelativeLayout? = null
-    private var amountBeingReviewed: TextView? = null
+    private var holdBalanceTicker: Ticker? = null
     private var saldoFrameLayout: View? = null
     private var tickerMessageRL: LinearLayout? = null
     private var tickeRMessageTV: TextView? = null
@@ -128,7 +126,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private var sellerSaldoBalanceRL: RelativeLayout? = null
     private var buyerBalanceTV: TextView? = null
     private var sellerBalanceTV: TextView? = null
-    private var checkBalanceStatus: TextView? = null
     private var totalBalanceTitle: TextView? = null
     private var totalBalanceInfo: View? = null
     private var buyerBalanceInfoIcon: View? = null
@@ -148,7 +145,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private var saldoDepositExpandIV: IconUnify? = null
     private var merchantDetailsExpandIV: IconUnify? = null
     private var expandLayout: Boolean = false
-    private var expandMerchantDetailLayout = true
+    private var expandMerchantDetailLayout = false
     private var merchantCreditFrameLayout: View? = null
     private var merchantStatusLL: LinearLayout? = null
     private val CHECK_VISIBILITY_DELAY: Long = 700
@@ -295,8 +292,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         expandLayout = isSellerEnabled
 
         totalBalanceTitle = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_text)
-        totalBalanceInfo =
-            view.findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_text_info)
 
         buyerBalanceInfoIcon =
             view.findViewById(com.tokopedia.saldodetails.R.id.saldo_buyer_deposit_text_info)
@@ -305,9 +300,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         totalBalanceTV = view.findViewById(com.tokopedia.saldodetails.R.id.total_balance)
         drawButton = view.findViewById(com.tokopedia.saldodetails.R.id.withdraw_button)
         topSlideOffBar = view.findViewById(com.tokopedia.saldodetails.R.id.deposit_header)
-        holdBalanceLayout = view.findViewById(com.tokopedia.saldodetails.R.id.hold_balance_layout)
-        amountBeingReviewed = view.findViewById(com.tokopedia.saldodetails.R.id.amount_review)
-        checkBalanceStatus = view.findViewById(com.tokopedia.saldodetails.R.id.check_balance)
+        holdBalanceTicker = view.findViewById(com.tokopedia.saldodetails.R.id.hold_balance_layout)
         saldoFrameLayout = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_prioritas_widget)
         merchantCreditFrameLayout =
             view.findViewById(com.tokopedia.saldodetails.R.id.merchant_credit_line_widget)
@@ -490,10 +483,17 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
 
-    fun refresh() {
+    private fun refresh() {
         if (::saldoDetailViewModel.isInitialized) {
             saldoDetailViewModel.getUserSaldoBalance()
             saldoHistoryFragment?.onRefresh()
+        }
+    }
+
+    fun resetPageAfterWithdrawal() {
+        if (::saldoDetailViewModel.isInitialized) {
+            saldoDetailViewModel.getUserSaldoBalance()
+            saldoHistoryFragment?.startInitialFetch()
         }
     }
 
@@ -537,11 +537,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             } catch (e: Exception) {
 
             }
-        }
-
-        checkBalanceStatus!!.setOnClickListener {
-            val intent = Intent(context, SaldoHoldInfoActivity::class.java)
-            startActivity(intent)
         }
 
         tickerMessageCloseButton!!.setOnClickListener { tickerMessageRL!!.gone() }
@@ -684,11 +679,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailViewModel.isSeller = isSellerEnabled
         totalBalanceTitle!!.text =
             resources.getString(com.tokopedia.saldodetails.R.string.total_saldo_text)
-        totalBalanceInfo!!.gone()
         buyerSaldoBalanceRL!!.show()
         sellerSaldoBalanceRL!!.show()
-
-        totalBalanceInfo!!.setOnClickListener { showBottomSheetInfoDialog(false) }
 
         buyerBalanceInfoIcon!!.setOnClickListener { showBottomSheetInfoDialog(false) }
 
@@ -721,24 +713,18 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             val bundle = Bundle()
             if (isSellerClicked) {
                 bundle.putString(
-                    UserStatusInfoBottomSheet.BODY_TEXT,
-                    it.getString(com.tokopedia.saldodetails.R.string.saldo_balance_seller_desc)
-                )
-                bundle.putString(
-                    UserStatusInfoBottomSheet.TITLE_TEXT,
+                    SaldoInstructionsBottomSheet.TITLE_TEXT,
                     it.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller)
                 )
+                bundle.putBoolean(SaldoInstructionsBottomSheet.SALDO_TYPE, true)
             } else {
                 bundle.putString(
-                    UserStatusInfoBottomSheet.BODY_TEXT,
-                    it.getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc)
-                )
-                bundle.putString(
-                    UserStatusInfoBottomSheet.TITLE_TEXT,
+                    SaldoInstructionsBottomSheet.TITLE_TEXT,
                     it.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer)
                 )
+                bundle.putBoolean(SaldoInstructionsBottomSheet.SALDO_TYPE, false)
             }
-            UserStatusInfoBottomSheet.show(bundle, childFragmentManager)
+            SaldoInstructionsBottomSheet.show(bundle, childFragmentManager)
         }
     }
 
@@ -796,12 +782,15 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showHoldWarning(warningText: String) {
-        holdBalanceLayout!!.show()
-        amountBeingReviewed!!.text = String.format(
-            resources.getString(com.tokopedia.saldodetails.R.string.saldo_hold_balance_text),
-            warningText
-        )
-        amountBeingReviewed!!.movementMethod = LinkMovementMethod.getInstance()
+        holdBalanceTicker?.show()
+        holdBalanceTicker?.setHtmlDescription(String.format(getString(R.string.saldo_hold_balance_text, warningText)))
+        holdBalanceTicker?.setDescriptionClickEvent(object: TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                val intent = Intent(context, SaldoHoldInfoActivity::class.java)
+                startActivity(intent)
+            }
+            override fun onDismiss() {}
+        })
     }
 
     private fun hideSaldoPrioritasFragment() {
@@ -948,7 +937,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideWarning() {
-        holdBalanceLayout!!.hide()
+        holdBalanceTicker!!.hide()
     }
 
 

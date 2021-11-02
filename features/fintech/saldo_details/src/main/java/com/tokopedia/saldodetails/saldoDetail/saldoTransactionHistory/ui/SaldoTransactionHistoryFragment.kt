@@ -79,7 +79,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         startInitialFetch()
     }
 
-    private fun startInitialFetch() {
+    fun startInitialFetch() {
         SaldoDateUtil.getInitialDateRange(::setDateRangeChanged)
     }
 
