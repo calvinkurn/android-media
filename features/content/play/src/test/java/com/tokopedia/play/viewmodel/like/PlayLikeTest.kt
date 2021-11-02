@@ -54,7 +54,7 @@ class PlayLikeTest {
     @Before
     fun setUp() {
         every {
-            mockRemoteConfig.getBoolean("android_main_app_enable_play_bubbles", any())
+            mockRemoteConfig.getBoolean(any(), any())
         } returns true
     }
 
