@@ -938,9 +938,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
             it.startActivity(
                 ImagePreviewActivity.getCallingIntent(
-                    it,
-                    strings,
-                    null, 0
+                    context = it,
+                    imageUris = strings,
+                    imageDesc = null,
+                    position = 0,
+                    disableDownloadButton = false
                 )
             )
         }
@@ -1676,6 +1678,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val errorMessage = ErrorHandler.getErrorMessage(context, it)
             showToasterError(errorMessage)
         })
+    }
+
+    override fun onGoToChatSetting() {
+        analytics.eventClickChatSetting(shopId)
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
     }
 
     private fun getChatReportUrl(): String {
@@ -2444,7 +2451,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             context, msg
         ) { id, msg ->
             when (id) {
-                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, true)
+                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
                 MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
             }
         }

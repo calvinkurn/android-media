@@ -46,6 +46,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         override fun beforeActivityLaunched() {
             gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
+            disableCoachMark(context)
             setupGraphqlMockResponse(HomeMockResponseConfig())
         }
     }

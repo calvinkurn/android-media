@@ -9,7 +9,6 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.model.result.map
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
