@@ -76,9 +76,6 @@ object DeeplinkMapperContent {
     }
 
     private fun handleNavigationPlay(uri: Uri): String {
-        return UriUtil.appendDiffDeeplinkWithQuery(
-            "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}",
-            uri.query
-        )
+        return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
     }
 }
