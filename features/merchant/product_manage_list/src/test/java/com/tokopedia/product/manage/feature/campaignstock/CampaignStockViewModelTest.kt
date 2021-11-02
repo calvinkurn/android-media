@@ -374,6 +374,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.INACTIVE,
+            true,
+            true,
             true
         ))
 
