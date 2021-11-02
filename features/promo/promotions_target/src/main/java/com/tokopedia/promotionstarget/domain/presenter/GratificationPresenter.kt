@@ -5,13 +5,11 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.notifications.inApp.CmDialogVisibilityContract
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer
-import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
@@ -214,7 +212,7 @@ class GratificationPresenter @Inject constructor(val context: Context,
                                @NotificationEntryType notificationEntryType: Int,
                                gratifPopupCallback: GratifPopupCallback,
                                screenName: String,
-                               paymentID: String = "",
+                               paymentID: Long = 0L,
                                timeout: Long = 0L,
                                closeCurrentActivity: Boolean = false,
                                inAppId: Long? = null
