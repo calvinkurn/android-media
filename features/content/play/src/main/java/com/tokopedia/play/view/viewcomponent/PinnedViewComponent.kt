@@ -1,14 +1,17 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.IdRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
+import com.tokopedia.play_common.util.extension.append
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -44,11 +47,12 @@ class PinnedViewComponent(
         if (hasAppLink) {
             spanBuilder.append(' ')
             spanBuilder.append(
-                getString(R.string.play_pinned_msg_applink_text),
+                text = getString(R.string.play_pinned_msg_applink_text),
+                flags = Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+                StyleSpan(Typeface.BOLD),
                 ForegroundColorSpan(
                     MethodChecker.getColor(rootView.context, R.color.play_dms_pinned_link)
                 ),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
         return spanBuilder
