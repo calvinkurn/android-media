@@ -45,4 +45,15 @@
     <string name="affiliate_accept_terms">Daftar.</string>
     <string name="affiliate_read_and_agree">Saya telah membaca dan setuju</string>
     <string name="affiliate_understand_terms">Pahami syarat dan ketentuan yang berlaku</string>
+    <string name="tutorial_title_1"><![CDATA[Komisi hingga jutaan cuma dengan klik & share!]]></string>
+    <string name="tutorial_subtitle_1">Promosikan produk Tokopedia di sosmed kamu, dan bisa tarik dana penghasilan min. Rp10 rb.</string>
+    <string name="tutorial_title_2">Rekomendasi produk sesuai personamu</string>
+    <string name="tutorial_subtitle_2"><![CDATA[Tokopedia akan bantu pilihkan produk best seller dan yang lagi trending!]]></string>
+    <string name="tutorial_title_3">Semua bisa kamu lakukan di Dashboard Affiliate</string>
+    <string name="tutorial_subtitle_3"><![CDATA[Mudah cek performa Affiliate, hingga kembangin skill kamu dengan Content Creator Academy!]]></string>
+    <string name="pelajari">Pelajari</string>
+    <string name="daftar_sekarang">Daftar Sekarang</string>
+    <string name="daftar_affiliate_dengan_akun_lain">Daftar Affiliate dengan akun lain?</string>
+    <string name="daftarkan_akun_ini">Daftarkan akun ini:</string>
+    <string name="keluar">Keluar</string>
 </resources>

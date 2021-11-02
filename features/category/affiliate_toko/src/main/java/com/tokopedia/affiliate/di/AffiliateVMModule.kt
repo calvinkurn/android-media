@@ -6,6 +6,7 @@ import com.tokopedia.basemvvm.viewmodel.ViewModelKey
 import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
 import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePortfolioViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromotionBSViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateTermsAndConditionViewModel
@@ -38,6 +39,11 @@ abstract class AffiliateVMModule {
     @ViewModelKey(AffiliatePromoViewModel::class)
     internal abstract fun affiliatePromoViewModel(viewModel: AffiliatePromoViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliateLoginViewModel::class)
+    internal abstract fun affiliateLoginViewModel(viewModel: AffiliateLoginViewModel): ViewModel
     @Binds
     @IntoMap
     @AffiliateScope
