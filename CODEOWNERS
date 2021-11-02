@@ -52,7 +52,6 @@
 /features/merchant/product_manage_list/                 @tokopedia/android-minionstuart-dev
 /features/merchant/product_share/                       @tokopedia/android-minionstuart-dev
 /features/merchant/report/                              @tokopedia/android-minionstuart-dev
-/features/merchant/review_product/                      @tokopedia/android-minionstuart-dev
 /features/merchant/reputation_common/                   @tokopedia/android-minionstuart-dev
 /features/merchant/review/                              @tokopedia/android-minionstuart-dev
 /features/merchant/review_shop/                         @tokopedia/android-minionken-dev

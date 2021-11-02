@@ -1096,10 +1096,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun shouldShowRatingAndReviewCount(): Boolean {
-        return shouldGoToNewGallery()
-    }
-
     override fun onImageReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String) {
         context?.let {
             DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
@@ -1361,11 +1357,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun goToReviewImagePreview() {
         val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
-        if (shouldGoToNewGallery()) {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, productId)
-            return
-        }
-        ImageReviewGalleryActivity.moveTo(activity, productId)
+        RouteManager.route(context, ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY, productId)
     }
 
     private fun observeVideoDetail() {
@@ -3813,13 +3805,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         )
         val intent = ProductDetailActivity.createIntent(requireContext(), bundleProductId)
         startActivity(intent)
-    }
-
-    private fun shouldGoToNewGallery(): Boolean {
-        getAbTestPlatform()?.let {
-            return it.getString(RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
-        }
-        return false
     }
 
     override fun screenShotTaken() {

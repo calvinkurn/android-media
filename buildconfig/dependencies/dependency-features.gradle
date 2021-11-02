@@ -152,8 +152,6 @@ ext {
             moengageWrapper                 : ":features:im:moengage_wrapper",
 
             tokopediaNow                    : ":features:tokopedianow",
-
-            reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             reviewInbox                     : ":features:merchant:review_inbox",
