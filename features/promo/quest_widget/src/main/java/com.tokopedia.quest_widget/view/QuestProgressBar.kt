@@ -1,5 +1,6 @@
 package com.tokopedia.quest_widget.view
 
+import android.animation.Animator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -8,10 +9,12 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.FloatRange
 import android.animation.ValueAnimator
+import com.tokopedia.kotlin.extensions.view.hide
 import kotlin.math.min
 
 
-class QuestProgressBar : View {
+class QuestProgressBar
+    : View {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -25,6 +28,8 @@ class QuestProgressBar : View {
         style = Paint.Style.STROKE
     }
 
+    var progressCompletionListener: ProgressCompletionListener? = null
+    var hideProgressBar = false
     private val rect = RectF()
     private val startAngle = -90f
     private val maxAngle = 360f
@@ -57,6 +62,9 @@ class QuestProgressBar : View {
     fun setProgress(@FloatRange(from = 5.0, to = 100.0) progress: Float) {
         setAnimationProgress(progress)
         invalidate()
+        if(progress == 100f){
+            this.hideProgressBar = true
+        }
     }
 
     fun setProgressColor(color: Int) {
@@ -90,6 +98,34 @@ class QuestProgressBar : View {
         }
         
         animator.start()
+        animator.addListener(object : Animator.AnimatorListener{
+            override fun onAnimationStart(p0: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(p0: Animator?) {
+                if(this@QuestProgressBar.hideProgressBar){
+                    hide()
+                    progressCompletionListener?.showCompletionAnimation()
+                }
+            }
+
+            override fun onAnimationCancel(p0: Animator?) {
+            }
+
+            override fun onAnimationRepeat(p0: Animator?) {
+            }
+
+        })
 
     }
+
+    @JvmName("setProgressCompletionListener1")
+    fun setProgressCompletionListener(progressCompletionListener: ProgressCompletionListener){
+        this.progressCompletionListener = progressCompletionListener
+    }
+}
+
+interface ProgressCompletionListener{
+    fun showCompletionAnimation()
 }
