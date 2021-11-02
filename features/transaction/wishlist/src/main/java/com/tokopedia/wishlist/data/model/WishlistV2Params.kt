@@ -2,9 +2,6 @@ package com.tokopedia.wishlist.data.model
 
 import com.google.gson.annotations.SerializedName
 
-/**
- * Created by fwidjaja on 16/10/21.
- */
 data class WishlistV2Params(
         @SerializedName("page")
         var page: Int = 1,

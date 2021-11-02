@@ -56,6 +56,6 @@ class WishlistV2ThreeDotsMenuBottomSheet : BottomSheetUnify() {
     }
 
     interface BottomSheetListener {
-        fun onThreeDotsMenuItemSelected(additionalItem: WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem)
+        fun onThreeDotsMenuItemSelected(additionalItem: WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem)
     }
 }

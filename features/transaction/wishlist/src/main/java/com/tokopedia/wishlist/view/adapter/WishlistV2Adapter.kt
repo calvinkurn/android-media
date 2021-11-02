@@ -37,7 +37,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onCariBarangClicked()
         fun onNotFoundButtonClicked(keyword: String)
         fun onProductRecommendationClicked(productId: String)
-        fun onThreeDotsMenuClicked(listThreeDotsMenu: List<WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem>)
+        fun onThreeDotsMenuClicked(listThreeDotsMenu: WishlistV2Response.Data.WishlistV2.Item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

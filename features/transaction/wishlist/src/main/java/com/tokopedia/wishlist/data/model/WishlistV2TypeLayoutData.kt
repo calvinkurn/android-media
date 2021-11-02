@@ -6,4 +6,4 @@ package com.tokopedia.wishlist.data.model
 data class WishlistV2TypeLayoutData(
         val dataObject: Any = Any(),
         val typeLayout: String? = "",
-        val listThreeDotsMenu: List<WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem> = listOf())
+        val wishlistItem: WishlistV2Response.Data.WishlistV2.Item = WishlistV2Response.Data.WishlistV2.Item())

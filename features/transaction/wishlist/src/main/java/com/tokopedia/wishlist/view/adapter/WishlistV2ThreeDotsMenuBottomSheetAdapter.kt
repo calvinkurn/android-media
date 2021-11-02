@@ -13,7 +13,7 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomShee
  */
 class WishlistV2ThreeDotsMenuBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener? = null
-    var listThreeDotsMenuItem = listOf<WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem>()
+    var listThreeDotsMenuItem = listOf<WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = BottomsheetWishlistV2ThreeDotsMenuItemBinding.inflate(LayoutInflater.from(parent.context), null, false)

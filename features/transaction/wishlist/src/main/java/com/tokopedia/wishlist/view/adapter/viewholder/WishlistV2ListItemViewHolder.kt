@@ -18,7 +18,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
             binding.wishlistCheckbox.visibility = View.GONE
         }
 
-        binding.wishlistItem.setSecondaryButtonClickListener { actionListener?.onThreeDotsMenuClicked(item.listThreeDotsMenu) }
+        binding.wishlistItem.setSecondaryButtonClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
     }
 
 }

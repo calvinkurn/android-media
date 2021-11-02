@@ -40,12 +40,12 @@ data class WishlistV2Response(
 				val page: Int = -1,
 
 				@SerializedName("items")
-				val items: List<ItemsItem> = listOf(),
+				val items: List<Item> = listOf(),
 
 				@SerializedName("empty_state")
 				val emptyState: EmptyState = EmptyState()
 		) {
-			data class ItemsItem(
+			data class Item(
 
 					@SerializedName("original_price")
 					val originalPrice: String = "",
@@ -79,7 +79,7 @@ data class WishlistV2Response(
 					val price: String = "",
 
 					@SerializedName("wholesale_price")
-					val wholesalePrice: List<WholesalePriceItem>,
+					val wholesalePrice: List<WholesalePriceItem> = listOf(),
 
 					@SerializedName("id")
 					val id: String = "",
@@ -97,7 +97,7 @@ data class WishlistV2Response(
 					val wishlistId: String = "",
 
 					@SerializedName("variant_name")
-					val variantName: String,
+					val variantName: String = "",
 
 					@SerializedName("label_stock")
 					val labelStock: String = "",

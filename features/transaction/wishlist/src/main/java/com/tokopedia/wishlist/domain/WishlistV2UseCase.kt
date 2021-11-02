@@ -12,9 +12,6 @@ import com.tokopedia.wishlist.data.model.WishlistV2Response
 import com.tokopedia.wishlist.util.WishlistV2Consts.PARAMS
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 15/10/21.
- */
 class WishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
     suspend fun executeSuspend(param: WishlistV2Params): Result<WishlistV2Response.Data.WishlistV2> {
         return try {

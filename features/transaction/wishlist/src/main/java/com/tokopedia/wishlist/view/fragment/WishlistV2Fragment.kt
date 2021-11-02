@@ -138,6 +138,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingWishlistV2()
+        observingDeleteWishlistV2()
         observingRecommendationList()
     }
 
@@ -177,7 +178,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                                 triggerSearch()
                             }
                             searchQuery.length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
-                                showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
+                                showToaster(getString(R.string.error_message_minimum_search_keyword), "", Toaster.TYPE_ERROR)
                             }
                             else -> {
                                 wishlistNavtoolbar.hideKeyboard()
@@ -272,6 +273,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     private fun loadWishlistV2() {
+        paramWishlistV2.page = currPage
         wishlistViewModel.loadWishlistV2(paramWishlistV2)
     }
 
@@ -294,7 +296,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                             renderChipsFilter(wishlistV2.sortFilters)
                         }
                         if (wishlistV2.items.isNotEmpty()) {
-                            currPage += 1
+                            if (wishlistV2.hasNextPage) {
+                                currPage += 1
+                            }
                             renderWishlist(wishlistV2.items)
 
                         } else {
@@ -306,7 +310,35 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 }
                 is Fail -> {
                     refreshHandler?.finishRefresh()
-                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), Toaster.TYPE_ERROR)
+                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
+    private fun observingDeleteWishlistV2() {
+        wishlistViewModel.deleteWishlistV2Result.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    result.data.let { wishlistRemoveV2 ->
+                        if (wishlistRemoveV2.success) {
+                            var msg = getString(R.string.wishlist_v2_delete_msg_default)
+                            if (wishlistRemoveV2.message.isNotEmpty()) {
+                                msg = wishlistRemoveV2.message
+                            }
+
+                            var btnText = getString(R.string.wishlist_tutup_label)
+                            if (wishlistRemoveV2.button.text.isNotEmpty()) {
+                                btnText = wishlistRemoveV2.button.text
+                            }
+
+                            showToaster(msg, btnText, Toaster.TYPE_NORMAL)
+                            refreshHandler?.startRefresh()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -419,23 +451,24 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         filterBottomSheet.show(childFragmentManager)
     }
 
-    private fun showBottomSheetThreeDotsMenu(listThreeDotsMenu: List<WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem>) {
+    private fun showBottomSheetThreeDotsMenu(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
         val bottomSheetThreeDotsMenu = WishlistV2ThreeDotsMenuBottomSheet.newInstance()
         if (bottomSheetThreeDotsMenu.isAdded || childFragmentManager.isStateSaved) return
 
         val threeDotsMenuBottomSheetAdapter = WishlistV2ThreeDotsMenuBottomSheetAdapter()
-        threeDotsMenuBottomSheetAdapter.listThreeDotsMenuItem = listThreeDotsMenu
+        threeDotsMenuBottomSheetAdapter.listThreeDotsMenuItem = itemWishlist.buttons.additionalButtons
 
         bottomSheetThreeDotsMenu.setAdapter(threeDotsMenuBottomSheetAdapter)
         bottomSheetThreeDotsMenu.setListener(object : WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener{
-            override fun onThreeDotsMenuItemSelected(additionalItem: WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem) {
+            override fun onThreeDotsMenuItemSelected(additionalItem: WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem) {
+                bottomSheetThreeDotsMenu.dismiss()
                 if (additionalItem.url.isNotEmpty()) {
                     RouteManager.route(context, additionalItem.url)
                 } else {
                     if (additionalItem.action == SHARE_LINK_PRODUCT) {
                         println("++ share link product")
                     } else if (additionalItem.action == DELETE_WISHLIST) {
-                        println("++ delete wishlist")
+                        wishlistViewModel.deleteWishlistV2(itemWishlist.id, userSession.userId)
                     }
                 }
             }
@@ -443,7 +476,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         bottomSheetThreeDotsMenu.show(childFragmentManager)
     }
 
-    private fun renderWishlist(items: List<WishlistV2Response.Data.WishlistV2.ItemsItem>) {
+    private fun renderWishlist(items: List<WishlistV2Response.Data.WishlistV2.Item>) {
         val listItem = arrayListOf<WishlistV2TypeLayoutData>()
         items.forEach { item ->
             val productModel = ProductCardModel(
@@ -456,22 +489,22 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     isShopRatingYellow = true,
                     hasSecondaryButton = true,
                     hasTambahKeranjangButton = true)
-            listItem.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item.buttons.additionalButtons))
+            listItem.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item))
         }
 
         if (!onLoadMore) {
             wishlistV2Adapter.addList(listItem)
-            // scrollRecommendationListener.resetState()
+            scrollRecommendationListener.resetState()
         } else {
             wishlistV2Adapter.appendList(listItem)
-            // scrollRecommendationListener.updateStateAfterGetData()
+            scrollRecommendationListener.updateStateAfterGetData()
         }
     }
 
-    private fun showToaster(message: String, type: Int) {
+    private fun showToaster(message: String, actionText: String, type: Int) {
         val toasterSuccess = Toaster
         view?.let { v ->
-            toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, "").show()
+            toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, actionText).show()
         }
     }
 
@@ -511,8 +544,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         }
     }
 
-    override fun onThreeDotsMenuClicked(listThreeDotsMenu: List<WishlistV2Response.Data.WishlistV2.ItemsItem.Buttons.AdditionalButtonsItem>) {
-        showBottomSheetThreeDotsMenu(listThreeDotsMenu)
+    override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
+        showBottomSheetThreeDotsMenu(itemWishlist)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

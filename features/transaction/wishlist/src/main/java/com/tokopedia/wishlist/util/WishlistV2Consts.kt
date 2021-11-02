@@ -14,4 +14,6 @@ object WishlistV2Consts {
     const val TYPE_RECOMMENDATION_LIST = "recommendation_list"
     const val PAGE_NAME = "wishlist"
     const val PARAMS = "params"
+    const val PRODUCT_ID = "productID"
+    const val USER_ID = "userID"
 }
