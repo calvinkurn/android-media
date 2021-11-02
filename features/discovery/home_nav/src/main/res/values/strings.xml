@@ -83,7 +83,7 @@
     <string name="error_state_transaction_title">Gagal memuat transaksi</string>
     <string name="error_state_transaction_description">Klik untuk coba lagi.</string>
 
-    <string name="error_state_shop_info">Gagal memuat toko</string>
+    <string name="error_state_shop_info">Gagal Memuat</string>
 
     <string name="content_desc_image_transaction">image transaction</string>
     <string name="content_desc_image_payment">image payment</string>

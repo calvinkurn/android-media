@@ -123,15 +123,14 @@ class AccountHeaderViewHolder(itemView: View,
         val usrBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_badge)
         val usrOvoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_ovo_badge)
         val btnSettings: ImageView = layoutLoginHeader.findViewById(R.id.btn_settings)
-        val btnTryAgain: ImageView = layoutLoginHeader.findViewById(R.id.btn_try_again)
+        val btnTryAgain: CardView = layoutLoginHeader.findViewById(R.id.btn_try_again)
         val usrSaldoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_saldo_badge)
         val tvName: Typography = layoutLoginHeader.findViewById(R.id.tv_name)
         val tvOvo: Typography = layoutLoginHeader.findViewById(R.id.tv_ovo)
         val tvSaldo: Typography = layoutLoginHeader.findViewById(R.id.tv_saldo)
         val usrSaldoBadgeShimmer: View = layoutLoginHeader.findViewById(R.id.usr_saldo_badge_shimmer)
-        val tvOvoShimmer: View = layoutLoginHeader.findViewById(R.id.tv_ovo_shimmer)
         val usrOvoBadgeShimmer: View = layoutLoginHeader.findViewById(R.id.usr_ovo_badge_shimmer)
-        val tvSaldoShimmer: View = layoutLoginHeader.findViewById(R.id.tv_saldo_shimmer)
+//        val tvSaldoShimmer: View = layoutLoginHeader.findViewById(R.id.tv_saldo_shimmer)
         //shop
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
@@ -179,13 +178,6 @@ class AccountHeaderViewHolder(itemView: View,
          * Button for error handling
          */
         btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileRefreshClicked(adapterPosition)}
-        btnTryAgain.setImageDrawable(
-                getIconUnifyDrawable(
-                        itemView.context,
-                        IconUnify.REPLAY,
-                        ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
-                )
-        )
 
         btnTryAgainShopInfo.setOnClickListener{mainNavListener.onErrorShopInfoRefreshClicked(adapterPosition)}
 
@@ -221,21 +213,20 @@ class AccountHeaderViewHolder(itemView: View,
                 profileSaldo.isGetSaldoError -> {
                     if (element.profileWalletAppDataModel.isWalletAppFailed ||
                             element.profileMembershipDataModel.isTokopointExternalAmountError) {
-                        sectionSaldo.gone()
+                        sectionSaldo.visible()
                     } else {
                         tvSaldo.text = itemView.context.getString(R.string.mainnav_general_error)
                         usrSaldoBadge.gone()
-                        usrSaldoBadgeShimmer.visible()
-                        tvSaldoShimmer.invisible()
+                        sectionSaldo.visible()
+//                        usrSaldoBadgeShimmer.visible()
                     }
                 }
 
                 !profileSaldo.isGetSaldoError -> {
-                    usrSaldoBadgeShimmer.invisible()
-                    tvSaldoShimmer.invisible()
+//                    usrSaldoBadgeShimmer.invisible()
                     usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
                     if (profileSaldo.saldo.isEmpty()) {
-                        sectionSaldo.gone()
+                        sectionSaldo.visible()
                     } else {
                         tvSaldo.text = profileSaldo.saldo
                         sectionSaldo.visible()
@@ -249,10 +240,8 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         if (element.isCacheData) {
-            tvOvoShimmer.visible()
             usrOvoBadgeShimmer.visible()
             usrSaldoBadgeShimmer.visible()
-            tvSaldoShimmer.visible()
             tvOvo.invisible()
             usrOvoBadge.invisible()
             usrSaldoBadge.invisible()
@@ -260,8 +249,8 @@ class AccountHeaderViewHolder(itemView: View,
             /**
              * Remove loading shimmering view
              */
-            tvOvoShimmer.invisible()
             usrOvoBadgeShimmer.invisible()
+            usrSaldoBadgeShimmer.invisible()
             tvOvo.visible()
             usrOvoBadge.visible()
 
@@ -294,6 +283,7 @@ class AccountHeaderViewHolder(itemView: View,
                                     tvOvo.text = itemView.context.getText(R.string.mainnav_general_error)
                                     usrOvoBadge.gone()
                                     usrOvoBadgeShimmer.visible()
+                                    usrSaldoBadgeShimmer.visible()
                                 }
                             }
                             walletAppModel.isWalletAppFailed -> {
@@ -350,6 +340,7 @@ class AccountHeaderViewHolder(itemView: View,
                 shimmerTryAgainShopInfo.visible()
             } else if (profileSeller.isGetShopError) {
                 btnTryAgainShopInfo.visible()
+                usrShopAvatar.gone()
                 tvShopInfo.visible()
                 tvShopTitle.gone()
                 shimmerShopInfo.gone()

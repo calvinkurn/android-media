@@ -93,48 +93,38 @@
                 android:id="@+id/btn_settings"
                 android:layout_width="@dimen/nav_user_profile_icon_setting_size"
                 android:layout_height="@dimen/nav_user_profile_icon_setting_size"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="@dimen/unify_space_8"
                 app:icon_name="SETTING"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="10dp"
+                app:layout_goneMarginEnd="0dp"
                 app:layout_constraintEnd_toStartOf="@id/btn_try_again"
                 app:layout_constraintTop_toTopOf="@id/section_header_profile"
                 app:layout_constraintVertical_chainStyle="packed" />
 
-            <ImageView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/btn_try_again"
                 android:layout_width="@dimen/nav_user_profile_icon_retry_size"
                 android:layout_height="@dimen/nav_user_profile_icon_retry_size"
-                android:background="@drawable/ic_oval_bg"
                 android:contentDescription="@string/account_header_store_title"
-                android:padding="5dp"
-                android:visibility="gone"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@id/btn_settings"
-                tools:visibility="visible" />
+                app:layout_constraintBottom_toBottomOf="@id/btn_settings"
+                android:visibility="visible"
+                app:cardCornerRadius="90dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardElevation="1dp"
+                >
 
-<!--            <androidx.cardview.widget.CardView-->
-<!--                android:id="@+id/btn_try_again"-->
-<!--                android:layout_width="@dimen/nav_user_profile_icon_retry_size"-->
-<!--                android:layout_height="@dimen/nav_user_profile_icon_retry_size"-->
-<!--                app:layout_constraintRight_toRightOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="@id/btn_settings"-->
-<!--                android:layout_marginEnd="14dp"-->
-<!--                app:cardCornerRadius="90dp"-->
-<!--                android:foreground="?android:attr/selectableItemBackground"-->
-<!--                app:cardElevation="1dp"-->
-<!--                >-->
-<!--    -->
-<!--                <com.tokopedia.iconunify.IconUnify-->
-<!--                    android:id="@+id/image_try_again_shop"-->
-<!--                    android:layout_width="14dp"-->
-<!--                    android:layout_height="14dp"-->
-<!--                    android:contentDescription="@string/account_header_store_title"-->
-<!--                    android:visibility="gone"-->
-<!--                    app:icon_name="RELOAD"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    tools:visibility="visible" />-->
-<!--    -->
-<!--            </androidx.cardview.widget.CardView>-->
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/image_try_again_shop"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:contentDescription="@string/account_header_store_title"
+                    android:layout_gravity="center"
+                    app:icon_name="RELOAD"
+                    />
+
+            </androidx.cardview.widget.CardView>
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/section_icon_barrier"
