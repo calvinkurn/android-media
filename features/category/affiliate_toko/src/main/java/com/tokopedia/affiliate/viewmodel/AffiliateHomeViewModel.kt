@@ -90,7 +90,7 @@ class AffiliateHomeViewModel @Inject constructor(
                     tempList.add(AffiliateSharedProductCardsModel(product))
                 }
             }
-            return@let tempList
+            return tempList
         }
         return null
     }
