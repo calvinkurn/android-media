@@ -6,17 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
-import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
+import com.tokopedia.affiliate.usecase.AffiliateRecommendedProductUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class AffiliateRecommendedProductViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
-        private val affiliatePerformanceUseCase: AffiliatePerformanceUseCase,
+        private val affiliateRecommendedProductUseCase: AffiliateRecommendedProductUseCase,
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
@@ -30,16 +28,16 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
         launchCatchError(block = {
             if(page == PAGE_ZERO)
                 shimmerVisibility.value = false
-            affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
-                totalItemsCount.value = it.itemTotalCount
+            affiliateRecommendedProductUseCase.affiliateGetRecommendedProduct(identifier,page,pageLimit).recommendedAffiliateProduct?.data?.let {
+                totalItemsCount.value = it.pageInfo?.totalCount
                 val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-                it.items?.let { items ->
+                it.cards?.firstOrNull()?.items?.let { items ->
                     for (product in items) {
                         product?.let {
                             tempList.add(AffiliateStaggeredPromotionCardModel(product))
                         }
                     }
-                    affiliateDataList.value = ArrayList()
+                    affiliateDataList.value = tempList
                 }
             }
         }, onError = {

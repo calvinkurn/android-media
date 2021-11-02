@@ -16,7 +16,9 @@ data class AffiliateRecommendedProductData(
             @SerializedName("error")
             var error: Error?,
             @SerializedName("status")
-            var status: Int?
+            var status: Int?,
+            @SerializedName("pageInfo")
+            var pageInfo: PageInfo?,
         ) {
             data class Card(
                 @SerializedName("hasMore")
@@ -105,6 +107,14 @@ data class AffiliateRecommendedProductData(
                     }
                 }
             }
+
+            data class PageInfo (
+                    @SerializedName("hasNext") val hasNext : Int?,
+                    @SerializedName("hasPrev") val hasPrev : Int?,
+                    @SerializedName("currentPage") val currentPage : Int?,
+                    @SerializedName("totalPage") val totalPage : Int?,
+                    @SerializedName("totalCount") val totalCount : Int?
+            )
 
             data class Error(
                 @SerializedName("errorCta")

@@ -53,8 +53,8 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     companion object {
         private const val GRID_SPAN_COUNT: Int = 2
-        const val BOUGHT_IDENTIFIER = "recently_purchased"
-        const val LAST_VIEWED_IDENTIFIER = "recently_seen"
+        const val BOUGHT_IDENTIFIER = "recent_purchase"
+        const val LAST_VIEWED_IDENTIFIER = "recent_view"
         fun getFragmentInstance(recommendationType : String , promoInterface : AffiliatePromoInterface): Fragment {
             return AffiliateRecommendedProductFragment().apply {
                 affiliatePromoInterface = promoInterface
