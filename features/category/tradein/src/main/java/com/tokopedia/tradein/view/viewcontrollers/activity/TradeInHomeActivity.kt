@@ -315,6 +315,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
         if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
         laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
             TokopediaUrl.getInstance().TYPE == Env.STAGING, TRADEIN_EXCHANGE)
+        laku6TradeIn.setTokopediaTestType(TRADEIN_EXCHANGE)
     }
 
     private fun getTradeInParams() {
@@ -376,6 +377,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
         } else {
             if(!::laku6TradeIn.isInitialized)
                 setLaku6()
+            laku6TradeIn.setTokopediaTestType(TRADEIN_EXCHANGE)
             laku6TradeIn.startGUITest()
         }
     }
