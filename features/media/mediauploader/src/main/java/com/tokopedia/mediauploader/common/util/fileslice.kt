@@ -114,3 +114,17 @@ fun File.slice(
 
     return byteArray
 }
+
+fun ByteArray.trimLastZero(): ByteArray {
+    var length = this.size - 1
+
+    for (i in length downTo 0) {
+        if (this[i].toInt() == 0) {
+            length--
+        } else {
+            break
+        }
+    }
+
+    return this.copyOf(length + 1)
+}
