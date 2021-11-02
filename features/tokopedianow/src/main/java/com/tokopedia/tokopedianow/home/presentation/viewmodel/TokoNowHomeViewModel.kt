@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -42,6 +43,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHomeLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProgressBar
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecom
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
@@ -49,7 +51,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharing
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeProgressBar
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.setQuantityToZero
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecomQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateRepurchaseProductQuantity
@@ -132,7 +133,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
         val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.LOADING
         )
         _homeLayoutList.postValue(Success(data))
@@ -142,7 +143,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.clear()
         homeLayoutItemList.addEmptyStateIntoList(id)
         val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.HIDE
         )
         _homeLayoutList.postValue(Success(data))
@@ -160,7 +161,7 @@ class TokoNowHomeViewModel @Inject constructor(
             if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
                 homeLayoutItemList.addProductRecomOoc(recommendationWidgets.first())
                 val data = HomeLayoutListUiModel(
-                    items = homeLayoutItemList,
+                    items = getHomeVisitableList(),
                     state = TokoNowLayoutState.HIDE
                 )
                 _homeLayoutList.postValue(Success(data))
@@ -189,7 +190,7 @@ class TokoNowHomeViewModel @Inject constructor(
             getLayoutComponentData(warehouseId)
 
             val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
@@ -235,7 +236,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutItemList.removeProgressBar()
 
                 val data = HomeLayoutListUiModel(
-                    items = homeLayoutItemList,
+                    items = getHomeVisitableList(),
                     state = TokoNowLayoutState.LOAD_MORE
                 )
 
@@ -258,14 +259,7 @@ class TokoNowHomeViewModel @Inject constructor(
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
                 getMiniCartUseCase.execute({
-                    val isInitialLoad = _homeLayoutList.value == null
-
-                    if(isInitialLoad) {
-                        setMiniCartAndProductQuantity(it)
-                    } else {
-                        setProductAddToCartQuantity(it)
-                    }
-
+                    setMiniCartAndProductQuantity(it)
                     _miniCart.postValue(Success(it))
                 }, {
                     _miniCart.postValue(Fail(it))
@@ -289,14 +283,14 @@ class TokoNowHomeViewModel @Inject constructor(
             val response = getCategoryList(warehouseId)
             homeLayoutItemList.mapHomeCategoryGridData(item, response)
             val data = HomeLayoutListUiModel(
-                    items = homeLayoutItemList,
+                    items = getHomeVisitableList(),
                     state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
         }) {
             homeLayoutItemList.mapHomeCategoryGridData(item, null)
             val data = HomeLayoutListUiModel(
-                    items = homeLayoutItemList,
+                    items = getHomeVisitableList(),
                     state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
@@ -349,7 +343,7 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             setMiniCartAndProductQuantity(miniCart)
             val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.SHOW
             )
             _atcQuantity.postValue(Success(data))
@@ -362,7 +356,7 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.removeItem(id)
 
             val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.SHOW
             )
 
@@ -375,7 +369,7 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.removeItem(id)
 
             val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.UPDATE
             )
 
@@ -503,15 +497,26 @@ class TokoNowHomeViewModel @Inject constructor(
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             trackProductAddToCart(productId, quantity, type, it.data.cartId)
-            homeLayoutItemList.updateProductQuantity(
-                productId,
-                quantity,
-                type
-            )
+            updateAddToCartQuantity(productId, quantity, type)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
         })
+    }
+
+    private fun updateAddToCartQuantity(
+        productId: String,
+        quantity: Int,
+        @TokoNowLayoutType type: String
+    ) {
+        homeLayoutItemList.updateProductQuantity(productId, quantity, type)
+
+        val data = HomeLayoutListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoNowLayoutState.SHOW
+        )
+
+        _atcQuantity.postValue(Success(data))
     }
 
     private fun updateItemCart(
@@ -520,8 +525,11 @@ class TokoNowHomeViewModel @Inject constructor(
         @TokoNowLayoutType type: String
     ) {
         miniCartItem.quantity = quantity
+        val cartId = miniCartItem.cartId
+        val productId = miniCartItem.productId
+
         val updateCartRequest = UpdateCartRequest(
-            cartId = miniCartItem.cartId,
+            cartId = cartId,
             quantity = miniCartItem.quantity,
             notes = miniCartItem.notes
         )
@@ -530,7 +538,8 @@ class TokoNowHomeViewModel @Inject constructor(
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
-            trackProductUpdateCart(miniCartItem.productId, quantity, type, miniCartItem.cartId)
+            trackProductUpdateCart(productId, quantity, type, cartId)
+            updateAddToCartQuantity(productId, quantity, type)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
@@ -545,7 +554,7 @@ class TokoNowHomeViewModel @Inject constructor(
             val productId = miniCartItem.productId
             val data = Pair(productId, it.data.message.joinToString(separator = ", "))
             trackProductRemoveCart(productId, type, miniCartItem.cartId)
-            homeLayoutItemList.setQuantityToZero(productId, type)
+            updateAddToCartQuantity(productId, DEFAULT_QUANTITY, type)
             _miniCartRemove.postValue(Success(data))
         }, {
             _miniCartRemove.postValue(Fail(it))
@@ -614,17 +623,11 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     private fun trackRecentProductRecomAddToCart(productId: String, quantity: Int, cartId: String) {
-        val homeItem = homeLayoutItemList.firstOrNull { it.layout is HomeProductRecomUiModel }
-        val productRecom = homeItem?.layout as? HomeProductRecomUiModel
-        val recomWidget = productRecom?.recomWidget
-        val recommendationItemList = recomWidget?.recommendationItemList.orEmpty()
-        val product = recommendationItemList.firstOrNull {
-            it.productId.toString() == productId
-        }
-        product?.quantity = quantity
+        homeLayoutItemList.updateProductRecom(productId, quantity)?.let { productRecom ->
+            val recomItemList = productRecom.recomWidget.recommendationItemList
+            val product = recomItemList.first { it.productId.toString() == productId }
+            val position = recomItemList.indexOf(product)
 
-        product?.let { item ->
-            val position = recommendationItemList.indexOf(item)
             val data = HomeAddToCartTracker(position, quantity, cartId, productRecom)
             _homeAddToCartTracker.postValue(data)
         }
@@ -632,7 +635,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
         val allItemsLoaded = channelToken.isEmpty()
-        val isLoading = homeLayoutItemList.map { it.layout }.contains(HomeProgressBarUiModel)
+        val isLoading = getHomeVisitableList().contains(HomeProgressBarUiModel)
         val scrolledToBottom = lastVisibleItemIndex == homeLayoutItemList.count() - DEFAULT_INDEX
         return scrolledToBottom && !isLoading && !allItemsLoaded
     }
@@ -640,9 +643,13 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun showProgressBar() {
         homeLayoutItemList.addProgressBar()
         val data = HomeLayoutListUiModel(
-            homeLayoutItemList,
+            getHomeVisitableList(),
             TokoNowLayoutState.UPDATE
         )
         _homeLayoutList.postValue(Success(data))
+    }
+
+    private fun getHomeVisitableList(): List<Visitable<*>> {
+        return homeLayoutItemList.mapNotNull { it.layout }
     }
 }

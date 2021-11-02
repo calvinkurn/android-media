@@ -25,6 +25,7 @@ class ShopFavouriteListPresenterTest: ShopFavouriteListPresenterTestFixtures() {
         }
 
         //when
+        shopFavouriteListPresenter.attachView(shopFavouriteListView)
         shopFavouriteListPresenter.toggleFavouriteShop("117")
 
         //then
@@ -38,6 +39,7 @@ class ShopFavouriteListPresenterTest: ShopFavouriteListPresenterTestFixtures() {
         every { userSessionInterface.isLoggedIn } returns false
 
         //when
+        shopFavouriteListPresenter.attachView(shopFavouriteListView)
         shopFavouriteListPresenter.toggleFavouriteShop("117")
 
         //then
@@ -56,10 +58,29 @@ class ShopFavouriteListPresenterTest: ShopFavouriteListPresenterTestFixtures() {
         }
 
         //when
+        shopFavouriteListPresenter.attachView(shopFavouriteListView)
         shopFavouriteListPresenter.toggleFavouriteShop("117")
 
         //then
         verify { shopFavouriteListView.onErrorToggleFavourite(throwable) }
+        confirmVerified(shopFavouriteListView)
+    }
+
+    @Test
+    fun `when toggleFavouriteShop Error should not trigger onErrorToggleFavourite if view is null`() {
+        // given
+        val throwable = Throwable()
+        every { userSessionInterface.isLoggedIn } returns true
+        every { toggleFavouriteShopAndDeleteCacheUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<Boolean>>().onStart()
+            secondArg<Subscriber<Boolean>>().onError(throwable)
+        }
+
+        //when
+        shopFavouriteListPresenter.toggleFavouriteShop("117")
+
+        //then
+        verify(exactly = 0) { shopFavouriteListView.onErrorToggleFavourite(throwable) }
         confirmVerified(shopFavouriteListView)
     }
 
@@ -102,6 +123,7 @@ class ShopFavouriteListPresenterTest: ShopFavouriteListPresenterTestFixtures() {
     @Test
     fun `when getShopFavouriteList success should return UI model`() {
         runBlocking {
+            shopFavouriteListPresenter.attachView(shopFavouriteListView)
             // given
             val shopFollowerData = ShopFollowerData("id", "name", "photo", "url")
             val shopFollowerDataList = listOf(shopFollowerData)
@@ -124,6 +146,67 @@ class ShopFavouriteListPresenterTest: ShopFavouriteListPresenterTestFixtures() {
     }
 
     @Test
+    fun `when getShopFavouriteList success should not call renderList if view is null`() {
+        runBlocking {
+            // given
+            val shopFollowerData = ShopFollowerData("id", "name", "photo", "url")
+            val shopFollowerDataList = listOf(shopFollowerData)
+            val shopFollowerList = ShopFollowerList(
+                    shopFollowerDataList,
+                    Error(),
+                    false)
+            val outputData = GetShopFollowerListData(shopFollowerList)
+            val expectedData = outputData.convertToUiModel(1)
+            coEvery { getShopFollowerListUseCase.executeOnBackground() } returns outputData
+
+            // when
+            shopFavouriteListPresenter.getShopFavouriteList("117", 1)
+            assert(shopFavouriteListPresenter.view == null)
+            // then
+            coVerify { getShopFollowerListUseCase.executeOnBackground() }
+            verify(exactly = 0){
+                shopFavouriteListView.renderList(expectedData.followerUiModelList, expectedData.isCanLoadMore)
+            }
+            confirmVerified(shopFavouriteListView)
+        }
+    }
+
+    @Test
+    fun `when getShopFavouriteList error should call showGetListError`() {
+        runBlocking {
+            shopFavouriteListPresenter.attachView(shopFavouriteListView)
+            // given
+            val expectedException = Exception()
+            coEvery { getShopFollowerListUseCase.executeOnBackground() } throws expectedException
+
+            // when
+            shopFavouriteListPresenter.getShopFavouriteList("117", 1)
+
+            // then
+            coVerify { getShopFollowerListUseCase.executeOnBackground() }
+            verify { shopFavouriteListView.showGetListError(expectedException) }
+            confirmVerified(shopFavouriteListView)
+        }
+    }
+
+    @Test
+    fun `when getShopFavouriteList error should not call showGetListError if view is null`() {
+        runBlocking {
+            // given
+            val expectedException = Exception()
+            coEvery { getShopFollowerListUseCase.executeOnBackground() } throws expectedException
+
+            // when
+            shopFavouriteListPresenter.getShopFavouriteList("117", 1)
+
+            // then
+            coVerify { getShopFollowerListUseCase.executeOnBackground() }
+            verify(exactly = 0) { shopFavouriteListView.showGetListError(expectedException) }
+            confirmVerified(shopFavouriteListView)
+        }
+    }
+
+    @Test
     fun `when getShopInfo success should return UI model`() {
         // given
         val shopInfo = ShopInfo()
@@ -131,11 +214,28 @@ class ShopFavouriteListPresenterTest: ShopFavouriteListPresenterTestFixtures() {
             firstArg<(ShopInfo) -> Unit>().invoke(shopInfo)
         }
 
-        //when
+        //when.
+        shopFavouriteListPresenter.attachView(shopFavouriteListView)
         shopFavouriteListPresenter.getShopInfo("117")
 
         //then
         verify { shopFavouriteListView.onSuccessGetShopInfo(shopInfo) }
+        confirmVerified(shopFavouriteListView)
+    }
+
+    @Test
+    fun `when getShopInfo success should not call onSuccessGetShopInfo is view is null`() {
+        // given
+        val shopInfo = ShopInfo()
+        every { gqlGetShopInfoUseCase.execute(any(), any()) }.answers {
+            firstArg<(ShopInfo) -> Unit>().invoke(shopInfo)
+        }
+
+        //when.
+        shopFavouriteListPresenter.getShopInfo("117")
+
+        //then
+        verify(exactly = 0) { shopFavouriteListView.onSuccessGetShopInfo(shopInfo) }
         confirmVerified(shopFavouriteListView)
     }
 
@@ -148,10 +248,27 @@ class ShopFavouriteListPresenterTest: ShopFavouriteListPresenterTestFixtures() {
         }
 
         //when
+        shopFavouriteListPresenter.attachView(shopFavouriteListView)
         shopFavouriteListPresenter.getShopInfo("117")
 
         //then
         verify { shopFavouriteListView.showGetListError(throwable) }
+        confirmVerified(shopFavouriteListView)
+    }
+
+    @Test
+    fun `when getShopInfo error should not call showGetListError if view is null`() {
+        // given
+        val throwable = Throwable()
+        every { gqlGetShopInfoUseCase.execute(any(), any()) }.answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        //when
+        shopFavouriteListPresenter.getShopInfo("117")
+
+        //then
+        verify(exactly = 0) { shopFavouriteListView.showGetListError(throwable) }
         confirmVerified(shopFavouriteListView)
     }
 

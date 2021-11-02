@@ -3,9 +3,7 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-    const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
-    const val NAVIGATION_EXP_TOP_NAV2 = "new_glmenu2"
-    const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
+    const val NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
@@ -45,8 +43,7 @@ object RollenceKey {
     const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
     // end of home component rollence section
 
-    const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
-    const val NAVIGATION_VARIANT_REVAMP2 = "new_glmenu2"
+    const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
 
     //TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
@@ -73,6 +70,8 @@ object RollenceKey {
     const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
     const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
 
+    //User
+    const val USER_DARK_MODE_TOGGLE = "dark_mode_nakama_v2"
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
     const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"

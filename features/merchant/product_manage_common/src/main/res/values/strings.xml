@@ -19,6 +19,8 @@
     <string name="product_manage_quick_edit_price_ticker_info">Kamu akan mengubah harga lokasi utama saja. Untuk mengubah harga lokasi lain, akses Tokopedia Seller melalui desktop.</string>
 
     <string name="product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_campaign_status_success_toast">Status \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_campaign_stock_status_success_toast">Status dan stok \"%1$s\" berhasil diubah.</string>
     <string name="product_manage_campaign_stock_error_toast">Oops, permintaan kamu tidak dapat diproses,\nSilakan coba lagi, ya!</string>
 
     <string name="content_desc_quickEditStockActivateSwitch">button switch status produk</string>
