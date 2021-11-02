@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,13 +23,9 @@ import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
-import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_divider_footer
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_divider_header
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_header_view
 
 /**
  * Created by Devara on 2020-04-28
@@ -42,8 +37,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
 
     private var isCacheData = false
-    private var isLego4UsingRollenceVariant = false
-    private var isLego2UsingRollenceVariant = false
+    private var isLego24UsingRollenceVariant = false
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_lego_banner
@@ -56,8 +50,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
     override fun bind(element: DynamicLegoBannerDataModel) {
         isCacheData = element.isCache
-        isLego4UsingRollenceVariant = HomeComponentRollenceController.isHomeComponentLego4BannerUsingRollenceVariant()
-        isLego2UsingRollenceVariant = HomeComponentRollenceController.isHomeComponentLego2BannerUsingRollenceVariant()
+        isLego24UsingRollenceVariant = HomeComponentRollenceController.isHomeComponentLego24BannerUsingRollenceVariant()
         setHeaderComponent(element)
         setChannelDivider(element)
         setGrids(element)
@@ -97,22 +90,21 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     element.channelModel,
                     adapterPosition + 1,
                     isCacheData,
-                    isLego4UsingRollenceVariant,
-                    isLego2UsingRollenceVariant)
+                    isLego24UsingRollenceVariant)
             var marginValue = 0
             var marginBottom = 0
             recyclerView.clearDecorations()
 
             //setup for lego 4 banner rollence
             //need to be deleted after rollence duration end
-            if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLego4UsingRollenceVariant) {
+            if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLego24UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                         GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context), false))
                 marginValue = 0
             }
             //setup for lego 2 banner rollence
             //need to be deleted after rollence duration end
-            else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLego2UsingRollenceVariant) {
+            else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLego24UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                         GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_10, false))
                 marginValue = 0
@@ -169,8 +161,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                           private val channel: ChannelModel,
                           private val parentPosition: Int,
                           private val isCacheData: Boolean,
-                          private val isLego4UsingRollenceVariant: Boolean = false,
-                          private val isLego2UsingRollenceVariant: Boolean = false) : RecyclerView.Adapter<LegoItemViewHolder>() {
+                          private val isLego24UsingRollenceVariant: Boolean = false) : RecyclerView.Adapter<LegoItemViewHolder>() {
         private var grids: List<ChannelGrid> = channel.channelGrids
         private val layout = channel.channelConfig.layout
 
@@ -186,13 +177,13 @@ class DynamicLegoBannerViewHolder(itemView: View,
         }
 
         override fun getItemViewType(position: Int): Int {
-            return if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLego4UsingRollenceVariant)
-                LEGO_LANDSCAPE_NON_RADIUS
-            else if (layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLego2UsingRollenceVariant)
-                LEGO_LANDSCAPE_NON_RADIUS
+            return if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLego24UsingRollenceVariant)
+                LEGO_LANDSCAPE
+            else if (layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLego24UsingRollenceVariant)
+                LEGO_LANDSCAPE
             else if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
                     || layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE)
-                LEGO_LANDSCAPE
+                LEGO_LANDSCAPE_NON_RADIUS
             else LEGO_SQUARE
         }
 
