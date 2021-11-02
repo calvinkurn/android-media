@@ -121,7 +121,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun hideDigitalRecommendation() {
-//        TODO("Not yet implemented")
+        adapter.removeDigitalRecommendation()
     }
 
     private fun setupViews() {

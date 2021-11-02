@@ -52,4 +52,15 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         add(RechargeOrderDetailDividerModel())
     }
 
+    fun removeDigitalRecommendation() {
+        val index = visitables.indexOfLast { it is RechargeOrderDetailDigitalRecommendationModel }
+
+        if (index != -1) {
+            visitables.removeAt(index + 1) // remove divider
+            notifyItemRemoved(index + 1)
+            visitables.removeAt(index) // remove digital recommendation
+            notifyItemRemoved(index)
+        }
+    }
+
 }
