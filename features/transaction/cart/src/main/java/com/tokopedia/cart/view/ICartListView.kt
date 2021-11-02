@@ -126,7 +126,4 @@ interface ICartListView : CustomerView {
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
 
-    fun isBundleToggleChanged(): Boolean
-
-    fun recreateActivity()
 }

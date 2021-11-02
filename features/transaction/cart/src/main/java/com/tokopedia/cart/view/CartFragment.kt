@@ -3391,22 +3391,4 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             startActivityForResult(intent, NAVIGATION_EDIT_BUNDLE)
         }
     }
-
-    override fun isBundleToggleChanged(): Boolean {
-        activity?.let {
-            if (!Switch.isBundleToggleOn(it)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    override fun recreateActivity() {
-        try {
-            activity?.recreate()
-        } catch (t: Throwable) {
-            Timber.d(t)
-        }
-    }
-
 }
