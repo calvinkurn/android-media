@@ -735,7 +735,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun setupFirstTimeForSeller() {
         presenter.adjustInterlocutorWarehouseId(messageId)
-        viewModel.getTickerReminder()
+        if (!presenter.isInTheMiddleOfThePage()) {
+            viewModel.getTickerReminder()
+        }
     }
 
     private fun setupFirstTimeForBuyer() {
