@@ -42,8 +42,7 @@ class VariantItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
             val child = parent.getChildAt(index)
 
             if (index != 0) {
-                val viewHolder = parent.getChildViewHolder(child)
-                when (viewHolder) {
+                when (parent.getChildViewHolder(child)) {
                     is VariantPlaceholderViewHolder -> {
                         c.drawRect(
                                 Rect(startOffset, child.top, parent.width, child.top - dividerHeight),

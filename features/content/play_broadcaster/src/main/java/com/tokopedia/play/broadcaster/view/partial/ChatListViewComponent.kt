@@ -9,7 +9,6 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.ui.chat.ChatScrollDownView
 import com.tokopedia.play_common.ui.chat.itemdecoration.PlayChatItemDecoration
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import timber.log.Timber
 
 /**
  * Created by jegul on 09/06/20

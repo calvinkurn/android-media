@@ -8,7 +8,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.ShopInfo
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

@@ -439,7 +439,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 productId = selectedProductIds
             )
             // open variant bottom sheet
-            AtcVariantNavigation.showVariantBottomSheet(this, productVariant)
+            AtcVariantNavigation.showVariantBottomSheet(this, productVariant, variantProductId)
         }
     }
 

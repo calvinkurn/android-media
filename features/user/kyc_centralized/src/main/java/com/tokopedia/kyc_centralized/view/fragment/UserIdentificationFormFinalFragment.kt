@@ -37,6 +37,7 @@ import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
+import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
@@ -518,25 +519,35 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private fun setFailedResult(throwable: Throwable) {
         val errorCode = KycUploadErrorCodeUtil.getErrorCode(throwable)
-        when (throwable) {
-            is SocketTimeoutException -> {
-                isSocketTimeoutException = true
-                setViews(getString(R.string.kyc_upload_failed_reason_bad_network_title),
+        if(errorCode == KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT) {
+            setViews(getString(R.string.kyc_upload_failed_reason_encrypt_title),
+                "${getString(R.string.kyc_upload_failed_reason_encrypt)} ($errorCode)",
+                com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_GENERAL)
+            kyc_upload_error_button?.setOnClickListener {
+                deleteTmpFile(deleteKtp = true, deleteFace = true)
+                stepperListener?.finishPage()
+            }
+        } else {
+            when (throwable) {
+                is SocketTimeoutException -> {
+                    isSocketTimeoutException = true
+                    setViews(getString(R.string.kyc_upload_failed_reason_bad_network_title),
                         getString(R.string.kyc_upload_failed_reason_bad_network),
                         com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_NETWORK)
-            }
-            else -> {
-                setViews(getString(R.string.kyc_upload_failed_reason_general_title),
+                }
+                else -> {
+                    setViews(getString(R.string.kyc_upload_failed_reason_general_title),
                         "${getString(R.string.kyc_upload_failed_reason_general)} ($errorCode)",
                         com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_GENERAL)
+                }
             }
-        }
-        kyc_upload_error_button?.setOnClickListener {
-            if (!isKycSelfie) {
-                analytics?.eventClickConnectionTimeout()
-                openLivenessView()
-            } else {
-                uploadKycFiles()
+            kyc_upload_error_button?.setOnClickListener {
+                if (!isKycSelfie) {
+                    analytics?.eventClickConnectionTimeout()
+                    openLivenessView()
+                } else {
+                    uploadKycFiles()
+                }
             }
         }
     }
