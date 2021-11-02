@@ -427,9 +427,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         } else if (requestCode == EXTEND_ORDER_REQUEST_CODE) {
             val isOrderExtend = data?.getBooleanExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_ORDER_EXTENDED, true)
             if (isOrderExtend == true) {
+                // order extended
                 uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
                 loadOrderHistoryList(orderIdNeedUpdated)
-            } else if (isOrderExtend == false) {
+            } else {
+                // order not extended
                 resetFilter()
                 currIndexNeedUpdate = -1
                 orderIdNeedUpdated = ""
@@ -1672,6 +1674,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             val linkUrl = dotMenu.appURL
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(linkUrl, UohConsts.UTF_8)))
                         }
+                        dotMenu.actionType.equals(GQL_MP_EXTEND, true) -> {
+                            goToOrderExtension(order, index)
+                        }
                     }
                 }
                 userSession.userId?.let { UohAnalytics.clickSecondaryOptionOnThreeDotsMenu(orderData.verticalCategory, dotMenu.label, it) }
@@ -1771,19 +1776,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
                         RouteManager.route(context, applinkTrack)
                     }
-                    button.actionType.equals(GQL_MP_EXTEND, true) -> {
-                        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
-                        val appLink = UriUtil.buildUriAppendParams(
-                                ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION,
-                                params
-                        )
-                        val intent = RouteManager.getIntentNoFallback(context, appLink)?.apply {
-                            putExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH, true)
-                        } ?: return
-                        orderIdNeedUpdated = order.orderUUID
-                        currIndexNeedUpdate = index
-                        startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
-                    }
                     button.actionType.equals(GQL_LS_FINISH, true) -> {
                         orderIdNeedUpdated = order.orderUUID
                         val lsFinishOrderBottomSheet = UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
@@ -1809,6 +1801,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         if (order.verticalID.isNotEmpty()) {
                             uohListViewModel.doRechargeSetFail(order.verticalID.toInt())
                         }
+                    }
+                    button.actionType.equals(GQL_MP_EXTEND, true) -> {
+                        goToOrderExtension(order, index)
                     }
                 }
             }
@@ -2004,6 +1999,20 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onFailCreateReview(errorMessage: String) {
         view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.uoh_review_oke)).show() }
+    }
+
+    private fun goToOrderExtension(order: UohListOrder.Data.UohOrders.Order, index: Int) {
+        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
+        val appLink = UriUtil.buildUriAppendParams(
+                ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION,
+                params
+        )
+        val intent = RouteManager.getIntentNoFallback(context, appLink)?.apply {
+            putExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH, true)
+        } ?: return
+        orderIdNeedUpdated = order.orderUUID
+        currIndexNeedUpdate = index
+        startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
     }
 
     override fun onPause() {
