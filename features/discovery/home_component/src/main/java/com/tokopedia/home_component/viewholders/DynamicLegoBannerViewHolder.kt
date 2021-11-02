@@ -100,21 +100,21 @@ class DynamicLegoBannerViewHolder(itemView: View,
             if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLego24UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                         GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context), false))
-                marginValue = 0
+                marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
             }
             //setup for lego 2 banner rollence
             //need to be deleted after rollence duration end
             else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLego24UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                         GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_10, false))
-                marginValue = 0
+                marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
             } else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
                     || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), SPAN_SPACING_20, false))
-                marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
-                marginBottom = marginValue
+                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context), false))
+                marginValue = 0
             }
+            marginBottom = marginValue
             //end setup for lego 4 banner rollence
             val marginLayoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
             marginLayoutParams.leftMargin = marginValue
