@@ -34,14 +34,9 @@ import org.junit.Test
 class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
 
     @Test
-    fun `when BundleInfo type is single then isSingleProductBundle should be true`() {
+    fun `when BundleInfo type is invalid then isSingleProductBundle should be false`() = testDispatcher.runBlockingTest {
         // given, when
         val resultEmpty = viewModel.isSingleProductBundle(emptyList())
-        val resultSingle = viewModel.isSingleProductBundle(
-            listOf(BundleInfo(
-                bundleItems = List(1){ BundleItem() }
-            ))
-        )
         val resultMultiple = viewModel.isSingleProductBundle(
             listOf(BundleInfo(
                 bundleItems = List(2){ BundleItem() }
@@ -51,6 +46,18 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
         // then
         assertEquals(false, resultEmpty)
         assertEquals(false, resultMultiple)
+    }
+
+    @Test
+    fun `when BundleInfo type is single then isSingleProductBundle should be true`() = testDispatcher.runBlockingTest {
+        // given, when
+        val resultSingle = viewModel.isSingleProductBundle(
+            listOf(BundleInfo(
+                bundleItems = List(1){ BundleItem() }
+            ))
+        )
+
+        // then
         assertEquals(true, resultSingle)
     }
 
@@ -224,22 +231,6 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
     }
 
     @Test
-    fun `when getSelectedProductBundleMaster data provided then should return correct value`() {
-        every {
-            viewModel.selectedProductBundleMaster.value
-        } returns ProductBundleMaster(bundleId = 123)
-        val resultNonNull = viewModel.getSelectedProductBundleMaster()
-
-        every {
-            viewModel.selectedProductBundleMaster.value
-        } returns null
-        val resultNull = viewModel.getSelectedProductBundleMaster()
-
-        assertEquals(123, resultNonNull.bundleId)
-        assertEquals(0, resultNull.bundleId)
-    }
-
-    @Test
     fun `when getVariantLevel then should return expected size`() {
         val expectedSize = 2
         val variantLevelSize = viewModel.getVariantLevel(ProductVariant(
@@ -278,25 +269,6 @@ class ProductBundleViewModelTest: ProductBundleViewModelTestFixture() {
 
         assertEquals("123", foundVariantId)
         assertEquals("123", foundProductId)
-    }
-
-    @Test
-    fun `when ProductBundleDetails data provided then should return correct value`() {
-        val bundleMaster = ProductBundleMaster(bundleId = 123)
-        val bundleDetail = listOf(ProductBundleDetail(productId = 123L))
-        every {
-            viewModel.selectedProductBundleMaster.value
-        } returns bundleMaster
-
-        viewModel.getSelectedProductBundleDetails()
-        viewModel.updateProductBundleMap(bundleMaster, bundleDetail)
-        viewModel.getSelectedProductBundleDetails()
-        viewModel.getProductBundleMasters()
-        viewModel.getProductBundleDetails(bundleMaster)
-        viewModel.updateProductBundleDetail(bundleMaster, 100L, 200L)
-        viewModel.updateProductBundleDetail(bundleMaster, 123L, 200L)
-        viewModel.resetBundleMap()
-        viewModel.updateProductBundleDetail(bundleMaster, 100L, 200L)
     }
 
     @Test
