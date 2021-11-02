@@ -20,6 +20,7 @@
 /features/discovery/image_search/                   	@tokopedia/android-miniondave-dev
 /features/discovery/similarsearch/                  	@tokopedia/android-miniondave-dev
 /features/discovery/autocomplete/                   	@tokopedia/android-miniondave-dev
+/features/discovery/autocomplete_component/             @tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget/              	@tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget_samples/      	@tokopedia/android-miniondave-dev
 /features/home/dynamicbanner/                          	@tokopedia/android-miniondave-dev
