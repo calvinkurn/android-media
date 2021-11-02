@@ -94,7 +94,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     AFFILIATE_LOGIN_REQUEST_CODE)
         } else {
-            affiliateHomeViewModel.getAffiliateValidateUser()
             affiliateHomeViewModel.getAnnouncementInformation()
         }
         setAffiliateGreeting()
@@ -224,12 +223,14 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         if(announcementData?.getAffiliateAnnouncement?.data?.status== ANNOUNCEMENT__TYPE_SUCCESS) {
             when (announcementData.getAffiliateAnnouncement.data.type) {
                 ANNOUNCEMENT__TYPE_CCA -> {
+                    affiliateHomeViewModel.getAffiliateValidateUser()
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data,
                         Ticker.TYPE_INFORMATION
                     )
                 }
                 ANNOUNCEMENT__TYPE_USER_BLACKLIST -> {
+                    affiliateHomeViewModel.getAffiliateValidateUser()
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data,
                         Ticker.TYPE_ERROR
@@ -242,6 +243,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     )
                 }
                 ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT -> {
+                    affiliateHomeViewModel.getAffiliateValidateUser()
                     affiliate_announcement_ticker_cv.hide()
                 }
             }

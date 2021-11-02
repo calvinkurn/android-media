@@ -7,7 +7,6 @@ import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.AffiliateAnnouncementData
-import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.model.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
