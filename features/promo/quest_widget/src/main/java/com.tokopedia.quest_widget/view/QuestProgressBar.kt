@@ -88,6 +88,8 @@ class QuestProgressBar : View {
             (animation.animatedValue as Int).toFloat()
             invalidate()
         }
+        
         animator.start()
+
     }
 }

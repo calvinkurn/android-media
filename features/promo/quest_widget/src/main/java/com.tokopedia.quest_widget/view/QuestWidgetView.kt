@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quest_widget.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.quest_widget.data.QuestData
@@ -103,6 +104,10 @@ class QuestWidgetView @JvmOverloads constructor(
                     data.config
                 )
             rvQuestWidget.adapter = adapter
+        }
+
+        tvLihat.setOnClickListener {
+            RouteManager.route(context, data?.widgetData?.pageDetail?.cta?.url)
         }
     }
 

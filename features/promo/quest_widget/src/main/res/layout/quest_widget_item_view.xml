@@ -17,9 +17,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dim_12dp"
+            android:layout_width="@dimen/dim_56dp"
+            android:layout_height="@dimen/dim_56dp"
             android:layout_marginBottom="@dimen/dim_14dp"
             android:layout_marginTop="@dimen/dim_14dp"
             android:measureAllChildren="false">
@@ -38,7 +37,7 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iconContainer"
                 android:layout_width="@dimen/dim_56dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:visibility="visible"
                 android:layout_height="@dimen/dim_56dp"
                 app:srcCompat="@drawable/quest_widget_ellipses"/>

@@ -1,5 +1,8 @@
 package com.tokopedia.quest_widget.view
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
@@ -10,6 +13,7 @@ import com.example.quest_widget.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.quest_widget.constants.QuestUserStatus
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.Progress
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
@@ -18,11 +22,11 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 const val LAGITEXT = "x lagi"
+
 class QuestWidgetItemView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ): CardUnify(context, attrs) {
 
-    private val TAG = QuestWidgetItemView::class.java.simpleName
     private var tvBannerTitle: Typography
     private var tvBannerDesc: Typography
     private var ivBannerIcon: ImageUnify
@@ -47,32 +51,23 @@ class QuestWidgetItemView @JvmOverloads constructor(
         tvBannerTitle.text = config.banner_title
         ivBannerIcon.loadImage(config.banner_icon_url)
         val progress = calculateProgress((item.task?.get(0)?.progress))
-        if (progress != 0F) {
-            iconContainer.hide()
-            progressBar.show()
-            progressBar.apply {
-                setProgress(calculateProgress(item.task?.get(0)?.progress))
-                setProgressColor(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                    )
-                )
-                setRounded(true)
-                setProgressWidth(8F)
-                setProgressBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N75
-                    )
-                )
+
+        when(item.questUser?.status){
+            QuestUserStatus.ON_PROGRESS ->{
+                scaleDownIcon(ivBannerIcon, iconContainer) { setProgressBarvalue(progress) }
+            }
+            QuestUserStatus.COMPLETED -> {
+                scaleDownIcon(ivBannerIcon, iconContainer) { setProgressBarvalue(progress) }
+                scaleUpIcon(ivBannerIcon , iconContainer)
+                //TODO if progress 100 show coupon image
+                //TODO Show translation animation
+            }
+            QuestUserStatus.CLAIMED -> {
+            }
+            QuestUserStatus.IDLE -> {
+                //TODO Show translation animation
             }
         }
-        else{
-            progressBar.hide()
-            iconContainer.show()
-        }
-
         val desc = item.actionButton?.shortText + " " + (item.task?.get(0)?.progress?.current?.let {
             item.task[0]?.progress?.target?.minus(
                 it
@@ -90,9 +85,102 @@ class QuestWidgetItemView @JvmOverloads constructor(
        return 100 - (((target-start) / target) * 100)
     }
 
-    companion object {
-        const val PROGRESS = 0
-        const val CONTAINER = 1
+    private fun setProgressBarvalue(progress: Float){
+        if (progress != 0F) {
+            iconContainer.hide()
+            progressBar.show()
+            progressBar.apply {
+                setProgress(progress)
+                setProgressColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    )
+                )
+                setRounded(true)
+                setProgressWidth(8F)
+                setProgressBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N75
+                    )
+                )
+            }
+        } else {
+                progressBar.hide()
+                iconContainer.show()
+            }
+        }
+
+
+    @SuppressLint("Recycle")
+    private fun scaleUpIcon(
+        icon: ImageUnify, iconContainer: ImageUnify,
+        completion: (() -> Unit)? = null
+    ) {
+        progressBar.hide()
+        icon.show()
+        iconContainer.show()
+        val animator = AnimatorSet()
+
+        val animatorContainerY = ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, 1.05F)
+        val animatorContainerX = ObjectAnimator.ofFloat(iconContainer ,View.SCALE_X, this.scaleX, 1.05F)
+        animatorContainerY.duration = 2000
+        animatorContainerX.duration = 2000
+        val animatorIconY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, this.scaleY, 1.05F)
+        val animatorIconX = ObjectAnimator.ofFloat(icon ,View.SCALE_X, this.scaleX, 1.05F)
+        animatorIconY.duration = 2000
+        animatorIconX.duration = 2000
+
+        animator.playTogether(animatorIconY,animatorContainerX,animatorIconY,animatorIconX)
+        animator.addListener(object : Animator.AnimatorListener{
+            override fun onAnimationStart(p0: Animator?) {
+            }
+            override fun onAnimationEnd(p0: Animator?) {
+                completion?.let {
+                    it()
+                }
+            }
+            override fun onAnimationCancel(p0: Animator?) {
+            }
+            override fun onAnimationRepeat(p0: Animator?) {
+            }
+
+        })
+        animator.start()
+    }
+
+    @SuppressLint("Recycle")
+    private fun scaleDownIcon(
+        icon: ImageUnify, iconContainer: ImageUnify,
+        completion: (() -> Unit)? = null
+    ) {
+        icon.show()
+        iconContainer.show()
+        val animator = AnimatorSet()
+
+        val animatorContainerY = ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, 1.05F)
+        val animatorContainerX = ObjectAnimator.ofFloat(iconContainer ,View.SCALE_X, this.scaleX, 1.05F)
+        animatorContainerY.duration = 2000
+        animatorContainerX.duration = 2000
+        val animatorIconY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, this.scaleY, 1.05F)
+        val animatorIconX = ObjectAnimator.ofFloat(icon ,View.SCALE_X, this.scaleX, 1.05F)
+        animatorIconY.duration = 2000
+        animatorIconX.duration = 2000
+
+        animator.playTogether(animatorIconY,animatorContainerX,animatorIconY,animatorIconX)
+        animator.addListener(object : Animator.AnimatorListener{
+            override fun onAnimationStart(p0: Animator?) {
+            }
+            override fun onAnimationEnd(p0: Animator?) {
+                scaleUpIcon(icon,iconContainer,completion)
+            }
+            override fun onAnimationCancel(p0: Animator?) {
+            }
+            override fun onAnimationRepeat(p0: Animator?) {
+            }
+        })
+        animator.start()
     }
 }
 
