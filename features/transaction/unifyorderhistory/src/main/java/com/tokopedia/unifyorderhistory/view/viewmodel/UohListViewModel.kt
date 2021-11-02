@@ -3,16 +3,13 @@ package com.tokopedia.unifyorderhistory.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.unifyorderhistory.util.UohConsts
-import com.tokopedia.unifyorderhistory.util.UohIdlingResource
-import com.tokopedia.unifyorderhistory.util.UohUtils.asSuccess
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -22,15 +19,16 @@ import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.data.model.*
 import com.tokopedia.unifyorderhistory.domain.*
+import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_ADS_COUNT
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_DIMEN_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INVENTORY_ID
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.unifyorderhistory.util.UohIdlingResource
+import com.tokopedia.unifyorderhistory.util.UohUtils.asSuccess
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
-import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -198,28 +196,17 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
     fun doAtc(atcParams: AddToCartRequestParams) {
         UohIdlingResource.increment()
-        val requestParams = RequestParams.create()
-        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
-        try {
-            atcUseCase.execute(requestParams, object : Subscriber<AddToCartDataModel>() {
-                override fun onNext(addToCartDataModel: AddToCartDataModel?) {
-                    addToCartDataModel?.let {
-                        _atcResult.value = (Success(it))
-                        UohIdlingResource.decrement()
-                    }
-                }
-
-                override fun onCompleted() {}
-
-                override fun onError(e: Throwable?) {
-                    _atcResult.value = (e?.let { Fail(it) })
-                    UohIdlingResource.decrement()
-                }
-            })
-        } catch (e: Exception) {
-            Timber.d(e)
-            _atcResult.value = Fail(e.fillInStackTrace())
-            UohIdlingResource.decrement()
+        launch {
+            try {
+                atcUseCase.setParams(atcParams)
+                val result = atcUseCase.executeOnBackground()
+                _atcResult.value = Success(result)
+                UohIdlingResource.decrement()
+            } catch (e: Exception) {
+                Timber.d(e)
+                _atcResult.value = Fail(e)
+                UohIdlingResource.decrement()
+            }
         }
     }
 }
