@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.view.View
@@ -675,8 +676,21 @@ class MultiLineGraphViewHolder(
         with(emptyStateBinding) {
             if (showAnimation?.isRunning == true) showAnimation?.end()
             if (!multiLineEmptyState.isVisible) return
-            multiLineEmptyState.gone()
             hideAnimation = multiLineEmptyState.animatePop(1f, 0f)
+            hideAnimation?.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+
+                override fun onAnimationEnd(animation: Animator?) {
+                    multiLineEmptyState.gone()
+                    hideAnimation?.removeListener(this)
+                }
+
+                override fun onAnimationCancel(animation: Animator?) {
+                    hideAnimation?.removeListener(this)
+                }
+
+                override fun onAnimationStart(animation: Animator?) {}
+            })
         }
     }
 
