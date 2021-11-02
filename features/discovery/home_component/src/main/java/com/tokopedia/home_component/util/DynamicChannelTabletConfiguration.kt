@@ -10,8 +10,8 @@ object DynamicChannelTabletConfiguration {
 
     private const val SPAN_COUNT_2x2_NORMAL = 2
     private const val SPAN_COUNT_2x2_TABLET = 4
-    private const val SPAN_SPACING_2x2_TABLET = 16
-    private const val SPAN_SPACING_2x2_NORMAL = 8
+    private const val SPAN_SPACING_2x2_TABLET = 20
+    private const val SPAN_SPACING_2x2_NORMAL = 10
 
     fun getSpanCountFor2x2(context: Context?): Int {
         context?.let {
