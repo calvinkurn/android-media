@@ -44,11 +44,15 @@ suspend fun request(
     uploaderManager.setProgressUploader(loader)
 
     return try {
-        execute()
+        execute().also {
+            if (it is UploadResult.Error) {
+                uploaderManager.setError(it.message, sourceId, file)
+            }
+        }
     } catch (e: SocketTimeoutException) {
-        uploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, file)
+        uploaderManager.setError(TIMEOUT_ERROR, sourceId, file)
     } catch (e: StreamResetException) {
-        uploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, file)
+        uploaderManager.setError(TIMEOUT_ERROR, sourceId, file)
     } catch (e: Exception) {
         if (e !is UnknownHostException &&
             e !is SocketException &&
@@ -62,6 +66,6 @@ suspend fun request(
             }
         }
 
-        uploaderManager.setError(listOf(NETWORK_ERROR), sourceId, file)
+        uploaderManager.setError(NETWORK_ERROR, sourceId, file)
     }
 }
