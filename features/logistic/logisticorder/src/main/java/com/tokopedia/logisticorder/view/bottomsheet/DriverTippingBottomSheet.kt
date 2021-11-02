@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -57,11 +58,18 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     private fun setInitialViewState() {
         setTitle("")
         binding.progressBar.visibility = View.VISIBLE
+//        viewModel.getTrackingData()
     }
 
     override fun getComponent(): TrackingPageComponent {
         return DaggerTrackingPageComponent.builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build()
+    }
+
+    fun show(manager: FragmentManager?) {
+        manager?.run {
+            super.show(this, "")
+        }
     }
 }

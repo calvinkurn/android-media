@@ -89,4 +89,36 @@ object TrackingPageQuery {
           }
         }
     """.trimIndent()
+
+    val getDriverTip = """
+        query logistic_driver_tip_info (${'$'}input: Input! ){
+          logistic_driver_tip_info(input: ${'$'}input) {
+            message_error
+            status
+            data {
+              last_driver {
+                name
+                phone
+                photo
+                license_number
+                is_changed
+              }
+              status
+              prepayment {
+                info
+                preset_amount
+                max_amount
+                min_amount
+                payment_link
+              }
+              payment {
+                amount
+                amount_formatted
+                method
+                method_icon
+              }
+            }
+          }
+        }
+    """.trimIndent()
 }
