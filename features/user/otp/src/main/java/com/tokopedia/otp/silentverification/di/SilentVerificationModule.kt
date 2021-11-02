@@ -4,8 +4,8 @@ import android.content.Context
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.otp.silentverification.domain.GetEvUrlRepository
-import com.tokopedia.otp.silentverification.domain.GetEvUrlRepositoryImpl
+import com.tokopedia.otp.silentverification.domain.repository.GetEvUrlRepository
+import com.tokopedia.otp.silentverification.domain.repository.GetEvUrlRepositoryImpl
 import com.tokopedia.otp.silentverification.helper.NetworkClientHelper
 import com.tokopedia.otp.silentverification.helper.NetworkClientHelperImpl
 import com.tokopedia.user.session.UserSession

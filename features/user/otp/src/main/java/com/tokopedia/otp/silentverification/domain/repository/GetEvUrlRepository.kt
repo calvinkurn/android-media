@@ -1,4 +1,4 @@
-package com.tokopedia.otp.silentverification.domain
+package com.tokopedia.otp.silentverification.domain.repository
 
 import android.net.Network
 import okhttp3.Call

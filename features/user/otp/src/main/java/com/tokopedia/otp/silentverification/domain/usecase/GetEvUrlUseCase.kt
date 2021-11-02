@@ -1,7 +1,7 @@
 package com.tokopedia.otp.silentverification.domain.usecase
 
 import android.net.Network
-import com.tokopedia.otp.silentverification.domain.GetEvUrlRepository
+import com.tokopedia.otp.silentverification.domain.repository.GetEvUrlRepository
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
