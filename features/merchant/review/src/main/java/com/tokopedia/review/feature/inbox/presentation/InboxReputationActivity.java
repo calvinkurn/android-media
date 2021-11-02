@@ -18,7 +18,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
@@ -40,11 +39,12 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.SectionsPager
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationListener;
+import com.tokopedia.review.feature.inbox.di.DaggerInboxReputationComponent;
+import com.tokopedia.review.feature.inbox.di.InboxReputationComponent;
 import com.tokopedia.review.feature.inboxreview.presentation.fragment.InboxReviewFragment;
 import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputationPenaltyFragment;
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment;
 import com.tokopedia.unifycomponents.TabsUnify;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -52,11 +52,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * @author by nisie on 8/10/17.
  */
 
-public class InboxReputationActivity extends BaseActivity implements HasComponent, InboxReputationListener, ReviewSellerPerformanceMonitoringListener {
+public class InboxReputationActivity extends BaseActivity implements HasComponent<InboxReputationComponent>, InboxReputationListener, ReviewSellerPerformanceMonitoringListener {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     public static final String GO_TO_BUYER_REVIEW = "GO_TO_BUYER_REVIEW";
@@ -81,12 +83,15 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     private PagerAdapter sectionAdapter;
     private HeaderUnify toolbar;
 
-    private UserSessionInterface userSession;
+    @Inject
+    UserSessionInterface userSession;
+
+    @Inject
+    ReputationTracking reputationTracking;
 
     private boolean goToReputationHistory;
     private boolean goToBuyerReview;
     private boolean canFireTracking;
-    private ReputationTracking reputationTracking;
     private boolean isAppLinkProccessed = false;
 
     private PageLoadTimePerformanceInterface pageLoadTimePerformance;
@@ -102,9 +107,8 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         String tab = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_TAB);
         String source = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_SOURCE);
         canFireTracking = !goToReputationHistory;
-        userSession = new UserSession(this);
-        reputationTracking = new ReputationTracking();
         super.onCreate(savedInstanceState);
+        getComponent().inject(this);
         if (!GlobalConfig.isSellerApp()) {
             startActivity(ReviewInboxActivity.Companion.createNewInstance(this, tab, source));
             finish();
@@ -437,7 +441,10 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
     }
 
     @Override
-    public BaseAppComponent getComponent() {
-        return ((BaseMainApplication) getApplication()).getBaseAppComponent();
+    public InboxReputationComponent getComponent() {
+        return DaggerInboxReputationComponent
+                .builder()
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build();
     }
 }
