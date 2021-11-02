@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cart.databinding.ItemCartProductBundleBinding
 import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.bundle.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.bundle.view.viewholder.CartItemViewHolder.Companion.TYPE_VIEW_ITEM_CART
 import com.tokopedia.cart.bundle.view.viewholder.CartItemViewHolder.ViewHolderListener
+import com.tokopedia.cart.databinding.ItemCartProductBundleBinding
 
 class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ViewHolderListener {
 
@@ -89,5 +89,6 @@ class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView
         fun onSimilarProductUrlClicked(data: CartItemHolderData)
         fun onShowActionSeeOtherProduct(productId: String, errorType: String)
         fun onFollowShopClicked(shopId: String, errorType: String)
+        fun onVerificationClicked(applink: String)
     }
 }

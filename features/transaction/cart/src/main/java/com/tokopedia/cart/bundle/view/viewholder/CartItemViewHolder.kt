@@ -141,7 +141,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                             renderActionWishlist(it, data)
                         }
                     }
-                    Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP -> {
+                    Action.ACTION_CHECKOUTBROWSER, Action.ACTION_SIMILARPRODUCT, Action.ACTION_FOLLOWSHOP, Action.ACTION_VERIFICATION -> {
                         when {
                             data.selectedUnavailableActionId == Action.ACTION_CHECKOUTBROWSER && it.id == Action.ACTION_CHECKOUTBROWSER -> {
                                 renderActionCheckoutInBrowser(it, data)
@@ -151,6 +151,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                             }
                             data.selectedUnavailableActionId == Action.ACTION_FOLLOWSHOP && it.id == Action.ACTION_FOLLOWSHOP -> {
                                 renderFollowShop(it, data)
+                            }
+                            data.selectedUnavailableActionId == Action.ACTION_VERIFICATION && it.id == Action.ACTION_VERIFICATION -> {
+                                renderVerification(it, data)
                             }
                         }
                     }
@@ -786,6 +789,19 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                 }
             }
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            show()
+        }
+    }
+
+    private fun renderVerification(action: Action, data: CartItemHolderData) {
+        binding.textProductUnavailableAction.apply {
+            text = action.message
+            setOnClickListener {
+                if (data.selectedUnavailableActionLink.isNotEmpty()) {
+                    actionListener?.onVerificationClicked(data.selectedUnavailableActionLink)
+                }
+            }
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             show()
         }
     }
