@@ -19,10 +19,13 @@ class RechargeOrderDetailPaymentViewHolder(
         with(binding) {
             simpleRechargeOrderDetailPaymentMethod.setData(element.paymentMethod)
 
-            for (item in element.paymentDetails) {
-                val simpleView = RechargeOrderDetailSimpleView(root.context)
-                simpleView.setData(item)
-                containerRechargeOrderDetailPaymentDetail.addView(simpleView)
+            if (containerRechargeOrderDetailPaymentDetail.childCount < element.paymentDetails.size) {
+                containerRechargeOrderDetailPaymentDetail.removeAllViews()
+                for (item in element.paymentDetails) {
+                    val simpleView = RechargeOrderDetailSimpleView(root.context)
+                    simpleView.setData(item)
+                    containerRechargeOrderDetailPaymentDetail.addView(simpleView)
+                }
             }
 
             tgRechargeOrderDetailTotalPriceLabel.text = element.totalPriceLabel

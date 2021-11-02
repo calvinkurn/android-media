@@ -36,10 +36,13 @@ class RechargeOrderDetailTopSectionViewHolder(
                 RouteManager.route(root.context, element.invoiceUrl)
             }
 
-            for (item in element.titleData) {
-                val simpleView = RechargeOrderDetailSimpleView(root.context)
-                simpleView.setData(item)
-                containerRechargeOrderDetailTopSectionTitles.addView(simpleView)
+            if (containerRechargeOrderDetailTopSectionTitles.childCount < element.titleData.size) {
+                containerRechargeOrderDetailTopSectionTitles.removeAllViews()
+                for (item in element.titleData) {
+                    val simpleView = RechargeOrderDetailSimpleView(root.context)
+                    simpleView.setData(item)
+                    containerRechargeOrderDetailTopSectionTitles.addView(simpleView)
+                }
             }
         }
     }

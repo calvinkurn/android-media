@@ -22,36 +22,39 @@ class RechargeOrderDetailActionButtonSectionViewHolder(
 
     override fun bind(element: RechargeOrderDetailActionButtonListModel) {
         with(binding) {
-            val primaryActionButton = mutableListOf<UnifyButton>()
-            val secondaryActionButton = mutableListOf<UnifyButton>()
+            if (containerRechargeOrderDetailActionButton.childCount < element.actionButtons.size) {
+                containerRechargeOrderDetailActionButton.removeAllViews()
+                val primaryActionButton = mutableListOf<UnifyButton>()
+                val secondaryActionButton = mutableListOf<UnifyButton>()
 
-            for (item in element.actionButtons) {
-                val button = createActionButton(root.context, item)
+                for (item in element.actionButtons) {
+                    val button = createActionButton(root.context, item)
 
-                if (item.buttonType.equals(PRIMARY_BUTTON_TYPE, true)) {
-                    primaryActionButton.add(button)
-                } else if (item.buttonType.equals(SECONDARY_BUTTON_TYPE, true)) {
-                    primaryActionButton.add(button)
+                    if (item.buttonType.equals(PRIMARY_BUTTON_TYPE, true)) {
+                        primaryActionButton.add(button)
+                    } else if (item.buttonType.equals(SECONDARY_BUTTON_TYPE, true)) {
+                        primaryActionButton.add(button)
+                    }
                 }
-            }
 
-            for (button in primaryActionButton) {
-                containerRechargeOrderDetailActionButton.addView(button)
-                button.setMargin(0,
-                        root.context.resources.getDimensionPixelSize(
-                                com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                        0,
-                        0)
-                button.requestLayout()
-            }
-            for (button in secondaryActionButton) {
-                containerRechargeOrderDetailActionButton.addView(button)
-                button.setMargin(0,
-                        root.context.resources.getDimensionPixelSize(
-                                com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                        0,
-                        0)
-                button.requestLayout()
+                for (button in primaryActionButton) {
+                    containerRechargeOrderDetailActionButton.addView(button)
+                    button.setMargin(0,
+                            root.context.resources.getDimensionPixelSize(
+                                    com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                            0,
+                            0)
+                    button.requestLayout()
+                }
+                for (button in secondaryActionButton) {
+                    containerRechargeOrderDetailActionButton.addView(button)
+                    button.setMargin(0,
+                            root.context.resources.getDimensionPixelSize(
+                                    com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                            0,
+                            0)
+                    button.requestLayout()
+                }
             }
         }
     }

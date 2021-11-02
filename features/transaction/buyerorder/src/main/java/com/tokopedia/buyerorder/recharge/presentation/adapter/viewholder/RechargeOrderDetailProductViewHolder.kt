@@ -16,14 +16,17 @@ class RechargeOrderDetailProductViewHolder(
 
     override fun bind(element: RechargeOrderDetailSectionModel) {
         with(binding) {
-            for (item in element.detailList) {
-                val simpleView = RechargeOrderDetailSimpleView(root.context)
-                simpleView.setData(item)
-                if (item.isCopyable)
-                    simpleView.setCopyListener {
-                        listener?.onCopyCodeClicked(item.label, item.detail)
-                    }
-                containerRechargeOrderDetailProductDetail.addView(simpleView)
+            if (containerRechargeOrderDetailProductDetail.childCount < element.detailList.size) {
+                containerRechargeOrderDetailProductDetail.removeAllViews()
+                for (item in element.detailList) {
+                    val simpleView = RechargeOrderDetailSimpleView(root.context)
+                    simpleView.setData(item)
+                    if (item.isCopyable)
+                        simpleView.setCopyListener {
+                            listener?.onCopyCodeClicked(item.label, item.detail)
+                        }
+                    containerRechargeOrderDetailProductDetail.addView(simpleView)
+                }
             }
         }
     }
