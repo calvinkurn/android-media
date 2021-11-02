@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
 import com.tokopedia.applink.RouteManager
@@ -99,6 +98,8 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalIn
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
+import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
@@ -203,6 +204,7 @@ class TokoNowHomeFragment: Fragment(),
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
     private var hasEducationalInformationAppeared = false
+    private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -222,6 +224,7 @@ class TokoNowHomeFragment: Fragment(),
     private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         firebaseRemoteConfig.let {
@@ -516,6 +519,21 @@ class TokoNowHomeFragment: Fragment(),
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun initPerformanceMonitoring() {
+        pageLoadTimeMonitoring = (activity as? TokoNowHomeActivity)?.pageLoadTimeMonitoring
+        pageLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+    }
+
+    private fun startRenderPerformanceMonitoring() {
+        pageLoadTimeMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderPerformanceMonitoring() {
+        rvHome?.addOneTimeGlobalLayoutListener {
+            pageLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
+        }
     }
 
     private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
@@ -997,9 +1015,11 @@ class TokoNowHomeFragment: Fragment(),
         showFailedToFetchData()
         stickyLoginLoadContent()
         logHomeLayoutError(throwable)
+        stopRenderPerformanceMonitoring()
     }
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        startRenderPerformanceMonitoring()
         showHomeLayout(data)
         loadHeaderBackground()
         checkAddressDataAndServiceArea()
@@ -1016,6 +1036,7 @@ class TokoNowHomeFragment: Fragment(),
         showHomeLayout(data)
         hideHeaderBackground()
         stickyLoginLoadContent()
+        stopRenderPerformanceMonitoring()
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
@@ -1023,6 +1044,7 @@ class TokoNowHomeFragment: Fragment(),
         showHeaderBackground()
         stickyLoginLoadContent()
         getProductAddToCartQuantity()
+        stopRenderPerformanceMonitoring()
     }
 
     private fun checkAddressDataAndServiceArea() {
