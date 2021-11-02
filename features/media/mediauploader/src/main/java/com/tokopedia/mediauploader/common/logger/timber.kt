@@ -6,9 +6,9 @@ import java.io.File
 
 const val ERROR_MAX_LENGTH = 1500
 
-fun trackToTimber(filePath: File? = null, sourceId: String, message: List<String>) {
+fun trackToTimber(filePath: File? = null, sourceId: String, message: String) {
     if (filePath != null && filePath.path.isNotEmpty() && message.isNotEmpty()) {
-        trackToTimber(sourceId, "Error upload image %s because %s".format(filePath.path, message.toString()))
+        trackToTimber(sourceId, "Error upload image %s because %s".format(filePath.path, message))
     }
 }
 
