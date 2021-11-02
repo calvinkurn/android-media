@@ -4,4 +4,4 @@ import java.lang.annotation.Inherited
 
 @Retention
 @Inherited
-annotation class InstrumentationTest
+annotation class UiTest

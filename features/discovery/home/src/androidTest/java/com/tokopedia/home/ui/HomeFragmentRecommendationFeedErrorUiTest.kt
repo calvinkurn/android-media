@@ -21,7 +21,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
-import com.tokopedia.test.application.annotations.InstrumentationTest
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.espresso_component.CommonAssertion
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -34,7 +34,7 @@ import org.junit.Test
 /**
  * Created by devarafikry on 02/07/21.
  */
-@InstrumentationTest
+@UiTest
 class HomeFragmentRecommendationFeedErrorUiTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
