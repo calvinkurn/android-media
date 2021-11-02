@@ -42,4 +42,6 @@
     <string name="affiliate_portfolio_confirm_btn">Selanjutnya</string>
     <string name="affiliate_header_text">Hai, {name}! Isi profil sosial media kamu di bawah ini, ya!</string>
     <string name="affiliate_subheader_text">Isi minimal 1 sosial media.</string>
+    <string name="affiliate_accept_terms">Daftar.</string>
+    <string name="affiliate_read_and_agree">Saya telah membaca dan setuju</string>
 </resources>

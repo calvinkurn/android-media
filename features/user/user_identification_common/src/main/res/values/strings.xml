@@ -47,6 +47,7 @@
     <string name="form_reupload_info">Dengan klik “Kirim Dokumen” saya menyetujui syarat &amp; ketentuan yang berlaku</string>
 
     <string name="terms_and_condition">syarat &amp; ketentuan</string>
+    <string name="terms_and_condition_upper">Syarat &amp; Ketentuan</string>
     <string name="upload_button">Kirim Dokumen</string>
     <string name="upload_button_tradein">Unggah dan Beli Sekarang</string>
 

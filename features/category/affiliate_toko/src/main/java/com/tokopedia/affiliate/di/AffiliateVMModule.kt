@@ -8,6 +8,7 @@ import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePortfolioViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromotionBSViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateTermsAndConditionViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -42,6 +43,12 @@ abstract class AffiliateVMModule {
     @AffiliateScope
     @ViewModelKey(AffiliatePortfolioViewModel::class)
     internal abstract fun affiliatePortfolioViewModel(viewModel: AffiliatePortfolioViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliateTermsAndConditionViewModel::class)
+    internal abstract fun affiliateTermsAndConditionViewModel(viewModel: AffiliateTermsAndConditionViewModel): ViewModel
 
 
 }
