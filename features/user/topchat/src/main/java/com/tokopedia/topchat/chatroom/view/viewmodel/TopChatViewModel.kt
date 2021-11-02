@@ -17,7 +17,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-open class TopChatViewModel @Inject constructor(
+class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
     private var reminderTickerUseCase: GetReminderTickerUseCase,
     private var closeReminderTicker: CloseReminderTicker,
