@@ -137,6 +137,12 @@ class PlayViewModel @Inject constructor(
         get() = _observableCastState
 
     /**
+     * Remote Config for bubble like
+     */
+    private val isLikeBubbleEnabled: Boolean
+        get() = remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE, true)
+
+    /**
      * Interactive Remote Config defaults to true, because it should be enabled by default,
      * and will be disabled only if something goes wrong
      */
@@ -1368,24 +1374,27 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleWebSocketMessage(message: WebSocketResponse, channelId: String) = withContext(dispatchers.main) {
+    private suspend fun handleWebSocketMessage(
+        message: WebSocketResponse,
+        channelId: String
+    ) = withContext(dispatchers.main) {
         val result = withContext(dispatchers.computation) {
             val socketMapper = PlaySocketMapper(message)
             socketMapper.mapping()
         }
 
         when (result) {
-            is TotalLike -> withContext(dispatchers.computation) {
+            is TotalLike -> withContext(dispatchers.computation) likeContext@ {
                 val (totalLike, totalLikeFmt) = playSocketToModelMapper.mapTotalLike(result)
                 val prevLike = _channelReport.value.totalLike
 
-                if (channelType.isLive && totalLike < prevLike) return@withContext
+                if (channelType.isLive && totalLike < prevLike) return@likeContext
 
                 _channelReport.setValue {
                     copy(totalLike = totalLike, totalLikeFmt = totalLikeFmt)
                 }
 
-                if (!channelType.isLive) return@withContext
+                if (!channelType.isLive || !isLikeBubbleEnabled) return@likeContext
 
                 val diffLike = totalLike - prevLike
 
@@ -1812,11 +1821,13 @@ class PlayViewModel @Inject constructor(
 
             viewModelScope.launch {
                 _uiEvent.emit(AnimateLikeEvent(fromIsLiked = true))
-                _uiEvent.emit(ShowLikeBubbleEvent.Single(
-                    count = 1,
-                    reduceOpacity = false,
-                    config = _likeInfo.value.likeBubbleConfig,
-                ))
+                if (isLikeBubbleEnabled) {
+                    _uiEvent.emit(ShowLikeBubbleEvent.Single(
+                        count = 1,
+                        reduceOpacity = false,
+                        config = _likeInfo.value.likeBubbleConfig,
+                    ))
+                }
             }
 
             val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)
@@ -1972,6 +1983,7 @@ class PlayViewModel @Inject constructor(
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
         private const val FIREBASE_REMOTE_CONFIG_KEY_CAST = "android_main_app_enable_play_cast"
+        private const val FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE = "android_main_app_enable_play_bubbles"
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
