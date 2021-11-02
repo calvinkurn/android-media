@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
-import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
@@ -136,64 +136,21 @@ class RechargeHomepageAdapterTypeFactory(
         return when (type) {
             RechargeHomepageLoadingViewholder.LAYOUT -> RechargeHomepageLoadingViewholder(parent)
             // Home Components
-            ReminderWidgetViewHolder.LAYOUT -> ReminderWidgetViewHolder(
-                parent,
-                reminderWidgetCallback
-            )
-            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(
-                parent,
-                dynamicLegoBannerCallback,
-                dynamicLegoBannerCallback
-            )
+            ReminderWidgetViewHolder.LAYOUT -> ReminderWidgetViewHolder(parent, reminderWidgetCallback)
+            DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(parent, dynamicLegoBannerCallback, dynamicLegoBannerCallback)
             // Recharge
-            RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageDualIconsViewHolder.LAYOUT -> RechargeHomepageDualIconsViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageBannerEmptyViewHolder.LAYOUT -> RechargeHomepageBannerEmptyViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageProductCardsViewHolder.LAYOUT -> RechargeHomepageProductCardsViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageProductCardCustomBannerViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageCarousellViewHolder.LAYOUT -> RechargeHomepageCarousellViewHolder(
-                parent,
-                listener
-            )
+            RechargeHomepageFavoriteViewHolder.LAYOUT -> RechargeHomepageFavoriteViewHolder(parent, listener)
+            RechargeHomepageCategoryViewHolder.LAYOUT -> RechargeHomepageCategoryViewHolder(parent, listener)
+            RechargeHomepageDualIconsViewHolder.LAYOUT -> RechargeHomepageDualIconsViewHolder(parent, listener)
+            RechargeHomepageBannerViewHolder.LAYOUT -> RechargeHomepageBannerViewHolder(parent, listener)
+            RechargeHomepageBannerEmptyViewHolder.LAYOUT -> RechargeHomepageBannerEmptyViewHolder(parent, listener)
+            RechargeHomepageVideoHighlightViewHolder.LAYOUT -> RechargeHomepageVideoHighlightViewHolder(parent, listener)
+            RechargeHomepageSingleBannerViewHolder.LAYOUT -> RechargeHomepageSingleBannerViewHolder(parent, listener)
+            RechargeHomepageDualBannersViewHolder.LAYOUT -> RechargeHomepageDualBannersViewHolder(parent, listener)
+            RechargeHomepageProductCardsViewHolder.LAYOUT -> RechargeHomepageProductCardsViewHolder(parent, listener)
+            RechargeHomepageProductBannerViewHolder.LAYOUT -> RechargeHomepageProductBannerViewHolder(parent, listener)
+            RechargeHomepageProductCardCustomBannerViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerViewHolder(parent, listener)
+            RechargeHomepageCarousellViewHolder.LAYOUT -> RechargeHomepageCarousellViewHolder(parent, listener)
             RechargeHomepageTickerViewHolder.LAYOUT -> RechargeHomepageTickerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
