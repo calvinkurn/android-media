@@ -90,7 +90,7 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="5dp"
+                        android:layout_height="@dimen/hotel_5dp"
                         android:layout_marginBottom="@dimen/hotel_12dp"
                         android:background="@drawable/bg_hotel_ticket_divider"
                         android:layerType="software" />
