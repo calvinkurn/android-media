@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/dp_16">
+        android:padding="16dp">
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/text_input_layout_name"
@@ -29,7 +29,7 @@
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="16dp"
             android:id="@+id/text_input_layout_address"
             style="@style/HintTextInputLayout"
             android:hint="@string/shop_address_label_address">
@@ -50,7 +50,7 @@
             android:id="@+id/text_input_layout_district"
             style="@style/HintTextInputLayout"
             android:hint="@string/shop_address_label_district"
-            android:layout_marginTop="@dimen/dp_16">
+            android:layout_marginTop="16dp">
 
             <EditText
                 android:id="@+id/edit_text_district"
@@ -68,7 +68,7 @@
             android:id="@+id/text_input_layout_postal_code"
             style="@style/HintTextInputLayout"
             android:hint="@string/shop_address_label_postal_code"
-            android:layout_marginTop="@dimen/dp_16">
+            android:layout_marginTop="16dp">
 
             <AutoCompleteTextView
                 android:id="@+id/postal_code"
@@ -86,7 +86,7 @@
             android:id="@+id/text_input_layout_phone"
             style="@style/HintTextInputLayout"
             android:hint="@string/shop_address_label_phone"
-            android:layout_marginTop="@dimen/dp_16">
+            android:layout_marginTop="16dp">
 
             <EditText
                 android:id="@+id/edit_text_phone"
@@ -102,7 +102,7 @@
             android:id="@+id/text_input_layout_email"
             style="@style/HintTextInputLayout"
             android:hint="@string/shop_address_label_email"
-            android:layout_marginTop="@dimen/dp_16">
+            android:layout_marginTop="16dp">
 
             <EditText
                 android:id="@+id/edit_text_email"
@@ -118,7 +118,7 @@
             android:id="@+id/text_input_layout_fax"
             style="@style/HintTextInputLayout"
             android:hint="@string/shop_address_label_fax"
-            android:layout_marginTop="@dimen/dp_16">
+            android:layout_marginTop="16dp">
 
             <EditText
                 android:id="@+id/edit_text_fax"

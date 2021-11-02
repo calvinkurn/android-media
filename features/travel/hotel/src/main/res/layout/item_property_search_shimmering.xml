@@ -35,7 +35,7 @@
             android:layout_marginStart="@dimen/hotel_12dp"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl2"
-            android:textSize="@dimen/sp_14"
+            android:textSize="14sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/image_shimmer"
             app:layout_constraintStart_toEndOf="@+id/image_shimmer"

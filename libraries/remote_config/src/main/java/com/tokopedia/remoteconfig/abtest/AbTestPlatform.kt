@@ -137,6 +137,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (userSession.isLoggedIn) {
             payloads[ID] = userSession.userId
         } else {
+            if(handleDeviceIdless()) {return}
             payloads[ID] = userSession.deviceId
         }
         payloads[IRIS_SESSION_ID] = irisSession.getSessionId()
@@ -168,6 +169,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                     override fun onError(e: Throwable?) { }
 
                 }}
+    }
+
+    private fun handleDeviceIdless() :Boolean {
+        if(userSession.deviceId == null){
+            return true
+        }
+        return false
     }
 
     private fun gqlResponseHandler(graphqlResponse: GraphqlResponse): RolloutFeatureVariants {

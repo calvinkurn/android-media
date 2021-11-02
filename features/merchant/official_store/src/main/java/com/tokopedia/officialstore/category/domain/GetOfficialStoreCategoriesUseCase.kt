@@ -24,12 +24,13 @@ class GetOfficialStoreCategoriesUseCase @Inject constructor(
         gqlRequest.isDoQueryHash = doQueryHashing
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
-        val graphqlResponse = graphqlUseCase.executeOnBackground()
+        val response = graphqlUseCase.executeOnBackground()
+            .getData<OfficialStoreCategories.Response>(OfficialStoreCategories.Response::class.java)
 
-        return graphqlResponse.run {
-            getData<OfficialStoreCategories.Response>(OfficialStoreCategories.Response::class.java)
-                    .OfficialStoreCategories
+        response?.let {
+            return it.OfficialStoreCategories
         }
+        return OfficialStoreCategories()
     }
 
     suspend fun executeOnBackground(isCache: Boolean, doQueryHashing : Boolean): OfficialStoreCategories{
