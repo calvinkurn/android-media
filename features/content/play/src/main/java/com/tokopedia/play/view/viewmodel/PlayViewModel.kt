@@ -797,10 +797,11 @@ class PlayViewModel @Inject constructor(
             addCastStateListener()
 
             setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext.castState))
+
+            trackVisitChannel(channelData.id)
         }
 
         updateChannelInfo(channelData)
-        trackVisitChannel(channelData.id)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
