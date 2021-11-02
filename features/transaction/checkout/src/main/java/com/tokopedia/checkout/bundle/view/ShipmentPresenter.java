@@ -15,7 +15,8 @@ import com.tokopedia.checkout.bundle.analytics.CheckoutAnalyticsPurchaseProtecti
 import com.tokopedia.checkout.bundle.data.api.CommonPurchaseApiUrl;
 import com.tokopedia.checkout.bundle.data.model.request.changeaddress.DataChangeAddressRequest;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.CheckoutRequestMapper;
-import com.tokopedia.checkout.bundle.data.model.request.checkout.CrossSellRequest;
+import com.tokopedia.checkout.bundle.data.model.request.checkout.cross_sell.CrossSellItemRequestModel;
+import com.tokopedia.checkout.bundle.data.model.request.checkout.cross_sell.CrossSellRequest;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.EgoldData;
@@ -1374,13 +1375,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         CrossSellRequest crossSellRequest = new CrossSellRequest();
-        ArrayList<CrossSellModel> listCrossSellItemData = new ArrayList<>();
+        ArrayList<CrossSellItemRequestModel> listCrossSellItemRequest = new ArrayList<>();
 
         if (!listShipmentCrossSellModel.isEmpty()) {
-            crossSellRequest.setListItem(listShipmentCrossSellModel);
+            CrossSellItemRequestModel crossSellItemRequestModel = new CrossSellItemRequestModel();
+            for (ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
+                crossSellItemRequestModel.setId((int) shipmentCrossSellModel.getCrossSellModel().getId());
+                crossSellItemRequestModel.setPrice((int) shipmentCrossSellModel.getCrossSellModel().getPrice());
+                crossSellItemRequestModel.setAdditionalVerticalId((int) shipmentCrossSellModel.getCrossSellModel().getAdditionalVerticalId());
+                crossSellItemRequestModel.setTransactionType(shipmentCrossSellModel.getCrossSellModel().getTransactionType());
+                listCrossSellItemRequest.add(crossSellItemRequestModel);
+            }
+            crossSellRequest.setListItem(listCrossSellItemRequest);
         }
-        crossSellRequest.setListItem(listShipmentCrossSellModel);
-
         CheckoutRequest checkoutRequest = new CheckoutRequest();
         checkoutRequest.setDonation(isDonation);
         checkoutRequest.setCrossSell(crossSellRequest);

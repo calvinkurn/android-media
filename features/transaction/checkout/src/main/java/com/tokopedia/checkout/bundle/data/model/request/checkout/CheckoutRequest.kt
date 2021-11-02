@@ -2,6 +2,7 @@ package com.tokopedia.checkout.bundle.data.model.request.checkout
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.checkout.bundle.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.*
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
