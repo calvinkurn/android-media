@@ -32,6 +32,7 @@ open class ShopHomeProductItemBigGridViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_product_card_big_grid
     }
+
     private fun findViews(view: View) {
         productCard = view.findViewById(R.id.product_card)
     }
@@ -42,7 +43,7 @@ open class ShopHomeProductItemBigGridViewHolder(
                 isHasAddToCartButton = false,
                 hasThreeDots = isShowTripleDot,
                 shopHomeProductViewModel = shopHomeProductViewModel,
-                isWideContent = false
+                isWideContent = true
         ))
         setListener()
     }
