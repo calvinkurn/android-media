@@ -9,7 +9,6 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
-import com.tokopedia.play.ui.productfeatured.viewholder.ProductFeaturedSeeMoreViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -25,16 +24,11 @@ class ProductFeaturedViewComponent(
     private val featuredProduct = mutableListOf<PlayProductUiModel>()
 
     private val adapter = ProductFeaturedAdapter(
-            productFeaturedListener = object : ProductBasicViewHolder.Listener {
-                override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
-                    listener.onProductFeaturedClicked(this@ProductFeaturedViewComponent, product, position)
-                }
-            },
-            productSeeMoreListener = object : ProductFeaturedSeeMoreViewHolder.Listener {
-                override fun onSeeMoreClicked() {
-                    listener.onSeeMoreClicked(this@ProductFeaturedViewComponent)
-                }
+        productFeaturedListener = object : ProductBasicViewHolder.Listener {
+            override fun onClickProductCard(product: PlayProductUiModel.Product, position: Int) {
+                listener.onProductFeaturedClicked(this@ProductFeaturedViewComponent, product, position)
             }
+        }
     )
 
     private val scrollListener = object: RecyclerView.OnScrollListener(){
@@ -84,12 +78,7 @@ class ProductFeaturedViewComponent(
     }
 
     private fun getFinalFeaturedItems(products: List<PlayProductUiModel>, maxProducts: Int): List<PlayProductUiModel> {
-        val featuredProducts = products.take(maxProducts)
-        return if (featuredProducts.isNotEmpty()) {
-            if (featuredProducts.first() is PlayProductUiModel.Product && featuredProducts.last() !is PlayProductUiModel.SeeMore) featuredProducts + PlayProductUiModel.SeeMore(products.size)
-            else featuredProducts
-        }
-        else featuredProducts
+        return products.take(maxProducts)
     }
 
     private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }
@@ -133,6 +122,5 @@ class ProductFeaturedViewComponent(
 
         fun onProductFeaturedImpressed(view: ProductFeaturedViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductFeaturedClicked(view: ProductFeaturedViewComponent, product: PlayProductUiModel.Product, position: Int)
-        fun onSeeMoreClicked(view: ProductFeaturedViewComponent)
     }
 }

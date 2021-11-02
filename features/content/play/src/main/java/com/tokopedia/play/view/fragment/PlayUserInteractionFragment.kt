@@ -409,10 +409,13 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickFeaturedProduct(product, position)
     }
 
-    override fun onSeeMoreClicked(view: ProductFeaturedViewComponent) {
-        openProductSheet()
-        analytic.clickFeaturedProductSeeMore()
-    }
+    /**
+     * TODO: Don't forget to delete this
+     */
+//    override fun onSeeMoreClicked(view: ProductFeaturedViewComponent) {
+//        openProductSheet()
+//        analytic.clickFeaturedProductSeeMore()
+//    }
 
     /**
      * Pinned Voucher View Component Listener
