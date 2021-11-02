@@ -8,6 +8,10 @@ import com.tokopedia.buyerorder.databinding.*
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.*
 import com.tokopedia.buyerorder.recharge.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
+import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 /**
  * @author by furqan on 01/11/2021
@@ -19,8 +23,13 @@ class RechargeOrderDetailTypeFactory(
         private val digitalRecommendationListener: RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
         private val staticButtonListener: RechargeOrderDetailStaticButtonViewHolder.ActionListener,
         private val aboutOrderListener: RechargeOrderDetailAboutOrderViewHolder.ActionListener,
-        private val actionButtonListener: RechargeOrderDetailActionButtonSectionViewHolder.ActionListener
-) : BaseAdapterTypeFactory() {
+        private val actionButtonListener: RechargeOrderDetailActionButtonSectionViewHolder.ActionListener,
+        private val recommendationWidgetListener: RecommendationWidgetListener
+) : BaseAdapterTypeFactory(), RecommendationTypeFactory {
+
+    override fun type(bestSellerDataModel: BestSellerDataModel): Int {
+        return BestSellerViewHolder.LAYOUT
+    }
 
     fun type(aboutOrderModel: RechargeOrderDetailAboutOrderModel): Int =
             RechargeOrderDetailAboutOrderViewHolder.LAYOUT
@@ -48,6 +57,7 @@ class RechargeOrderDetailTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when (type) {
+                BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(parent, recommendationWidgetListener)
                 RechargeOrderDetailAboutOrderViewHolder.LAYOUT -> {
                     val binding = ItemOrderDetailRechargeAboutOrdersBinding.bind(parent)
                     RechargeOrderDetailAboutOrderViewHolder(binding, aboutOrderListener)

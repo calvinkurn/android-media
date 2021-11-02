@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.recharge.presentation.model.*
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 /**
  * @author by furqan on 01/11/2021
@@ -12,21 +13,27 @@ import com.tokopedia.buyerorder.recharge.presentation.model.*
 class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         BaseAdapter<RechargeOrderDetailTypeFactory>(typeFactory) {
 
-    fun updateItems(data: RechargeOrderDetailModel) {
-        val newItems = setupItems(data)
-        visitables.clear()
-        visitables.addAll(newItems)
-        notifyDataSetChanged()
+    fun updateItems(data: RechargeOrderDetailModel?, topAdsData: BestSellerDataModel?) {
+        data?.let {
+            val newItems = setupItems(it, topAdsData)
+            visitables.clear()
+            visitables.addAll(newItems)
+            notifyDataSetChanged()
+        }
     }
 
     private fun setupItems(
-            data: RechargeOrderDetailModel
-    ): List<Visitable<RechargeOrderDetailTypeFactory>> {
-        return mutableListOf<Visitable<RechargeOrderDetailTypeFactory>>().apply {
+            data: RechargeOrderDetailModel,
+            topAdsData: BestSellerDataModel?
+    ): List<Visitable<*>> {
+        return mutableListOf<Visitable<*>>().apply {
             setupTopSection(data.topSectionModel)
             setupDetailSection(data.detailsSection)
             setupPaymentSection(data.paymentSectionModel)
             setupDigitalRecommendationWidget()
+            topAdsData?.let {
+                setupTopAdsWidget(it)
+            }
             setupSBMStaticButton()
             setupLanggananStaticButton()
             setupAboutOrdersSection(data.helpUrl)
@@ -34,27 +41,32 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         }
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupTopSection(topModel: RechargeOrderDetailTopSectionModel) {
+    private fun MutableList<Visitable<*>>.setupTopSection(topModel: RechargeOrderDetailTopSectionModel) {
         add(topModel)
         addDivider()
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupDetailSection(detailModel: RechargeOrderDetailSectionModel) {
+    private fun MutableList<Visitable<*>>.setupDetailSection(detailModel: RechargeOrderDetailSectionModel) {
         add(detailModel)
         addDivider()
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupPaymentSection(paymentModel: RechargeOrderDetailPaymentModel) {
+    private fun MutableList<Visitable<*>>.setupPaymentSection(paymentModel: RechargeOrderDetailPaymentModel) {
         add(paymentModel)
         addDivider()
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupDigitalRecommendationWidget() {
+    private fun MutableList<Visitable<*>>.setupDigitalRecommendationWidget() {
         add(RechargeOrderDetailDigitalRecommendationModel())
         addDivider()
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupSBMStaticButton() {
+    private fun MutableList<Visitable<*>>.setupTopAdsWidget(topAdsData: BestSellerDataModel) {
+        add(topAdsData)
+        addDivider()
+    }
+
+    private fun MutableList<Visitable<*>>.setupSBMStaticButton() {
         add(RechargeOrderDetailStaticButtonModel(
                 iconUrl = "",
                 iconRes = R.drawable.ic_recharge_order_detail_sbm,
@@ -67,7 +79,7 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         addDivider()
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupLanggananStaticButton() {
+    private fun MutableList<Visitable<*>>.setupLanggananStaticButton() {
         add(RechargeOrderDetailStaticButtonModel(
                 iconUrl = "",
                 iconRes = R.drawable.ic_recharge_order_detail_mybills,
@@ -80,15 +92,15 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         addDivider()
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupAboutOrdersSection(helpUrl: String) {
+    private fun MutableList<Visitable<*>>.setupAboutOrdersSection(helpUrl: String) {
         add(RechargeOrderDetailAboutOrderModel(helpUrl))
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupActionButtonSection(actionButtonList: RechargeOrderDetailActionButtonListModel) {
+    private fun MutableList<Visitable<*>>.setupActionButtonSection(actionButtonList: RechargeOrderDetailActionButtonListModel) {
         add(actionButtonList)
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.addDivider() {
+    private fun MutableList<Visitable<*>>.addDivider() {
         add(RechargeOrderDetailDividerModel())
     }
 
@@ -99,6 +111,17 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
             visitables.removeAt(index + 1) // remove divider
             notifyItemRemoved(index + 1)
             visitables.removeAt(index) // remove digital recommendation
+            notifyItemRemoved(index)
+        }
+    }
+
+    fun removeTopAds() {
+        val index = visitables.indexOfLast { it is BestSellerDataModel }
+
+        if (index != -1) {
+            visitables.removeAt(index + 1) // remove divider
+            notifyItemRemoved(index + 1)
+            visitables.removeAt(index) // remove topads
             notifyItemRemoved(index)
         }
     }

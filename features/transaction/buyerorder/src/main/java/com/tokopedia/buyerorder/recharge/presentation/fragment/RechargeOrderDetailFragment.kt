@@ -28,6 +28,10 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -42,7 +46,8 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
         RechargeOrderDetailStaticButtonViewHolder.ActionListener,
         RechargeOrderDetailAboutOrderViewHolder.ActionListener,
-        RechargeOrderDetailActionButtonSectionViewHolder.ActionListener {
+        RechargeOrderDetailActionButtonSectionViewHolder.ActionListener,
+        RecommendationWidgetListener {
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -70,6 +75,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 this,
                 this,
                 this,
+                this,
                 this)
     }
     private val adapter: RechargeOrderDetailAdapter by lazy {
@@ -86,7 +92,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         getComponent(RechargeOrderDetailComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentRechargeOrderDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -155,6 +161,30 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 //        TODO("Not yet implemented")
     }
 
+    override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+        RouteManager.route(context, recommendationItem.appUrl)
+    }
+
+    override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, chipsPosition: Int) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+        RouteManager.route(context, appLink)
+    }
+
+    override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+        RouteManager.route(context, appLink)
+    }
+
     private fun setupViews() {
         setupRecyclerView()
     }
@@ -196,18 +226,29 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeData() {
-        rechargeViewModel.orderDetailData.observe(viewLifecycleOwner, {
+        rechargeViewModel.orderDetailData.observe(viewLifecycleOwner, { result ->
             hideLoading()
-            when (it) {
+            when (result) {
                 is Success -> {
-                    adapter.updateItems(it.data)
-                    setupStickyButton(it.data.actionButtonList.actionButtons.firstOrNull {
+                    adapter.updateItems(result.data, rechargeViewModel.getTopAdsData())
+                    setupStickyButton(result.data.actionButtonList.actionButtons.firstOrNull {
                         it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
                     })
                     showRecyclerView()
                 }
                 is Fail -> {
 
+                }
+            }
+        })
+
+        rechargeViewModel.topadsData.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    adapter.updateItems(rechargeViewModel.getOrderDetailResultData(), result.data)
+                }
+                is Fail -> {
+                    adapter.removeTopAds()
                 }
             }
         })
