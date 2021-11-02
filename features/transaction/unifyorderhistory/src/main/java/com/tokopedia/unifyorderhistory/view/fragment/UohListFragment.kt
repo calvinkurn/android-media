@@ -56,6 +56,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.listener.MainParentStateListener
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -600,7 +601,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
             viewLifecycleOwner.lifecycle.addObserver(uohNavtoolbar)
             uohNavtoolbar.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
-                HintData(getString(R.string.hint_cari_transaksi) )
+                    HintData(getString(R.string.hint_cari_transaksi))
             ),
                 editorActionCallback = {query ->
                     searchQuery = query
@@ -923,7 +924,18 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 is Fail -> {
-                    context?.getString(R.string.fail_cancellation)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, Toaster.TYPE_ERROR) }
+                    context?.also { ctx ->
+                        val throwable = it.throwable
+                        var errorMessage = if (throwable is ResponseErrorException) {
+                            throwable.message ?: ""
+                        } else {
+                            ErrorHandler.getErrorMessage(ctx, throwable, ErrorHandler.Builder().withErrorCode(false))
+                        }
+                        if (errorMessage.isBlank()) {
+                            errorMessage = ctx.getString(R.string.fail_cancellation)
+                        }
+                        showToaster(errorMessage, Toaster.TYPE_ERROR)
+                    }
                 }
             }
         })
