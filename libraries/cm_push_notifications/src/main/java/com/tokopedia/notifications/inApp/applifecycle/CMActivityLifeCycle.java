@@ -1,4 +1,4 @@
-package com.tokopedia.notifications.inApp.viewEngine;
+package com.tokopedia.notifications.inApp.applifecycle;
 
 import android.app.Activity;
 import android.app.Application;
@@ -8,7 +8,7 @@ import android.util.Log;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.common.CMConstant;
-import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
+import com.tokopedia.notifications.inApp.applifecycle.CmActivityLifecycleHandler;
 import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;

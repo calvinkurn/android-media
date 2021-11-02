@@ -1,8 +1,8 @@
-package com.tokopedia.notifications.inApp
+package com.tokopedia.notifications.inApp.external
 
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleCallback
-import com.tokopedia.notifications.inApp.CmEventListener.fragmentLifecycleCallbackList
-import com.tokopedia.notifications.inApp.CmEventListener.pushIntentContractList
+import com.tokopedia.notifications.inApp.external.CmEventListener.fragmentLifecycleCallbackList
+import com.tokopedia.notifications.inApp.external.CmEventListener.pushIntentContractList
 
 
 object CmEventListenerManager {

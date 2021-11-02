@@ -1,7 +1,8 @@
-package com.tokopedia.notifications.inApp
+package com.tokopedia.notifications.inApp.external
 
 import android.app.Activity
 import android.os.Bundle
+import com.tokopedia.notifications.inApp.external.CmEventListener
 
 class PushIntentHandler {
 

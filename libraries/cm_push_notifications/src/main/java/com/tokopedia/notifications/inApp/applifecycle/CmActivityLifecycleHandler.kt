@@ -1,4 +1,4 @@
-package com.tokopedia.notifications.inApp
+package com.tokopedia.notifications.inApp.applifecycle
 
 import android.app.Activity
 import android.app.Application
@@ -8,14 +8,14 @@ import android.util.Log
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.inApp.external.PushIntentHandler
 import java.lang.ref.WeakReference
 
-class CmActivityLifecycleHandler(
-    private val applicationCallback: CmActivityApplicationCallback,
-    private val pushIntentHandler: PushIntentHandler,
-    val callback: ShowInAppCallback,
-    private val dialogVisibilityContract: CmDialogVisibilityContract
-) {
+class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationCallback,
+                                 val pushIntentHandler: PushIntentHandler,
+                                 val callback: ShowInAppCallback,
+                                 val cmInAppManager: CMInAppManager) {
 
     var currentWeakActivity: WeakReference<Activity>? = null
         private set
@@ -52,15 +52,15 @@ class CmActivityLifecycleHandler(
                 finalBundle = intent.extras
             }
             pushIntentHandler.isHandledByPush =
-                pushIntentHandler.processPushIntent(activity, finalBundle)
+                    pushIntentHandler.processPushIntent(activity, finalBundle)
         } catch (t: Throwable) {
             ServerLogger.log(
-                Priority.P2, "CM_VALIDATION",
-                mapOf(
-                    "type" to "exception",
-                    "err" to Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT),
-                    "data" to ""
-                )
+                    Priority.P2, "CM_VALIDATION",
+                    mapOf(
+                            "type" to "exception",
+                            "err" to Log.getStackTraceString(t).take(CMConstant.TimberTags.MAX_LIMIT),
+                            "data" to ""
+                    )
             )
         }
     }
@@ -79,7 +79,7 @@ class CmActivityLifecycleHandler(
     }
 
     fun onActivityDestroyedInternal(activity: Activity) {
-        dialogVisibilityContract.onDialogDismiss(activity)
+        cmInAppManager.onDialogDismiss(activity)
     }
 
     private fun clearCurrentActivity(activity: Activity) {
