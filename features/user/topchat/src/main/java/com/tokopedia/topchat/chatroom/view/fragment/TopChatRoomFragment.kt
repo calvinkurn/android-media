@@ -2458,6 +2458,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
     }
 
+    override fun getCommonShopId(): Long {
+        return shopId
+    }
+
     private fun copyToClipboard(text: CharSequence) {
         val clipboard = context?.getSystemService(
             CLIPBOARD_SERVICE

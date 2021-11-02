@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 data class ReminderTickerUiModel(
@@ -23,6 +24,7 @@ data class ReminderTickerUiModel(
     @SerializedName("urlLabel")
     var urlLabel: String = ""
 ) : Visitable<TopChatTypeFactory> {
+    val impressHolder = ImpressHolder()
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)
     }
