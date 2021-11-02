@@ -14,6 +14,7 @@ import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.*
+import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailActionButtonModel
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailStaticButtonModel
 import com.tokopedia.buyerorder.recharge.presentation.viewmodel.RechargeOrderDetailViewModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
@@ -135,6 +136,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onClickHelp(helpUrl: String) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onActionButtonClicked(actionButton: RechargeOrderDetailActionButtonModel) {
 //        TODO("Not yet implemented")
     }
 

@@ -29,7 +29,7 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
             setupDigitalRecommendationWidget()
             setupSBMStaticButton()
             setupLanggananStaticButton()
-            setupAboutOrdersSection(data.helpUrl)
+            setupAboutOrdersSection(data.helpUrl, data.actionButtonList)
         }
     }
 
@@ -79,8 +79,8 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         addDivider()
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupAboutOrdersSection(helpUrl: String) {
-        add(RechargeOrderDetailAboutOrderModel(helpUrl))
+    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupAboutOrdersSection(helpUrl: String, actionButtonList: RechargeOrderDetailActionButtonListModel) {
+        add(RechargeOrderDetailAboutOrderModel(helpUrl, actionButtonList))
     }
 
     private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.addDivider() {

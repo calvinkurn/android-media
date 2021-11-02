@@ -11,7 +11,8 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class RechargeOrderDetailAboutOrderModel(
-        val helpUrl: String
+        val helpUrl: String,
+        val actionButtonList: RechargeOrderDetailActionButtonListModel
 ) : Parcelable, Visitable<RechargeOrderDetailTypeFactory> {
     override fun type(typeFactory: RechargeOrderDetailTypeFactory?): Int =
             typeFactory?.type(this).orZero()

@@ -165,4 +165,5 @@
     <string name="recharge_order_detail_mybills_label">Langganan</string>
     <string name="recharge_order_detail_mybills_detail">Ada tagihan rutin? Biar nggak lupa, Langganan aja</string>
     <string name="recharge_order_detail_about_orders_title">Tentang Pesananmu</string>
+    <string name="recharge_order_detail_help_center_title">Pusat Bantuan</string>
 </resources>
