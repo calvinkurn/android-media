@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartTopAdsHeadlineBundleBinding
+import com.tokopedia.cart.databinding.ItemCartTopAdsHeadlineBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,14 +21,14 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductV
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
-class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBundleBinding,
+class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBinding,
                                    val listener: ActionListener?,
                                    val userSession: UserSessionInterface) : RecyclerView.ViewHolder(binding.root) {
 
     private var data: CartTopAdsHeadlineData? = null
 
     companion object {
-        val LAYOUT = R.layout.item_cart_top_ads_headline_bundle
+        val LAYOUT = R.layout.item_cart_top_ads_headline
         const val VALUE_SRC_CART = "cart"
         const val PARAM_ST = "st"
         const val VALUE_CPM = "cpm"

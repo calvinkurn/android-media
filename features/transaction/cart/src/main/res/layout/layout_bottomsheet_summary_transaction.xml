@@ -110,7 +110,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_summary_promo_transaction_title"
         tools:itemCount="2"
-        tools:listitem="@layout/item_cart_promo_price_summary_bundle" />
+        tools:listitem="@layout/item_cart_promo_price_summary" />
 
     <View
         android:id="@+id/separator_seller_cashback"

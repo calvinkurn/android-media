@@ -3,7 +3,7 @@ package com.tokopedia.cart.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemProductWishlistBundleBinding
+import com.tokopedia.cart.databinding.ItemProductWishlistBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,10 +15,10 @@ import com.tokopedia.kotlin.extensions.view.show
  * Created by Irfan Khoirul on 2019-06-15.
  */
 
-class CartWishlistItemViewHolder(private val binding: ItemProductWishlistBundleBinding, val actionListener: ActionListener?, val itemWidth: Int) : RecyclerView.ViewHolder(binding.root) {
+class CartWishlistItemViewHolder(private val binding: ItemProductWishlistBinding, val actionListener: ActionListener?, val itemWidth: Int) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        val LAYOUT = R.layout.item_product_wishlist_bundle
+        val LAYOUT = R.layout.item_product_wishlist
     }
 
     fun bind(element: CartWishlistItemHolderData) {
