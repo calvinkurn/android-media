@@ -45,8 +45,7 @@ class PlaySocketToModelMapper @Inject constructor(
     fun mapPinnedMessage(input: PinnedMessage): PinnedMessageUiModel {
         return PinnedMessageUiModel(
                 id = input.pinnedMessageId,
-                applink = input.redirectUrl,
-                partnerName = "", /**Skip**/
+                appLink = input.redirectUrl,
                 title = input.title,
         )
     }

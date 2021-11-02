@@ -153,8 +153,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedMessageUiModel(
             id = pinnedMessageResponse.id,
-            applink = pinnedMessageResponse.redirectUrl,
-            partnerName = htmlTextTransformer.transform(partnerResponse.name),
+            appLink = pinnedMessageResponse.redirectUrl,
             title = pinnedMessageResponse.title,
     )
 

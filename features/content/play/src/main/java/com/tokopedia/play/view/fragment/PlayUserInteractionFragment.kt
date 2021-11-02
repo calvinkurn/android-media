@@ -366,9 +366,9 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * QuickReply View Component Listener
      */
-    override fun onPinnedMessageActionClicked(view: PinnedViewComponent, applink: String, message: String) {
-        analytic.clickPinnedMessage(message, applink)
-        openPageByApplink(applink, pipMode = true)
+    override fun onPinnedMessageActionClicked(view: PinnedViewComponent, appLink: String, message: String) {
+        analytic.clickPinnedMessage(message, appLink)
+        openPageByApplink(appLink, pipMode = true)
     }
 
     /**
