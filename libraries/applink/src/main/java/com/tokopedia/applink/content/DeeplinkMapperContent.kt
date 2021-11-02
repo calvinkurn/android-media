@@ -2,6 +2,7 @@ package com.tokopedia.applink.content
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_PRODUCT_PICKER_FROM_SHOP
@@ -75,8 +76,9 @@ object DeeplinkMapperContent {
     }
 
     private fun handleNavigationPlay(uri: Uri): String {
-        var appLink = "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
-        if(!uri.query.isNullOrEmpty()) appLink += "?" + uri.query
-        return appLink
+        return UriUtil.appendDiffDeeplinkWithQuery(
+            "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}",
+            uri.query
+        )
     }
 }
