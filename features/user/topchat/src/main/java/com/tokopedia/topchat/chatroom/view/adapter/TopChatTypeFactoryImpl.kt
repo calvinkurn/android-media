@@ -56,7 +56,8 @@ open class TopChatTypeFactoryImpl constructor(
     private val reviewListener: ReviewViewHolder.Listener,
     private val srwBubbleListener: SrwBubbleViewHolder.Listener,
     private val chatMsgListener: FlexBoxChatLayout.Listener,
-    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
+    private val listener: ReminderTickerViewHolder.Listener
 ) : BaseChatTypeFactoryImpl(
     imageAnnouncementListener,
     chatLinkHandlerListener,
@@ -229,7 +230,7 @@ open class TopChatTypeFactoryImpl constructor(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ReminderTickerViewHolder.LAYOUT -> ReminderTickerViewHolder(
-                parent
+                parent, listener
             )
             TopchatBannedProductAttachmentViewHolder.LAYOUT -> TopchatBannedProductAttachmentViewHolder(
                 parent,

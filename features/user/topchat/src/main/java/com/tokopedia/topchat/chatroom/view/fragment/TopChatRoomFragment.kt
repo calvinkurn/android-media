@@ -164,7 +164,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
     SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
-    FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener {
+    FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener,
+    ReminderTickerViewHolder.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -969,7 +970,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this
+            this, this
         )
     }
 
@@ -2391,7 +2392,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val eligiblePosition = adapter.findSrwTickerPosition(data.regexMessage)
         adapter.addElement(eligiblePosition, data)
         viewModel.removeTicker()
-        Toast.makeText(context, "Position found: $eligiblePosition", Toast.LENGTH_SHORT).show()
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
@@ -2475,6 +2475,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
             loadInitialData()
         }
+    }
+
+    override fun closeReminderTicker(element: ReminderTickerUiModel) {
+        viewModel.closeTickerReminder(element)
     }
 
     companion object {

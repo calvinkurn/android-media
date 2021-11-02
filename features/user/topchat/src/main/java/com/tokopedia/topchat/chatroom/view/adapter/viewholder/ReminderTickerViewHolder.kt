@@ -12,16 +12,23 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class ReminderTickerViewHolder(
-    itemView: View?
+    itemView: View?,
+    private val listener: Listener?
 ) : AbstractViewHolder<ReminderTickerUiModel>(itemView) {
 
     private val ticker: Ticker? = itemView?.findViewById(R.id.tk_prompt)
 
+    interface Listener {
+        fun closeReminderTicker(element: ReminderTickerUiModel)
+    }
+
     override fun bind(element: ReminderTickerUiModel) {
         bindTitle(element)
         bindDesc(element)
+        bindCloseListener(element)
     }
 
     private fun bindTitle(element: ReminderTickerUiModel) {
@@ -50,6 +57,15 @@ class ReminderTickerViewHolder(
             RouteManager.route(it.context, element.url)
         }
         ticker?.setTextDescription(sb)
+    }
+
+    private fun bindCloseListener(element: ReminderTickerUiModel) {
+        ticker?.setDescriptionClickEvent(object: TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) { }
+            override fun onDismiss() {
+                listener?.closeReminderTicker(element)
+            }
+        })
     }
 
     companion object {

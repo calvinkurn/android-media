@@ -24,7 +24,7 @@ open class GetReminderTickerUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String = """
-                query GetReminderTicker($$PARAM_FEATURE_ID: Int!) {
+            query GetReminderTicker($$PARAM_FEATURE_ID: Int!) {
                 GetReminderTicker ($PARAM_FEATURE_ID: $$PARAM_FEATURE_ID) {
                     featureId
                     enable

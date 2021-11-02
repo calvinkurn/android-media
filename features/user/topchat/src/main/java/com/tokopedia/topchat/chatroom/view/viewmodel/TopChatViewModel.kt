@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
+import com.tokopedia.topchat.chatroom.domain.usecase.CloseReminderTicker
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
@@ -19,6 +20,7 @@ import javax.inject.Inject
 open class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
     private var reminderTickerUseCase: GetReminderTickerUseCase,
+    private var closeReminderTicker: CloseReminderTicker,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher.main) {
@@ -64,6 +66,19 @@ open class TopChatViewModel @Inject constructor(
 
     fun removeTicker() {
         _srwTickerReminder.value = null
+    }
+
+    fun closeTickerReminder(element: ReminderTickerUiModel) {
+        launchCatchError(
+            block = {
+                val existingMessageIdParam = GetReminderTickerUseCase.Param(
+                    featureId = element.featureId
+                )
+                closeReminderTicker(existingMessageIdParam)
+            },
+            onError = { }
+        )
+
     }
 
 }
