@@ -45,9 +45,9 @@ class ShopHomeFlashSaleViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_flash_sale_widget
-        private const val EMPTY_SIZE = 0
         private const val SINGLE = 1
         private const val DOUBLE = 2
+        private const val ZERO = 0
         private const val ONE = 1
         private const val ONE_HUNDRED = 100
         private const val ONE_THOUSAND = 1000
@@ -95,6 +95,11 @@ class ShopHomeFlashSaleViewHolder(
         flashSaleReminderView?.setOnClickListener {
             uiModel?.run {
                 listener.onClickFlashSaleReminder(this)
+            }
+        }
+        timerView?.onFinish = {
+            uiModel?.run {
+                listener.onTimerFinished(this)
             }
         }
     }
@@ -177,6 +182,7 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun getTotalNotifyWording(reminder: Int): String {
         return when {
+            reminder == ZERO -> getString(R.string.shop_page_label_remind_me)
             // reminder < 100 => direct number
             reminder < ONE_HUNDRED -> reminder.toString()
             reminder / ONE_MILLION >= ONE -> {
@@ -192,16 +198,15 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupProductCardCarousel(model: ShopHomeFlashSaleUiModel) {
         val flashSaleData = model.data?.firstOrNull()
-        val productList = flashSaleData?.productList?.toMutableList() ?: mutableListOf()
-        // get the total product and total product wording
-        val totalProduct = flashSaleData?.totalProduct ?: 0
+        val productListSize = flashSaleData?.productList?.size ?: 0
+        val productList = flashSaleData?.productList?.take(MAX_PRODUCT_CARD_SIZE)?.toMutableList() ?: mutableListOf()
+        // get total product wording
         val totalProductWording = flashSaleData?.totalProductWording ?: ""
-        // add product place holder if product list size 5 and metada is not empty
-        val isUsingPlaceHolder = isUsingPlaceHolder(totalProduct, totalProductWording, productList.size)
+        // add product place holder if product list size > 5 and metada is not empty
+        val isUsingPlaceHolder = isUsingPlaceHolder(totalProductWording, productListSize)
         if (isUsingPlaceHolder) {
             productList.add(ShopHomeProductUiModel().apply {
                 this.isProductPlaceHolder = isUsingPlaceHolder
-                this.totalProduct = totalProduct
                 this.totalProductWording = totalProductWording
             })
             // set flash sale ui model for click handling purpose
@@ -211,8 +216,8 @@ class ShopHomeFlashSaleViewHolder(
         productCarouselAdapter.setProductList(productList)
     }
 
-    private fun isUsingPlaceHolder(totalProduct: Int, totalProductWording: String, size: Int): Boolean {
-        return size == MAX_PRODUCT_CARD_SIZE && totalProduct > EMPTY_SIZE && totalProductWording.isNotBlank()
+    private fun isUsingPlaceHolder(totalProductWording: String, size: Int): Boolean {
+        return size > MAX_PRODUCT_CARD_SIZE && totalProductWording.isNotBlank()
     }
 
     private fun isStatusCampaignFinished(statusCampaign: String): Boolean {
