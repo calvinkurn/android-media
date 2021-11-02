@@ -154,8 +154,8 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
      */
     private fun viewPagerPartnerDisplay(payLaterAllData: PayLaterAllData): Int {
         return when {
-            payLaterAllData.detail.isEmpty() -> return 0
-            payLaterAllData.detail.size < payLaterViewModel.partnerDisplayPosition -> return payLaterAllData.detail.size - 1
+            payLaterAllData.detail.isEmpty() -> 0
+            payLaterAllData.detail.size <= payLaterViewModel.partnerDisplayPosition -> payLaterAllData.detail.size-1
             else -> payLaterViewModel.partnerDisplayPosition
         }
 
