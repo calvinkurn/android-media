@@ -34,8 +34,8 @@ class RechargeOrderDetailStaticButtonViewHolder(
                 tgRechargeOrderDetailStaticDetail.text = element.subtitle
 
             root.setOnClickListener {
-                RouteManager.route(root.context, element.actionUrl)
                 listener?.onClickStaticButton(element)
+                RouteManager.route(root.context, element.actionUrl)
             }
         }
     }

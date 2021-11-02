@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.FragmentRechargeOrderDetailBinding
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
@@ -26,6 +28,7 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -129,11 +132,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onCopyInvoiceNumberClicked(invoiceRefNum: String) {
-//        TODO("Not yet implemented")
+        copyToClipboard(INVOICE_NUMBER_LABEL, invoiceRefNum)
     }
 
     override fun onCopyCodeClicked(label: String, value: String) {
-//        TODO("Not yet implemented")
+        copyToClipboard(label, value)
     }
 
     override fun hideDigitalRecommendation() {
@@ -242,6 +245,18 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun copyToClipboard(label: String, value: String) {
+        context?.let {
+            BuyerUtils.copyTextToClipBoard(label, value, it)
+            BuyerUtils.vibrate(it)
+            Toaster.build(binding.root,
+                    String.format(getString(R.string.recharge_order_detail_copied_message), label),
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
     companion object {
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
         private const val EXTRA_ORDER_CATEGORY = "EXTRA_ORDER_CATEGORY"
@@ -251,6 +266,8 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
 
         private const val TOKOPEDIA_PREFIX = "tokopedia"
         private const val IDEM_POTENCY_KEY = "idem_potency_key"
+
+        private const val INVOICE_NUMBER_LABEL = "Nomor Invoice"
 
         fun getInstance(orderId: String,
                         orderCategory: String): RechargeOrderDetailFragment =

@@ -17,8 +17,8 @@ class RechargeOrderDetailAboutOrderViewHolder(
     override fun bind(element: RechargeOrderDetailAboutOrderModel) {
         with(binding) {
             containerRechargeOrderDetailHelp.setOnClickListener {
-                RouteManager.route(root.context, element.helpUrl)
                 listener?.onClickHelp(element.helpUrl)
+                RouteManager.route(root.context, element.helpUrl)
             }
         }
     }
