@@ -49,8 +49,8 @@ class TokoNowChooseAddressWidgetViewHolder(
                     tokoNowChooseAddressWidgetListener?.onChooseAddressWidgetRemoved()
                 }
 
-                override fun onClickChooseAddressTokoNowTracked() {
-                    tokoNowChooseAddressWidgetListener?.onClickChooseAddressWidgetTracked()
+                override fun onClickChooseAddressTokoNowTracker() {
+                    tokoNowChooseAddressWidgetListener?.onClickChooseAddressWidgetTracker()
                 }
 
                 override fun needToTrackTokoNow(): Boolean = true
@@ -106,6 +106,6 @@ class TokoNowChooseAddressWidgetViewHolder(
 
     interface TokoNowChooseAddressWidgetListener {
         fun onChooseAddressWidgetRemoved()
-        fun onClickChooseAddressWidgetTracked()
+        fun onClickChooseAddressWidgetTracker()
     }
 }

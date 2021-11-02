@@ -229,7 +229,7 @@ class TokoNowRepurchaseFragment:
         }
     }
 
-    override fun onClickChooseAddressWidgetTracked() {
+    override fun onClickChooseAddressWidgetTracker() {
         analytics.onClickChangeAddress(userSession.userId)
     }
 

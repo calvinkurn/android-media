@@ -190,7 +190,7 @@ class ChooseAddressWidget : ConstraintLayout,
                     }
                 }
                 if (chooseAddressWidgetListener?.needToTrackTokoNow() == true) {
-                    chooseAddressWidgetListener?.onClickChooseAddressTokoNowTracked()
+                    chooseAddressWidgetListener?.onClickChooseAddressTokoNowTracker()
                 }
                 val chooseAddressBottomSheet = ChooseAddressBottomSheet()
                 chooseAddressBottomSheet.setListener(this)
@@ -319,7 +319,7 @@ class ChooseAddressWidget : ConstraintLayout,
          * custom tracker for choose address widget of TokoNow page
          * By default, this method will be empty
          */
-        fun onClickChooseAddressTokoNowTracked() {
+        fun onClickChooseAddressTokoNowTracker() {
         }
 
         /**
