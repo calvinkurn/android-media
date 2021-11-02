@@ -212,7 +212,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         val model =  (intent.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel?)
         isEditState = model?.isEditState ?: false
 
-        if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE && (intent.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel).isEditState) {
+        if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE && isEditState) {
             createPostAnalytics.eventClickBackOnPreviewPage()
             finish()
         } else if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_TAGGING_PAGE && isOpenedFromPreview) {
