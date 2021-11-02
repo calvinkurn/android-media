@@ -59,6 +59,7 @@ data class AddToCartParam (
                 price = uiModel.priceInt,
                 productImage = uiModel.productImage,
                 freeShipping = uiModel.hasFreeShipping(),
+                productUrl = uiModel.productUrl,
                 blastId = uiModel.blastId,
                 source = source
             )
