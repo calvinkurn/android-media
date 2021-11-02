@@ -33,7 +33,7 @@ class PopupManagerAddProductUseCase @Inject constructor(@Named(GQL_POPUP_NAME)
         setRequestParams(requestParams.parameters)
 
         val data = executeOnBackground()
-        return data.shopManagerPopups.popupsData.isShowPopup
+        return data.shopManagerPopups.shopManagerPopupsData.isShowPopup
     }
 
 }

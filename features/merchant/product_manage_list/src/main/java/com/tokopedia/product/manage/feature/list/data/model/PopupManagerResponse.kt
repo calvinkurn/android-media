@@ -12,10 +12,10 @@ data class PopupManagerResponse(
 data class ShopManagerPopups(
     @SerializedName("data")
     @Expose
-    val popupsData: PopupsData = PopupsData()
+    val shopManagerPopupsData: ShopManagerPopupsData = ShopManagerPopupsData()
 )
 
-data class PopupsData(
+data class ShopManagerPopupsData(
     @SerializedName("showPopup")
     @Expose
     val isShowPopup: Boolean = false
