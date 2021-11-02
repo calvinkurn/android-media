@@ -28,7 +28,7 @@ object FeedScrollListenerNew {
     private const val PAYLOAD_POST_TOPADS_VISIBLE= 77
     private const val TYPE_VIDEO = "video"
     fun  onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
-        if (true) {
+        if (canAutoplayVideo(recyclerView)) {
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
             val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
             val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
