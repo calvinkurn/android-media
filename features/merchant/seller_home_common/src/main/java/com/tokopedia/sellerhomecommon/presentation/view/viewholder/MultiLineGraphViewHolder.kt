@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
-import android.animation.Animator
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.view.View
@@ -59,7 +58,7 @@ class MultiLineGraphViewHolder(
     private var isMetricComparableByPeriodSelected: Boolean = false
     private var showAnimation: ValueAnimator? = null
     private var hideAnimation: ValueAnimator? = null
-    private var showEmptyState: Boolean = false
+    private var shouldShowEmptyState: Boolean = false
 
     override fun bind(element: MultiLineGraphWidgetUiModel) {
         showAnimation?.end()
@@ -276,12 +275,13 @@ class MultiLineGraphViewHolder(
 
     private fun setupEmptyState() {
         element?.let { element ->
-            with(element.emptyState) {
-                emptyStateBinding.tvLineGraphEmptyStateTitle.text = title
-                emptyStateBinding.tvLineGraphEmptyStateDescription.text = description
-                emptyStateBinding.tvShcMultiLineEmptyStateCta.text = ctaText
-                emptyStateBinding.tvShcMultiLineEmptyStateCta.setOnClickListener {
-                    if (RouteManager.route(itemView.context, appLink)) {
+            with(emptyStateBinding) {
+                val emptyState = element.emptyState
+                tvLineGraphEmptyStateTitle.text = emptyState.title
+                tvLineGraphEmptyStateDescription.text = emptyState.description
+                tvShcMultiLineEmptyStateCta.text = emptyState.ctaText
+                tvShcMultiLineEmptyStateCta.setOnClickListener {
+                    if (RouteManager.route(itemView.context, emptyState.appLink)) {
                         listener.sendMultiLineGraphEmptyStateCtaClick(element)
                     }
                 }
@@ -357,14 +357,15 @@ class MultiLineGraphViewHolder(
     }
 
     private fun showLineGraph(metrics: List<MultiLineMetricUiModel>) {
-        showEmptyState = showEmpty(element, metrics)
+        shouldShowEmptyState = showEmpty(element, metrics)
         with(binding.chartViewShcMultiLine) {
             val lineChartDataSets = getLineChartData(metrics)
             init(getLineGraphConfig(lineChartDataSets))
             setDataSets(*lineChartDataSets.toTypedArray())
             invalidateChart()
         }
-        if (showEmptyState) {
+
+        if (shouldShowEmptyState) {
             setupEmptyState()
         } else {
             animateHideEmptyState()
@@ -388,7 +389,7 @@ class MultiLineGraphViewHolder(
         return LineChartConfig.create {
             xAnimationDuration { 200 }
             yAnimationDuration { 200 }
-            tooltipEnabled { !showEmptyState }
+            tooltipEnabled { !shouldShowEmptyState }
             setChartTooltip(getLineGraphTooltip())
 
             xAxis {
@@ -674,21 +675,8 @@ class MultiLineGraphViewHolder(
         with(emptyStateBinding) {
             if (showAnimation?.isRunning == true) showAnimation?.end()
             if (!multiLineEmptyState.isVisible) return
+            multiLineEmptyState.gone()
             hideAnimation = multiLineEmptyState.animatePop(1f, 0f)
-            hideAnimation?.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) {}
-
-                override fun onAnimationEnd(animation: Animator?) {
-                    multiLineEmptyState.gone()
-                    hideAnimation?.removeListener(this)
-                }
-
-                override fun onAnimationCancel(animation: Animator?) {
-                    hideAnimation?.removeListener(this)
-                }
-
-                override fun onAnimationStart(animation: Animator?) {}
-            })
         }
     }
 
