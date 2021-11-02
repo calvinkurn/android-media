@@ -806,7 +806,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 immersiveBoxView.hide()
                 playButtonView.hide()
                 toolbarView.setIsShareable(false)
-                shareLinkView.setIsShareable(false)
+                shareLinkView?.setIsShareable(false)
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
@@ -1506,7 +1506,7 @@ class PlayUserInteractionFragment @Inject constructor(
         toolbarView.setPartnerName(partner.name)
 
         toolbarView.setIsShareable(share.shouldShow)
-        shareLinkView.setIsShareable(share.shouldShow)
+        shareLinkView?.setIsShareable(share.shouldShow)
     }
 
     private fun renderLikeView(

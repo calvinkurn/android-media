@@ -22,8 +22,6 @@ class ProductFeaturedSeeMoreViewHolder(
 
     fun bind(item: PlayProductUiModel.SeeMore) {
         icProduct.setTotalProduct(item.total)
-        itemView.scaleX = item.scale
-        itemView.scaleY = item.scale
     }
 
     companion object {
