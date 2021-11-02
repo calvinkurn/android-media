@@ -9,8 +9,6 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeSwipeBannerBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageSwipeBannerModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.unifycomponents.toPx
 
 /**
  * @author: astidhiyaa on 01/11/21.
@@ -19,7 +17,7 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
                                             val listener: RechargeHomepageItemListener)
     : AbstractViewHolder<RechargeHomepageSwipeBannerModel>(itemView), CarouselUnify.OnActiveIndexChangedListener {
 
-    private var slidesList: List<RechargeHomepageSections.Item> = emptyList()
+    private lateinit var slidesList: List<RechargeHomepageSections.Item>
 
     override fun bind(element: RechargeHomepageSwipeBannerModel) {
         val bind = ViewRechargeHomeSwipeBannerBinding.bind(itemView)
@@ -36,22 +34,21 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
             freeMode = false
             centerMode = true
             slideToScroll = 1
+            slideToShow = 1.0f
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
-
-            when {
-                slidesList.isNotEmpty() -> {
-                    slideToShow = 1.3f
-                    autoplay = true
-                    infinite = true
-                    setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
-                }
-                slidesList.size == 1 -> {
-                    autoplay = false
-                    infinite = false
-                    slideToShow = 1.0f
-                }
-                else -> listener.loadRechargeSectionData(element.visitableId())
+            onItemClick = {
+                listener.onRechargeSectionItemClicked(slidesList[it])
             }
+
+            if(element.section.items.isNotEmpty()){
+                autoplayDuration = 5000L
+                autoplay = true
+                infinite = true
+            }
+            else {
+                listener.loadRechargeSectionData(element.visitableId())
+            }
+
             val urlArr : ArrayList<String> = slidesList.map {
                 it.mediaUrl
             } as ArrayList<String>
