@@ -114,8 +114,11 @@ class GraphqlRepositoryImpl @Inject constructor(
                 if (error != null && !error.isJsonNull) {
                     errors[typeOfT] = CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
-                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
+                val operationName = tempRequest.getOrNull(index)?.operationName.orEmpty()
+                LoggingUtils.logGqlSuccessRate(operationName, "1")
             } catch (jse: JsonSyntaxException) {
+                val operationName = CommonUtils.getOperationNameFromException(requests)
+                LoggingUtils.logGqlSuccessRate(operationName, "0")
                 LoggingUtils.logGqlParseError(
                     "json",
                     Log.getStackTraceString(jse),
@@ -174,9 +177,12 @@ class GraphqlRepositoryImpl @Inject constructor(
                 requests.remove(copyRequests[i])
 
                 Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
-                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
+                val operationName =  copyRequests.getOrNull(i)?.operationName.orEmpty()
+                LoggingUtils.logGqlSuccessRate(operationName, "1")
             }
         } catch (jse: JsonSyntaxException) {
+            val operationName = CommonUtils.getOperationNameFromException(requests)
+            LoggingUtils.logGqlSuccessRate(operationName, "0")
             LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
             jse.printStackTrace()
         } catch (e: Exception) {

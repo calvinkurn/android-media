@@ -97,8 +97,11 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 if (error != null && !error.isJsonNull) {
                     errors[typeOfT] = CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
-                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
+                val operationName = tempRequest.getOrNull(index)?.operationName.orEmpty()
+                LoggingUtils.logGqlSuccessRate(operationName, "1")
             } catch (jse: JsonSyntaxException) {
+                val operationName = CommonUtils.getOperationNameFromException(requests)
+                LoggingUtils.logGqlSuccessRate(operationName, "0")
                 LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
                 jse.printStackTrace()
             } catch (e: Exception) {
@@ -152,9 +155,12 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 requests.remove(copyRequests[i])
 
                 Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
+                val operationName = copyRequests.getOrNull(i)?.operationName.orEmpty()
+                LoggingUtils.logGqlSuccessRate(operationName, "1")
             }
-            LoggingUtils.logGqlParseSuccess("kt", requests.toString())
         } catch (jse: JsonSyntaxException) {
+            val operationName = CommonUtils.getOperationNameFromException(requests)
+            LoggingUtils.logGqlSuccessRate(operationName, "0")
             LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
             jse.printStackTrace()
         } catch (e: Exception) {

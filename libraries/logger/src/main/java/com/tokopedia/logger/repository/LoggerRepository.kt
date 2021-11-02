@@ -127,6 +127,7 @@ class LoggerRepository(private val logDao: LoggerDao,
             val priorityName = when (priorityValue) {
                 Constants.SEVERITY_HIGH -> LoggerReporting.P1
                 Constants.SEVERITY_MEDIUM -> LoggerReporting.P2
+                Constants.SEVERITY_SR -> LoggerReporting.SF
                 else -> ""
             }
             val tagMapsValue = StringBuilder(priorityName).append(LoggerReporting.DELIMITER_TAG_MAPS).append(tagValue).toString()
@@ -134,7 +135,11 @@ class LoggerRepository(private val logDao: LoggerDao,
                 scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
             }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
-                messageNewRelicList.add(addEventNewRelic(message))
+                if (priorityName == LoggerReporting.SF) {
+                    messageNewRelicList.add(addEventNewRelicSuccessRate(message))
+                } else {
+                    messageNewRelicList.add(addEventNewRelic(message))
+                }
             }
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
                 messageEmbraceList.add(EmbraceBody(tagValue, jsonToMapEmbrace(message)))
@@ -161,6 +166,13 @@ class LoggerRepository(private val logDao: LoggerDao,
     private fun addEventNewRelic(message: String): String {
         val gson = Gson().fromJson(message, JsonObject::class.java)
         gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
+        return gson.toString()
+    }
+
+    private fun addEventNewRelicSuccessRate(message: String): String {
+        val gson = Gson().fromJson(message, JsonObject::class.java)
+        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_SF_NEW_RELIC)
+        gson.remove(Constants.PRIORITY_LOG)
         return gson.toString()
     }
 

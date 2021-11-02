@@ -6,9 +6,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.bind.JsonTreeReader;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
 
 import java.io.StringReader;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import retrofit2.Response;
 
@@ -55,6 +57,18 @@ public class CommonUtils {
             } catch (Exception ignored) {}
         }
         return new JsonArray();
+    }
+
+    public static String getOperationNameFromException(List<GraphqlRequest> graphqlRequests) {
+        if (graphqlRequests.size() == 0) {
+            return "";
+        } else {
+            try {
+                return graphqlRequests.get(0).getOperationName();
+            } catch (Exception ignored) {
+                return "";
+            }
+        }
     }
 }
 
