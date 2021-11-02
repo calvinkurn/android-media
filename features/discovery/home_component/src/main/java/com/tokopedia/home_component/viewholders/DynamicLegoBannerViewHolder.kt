@@ -44,8 +44,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
         private const val SPAN_COUNT_2 = 2
         private const val SPAN_COUNT_3 = 3
         private const val SPAN_SPACING_0 = 0
-        private const val SPAN_SPACING_10 = 10
-        private const val SPAN_SPACING_20 = 20
+        private const val SPAN_SPACING_16 = 16
+        private const val SPAN_SPACING_8 = 8
     }
 
     override fun bind(element: DynamicLegoBannerDataModel) {
@@ -99,19 +99,19 @@ class DynamicLegoBannerViewHolder(itemView: View,
             //need to be deleted after rollence duration end
             if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLego24UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpacingSpaceForLegoRounded(itemView.context).toInt(), DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context), false))
+                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), SPAN_SPACING_16, false))
                 marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
             }
             //setup for lego 2 banner rollence
             //need to be deleted after rollence duration end
             else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLego24UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(SPAN_COUNT_2, DynamicChannelTabletConfiguration.getSpacingSpaceForLegoRounded(itemView.context).toInt(), false))
+                        GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_16, false))
                 marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
             } else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
                     || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), DynamicChannelTabletConfiguration.getSpacingSpaceForLegoBleeding(itemView.context).toInt(), false))
+                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), SPAN_SPACING_8, false))
                 marginValue = 0
             }
             marginBottom = marginValue
