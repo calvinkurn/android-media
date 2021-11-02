@@ -245,17 +245,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 it.select()
             }
             val tabs = telcoTabViewModel.getAll()
-            if (showProducts) {
-                sharedModelPrepaid.setPositionScrollToItem(0)
-                categoryId = getIdCategoryCurrentItem()
-                topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
-                sharedModelPrepaid.setVisibilityTotalPrice(false)
-                sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
-                sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
-            } else {
-                setTrackingOnTabMenu(tabs[position].title)
-                if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
-                else sendImpressionRecents()
+            if (!tabs.isNullOrEmpty() && tabs.size > position) {
+                if (showProducts) {
+                    sharedModelPrepaid.setPositionScrollToItem(0)
+                    categoryId = getIdCategoryCurrentItem()
+                    topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
+                    sharedModelPrepaid.setVisibilityTotalPrice(false)
+                    sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
+                    sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
+                } else {
+                    setTrackingOnTabMenu(tabs[position].title)
+                    if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
+                    else sendImpressionRecents()
+                }
             }
         }
     }
@@ -779,8 +781,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         private const val TITLE_PAGE = "telco prepaid"
 
         fun newInstance(
-            telcoExtraParam: TopupBillsExtraParam,
-            rechargeProductFromSlice: String = ""
+                telcoExtraParam: TopupBillsExtraParam,
+                rechargeProductFromSlice: String = ""
         ): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
             val bundle = Bundle()

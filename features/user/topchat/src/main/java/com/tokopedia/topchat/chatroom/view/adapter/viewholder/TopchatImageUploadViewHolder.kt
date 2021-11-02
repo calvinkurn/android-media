@@ -22,8 +22,7 @@ class TopchatImageUploadViewHolder(
     itemView: View?,
     listener: ImageUploadListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
-)
-    : ImageUploadViewHolder(itemView, listener) {
+) : ImageUploadViewHolder(itemView, listener) {
 
     private val viewContainer: LinearLayout? = itemView?.findViewById(R.id.ll_image_container)
     private var replyBubbleArea: ReplyBubbleAreaMessage? = itemView?.findViewById(

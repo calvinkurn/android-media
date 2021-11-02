@@ -155,10 +155,12 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         val totalStock = 2
         val expectedResult = Success(UpdateCampaignStockResult(
             productId,
-                productName,
-                totalStock,
-                ProductStatus.ACTIVE,
-                true
+            productName,
+            totalStock,
+            ProductStatus.ACTIVE,
+            isStockChanged = true,
+            isStatusChanged = true,
+            true
         ))
 
         verifyProductUpdateResponseResult(expectedResult)
@@ -209,6 +211,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             initialProductStatus,
+            isStockChanged = true,
+            isStatusChanged = true,
             true
         ))
 
@@ -260,6 +264,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.ACTIVE,
+            isStockChanged = true,
+            isStatusChanged = true,
             true
         ))
 
@@ -310,6 +316,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.INACTIVE,
+            isStockChanged = true,
+            isStatusChanged = true,
             true
         ))
 
@@ -496,6 +504,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.INACTIVE,
+            isStockChanged = true,
+            isStatusChanged = true,
             true
         ))
 
@@ -551,6 +561,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
                 productName,
                 totalStock,
                 ProductStatus.INACTIVE,
+                isStockChanged = true,
+                isStatusChanged = true,
                 editVariantResponse.productUpdateV3Data.isSuccess,
                 editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
                 hashMapOf(
@@ -610,6 +622,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.INACTIVE,
+            isStockChanged = false,
+            isStatusChanged = false,
             editVariantResponse.productUpdateV3Data.isSuccess,
             editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
             hashMapOf()
@@ -670,6 +684,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.INACTIVE,
+            isStockChanged = true,
+            isStatusChanged = true,
             editVariantResponse.productUpdateV3Data.isSuccess,
             editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
             hashMapOf(
@@ -746,6 +762,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.ACTIVE,
+            isStockChanged = false,
+            isStatusChanged = false,
             editVariantResponse.productUpdateV3Data.isSuccess,
             editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
             hashMapOf(
