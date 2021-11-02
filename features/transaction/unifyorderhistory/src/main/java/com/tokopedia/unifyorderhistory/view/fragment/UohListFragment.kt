@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -245,7 +244,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private val splitStringDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
     private val uohListViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[UohListViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[UohListViewModel::class.java]
     }
 
     companion object {
@@ -435,7 +434,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 resetFilter()
                 currIndexNeedUpdate = -1
                 orderIdNeedUpdated = ""
-                refreshUohData()
+                refreshHandler?.startRefresh()
+                scrollRecommendationListener.resetState()
             }
             val toasterMessage = data?.getStringExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_MESSAGE)
             if (!toasterMessage.isNullOrBlank()) {
