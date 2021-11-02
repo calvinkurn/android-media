@@ -2,12 +2,14 @@ package com.tokopedia.tokopedianow.home.presentation.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactoryImpl
+import com.tokopedia.tokopedianow.common.adapter.typefactory.*
+import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
@@ -26,7 +28,22 @@ class HomeAdapterTypeFactory(
     private val homeSharingEducationListener: HomeSharingEducationWidgetViewHolder.HomeSharingEducationListener? = null,
     private val homeEducationalInformationListener: HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener? = null,
     private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener
-): TokoNowTypeFactoryImpl(),  HomeTypeFactory, HomeComponentTypeFactory {
+):  BaseAdapterTypeFactory(),
+    HomeTypeFactory,
+    HomeComponentTypeFactory,
+    TokoNowCategoryGridTypeFactory,
+    TokoNowRepurchaseTypeFactory,
+    TokoNowChooseAddressWidgetTypeFactory,
+    TokoNowEmptyStateOocTypeFactory,
+    TokoNowServerErrorTypeFactory {
+
+    // region Common TokoNow Component
+    override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int = TokoNowChooseAddressWidgetViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowRepurchaseUiModel): Int = TokoNowRepurchaseViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateNoResultViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
+    // endregion
 
     // region TokoNow Home Component
     override fun type(uiModel: HomeTickerUiModel): Int = HomeTickerViewHolder.LAYOUT
