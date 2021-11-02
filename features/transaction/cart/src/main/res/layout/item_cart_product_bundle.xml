@@ -288,7 +288,7 @@
             tools:text="Incident"
             tools:visibility="gone" />
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
+        <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/text_field_notes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -299,7 +299,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator"
             app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
-            app:text_field_label="Catatan untuk barang ini"
+            app:unify_text_field_label="@string/cart_label_text_field_notes"
             tools:layout_height="32dp"
             tools:visibility="visible" />
 
