@@ -62,7 +62,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
     abstract fun getTopAdsView(): TopAdsView?
-    abstract fun getTopAdsRecommendationContainer() : RelativeLayout?
     abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
@@ -84,7 +83,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private val marketRecommendationPlaceLayout = R.layout.thank_layout_market_place_recom
 
     private val topadsHeadlineLayoutId = R.layout.thanks_item_top_ads_headlines_view
-    private lateinit var topadsHeadlineView: TopAdsHeadlineView
+    private val topadsHeadlineView by lazy { attachTopAdsView() }
 
     private var iDigitalRecommendationView: IDigitalRecommendationView? = null
 
@@ -136,20 +135,16 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             getTopTickerData()
             thanksPageDataViewModel.resetAddressToDefault()
             loadTopAdsRecommendationView()
-            fetchTopadsHeadlineAds(0) //TODO ankit network call
         }
     }
 
     private fun loadTopAdsRecommendationView() {
-        getTopAdsRecommendationContainer()?.let { container ->
 
-            container.addView(getView(topadsHeadlineLayoutId))
-            topadsHeadlineView = container.findViewById(R.id.topads_headline_view)
-        }
+        fetchTopadsHeadlineAds(0)
     }
 
-    private fun getView(@LayoutRes layout: Int): View {
-        return LayoutInflater.from(context).inflate(layout, null, false)
+    private fun attachTopAdsView(): TopAdsHeadlineView {
+        return LayoutInflater.from(context).inflate(topadsHeadlineLayoutId, null, false) as TopAdsHeadlineView
     }
 
     private fun getFeatureRecommendationData() {
@@ -188,11 +183,25 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         val recomContainer = getRecommendationContainer()
         iRecommendationView = recomContainer?.let { container ->
             val view = getRecommendationView(marketRecommendationPlaceLayout)
+
+            //container 1 to display top ads recommendation view
+            container.addContainer(TOP_ADS_HEADLINE_ABOVE_RECOM)
+
             container.addView(view)
+
+            //container 2 to display top ads recommendation view
+            container.addContainer(TOP_ADS_HEADLINE_BELOW_RECOM)
+
             view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
         }
         if (::thanksPageData.isInitialized)
             iRecommendationView?.loadRecommendation(thanksPageData, this)
+    }
+
+    private fun LinearLayout.addContainer(tag: String) {
+        val ll = LinearLayout(context)
+        ll.tag = tag
+        addView(ll)
     }
 
     private fun addDigitalRecommendation(pgCategoryIds: List<Int> = listOf(), pageType: ThankPageType) {
@@ -528,15 +537,41 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         const val TICKER_ERROR = "Error"
 
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
+
+        const val TOP_ADS_SRC = "thank_you_page"
+        const val TOP_ADS_HEADLINE_ABOVE_RECOM = "variant1"
+        const val TOP_ADS_HEADLINE_BELOW_RECOM = "variant2"
     }
 
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
         val session = UserSession(requireContext().applicationContext)
         topadsHeadlineView.getHeadlineAds(
             getHeadlineAdsParam(topadsHeadLinePage,session.userId),
-            this::onSuccessResponse,
+            this::showHeadlineView,
             this::hideHeadlineView
         )
+    }
+
+    private fun hideHeadlineView() {
+        topadsHeadlineView.hideShimmerView()
+        topadsHeadlineView.hide()
+    }
+
+    private fun showHeadlineView(cpmModel: CpmModel) {
+        attachTopAdsView(true)
+        topadsHeadlineView.show()
+        topadsHeadlineView.hideShimmerView()
+        topadsHeadlineView.displayAds(cpmModel)
+    }
+
+    private fun attachTopAdsView(above: Boolean) {
+        if(above) {
+            getRecommendationContainer()?.findViewWithTag<LinearLayout>(TOP_ADS_HEADLINE_ABOVE_RECOM)
+                ?.addView(topadsHeadlineView)
+        } else {
+            getRecommendationContainer()?.findViewWithTag<LinearLayout>(TOP_ADS_HEADLINE_BELOW_RECOM)
+                ?.addView(topadsHeadlineView)
+        }
     }
 
     private fun getHeadlineAdsParam(topadsHeadLinePage: Int, userId: String): String {
@@ -547,29 +582,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 PARAM_EP to VALUE_EP,
                 PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
                 PARAM_ITEM to VALUE_ITEM,
-                PARAM_SRC to "thank_you_page",
+                PARAM_SRC to TOP_ADS_SRC,
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
                 PARAM_USER_ID to userId,
             )
         )
-    }
-
-    private fun onSuccessResponse(cpmModel: CpmModel) {
-        showHeadlineView(cpmModel)
-        /*topadsHeadlineUiModel?.run {
-            this.cpmModel = cpmModel
-            showHeadlineView(cpmModel)
-        }*/
-    }
-
-    private fun hideHeadlineView() {
-        topadsHeadlineView.hideShimmerView()
-        topadsHeadlineView.hide()
-    }
-
-    private fun showHeadlineView(cpmModel: CpmModel) {
-        topadsHeadlineView.hideShimmerView()
-        topadsHeadlineView.show()
-        topadsHeadlineView.displayAds(cpmModel)
     }
 }

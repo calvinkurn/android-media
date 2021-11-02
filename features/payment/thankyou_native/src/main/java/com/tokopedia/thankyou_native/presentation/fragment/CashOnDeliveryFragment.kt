@@ -49,7 +49,6 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
 
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
-    override fun getTopAdsRecommendationContainer(): RelativeLayout? = topAdsRecomContainer
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         tv_payment_success.text = getString(R.string.thank_cod_payment_successful)

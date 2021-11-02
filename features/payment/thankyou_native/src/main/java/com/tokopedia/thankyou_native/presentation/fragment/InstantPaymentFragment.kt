@@ -52,7 +52,6 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
-    override fun getTopAdsRecommendationContainer(): RelativeLayout? = topAdsRecomContainer
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         //not required
