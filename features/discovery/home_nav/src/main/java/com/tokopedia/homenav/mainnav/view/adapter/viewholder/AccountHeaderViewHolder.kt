@@ -25,16 +25,14 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
+import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.NotificationUnify
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -130,7 +128,6 @@ class AccountHeaderViewHolder(itemView: View,
         val tvSaldo: Typography = layoutLoginHeader.findViewById(R.id.tv_saldo)
         val usrSaldoBadgeShimmer: View = layoutLoginHeader.findViewById(R.id.usr_saldo_badge_shimmer)
         val usrOvoBadgeShimmer: View = layoutLoginHeader.findViewById(R.id.usr_ovo_badge_shimmer)
-//        val tvSaldoShimmer: View = layoutLoginHeader.findViewById(R.id.tv_saldo_shimmer)
         //shop
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
@@ -140,6 +137,7 @@ class AccountHeaderViewHolder(itemView: View,
         val btnTryAgainShopInfo: CardView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
         val shimmerTryAgainShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_btn_try_again)
         val arrowRight : IconUnify = layoutLogin.findViewById(R.id.image_arrow_right)
+        val containerShop : ConstraintLayout = layoutLogin.findViewById(R.id.container_shop)
 
         val sectionSaldo: View = layoutLoginHeader.findViewById(R.id.section_header_saldo)
         val sectionWallet: View = layoutLoginHeader.findViewById(R.id.section_header_wallet)
@@ -189,7 +187,7 @@ class AccountHeaderViewHolder(itemView: View,
             userImage.isClickable = false
             tvName.isClickable = false
             if (profileData.isGetUserNameError) {
-                tvName.text = MethodChecker.fromHtml(AccountHeaderDataModel.ERROR_TEXT_PROFILE)
+                tvName.text = getString(R.string.mainnav_general_error)
             } else {
                 configureNameAndBadgeSwitcher(
                     tvName,
@@ -282,8 +280,9 @@ class AccountHeaderViewHolder(itemView: View,
                                      */
                                     tvOvo.text = itemView.context.getText(R.string.mainnav_general_error)
                                     usrOvoBadge.gone()
-                                    usrOvoBadgeShimmer.visible()
-                                    usrSaldoBadgeShimmer.visible()
+                                    usrOvoBadgeShimmer.gone()
+                                    usrSaldoBadgeShimmer.gone()
+                                    btnTryAgain.visible()
                                 }
                             }
                             walletAppModel.isWalletAppFailed -> {
@@ -382,13 +381,11 @@ class AccountHeaderViewHolder(itemView: View,
                     visible()
                     text = shopInfo
                     setOnClickListener {
-                        if (profileSeller.hasShop)
-                            onShopClicked(profileSeller.canGoToSellerAccount)
-                        else {
-                            RouteManager.route(context, ApplinkConst.CREATE_SHOP)
-                            TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
-                        }
+                        shopClicked(profileSeller, context)
                     }
+                }
+                containerShop.setOnClickListener {
+                    shopClicked(profileSeller, it.context)
                 }
                 tvShopInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                 tvShopInfo.setWeight(Typography.BOLD)
@@ -399,6 +396,15 @@ class AccountHeaderViewHolder(itemView: View,
                     tvShopNotif.gone()
                 }
             }
+        }
+    }
+
+    private fun shopClicked(profileSeller: ProfileSellerDataModel, context: Context) {
+        if (profileSeller.hasShop)
+            onShopClicked(profileSeller.canGoToSellerAccount)
+        else {
+            RouteManager.route(context, ApplinkConst.CREATE_SHOP)
+            TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
         }
     }
 
@@ -416,10 +422,6 @@ class AccountHeaderViewHolder(itemView: View,
             TrackingProfileSection.onClickRegisterButton("")
             mainNavListener.onProfileRegisterClicked()
         }
-    }
-
-    private fun getSharedPreference(): SharedPreferences {
-        return itemView.context.getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 
     private fun getCurrentGreetings() : String {
@@ -460,6 +462,7 @@ class AccountHeaderViewHolder(itemView: View,
     private fun configureNameAndBadgeSwitcher(tvName: Typography, greetingString: String, nameString: String, ivBadge: ImageView, badgeGreetingsUrl: String, badgeUrl: String) {
         if (needToSwitchText) {
             tvName.text = greetingString
+            ivBadge.visible()
             ivBadge.loadImage(badgeGreetingsUrl)
             launch {
                 delay(GREETINGS_DELAY)
@@ -469,6 +472,7 @@ class AccountHeaderViewHolder(itemView: View,
             }
         } else {
             tvName.text = nameString
+            ivBadge.visible()
             ivBadge.loadImage(badgeUrl)
         }
     }

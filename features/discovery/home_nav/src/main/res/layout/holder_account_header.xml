@@ -116,7 +116,7 @@
                 >
 
                 <com.tokopedia.iconunify.IconUnify
-                    android:id="@+id/image_try_again_shop"
+                    android:id="@+id/image_try_again"
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:contentDescription="@string/account_header_store_title"

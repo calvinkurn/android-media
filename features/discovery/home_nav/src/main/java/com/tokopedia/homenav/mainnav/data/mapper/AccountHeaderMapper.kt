@@ -34,12 +34,23 @@ class AccountHeaderMapper(
         when (val loginState = getLoginState()) {
             AccountHeaderDataModel.LOGIN_STATE_LOGIN -> {
                 val data = AccountHeaderDataModel()
-                userPojo?.let {
+                if(userPojo == null) {
                     data.setProfileData(
+                        userName = "",
+                        userImage = "",
+                        loginState = loginState,
+                        isGetUserNameError = true
+                    )
+                }
+                else {
+                    userPojo.let {
+                        data.setProfileData(
                             userName = userPojo.profile.name,
                             userImage = userPojo.profile.profilePicture,
-                            loginState = loginState
-                    )
+                            loginState = loginState,
+                            isGetUserNameError = data.profileDataModel.isGetUserNameError
+                        )
+                }
                 }
                 tokopointsStatusFilteredPojo?.tokopointsStatusFiltered?.let {
                     data.setTokopointData(it.statusFilteredData.points.externalCurrencyAmountStr, it.statusFilteredData.points.pointsAmountStr, it.statusFilteredData.points.iconImageURL)

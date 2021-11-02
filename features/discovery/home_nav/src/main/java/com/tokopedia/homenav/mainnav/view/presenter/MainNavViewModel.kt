@@ -30,6 +30,7 @@ import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.*
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.DEFAULT_SHOP_ID_NOT_OPEN
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_FAILED
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
@@ -535,7 +536,7 @@ class MainNavViewModel @Inject constructor(
                             adminRole = adminRoleText
                         } else {
                             shopName = ""
-                            shopId = ""
+                            shopId = DEFAULT_SHOP_ID_NOT_OPEN
                             adminRole = null
                             orderCount = 0
                         }
