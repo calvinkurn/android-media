@@ -24,7 +24,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -178,10 +177,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             true
         )
 
-    private val coachMark by lazy {
-        CoachMark2(this.requireContext())
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         performanceInterface.startMonitoring(SALDODETAIL_FINTECH_PLT)
         performanceInterface.startPreparePagePerformanceMonitoring()
@@ -225,9 +220,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             else arrayListOf(anchorView)
 
             controller.anchorViewList = anchorViewList
-            controller.startCoachMark(isSellerEnabled)
+            controller.startCoachMark()
             sp_app_bar_layout.addOnOffsetChangedListener(AppBarLayout
-                .OnOffsetChangedListener { _, _ -> controller.updatePenjualanCoachMark() })
+                .OnOffsetChangedListener { _, _ -> controller.updateSalesCoachMarkOnScroll() })
         }
     }
 
@@ -240,9 +235,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         setViewModelObservers()
 
         expandLayout = isSellerEnabled
-
-        // @Todo just for testing
-        expandLayout = true
 
         totalBalanceTitle = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_text)
 

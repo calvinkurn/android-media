@@ -13,8 +13,8 @@ class SaldoCoachMarkController(val context: Context) {
     private val coachMark by lazy { CoachMark2(context) }
     var anchorViewList: ArrayList<View?>? = null
 
-    fun startCoachMark(isSellerEnabled: Boolean) {
-        val allCoachMarkList = buildSaldoCoach(anchorViewList)
+    fun startCoachMark() {
+        val allCoachMarkList = buildSaldoCoachMarkListByKey(anchorViewList)
         val showCoachMarkList = allCoachMarkList.filterNot { isSaldoCoachMarkShown(it.coachMarkKey) }.map { it.coachMarkItem }
         coachMark.showCoachMark(ArrayList(showCoachMarkList))
         // first is shown by and updated
@@ -32,7 +32,7 @@ class SaldoCoachMarkController(val context: Context) {
         })
     }
 
-    private fun buildSaldoCoach(anchorViewList: ArrayList<View?>?) : ArrayList<SaldoCoachMark> {
+    private fun buildSaldoCoachMarkListByKey(anchorViewList: ArrayList<View?>?) : ArrayList<SaldoCoachMark> {
         val list = arrayListOf<SaldoCoachMark>()
         anchorViewList?.getOrNull(0)?.let {
             val item = SaldoCoachMark(
@@ -70,7 +70,7 @@ class SaldoCoachMarkController(val context: Context) {
         return list
     }
 
-    fun updatePenjualanCoachMark() {
+    fun updateSalesCoachMarkOnScroll() {
         if (coachMark.currentIndex == 2) {
         val xOffset = (X_OFFSET).toPx()
         val yOffset = 8.toPx()
@@ -80,7 +80,6 @@ class SaldoCoachMarkController(val context: Context) {
             }
         }
     }
-
 
     private fun isSaldoCoachMarkShown(coachMarkKey: String?): Boolean {
         coachMarkKey?.let {
