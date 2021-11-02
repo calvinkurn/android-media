@@ -1,6 +1,7 @@
 package com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +12,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.CoachMarkContentPosition
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
@@ -22,17 +19,14 @@ import com.tokopedia.saldodetails.commom.design.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
-import com.tokopedia.saldodetails.commom.utils.SaldoRollence
-import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment
+import com.tokopedia.saldodetails.commom.utils.TransactionTitle
+import com.tokopedia.saldodetails.saldoDetail.coachmark.SaldoCoachMarkListener
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.TransactionHistoryViewModel
-import com.tokopedia.saldodetails.commom.utils.TransactionTitle
 import com.tokopedia.unifycomponents.getCustomText
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
 import kotlinx.android.synthetic.main.fragment_saldo_history.*
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -110,6 +104,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         saldoTransactionTabsUnify.customTabGravity = TabLayout.GRAVITY_START
         saldoTransactionTabsUnify.setupWithViewPager(transactionHistoryViewPager)
 
+        // tabs are visible now start, coachMark
+        Handler().postDelayed({
+            (activity as SaldoCoachMarkListener).startCoachMarkFlow(getPenjualanTabView())
+        }, 400)
     }
 
     private fun loadMultipleTabItem() {
@@ -146,7 +144,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
                 addNewTab(tabItem.title)
         }
         saldoTransactionTabsUnify.visibility = View.VISIBLE
-
     }
 
     private fun initListeners() {
@@ -181,52 +178,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         )
     }
 
-    var coachMark2: CoachMark2? = null
-
-    fun showSaleTabCoachMark() {
-        getPenjualanTabView()?.also {
-            it.postDelayed({
-                showCoachMark(it)
-            }, DELAY_COACHMARK)
-        }
-    }
-
-    private fun showCoachMark(view: View) {
-        try {
-            if (context != null && activity?.isFinishing == false) {
-                coachMark2 = CoachMark2(requireContext())
-                val list = arrayListOf<CoachMark2Item>().apply {
-                    add(
-                        CoachMark2Item(
-                            view,
-                            getString(R.string.saldo_penjualan_coachmark_title),
-                            getString(R.string.saldo_penjualan_coachmark_desc),
-                            CoachMarkContentPosition.BOTTOM.position
-                        )
-                    )
-                }
-                coachMark2?.showCoachMark(list)
-                coachMark2?.setOnDismissListener {
-                    coachMark2 = null
-                    updatePenjualanCoachMarkDisplayed()
-                }
-            }
-        } catch (e: Exception) {
-
-        }
-    }
-
-    fun updatePenjualanCoachMark() {
-        val xOffset = (X_OFFSET).toPx()
-        val yOffset = 8.toPx()
-        coachMark2?.let {
-            val tabView = getPenjualanTabView()
-            tabView?.post {
-                coachMark2?.update(tabView, xOffset, yOffset, -1, -1)
-            }
-        }
-    }
-
     private fun getPenjualanTabView(): View? {
         var totalTabCount = saldoTransactionTabsUnify.tabLayout.tabCount
         do {
@@ -241,28 +192,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         return null
     }
 
-    fun hasPenjualanCoachMarkShown(): Boolean {
-        context?.let {
-            return CoachMarkPreference.hasShown(
-                it,
-                SaldoDepositFragment.KEY_CAN_SHOW_PENJUALAN_COACHMARK
-            )
-        } ?: run { return true }
-    }
+    //private fun isSalesTabEnabled() = SaldoRollence.isSaldoRevampEnabled()
+    private fun isSalesTabEnabled() = true
 
-    private fun updatePenjualanCoachMarkDisplayed() {
-        context?.let {
-            CoachMarkPreference.setShown(
-                requireContext(),
-                SaldoDepositFragment.KEY_CAN_SHOW_PENJUALAN_COACHMARK, true
-            )
-        }
-    }
-
-    private fun isSalesTabEnabled() = SaldoRollence.isSaldoRevampEnabled()
-
-    companion object {
-        const val X_OFFSET = -70
-        const val DELAY_COACHMARK = 500L
-    }
 }

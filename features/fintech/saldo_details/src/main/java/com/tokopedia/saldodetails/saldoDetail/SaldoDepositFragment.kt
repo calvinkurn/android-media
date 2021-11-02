@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,8 +25,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -43,14 +40,15 @@ import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.design.SaldoInstructionsBottomSheet
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.utils.ErrorMessage
+import com.tokopedia.saldodetails.commom.utils.SaldoCoachMarkController
 import com.tokopedia.saldodetails.commom.utils.Success
 import com.tokopedia.saldodetails.merchantDetail.credit.MerchantCreditDetailFragment
 import com.tokopedia.saldodetails.merchantDetail.priority.MerchantSaldoPriorityFragment
 import com.tokopedia.saldodetails.saldoDetail.domain.data.GqlDetailsResponse
 import com.tokopedia.saldodetails.saldoDetail.domain.data.GqlMerchantCreditResponse
 import com.tokopedia.saldodetails.saldoDetail.domain.data.Saldo
-import com.tokopedia.saldodetails.saldoHoldInfo.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.SaldoTransactionHistoryFragment
+import com.tokopedia.saldodetails.saldoHoldInfo.SaldoHoldInfoActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.unifycomponents.Toaster
@@ -209,7 +207,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         initRemoteConfig()
         initListeners()
         initialVar()
-        startCoachMark()
         context?.let { UpdateShopActiveService.startService(it) }
     }
 
@@ -217,68 +214,21 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
-    private fun startCoachMark() {
-        Handler().postDelayed({ this.setCoachMark() }, COACH_MARK_DELAY)
-    }
+    fun startSaldoCoachMarkFlow(anchorView: View?) {
+        if (activity is SaldoDepositActivity) {
+            val controller = SaldoCoachMarkController(requireContext())
+            val anchorViewList = if (isSellerEnabled) arrayListOf(
+                saldo_buyer_deposit_text,
+                saldo_seller_deposit_text,
+                anchorView
+            )
+            else arrayListOf(anchorView)
 
-    private fun setCoachMark() {
-        context?.let {
-            if (isBalanceCoachMarkShown().not()) {
-                val list = buildCoachMark() ?: return
-                updateBalanceCoachMarkShown()
-                coachMark.setOnDismissListener {
-                    if (coachMark.currentIndex == PENJUALAN_TAB_INDEX) {
-                        showPenjualanCoachMark()
-                    }
-                }
-                coachMark.showCoachMark(list)
-            } else {
-                showPenjualanCoachMark()
-            }
-        }
-    }
-
-    private fun showPenjualanCoachMark() {
-        val canShowPenjualanCoachMark: Boolean =
-            saldoHistoryFragment?.hasPenjualanCoachMarkShown() ?: true
-        if (canShowPenjualanCoachMark.not()) {
+            controller.anchorViewList = anchorViewList
+            controller.startCoachMark(isSellerEnabled)
             sp_app_bar_layout.addOnOffsetChangedListener(AppBarLayout
-                .OnOffsetChangedListener { _, _ -> saldoHistoryFragment?.updatePenjualanCoachMark() })
-            saldoHistoryFragment?.showSaleTabCoachMark()
+                .OnOffsetChangedListener { _, _ -> controller.updatePenjualanCoachMark() })
         }
-    }
-
-    private fun buildCoachMark(): ArrayList<CoachMark2Item>? {
-        val list = ArrayList<CoachMark2Item>()
-        return if (isSellerEnabled && activity is SaldoDepositActivity && context != null) {
-            list.add(
-                CoachMark2Item(
-                    saldo_buyer_deposit_text,
-                    getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer),
-                    getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc)
-                )
-            )
-
-            list.add(
-                CoachMark2Item(
-                    saldo_seller_deposit_text,
-                    getString(R.string.saldo_total_balance_seller),
-                    getString(R.string.saldo_intro_description_seller)
-                )
-            )
-            list
-        } else null
-    }
-
-    private fun isBalanceCoachMarkShown(): Boolean {
-        context?.let {
-            return CoachMarkPreference.hasShown(it, KEY_CAN_SHOW_BALANCE_COACHMARK)
-        } ?: run { return true }
-        return false
-    }
-
-    private fun updateBalanceCoachMarkShown() {
-        context?.let { CoachMarkPreference.setShown(it, KEY_CAN_SHOW_BALANCE_COACHMARK, true) }
     }
 
     @SuppressLint("Range")
@@ -290,6 +240,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         setViewModelObservers()
 
         expandLayout = isSellerEnabled
+
+        // @Todo just for testing
+        expandLayout = true
 
         totalBalanceTitle = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_text)
 
@@ -362,9 +315,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailViewModel.gqlUserSaldoBalanceLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    if(it.data.saldo.isHaveError){
+                    if (it.data.saldo.isHaveError) {
                         onSaldoBalanceLoadingError()
-                    }else {
+                    } else {
                         onUserSaldoBalanceLoaded(it.data.saldo)
                     }
                 }
@@ -469,7 +422,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     }
 
-    private fun onSaldoBalanceLoadingError(){
+    private fun onSaldoBalanceLoadingError() {
         saldoDetailsAnalytics.sendApiFailureEvents(SaldoDetailsConstants.EventLabel.SALDO_FETCH_BALANCE)
         cardWithdrawBalance.gone()
         localLoadSaldoBalance.visible()
@@ -479,7 +432,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             refresh()
         }
         localLoadSaldoBalance.localLoadTitle = getString(R.string.saldo_balance_load_fail_title)
-        localLoadSaldoBalance.localLoadDescription = getString(R.string.saldo_balance_load_fail_desc)
+        localLoadSaldoBalance.localLoadDescription =
+            getString(R.string.saldo_balance_load_fail_desc)
     }
 
 
@@ -783,12 +737,20 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun showHoldWarning(warningText: String) {
         holdBalanceTicker?.show()
-        holdBalanceTicker?.setHtmlDescription(String.format(getString(R.string.saldo_hold_balance_text, warningText)))
-        holdBalanceTicker?.setDescriptionClickEvent(object: TickerCallback {
+        holdBalanceTicker?.setHtmlDescription(
+            String.format(
+                getString(
+                    R.string.saldo_hold_balance_text,
+                    warningText
+                )
+            )
+        )
+        holdBalanceTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 val intent = Intent(context, SaldoHoldInfoActivity::class.java)
                 startActivity(intent)
             }
+
             override fun onDismiss() {}
         })
     }
@@ -945,4 +907,5 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         super.onDestroy()
         performanceInterface.stopMonitoring()
     }
+
 }

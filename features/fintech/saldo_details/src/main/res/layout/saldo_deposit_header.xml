@@ -275,8 +275,7 @@
             app:tickerShapeType="loose"
             app:closeButtonVisibility="gone"
             android:visibility="gone"
-            tools:visibility="visible"
-            />
+            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/withdraw_button"
