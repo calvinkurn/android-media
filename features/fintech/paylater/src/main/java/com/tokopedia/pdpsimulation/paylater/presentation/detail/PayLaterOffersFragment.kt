@@ -107,9 +107,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                             name
                         )
                     )
-                    payLaterProductList[payLaterViewModel.sortPosition].detail?.get(
-                        payLaterViewModel.partnerDisplayPosition
-                    )?.let { detail ->
+                    payLaterProductList[payLaterViewModel.sortPosition].detail[payLaterViewModel.partnerDisplayPosition]?.let { detail ->
                         onPageSelectedByUser(detail)
                     }
                 } else {
@@ -134,17 +132,27 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             )
         )
         paymentOptionViewPager.post {
-            payLaterProductList[position].detail?.let { detailList ->
-                pagerAdapter.setPaymentData(detailList)
-                payLaterViewModel.sortPosition = position
-            }
 
-            payLaterProductList[position].detail?.get(0)?.let { detail ->
-                onPageSelectedByUser(detail)
+            payLaterProductList[position].detail[viewPagerPartnerDisplay(payLaterProductList[position])]
+                ?.let { detail ->
+                    onPageSelectedByUser(detail)
+                }
+            payLaterProductList[position].detail.let { detailList ->
+                pagerAdapter.setPaymentData(detailList as List<Detail>)
+                payLaterViewModel.sortPosition = position
             }
 
         }
 
+
+    }
+
+    private fun viewPagerPartnerDisplay(payLaterAllData: PayLaterAllData): Int {
+        return when {
+            payLaterAllData.detail.isEmpty() -> return 0
+            payLaterAllData.detail.size < payLaterViewModel.partnerDisplayPosition -> return payLaterAllData.detail.size - 1
+            else -> payLaterViewModel.partnerDisplayPosition
+        }
 
     }
 
@@ -214,8 +222,8 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             sortFilter.visibility = View.VISIBLE
             generateSortFilter(paylaterProduct)
             paymentOptionViewPager.post {
-                payLaterProductList[payLaterViewModel.sortPosition].detail?.let { detailList ->
-                    pagerAdapter.setPaymentData(detailList)
+                payLaterProductList[payLaterViewModel.sortPosition].detail.let { detailList ->
+                    pagerAdapter.setPaymentData(detailList as List<Detail>)
                 }
             }
         }
@@ -232,6 +240,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
             }
 
             override fun onPageSelected(position: Int) {
+                payLaterViewModel.partnerDisplayPosition = position
                 val detail = pagerAdapter.getPaymentDetailByPosition(position)
                 detail?.let {
                     onPageSelectedByUser(it)

@@ -22,7 +22,7 @@ data class PayLaterGetSimulation(
 data class PayLaterAllData(
     @SerializedName("tenure") val tenure: Int?,
     @SerializedName("text") val text: String?,
-    @SerializedName("detail") val detail: List<Detail>?
+    @SerializedName("detail") val detail: List<Detail?>
 ) : Parcelable
 
 @Parcelize
