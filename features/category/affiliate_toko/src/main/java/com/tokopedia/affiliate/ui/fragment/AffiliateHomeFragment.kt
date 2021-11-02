@@ -251,13 +251,13 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     private fun setupTickerView(data: AffiliateAnnouncementData.GetAffiliateAnnouncement.Data,tickerType: Int)
     {
         affiliate_announcement_ticker_cv.show()
-        affiliate_announcement_ticker.tickerTitle=data.announcementTitle
+        affiliate_announcement_ticker.tickerTitle = data.announcementTitle
         data.announcementDescription?.let {
             affiliate_announcement_ticker.setTextDescription(
                 it
             )
         }
-        affiliate_announcement_ticker.tickerType=tickerType
+        affiliate_announcement_ticker.tickerType = tickerType
     }
     override fun getVMFactory(): ViewModelProvider.Factory {
         return viewModelProvider

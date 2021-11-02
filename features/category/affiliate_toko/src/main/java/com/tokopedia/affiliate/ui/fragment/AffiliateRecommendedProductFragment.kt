@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tkpd.remoteresourcerequest.type.SingleDPIImageType
+import com.tkpd.remoteresourcerequest.view.ImageDensityType
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.affiliate.PAGE_ZERO
@@ -47,12 +49,16 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     private lateinit var affiliateRecommendedProductViewModel: AffiliateRecommendedProductViewModel
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(promotionClickInterface = this))
     private var affiliatePromoInterface : AffiliatePromoInterface? = null
+    private var identifier = BOUGHT_IDENTIFIER
 
     companion object {
         private const val GRID_SPAN_COUNT: Int = 2
-        fun getFragmentInstance(promoInterface : AffiliatePromoInterface): Fragment {
+        const val BOUGHT_IDENTIFIER = "recent_purchase"
+        const val LAST_VIEWED_IDENTIFIER = "recent_view"
+        fun getFragmentInstance(recommendationType : String , promoInterface : AffiliatePromoInterface): Fragment {
             return AffiliateRecommendedProductFragment().apply {
                 affiliatePromoInterface = promoInterface
+                identifier = recommendationType
             }
         }
     }
@@ -75,20 +81,30 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         setUpRecyclerView()
         setUpEmptyState()
         sendScreenEvent()
-        affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(PAGE_ZERO)
+        affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
     }
 
     private fun setUpEmptyState() {
         recommended_global_error.run {
             errorIllustration.hide()
-            errorTitle.text = getString(R.string.affiliate_never_bought_product)
-            errorDescription.text = getString(R.string.affiliate_still_buy_products)
+            errorSecondaryAction.gone()
             setButtonFull(true)
+            if(identifier == BOUGHT_IDENTIFIER){
+                affiliate_no_product_seen_iv.hide()
+                affiliate_no_product_bought_iv.show()
+                errorTitle.text = getString(R.string.no_product_bought_on_tokopedia_yet)
+                errorDescription.text = getString(R.string.no_product_bought_on_tokopedia_yet_content)
+            }else {
+                affiliate_no_product_seen_iv.show()
+                affiliate_no_product_bought_iv.hide()
+                errorTitle.text = getString(R.string.no_product_seen_on_tokopedia_yet)
+                errorDescription.text = getString(R.string.no_product_seen_on_tokopedia_yet_content)
+            }
             errorAction.text = getString(R.string.affiliate_paste_link)
             errorAction.setOnClickListener {
                affiliatePromoInterface?.enterLinkButtonClicked()
             }
-            errorSecondaryAction.gone()
+
         }
     }
 
@@ -101,7 +117,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             swipe_refresh_layout.setOnRefreshListener {
                 isSwipeRefresh = true
                 loadMoreTriggerListener?.resetState()
-                affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(PAGE_ZERO)
+                affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
             }
             loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
             recyclerView.adapter = adapter
@@ -113,7 +129,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if(totalItemsCount < totalDataItemsCount)
-                    affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(page - 1)
+                    affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,page - 1)
             }
         }
     }

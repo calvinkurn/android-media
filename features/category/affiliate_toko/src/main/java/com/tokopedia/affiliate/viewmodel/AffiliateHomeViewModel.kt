@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.AffiliateAnnouncementData
 import com.tokopedia.affiliate.model.AffiliatePerformanceData
@@ -90,7 +91,7 @@ class AffiliateHomeViewModel @Inject constructor(
                     tempList.add(AffiliateSharedProductCardsModel(product))
                 }
             }
-            return@let tempList
+            return tempList
         }
         return null
     }
