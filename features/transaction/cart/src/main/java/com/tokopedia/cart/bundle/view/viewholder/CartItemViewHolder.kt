@@ -287,10 +287,11 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
         if (data.isBundlingItem) {
             if (data.isMultipleBundleProduct && (data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
                 binding.containerProductAction.gone()
+                binding.holderItemCartDivider.gone()
             } else {
                 binding.containerProductAction.show()
+                binding.holderItemCartDivider.visibility = if (layoutPosition == dataSize - 1) View.GONE else View.VISIBLE
             }
-            binding.holderItemCartDivider.gone()
         } else {
             binding.containerProductAction.show()
             binding.holderItemCartDivider.visibility = if (layoutPosition == dataSize - 1) View.GONE else View.VISIBLE
