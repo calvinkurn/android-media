@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:id="@+id/container_recharge_order_detail_action_button"
-    android:orientation="vertical">
-
-</LinearLayout>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    android:elevation="@dimen/unify_space_8"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/unify_space_16"
+    android:paddingRight="@dimen/unify_space_16"
+    android:paddingBottom="@dimen/unify_space_16" />
