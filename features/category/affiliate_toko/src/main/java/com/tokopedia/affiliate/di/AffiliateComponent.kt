@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import dagger.Component
 
@@ -23,5 +24,7 @@ interface AffiliateComponent {
     fun injectHelpFragment(affiliateHelpFragment: AffiliateHelpFragment)
 
     fun inject(affiliatePromotionBottomSheet: AffiliatePromotionBottomSheet)
+
+    fun injectLoginFragment(affiliateLoginFragment : AffiliateLoginFragment)
 
 }

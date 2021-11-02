@@ -15,6 +15,7 @@ import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
@@ -32,6 +33,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initBottomNavigationView()
+        //showAffiliatePortal()
+        showLoginPortal()
     }
 
     override fun getLayoutRes(): Int = R.layout.affiliate_layout
@@ -57,11 +60,18 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
         return null
     }
 
+    private fun showLoginPortal() {
+        openFragment(AffiliateLoginFragment.getFragmentInstance())
+    }
+
+    private fun showAffiliatePortal() {
+        affiliateBottomNavigation?.showBottomNav()
+        affiliateBottomNavigation?.populateBottomNavigationView()
+    }
+
     private fun initBottomNavigationView() {
         affiliateBottomNavigation = AffiliateBottomNavbar(findViewById(R.id.bottom_navbar),
-                this,this).apply {
-            populateBottomNavigationView()
-        }
+                this,this)
     }
 
     override fun menuClicked(position: Int, id: Int): Boolean {
