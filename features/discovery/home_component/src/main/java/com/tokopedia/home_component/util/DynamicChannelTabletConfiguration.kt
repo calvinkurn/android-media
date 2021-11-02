@@ -10,18 +10,27 @@ object DynamicChannelTabletConfiguration {
 
     private const val SPAN_COUNT_2x2_NORMAL = 2
     private const val SPAN_COUNT_2x2_TABLET = 4
-    private const val SPAN_SPACING_2x2_TABLET = 10
-    private const val SPAN_SPACING_2x2_NORMAL = 10
+    private const val SPAN_SPACING_2x2_TABLET = 16
+    private const val SPAN_SPACING_2x2_NORMAL = 8
 
-    fun getSpanCountFor2x2(context: Context): Int {
-        return if (DeviceScreenInfo.isTablet(context)) SPAN_COUNT_2x2_TABLET else SPAN_COUNT_2x2_NORMAL
+    fun getSpanCountFor2x2(context: Context?): Int {
+        context?.let {
+            return if (DeviceScreenInfo.isTablet(context)) SPAN_COUNT_2x2_TABLET else SPAN_COUNT_2x2_NORMAL
+        }
+        return SPAN_COUNT_2x2_NORMAL
     }
 
-    fun getSpanCountForHomeRecommendationAdapter(context: Context): Int {
-        return getSpanCountFor2x2(context)
+    fun getSpanCountForHomeRecommendationAdapter(context: Context?): Int {
+        context?.let {
+            return getSpanCountFor2x2(context)
+        }
+        return SPAN_COUNT_2x2_NORMAL
     }
 
-    fun getSpacingSpaceFor2x2(context: Context): Int {
-        return if (DeviceScreenInfo.isTablet(context)) SPAN_SPACING_2x2_TABLET else SPAN_SPACING_2x2_NORMAL
+    fun getSpacingSpaceFor2x2(context: Context?): Int {
+        context?.let {
+            return if (DeviceScreenInfo.isTablet(context)) SPAN_SPACING_2x2_TABLET else SPAN_SPACING_2x2_NORMAL
+        }
+        return SPAN_SPACING_2x2_NORMAL
     }
 }
