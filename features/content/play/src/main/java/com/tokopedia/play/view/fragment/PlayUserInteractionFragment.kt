@@ -839,7 +839,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 renderInteractiveView(prevState?.interactiveView, state.interactiveView, state.partner)
                 renderWinnerBadgeView(state.winnerBadge)
-                renderToolbarView(state.partner, state.share)
+                renderToolbarView(state.title, state.share)
                 renderLikeView(prevState?.like, state.like)
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
@@ -1480,9 +1480,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderToolbarView(
-        partner: PlayPartnerUiState,
+        title: PlayTitleUiState,
         share: PlayShareUiState
     ) {
+        toolbarView.setTitle(title.title)
         shareLinkView?.setIsShareable(share.shouldShow)
     }
 

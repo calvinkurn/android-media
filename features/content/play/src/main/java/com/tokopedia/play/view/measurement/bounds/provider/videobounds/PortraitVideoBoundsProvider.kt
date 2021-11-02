@@ -20,7 +20,7 @@ class PortraitVideoBoundsProvider(
         private val container: ViewGroup
 ) : VideoBoundsProvider {
 
-    private val toolbarView = container.findViewById<View>(R.id.view_toolbar)
+    private val toolbarView = container.findViewById<View>(R.id.view_toolbar_room)
     private val statsInfoView = container.findViewById<View>(R.id.view_stats_info)
     private val sendChatView = container.findViewById<View>(R.id.view_send_chat)
     private val quickReplyView = container.findViewById<View>(R.id.rv_quick_reply)
