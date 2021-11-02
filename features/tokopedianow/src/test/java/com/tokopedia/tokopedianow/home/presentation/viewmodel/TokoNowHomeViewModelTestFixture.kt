@@ -381,10 +381,6 @@ abstract class TokoNowHomeViewModelTestFixture {
         override fun type(typeFactory: HomeTypeFactory?) = 0
     }
 
-    object UnknownTokoNowLayout: TokoNowLayoutUiModel("1") {
-        override fun type(typeFactory: TokoNowTypeFactory?) = 0
-    }
-
     object UnknownLayout: HomeComponentVisitable {
         override fun visitableId(): String? = null
         override fun equalsWith(b: Any?): Boolean = false
