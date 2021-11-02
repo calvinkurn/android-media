@@ -142,10 +142,9 @@ data class OrderExtensionRequestInfoUiModel(
             var isError = false
             if (value.isNotEmpty() || !hasFocus) {
                 errorCheckers.forEach {
-                    if (it.isError(value)) {
+                    if (!isError && it.isError(value)) {
                         newMessage = it.errorMessage
                         isError = true
-                        return@forEach
                     }
                 }
             }

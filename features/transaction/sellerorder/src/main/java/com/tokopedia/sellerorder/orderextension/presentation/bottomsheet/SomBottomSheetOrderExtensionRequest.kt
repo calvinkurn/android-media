@@ -117,7 +117,6 @@ class SomBottomSheetOrderExtensionRequest(
                 text = context.getString(R.string.bottomsheet_order_extension_request_button_text)
             }
             setOnClickListener {
-                it.hideKeyboard()
                 viewModel.sendOrderExtensionRequest(orderId)
             }
         }
