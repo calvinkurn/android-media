@@ -98,7 +98,7 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
     }
 
     companion object {
-        private const val ACTION_URL_LANGGANAN = "https://www.tokopedia.com/langganan"
+        private const val ACTION_URL_LANGGANAN = "tokopedia://webview?titlebar=false&url=https://m.tokopedia.com/langganan"
     }
 
 }
