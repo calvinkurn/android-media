@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.gms.cast.framework.CastStateListener
+import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -523,6 +524,8 @@ class PlayViewModel @Inject constructor(
     private val videoBufferGovernor = videoBufferGovernorFactory.create(playVideoPlayer, viewModelScope)
 
     private var likeReminderTimer: Job? = null
+
+    private val gson by lazy { Gson() }
 
     init {
         videoStateProcessor.addStateListener(videoStateListener)
@@ -1379,7 +1382,7 @@ class PlayViewModel @Inject constructor(
         channelId: String
     ) = withContext(dispatchers.main) {
         val result = withContext(dispatchers.computation) {
-            val socketMapper = PlaySocketMapper(message)
+            val socketMapper = PlaySocketMapper(message, gson)
             socketMapper.mapping()
         }
 

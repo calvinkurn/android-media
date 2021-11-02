@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import android.content.Context
 import android.os.Handler
 import androidx.lifecycle.*
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -236,6 +237,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private var isLiveStarted: Boolean = false
 
     private var socketJob: Job? = null
+
+    private val gson by lazy { Gson() }
 
     init {
         _observableChatList.value = mutableListOf()
@@ -661,7 +664,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private suspend fun handleWebSocketMessage(message: WebSocketResponse) {
         val result = withContext(dispatcher.computation) {
-            val socketMapper = PlayBroadcastWebSocketMapper(message)
+            val socketMapper = PlayBroadcastWebSocketMapper(message, gson)
             socketMapper.map()
         }
         when(result) {
