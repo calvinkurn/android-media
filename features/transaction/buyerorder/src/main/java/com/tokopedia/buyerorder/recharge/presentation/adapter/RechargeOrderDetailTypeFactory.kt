@@ -27,9 +27,8 @@ class RechargeOrderDetailTypeFactory(
         private val recommendationWidgetListener: RecommendationWidgetListener
 ) : BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
-    override fun type(bestSellerDataModel: BestSellerDataModel): Int {
-        return BestSellerViewHolder.LAYOUT
-    }
+    override fun type(bestSellerDataModel: BestSellerDataModel): Int =
+            BestSellerViewHolder.LAYOUT
 
     fun type(aboutOrderModel: RechargeOrderDetailAboutOrderModel): Int =
             RechargeOrderDetailAboutOrderViewHolder.LAYOUT
