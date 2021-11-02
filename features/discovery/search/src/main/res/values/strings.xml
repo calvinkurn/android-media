@@ -102,4 +102,6 @@
     <string name="search_result_global_search_text">Belum nemu barang yang cocok?</string>
     <string name="search_result_global_search_button_text">Cari di Tokopedia</string>
     <string name="search_result_local_search_other_products">Barang lainnya di %s</string>
+
+    <string name="search_last_filter_use_filter">Gunakan Filter</string>
 </resources>

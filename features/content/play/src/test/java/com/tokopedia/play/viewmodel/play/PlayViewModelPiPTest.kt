@@ -6,9 +6,7 @@ import com.tokopedia.play.model.PlayVideoModelBuilder
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
@@ -84,7 +82,7 @@ class PlayViewModelPiPTest {
         } andWhen {
             isPiPAllowed()
         } thenVerify { result ->
-            result.isFalse()
+            result.assertFalse()
         }
     }
 
@@ -106,7 +104,7 @@ class PlayViewModelPiPTest {
         } andWhen {
             isPiPAllowed()
         } thenVerify { result ->
-            result.isTrue()
+            result.assertTrue()
         }
     }
 
@@ -128,7 +126,7 @@ class PlayViewModelPiPTest {
         } andWhen {
             isPiPAllowed()
         } thenVerify { result ->
-            result.isFalse()
+            result.assertFalse()
         }
     }
 
@@ -150,7 +148,7 @@ class PlayViewModelPiPTest {
         } andWhen {
             isPiPAllowed()
         } thenVerify { result ->
-            result.isFalse()
+            result.assertFalse()
         }
     }
 }

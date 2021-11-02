@@ -96,10 +96,6 @@ class ProductBundleViewModel @Inject constructor(
         return selectedProductBundleMaster ?: productBundleMasters.firstOrNull()
     }
 
-    fun getSelectedProductIds(selectedProductIdsStr: String): List<String> {
-        return selectedProductIdsStr.split(COMMA_DELIMITER).toList()
-    }
-
     fun getSelectedProductIds(productBundleDetails: List<ProductBundleDetail>): String {
         return productBundleDetails.joinToString { it.productId.toString() }
     }
