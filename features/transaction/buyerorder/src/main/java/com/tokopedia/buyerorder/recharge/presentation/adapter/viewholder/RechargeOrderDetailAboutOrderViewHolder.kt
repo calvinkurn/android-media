@@ -42,9 +42,19 @@ class RechargeOrderDetailAboutOrderViewHolder(
 
             for (button in primaryActionButton) {
                 containerRechargeOrderDetailAboutOrder.addView(button)
+                button.setMargin(0,
+                        root.context.resources.getDimensionPixelSize(
+                                com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                        0,
+                        0)
             }
             for (button in secondaryActionButton) {
                 containerRechargeOrderDetailAboutOrder.addView(button)
+                button.setMargin(0,
+                        root.context.resources.getDimensionPixelSize(
+                                com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
+                        0,
+                        0)
             }
         }
     }
@@ -53,10 +63,6 @@ class RechargeOrderDetailAboutOrderViewHolder(
         val button = UnifyButton(context)
         button.text = actionButton.label
         button.buttonSize = UnifyButton.Size.MEDIUM
-        button.setMargin(0,
-                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
-                0,
-                0)
 
         if (actionButton.buttonType.equals(PRIMARY_BUTTON_TYPE, true)) {
             button.buttonType = UnifyButton.Type.MAIN
