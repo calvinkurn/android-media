@@ -31,9 +31,12 @@ class BuyerOrderExtensionActivity: BaseSimpleActivity(), HasComponent<BuyerOrder
             .build()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_buyer_order_extension_base)
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_buyer_order_extension_base
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
     }
 
     override fun onBackPressed() {

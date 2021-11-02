@@ -53,6 +53,7 @@ import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.utils.ErrorHandler
@@ -157,6 +158,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_E
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.unifyorderhistory.util.UohUtils
+import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
@@ -168,6 +170,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.io.Serializable
 import java.net.URLDecoder
 import java.text.SimpleDateFormat
@@ -421,15 +424,20 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 initialLoad()
             }
         } else if (requestCode == EXTEND_ORDER_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                initialLoad()
+            val isOrderExtend = data?.getBooleanExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_ORDER_EXTENDED, true)
+            if (isOrderExtend == true) {
+                uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+                loadOrderHistoryList(orderIdNeedUpdated)
+            } else if (isOrderExtend == false) {
+                resetFilter()
+                currIndexNeedUpdate = -1
+                orderIdNeedUpdated = ""
+                refreshUohData()
             }
             val toasterMessage = data?.getStringExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_MESSAGE)
             if (!toasterMessage.isNullOrBlank()) {
                 val toasterType = data.getIntExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE, Toaster.TYPE_NORMAL)
-                view?.let {
-                    Toaster.build(it, toasterMessage, type = toasterType)
-                }
+                showToaster(toasterMessage, toasterType)
             }
         }
     }
@@ -741,6 +749,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                                     }
                                 }
                             }
+                            refreshHandler?.finishRefresh()
                         }
                         UohAnalytics.viewOrderListPage()
                     } else {
@@ -1521,6 +1530,14 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun showToaster(message: String, type: Int) {
         val toasterSuccess = Toaster
         view?.let { v ->
+            if (activity !is UohListActivity) {
+                try {
+                    toasterSuccess.toasterCustomBottomHeight = 48.dpToPx(resources.displayMetrics)
+                } catch (t: Throwable) {
+                    // ignore
+                    Timber.d(t)
+                }
+            }
             toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, "").show()
         }
     }
@@ -1743,7 +1760,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         RouteManager.route(context, applinkTrack)
                     }
                     button.actionType.equals(GQL_MP_EXTEND, true) -> {
-                        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.orderUUID)
+                        val params = mapOf<String, Any>(ApplinkConstInternalOrder.PARAM_ORDER_ID to order.verticalID)
                         val appLink = UriUtil.buildUriAppendParams(
                                 ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION,
                                 params
@@ -1751,6 +1768,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         val intent = RouteManager.getIntentNoFallback(context, appLink)?.apply {
                             putExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH, true)
                         } ?: return
+                        orderIdNeedUpdated = order.orderUUID
+                        currIndexNeedUpdate = index
                         startActivityForResult(intent, EXTEND_ORDER_REQUEST_CODE)
                     }
                     button.actionType.equals(GQL_LS_FINISH, true) -> {
