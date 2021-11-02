@@ -15,3 +15,8 @@ class CMRemoteConfigUtils(val context: Context) {
     fun getStringRemoteConfig(key: String): String = remoteConfig.getString(key, "")
 
 }
+
+
+object InAppRemoteConfigKey{
+    const val ENABLE_NEW_INAPP_LOCAL_FETCH = "app_enable_new_inapp_local_fetch"
+}

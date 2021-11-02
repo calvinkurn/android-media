@@ -19,9 +19,11 @@ import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
+import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
+import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
@@ -37,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_FETCH;
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_INTERSTITIAL;
@@ -122,14 +125,40 @@ public class CMInAppManager implements CmInAppListener,
     private void showInAppNotification(String name, int entityHashCode, boolean isActivity) {
         if (excludeScreenList != null && excludeScreenList.contains(name))
             return;
+        if(cmRemoteConfigUtils == null) {
+            fetchInAppVOld(name, entityHashCode, isActivity);
+        }else {
+            boolean isNewFetchEnabled =
+                    cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_FETCH,
+                            false);
+            if(isNewFetchEnabled){
+                fetchInAppVNew(name, entityHashCode, isActivity);
+            }else {
+                fetchInAppVOld(name, entityHashCode, isActivity);
+            }
+        }
+    }
+
+    private void fetchInAppVOld(String name, int entityHashCode, boolean isActivity) {
         RulesManager.getInstance().checkValidity(
                 name,
                 0L,
                 this,
                 entityHashCode,
-                isActivity
-        );
+                isActivity);
     }
+
+    private void fetchInAppVNew(String name, int entityHashCode, boolean isActivity){
+        InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
+                .clearExpiredInApp();
+        InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
+                .getInAppData(name, isActivity, inAppList ->
+                        CMInAppManager.this.notificationsDataResult((List<CMInApp>) inAppList,
+                                entityHashCode, name)
+                );
+    }
+
+
 
     @Override
     public void notificationsDataResult(List<CMInApp> inAppDataList, int entityHashCode, String screenName) {
@@ -138,7 +167,7 @@ public class CMInAppManager implements CmInAppListener,
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
-                if(canShowDialog()) {
+                if (canShowDialog()) {
                     showDialog(cmInApp);
                 }
             }

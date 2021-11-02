@@ -7,36 +7,38 @@ import com.tokopedia.track.TrackApp
 
 object ReviewCredibilityTracking {
 
-    fun trackOnClickCTASelfCredibility(ctaValue: String, userId: String, source: String) {
+    fun trackOnClickCTASelfCredibility(ctaValue: String, userId: String, source: String, viewerUserId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 ReviewTrackingConstant.EVENT to ReviewCredibilityTrackingConstant.EVENT_CLICK_INBOX_REVIEW,
                 ReviewTrackingConstant.EVENT_ACTION to ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_CTA_SELF,
                 ReviewTrackingConstant.EVENT_CATEGORY to getEventCategoryBasedOnSource(source),
                 ReviewTrackingConstant.EVENT_LABEL to String.format(
-                    ReviewCredibilityTrackingConstant.EVENT_LABEL_VALUE,
-                    ctaValue
+                    ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA,
+                    ctaValue,
+                    userId
                 ),
                 ReviewTrackingConstant.KEY_BUSINESS_UNIT to ReviewTrackingConstant.BUSINESS_UNIT,
                 ReviewTrackingConstant.KEY_CURRENT_SITE to ReviewTrackingConstant.CURRENT_SITE,
-                ReviewTrackingConstant.KEY_USER_ID to userId
+                ReviewTrackingConstant.KEY_USER_ID to viewerUserId
             )
         )
     }
 
-    fun trackOnClickCTAOtherUserCredibility(ctaValue: String, userId: String, productId: String, source: String) {
+    fun trackOnClickCTAOtherUserCredibility(ctaValue: String, userId: String, productId: String, source: String, viewerUserId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                ReviewTrackingConstant.EVENT to ReviewCredibilityTrackingConstant.EVENT_CLICK_PDP,
+                ReviewTrackingConstant.EVENT to ReviewCredibilityTrackingConstant.EVENT_CLICK_INBOX_REVIEW,
                 ReviewTrackingConstant.EVENT_ACTION to ReviewCredibilityTrackingConstant.EVENT_ACTION_CLICK_CTA_OTHER_USER,
                 ReviewTrackingConstant.EVENT_CATEGORY to getEventCategoryBasedOnSource(source),
                 ReviewTrackingConstant.EVENT_LABEL to String.format(
-                    ReviewCredibilityTrackingConstant.EVENT_LABEL_VALUE,
-                    ctaValue
+                    ReviewCredibilityTrackingConstant.EVENT_LABEL_CLICK_CTA,
+                    ctaValue,
+                    userId
                 ),
                 ReviewTrackingConstant.KEY_BUSINESS_UNIT to ReviewTrackingConstant.BUSINESS_UNIT,
                 ReviewTrackingConstant.KEY_CURRENT_SITE to ReviewTrackingConstant.CURRENT_SITE,
-                ReviewTrackingConstant.KEY_USER_ID to userId,
+                ReviewTrackingConstant.KEY_USER_ID to viewerUserId,
                 ReviewTrackingConstant.KEY_PRODUCT_ID to productId
             )
         )
