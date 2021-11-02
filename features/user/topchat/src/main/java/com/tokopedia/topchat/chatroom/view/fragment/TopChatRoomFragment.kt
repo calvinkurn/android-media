@@ -726,13 +726,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
         replyCompose?.setReplyListener(this)
-        when {
-            !isSeller() -> presenter.getSmartReplyWidget(messageId)
-            isSeller() -> {
-                presenter.adjustInterlocutorWarehouseId(messageId)
-                viewModel.getTickerReminder()
-            }
+        if (isSeller()) {
+            setupFirstTimeForSeller()
+        } else {
+            setupFirstTimeForBuyer()
         }
+    }
+
+    private fun setupFirstTimeForSeller() {
+        presenter.adjustInterlocutorWarehouseId(messageId)
+        viewModel.getTickerReminder()
+    }
+
+    private fun setupFirstTimeForBuyer() {
+        presenter.getSmartReplyWidget(messageId)
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
