@@ -3,6 +3,10 @@ package com.tokopedia.mediauploader.common.util
 import android.graphics.BitmapFactory
 import java.io.File
 
+fun Int.mbToBytes(): Int {
+    return this * 1024 * 1024
+}
+
 fun String.fileExtension(): String {
     val lastIndexOf = this.lastIndexOf(".")
     return if (lastIndexOf == -1) "" else this.substring(lastIndexOf)
