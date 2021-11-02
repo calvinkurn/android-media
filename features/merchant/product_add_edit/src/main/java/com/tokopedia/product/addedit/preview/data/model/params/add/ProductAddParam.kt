@@ -47,9 +47,6 @@ data class ProductAddParam (
         @SerializedName("shop")
         @Expose
         var shop: ShopParam = ShopParam(),
-        @SerializedName("catalog")
-        @Expose
-        var catalog: Catalog = Catalog(),
         @SerializedName("category")
         @Expose
         var category: Category? = null,

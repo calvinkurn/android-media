@@ -119,7 +119,6 @@ class GetProductMapper @Inject constructor() {
                     product.productName,
                     product.category.name,
                     product.category.id,
-                    product.catalog.catalogID,
                     product.price,
                     product.stock,
                     product.minOrder,

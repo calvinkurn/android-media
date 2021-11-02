@@ -64,7 +64,6 @@ class AddProductInputMapper @Inject constructor() {
                 shipmentInputModel.isMustInsurance,
                 detailInputModel.sku,
                 ShopParam(shopId),
-                Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
                 mapProductShowCases(detailInputModel.productShowCases),
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
