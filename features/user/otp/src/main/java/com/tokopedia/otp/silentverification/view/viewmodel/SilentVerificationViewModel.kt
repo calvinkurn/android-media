@@ -32,13 +32,14 @@ class SilentVerificationViewModel @Inject constructor(
     val requestSilentVerificationOtpUseCase: RequestSilentVerificationOtpUseCase,
     val validateSilentVerificationUseCase: ValidateSilentVerificationUseCase,
     val dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _validationResponse = MutableLiveData<Result<OtpValidateData>>()
     val validationResponse: LiveData<Result<OtpValidateData>>
         get() = _validationResponse
 
-    private val _requestSilentVerificationResponse = MutableLiveData<Result<RequestSilentVerificationResult>>()
+    private val _requestSilentVerificationResponse =
+        MutableLiveData<Result<RequestSilentVerificationResult>>()
     val requestSilentVerificationResponse: LiveData<Result<RequestSilentVerificationResult>>
         get() = _requestSilentVerificationResponse
 
@@ -71,7 +72,8 @@ class SilentVerificationViewModel @Inject constructor(
         msisdn: String,
         mode: String,
         userId: Int,
-        tokenId: String) {
+        tokenId: String
+    ) {
         launchCatchError(block = {
             val params = mapOf(
                 ValidateSilentVerificationUseCase.PARAM_OTP_TYPE to otpType,
@@ -88,27 +90,32 @@ class SilentVerificationViewModel @Inject constructor(
     }
 
     fun getEvUrl(evurl: String, network: Network) {
-        val okHttpClient: OkHttpClient =
-            OkHttpClient.Builder()
-                .socketFactory(network.socketFactory)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .build()
-        val req: Request = Request.Builder()
-            .url(evurl)
-            .build()
         try {
-            okHttpClient.newCall(req).enqueue(object: Callback {
+            val okHttpClient: OkHttpClient =
+                OkHttpClient.Builder()
+                    .socketFactory(network.socketFactory)
+                    .writeTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS)
+                    .build()
+            val req: Request = Request.Builder()
+                .url(evurl)
+                .build()
+            okHttpClient.newCall(req).enqueue(object : Callback {
                 override fun onResponse(call: Call, response: Response) {
-                    _bokuVerificationResponse.postValue(Success(response.body()?.string() ?: ""))
+                    val result = response.body()?.string() ?: ""
+                    println("verify:$result")
+                    _bokuVerificationResponse.postValue(Success(result))
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
+                    println("verify:onFailure: ${e.message}")
                     _bokuVerificationResponse.postValue(Fail(e))
                     e.printStackTrace()
                 }
             })
         } catch (ex: Exception) {
+            println("verify:exception ev url")
+            ex.printStackTrace()
             _bokuVerificationResponse.postValue(Fail(ex))
         }
     }
@@ -123,22 +130,28 @@ class SilentVerificationViewModel @Inject constructor(
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build()
 
-            connectivityManager.requestNetwork(request, object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    getEvUrl(url, network)
-                }
+            connectivityManager.requestNetwork(
+                request,
+                object : ConnectivityManager.NetworkCallback() {
+                    override fun onAvailable(network: Network) {
+                        println("verify:onAvailable")
+                        getEvUrl(url, network)
+                    }
 
-                override fun onUnavailable() {
-                    super.onUnavailable()
-                    _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
-                }
+                    override fun onUnavailable() {
+                        super.onUnavailable()
+                        println("verify:onUnavailable")
+                        _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
+                    }
 
-                override fun onLost(network: Network) {
-                    super.onLost(network)
-                    _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
-                }
-            })
+                    override fun onLost(network: Network) {
+                        super.onLost(network)
+                        println("verify:onLost")
+                        _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
+                    }
+                })
         }, onError = {
+            println("verify:catcherror")
             _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
         })
     }

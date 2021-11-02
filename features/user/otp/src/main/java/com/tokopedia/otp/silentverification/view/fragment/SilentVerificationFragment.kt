@@ -27,6 +27,7 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
@@ -247,9 +248,11 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     private fun onRequestSuccess(data: RequestSilentVerificationResult) {
         activity?.let {
-            if (data.evUrl.isNotEmpty() && data.tokenId.isNotEmpty()) {
+            if (data.evUrl.isNotEmpty() && data.tokenId.isNotEmpty() && data.errorMessage.isEmpty()) {
                 tokenId = data.tokenId
                 viewModel.verify(requireActivity(), data.evUrl)
+            } else {
+                onErrorVerification(Throwable(data.errorMessage))
             }
         }
     }
@@ -301,6 +304,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     }
 
     private fun onErrorVerification(throwable: Throwable) {
+        Toaster.build(requireView(), throwable.message ?: "Error", Toaster.LENGTH_LONG).show()
         showErrorState()
     }
 
@@ -312,7 +316,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         private const val VALUE_SUCCESS = "Success"
 
         private const val LOTTIE_SUCCESS_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_success.json"
-        private const val LOTTIE_BG_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_animation_bg.json"
+        private const val LOTTIE_BG_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_animation_bg_small.json"
 
         const val SILENT_VERIFICATION_SCREEN = "silentVerification"
 
