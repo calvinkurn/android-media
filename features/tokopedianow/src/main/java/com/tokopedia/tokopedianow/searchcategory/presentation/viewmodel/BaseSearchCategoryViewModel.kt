@@ -758,7 +758,6 @@ abstract class BaseSearchCategoryViewModel(
     protected abstract fun getPageSourceForGeneralSearchTracking(): String
 
     private fun updateViewForFirstPage(isEmptyProductList: Boolean) {
-        clearVisitableListLiveData()
         updateVisitableListLiveData()
 
         updateNextPageData()
