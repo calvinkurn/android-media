@@ -34,38 +34,16 @@ class SaveInAppUseCase(
     }
 
     private fun canSaveInApp(cmInApp: CMInApp): Boolean {
-        return verifyInApp(SaveInAppTestType.TEST_TYPE_TEST_CAMPAIGN, cmInApp)
-    }
-
-    private fun verifyInApp(
-        testType: SaveInAppTestType,
-        cmInApp: CMInApp
-    ): Boolean {
-        return when (testType) {
-            SaveInAppTestType.TEST_TYPE_TEST_CAMPAIGN -> {
-                if (testForTestCampaign(cmInApp)) {
-                    true
-                } else {
-                    verifyInApp(SaveInAppTestType.TEST_TYPE_INTERACTION_FOR_PERSISTENT_OFF, cmInApp)
-                }
-            }
-            SaveInAppTestType.TEST_TYPE_INTERACTION_FOR_PERSISTENT_OFF -> {
-                if (testInteractionForPerstOff(cmInApp)) {
-                    verifyInApp(SaveInAppTestType.TEST_TYPE_SCREEN_WITH_PARENT_ID, cmInApp)
-                } else {
-                    false
-                }
-            }
-            SaveInAppTestType.TEST_TYPE_SCREEN_WITH_PARENT_ID -> {
-                if (testScreenWithParentId(cmInApp)) {
-                    verifyInApp(SaveInAppTestType.TEST_TYPE_SAME_PARENT_ID, cmInApp)
-                } else {
-                    false
-                }
-            }
-            SaveInAppTestType.TEST_TYPE_SAME_PARENT_ID -> {
+        return if (testForTestCampaign(cmInApp)) {
+            true
+        } else if (testInteractionForPerstOff(cmInApp)) {
+            if (testScreenWithParentId(cmInApp)) {
                 testSameParentId(cmInApp)
+            } else {
+                false
             }
+        } else {
+            false
         }
     }
 
@@ -141,34 +119,6 @@ class SaveInAppUseCase(
             event,
             cmInApp
         )
-    }
-
-    enum class SaveInAppTestType {
-        TEST_TYPE_TEST_CAMPAIGN {
-            override fun getStepNumber(): Int {
-                return 1
-            }
-
-        },
-        TEST_TYPE_INTERACTION_FOR_PERSISTENT_OFF {
-            override fun getStepNumber(): Int {
-                return 2
-            }
-
-        },
-        TEST_TYPE_SCREEN_WITH_PARENT_ID {
-            override fun getStepNumber(): Int {
-                return 3
-            }
-
-        },
-        TEST_TYPE_SAME_PARENT_ID {
-            override fun getStepNumber(): Int {
-                return 4
-            }
-        };
-
-        abstract fun getStepNumber(): Int
     }
 
 }
