@@ -73,9 +73,9 @@ class RechargeOrderDetailViewModel @Inject constructor(
         try {
             val data = getRecommendationUseCaseCoroutine.getData(GetRecommendationRequestParam())
             val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first())
-            _topadsData.value = Success(bestSellerDataModel)
+            _topadsData.postValue(Success(bestSellerDataModel))
         } catch (t: Throwable) {
-            Fail(t)
+            _topadsData.postValue(Fail(t))
         }
     }
 
