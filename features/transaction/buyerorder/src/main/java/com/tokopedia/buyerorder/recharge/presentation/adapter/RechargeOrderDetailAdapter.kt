@@ -29,7 +29,8 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
             setupDigitalRecommendationWidget()
             setupSBMStaticButton()
             setupLanggananStaticButton()
-            setupAboutOrdersSection(data.helpUrl, data.actionButtonList)
+            setupAboutOrdersSection(data.helpUrl)
+            setupActionButtonSection(data.actionButtonList)
         }
     }
 
@@ -79,8 +80,12 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         addDivider()
     }
 
-    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupAboutOrdersSection(helpUrl: String, actionButtonList: RechargeOrderDetailActionButtonListModel) {
-        add(RechargeOrderDetailAboutOrderModel(helpUrl, actionButtonList))
+    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupAboutOrdersSection(helpUrl: String) {
+        add(RechargeOrderDetailAboutOrderModel(helpUrl))
+    }
+
+    private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.setupActionButtonSection(actionButtonList: RechargeOrderDetailActionButtonListModel) {
+        add(actionButtonList)
     }
 
     private fun MutableList<Visitable<RechargeOrderDetailTypeFactory>>.addDivider() {
@@ -100,7 +105,7 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
 
     fun lastVisibleIsActionButton(lastVisibleItemPosition: Int): Boolean =
             if (visitables.size > lastVisibleItemPosition) {
-                visitables[lastVisibleItemPosition] is RechargeOrderDetailAboutOrderModel
+                visitables[lastVisibleItemPosition] is RechargeOrderDetailActionButtonListModel
             } else {
                 false
             }

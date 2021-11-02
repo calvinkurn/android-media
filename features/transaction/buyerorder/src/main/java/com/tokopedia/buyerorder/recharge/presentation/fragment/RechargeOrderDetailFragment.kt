@@ -38,7 +38,8 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         RechargeOrderDetailProductViewHolder.ActionListener,
         RechargeOrderDetailDigitalRecommendationViewHolder.ActionListener,
         RechargeOrderDetailStaticButtonViewHolder.ActionListener,
-        RechargeOrderDetailAboutOrderViewHolder.ActionListener {
+        RechargeOrderDetailAboutOrderViewHolder.ActionListener,
+        RechargeOrderDetailActionButtonSectionViewHolder.ActionListener {
 
     private lateinit var binding: FragmentRechargeOrderDetailBinding
 
@@ -61,6 +62,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         )
     private val typeFactory: RechargeOrderDetailTypeFactory by lazy {
         RechargeOrderDetailTypeFactory(digitalRecommendationData,
+                this,
                 this,
                 this,
                 this,

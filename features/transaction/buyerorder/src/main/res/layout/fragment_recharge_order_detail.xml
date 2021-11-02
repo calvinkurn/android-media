@@ -33,8 +33,9 @@
         android:elevation="@dimen/unify_space_8"
         android:paddingHorizontal="@dimen/unify_space_16"
         android:paddingVertical="@dimen/unify_space_8"
-        tools:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_recharge_order_detail_sticky"
