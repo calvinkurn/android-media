@@ -69,7 +69,7 @@ abstract class BaseProductDetailScreenShotTest {
                 "${filePrefix()}-full")
 
         //Screenshot partial view
-        findViewAndScreenShot(com.tokopedia.product.detail.R.id.base_btn_action, filePrefix(), "button")
+        findViewAndScreenShot(com.tokopedia.product.detail.R.id.partial_layout_button_action, filePrefix(), "button")
 
         //Screenshot per-viewholder
         findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_CONTENT), filePrefix(), "content")
