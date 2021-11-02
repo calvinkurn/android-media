@@ -1,7 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,12 +45,14 @@ class ShopHomeFlashSaleViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_flash_sale_widget
+        private const val EMPTY_SIZE = 0
         private const val SINGLE = 1
         private const val DOUBLE = 2
         private const val ONE = 1
         private const val ONE_HUNDRED = 100
         private const val ONE_THOUSAND = 1000
         private const val ONE_MILLION = 1000000
+        private const val MAX_PRODUCT_CARD_SIZE = 5
     }
 
     init {
@@ -67,10 +68,9 @@ class ShopHomeFlashSaleViewHolder(
         setupCtaSeeAll(productSize)
         setupFlashSaleBackgroundView(flashSaleItem?.productList ?: listOf())
         setupFlashSaleCountDownTimer(element)
-        setupFlashSaleReminder(flashSaleItem?.isRemindMe?:false, flashSaleItem?.totalNotify?:0)
+        setupFlashSaleReminder(flashSaleItem)
         setupProductCardCarousel(element)
         setupWidgetImpressionListener(element)
-        // todo set placeholder
     }
 
     private fun setupWidgetImpressionListener(uiModel: ShopHomeFlashSaleUiModel) {
@@ -159,11 +159,18 @@ class ShopHomeFlashSaleViewHolder(
         }
     }
 
-    private fun setupFlashSaleReminder(isRemindMe: Boolean, totalNotify: Int) {
+    private fun setupFlashSaleReminder(flashSaleItem: ShopHomeFlashSaleUiModel.FlashSaleItem?) {
+        // hide reminder when campaign status is ongoing
+        val statusCampaign = flashSaleItem?.statusCampaign ?: ""
+        val isOngoing = isStatusCampaignOngoing(statusCampaign)
+        if(isOngoing) flashSaleReminderView?.hide()
+        else flashSaleReminderView?.show()
         // set reminder bell icon
+        val isRemindMe = flashSaleItem?.isRemindMe?:false
         if (isRemindMe) reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_true)
         else reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_false)
         // set reminder wording
+        val totalNotify = flashSaleItem?.totalNotify?:0
         val reminderWording = getTotalNotifyWording(totalNotify)
         reminderCountView?.text = reminderWording
     }
@@ -184,8 +191,28 @@ class ShopHomeFlashSaleViewHolder(
     }
 
     private fun setupProductCardCarousel(model: ShopHomeFlashSaleUiModel) {
-        val productList = model.data?.firstOrNull()?.productList ?: listOf()
+        val flashSaleData = model.data?.firstOrNull()
+        val productList = flashSaleData?.productList?.toMutableList() ?: mutableListOf()
+        // get the total product and total product wording
+        val totalProduct = flashSaleData?.totalProduct ?: 0
+        val totalProductWording = flashSaleData?.totalProductWording ?: ""
+        // add product place holder if product list size 5 and metada is not empty
+        val isUsingPlaceHolder = isUsingPlaceHolder(totalProduct, totalProductWording, productList.size)
+        if (isUsingPlaceHolder) {
+            productList.add(ShopHomeProductUiModel().apply {
+                this.isProductPlaceHolder = isUsingPlaceHolder
+                this.totalProduct = totalProduct
+                this.totalProductWording = totalProductWording
+            })
+            // set flash sale ui model for click handling purpose
+            productCarouselAdapter.setFsUiModel(model)
+        }
+        // set product list to product carousel adapter
         productCarouselAdapter.setProductList(productList)
+    }
+
+    private fun isUsingPlaceHolder(totalProduct: Int, totalProductWording: String, size: Int): Boolean {
+        return size == MAX_PRODUCT_CARD_SIZE && totalProduct > EMPTY_SIZE && totalProductWording.isNotBlank()
     }
 
     private fun isStatusCampaignFinished(statusCampaign: String): Boolean {

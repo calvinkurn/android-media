@@ -21,11 +21,10 @@ class ShopHomeFlashSaleProductListViewHolder(
     fun bindData(uiModel: ShopHomeProductUiModel) {
         this.uiModel = uiModel
         productCardList?.setProductModel(
-            ShopPageHomeMapper.mapToProductCardModel(
+            ShopPageHomeMapper.mapToProductCardCampaignModel(
                 isHasAddToCartButton = false,
                 hasThreeDots = false,
-                shopHomeProductViewModel = uiModel,
-                isWideContent = true
+                shopHomeProductViewModel = uiModel
             )
         )
     }

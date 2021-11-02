@@ -2328,6 +2328,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         goToPDP(model.id?:"")
     }
 
+    override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
+        context?.run {
+            if (shopId.isNotBlank() && model.header.ctaLink.isNotBlank()) {
+                RouteManager.route(this, model.header.ctaLink)
+            }
+        }
+    }
+
     private fun handleClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val isRemindMe = model.data?.firstOrNull()?.isRemindMe ?: false
         val action = if (isRemindMe) {

@@ -132,6 +132,8 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       timeCounter
                       totalNotify
                       totalNotifyWording
+                      totalProduct
+                      totalProductWording
                       dynamicRule {
                         dynamicRoleData {
                           ruleName

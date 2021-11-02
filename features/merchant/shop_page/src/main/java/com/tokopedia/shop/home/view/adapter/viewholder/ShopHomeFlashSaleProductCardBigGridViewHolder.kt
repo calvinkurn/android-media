@@ -21,11 +21,10 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     fun bindData(uiModel: ShopHomeProductUiModel) {
         this.uiModel = uiModel
         productCardBigGrid?.setProductModel(
-            ShopPageHomeMapper.mapToProductCardModel(
+            ShopPageHomeMapper.mapToProductCardCampaignModel(
                 isHasAddToCartButton = false,
                 hasThreeDots = false,
-                shopHomeProductViewModel = uiModel,
-                isWideContent = true
+                shopHomeProductViewModel = uiModel
             )
         )
     }
