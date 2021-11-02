@@ -276,9 +276,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private fun handleBokuResult(resultCode: String) {
         try {
             val result = mapBokuResult(resultCode)
-            if (result.containsKey(KEY_ERROR_DESC) &&
-                result.containsValue(VALUE_SUCCESS) &&
-                result.containsKey(KEY_CARRIER)
+            if (result[KEY_ERROR_CODE] == "0" &&
+                result[KEY_ERROR_DESC].equals("Success", true)
             ) {
                 onSuccessBokuVerification()
             } else {
