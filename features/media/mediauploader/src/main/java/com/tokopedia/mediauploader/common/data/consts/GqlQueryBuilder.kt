@@ -50,6 +50,9 @@ object GqlQueryBuilder {
               vod_policy {
                 max_file_size
                 allowed_ext
+                simple_upload_size_threshold_mb
+                big_upload_chunk_size_mb
+                big_upload_max_concurrent
               }
             }
           }
