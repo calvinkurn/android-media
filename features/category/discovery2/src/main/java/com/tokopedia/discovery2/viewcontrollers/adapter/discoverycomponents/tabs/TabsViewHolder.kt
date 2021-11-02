@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tab
 
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -49,13 +50,22 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
+            var selectedPosition = 0
             it.forEachIndexed { index, tabItem ->
                 if (tabItem.data?.isNotEmpty() == true) {
                     tabItem.data?.firstOrNull()?.name?.let { tabTitle ->
+                        if(tabItem.data?.firstOrNull()?.isSelected == true)
+                            selectedPosition = index
                         tabsHolder.addNewTab(tabTitle, tabItem.data?.firstOrNull()?.isSelected ?: false)
                     }
                 }
             }
+            tabsHolder.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                    }
+                })
         })
 
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
