@@ -11,8 +11,6 @@ import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleO
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.notifications.FragmentObserver;
-import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.CMRemoteConfigUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
@@ -32,7 +30,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpr
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
-import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
+import com.tokopedia.notifications.inApp.applifecycle.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
@@ -60,7 +58,7 @@ import static com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant.TYPE_
 public class CMInAppManager implements CmInAppListener,
         DataProvider,
         CmActivityLifecycleHandler.CmActivityApplicationCallback,
-        ShowInAppCallback, CmDialogVisibilityContract,
+        ShowInAppCallback,
         CMInAppController.OnNewInAppDataStoreListener {
 
     private static final CMInAppManager inAppManager;
@@ -122,7 +120,7 @@ public class CMInAppManager implements CmInAppListener,
         return inAppManager.cmInAppListener;
     }
 
-    @androidx.annotation.Nullable
+    @Nullable
     public IExternalInAppCallback getExternalInAppCallback(){
         return externalInAppCallback;
     }

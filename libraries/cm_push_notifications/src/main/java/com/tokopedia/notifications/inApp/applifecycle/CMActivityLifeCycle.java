@@ -1,4 +1,4 @@
-package com.tokopedia.notifications.inApp.viewEngine;
+package com.tokopedia.notifications.inApp.applifecycle;
 
 import android.app.Activity;
 import android.app.Application;
