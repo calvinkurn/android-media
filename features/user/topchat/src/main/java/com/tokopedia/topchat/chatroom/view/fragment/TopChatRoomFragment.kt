@@ -51,10 +51,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -147,6 +143,7 @@ import android.content.ClipData
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
@@ -526,6 +523,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateHasNextState(chat)
         loadChatRoomSettings(chatRoom)
         presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
+        renderTickerReminderIfNotYet()
+    }
+
+    private fun renderTickerReminderIfNotYet() {
+        val ticker = viewModel.srwTickerReminder.value
+        if (ticker != null && ticker is Success) {
+            onSuccessGetTickerReminder(ticker.data)
+        }
     }
 
     private fun onErrorGetTopChat(throwable: Throwable) {
