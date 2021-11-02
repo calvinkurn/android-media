@@ -59,7 +59,7 @@ object CampaignWidgetTracking : BaseTrackerConst() {
         adapterPosition: Int,
         userId: String
     ): Map<String, Any> {
-        val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionView(
+        val trackingBuilder = BaseTrackerBuilder().constructBasicPromotionClick(
             event = Event.PROMO_CLICK,
             eventAction = CLICK_ACTION_CAMPAIGN_WIDGET,
             eventCategory = Category.HOMEPAGE,
