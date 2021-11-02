@@ -668,11 +668,23 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         when (position) {
             CreateReviewFragment.RATING_1 -> {
                 textAreaTitle?.text = resources.getString(R.string.review_create_worst_title)
-                textArea?.setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                textArea?.apply {
+                    if (createReviewViewModel.isOtherCategoryOnly()) {
+                        setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
+                    } else {
+                        setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                    }
+                }
             }
             CreateReviewFragment.RATING_2 -> {
                 textAreaTitle?.text = resources.getString(R.string.review_form_bad_title)
-                textArea?.setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                textArea?.apply {
+                    if (createReviewViewModel.isOtherCategoryOnly()) {
+                        setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
+                    } else {
+                        setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                    }
+                }
             }
             CreateReviewFragment.RATING_3 -> {
                 textAreaTitle?.text = resources.getString(R.string.review_form_neutral_title)

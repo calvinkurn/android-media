@@ -360,7 +360,7 @@ class CreateReviewViewModel @Inject constructor(
         }
     }
 
-    private fun isOtherCategoryOnly(): Boolean {
+    fun isOtherCategoryOnly(): Boolean {
         return selectedBadRatingCategories.size == 1 && selectedBadRatingCategories.first() == CreateReviewBottomSheet.BAD_RATING_OTHER_ID.toString()
     }
 
