@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.video.data.params
 
-import com.tokopedia.mediauploader.common.util.fileBody
+import com.tokopedia.mediauploader.common.util.byteBody
 
 data class ChunkUploadParam(
     var sourceId: String,
@@ -11,7 +11,7 @@ data class ChunkUploadParam(
     var timeOut: String,
 ) {
 
-    fun fileBody() = byteArray.fileBody(
+    fun fileBody() = byteArray.byteBody(
         fileName = fileName,
         type = TYPE_FILE,
         bodyName = BODY_FILE
