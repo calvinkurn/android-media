@@ -65,7 +65,7 @@ class ShipmentDonationViewHolder(itemView: View, private val shipmentAdapterActi
 
     companion object {
         @JvmField
-        val ITEM_VIEW_DONATION = R.layout.item_donation_bundle
+        val ITEM_VIEW_DONATION = R.layout.item_donation
     }
 
 }

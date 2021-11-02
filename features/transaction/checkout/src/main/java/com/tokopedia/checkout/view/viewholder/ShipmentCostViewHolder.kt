@@ -142,7 +142,7 @@ class ShipmentCostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     companion object {
         @JvmField
-        val ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details_bundle
+        val ITEM_VIEW_SHIPMENT_COST = R.layout.view_item_shipment_cost_details
     }
 
 }

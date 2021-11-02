@@ -27,7 +27,7 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
 
     companion object {
         @JvmStatic
-        val ITEM_VIEW_PROMO_CHECKOUT = R.layout.item_promo_checkout_bundle
+        val ITEM_VIEW_PROMO_CHECKOUT = R.layout.item_promo_checkout
     }
 
     private val btnPromoCheckoutView by lazy {

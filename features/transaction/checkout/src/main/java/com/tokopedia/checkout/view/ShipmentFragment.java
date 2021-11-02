@@ -144,7 +144,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
@@ -335,7 +334,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_shipment_bundle;
+        return R.layout.fragment_shipment;
     }
 
     @Override
@@ -1045,7 +1044,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         sendAnalyticsOnClickEditPinPointErrorValidation(message);
         if (getView() != null) {
             LayoutInflater inflater = getLayoutInflater();
-            View layout = inflater.inflate(R.layout.toast_rectangle_bundle, getView().findViewById(R.id.toast_layout));
+            View layout = inflater.inflate(R.layout.toast_rectangle, getView().findViewById(R.id.toast_layout));
 
             TextView tvMessage = layout.findViewById(R.id.tv_message);
             tvMessage.setText(message);

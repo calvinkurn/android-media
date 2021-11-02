@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/ll_shipping_experience_state_loading"
-        layout="@layout/purchase_platform_partial_shimmering_list_bundle"
+        layout="@layout/purchase_platform_partial_shimmering_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -31,7 +31,7 @@
 
             <!--Shipping: Trade In Pickup-->
             <include
-                layout="@layout/item_shipment_trade_in_pickup_bundle"
+                layout="@layout/item_shipment_trade_in_pickup"
                 tools:visibility="gone" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -466,7 +466,7 @@
                 app:layout_constraintCircleRadius="4dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_failed_shipping_title"

@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.layout_bottomsheet_trade_in_info_bundle.view.*
+import kotlinx.android.synthetic.main.layout_bottomsheet_trade_in_info.view.*
 
 const val TRADE_IN_NORMAL_IMAGE_URL = "https://ecs7.tokopedia.net/timi/desc-timi.png"
 const val TRADE_IN_DROP_OFF_IMAGE_URL = "https://ecs7.tokopedia.net/timi/Ditukar%20Di%20Indomaret@3x.png"
@@ -17,7 +17,7 @@ const val TRADE_IN_DROP_OFF_IMAGE_URL = "https://ecs7.tokopedia.net/timi/Ditukar
 fun showTradeInInfoBottomsheet(fragmentManager: FragmentManager, context: Context) {
 
     BottomSheetUnify().apply {
-        val view = View.inflate(context, R.layout.layout_bottomsheet_trade_in_info_bundle, null)
+        val view = View.inflate(context, R.layout.layout_bottomsheet_trade_in_info, null)
         setupContent(view, context)
 
         showKnob = true

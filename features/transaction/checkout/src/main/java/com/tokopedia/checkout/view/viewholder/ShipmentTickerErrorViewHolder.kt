@@ -35,6 +35,6 @@ class ShipmentTickerErrorViewHolder(itemView: View, val listener: ShipmentAdapte
 
     companion object {
         @JvmStatic
-        val ITEM_VIEW_SHIPMENT_TICKER_ERROR = R.layout.item_shipment_ticker_error_bundle
+        val ITEM_VIEW_SHIPMENT_TICKER_ERROR = R.layout.item_shipment_ticker_error
     }
 }

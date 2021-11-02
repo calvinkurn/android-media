@@ -131,7 +131,7 @@
 
             <include
                 android:id="@+id/layout_address_drop_off"
-                layout="@layout/layout_address_drop_off_bundle"
+                layout="@layout/layout_address_drop_off"
                 tools:visibility="visible" />
 
         </LinearLayout>

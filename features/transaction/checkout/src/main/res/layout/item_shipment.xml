@@ -78,15 +78,15 @@
         android:orientation="vertical">
 
         <include
-            layout="@layout/item_shipment_seller_info_bundle"
+            layout="@layout/item_shipment_seller_info"
             tools:visibility="visible" />
 
         <include
-            layout="@layout/item_shipment_product_bundle"
+            layout="@layout/item_shipment_product"
             tools:visibility="gone" />
 
         <include
-            layout="@layout/item_shipment_other_product_bundle"
+            layout="@layout/item_shipment_other_product"
             tools:visibility="visible" />
 
         <!--Shipping: Shipping Experience-->
@@ -96,11 +96,11 @@
 
         <!--Shipping: Option (Insurance, dropshipper, etc)-->
         <include
-            layout="@layout/item_shipment_shipping_options_bundle"
+            layout="@layout/item_shipment_shipping_options"
             tools:visibility="gone" />
 
         <include
-            layout="@layout/item_shipment_subtotal_bundle"
+            layout="@layout/item_shipment_subtotal"
             tools:visibility="visible" />
 
     </LinearLayout>

@@ -20,7 +20,7 @@ object CartProtectionInfoBottomSheetHelper {
 
     @JvmStatic
     fun openWebviewInBottomSheet(fragment: ShipmentFragment, context: Context, url: String, title: String) {
-        val view = View.inflate(context, R.layout.checkout_protection_more_bundle, null)
+        val view = View.inflate(context, R.layout.checkout_protection_more, null)
         webView = view.findViewById(R.id.proteksi_webview)
         val viewflipper = view.findViewById<ViewFlipper>(R.id.container_webview)
         val webSettings = webView?.settings

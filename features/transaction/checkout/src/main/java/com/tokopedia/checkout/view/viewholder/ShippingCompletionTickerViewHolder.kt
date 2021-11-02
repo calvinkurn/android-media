@@ -19,7 +19,7 @@ class ShippingCompletionTickerViewHolder(val view: View, val actionListener: Shi
 
     companion object {
         @JvmStatic
-        val ITEM_VIEW_TICKER_SHIPPING_COMPLETION = R.layout.item_ticker_shipping_completion_bundle
+        val ITEM_VIEW_TICKER_SHIPPING_COMPLETION = R.layout.item_ticker_shipping_completion
     }
 
     fun bindViewHolder(tickerModel: ShippingCompletionTickerModel) {

@@ -23,7 +23,7 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
 
     companion object {
         @JvmStatic
-        val ITEM_VIEW_PAYMENT_BUTTON = R.layout.item_shipment_button_payment_bundle
+        val ITEM_VIEW_PAYMENT_BUTTON = R.layout.item_shipment_button_payment
     }
 
     fun bindViewHolder(model: ShipmentButtonPaymentModel) {

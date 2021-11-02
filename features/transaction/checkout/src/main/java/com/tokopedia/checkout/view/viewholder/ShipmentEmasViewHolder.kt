@@ -73,7 +73,7 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
 
     companion object {
         @JvmField
-        val ITEM_VIEW_EMAS = R.layout.checkout_holder_item_emas_bundle
+        val ITEM_VIEW_EMAS = R.layout.checkout_holder_item_emas
     }
 
 }
