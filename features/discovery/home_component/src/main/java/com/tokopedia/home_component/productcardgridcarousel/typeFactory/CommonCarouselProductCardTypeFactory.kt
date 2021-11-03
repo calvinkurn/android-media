@@ -11,7 +11,7 @@ interface CommonCarouselProductCardTypeFactory: AdapterTypeFactory {
     fun type(dataModelCarousel: CarouselSeeMorePdpDataModel): Int
     fun type(dataModel: CarouselFeaturedShopCardDataModel): Int
     fun type(dataModel: CarouselViewAllCardDataModel): Int = 0
-    fun type(dataModel: CarouselCampaignCardDataModel): Int
+    fun type(dataModel: CarouselCampaignCardDataModel): Int = 0
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 }

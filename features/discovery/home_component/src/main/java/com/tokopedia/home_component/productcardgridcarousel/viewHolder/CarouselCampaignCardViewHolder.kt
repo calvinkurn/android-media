@@ -2,12 +2,12 @@ package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
 import android.view.View
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselCampaignCardDataModel
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.CardUnify
 
 /**
  * Created by yfsx on 11/10/21.
@@ -16,7 +16,7 @@ class CarouselCampaignCardViewHolder(
     private val view: View,
     private val channels: ChannelModel
 ) : AbstractViewHolder<CarouselCampaignCardDataModel>(view) {
-    private lateinit var cardContainer: CardUnify
+    private lateinit var cardContainer: CardView
     private lateinit var cardImage: ImageView
 
     override fun bind(element: CarouselCampaignCardDataModel?) {

@@ -4,7 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.*
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFeaturedShopCardDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselFeaturedShopViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselProductCardViewHolder
@@ -33,10 +36,6 @@ class RechargeBUWidgetProductCardTypeFactoryImpl(private val channels: ChannelMo
 
     override fun type(dataModel: CarouselFeaturedShopCardDataModel): Int {
         return CarouselFeaturedShopViewHolder.LAYOUT
-    }
-
-    override fun type(dataModel: CarouselCampaignCardDataModel): Int {
-        return 0
     }
 
     override fun type(rechargeBUWidgetProductCardModel: RechargeBUWidgetProductCardModel): Int {
