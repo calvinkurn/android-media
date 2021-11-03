@@ -109,6 +109,9 @@
     <!--Multiple Like-->
     <dimen name="play_like_bubble_original_size">12dp</dimen>
 
+    <!--Partner Info-->
+    <dimen name="play_follow_button_width">56dp</dimen>
+
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>
     <dimen name="play_offset_10">10dp</dimen>

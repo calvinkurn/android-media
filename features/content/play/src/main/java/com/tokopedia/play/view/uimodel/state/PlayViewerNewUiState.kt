@@ -51,6 +51,9 @@ sealed class PlayInteractiveUiState {
 data class PlayPartnerUiState(
     val name: String,
     val followStatus: PlayPartnerFollowStatus,
+    val iconUrl: String,
+    val badgeUrl: String,
+    val isLoadingFollow: Boolean,
 )
 
 data class PlayWinnerBadgeUiState(

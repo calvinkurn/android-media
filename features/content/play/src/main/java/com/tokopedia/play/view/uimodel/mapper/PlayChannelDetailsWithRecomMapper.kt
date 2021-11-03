@@ -70,10 +70,12 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     )
 
     private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
-            id = partnerResponse.id.toLongOrZero(),
-            name = htmlTextTransformer.transform(partnerResponse.name),
-            type = PartnerType.getTypeByValue(partnerResponse.type),
-            status = PlayPartnerFollowStatus.Unknown,
+        id = partnerResponse.id.toLongOrZero(),
+        name = htmlTextTransformer.transform(partnerResponse.name),
+        type = PartnerType.getTypeByValue(partnerResponse.type),
+        status = PlayPartnerFollowStatus.Unknown,
+        iconUrl = partnerResponse.thumbnailUrl,
+        badgeUrl = partnerResponse.badgeUrl,
     )
 
     private fun mapLikeInfo(
