@@ -83,6 +83,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantAT
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
@@ -537,7 +538,7 @@ abstract class BaseSearchCategoryViewModel(
 
         refreshQueryParamFromFilterController()
 
-        onViewReloadPage()
+        applyFilter()
     }
 
     private fun refreshQueryParamFromFilterController() {
@@ -554,6 +555,29 @@ abstract class BaseSearchCategoryViewModel(
 
         showLoading()
         onViewCreated()
+    }
+
+    private fun applyFilter() {
+        totalData = 0
+        totalFetchedData = 0
+        nextPage = 1
+        chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+        dynamicFilterModelMutableLiveData.value = null
+
+        showProgressBar()
+        onViewCreated()
+    }
+
+    private fun showProgressBar() {
+        addProgressBarDataView()
+        updateVisitableListLiveData()
+    }
+
+    private fun addProgressBarDataView() {
+        visitableList.firstOrNull { it is ProductCountDataView }?.let {
+            val index = visitableList.indexOf(it)
+            visitableList.add(index, ProgressBarDataView)
+        }
     }
 
     protected open fun openL3FilterPage(selectedFilter: Filter) {
