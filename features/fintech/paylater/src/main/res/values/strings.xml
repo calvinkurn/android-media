@@ -72,5 +72,7 @@
     <string name="pay_later_its_not_final_price">Ini belum harga final, ya</string>
     <string name="pay_later_cost_not_included">Simulasi pembayaran belum termasuk biaya saat pengiriman seperti Proteksi dan ongkir.</string>
     <string name="pay_later_connect_gopay">Sambungin Gojek dulu, ya</string>
+    <string name="paylater_to_use_gopay">Buat pakai GoPayLater Cicil, kamu perlu sambungin akun Gojek ke Tokopedia dulu. Cuma sebentar, kok!</string>
+    <string name="paylater_gopay_connect_account">Sambungin Akun</string>
 
 </resources>
