@@ -20,7 +20,7 @@ class VideoUploaderManager @Inject constructor(
 
     private var isSimpleUpload = true
 
-    suspend operator fun invoke(file: File, sourceId: String): UploadResult {
+    suspend operator fun invoke(file: File, sourceId: String, withTranscode: Boolean): UploadResult {
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
         val filePath = file.path
@@ -47,10 +47,10 @@ class VideoUploaderManager @Inject constructor(
                 else -> {
                     isSimpleUpload = file.length() <= maxSizeOfSimpleUpload.mbToBytes()
 
-                    if (isSimpleUpload) {
-                        simpleUploaderManager(file, sourceId, sourcePolicy)
+                    if (!isSimpleUpload) {
+                        largeUploaderManager(file, sourceId, sourcePolicy, withTranscode)
                     } else {
-                        largeUploaderManager(file, sourceId, sourcePolicy)
+                        simpleUploaderManager(file, sourceId, sourcePolicy, withTranscode)
                     }
                 }
             }
