@@ -54,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/discovery_home_desc_error"
-            android:textSize="@dimen/sp_12"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/img_home_default_error"
             app:layout_constraintEnd_toEndOf="@+id/default_home_title_copy"
             app:layout_constraintHorizontal_bias="0.0"

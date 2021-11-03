@@ -9,8 +9,8 @@
     android:layout_marginRight="8dp">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_width="@dimen/dp_300"
-        android:layout_height="@dimen/dp_130"
+        android:layout_width="300dp"
+        android:layout_height="130dp"
         app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

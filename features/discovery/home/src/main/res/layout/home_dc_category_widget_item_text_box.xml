@@ -15,8 +15,8 @@
         android:id="@+id/card_container">
         <ImageView
             android:id="@+id/category_image"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_100"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             tools:background="@color/Unify_R200"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
