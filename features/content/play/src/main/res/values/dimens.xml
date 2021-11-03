@@ -5,6 +5,7 @@
     <dimen name="play_player_control_spacing_right">12dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_6">6dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_12">12dp</dimen>
     <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_20">20dp</dimen>
