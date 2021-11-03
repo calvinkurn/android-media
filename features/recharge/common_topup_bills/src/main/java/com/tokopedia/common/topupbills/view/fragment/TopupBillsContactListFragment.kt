@@ -177,9 +177,9 @@ open class TopupBillsContactListFragment:
             if (contacts.isNotEmpty()) {
                 contactListAdapter.setEmptyState()
             }
-            savedNumberViewModel.setClueVisibility(false)
+            if (isVisible) savedNumberViewModel.setClueVisibility(false)
         } else {
-            savedNumberViewModel.setClueVisibility(true)
+            if (isVisible) savedNumberViewModel.setClueVisibility(true)
         }
     }
 

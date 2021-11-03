@@ -315,7 +315,7 @@ class TopupBillsFavoriteNumberFragment:
             numberListAdapter.setNumbers(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
-            savedNumberViewModel.setClueVisibility(true)
+            if (isVisible) savedNumberViewModel.setClueVisibility(true)
         } else {
             if (topUpBillsViewModel.seamlessFavNumberData.value is Success) {
                 if (clientNumbers.isNotEmpty()) {
@@ -324,7 +324,7 @@ class TopupBillsFavoriteNumberFragment:
                     numberListAdapter.setNotFound(listOf(TopupBillsFavNumberNotFoundDataView()))
                 }
             }
-            savedNumberViewModel.setClueVisibility(false)
+            if (isVisible) savedNumberViewModel.setClueVisibility(false)
         }
     }
 
