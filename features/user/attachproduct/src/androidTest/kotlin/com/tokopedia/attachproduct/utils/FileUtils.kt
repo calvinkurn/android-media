@@ -29,7 +29,8 @@ object FileUtils {
             throw NullPointerException()
         }
         val reader = StringReader(json)
-        return Gson().fromJson<Any>(reader, typeOfT) as T
+        val model = Gson().fromJson<T>(reader, typeOfT)
+        return model
     }
 
 }

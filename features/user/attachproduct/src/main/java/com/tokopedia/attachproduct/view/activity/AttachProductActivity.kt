@@ -18,14 +18,14 @@ import java.util.*
 
 open class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activity {
 
-    private var warehouseId = "0"
-    private var shopId = ""
+    protected var warehouseId = "0"
+    protected var shopId = ""
     private var shopName: String = ""
-    private var isSeller = false
-    private var source: String = ""
+    protected var isSeller = false
+    protected var source: String = ""
     private lateinit var remoteConfig: RemoteConfig
     var maxChecked = MAX_CHECKED_DEFAULT
-    private val hiddenProducts: ArrayList<String> = arrayListOf()
+    protected val hiddenProducts: ArrayList<String> = arrayListOf()
 
     companion object {
         const val MAX_CHECKED_DEFAULT = 3

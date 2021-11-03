@@ -6,7 +6,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.attachproduct.R
-import com.tokopedia.attachproduct.fake.depedency.FakeUserSession
+import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
+import com.tokopedia.attachproduct.fake.usecase.FakeAttachProductUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
@@ -14,12 +15,13 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 
 /**
  * Created by Hendri on 19/02/18.
  */
 @Module
-class AttachProductModule(private val context: Context) {
+class FakeAttachProductModule(private val context: Context) {
 
     @Provides
     @AttachProductContext
@@ -29,7 +31,7 @@ class AttachProductModule(private val context: Context) {
 
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSession {
-        return FakeUserSession(context)
+        return UserSession(context)
     }
 
     @Provides
@@ -39,12 +41,18 @@ class AttachProductModule(private val context: Context) {
     }
     @Provides
     @AttachProductScope
-    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
 
     @Provides
     @AttachProductScope
     fun provideQuery(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_query_attach_product)
+    }
+
+    @Provides
+    @AttachProductScope
+    fun provideUseCase(repository: GraphqlRepository, dispatcher: CoroutineDispatcher): AttachProductUseCase {
+        return FakeAttachProductUseCase(repository, dispatcher)
     }
 }

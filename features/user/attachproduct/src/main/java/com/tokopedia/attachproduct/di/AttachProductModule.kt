@@ -47,4 +47,10 @@ class AttachProductModule(private val context: Context) {
     fun provideQuery(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_query_attach_product)
     }
+
+    @Provides
+    @AttachProductScope
+    fun provideUseCase(repository: GraphqlRepository, query: String, dispatcher: CoroutineDispatcher): AttachProductUseCase {
+        return AttachProductUseCase(repository, query, dispatcher)
+    }
 }
