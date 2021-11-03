@@ -15,6 +15,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.FragmentRechargeOrderDetailBinding
+import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
@@ -22,6 +23,7 @@ import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetai
 import com.tokopedia.buyerorder.recharge.presentation.adapter.viewholder.*
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailActionButtonModel
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailStaticButtonModel
+import com.tokopedia.buyerorder.recharge.presentation.utils.RechargeOrderDetailAnalytics
 import com.tokopedia.buyerorder.recharge.presentation.viewmodel.RechargeOrderDetailViewModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
@@ -57,14 +59,16 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         ViewModelProvider(this, viewModelFactory).get(RechargeOrderDetailViewModel::class.java)
     }
 
+    @Inject
+    lateinit var rechargeOrderDetailAnalytics: RechargeOrderDetailAnalytics
+
     private val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
                 viewModelFactory,
                 viewLifecycleOwner,
                 DigitalRecommendationAdditionalTrackingData(
                         userType = "",
-                        widgetPosition = "",
-                        pgCategories = emptyList()
+                        widgetPosition = "1"
                 ),
                 DigitalRecommendationPage.DIGITAL_GOODS
         )
@@ -127,6 +131,8 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                         orderId = orderId
                 )
         )
+
+        rechargeOrderDetailAnalytics.eventOpenScreen(RechargeOrderDetailAnalytics.DefaultValue.SCREEN_NAME_ORDER_DETAIL)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -141,6 +147,14 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         copyToClipboard(INVOICE_NUMBER_LABEL, invoiceRefNum)
     }
 
+    override fun onSeeInvoiceClicked(invoiceRefNum: String, invoiceUrl: String) {
+        rechargeOrderDetailAnalytics.eventClickSeeInvoice(
+                OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+        )
+        rechargeOrderDetailAnalytics.eventOpenScreen(RechargeOrderDetailAnalytics.DefaultValue.SCREEN_NAME_INVOICE)
+    }
+
     override fun onCopyCodeClicked(label: String, value: String) {
         copyToClipboard(label, value)
     }
@@ -150,31 +164,38 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onClickStaticButton(staticButtonModel: RechargeOrderDetailStaticButtonModel) {
-//        TODO("Not yet implemented")
+        sendActionButtonClickedEvent(
+                staticButtonModel.title,
+                FEATURE_ACTION_BUTTON_TYPE
+        )
     }
 
     override fun onClickHelp(helpUrl: String) {
-//        TODO("Not yet implemented")
+        // no op for now
     }
 
     override fun onActionButtonClicked(actionButton: RechargeOrderDetailActionButtonModel) {
-//        TODO("Not yet implemented")
+        sendActionButtonClickedEvent(
+                actionButton.name,
+                actionButton.buttonType
+        )
     }
 
     override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+        rechargeOrderDetailAnalytics.eventTopAdsClick(recommendationItem)
         RouteManager.route(context, recommendationItem.appUrl)
     }
 
     override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-//        TODO("Not yet implemented")
+        rechargeOrderDetailAnalytics.eventTopAdsImpression(recommendationItem)
     }
 
     override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-//        TODO("Not yet implemented")
+        // no op
     }
 
     override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, chipsPosition: Int) {
-//        TODO("Not yet implemented")
+        // no op
     }
 
     override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
@@ -217,6 +238,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 btnRechargeOrderDetailSticky.text = primaryActionButton.label
                 btnRechargeOrderDetailSticky.setOnClickListener {
                     context?.let { ctx ->
+                        sendActionButtonClickedEvent(
+                                primaryActionButton.name,
+                                primaryActionButton.buttonType
+                        )
                         onStickyActionButtonClicked(ctx, primaryActionButton.uri)
                     }
                 }
@@ -288,6 +313,10 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun copyToClipboard(label: String, value: String) {
+        rechargeOrderDetailAnalytics.eventClickCopyButton(
+                OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+        )
         context?.let {
             BuyerUtils.copyTextToClipBoard(label, value, it)
             BuyerUtils.vibrate(it)
@@ -299,12 +328,27 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun sendActionButtonClickedEvent(buttonName: String, buttonType: String) {
+        rechargeOrderDetailAnalytics.eventClickActionButton(
+                OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+                buttonName,
+                when (buttonType) {
+                    PRIMARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_PRIMARY_BUTTON
+                    SECONDARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_SECONDARY_BUTTON
+                    else -> RechargeOrderDetailAnalytics.EventAction.CLICK_FEATURE_BUTTON
+                }
+        )
+    }
+
     companion object {
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
         private const val EXTRA_ORDER_CATEGORY = "EXTRA_ORDER_CATEGORY"
         private const val EXTRA_IS_PRIMARY_BUTTON_EXISTS = "EXTRA_IS_PRIMARY_BUTTON_EXISTS"
 
         private const val PRIMARY_ACTION_BUTTON_TYPE = "primary"
+        private const val SECONDARY_ACTION_BUTTON_TYPE = "secondary"
+        private const val FEATURE_ACTION_BUTTON_TYPE = "feature"
 
         private const val TOKOPEDIA_PREFIX = "tokopedia"
         private const val IDEM_POTENCY_KEY = "idem_potency_key"

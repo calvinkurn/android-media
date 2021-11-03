@@ -33,6 +33,7 @@ class RechargeOrderDetailTopSectionViewHolder(
                 listener?.onCopyInvoiceNumberClicked(element.invoiceRefNum)
             }
             tgRechargeSeeInvoice.setOnClickListener {
+                listener?.onSeeInvoiceClicked(element.invoiceRefNum, element.invoiceUrl)
                 RouteManager.route(root.context, element.invoiceUrl)
             }
 
@@ -49,6 +50,7 @@ class RechargeOrderDetailTopSectionViewHolder(
 
     interface ActionListener {
         fun onCopyInvoiceNumberClicked(invoiceRefNum: String)
+        fun onSeeInvoiceClicked(invoiceRefNum: String, invoiceUrl: String)
     }
 
     companion object {
