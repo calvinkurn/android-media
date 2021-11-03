@@ -129,7 +129,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
     }
 
     private fun initInject() {
-        getComponent().inject(this)
+        getComponent().injectPromotionBottomSheet(this)
     }
 
     private fun getComponent(): AffiliateComponent =

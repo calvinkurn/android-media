@@ -66,6 +66,8 @@
         app:tickerType="error"
         app:closeButtonVisibility="gone"
         app:titleText="Akunmu sedang bermasalah. Selengkapnya"
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -76,6 +78,8 @@
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginEnd="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/affiliate_sign_up_btn"
         >
 

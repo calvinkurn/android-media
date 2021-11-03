@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
@@ -19,13 +20,15 @@ interface AffiliateComponent {
     @get:ApplicationContext
     val context: Context
 
+    fun injectActivity(affiliateActivity : AffiliateActivity)
+
     fun injectHomeFragment(affiliateHomeFragment: AffiliateHomeFragment)
 
     fun injectPromoFragment(affiliatePromoFragment: AffiliatePromoFragment)
 
     fun injectHelpFragment(affiliateHelpFragment: AffiliateHelpFragment)
 
-    fun inject(affiliatePromotionBottomSheet: AffiliatePromotionBottomSheet)
+    fun injectPromotionBottomSheet(affiliatePromotionBottomSheet: AffiliatePromotionBottomSheet)
 
     fun injectLoginFragment(affiliateLoginFragment : AffiliateLoginFragment)
 

@@ -9,4 +9,20 @@ class AffiliateLoginViewModel  @Inject constructor(
 ) : BaseViewModel() {
 
 
+    fun getUserName(): String {
+        return userSessionInterface.name
+    }
+
+    fun getUserEmail(): String {
+        return userSessionInterface.email
+    }
+
+    fun getUserProfilePicture(): String {
+        return userSessionInterface.profilePicture
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return userSessionInterface.isLoggedIn
+    }
+
 }

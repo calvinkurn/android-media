@@ -6,10 +6,17 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL
+import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
+import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.di.AffiliateComponent
+import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
@@ -17,14 +24,25 @@ import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
+import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomClickListener,
-        AffiliateBottomNavBarInterface {
+        AffiliateBottomNavBarInterface , AffiliateActivityInterface{
+
+    @Inject
+    lateinit var userSessionInterface : UserSessionInterface
+
+    @Inject
+    lateinit var viewModelProvider: ViewModelProvider.Factory
 
     private lateinit var affiliateVM: AffiliateViewModel
 
@@ -32,9 +50,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initBottomNavigationView()
-        //showAffiliatePortal()
-        showLoginPortal()
+        afterViewCreated()
     }
 
     override fun getLayoutRes(): Int = R.layout.affiliate_layout
@@ -52,6 +68,20 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
         }
     }
 
+    override fun getVMFactory(): ViewModelProvider.Factory {
+        return viewModelProvider
+    }
+
+    override fun initInject() {
+        getComponent().injectActivity(this)
+    }
+
+    private fun getComponent(): AffiliateComponent =
+            DaggerAffiliateComponent
+                    .builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .build()
+
     override fun setViewModel(viewModel: BaseViewModel) {
         affiliateVM = viewModel as AffiliateViewModel
     }
@@ -60,8 +90,17 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
         return null
     }
 
+    private fun afterViewCreated() {
+        initBottomNavigationView()
+        setObservers()
+        if(userSessionInterface.isLoggedIn)
+            affiliateVM.getAffiliateValidateUser()
+        else
+            showLoginPortal()
+    }
+
     private fun showLoginPortal() {
-        openFragment(AffiliateLoginFragment.getFragmentInstance())
+        openFragment(AffiliateLoginFragment.getFragmentInstance(this))
     }
 
     private fun showAffiliatePortal() {
@@ -85,6 +124,16 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
 
     override fun menuReselected(position: Int, id: Int) {
 
+    }
+
+    private fun setObservers() {
+        affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
+            if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
+                showAffiliatePortal()
+            }else {
+                showLoginPortal()
+            }
+        })
     }
 
     private fun openFragment(fragment : Fragment){
@@ -122,5 +171,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
 
     override fun selectItem(position: Int, id: Int) {
         affiliateBottomNavigation?.setSelected(position)
+    }
+
+    override fun navigateToTermsFragment() {
+        openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance())
     }
 }
