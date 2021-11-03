@@ -26,7 +26,6 @@
         android:layout_height="@dimen/dp_0"
         android:id="@+id/bg_iv"
         android:scaleType="fitXY"
-        tools:background="@color/green_300"
         app:layout_constraintStart_toEndOf="@+id/title_iv_parent"
         app:layout_constraintEnd_toEndOf="@id/text_data_parent"
         app:layout_constraintTop_toTopOf="@+id/text_data_parent"
