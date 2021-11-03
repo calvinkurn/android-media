@@ -67,6 +67,10 @@ class CreateReviewProgressBar : BaseCustomView {
                 }
                 setBadRatingNeedReviewText()
             }
+            progress.isNeedBadRating() -> {
+                setEmptyProgress()
+                setBadRatingNeedReasonText()
+            }
             else -> {
                 setEmptyProgress()
                 if (progress.isGoodRating) {
@@ -129,5 +133,9 @@ class CreateReviewProgressBar : BaseCustomView {
 
     private fun setBadRatingEmptyText() {
         progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_empty)
+    }
+
+    private fun setBadRatingNeedReasonText() {
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_bad_rating_reason)
     }
 }

@@ -111,46 +111,32 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun stopPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.let {
-            it.stopMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.stopMonitoring()
         pageLoadTimePerformanceMonitoring = null
     }
 
     override fun startPreparePagePerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.let {
-            it.startPreparePagePerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
     override fun stopPreparePagePerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.let {
-            it.stopPreparePagePerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
     }
 
     override fun startNetworkRequestPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.let {
-            it.startNetworkRequestPerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
     }
 
     override fun stopNetworkRequestPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.let {
-            it.stopNetworkRequestPerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
     }
 
     override fun startRenderPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.let {
-            it.startRenderPerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
     }
 
     override fun stopRenderPerformanceMonitoring() {
-        pageLoadTimePerformanceMonitoring?.let {
-            it.stopRenderPerformanceMonitoring()
-        }
+        pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
     }
 
     private fun getDataFromApplinkOrIntent() {

@@ -6,12 +6,12 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
+import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
 object CreateReviewTracking {
-
-    private val tracker = TrackApp.getInstance().gtm
 
     fun reviewOnAnonymousClickTracker(
         orderId: String,
@@ -19,7 +19,7 @@ object CreateReviewTracking {
         isEditReview: Boolean,
         feedbackId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
@@ -31,7 +31,7 @@ object CreateReviewTracking {
 
 
     fun reviewOnCloseTracker(orderId: String, productId: String, isEligible: Boolean) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -54,7 +54,7 @@ object CreateReviewTracking {
     ) {
         val messageState = if (isMessageEmpty) "blank" else "filled"
         val anonymousState = if (isAnonymous) "true" else "false"
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
@@ -78,7 +78,7 @@ object CreateReviewTracking {
         feedbackId: String
     ) {
         val messageState = if (isMessageEmpty) "blank" else "filled"
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
@@ -89,7 +89,7 @@ object CreateReviewTracking {
     }
 
     fun reviewOnScoreVisible(orderId: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -104,7 +104,7 @@ object CreateReviewTracking {
     }
 
     fun reviewOnViewTracker(orderId: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 "viewReviewIris",
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -123,7 +123,7 @@ object CreateReviewTracking {
         feedbackId: String
     ) {
         val successState = if (isSuccessful) "success" else "unsuccessful"
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 "clickReview",
                 CreateReviewTrackingConstants.EVENT_CATEGORY + getEditMarker(isEditReview),
@@ -142,7 +142,7 @@ object CreateReviewTracking {
         feedbackId: String
     ) {
         val successState = if (isSuccessful) "success" else "unsuccessful"
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 "clickReview",
                 "product review detail page" + getEditMarker(isEditReview),
@@ -153,7 +153,7 @@ object CreateReviewTracking {
     }
 
     fun onExpandTextBoxClicked(orderId: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -168,7 +168,7 @@ object CreateReviewTracking {
     }
 
     fun onCollapseTextBoxClicked(orderId: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -183,7 +183,7 @@ object CreateReviewTracking {
     }
 
     fun eventClickSmiley(orderId: String, productId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -198,7 +198,7 @@ object CreateReviewTracking {
     }
 
     fun eventViewDialog(dialogTitle: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.VIEW_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -209,7 +209,7 @@ object CreateReviewTracking {
     }
 
     fun eventClickContinueWrite(dialogTitle: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -223,7 +223,7 @@ object CreateReviewTracking {
     }
 
     fun eventClickLeavePage(dialogTitle: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -237,7 +237,7 @@ object CreateReviewTracking {
     }
 
     fun eventClickSendAnother(title: String, hasPendingIncentive: Boolean) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -251,7 +251,7 @@ object CreateReviewTracking {
     }
 
     fun eventClickLater(title: String, hasPendingIncentive: Boolean) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -265,7 +265,7 @@ object CreateReviewTracking {
     }
 
     fun eventClickOk(title: String, hasPendingIncentive: Boolean) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -279,7 +279,7 @@ object CreateReviewTracking {
     }
 
     fun eventClickCompleteReviewFirst(dialogTitle: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -293,7 +293,7 @@ object CreateReviewTracking {
     }
 
     fun eventClickSendNow(dialogTitle: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY,
@@ -312,7 +312,7 @@ object CreateReviewTracking {
         reputationId: String,
         source: String
     ) {
-        tracker.sendScreenAuthenticated(
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
             screenName, mapOf(
                 CreateReviewTrackingConstants.KEY_DEEPLINK to getWriteFormDeeplinkAsString(
                     reputationId,
@@ -329,7 +329,7 @@ object CreateReviewTracking {
         reputationId: String,
         source: String
     ) {
-        tracker.sendScreenAuthenticated(
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
             screenName,
             getOpenScreenEventMap(productId, reputationId, source)
         )
@@ -342,7 +342,7 @@ object CreateReviewTracking {
         productId: String,
         userId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.VIEW_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
@@ -367,7 +367,7 @@ object CreateReviewTracking {
         productId: String,
         userId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
@@ -393,7 +393,7 @@ object CreateReviewTracking {
         productId: String,
         userId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.VIEW_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
@@ -419,7 +419,7 @@ object CreateReviewTracking {
         productId: String,
         userId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
@@ -444,7 +444,7 @@ object CreateReviewTracking {
         productId: String,
         userId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
@@ -463,7 +463,7 @@ object CreateReviewTracking {
     }
 
     fun eventViewReviewTemplate(templateCount: Int, productId: String, userId: String) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.VIEW_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
@@ -490,7 +490,7 @@ object CreateReviewTracking {
         productId: String,
         userId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
@@ -526,7 +526,7 @@ object CreateReviewTracking {
         productId: String,
         userId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.EVENT_CLICK_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
@@ -558,7 +558,7 @@ object CreateReviewTracking {
         productId: String,
         userId: String
     ) {
-        tracker.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
                 ReviewTrackingConstant.VIEW_REVIEW,
                 CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
@@ -577,7 +577,78 @@ object CreateReviewTracking {
         )
     }
 
-    private fun createEventMap(event: String, category: String, action: String, label: String): HashMap<String, Any>? {
+    fun eventViewBadRatingReason(
+        trackingQueue: TrackingQueue,
+        orderId: String,
+        productId: String,
+        badRatingReason: String,
+        userId: String
+    ) {
+        trackingQueue.putEETracking(
+            hashMapOf(
+                ReviewTrackingConstant.EVENT to CreateReviewTrackingConstants.EVENT_PROMO_VIEW,
+                ReviewTrackingConstant.EVENT_ACTION to CreateReviewTrackingConstants.EVENT_ACTION_IMPRESS_BAD_RATING_REASON,
+                ReviewTrackingConstant.EVENT_LABEL to String.format(
+                    CreateReviewTrackingConstants.EVENT_LABEL_IMPRESS_BAD_RATING_REASON,
+                    orderId,
+                    productId
+                ),
+                ReviewTrackingConstant.EVENT_CATEGORY to CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.KEY_PRODUCT_ID to productId,
+                ReviewTrackingConstant.EVENT_CATEGORY to ReadReviewTrackingConstants.EVENT_CATEGORY,
+                ReviewTrackingConstant.KEY_USER_ID to userId,
+                CreateReviewTrackingConstants.KEY_BUSINESS_UNIT to CreateReviewTrackingConstants.BUSINESS_UNIT,
+                CreateReviewTrackingConstants.KEY_CURRENT_SITE to CreateReviewTrackingConstants.CURRENT_SITE,
+                CreateReviewTrackingConstants.KEY_ECOMMERCE to mapOf(
+                    CreateReviewTrackingConstants.EVENT_PROMO_VIEW to mapOf(
+                        CreateReviewTrackingConstants.KEY_PROMOTIONS to listOf(
+                            mapOf(
+                                CreateReviewTrackingConstants.KEY_ID to String.format(
+                                    CreateReviewTrackingConstants.BAD_RATING_REASON_IMPRESSION_ENHANCED_ECOMMERCE_ID,
+                                    badRatingReason
+                                ),
+                                CreateReviewTrackingConstants.KEY_CREATIVE to null.toString(),
+                                CreateReviewTrackingConstants.KEY_NAME to null.toString(),
+                                CreateReviewTrackingConstants.KEY_POSITION to null.toString(),
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    }
+
+    fun eventClickBadRatingReason(
+        orderId: String,
+        productId: String,
+        userId: String,
+        badRatingReason: String,
+        isActive: Boolean
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
+                CreateReviewTrackingConstants.EVENT_ACTION_CLICK_BAD_RATING_REASON,
+                String.format(
+                    CreateReviewTrackingConstants.EVENT_LABEL_CLICK_BAD_RATING_REASON,
+                    orderId,
+                    productId,
+                    badRatingReason,
+                    isActive.toString()
+                ),
+                productId,
+                userId
+            )
+        )
+    }
+
+    private fun createEventMap(
+        event: String,
+        category: String,
+        action: String,
+        label: String
+    ): HashMap<String, Any> {
         val eventMap = HashMap<String, Any>()
         eventMap[ReviewTrackingConstant.EVENT] = event
         eventMap[ReviewTrackingConstant.EVENT_CATEGORY] = category
@@ -593,7 +664,7 @@ object CreateReviewTracking {
         label: String,
         productId: String,
         userId: String
-    ): HashMap<String, Any>? {
+    ): HashMap<String, Any> {
         val eventMap = HashMap<String, Any>()
         eventMap[ReviewTrackingConstant.EVENT] = event
         eventMap[ReviewTrackingConstant.EVENT_CATEGORY] = category
@@ -608,7 +679,7 @@ object CreateReviewTracking {
         return eventMap
     }
 
-    private fun getEditMarker(isEditReview: Boolean): String? {
+    private fun getEditMarker(isEditReview: Boolean): String {
         return if (isEditReview) " - edit" else ""
     }
 

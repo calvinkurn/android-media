@@ -22,6 +22,8 @@ object CreateReviewTrackingConstants {
     const val EVENT_ACTION_VIEW_TEMPLATE = "view - review template"
     const val EVENT_ACTION_VIEW_THANK_YOU_BOTTOM_SHEET = "view - terimakasih untuk ulasanmu pop up"
     const val EVENT_ACTION_VIEW_UNSAVED_DIALOG = "view - ulasanmu nanti hilang pop up"
+    const val EVENT_ACTION_CLICK_BAD_RATING_REASON = "click - bad review template checkbox"
+    const val EVENT_ACTION_IMPRESS_BAD_RATING_REASON = "impression - bad review template checkbox"
 
     const val EVENT_CATEGORY = "product review detail page"
     const val EVENT_CATEGORY_REVIEW_BOTTOM_SHEET =
@@ -43,6 +45,8 @@ object CreateReviewTrackingConstants {
         "title:%s;reputation_id:%s;order_id:%s;product_id:%s;"
     const val EVENT_LABEL_VIEW_INCENTIVES_TICKER =
         "message:%s;reputation_id:%s;order_id:%s;product_id:%s;"
+    const val EVENT_LABEL_CLICK_BAD_RATING_REASON = "order_id:%s;product_id:%s;reason:%s;is_active:%s;"
+    const val EVENT_LABEL_IMPRESS_BAD_RATING_REASON = "order_id:%s;product_id:%s;"
 
     const val SCREEN_NAME = "/create-review-form"
     const val SCREEN_NAME_BOTTOM_SHEET = "create-review-form"
@@ -51,7 +55,16 @@ object CreateReviewTrackingConstants {
     const val KEY_CURRENT_SITE = "currentSite"
     const val KEY_PRODUCT_ID = "productId"
     const val KEY_DEEPLINK = "deeplink"
+    const val KEY_ECOMMERCE = "ecommerce"
+    const val KEY_PROMOTIONS = "promotions"
+    const val KEY_ID = "id"
+    const val KEY_CREATIVE = "creative"
+    const val KEY_NAME = "name"
+    const val KEY_POSITION = "position"
 
     const val BUSINESS_UNIT = "product detail page"
     const val CURRENT_SITE = "tokopediamarketplace"
+
+    const val EVENT_PROMO_VIEW = "promoView"
+    const val BAD_RATING_REASON_IMPRESSION_ENHANCED_ECOMMERCE_ID = "reason:%s;"
 }

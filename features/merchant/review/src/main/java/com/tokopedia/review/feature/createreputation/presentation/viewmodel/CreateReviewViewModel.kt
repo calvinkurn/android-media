@@ -70,12 +70,12 @@ class CreateReviewViewModel @Inject constructor(
     val reviewTemplates: LiveData<Result<List<String>>>
         get() = _reviewTemplates
 
-    private val _submitButtonState = MutableLiveData<Boolean>(false)
+    private val _submitButtonState = MutableLiveData(false)
     val submitButtonState: LiveData<Boolean>
         get() = _submitButtonState
 
     private val _progressBarState =
-        MutableLiveData<CreateReviewProgressBarState>(CreateReviewProgressBarState())
+        MutableLiveData(CreateReviewProgressBarState())
     val progressBarState: LiveData<CreateReviewProgressBarState>
         get() = _progressBarState
 
@@ -346,10 +346,12 @@ class CreateReviewViewModel @Inject constructor(
 
     fun addBadRatingCategory(badRatingCategoryId: String) {
         selectedBadRatingCategories.add(badRatingCategoryId)
+        updateProgressBarFromBadRatingCategory()
     }
 
     fun removeBadRatingCategory(badRatingCategoryId: String) {
         selectedBadRatingCategories.remove(badRatingCategoryId)
+        updateProgressBarFromBadRatingCategory()
     }
 
     fun isBadRatingReasonSelected(isTextAreaNotEmpty: Boolean): Boolean {
@@ -362,6 +364,10 @@ class CreateReviewViewModel @Inject constructor(
 
     fun isOtherCategoryOnly(): Boolean {
         return selectedBadRatingCategories.size == 1 && selectedBadRatingCategories.first() == CreateReviewBottomSheet.BAD_RATING_OTHER_ID.toString()
+    }
+
+    private fun updateProgressBarFromBadRatingCategory() {
+        _progressBarState.value = _progressBarState.value?.copy(isBadRatingReasonSelected = isBadRatingReasonSelected(progressBarState.value?.isTextAreaFilled ?: false))
     }
 
     private fun sendReviewWithoutImage(

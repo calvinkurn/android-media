@@ -52,6 +52,7 @@ import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTracker
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -87,6 +88,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     @Inject
     lateinit var createReviewViewModel: CreateReviewViewModel
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     // View Elements
     private var reviewFormCoordinatorLayout: View? = null
@@ -294,11 +298,28 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         handleOnBackPressed()
     }
 
+    override fun onImpressBadRatingCategory(title: String) {
+        CreateReviewTracking.eventViewBadRatingReason(
+            trackingQueue,
+            getOrderId(),
+            productId,
+            title,
+            getUserId()
+        )
+    }
+
     override fun onBadRatingCategoryClicked(
         title: String,
         isSelected: Boolean,
         badRatingCategoryId: Int
     ) {
+        CreateReviewTracking.eventClickBadRatingReason(
+            getOrderId(),
+            productId,
+            createReviewViewModel.getUserId(),
+            title,
+            isSelected
+        )
         if (isSelected) {
             createReviewViewModel.addBadRatingCategory(badRatingCategoryId.toString())
             if (badRatingCategoryId == BAD_RATING_OTHER_ID) {
