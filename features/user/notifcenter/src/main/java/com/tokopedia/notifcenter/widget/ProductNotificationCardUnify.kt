@@ -37,6 +37,8 @@ class ProductNotificationCardUnify(
     private var campaignTag: ImageView? = null
     private var btnCheckout: UnifyButton? = null
     private var btnAtc: UnifyButton? = null
+    private var btnReminder: UnifyButton? = null
+    private var btnDeleteReminder: UnifyButton? = null
     private var btnAddToWishlist: UnifyButton? = null
     private var btnCheckWishlist: UnifyButton? = null
     private var btnEmptyStock: UnifyButton? = null
@@ -74,6 +76,8 @@ class ProductNotificationCardUnify(
         btnCheckout = view.findViewById(R.id.btn_checkout)
         campaignTag = view.findViewById(R.id.img_campaign)
         btnAtc = view.findViewById(R.id.btn_atc)
+        btnReminder = view.findViewById(R.id.tv_reminder)
+        btnDeleteReminder = view.findViewById(R.id.tv_delete_reminder)
         btnAddToWishlist = view.findViewById(R.id.tv_add_to_wishlist)
         btnCheckWishlist = view.findViewById(R.id.tv_check_wishlist)
         btnEmptyStock = view.findViewById(R.id.btn_empty_stock)
@@ -98,6 +102,8 @@ class ProductNotificationCardUnify(
             bindProductClick(product)
             bindBuyClick(product)
             bindAtcClick(product)
+            bindReminder(product)
+            bindDeleteReminder(product)
             bindAddToWishlist(product)
             bindCheckWishlist(product)
             bindEmptyStock(product)
@@ -119,14 +125,30 @@ class ProductNotificationCardUnify(
         }
     }
 
+    fun bindDeleteReminderState(product: ProductData) {
+        btnDeleteReminder?.post {
+            btnDeleteReminder?.isLoading = product.loadingReminderState
+        }
+    }
+
+    fun bindBumpReminderState(product: ProductData) {
+        btnReminder?.post {
+            btnReminder?.isLoading = product.loadingReminderState
+        }
+    }
+
     fun bumpReminderState(product: ProductData?) {
         product ?: return
-        bindAddToWishlist(product)
-        bindCheckWishlist(product)
+        bindReminder(product)
+        bindDeleteReminder(product)
     }
 
     private fun bindThumbnailLabel(product: ProductData) {
-        if (product.hasEmptyStock() || product.isEmptyButton() || product.isWishlistButton()) {
+        if (product.hasEmptyStock() ||
+            product.isEmptyButton() ||
+            product.isReminderButton() ||
+            product.isWishlistButton()
+        ) {
             thumbnailLabel?.show()
             thumbnailLabel?.unlockFeature = true
             thumbnailLabel?.setLabelType(colorString)
@@ -143,8 +165,48 @@ class ProductNotificationCardUnify(
         }
     }
 
+    private fun bindReminder(product: ProductData) {
+        val notification = notification
+        val adapterPosition = adapterPosition
+        if (product.isReminderButton() && !product.hasReminder &&
+            notification != null && adapterPosition != null) {
+            btnReminder?.show()
+            bindBumpReminderState(product)
+            btnReminder?.setOnClickListener {
+                if (!product.loadingReminderState) {
+                    product.loadingReminderState = true
+                    bindBumpReminderState(product)
+                    listener?.bumpReminder(product, notification, adapterPosition)
+                    listener?.trackBumpReminder()
+                }
+            }
+        } else {
+            btnReminder?.hide()
+        }
+    }
+
+    private fun bindDeleteReminder(product: ProductData) {
+        val notification = notification
+        val adapterPosition = adapterPosition
+        if (product.isReminderButton() && product.hasReminder &&
+            notification != null && adapterPosition != null) {
+            btnDeleteReminder?.show()
+            bindDeleteReminderState(product)
+            btnDeleteReminder?.setOnClickListener {
+                if (!product.loadingReminderState) {
+                    product.loadingReminderState = true
+                    bindDeleteReminderState(product)
+                    listener?.deleteReminder(product, notification, adapterPosition)
+                    listener?.trackDeleteReminder()
+                }
+            }
+        } else {
+            btnDeleteReminder?.hide()
+        }
+    }
+
     private fun bindAddToWishlist(product: ProductData) {
-        if(product.hasEmptyStock() && !product.isWishlist) {
+        if (product.isWishlistButton() && !product.isWishlist) {
             btnAddToWishlist?.show()
         } else {
             btnAddToWishlist?.hide()
@@ -157,7 +219,7 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindCheckWishlist(product: ProductData) {
-        if (product.hasEmptyStock() && product.isWishlist) {
+        if (product.isWishlistButton() && product.isWishlist) {
             btnCheckWishlist?.show()
         } else {
             btnCheckWishlist?.hide()

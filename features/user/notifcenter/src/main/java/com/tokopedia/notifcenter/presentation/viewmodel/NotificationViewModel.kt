@@ -9,9 +9,12 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
+import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.state.Resource
@@ -46,6 +49,8 @@ interface INotificationViewModel {
 class NotificationViewModel @Inject constructor(
     private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
     private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase,
+    private val bumpReminderUseCase: NotifcenterSetReminderBumpUseCase,
+    private val deleteReminderUseCase: NotifcenterDeleteReminderBumpUseCase,
     private val clearNotifUseCase: ClearNotifCounterUseCase,
     private val markAsReadUseCase: MarkNotificationAsReadUseCase,
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
@@ -85,6 +90,14 @@ class NotificationViewModel @Inject constructor(
     private val _clearNotif = MutableLiveData<Resource<ClearNotifCounterResponse>>()
     val clearNotif: LiveData<Resource<ClearNotifCounterResponse>>
         get() = _clearNotif
+
+    private val _bumpReminder = MutableLiveData<Resource<BumpReminderResponse>>()
+    val bumpReminder: LiveData<Resource<BumpReminderResponse>>
+        get() = _bumpReminder
+
+    private val _deleteReminder = MutableLiveData<Resource<DeleteReminderResponse>>()
+    val deleteReminder: LiveData<Resource<DeleteReminderResponse>>
+        get() = _deleteReminder
 
     private val _orderList = MutableLiveData<Resource<NotifOrderListResponse>>()
     val orderList: LiveData<Resource<NotifOrderListResponse>>
@@ -206,6 +219,46 @@ class NotificationViewModel @Inject constructor(
         if (role == null) return
         notifcenterDetailUseCase.getMoreEarlierNotifications(
             filter, role, onSuccess, onError
+        )
+    }
+
+    fun bumpReminder(product: ProductData, notif: NotificationUiModel) {
+        launchCatchError(dispatcher.io,
+            {
+                bumpReminderUseCase.bumpReminder(
+                    product.productId.toString(),
+                    notif.notifId
+                ).collect {
+                    it.referer = product.productId
+                    _bumpReminder.postValue(it)
+                }
+            },
+            {
+                val error = Resource.error(it, null).apply {
+                    referer = product.productId
+                }
+                _bumpReminder.postValue(error)
+            }
+        )
+    }
+
+    fun deleteReminder(product: ProductData, notification: NotificationUiModel) {
+        launchCatchError(dispatcher.io,
+            {
+                deleteReminderUseCase.deleteReminder(
+                    product.productId.toString(),
+                    notification.notifId
+                ).collect {
+                    it.referer = product.productId
+                    _deleteReminder.postValue(it)
+                }
+            },
+            {
+                val error = Resource.error(it, null).apply {
+                    referer = product.productId
+                }
+                _deleteReminder.postValue(error)
+            }
         )
     }
 

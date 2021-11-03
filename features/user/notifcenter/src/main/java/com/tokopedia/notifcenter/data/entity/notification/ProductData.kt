@@ -61,8 +61,9 @@ data class ProductData(
     val impressHolder = ImpressHolder()
 
     fun isBuyButton() = typeButton == BUTTON_TYPE_BUY
-    fun isWishlistButton() = typeButton == BUTTON_TYPE_WISHLIST
+    fun isReminderButton() = typeButton == BUTTON_TYPE_REMINDER
     fun isEmptyButton() = typeButton == BUTTON_TYPE_EMPTY_STOCK
+    fun isWishlistButton() = typeButton == BUTTON_TYPE_WISHLIST
 
     fun hasEmptyStock(): Boolean {
         return isShow
@@ -88,7 +89,8 @@ data class ProductData(
 
     companion object {
         const val BUTTON_TYPE_BUY = 0
-        const val BUTTON_TYPE_WISHLIST = 1
+        const val BUTTON_TYPE_REMINDER = 1
         const val BUTTON_TYPE_EMPTY_STOCK = 2
+        const val BUTTON_TYPE_WISHLIST = 3
     }
 }

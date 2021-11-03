@@ -135,6 +135,31 @@
             app:layout_constraintTop_toBottomOf="@id/cl_product_detail">
 
             <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/tv_delete_reminder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:layout_weight="1"
+                android:text="@string/notifcenter_btn_delete_reminder"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/tv_reminder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:layout_weight="1"
+                android:text="@string/notifcenter_btn_reminder"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/tv_check_wishlist"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
