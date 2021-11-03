@@ -531,18 +531,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         view?.let { Toaster.make(it, message, Toaster.LENGTH_SHORT) }
     }
 
-    companion object {
-        const val TICKER_WARNING = "Warning"
-        const val TICKER_INFO = "Info"
-        const val TICKER_ERROR = "Error"
-
-        const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
-
-        const val TOP_ADS_SRC = "inbox"
-        const val TOP_ADS_HEADLINE_ABOVE_RECOM = "variant1"
-        const val TOP_ADS_HEADLINE_BELOW_RECOM = "variant2"
-    }
-
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
         val session = UserSession(requireContext().applicationContext)
         topadsHeadlineView.getHeadlineAds(
@@ -587,5 +575,18 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 PARAM_USER_ID to userId,
             )
         )
+    }
+
+    companion object {
+        const val TICKER_WARNING = "Warning"
+        const val TICKER_INFO = "Info"
+        const val TICKER_ERROR = "Error"
+
+        const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
+
+        /* Constant for toads headlines widget*/
+        const val TOP_ADS_SRC = "inbox"
+        const val TOP_ADS_HEADLINE_ABOVE_RECOM = "variant1"
+        const val TOP_ADS_HEADLINE_BELOW_RECOM = "variant2"
     }
 }
