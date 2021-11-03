@@ -164,9 +164,6 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun observeViewModel() {
         payLaterViewModel.payLaterOptionsDetailLiveData.observe(viewLifecycleOwner, {
-            if (payLaterViewModel.refreshData) {
-                payLaterViewModel.refreshData = false
-            }
             when (it) {
                 is Success ->
                     payLaterAvailableDataLoad(it.data)

@@ -343,6 +343,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         super.onResume()
         if (payLaterViewModel.refreshData) {
             payLaterViewModel.getPayLaterAvailableDetail(productPrice)
+            payLaterViewModel.refreshData = false
         }
     }
 
