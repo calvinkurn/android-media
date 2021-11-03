@@ -175,7 +175,11 @@ class AddEditProductVariantFragment :
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         buttonAddVariantType.setOnClickListener {
-            CustomVariantInputBottomSheet().show(childFragmentManager)
+            val bottomSheet = CustomVariantInputBottomSheet()
+            bottomSheet.setOnDataSubmitted {
+                variantTypeAdapter?.addData(it)
+            }
+            bottomSheet.show(childFragmentManager)
         }
         CustomVariantManageBottomSheet().show(childFragmentManager)
         showCoachmarkCustomVariantType()
@@ -224,11 +228,8 @@ class AddEditProductVariantFragment :
             if (variantDataValuePicker?.isVisible == true) return@setOnClickListener
             val variantData: VariantDetail = viewModel.getVariantData(VARIANT_VALUE_LEVEL_ONE_POSITION)
             val selectedVariantUnitValues = mutableListOf<UnitValue>()
-            if (variantData.units.isEmpty()) showCustomVariantInputForm(VARIANT_VALUE_LEVEL_ONE_POSITION, variantData, Unit(), listOf(), selectedVariantUnitValues)
-            else {
-                selectedVariantUnitValues.addAll((viewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_ONE_POSITION)))
-                showVariantDataValuePicker(variantData, VARIANT_VALUE_LEVEL_ONE_POSITION, viewModel.getSelectedVariantUnit(VARIANT_VALUE_LEVEL_ONE_POSITION), selectedVariantUnitValues)
-            }
+            selectedVariantUnitValues.addAll((viewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_ONE_POSITION)))
+            showVariantDataValuePicker(variantData, VARIANT_VALUE_LEVEL_ONE_POSITION, viewModel.getSelectedVariantUnit(VARIANT_VALUE_LEVEL_ONE_POSITION), selectedVariantUnitValues)
             viewModel.isEditMode.value?.let { isEditMode ->
                 val variantTypeName = variantData.name
                 trackAddingVariantDetailValueEvent(isEditMode, variantTypeName, shopId)
@@ -240,11 +241,8 @@ class AddEditProductVariantFragment :
             if (variantDataValuePicker?.isVisible == true) return@setOnClickListener
             val variantData: VariantDetail = viewModel.getVariantData(VARIANT_VALUE_LEVEL_TWO_POSITION)
             val selectedVariantUnitValues = mutableListOf<UnitValue>()
-            if (variantData.units.isEmpty()) showCustomVariantInputForm(VARIANT_VALUE_LEVEL_TWO_POSITION, variantData, Unit(), listOf(), selectedVariantUnitValues)
-            else {
-                selectedVariantUnitValues.addAll((viewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_TWO_POSITION)))
-                showVariantDataValuePicker(variantData, VARIANT_VALUE_LEVEL_TWO_POSITION, viewModel.getSelectedVariantUnit(VARIANT_VALUE_LEVEL_TWO_POSITION), selectedVariantUnitValues)
-            }
+            selectedVariantUnitValues.addAll((viewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_TWO_POSITION)))
+            showVariantDataValuePicker(variantData, VARIANT_VALUE_LEVEL_TWO_POSITION, viewModel.getSelectedVariantUnit(VARIANT_VALUE_LEVEL_TWO_POSITION), selectedVariantUnitValues)
             viewModel.isEditMode.value?.let { isEditMode ->
                 val variantTypeName = variantData.name
                 trackAddingVariantDetailValueEvent(isEditMode, variantTypeName, shopId)

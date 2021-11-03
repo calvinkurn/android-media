@@ -15,7 +15,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean
     }
 
-    private var items: List<VariantDetail> = listOf()
+    private var items: MutableList<VariantDetail> = mutableListOf()
     private var maxSelectedItems = 0
     private var selectedItems: ArrayList<VariantTypeViewHolder.ViewHolderState> = arrayListOf()
 
@@ -53,8 +53,18 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         return isConfirmed
     }
 
+    fun addData(variantName: String) {
+        items.add(VariantDetail(
+            name = variantName
+        ))
+        selectedItems.add(
+            VariantTypeViewHolder.ViewHolderState.NORMAL
+        )
+        notifyDataSetChanged()
+    }
+
     fun setData(items: List<VariantDetail>) {
-        this.items = items
+        this.items = items.toMutableList()
         selectedItems = ArrayList(items.map { VariantTypeViewHolder.ViewHolderState.NORMAL })
         notifyDataSetChanged()
     }

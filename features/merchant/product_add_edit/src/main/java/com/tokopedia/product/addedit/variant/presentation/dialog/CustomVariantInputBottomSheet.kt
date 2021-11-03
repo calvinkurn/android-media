@@ -17,7 +17,6 @@ import com.tokopedia.product.addedit.databinding.AddEditProductCustomVariantInpu
 import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
 import com.tokopedia.product.addedit.variant.di.DaggerAddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeSuggestionAdapter
-import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -29,6 +28,7 @@ class CustomVariantInputBottomSheet : BottomSheetUnify() {
     lateinit var viewModel: AddEditProductVariantViewModel
 
     private var binding by autoClearedNullable<AddEditProductCustomVariantInputBottomSheetContentBinding>()
+    private var onDataSubmitted: ((variantTypeName: String) -> Unit)? = null
 
     init {
         isKeyboardOverlap = false
@@ -108,27 +108,35 @@ class CustomVariantInputBottomSheet : BottomSheetUnify() {
     }
 
     private fun observeVariantTitleValidationStatus() {
-        viewModel.variantTitleValidationStatus.observe(viewLifecycleOwner) {
-            binding?.textFieldVariantTypeInput?.isInputError = true
-            when (it) {
-                VariantTitleValidationStatus.ILLEGAL_WORD -> {
-                    binding?.textFieldVariantTypeInput?.setMessage(getString(R.string.error_illegal_variant_name))
-                }
-                VariantTitleValidationStatus.SYMBOL_ERROR -> {
-                    binding?.textFieldVariantTypeInput?.setMessage(getString(R.string.error_symbol_variant_name))
-                }
-                VariantTitleValidationStatus.USED_NAME -> {
-                    binding?.textFieldVariantTypeInput?.setMessage(getString(R.string.error_used_variant_name))
-                }
-                VariantTitleValidationStatus.MINIMUM_CHAR -> {
-                    binding?.textFieldVariantTypeInput?.setMessage(getString(R.string.error_min_char_variant_name))
-                }
-                else -> {
-                    binding?.textFieldVariantTypeInput?.setMessage("")
-                    binding?.textFieldVariantTypeInput?.isInputError = false
+        viewModel.variantTitleValidationStatus.observe(viewLifecycleOwner) { validationStatus ->
+            binding?.textFieldVariantTypeInput?.apply {
+                isInputError = true
+                when (validationStatus) {
+                    VariantTitleValidationStatus.ILLEGAL_WORD -> {
+                        setMessage(getString(R.string.error_illegal_variant_name))
+                    }
+                    VariantTitleValidationStatus.SYMBOL_ERROR -> {
+                        setMessage(getString(R.string.error_symbol_variant_name))
+                    }
+                    VariantTitleValidationStatus.USED_NAME -> {
+                        setMessage(getString(R.string.error_used_variant_name))
+                    }
+                    VariantTitleValidationStatus.MINIMUM_CHAR -> {
+                        setMessage(getString(R.string.error_min_char_variant_name))
+                    }
+                    else -> {
+                        setMessage("")
+                        isInputError = false
+                        onDataSubmitted?.invoke(getText())
+                        dismiss()
+                    }
                 }
             }
         }
+    }
+
+    fun setOnDataSubmitted(listener: (variantTypeName: String) -> Unit) {
+        onDataSubmitted = listener
     }
 
     fun show(manager: FragmentManager?) {
