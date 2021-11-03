@@ -61,7 +61,6 @@ class TkpdAuthenticatorGql(
             return if(responseCount(response) == 0)
                 try {
                     val originalRequest = response.request()
-//                    val newAccessToken = runBlocking { refreshTokenUseCaseGql("") }.loginToken.accessToken
                     val newAccessToken = refreshTokenUseCaseGql.refreshToken(context, userSession, networkRouter)?.accessToken ?: ""
                     if(newAccessToken.isNotEmpty()) {
                         null
