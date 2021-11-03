@@ -171,16 +171,16 @@ class HomeFragmentUiTest {
             )
         ).check(matches(isClickable()))
 
-        onView(
-            withTagStringValue(
-                HomeTagHelper.getBBOBalanceWidgetTag(context)
-            )
-        ).check(matches(isDisplayed()))
-        onView(
-            withTagStringValue(
-                HomeTagHelper.getBBOBalanceWidgetTag(context)
-            )
-        ).check(matches(isClickable()))
+//        onView(
+//            withTagStringValue(
+//                HomeTagHelper.getBBOBalanceWidgetTag(context)
+//            )
+//        ).check(matches(isDisplayed()))
+//        onView(
+//            withTagStringValue(
+//                HomeTagHelper.getBBOBalanceWidgetTag(context)
+//            )
+//        ).check(matches(isClickable()))
 
         onView(
             withTagStringValue(
@@ -192,17 +192,17 @@ class HomeFragmentUiTest {
                 HomeTagHelper.getCouponBalanceWidgetTag(context)
             )
         ).check(matches(isClickable()))
-
-        onView(
-            withTagStringValue(
-                HomeTagHelper.getTokopointBalanceWidgetTag(context)
-            )
-        ).check(matches(isDisplayed()))
-        onView(
-            withTagStringValue(
-                HomeTagHelper.getTokopointBalanceWidgetTag(context)
-            )
-        ).check(matches(isClickable()))
+//
+//        onView(
+//            withTagStringValue(
+//                HomeTagHelper.getTokopointBalanceWidgetTag(context)
+//            )
+//        ).check(matches(isDisplayed()))
+//        onView(
+//            withTagStringValue(
+//                HomeTagHelper.getTokopointBalanceWidgetTag(context)
+//            )
+//        ).check(matches(isClickable()))
     }
 
     /**
@@ -259,21 +259,21 @@ class HomeFragmentUiTest {
             titleRes = R.string.onboarding_coachmark_inbox_title,
             descRes = R.string.onboarding_coachmark_inbox_description
         )
-
-        assertCoachmarkAndNext(
-            titleRes = R.string.home_gopay_coachmark_title,
-            descRes = R.string.home_gopay_coachmark_description
-        )
-
-        assertCoachmarkAndNext(
-            titleRes = R.string.home_gopay2_coachmark_title,
-            descRes = R.string.home_gopay2_coachmark_description
-        )
-
         assertCoachmarkAndNext(
             titleRes = R.string.onboarding_coachmark_title,
             descRes = R.string.onboarding_coachmark_description
         )
+
+//        assertCoachmarkAndNext(
+//            titleRes = R.string.home_gopay_coachmark_title,
+//            descRes = R.string.home_gopay_coachmark_description
+//        )
+//
+//        assertCoachmarkAndNext(
+//            titleRes = R.string.home_gopay2_coachmark_title,
+//            descRes = R.string.home_gopay2_coachmark_description
+//        )
+
     }
 
     private fun assertCoachmarkAndNext(
