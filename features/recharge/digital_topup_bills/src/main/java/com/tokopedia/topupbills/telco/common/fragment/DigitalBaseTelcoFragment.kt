@@ -472,11 +472,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             getClientInputNumber().run {
                 setInputType(InputType.TYPE_CLASS_TEXT)
             }
-        }
-        if (shouldRefreshInputNumber) {
-            getClientInputNumber().run {
-                setInputNumber(data.favoriteNumbers[0].clientNumber)
-                setContactName(data.favoriteNumbers[0].clientName)
+
+            if (shouldRefreshInputNumber) {
+                getClientInputNumber().run {
+                    setInputNumber(data.favoriteNumbers[0].clientNumber)
+                    setContactName(data.favoriteNumbers[0].clientName)
+                }
             }
         }
         setSeamlessFavNumbers(data)
