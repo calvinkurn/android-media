@@ -233,8 +233,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun clearErrorState() {
         inputNumberField.run {
-            setMessage("")
-            isInputError = false
+            if (isInputError) {
+                setMessage("")
+                isInputError = false
+            }
         }
     }
 
