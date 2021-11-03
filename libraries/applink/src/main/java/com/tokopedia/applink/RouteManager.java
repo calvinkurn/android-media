@@ -545,6 +545,4 @@ public class RouteManager {
         return pm.getLaunchIntentForPackage(context.getPackageName());
     }
 
-
-
 }

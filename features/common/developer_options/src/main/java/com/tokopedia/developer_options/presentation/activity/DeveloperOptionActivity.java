@@ -734,7 +734,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
         });
 
-        toggleShowAndCopyApplink.setChecked(getShowAndCopyToggleValue());
+        toggleShowAndCopyApplink.setChecked(getShowAndCopyApplinkToggleValue());
         toggleShowAndCopyApplink.setOnCheckedChangeListener((buttonView, isChecked) -> {
             getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, MODE_PRIVATE).edit().putBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, isChecked).apply();
         });
@@ -744,7 +744,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
     }
 
-    private boolean getShowAndCopyToggleValue() {
+    private boolean getShowAndCopyApplinkToggleValue() {
         return getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, MODE_PRIVATE).getBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE);
     }
 
