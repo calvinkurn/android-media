@@ -17,8 +17,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/img_user_login_shimmer"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_type="circle"/>
@@ -52,7 +52,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/tv_name_shimmer"
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="150dp"
         android:layout_height="@dimen/sp_16"
         android:layout_marginLeft="6dp"
         android:textSize="@dimen/sp_16"
@@ -63,7 +63,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/tv_ovo_shimmer"
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="150dp"
         android:layout_height="@dimen/sp_12"
         android:layout_marginLeft="6dp"
         app:loader_type="line"

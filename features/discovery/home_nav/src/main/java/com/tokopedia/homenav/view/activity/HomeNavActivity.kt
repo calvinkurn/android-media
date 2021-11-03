@@ -12,6 +12,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.fragment.MainNavFragmentArgs
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import kotlinx.android.synthetic.main.activity_main_nav.*
 
@@ -82,7 +83,7 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
             val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
             layoutParams.setMargins(
                     layoutParams.leftMargin,
-                    resources.getDimensionPixelOffset(R.dimen.dp_16) + mActionBarSize,
+                    16f.toDp().toInt() + mActionBarSize,
                     layoutParams.rightMargin,
                     layoutParams.bottomMargin
             )
@@ -90,7 +91,7 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
             val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
             layoutParams.setMargins(
                     layoutParams.leftMargin,
-                    resources.getDimensionPixelOffset(R.dimen.dp_200),
+                    200f.toDp().toInt(),
                     layoutParams.rightMargin,
                     layoutParams.bottomMargin
             )

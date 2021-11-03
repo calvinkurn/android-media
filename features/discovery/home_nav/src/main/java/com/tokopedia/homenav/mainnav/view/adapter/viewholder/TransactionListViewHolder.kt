@@ -15,6 +15,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toDp
 import kotlinx.android.synthetic.main.holder_transaction_list.view.*
 
 class TransactionListViewHolder(itemView: View,
@@ -29,8 +30,8 @@ class TransactionListViewHolder(itemView: View,
         val context = itemView.context
         val adapter = OrderListAdapter(OrderListTypeFactoryImpl(mainNavListener))
 
-        val edgeMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
-        val spacingBetween = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+        val edgeMargin = 16f.toDp().toInt()
+        val spacingBetween = 8f.toDp().toInt()
 
         itemView.transaction_rv.adapter = adapter
         itemView.transaction_rv.layoutManager = LinearLayoutManager(
