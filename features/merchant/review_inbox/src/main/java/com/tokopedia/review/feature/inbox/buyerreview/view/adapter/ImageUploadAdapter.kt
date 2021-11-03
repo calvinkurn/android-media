@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload
 import com.tokopedia.review.inbox.R
 import java.util.*
@@ -58,7 +58,7 @@ class ImageUploadAdapter constructor(var context: Context) :
     }
 
     private fun bindImage(holder: ViewHolder, position: Int) {
-        holder.image.loadImage(list[position].picSrc)
+        holder.image.loadImageRounded(list[position].picSrc, convertDpToPx(holder.itemView.context))
         holder.image.setOnClickListener(listener?.onImageClicked(position, list[position]))
         setBorder(holder, position)
     }
@@ -77,6 +77,10 @@ class ImageUploadAdapter constructor(var context: Context) :
 
     private fun bindUploadButton(holder: ViewHolder, position: Int) {
         holder.image.setOnClickListener(listener?.onUploadClicked(position))
+    }
+
+    private fun convertDpToPx(context: Context): Float {
+        return RADIUS * context.resources.displayMetrics.density
     }
 
     override fun getItemCount(): Int {
@@ -132,6 +136,7 @@ class ImageUploadAdapter constructor(var context: Context) :
         private const val VIEW_UPLOAD_BUTTON = 100
         private const val VIEW_REVIEW_IMAGE = 97
         private const val MAX_IMAGE = 5
+        private const val RADIUS = 4
         fun createAdapter(context: Context): ImageUploadAdapter {
             return ImageUploadAdapter(context)
         }
