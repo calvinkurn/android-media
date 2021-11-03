@@ -2,6 +2,7 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
@@ -16,9 +17,10 @@ class ProductSeeMoreViewComponent(
 ) : ViewComponent(container, idRes) {
 
     private val tvProductCount = findViewById<Typography>(R.id.tv_play_product_count)
+    private val icProductSeeMore = findViewById<AppCompatImageView>(R.id.ic_play_product_see_more)
 
     init {
-        rootView.setOnClickListener { listener.onProductSeeMoreClick() }
+        rootView.setOnClickListener { listener.onProductSeeMoreClick(this) }
     }
 
     fun setTotalProduct(total: Int) {
@@ -26,6 +28,6 @@ class ProductSeeMoreViewComponent(
     }
 
     interface Listener {
-        fun onProductSeeMoreClick()
+        fun onProductSeeMoreClick(view: ProductSeeMoreViewComponent)
     }
 }

@@ -122,7 +122,8 @@ class PlayUserInteractionFragment @Inject constructor(
         InteractiveViewComponent.Listener,
         InteractiveWinnerBadgeViewComponent.Listener,
         RealTimeNotificationViewComponent.Listener,
-        CastViewComponent.Listener
+        CastViewComponent.Listener,
+        ProductSeeMoreViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -146,6 +147,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(it, R.id.view_like_bubble, multipleLikesIconCacheStorage) }
+    private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
 
     /**
      * Interactive
@@ -410,14 +412,6 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * TODO: Don't forget to delete this
-     */
-//    override fun onSeeMoreClicked(view: ProductFeaturedViewComponent) {
-//        openProductSheet()
-//        analytic.clickFeaturedProductSeeMore()
-//    }
-
-    /**
      * Pinned Voucher View Component Listener
      */
     override fun onVoucherImpressed(view: PinnedVoucherViewComponent, voucher: MerchantVoucherUiModel, position: Int) {
@@ -484,6 +478,15 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onCastClicked() {
         analytic.clickCast()
     }
+
+    /**
+     * Product See More Listener
+     */
+    override fun onProductSeeMoreClick(view: ProductSeeMoreViewComponent) {
+        openProductSheet()
+        analytic.clickFeaturedProductSeeMore()
+    }
+
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
@@ -1318,6 +1321,7 @@ class PlayUserInteractionFragment @Inject constructor(
         if (pinnedModel != null && pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
             pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
             productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
+//            productSeeMoreView?.setTotalProduct(pinnedModel.productTags.productList.size)
         }
 
         if (!bottomInsets.isAnyShown && pinnedModel?.shouldShow == true) {
