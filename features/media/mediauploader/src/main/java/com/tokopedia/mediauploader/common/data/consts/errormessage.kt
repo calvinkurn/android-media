@@ -10,6 +10,7 @@ const val SOURCE_NOT_FOUND = "Oops, source tidak ditemukan. (603)"
 
 const val CHUNK_UPLOAD = "Oops, upload gagal nih, retry yuk! (500)"
 const val UPLOAD_ABORT = "Yah, upload gagal nih, ulang dari awal ya! (501)"
+const val TRANSCODING_FAILED = "Yah, transcodig nya gagal nih, ulang dari awal ya! (502)"
 
 fun formatNotAllowedMessage(allowedFormat: String): String {
     return "Yah, formatnya belum sesuai. Pastikan format gambar kamu dalam $allowedFormat. (301)"
