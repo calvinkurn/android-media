@@ -82,8 +82,9 @@ class HomeTopAdsVerificationTest {
 
     @Test
     fun testTopAdsHome() {
-        waitForData()
         Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(isDisplayed()))
+
+        waitForData()
 
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         val itemCount = homeRecyclerView.adapter?.itemCount?:0
