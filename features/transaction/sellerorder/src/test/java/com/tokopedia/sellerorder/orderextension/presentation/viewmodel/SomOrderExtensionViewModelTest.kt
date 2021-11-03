@@ -209,9 +209,7 @@ class SomOrderExtensionViewModelTest {
             (items[2] as OrderExtensionRequestInfoUiModel.OptionUiModel).deselect()
             (items[3] as OrderExtensionRequestInfoUiModel.CommentUiModel).updateToHide()
         }
-        val selectedOption = (initialOrderExtensionRequestInfo.items[1] as OrderExtensionRequestInfoUiModel.OptionUiModel).apply {
-            select()
-        }
+        val selectedOption = (initialOrderExtensionRequestInfo.items[1] as OrderExtensionRequestInfoUiModel.OptionUiModel)
         onGetOrderExtensionRequestInfoSuccess_thenReturn(mockk(), initialOrderExtensionRequestInfo)
 
         viewModel.getSomRequestExtensionInfo(orderId)
