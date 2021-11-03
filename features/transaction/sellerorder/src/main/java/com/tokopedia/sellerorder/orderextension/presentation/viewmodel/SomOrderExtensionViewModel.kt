@@ -139,4 +139,8 @@ class SomOrderExtensionViewModel @Inject constructor(
                 OrderExtensionRequestInfoUpdater.OnSelectedOptionChange(it)
         }
     }
+
+    fun requestDismissOrderExtensionRequestInfoBottomSheet() {
+        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater.OnRequestDismissBottomSheet()
+    }
 }

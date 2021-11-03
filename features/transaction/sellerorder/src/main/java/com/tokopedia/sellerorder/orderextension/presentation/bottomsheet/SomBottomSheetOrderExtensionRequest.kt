@@ -75,8 +75,18 @@ class SomBottomSheetOrderExtensionRequest(
             )
             super.show()
         } else {
-            dismiss()
+            super.dismiss()
         }
+    }
+
+    override fun dismiss(): Boolean {
+        return if (isShowing()) {
+            if (!dismissing) {
+                dismissing = true
+                viewModel.requestDismissOrderExtensionRequestInfoBottomSheet()
+            }
+            true
+        } else false
     }
 
     override fun onCommentChange(element: OrderExtensionRequestInfoUiModel.CommentUiModel) {
@@ -116,8 +126,10 @@ class SomBottomSheetOrderExtensionRequest(
                 text = context.getString(R.string.bottomsheet_order_extension_request_button_text)
             }
             setOnClickListener {
-                binding?.rvRequestExtensionInfo?.focusedChild?.clearFocus()
-                viewModel.sendOrderExtensionRequest(orderId)
+                if (!dismissing) {
+                    binding?.rvRequestExtensionInfo?.focusedChild?.clearFocus()
+                    viewModel.sendOrderExtensionRequest(orderId)
+                }
             }
         }
     }

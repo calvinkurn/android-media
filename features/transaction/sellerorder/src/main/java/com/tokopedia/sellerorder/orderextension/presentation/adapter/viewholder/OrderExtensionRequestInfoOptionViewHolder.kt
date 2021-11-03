@@ -18,13 +18,6 @@ class OrderExtensionRequestInfoOptionViewHolder(
 
     private val binding by viewBinding<ItemOrderExtensionRequestInfoOptionBinding>()
 
-    init {
-        binding?.root?.setOnCheckedChangeListener { _, isChecked ->
-            element?.selected = isChecked
-            if (isChecked) listener.onOptionChecked(element)
-        }
-    }
-
     override fun bind(element: OrderExtensionRequestInfoUiModel.OptionUiModel?) {
         super.bind(element)
         element?.run {
@@ -56,7 +49,7 @@ class OrderExtensionRequestInfoOptionViewHolder(
 
     override fun onTap(event: MotionEvent?): Boolean {
         super.onTap(event)
-        setupStatusWithAnimation(true)
+        listener.onOptionChecked(element)
         return true
     }
 
