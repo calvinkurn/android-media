@@ -96,7 +96,7 @@
             app:layout_constraintBottom_toBottomOf="@id/usr_shop_info"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="14dp"
-            app:cardCornerRadius="90dp"
+            app:cardCornerRadius="12dp"
             android:foreground="?android:attr/selectableItemBackground"
             app:cardElevation="1dp"
             >

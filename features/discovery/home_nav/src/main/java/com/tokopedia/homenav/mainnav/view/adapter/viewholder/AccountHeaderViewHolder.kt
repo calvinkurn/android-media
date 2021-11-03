@@ -1,13 +1,13 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -30,6 +30,7 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.unifycomponents.*
@@ -120,7 +121,7 @@ class AccountHeaderViewHolder(itemView: View,
         val userImage: ImageUnify = layoutLoginHeader.findViewById(R.id.img_user_login)
         val usrBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_badge)
         val usrOvoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_ovo_badge)
-        val btnSettings: ImageView = layoutLoginHeader.findViewById(R.id.btn_settings)
+        val btnSettings: IconUnify = layoutLoginHeader.findViewById(R.id.btn_settings)
         val btnTryAgain: CardView = layoutLoginHeader.findViewById(R.id.btn_try_again)
         val usrSaldoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_saldo_badge)
         val tvName: Typography = layoutLoginHeader.findViewById(R.id.tv_name)
@@ -216,12 +217,10 @@ class AccountHeaderViewHolder(itemView: View,
                         tvSaldo.text = itemView.context.getString(R.string.mainnav_general_error)
                         usrSaldoBadge.gone()
                         sectionSaldo.visible()
-//                        usrSaldoBadgeShimmer.visible()
                     }
                 }
 
                 !profileSaldo.isGetSaldoError -> {
-//                    usrSaldoBadgeShimmer.invisible()
                     usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
                     if (profileSaldo.saldo.isEmpty()) {
                         sectionSaldo.visible()

@@ -110,7 +110,7 @@
                 app:layout_constraintTop_toTopOf="@id/btn_settings"
                 app:layout_constraintBottom_toBottomOf="@id/btn_settings"
                 android:visibility="visible"
-                app:cardCornerRadius="90dp"
+                app:cardCornerRadius="12dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardElevation="1dp"
                 >
