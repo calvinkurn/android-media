@@ -12,11 +12,11 @@ fun String.fileExtension(): String {
     return if (lastIndexOf == -1) "" else this.substring(lastIndexOf)
 }
 
-fun String.isImage(): Boolean {
+fun File.isImage(): Boolean {
     val imageExtension = ".jpg,.jpeg"
     return imageExtension
         .split(",")
-        .contains(fileExtension())
+        .contains(name.fileExtension())
 }
 
 fun File.isMaxFileSize(maxFileSize: Int): Boolean {
