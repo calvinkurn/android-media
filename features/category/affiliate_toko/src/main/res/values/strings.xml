@@ -47,4 +47,6 @@
     <string name="no_product_bought_on_tokopedia_yet_content">Tidak apa-apa, kamu tetap bisa promosikan produk yang ada di Tokopedia</string>
     <string name="no_product_seen_on_tokopedia_yet">Belum ada produk yang dilihat di Tokopedia</string>
     <string name="no_product_seen_on_tokopedia_yet_content">Kamu bisa cari produk affiliate di Tokopedia, lalu tempel link di sini untuk dapat link affiliate</string>
+    <string name="system_down_title">Saat ini lagi ada pemeliharaan sistem</string>
+    <string name="system_down_description">Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!</string>
 </resources>

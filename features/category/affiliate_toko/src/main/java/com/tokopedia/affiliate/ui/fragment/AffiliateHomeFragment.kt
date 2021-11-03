@@ -225,20 +225,23 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 ANNOUNCEMENT__TYPE_CCA -> {
                     affiliateHomeViewModel.getAffiliateValidateUser()
                     setupTickerView(
-                        announcementData.getAffiliateAnnouncement.data,
+                        announcementData.getAffiliateAnnouncement.data.announcementTitle,
+                        announcementData.getAffiliateAnnouncement.data.announcementDescription,
                         Ticker.TYPE_INFORMATION
                     )
                 }
                 ANNOUNCEMENT__TYPE_USER_BLACKLIST -> {
                     affiliateHomeViewModel.getAffiliateValidateUser()
                     setupTickerView(
-                        announcementData.getAffiliateAnnouncement.data,
+                        announcementData.getAffiliateAnnouncement.data.announcementTitle,
+                        announcementData.getAffiliateAnnouncement.data.announcementDescription,
                         Ticker.TYPE_ERROR
                     )
                 }
                 ANNOUNCEMENT__TYPE_SERVICE_STATUS -> {
                     setupTickerView(
-                        announcementData.getAffiliateAnnouncement.data,
+                        announcementData.getAffiliateAnnouncement.data.announcementTitle,
+                        announcementData.getAffiliateAnnouncement.data.announcementDescription,
                         Ticker.TYPE_ANNOUNCEMENT
                     )
                 }
@@ -247,14 +250,20 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     affiliate_announcement_ticker_cv.hide()
                 }
             }
+        } else{
+            setupTickerView(
+                getString(R.string.system_down_title),
+                getString(R.string.system_down_description),
+                Ticker.TYPE_ANNOUNCEMENT
+            )
         }
 
     }
-    private fun setupTickerView(data: AffiliateAnnouncementData.GetAffiliateAnnouncement.Data,tickerType: Int)
+    private fun setupTickerView(title: String?,desc :String? ,tickerType: Int)
     {
         affiliate_announcement_ticker_cv.show()
-        affiliate_announcement_ticker.tickerTitle = data.announcementTitle
-        data.announcementDescription?.let {
+        affiliate_announcement_ticker.tickerTitle = title
+        desc?.let {
             affiliate_announcement_ticker.setTextDescription(
                 it
             )
