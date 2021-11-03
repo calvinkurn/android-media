@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -12,14 +13,10 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
-/**
- * @param recyclerView is passed as argument so that we can calculate the width of recycler view in onCreate
- */
 
 class TopAdsAdapter(
     private val topAdsModelList: List<TopAdsImageModel>,
-    private val onclick: (appLink: String) -> Unit,
-    private val recyclerView: RecyclerView
+    private val onclick: (appLink: String) -> Unit
 ) : RecyclerView.Adapter<TopAdsViewHolder>() {
 
     /**
@@ -30,10 +27,12 @@ class TopAdsAdapter(
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.layout_topads_sdk, parent, false)
 
-        val width: Int = recyclerView.width
+
         val params = view.layoutParams
-        params.width = (width * 0.96).toInt()
+        params.width = (getScreenWidth() * 0.93).toInt()
         view.layoutParams = params
+
+
 
         return TopAdsViewHolder(view, onclick)
     }

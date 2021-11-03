@@ -28,7 +28,7 @@ class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) 
 
 
     /**
-     * For topAds seller sousce is 20
+     * For topAds seller source is 20
      */
 
     companion object {
@@ -70,7 +70,7 @@ class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) 
     private fun generateAdsCarousal(imageList: ArrayList<TopAdsImageModel>) {
         displayRecycler.layoutManager =
             LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        val topAdsAdapter = TopAdsAdapter(imageList, ::onClick, displayRecycler)
+        val topAdsAdapter = TopAdsAdapter(imageList, ::onClick)
         displayRecycler.adapter = topAdsAdapter
         PagerSnapHelper().attachToRecyclerView(displayRecycler)
     }
