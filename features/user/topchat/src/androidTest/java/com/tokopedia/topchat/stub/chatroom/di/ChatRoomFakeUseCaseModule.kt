@@ -287,4 +287,21 @@ class ChatRoomFakeUseCaseModule {
     ): GetReminderTickerUseCaseStub {
         return GetReminderTickerUseCaseStub(repository, dispatchers)
     }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideCloseReminderTicker(
+        stub: CloseReminderTickerStub
+    ): CloseReminderTicker = stub
+
+    @Provides
+    @ChatScope
+    fun provideCloseReminderTickerStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): CloseReminderTickerStub {
+        return CloseReminderTickerStub(repository, dispatchers)
+    }
 }
