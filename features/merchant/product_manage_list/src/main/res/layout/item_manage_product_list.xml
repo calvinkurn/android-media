@@ -17,8 +17,8 @@
         app:layout_constraintBottom_toTopOf="@id/imageProduct"
         app:tickerShapeType="full"
         app:tickerType="warning"
-        tools:visibility="visible"
-        tools:descriptionText="Ada pelanggaran pada foto atau deskripsi." />
+        app:descriptionText="@string/product_manage_violation_ticker_message"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkBoxSelect"
@@ -270,7 +270,6 @@
         android:layout_marginTop="@dimen/product_manage_button_horizontal_spacing_long"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
-        android:text="@string/product_manage_contact_cs"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/divider"
         app:layout_constraintHorizontal_chainStyle="spread"

@@ -1594,7 +1594,14 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickContactCsButton(product: ProductUiModel) {
-        goToProductViolationHelpPage()
+        when {
+            product.isViolation() -> {
+                goToProductViolationHelpPage()
+            }
+            product.isPending() -> {
+                showViolationReasonBottomSheet()
+            }
+        }
         ProductManageTracking.eventContactCs(product.id)
     }
 
@@ -2572,6 +2579,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         context?.let {
             OngoingPromotionBottomSheet.createInstance(it, ArrayList(campaignTypeList)).show(childFragmentManager)
         }
+    }
+
+    private fun showViolationReasonBottomSheet() {
+        ViolationReasonBottomSheet.createInstance().show(childFragmentManager)
     }
 
     private fun showToaster(message: String) {
