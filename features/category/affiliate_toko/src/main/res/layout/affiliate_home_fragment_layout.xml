@@ -80,6 +80,13 @@
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.cardview.widget.CardView>
 
+    <androidx.constraintlayout.widget.Group
+        android:visibility="gone"
+        android:id="@+id/product_list_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="affiliate_promoted_products,affiliate_products_count,swipe_refresh_layout"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/affiliate_promoted_products"
         android:layout_width="wrap_content"
@@ -164,7 +171,7 @@
         android:id="@+id/affiliate_progress_bar"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

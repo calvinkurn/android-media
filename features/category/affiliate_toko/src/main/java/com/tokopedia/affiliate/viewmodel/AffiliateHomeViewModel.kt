@@ -31,11 +31,12 @@ class AffiliateHomeViewModel @Inject constructor(
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<String>()
+    private var affiliateErrorMessage = MutableLiveData<String>()
     private val pageLimit = 6
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
-            progressBar.value = false
+            progressBar.value = true
             validateUserdata.value = affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
         }, onError = {
             progressBar.value = false
@@ -45,10 +46,12 @@ class AffiliateHomeViewModel @Inject constructor(
     }
     fun getAnnouncementInformation() {
         launchCatchError(block = {
+            progressBar.value = true
             affiliateAnnouncement.value=affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
         },onError = {
+            progressBar.value = false
             it.printStackTrace()
-            errorMessage.value=it.localizedMessage
+            affiliateErrorMessage.value=it.localizedMessage
         })
     }
     fun getAffiliatePerformance(page : Int) {
@@ -97,6 +100,7 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getErrorMessage(): LiveData<String> = errorMessage
+    fun getAffiliateErrorMessage(): LiveData<String> = affiliateErrorMessage
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getAffiliateAnnouncement() : LiveData<AffiliateAnnouncementData> = affiliateAnnouncement
     fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
