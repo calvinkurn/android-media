@@ -22,6 +22,7 @@ import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -108,6 +109,9 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                         listener.onClearAutoComplete()
                         imgOperator.visibility = View.GONE
                         clearErrorState()
+                    }
+                    if (!start.isZero() && count == 1) {
+                        listener.onUserManualType()
                     }
                     listener.onRenderOperator(true)
                 }
@@ -346,6 +350,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         fun onClickClearInput()
         fun onShowFilterChip(isLabeled: Boolean)
         fun onClickFilterChip(isLabeled: Boolean)
+        fun onUserManualType()
     }
 
     companion object {

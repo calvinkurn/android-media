@@ -5,15 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.common.topupbills.databinding.ItemTopupBillsContactBinding
-import com.tokopedia.common.topupbills.databinding.ItemTopupBillsContactEmptyBinding
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsContactListFragment
 import com.tokopedia.common.topupbills.view.model.contact.TopupBillsContactDataView
 import com.tokopedia.common.topupbills.view.model.contact.TopupBillsContactEmptyDataView
+import com.tokopedia.common.topupbills.view.model.contact.TopupBillsContactNotFoundDataView
 import com.tokopedia.common.topupbills.view.model.contact.TopupBillsContactPermissionDataView
-import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberEmptyDataView
 import com.tokopedia.common.topupbills.view.typefactory.ContactListTypeFactory
-import com.tokopedia.promocheckout.common.util.EMPTY
 
 class TopupBillsContactListAdapter(
     var visitables: List<Visitable<ContactListTypeFactory>>,
@@ -47,6 +43,11 @@ class TopupBillsContactListAdapter(
 
     fun setEmptyState() {
         this.visitables = listOf(TopupBillsContactEmptyDataView())
+        notifyDataSetChanged()
+    }
+
+    fun setNotFoundState() {
+        this.visitables = listOf(TopupBillsContactNotFoundDataView())
         notifyDataSetChanged()
     }
 

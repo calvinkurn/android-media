@@ -196,6 +196,13 @@ class TopupBillsFavoriteNumberFragment:
 
         savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { keyword ->
             filterData(keyword) })
+
+        savedNumberViewModel.refreshSearchBar.observe(viewLifecycleOwner, { position ->
+            if (position == TopupBillsSavedNumberFragment.POSITION_FAVORITE_NUMBER) {
+                savedNumberViewModel.setClueVisibility(clientNumbers.isNotEmpty())
+                savedNumberViewModel.enableSearchBar(clientNumbers.isNotEmpty())
+            }
+        })
     }
 
     private fun loadData() {
@@ -241,8 +248,10 @@ class TopupBillsFavoriteNumberFragment:
             numberListAdapter.visitables[0] is TopupBillsFavNumberDataView
         ) {
             savedNumberViewModel.setClueVisibility(true)
+            savedNumberViewModel.enableSearchBar(true)
         } else {
             savedNumberViewModel.setClueVisibility(false)
+            savedNumberViewModel.enableSearchBar(false)
         }
 
         if (!isHideCoachmark && numberListAdapter.visitables.isNotEmpty()) {

@@ -88,6 +88,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             categoryName = topupAnalytics.getCategoryName(value)
         }
 
+    protected var actionTypeTrackingJob: Job? = null
+
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
@@ -374,7 +376,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected fun validatePhoneNumber(
         operatorData: TelcoCatalogPrefixSelect,
         clientNumberWidget: DigitalClientNumberWidget,
-        buyWidget: TopupBillsCheckoutWidget,
+        buyWidget: TopupBillsCheckoutWidget?,
         isValidTracking: () -> Unit
     ) {
         var isValid = true
@@ -389,8 +391,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 clientNumberWidget.clearErrorState()
             }
         }
-        isValidTracking.invoke()
-        buyWidget.setVisibilityLayout(isValid)
+        if (isValid) isValidTracking.invoke()
+        buyWidget?.setVisibilityLayout(isValid)
     }
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {

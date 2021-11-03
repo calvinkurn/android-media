@@ -80,6 +80,13 @@ open class TopupBillsContactListFragment:
         }
 
         savedNumberViewModel.searchKeyword.observe(viewLifecycleOwner, { filterData(it) })
+
+        savedNumberViewModel.refreshSearchBar.observe(viewLifecycleOwner, { position ->
+            if (position == TopupBillsSavedNumberFragment.POSITION_CONTACT_LIST) {
+                savedNumberViewModel.setClueVisibility(contacts.isNotEmpty())
+                savedNumberViewModel.enableSearchBar(contacts.isNotEmpty())
+            }
+        })
     }
 
     private fun initRecyclerView() {
@@ -110,12 +117,14 @@ open class TopupBillsContactListFragment:
     protected open fun loadContacts() {
         this.contacts = contactDataSource.getContactList()
         if (this.contacts.isEmpty()) {
-            contactListAdapter.setEmptyState()
+            contactListAdapter.setNotFoundState()
             savedNumberViewModel.setClueVisibility(false)
+            savedNumberViewModel.enableSearchBar(false)
         } else {
             contactListAdapter.setContacts(
                 CommonTopupBillsDataMapper.mapContactToDataView(this.contacts))
             savedNumberViewModel.setClueVisibility(true)
+            savedNumberViewModel.enableSearchBar(true)
         }
     }
 
@@ -165,6 +174,9 @@ open class TopupBillsContactListFragment:
         contactListAdapter.setContacts(
             CommonTopupBillsDataMapper.mapContactToDataView(searchClientNumbers))
         if (searchClientNumbers.isEmpty()) {
+            if (contacts.isNotEmpty()) {
+                contactListAdapter.setEmptyState()
+            }
             savedNumberViewModel.setClueVisibility(false)
         } else {
             savedNumberViewModel.setClueVisibility(true)

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
@@ -45,6 +46,7 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             binding?.commonTopupBillsSavedNumSwitcher?.isChecked = (position == POSITION_FAVORITE_NUMBER)
+            savedNumberViewModel.refreshSearchBar(position)
         }
     }
 
@@ -92,10 +94,19 @@ class TopupBillsSavedNumberFragment: BaseDaggerFragment() {
 
     private fun observeData() {
         savedNumberViewModel.clueVisibility.observe(viewLifecycleOwner, { isVisible ->
-            if (isVisible)
+            if (isVisible) {
                 binding?.commonTopupBillsFavoriteNumberClue?.show()
-            else
+            } else {
                 binding?.commonTopupBillsFavoriteNumberClue?.hide()
+            }
+        })
+
+        savedNumberViewModel.enableSearchBar.observe(viewLifecycleOwner, { isEnable ->
+            if (isEnable) {
+                binding?.commonTopupBillsSavedNumSearchbar?.show()
+            } else {
+                binding?.commonTopupBillsSavedNumSearchbar?.hide()
+            }
         })
     }
 

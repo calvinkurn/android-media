@@ -9,6 +9,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -50,6 +51,10 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_digital_telco_postpaid.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 
 /**
  * Created by nabillasabbaha on 06/05/19.
@@ -297,7 +302,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             override fun onRenderOperator(isDelayed: Boolean) {
                 operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
-                    inputNumberActionType = InputNumberActionType.MANUAL
                     if (it) {
                         getPrefixOperatorData()
                     } else {
@@ -331,6 +335,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             override fun onClickClearInput() {
                 topupAnalytics.eventClearInputNumber()
+            }
+
+            override fun onUserManualType() {
+                if (inputNumberActionType != InputNumberActionType.MANUAL) {
+                    inputNumberActionType = InputNumberActionType.MANUAL
+                }
             }
         })
 
@@ -443,7 +453,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     } else {
                         postpaidClientNumberWidget.setButtonEnquiry(false)
                     }
-                    validatePhoneNumber(operatorData, postpaidClientNumberWidget, buyWidget) {
+                    validatePhoneNumber(operatorData, postpaidClientNumberWidget, null) {
                         hitTrackingForInputNumber(this)
                     }
                 }
@@ -453,23 +463,27 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 getString(R.string.telco_number_error_prefix_not_found)
             )
             buyWidget.setBuyButtonState(false)
-        }
+        }i
     }
 
     private fun hitTrackingForInputNumber(selectedOperator: RechargePrefix) {
-        operatorName = selectedOperator.operator.attributes.name
-        when (inputNumberActionType) {
-            InputNumberActionType.MANUAL -> {
-                topupAnalytics.eventInputNumberManual(categoryId, operatorName)
-            }
-            InputNumberActionType.CONTACT -> {
-                topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-            }
-            InputNumberActionType.FAVORITE -> {
-                topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
-            }
-            InputNumberActionType.CONTACT_HOMEPAGE -> {
-                topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+        actionTypeTrackingJob?.cancel()
+        actionTypeTrackingJob = lifecycleScope.launch {
+            delay(INPUT_ACTION_TYPE_TRACKING_DELAY)
+            operatorName = selectedOperator.operator.attributes.name
+            when (inputNumberActionType) {
+                InputNumberActionType.MANUAL -> {
+                    topupAnalytics.eventInputNumberManual(categoryId, operatorName)
+                }
+                InputNumberActionType.CONTACT -> {
+                    topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+                }
+                InputNumberActionType.FAVORITE -> {
+                    topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
+                }
+                InputNumberActionType.CONTACT_HOMEPAGE -> {
+                    topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+                }
             }
         }
     }
@@ -512,13 +526,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         categoryId: String,
         inputNumberActionTypeIndex: Int
     ) {
+        if (!inputNumberActionTypeIndex.isLessThanZero()) {
+            inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
+        }
         postpaidClientNumberWidget.run {
             setContactName(clientName)
             setInputNumber(clientNumber)
             clearFocusAutoComplete()
-        }
-        if (!inputNumberActionTypeIndex.isLessThanZero()) {
-            inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         }
     }
 
@@ -592,6 +606,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
         private const val VALID_MIN_INPUT_NUMBER = 10
         private const val VALID_MAX_INPUT_NUMBER = 14
+
+        private const val INPUT_ACTION_TYPE_TRACKING_DELAY = 1000L
 
         fun newInstance(
             telcoExtraParam: TopupBillsExtraParam,

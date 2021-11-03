@@ -11,6 +11,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
@@ -53,6 +54,8 @@ import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -445,19 +448,22 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun hitTrackingForInputNumber(selectedOperator: RechargePrefix) {
-        operatorName = selectedOperator.operator.attributes.name
-        when (inputNumberActionType) {
-            InputNumberActionType.MANUAL -> {
-                topupAnalytics.eventInputNumberManual(categoryId, operatorName)
-            }
-            InputNumberActionType.CONTACT -> {
-                topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
-            }
-            InputNumberActionType.FAVORITE -> {
-                topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
-            }
-            InputNumberActionType.CONTACT_HOMEPAGE -> {
-                topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+        actionTypeTrackingJob?.cancel()
+        actionTypeTrackingJob = lifecycleScope.launch {
+            operatorName = selectedOperator.operator.attributes.name
+            when (inputNumberActionType) {
+                InputNumberActionType.MANUAL -> {
+                    topupAnalytics.eventInputNumberManual(categoryId, operatorName)
+                }
+                InputNumberActionType.CONTACT -> {
+                    topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+                }
+                InputNumberActionType.FAVORITE -> {
+                    topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
+                }
+                InputNumberActionType.CONTACT_HOMEPAGE -> {
+                    topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+                }
             }
         }
     }
@@ -493,7 +499,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         override fun onRenderOperator(isDelayed: Boolean) {
             operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty()?.let {
-                inputNumberActionType = InputNumberActionType.MANUAL
                 if (it) {
                     getPrefixOperatorData()
                 } else {
@@ -526,6 +531,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         override fun onClickClearInput() {
             topupAnalytics.eventClearInputNumber()
+        }
+
+        override fun onUserManualType() {
+            if (inputNumberActionType != InputNumberActionType.MANUAL) {
+                inputNumberActionType = InputNumberActionType.MANUAL
+            }
         }
     }
 
