@@ -1321,7 +1321,7 @@ class PlayUserInteractionFragment @Inject constructor(
         if (pinnedModel != null && pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
             pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
             productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
-//            productSeeMoreView?.setTotalProduct(pinnedModel.productTags.productList.size)
+            productSeeMoreView?.setTotalProduct(pinnedModel.productTags.productList.size)
         }
 
         if (!bottomInsets.isAnyShown && pinnedModel?.shouldShow == true) {
