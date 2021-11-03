@@ -20,8 +20,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.MockKAnnotations
-import io.mockk.mockk
+import io.mockk.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import rx.subscriptions.CompositeSubscription
@@ -68,7 +68,14 @@ abstract class BaseCartTest {
                 validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase,
                 TestSchedulers
         )
+        every { addWishListUseCase.unsubscribe() } just Runs
+        every { removeWishListUseCase.unsubscribe() } just Runs
         cartListPresenter?.attachView(view)
+    }
+
+    @After
+    fun tearDown() {
+        cartListPresenter?.detachView()
     }
 
 }
