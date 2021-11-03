@@ -866,7 +866,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderInteractiveView(prevState?.interactiveView, state.interactiveView, state.partner)
                 renderWinnerBadgeView(state.winnerBadge)
                 renderToolbarView(state.partner, state.share, state.cart)
-                renderPartnerInfoView(state.partner)
+                renderPartnerInfoView(prevState?.partner, state.partner)
                 renderLikeView(prevState?.like, state.like)
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
@@ -1521,10 +1521,9 @@ class PlayUserInteractionFragment @Inject constructor(
         toolbarView.setCartCount(cart.count)
     }
 
-    private fun renderPartnerInfoView(
-        partner: PlayPartnerUiState
-    ) {
-        partnerInfoView.setInfo(partner)
+    private fun renderPartnerInfoView(prevState: PlayPartnerUiState?, state: PlayPartnerUiState) {
+        if (prevState == state) return
+        partnerInfoView.setInfo(state)
     }
 
     private fun renderLikeView(
