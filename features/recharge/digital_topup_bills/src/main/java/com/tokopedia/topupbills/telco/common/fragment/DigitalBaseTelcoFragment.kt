@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
@@ -49,9 +50,7 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
-import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
-import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -60,16 +59,9 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.permission.request
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 import kotlin.math.abs
 
 /**
