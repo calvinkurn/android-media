@@ -695,9 +695,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun setupPostFirstPage() {
-        presenter.getShopFollowingStatus(
-            shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus
-        )
+        viewModel.getShopFollowingStatus(shopId)
     }
 
     private fun setupDummyData() {
@@ -770,7 +768,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun onErrorGetShopFollowingStatus(throwable: Throwable) {
+    private fun onErrorGetShopFollowingStatus() {
         topchatViewState?.isShopFollowed = false
     }
 
@@ -2363,6 +2361,18 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             when(it) {
                 is Success -> onSuccessGetMessageId(it.data)
                 is Fail -> onError(it.throwable)
+            }
+        })
+        viewModel.shopFollowing.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> {
+                    if(it.data.shopInfoById.result.isNullOrEmpty()) {
+                        onErrorGetShopFollowingStatus()
+                    } else {
+                        onSuccessGetShopFollowingStatus(it.data.isFollow)
+                    }
+                }
+                is Fail -> onErrorGetShopFollowingStatus()
             }
         })
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.data
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
@@ -17,7 +18,6 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.*
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
@@ -80,9 +80,9 @@ fun createHomeLayoutData(): HomeLayoutResponse {
 }
 
 fun createLoadingState(): HomeLayoutListUiModel {
-    val mutableList = mutableListOf<HomeLayoutItemUiModel>()
+    val mutableList = mutableListOf<Visitable<*>>()
     val loadingStateUiModel = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
-    mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
+    mutableList.add(loadingStateUiModel)
     return HomeLayoutListUiModel(
             items = mutableList,
             state = TokoNowLayoutState.LOADING
@@ -90,11 +90,11 @@ fun createLoadingState(): HomeLayoutListUiModel {
 }
 
 fun createEmptyState(id: String): HomeLayoutListUiModel {
-    val mutableList = mutableListOf<HomeLayoutItemUiModel>()
+    val mutableList = mutableListOf<Visitable<*>>()
     val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
     val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, eventCategory = "tokonow - homepage")
-    mutableList.add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
-    mutableList.add(HomeLayoutItemUiModel(emptyStateUiModel, HomeLayoutItemState.LOADED))
+    mutableList.add(chooseAddressUiModel)
+    mutableList.add(emptyStateUiModel)
     return HomeLayoutListUiModel(
             mutableList,
             state = TokoNowLayoutState.HIDE
