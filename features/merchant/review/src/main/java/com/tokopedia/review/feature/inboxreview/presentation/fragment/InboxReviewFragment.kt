@@ -405,7 +405,11 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             hideLoading()
             when (it) {
                 is Success -> {
-                    onSuccessGetFeedbackInboxReviewNext(it.data)
+                    if (countStatusIsZero()) {
+                        onSuccessGetFeedbackInboxReview(it.data)
+                    } else {
+                        onSuccessGetFeedbackInboxReviewNext(it.data)
+                    }
                 }
                 is Fail -> {
                     onErrorGetInboxReviewData()
