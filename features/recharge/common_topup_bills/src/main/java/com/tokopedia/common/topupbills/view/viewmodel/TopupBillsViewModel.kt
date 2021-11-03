@@ -57,8 +57,8 @@ class TopupBillsViewModel @Inject constructor(
     val favNumberData: LiveData<Result<TopupBillsFavNumber>>
         get() = _favNumberData
 
-    private val _seamlessFavNumberData = MutableLiveData<Result<TopupBillsSeamlessFavNumber>>()
-    val seamlessFavNumberData: LiveData<Result<TopupBillsSeamlessFavNumber>>
+    private val _seamlessFavNumberData = MutableLiveData<Result<Pair<TopupBillsSeamlessFavNumber, Boolean>>>()
+    val seamlessFavNumberData: LiveData<Result<Pair<TopupBillsSeamlessFavNumber, Boolean>>>
         get() = _seamlessFavNumberData
 
     private val _seamlessFavNumberUpdateData = MutableLiveData<Result<UpdateFavoriteDetail>>()
@@ -174,6 +174,7 @@ class TopupBillsViewModel @Inject constructor(
     fun getSeamlessFavoriteNumbers(
         rawQuery: String,
         mapParam: Map<String, Any>,
+        shouldRefreshInputNumber: Boolean = true,
         prevActionType: TopupBillsFavoriteNumberFragment.FavoriteNumberActionType? = null
     ) {
         launchCatchError(block = {
@@ -183,7 +184,7 @@ class TopupBillsViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsSeamlessFavNumberData>()
 
-            _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber))
+            _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber to shouldRefreshInputNumber))
         }) {
             val errMsg = when (prevActionType) {
                 UPDATE -> ERROR_FETCH_AFTER_UPDATE
