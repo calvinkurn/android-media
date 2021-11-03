@@ -15,6 +15,7 @@ import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.toDp
 import kotlinx.android.synthetic.main.home_component_dynamic_icon.view.*
 import kotlinx.android.synthetic.main.home_component_dynamic_icon_item.view.*
 
@@ -46,7 +47,7 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
             if (itemView.dynamic_icon_recycler_view.itemDecorationCount == 0) {
                 itemView.dynamic_icon_recycler_view.addItemDecoration(
                         CommonSpacingDecoration(
-                                itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                                8f.toDp().toInt()
                         )
                 )
             }

@@ -25,6 +25,7 @@ import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -243,7 +244,7 @@ class DynamicChannelHeaderView: FrameLayout {
                     }
 
                     visibility = View.VISIBLE
-                    channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, context.resources.getDimensionPixelSize(R.dimen.dp_8))
+                    channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 8f.toDp().toInt())
                     // calculate date diff
                     targetDate = Calendar.getInstance().apply {
                         val currentDate = Date()
@@ -262,7 +263,7 @@ class DynamicChannelHeaderView: FrameLayout {
         } else {
             countDownView?.let {
                 it.visibility = View.GONE
-                channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, context.resources.getDimensionPixelSize(R.dimen.dp_12))
+                channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 12f.toDp().toInt())
             }
         }
     }

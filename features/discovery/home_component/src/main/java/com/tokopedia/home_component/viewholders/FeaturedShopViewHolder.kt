@@ -24,6 +24,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDp
 import kotlinx.android.synthetic.main.home_featured_shop.view.*
 
 /**
@@ -83,7 +84,7 @@ class FeaturedShopViewHolder(
         if (itemView.dc_banner_rv.itemDecorationCount == 0) {
             itemView.dc_banner_rv.addItemDecoration(
                     CommonMarginStartDecoration(
-                            marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_14)
+                            marginStart = 14f.toDp().toInt()
                     )
             )
         }
