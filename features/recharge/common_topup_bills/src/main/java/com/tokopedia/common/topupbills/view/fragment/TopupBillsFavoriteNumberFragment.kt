@@ -342,7 +342,7 @@ class TopupBillsFavoriteNumberFragment:
     override fun onContinueClicked() {
         commonTopupBillsAnalytics.eventClickFavoriteNumberContinue(
                 currentCategoryName, userSession.userId)
-        navigateToPDP()
+        activity?.finish()
     }
 
     private fun navigateToPDP(
