@@ -139,6 +139,8 @@ class ShopHomeFlashSaleViewHolder(
                 val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
                 timerDescriptionView?.text = timeDescription
                 if (timeCounter.toLong() != 0L) {
+                    // reset count down layout visibility
+                    countDownLayout?.show()
                     when {
                         isStatusCampaignUpcoming(statusCampaign) -> {
                             val startDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate ?: "").time

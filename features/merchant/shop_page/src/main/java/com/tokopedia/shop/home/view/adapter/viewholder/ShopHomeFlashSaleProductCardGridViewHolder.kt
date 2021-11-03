@@ -21,7 +21,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
     fun bindData(uiModel: ShopHomeProductUiModel) {
         this.uiModel = uiModel
         productCardGrid?.setProductModel(
-            ShopPageHomeMapper.mapToProductCardCampaignModel(
+            ShopPageHomeMapper.mapToProductCardModel(
                 isHasAddToCartButton = false,
                 hasThreeDots = false,
                 shopHomeProductViewModel = uiModel
