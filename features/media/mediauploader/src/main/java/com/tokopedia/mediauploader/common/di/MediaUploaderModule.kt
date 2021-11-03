@@ -103,14 +103,6 @@ class MediaUploaderModule {
         return GetSimpleUploaderUseCase(services)
     }
 
-    @Provides
-    @MediaUploaderQualifier
-    fun provideSimpleUploaderManager(
-        simpleUploaderUseCase: GetSimpleUploaderUseCase
-    ): SimpleUploaderManager {
-        return SimpleUploaderManager(simpleUploaderUseCase)
-    }
-
     // --- large video ---
 
     @Provides
