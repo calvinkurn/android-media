@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.ViewModelProvider
@@ -39,6 +40,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var btnRemove: UnifyButton
     private lateinit var btnUpload: UnifyButton
     private lateinit var btnAbort: UnifyButton
+    private lateinit var edtUrl: AppCompatEditText
 
     @Inject lateinit var uploaderUseCase: UploaderUseCase
 
@@ -96,6 +98,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         btnUpload.isEnabled = true
         btnPickUp.hide()
         btnRemove.show()
+        edtUrl.hide()
 
         progressBar.setValue(0, true)
     }
@@ -123,6 +126,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private fun stateLargeUploadAborted() {
         txtInfo.text = "Tidak ada info file."
         imgPreview.setImageDrawable(null)
+        edtUrl.hide()
 
         btnUpload.text = "Upload"
 
@@ -135,6 +139,8 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
     private fun stateLargeUploadFinished() {
         appendInfo("\nuploaded\n")
+        edtUrl.show()
+
         btnUpload.text = "Upload"
         btnUpload.isEnabled = false
         btnAbort.hide()
@@ -188,8 +194,10 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
                         viewModel.setUploadingStatus(UploadState.Finished)
                         if (isUploadImage) {
                             appendInfo("${result.uploadId}\n")
+                            edtUrl.setText(result.uploadId)
                         } else {
                             appendInfo("${result.videoUrl}\n")
+                            edtUrl.setText(result.videoUrl)
                         }
                     }
                     is UploadResult.Error -> {
@@ -274,6 +282,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         btnRemove = findViewById(R.id.btn_remove)
         btnUpload = findViewById(R.id.btn_upload)
         btnAbort = findViewById(R.id.btn_abort)
+        edtUrl = findViewById(R.id.edt_url)
     }
 
     private fun initInjector() {
