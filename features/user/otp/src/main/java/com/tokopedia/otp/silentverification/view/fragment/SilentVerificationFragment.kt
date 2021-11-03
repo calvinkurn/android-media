@@ -1,5 +1,6 @@
 package com.tokopedia.otp.silentverification.view.fragment
 
+import android.animation.Animator
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
@@ -16,6 +17,7 @@ import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieTask
+import com.tkpd.util.Base64
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
@@ -91,7 +93,6 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         showFullLoading()
         playLottieAnim(LOTTIE_BG_ANIMATION)
-
         initObserver()
 
         if(otpData != null && modeListData != null) {
@@ -103,12 +104,15 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     private fun requestOtp() {
         showLoadingState()
-        otpData?.run {
-            viewModel.requestSilentVerification(
-                otpType = otpType.toString(),
-                mode = modeListData?.modeText ?: "",
-                msisdn = msisdn
-            )
+        if(context != null) {
+            otpData?.run {
+                viewModel.requestSilentVerification(
+                    otpType = otpType.toString(),
+                    mode = modeListData?.modeText ?: "",
+                    msisdn = msisdn,
+                    signature = generateAuthenticitySignature()
+                )
+            }
         }
     }
 
@@ -183,16 +187,16 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         binding?.fragmentSilentVerifContainer?.visible()
     }
 
-    private fun playLottieAnim(type: String) {
+    private fun playLottieAnim(type: String, onFinish: () -> Unit = {}) {
         try {
             if(lottieTaskList.isNotEmpty()) {
+                hideFullLoading()
                 if (type == LOTTIE_BG_ANIMATION) {
                     lottieTaskList[0].addListener { result ->
                         binding?.fragmentSilentVerifAnimation?.setComposition(result)
                         binding?.fragmentSilentVerifAnimation?.visibility = View.VISIBLE
                         binding?.fragmentSilentVerifAnimation?.playAnimation()
                         binding?.fragmentSilentVerifAnimation?.repeatCount = LottieDrawable.INFINITE
-                        hideFullLoading()
                     }
                 } else {
                     lottieTaskList[1].addListener { result ->
@@ -200,11 +204,16 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                         binding?.fragmentSilentVerifSuccessAnim?.setComposition(result)
                         binding?.fragmentSilentVerifSuccessAnim?.visibility = View.VISIBLE
                         binding?.fragmentSilentVerifSuccessAnim?.playAnimation()
-                        binding?.fragmentSilentVerifSuccessAnim?.repeatCount = LottieDrawable.INFINITE
 
-                        Handler().postDelayed({
-                            renderFinalSuccess()
-                        }, 1500)
+                        binding?.fragmentSilentVerifSuccessAnim?.addAnimatorListener(object:
+                            Animator.AnimatorListener {
+                            override fun onAnimationRepeat(animation: Animator?) {}
+                            override fun onAnimationEnd(animation: Animator?) {
+                                onFinish()
+                            }
+                            override fun onAnimationCancel(animation: Animator?) {}
+                            override fun onAnimationStart(animation: Animator?) {}
+                        })
                     }
                 }
             } else {
@@ -215,10 +224,15 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun renderInitialSuccess() {
+    private fun renderSuccessPage(data: OtpValidateData) {
         binding?.fragmentSilentVerifTitle?.hide()
         binding?.fragmentSilentVerifSubtitle?.hide()
-        playLottieAnim(LOTTIE_SUCCESS_ANIMATION)
+        playLottieAnim(LOTTIE_SUCCESS_ANIMATION) {
+            renderFinalSuccess()
+            Handler().postDelayed({
+                onFinishSilentVerif(data)
+            }, 1000)
+        }
     }
 
     private fun renderFinalSuccess() {
@@ -243,10 +257,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         tokenId = ""
         if(data.success) {
             analytics.trackSilentVerificationResult(TrackingOtpConstant.Label.LABEL_SUCCESS)
-            renderInitialSuccess()
-            Handler().postDelayed({
-                onFinishSilentVerif(data)
-            }, 2500)
+            renderSuccessPage(data)
         } else {
             analytics.trackSilentVerificationResult("${TrackingOtpConstant.Label.LABEL_FAILED}isSuccess:${data.success} - ${data.errorMessage}")
         }
@@ -282,6 +293,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private fun handleBokuResult(resultCode: String) {
         try {
             val result = mapBokuResult(resultCode)
+            println("verify:$resultCode")
             if (result[KEY_ERROR_CODE] == "0" &&
                 result[KEY_ERROR_DESC].equals(VALUE_SUCCESS, true)
             ) {
@@ -294,15 +306,20 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun generateAuthenticitySignature(): String =
+        Base64.GetDecoder(context).trim()
+
     private fun onSuccessBokuVerification() {
         otpData?.run {
             if(otpData?.msisdn?.isNotEmpty() == true && tokenId.isNotEmpty()) {
+
                 viewModel.validate(
                     otpType = otpType.toString(),
                     msisdn = msisdn,
                     mode = modeListData?.modeText ?: "",
                     userId = userId,
-                    tokenId = tokenId
+                    tokenId = tokenId,
+                    signature = generateAuthenticitySignature()
                 )
             }
         }

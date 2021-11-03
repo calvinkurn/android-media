@@ -44,13 +44,15 @@ class SilentVerificationViewModel @Inject constructor(
     fun requestSilentVerification(
         otpType: String,
         mode: String,
-        msisdn: String
+        msisdn: String,
+        signature: String
     ) {
         launchCatchError(block = {
             val params = mapOf(
                 RequestSilentVerificationOtpUseCase.PARAM_OTP_TYPE to otpType,
                 RequestSilentVerificationOtpUseCase.PARAM_MODE to mode,
-                RequestSilentVerificationOtpUseCase.PARAM_MSISDN to msisdn
+                RequestSilentVerificationOtpUseCase.PARAM_MSISDN to msisdn,
+//                RequestSilentVerificationOtpUseCase.PARAM_AUTHENTICITY_SIGNATURE to signature
             )
             val result = requestSilentVerificationOtpUseCase(params)
             _requestSilentVerificationResponse.value = Success(result.data)
@@ -64,7 +66,8 @@ class SilentVerificationViewModel @Inject constructor(
         msisdn: String,
         mode: String,
         userId: String,
-        tokenId: String
+        tokenId: String,
+        signature: String
     ) {
         launchCatchError(block = {
             val params = mapOf(
@@ -72,7 +75,8 @@ class SilentVerificationViewModel @Inject constructor(
                 ValidateSilentVerificationUseCase.PARAM_MODE to mode,
                 ValidateSilentVerificationUseCase.PARAM_USERID to userId,
                 ValidateSilentVerificationUseCase.PARAM_MSISDN to msisdn,
-                ValidateSilentVerificationUseCase.PARAM_TOKEN_ID to tokenId
+                ValidateSilentVerificationUseCase.PARAM_TOKEN_ID to tokenId,
+                // RequestSilentVerificationOtpUseCase.PARAM_AUTHENTICITY_SIGNATURE to signature
             )
             val result = validateSilentVerificationUseCase(params)
             _validationResponse.value = Success(result.data)

@@ -19,21 +19,6 @@ class RequestSilentVerificationOtpUseCase @Inject constructor(@ApplicationContex
         return repository.request(graphqlQuery(), params)
     }
 
-    @JvmOverloads
-    fun getParams(
-        otpType: String,
-        mode: String,
-        msisdn: String = "",
-        email: String = "",
-        otpDigit: Int = 4
-    ): Map<String, Any> = mapOf(
-        PARAM_OTP_TYPE to otpType,
-        PARAM_MODE to mode,
-        PARAM_MSISDN to msisdn,
-        PARAM_EMAIL to email,
-        PARAM_OTP_DIGIT to otpDigit
-    )
-
     override fun graphqlQuery(): String = """
         query otp_request(${'$'}otpType: String!, ${'$'}mode: String, ${'$'}msisdn: String, ${'$'}email: String, ${'$'}otpDigit: Int){
             OTPRequest(otpType: ${'$'}otpType, mode: ${'$'}mode, msisdn: ${'$'}msisdn, email: ${'$'}email, otpDigit: ${'$'}otpDigit) {
@@ -57,5 +42,6 @@ class RequestSilentVerificationOtpUseCase @Inject constructor(@ApplicationContex
         const val PARAM_MSISDN = "msisdn"
         const val PARAM_EMAIL = "email"
         const val PARAM_OTP_DIGIT = "otpDigit"
+        const val PARAM_AUTHENTICITY_SIGNATURE = "authenticity_signature"
     }
 }
