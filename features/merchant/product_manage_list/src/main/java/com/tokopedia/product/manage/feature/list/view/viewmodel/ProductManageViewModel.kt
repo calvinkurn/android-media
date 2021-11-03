@@ -25,7 +25,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Edi
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
-import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
+import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToUiModels
@@ -64,24 +64,24 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
-        private val editPriceUseCase: EditPriceUseCase,
-        private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-        private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-        private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
-        private val getProductListUseCase: GQLGetProductListUseCase,
-        private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
-        private val editStatusUseCase: EditStatusUseCase,
-        private val editStockUseCase: UpdateProductStockWarehouseUseCase,
-        private val deleteProductUseCase: DeleteProductUseCase,
-        private val multiEditProductUseCase: MultiEditProductUseCase,
-        private val getProductListMetaUseCase: GetProductListMetaUseCase,
-        private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
-        private val editProductVariantUseCase: EditProductVariantUseCase,
-        private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
-        private val dispatchers: CoroutineDispatchers
+    private val editPriceUseCase: EditPriceUseCase,
+    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
+    private val getShopManagerPopupsUseCase: GetShopManagerPopupsUseCase,
+    private val getProductListUseCase: GQLGetProductListUseCase,
+    private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
+    private val editStatusUseCase: EditStatusUseCase,
+    private val editStockUseCase: UpdateProductStockWarehouseUseCase,
+    private val deleteProductUseCase: DeleteProductUseCase,
+    private val multiEditProductUseCase: MultiEditProductUseCase,
+    private val getProductListMetaUseCase: GetProductListMetaUseCase,
+    private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
+    private val editProductVariantUseCase: EditProductVariantUseCase,
+    private val getProductVariantUseCase: GetProductVariantUseCase,
+    private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -502,7 +502,7 @@ class ProductManageViewModel @Inject constructor(
             block = {
                 val popupResult = withContext(dispatchers.io) {
                     val shopId = productId.toLongOrZero()
-                    val isSuccess = popupManagerAddProductUseCase.execute(shopId)
+                    val isSuccess = getShopManagerPopupsUseCase.execute(shopId)
                     GetPopUpResult(productId, isSuccess)
                 }
                 _getPopUpResult.value = Success(popupResult)},
@@ -623,7 +623,7 @@ class ProductManageViewModel @Inject constructor(
     fun detachView() {
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetShopDepositGraphQLUseCase.unsubscribe()
-        popupManagerAddProductUseCase.cancelJobs()
+        getShopManagerPopupsUseCase.cancelJobs()
         getProductListUseCase.cancelJobs()
         setFeaturedProductUseCase.cancelJobs()
     }
