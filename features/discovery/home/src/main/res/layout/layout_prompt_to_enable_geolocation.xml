@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/img_geolocation"
-            android:layout_width="@dimen/dp_28"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="28dp"
+            android:layout_height="32dp"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="8dp"
             app:srcCompat="@drawable/ic_product_home_geolocation_colorful_77"
