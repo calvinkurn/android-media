@@ -65,8 +65,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_WITHDRAW_CODE = 3333
-        const val KEY_CAN_SHOW_BALANCE_COACHMARK = "com.tokopedia.saldodetails.balance_coach_mark"
-        const val KEY_CAN_SHOW_PENJUALAN_COACHMARK = "penjualan_coach_mark"
         const val SALDODETAIL_FINTECH_PLT = "saldodetailfintech_plt"
         const val SALDODETAIL_FINTECH_PLT_PREPARE_METRICS = "saldodetailfintech_plt_prepare_metrics"
         const val SALDODETAIL_FINTECH_PLT_NETWORK_METRICS = "saldodetailfintech_plt_network_metrics"
@@ -81,7 +79,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         private const val MCL_STATUS_ZERO = 0
         private const val MCL_STATUS_BLOCK1 = 700
         private const val MCL_STATUS_BLOCK3 = 999
-        private const val PENJUALAN_TAB_INDEX = 2
         private const val IS_SELLER = "is_seller"
         const val BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID = "merchant_credit_details_id"
         const val BUNDLE_PARAM_SELLER_DETAILS_ID = "bundle_param_seller_details_id"
@@ -100,7 +97,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private val animationDuration: Long = 300
-    private val COACH_MARK_DELAY: Long = 400
 
     @Inject
     lateinit var userSession: UserSession
@@ -124,7 +120,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private var buyerBalanceTV: TextView? = null
     private var sellerBalanceTV: TextView? = null
     private var totalBalanceTitle: TextView? = null
-    private var totalBalanceInfo: View? = null
     private var buyerBalanceInfoIcon: View? = null
     private var sellerBalanceInfoIcon: View? = null
     private var saldoBalanceSeparator: View? = null

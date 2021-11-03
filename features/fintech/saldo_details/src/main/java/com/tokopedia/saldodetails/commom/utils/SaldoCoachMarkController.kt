@@ -71,10 +71,10 @@ class SaldoCoachMarkController(val context: Context) {
     }
 
     fun updateSalesCoachMarkOnScroll() {
-        if (coachMark.currentIndex == 2) {
+        if (coachMark.currentIndex == PENJUALAN_TAB_INDEX) {
         val xOffset = (X_OFFSET).toPx()
         val yOffset = 8.toPx()
-        val tabView = anchorViewList?.getOrNull(2)
+        val tabView = anchorViewList?.getOrNull(PENJUALAN_TAB_INDEX)
         tabView?.post {
             coachMark.update(tabView, xOffset, yOffset, -1, -1)
             }
@@ -99,6 +99,7 @@ class SaldoCoachMarkController(val context: Context) {
         const val KEY_CAN_SHOW_INCOME_COACHMARK = "com.tokopedia.saldodetails.income_coach_mark"
         const val KEY_CAN_SHOW_PENJUALAN_COACHMARK = "penjualan_coach_mark"
         const val X_OFFSET = -70
+        private const val PENJUALAN_TAB_INDEX = 2
 
     }
 }
