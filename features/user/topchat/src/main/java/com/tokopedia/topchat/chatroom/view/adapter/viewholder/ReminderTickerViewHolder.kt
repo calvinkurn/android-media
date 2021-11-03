@@ -64,6 +64,9 @@ class ReminderTickerViewHolder(
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         ticker?.setOnClickListener {
+            commonListener.getAnalytic().eventClickTickerReminderCta(
+                commonListener.getCommonShopId()
+            )
             RouteManager.route(it.context, element.url)
         }
         ticker?.setTextDescription(sb)
@@ -73,7 +76,9 @@ class ReminderTickerViewHolder(
         ticker?.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) { }
             override fun onDismiss() {
-                commonListener.getAnalytic().eventCloseTickerReminder(commonListener.getCommonShopId())
+                commonListener.getAnalytic().eventCloseTickerReminder(
+                    commonListener.getCommonShopId()
+                )
                 listener?.closeReminderTicker(element)
             }
         })
