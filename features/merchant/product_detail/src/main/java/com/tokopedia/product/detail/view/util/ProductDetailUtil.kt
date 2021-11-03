@@ -272,7 +272,7 @@ inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit) 
 fun getIdLocale() = Locale("id", "ID")
 
 fun String.goToWebView(context: Context) {
-    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, this))
+    RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, this))
 }
 
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)

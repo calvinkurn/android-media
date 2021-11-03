@@ -1112,7 +1112,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun goToWebView(url: String) {
-        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+        RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
     /**
@@ -3206,6 +3206,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun openWebViewUrl(url: String) {
         val webViewUrl = String.format(
+                Locale.getDefault(),
                 "%s?titlebar=false&url=%s",
                 ApplinkConst.WEBVIEW,
                 url
@@ -3671,7 +3672,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun goToSellerMigrationPage(@SellerMigrationFeatureName featureName: String, appLinks: ArrayList<String>) {
         context?.run {
-            val intent = RouteManager.getIntent(this, String.format("%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, featureName))
+            val intent = RouteManager.getIntent(this, String.format(Locale.getDefault(), "%s?${SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME}=%s", ApplinkConst.SELLER_MIGRATION, featureName))
             intent.putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, appLinks)
             intent.putExtra(SellerMigrationApplinkConst.EXTRA_SCREEN_NAME, screenName)
             startActivity(intent)
