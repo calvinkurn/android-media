@@ -25,7 +25,7 @@ class ShopHomeFlashSaleProductCardPlaceHolderViewHolder(
     fun bindData(uiModel: ShopHomeProductUiModel, fsUiModel: ShopHomeFlashSaleUiModel?) {
         this.uiModel = uiModel
         this.fsUiModel = fsUiModel
-        placeHolderTextView?.text = uiModel.totalProduct.toString() + uiModel.totalProductWording
+        placeHolderTextView?.text = uiModel.totalProductWording
     }
 
     private fun setupClickListener(listener: ShopHomeFlashSaleWidgetListener) {

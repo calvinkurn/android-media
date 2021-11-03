@@ -45,9 +45,9 @@ class ShopHomeFlashSaleViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_flash_sale_widget
-        private const val EMPTY_SIZE = 0
         private const val SINGLE = 1
         private const val DOUBLE = 2
+        private const val ZERO = 0
         private const val ONE = 1
         private const val ONE_HUNDRED = 100
         private const val ONE_THOUSAND = 1000
@@ -58,6 +58,7 @@ class ShopHomeFlashSaleViewHolder(
     init {
         setupClickListener(listener)
         setupProductCardCarouselView(productCarouselView)
+        setupWidgetImpressionListener(uiModel)
     }
 
     override fun bind(element: ShopHomeFlashSaleUiModel) {
@@ -70,11 +71,10 @@ class ShopHomeFlashSaleViewHolder(
         setupFlashSaleCountDownTimer(element)
         setupFlashSaleReminder(flashSaleItem)
         setupProductCardCarousel(element)
-        setupWidgetImpressionListener(element)
     }
 
-    private fun setupWidgetImpressionListener(uiModel: ShopHomeFlashSaleUiModel) {
-        uiModel.data?.firstOrNull()?.let {
+    private fun setupWidgetImpressionListener(uiModel: ShopHomeFlashSaleUiModel?) {
+        uiModel?.data?.firstOrNull()?.let {
             itemView.addOnImpressionListener(uiModel.impressHolder) {
                 listener.onFlashSaleWidgetImpressed(uiModel, adapterPosition)
             }
@@ -97,6 +97,11 @@ class ShopHomeFlashSaleViewHolder(
                 listener.onClickFlashSaleReminder(this)
             }
         }
+        timerView?.onFinish = {
+            uiModel?.run {
+                listener.onTimerFinished(this)
+            }
+        }
     }
 
     private fun setupProductCardCarouselView(productCarouselView: RecyclerView?) {
@@ -112,6 +117,7 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupCtaSeeAll(productSize: Int) {
         if (productSize == SINGLE) ctaSeeAllView?.hide()
+        else ctaSeeAllView?.show()
     }
 
     private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>) {
@@ -119,6 +125,7 @@ class ShopHomeFlashSaleViewHolder(
         singleBackGroundView?.hide()
         doubleBackGroundView?.hide()
         multipleBackGroundView?.hide()
+        // show different background based on products size
         when(productList.size) {
             SINGLE -> { singleBackGroundView?.show() }
             DOUBLE -> { doubleBackGroundView?.show() }
@@ -134,6 +141,7 @@ class ShopHomeFlashSaleViewHolder(
                 val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
                 timerDescriptionView?.text = timeDescription
                 if (timeCounter.toLong() != 0L) {
+                    countDownLayout?.show()
                     when {
                         isStatusCampaignUpcoming(statusCampaign) -> {
                             val startDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate ?: "").time
@@ -177,6 +185,7 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun getTotalNotifyWording(reminder: Int): String {
         return when {
+            reminder == ZERO -> getString(R.string.shop_page_label_remind_me)
             // reminder < 100 => direct number
             reminder < ONE_HUNDRED -> reminder.toString()
             reminder / ONE_MILLION >= ONE -> {
@@ -193,11 +202,11 @@ class ShopHomeFlashSaleViewHolder(
     private fun setupProductCardCarousel(model: ShopHomeFlashSaleUiModel) {
         val flashSaleData = model.data?.firstOrNull()
         val productList = flashSaleData?.productList?.toMutableList() ?: mutableListOf()
-        // get the total product and total product wording
+        // get total product and total product wording
         val totalProduct = flashSaleData?.totalProduct ?: 0
         val totalProductWording = flashSaleData?.totalProductWording ?: ""
-        // add product place holder if product list size 5 and metada is not empty
-        val isUsingPlaceHolder = isUsingPlaceHolder(totalProduct, totalProductWording, productList.size)
+        // add product place holder if product list size > 5 and metada is not empty
+        val isUsingPlaceHolder = isUsingPlaceHolder(totalProduct, totalProductWording)
         if (isUsingPlaceHolder) {
             productList.add(ShopHomeProductUiModel().apply {
                 this.isProductPlaceHolder = isUsingPlaceHolder
@@ -211,8 +220,8 @@ class ShopHomeFlashSaleViewHolder(
         productCarouselAdapter.setProductList(productList)
     }
 
-    private fun isUsingPlaceHolder(totalProduct: Int, totalProductWording: String, size: Int): Boolean {
-        return size == MAX_PRODUCT_CARD_SIZE && totalProduct > EMPTY_SIZE && totalProductWording.isNotBlank()
+    private fun isUsingPlaceHolder(totalProduct: Int, totalProductWording: String): Boolean {
+        return totalProduct > MAX_PRODUCT_CARD_SIZE && totalProductWording.isNotBlank()
     }
 
     private fun isStatusCampaignFinished(statusCampaign: String): Boolean {
