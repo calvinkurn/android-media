@@ -17,7 +17,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-open class TopChatViewModel @Inject constructor(
+class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
     private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
