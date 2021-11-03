@@ -30,10 +30,7 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.ThanksPageHelper
-import com.tokopedia.thankyou_native.helper.addContainer
-import com.tokopedia.thankyou_native.helper.attachTopAdsHeadlinesView
-import com.tokopedia.thankyou_native.helper.getTopAdsHeadlinesView
+import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
@@ -547,7 +544,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
 
         /* Constant for toads headlines widget*/
-        const val TOP_ADS_SRC = "thank_you_page"
+        const val TOP_ADS_SRC = "inbox"
         const val TOP_ADS_HEADLINE_ABOVE_RECOM = "variant1"
         const val TOP_ADS_HEADLINE_BELOW_RECOM = "variant2"
     }
