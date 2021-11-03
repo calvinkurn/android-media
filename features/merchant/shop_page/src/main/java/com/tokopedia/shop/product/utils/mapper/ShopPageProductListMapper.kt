@@ -105,7 +105,6 @@ object ShopPageProductListMapper {
                             else {
                                 // hide discount percentage when flash sale campaign is upcoming
                                 it.discountPercentage = ZERO_PRODUCT_DISCOUNT
-                                it.hideGimmick = true
                                 it.displayedPrice = campaign.discountedPriceFmt
                             }
                             it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
