@@ -37,8 +37,8 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_like"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         app:layout_constraintVertical_chainStyle="packed"
         app:lottie_rawRes="@raw/anim_outline_spam_like"
         app:layout_constraintStart_toStartOf="parent"

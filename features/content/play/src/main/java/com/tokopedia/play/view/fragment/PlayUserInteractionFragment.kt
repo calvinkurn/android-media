@@ -798,7 +798,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
                 sendChatView?.focusChatForm(false)
-                sendChatView?.hide()
+                sendChatView?.invisible()
 
                 videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
                 toolbarViewOnStateChanged(isFreezeOrBanned = true)
@@ -1376,7 +1376,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false) {
             sendChatView?.show()
-        } else sendChatView?.hide()
+        } else sendChatView?.invisible()
 
         sendChatView?.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
     }
