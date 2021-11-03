@@ -110,10 +110,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                         imgOperator.visibility = View.GONE
                         clearErrorState()
                     }
-                    if (!start.isZero() && count == 1) {
+                    val isUserManualType = !start.isZero() && count == 1
+                    if (isUserManualType) {
                         listener.onUserManualType()
                     }
-                    listener.onRenderOperator(true)
+                    listener.onRenderOperator(isUserManualType)
                 }
             })
 
