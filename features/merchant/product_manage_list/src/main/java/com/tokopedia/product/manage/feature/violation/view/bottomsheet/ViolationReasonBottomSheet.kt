@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageViolationBinding
 import com.tokopedia.product.manage.feature.violation.view.adapter.ViolationReasonAdapter
 import com.tokopedia.product.manage.feature.violation.view.adapter.ViolationReasonItemViewHolder
@@ -28,11 +27,6 @@ class ViolationReasonBottomSheet: BottomSheetUnify(), ViolationReasonItemViewHol
     }
 
     private var binding by autoClearedNullable<BottomSheetProductManageViolationBinding>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setTitle(getString(R.string.product_manage_violation_title))
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +53,9 @@ class ViolationReasonBottomSheet: BottomSheetUnify(), ViolationReasonItemViewHol
 
     private fun setupView() {
         // TODO: Remove dummy
+        setTitle("Pelanggaran atribut")
         val dummyUiModel = ViolationReasonUiModel(
+            "Pelanggaran atribut",
             "Produk diduga melanggar hukum karena:",
             "Berupa organ tubuh manusia",
             "Lakukan langkah berikut untuk menyelesaikan:",
@@ -71,8 +67,8 @@ class ViolationReasonBottomSheet: BottomSheetUnify(), ViolationReasonItemViewHol
             "sellerapp://home"
         )
         binding?.run {
-            tvProductManageViolationTitle.text = dummyUiModel.title
-            tvProductManageViolationReason.text = dummyUiModel.reason
+            tvProductManageViolationTitle.text = dummyUiModel.descTitle
+            tvProductManageViolationReason.text = dummyUiModel.descReason
             tvProductManageViolationStepTitle.text = dummyUiModel.stepTitle
             btnProductManageViolationAction.run {
                 text = dummyUiModel.buttonText
