@@ -100,13 +100,13 @@ object ShopPageProductListMapper {
                                     labelGroup.position.isEmpty()
                                 }?.title ?: ""
                                 it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
+                                it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
                             }
                             else {
                                 // hide discount percentage when flash sale campaign is upcoming
                                 it.discountPercentage = ZERO_PRODUCT_DISCOUNT
-                                it.hideGimmick = true
+                                it.displayedPrice = campaign.discountedPriceFmt
                             }
-                            it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
                             it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
                         }
                     }
