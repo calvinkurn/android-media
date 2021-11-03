@@ -34,7 +34,6 @@ import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInte
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import kotlinx.coroutines.delay
 import org.junit.*
 
 /**
@@ -82,8 +81,6 @@ class HomeTopAdsVerificationTest {
 
     @Test
     fun testTopAdsHome() {
-        Thread.sleep(4000)
-        disableCoachMark(context)
         Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(isDisplayed()))
 
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
