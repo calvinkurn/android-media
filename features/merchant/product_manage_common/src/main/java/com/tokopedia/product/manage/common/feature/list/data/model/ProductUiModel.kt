@@ -37,7 +37,7 @@ data class ProductUiModel(
     fun isInactive(): Boolean = status == ProductStatus.INACTIVE
     fun isViolation(): Boolean =
         status == ProductStatus.VIOLATION || status == ProductStatus.MODERATED
-    fun isNotViolation(): Boolean = !(isViolation() && isPending())
+    fun isNotViolation(): Boolean = !(isViolation() || isPending())
     fun isPending(): Boolean = status == ProductStatus.PENDING
     fun isEmpty(): Boolean = status == ProductStatus.EMPTY || stock == 0
     fun hasTopAds(): Boolean = topAdsInfo?.isTopAds == true || topAdsInfo?.isAutoAds == true

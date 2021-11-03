@@ -15,8 +15,9 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/imageProduct"
-        app:tickerShapeType="full"
+        app:tickerShapeType="loose"
         app:tickerType="warning"
+        app:closeButtonVisibility="gone"
         app:descriptionText="@string/product_manage_violation_ticker_message"
         tools:visibility="visible" />
 
@@ -275,7 +276,7 @@
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintLeft_toRightOf="@id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@id/rightGuideline"
-        app:layout_constraintTop_toBottomOf="@id/labelBanned"
+        app:layout_constraintTop_toBottomOf="@id/textStockCount"
         app:unifyButtonSize="small"
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost"
