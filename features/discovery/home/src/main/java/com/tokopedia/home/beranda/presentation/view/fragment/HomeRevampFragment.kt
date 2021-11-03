@@ -453,7 +453,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         beautyFestEvent = BEAUTY_FEST_NOT_SET
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
-        startToTransitionOffset = resources.getDimensionPixelOffset(R.dimen.dp_1)
+        startToTransitionOffset = 1f.toDp().toInt()
         registerBroadcastReceiverTokoCash()
         getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
@@ -2768,7 +2768,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 navToolbar?.let {
                     height = navToolbar?.height
                         ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                    height += 8f.toDp().toInt()
                 }
             }
             return height
@@ -2927,7 +2927,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             errorToaster = null
         }
         if (errorToaster == null || errorToaster?.isShown == false) {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+            Toaster.toasterCustomBottomHeight = 56f.toDp().toInt()
             errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
             errorToaster?.show()
         }
@@ -3099,7 +3099,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showSuccessResetPasswordDialog() {
-        Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+        Toaster.toasterCustomBottomHeight = 56f.toDp().toInt()
         Toaster.build(root,
                 getString(R.string.text_dialog_success_reset_password),
                 DELAY_TOASTER_RESET_PASSWORD,

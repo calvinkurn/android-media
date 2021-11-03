@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.*
 import android.util.TypedValue
@@ -11,6 +12,7 @@ import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
 
@@ -82,6 +84,8 @@ fun convertDpToPixel(dp: Float, context: Context): Int {
     val r = context.resources
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.displayMetrics).toInt()
 }
+
+fun Float.toSp(): Float = Resources.getSystem().displayMetrics.scaledDensity * this
 
 fun RecyclerView.removeAllItemDecoration() {
     if (this.itemDecorationCount > 0)

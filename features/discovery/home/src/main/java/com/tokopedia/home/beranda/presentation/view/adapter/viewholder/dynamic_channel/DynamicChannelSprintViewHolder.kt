@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -61,7 +62,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         recyclerView.setHasFixedSize(true)
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                        itemView.context.resources.getDimensionPixelSize(R.dimen.dp_4),
+                        4f.toDp().toInt(),
                         false))
         recyclerView.layoutManager = GridLayoutManager(
                 itemView.context,

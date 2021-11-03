@@ -54,6 +54,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommen
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemViewHolder.Companion.LAYOUT
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
@@ -207,7 +208,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun setupRecyclerView() {
         recyclerView?.layoutManager = staggeredGridLayoutManager
         (recyclerView?.layoutManager as StaggeredGridLayoutManager?)?.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-        recyclerView?.addItemDecoration(HomeFeedItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_4)))
+        recyclerView?.addItemDecoration(HomeFeedItemDecoration(4f.toDp().toInt()))
         recyclerView?.adapter = adapter
         parentPool?.setMaxRecycledViews(
                 LAYOUT,

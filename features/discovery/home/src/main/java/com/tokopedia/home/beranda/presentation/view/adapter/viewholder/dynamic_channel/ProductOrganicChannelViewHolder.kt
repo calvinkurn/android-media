@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
+import com.tokopedia.kotlin.extensions.view.toDp
 
 /**
  * Created by devarafikry on 12/08/19.
@@ -61,7 +62,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
 
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_10),
+                10f.toDp().toInt(),
                 true))
 
         recyclerView.layoutManager = GridLayoutManager(

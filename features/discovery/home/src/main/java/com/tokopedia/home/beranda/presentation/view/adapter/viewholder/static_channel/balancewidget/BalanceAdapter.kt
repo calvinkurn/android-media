@@ -41,6 +41,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.isHexColor
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.util.HomeServerLogger.TYPE_ERROR_SUBMIT_WALLET
 import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.home_component.util.toSp
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
@@ -492,7 +493,7 @@ class BalanceAdapter(
             )
         }
 
-        private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.sp_10) {
+        private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.home_balance_default_text_size) {
             textView.setTypeface(null, Typeface.NORMAL)
 
             textView.background = null
@@ -513,12 +514,12 @@ class BalanceAdapter(
                 (drawable as GradientDrawable?)?.let {
                     it.setColorFilter(Color.parseColor(tagAttr.backgroundColour), PorterDuff.Mode.SRC_ATOP)
                     textView.background = it
-                    val horizontalPadding = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_2)
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(R.dimen.sp_8))
+                    val horizontalPadding = 2f.toDp().toInt()
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 8f.toSp())
                     textView.setTypeface(null, Typeface.NORMAL)
                     textView.setPadding(horizontalPadding, 0, horizontalPadding, 0)
                 }
-                textView.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N0))
+                textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             } else {
                 textView.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
