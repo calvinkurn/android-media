@@ -17,6 +17,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
+import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.Matchers.not
 import org.junit.Test
@@ -27,7 +29,8 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
     fun should_open_bottomsheet_when_click_beli_in_attached_product_variants() {
         //Given
         inboxNotifcenterDep.apply {
-            notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
+            val result = notifcenterDetailUseCase.productOnly
+            notifcenterDetailUseCase.response = result
         }
         startInboxActivity()
         intending(IntentMatchers.anyIntent())
@@ -42,7 +45,7 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         //Then
         val intent = RouteManager.getIntent(context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1988298491", "10973651", "notif-center", "false", "") //Product from JSON
+            "1988298491", "10973651", "notifcenter", "false", "") //Product from JSON
         intended(IntentMatchers.hasData(intent.data))
     }
 
@@ -65,7 +68,7 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         //Then
         val intent = RouteManager.getIntent(context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1988298491", "10973651", "notif-center", "false", "") //Product from JSON
+            "1988298491", "10973651", "notifcenter", "false", "") //Product from JSON
         intended(IntentMatchers.hasData(intent.data))
     }
 
@@ -115,6 +118,11 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         //Given
         inboxNotifcenterDep.apply {
             notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
+            setupTypeButton(
+                productId = "1988288674",
+                typeButton = ProductData.BUTTON_TYPE_WISHLIST,
+                productOnly = notifcenterDetailUseCase.response
+            )
         }
         startInboxActivity()
         intending(IntentMatchers.anyIntent())
@@ -173,5 +181,17 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         onView(withId(R.id.rv_carousel_product)).perform(
             scrollToPosition<RecyclerView.ViewHolder>(position)
         )
+    }
+
+    private fun setupTypeButton(
+        productId: String,
+        typeButton: Int,
+        productOnly: NotifcenterDetailResponse
+    ) {
+        productOnly.notifcenterDetail.newList.first().productData.forEach {
+            if (it.productId == productId) {
+                it.typeButton = typeButton
+            }
+        }
     }
 }

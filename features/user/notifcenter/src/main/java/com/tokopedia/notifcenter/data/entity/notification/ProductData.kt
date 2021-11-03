@@ -48,7 +48,7 @@ data class ProductData(
         @SerializedName("stock")
         val stock: Int = 0,
         @SerializedName("type_button")
-        val typeButton: Int = 0,
+        var typeButton: Int = 0,
         @SerializedName("url")
         val url: String = "",
         @SerializedName("variant")
