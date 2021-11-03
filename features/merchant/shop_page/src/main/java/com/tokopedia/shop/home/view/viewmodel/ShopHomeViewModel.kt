@@ -428,7 +428,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
 
-    fun getBottomSheetFilterData(shopId: String) {
+    fun getBottomSheetFilterData(shopId: String = "") {
         launchCatchError(coroutineContext, block = {
             val filterBottomSheetData = withContext(dispatcherProvider.io) {
                 getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams(shopId)

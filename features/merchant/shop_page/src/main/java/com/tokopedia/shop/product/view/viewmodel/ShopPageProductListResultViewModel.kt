@@ -312,7 +312,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         return shopProductSortMapper.convertSort(listSort).toMutableList()
     }
 
-    fun getBottomSheetFilterData(shopId: String) {
+    fun getBottomSheetFilterData(shopId: String = "") {
         launchCatchError(coroutineContext, block = {
             val filterBottomSheetData = withContext(dispatcherProvider.io) {
                 getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams(shopId)
