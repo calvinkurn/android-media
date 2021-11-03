@@ -73,6 +73,7 @@ class ReminderTickerViewHolder(
         ticker?.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) { }
             override fun onDismiss() {
+                commonListener.getAnalytic().eventCloseTickerReminder(commonListener.getCommonShopId())
                 listener?.closeReminderTicker(element)
             }
         })

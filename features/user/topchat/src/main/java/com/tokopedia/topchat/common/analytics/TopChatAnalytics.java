@@ -164,6 +164,7 @@ public class TopChatAnalytics {
         String CLICK_UPDATE_STOCK = "click on update stock";
         String CLICK_THREE_BULLET_MENU = "click header - three bullet";
         String IMPRESSION_SMART_REPLY_TICKER = "impression smart reply ticker";
+        String CLICK_CLOSE_TICKER = "click close on smart reply ticker";
     }
 
     public interface Label {
@@ -678,12 +679,28 @@ public class TopChatAnalytics {
         );
     }
 
+    // 23137
     public void eventViewTickerReminder(long shopId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(
                         Name.VIEW_CHAT_DETAIL,
                         Category.MESSAGE_ROOM,
                         Action.IMPRESSION_SMART_REPLY_TICKER,
+                        String.valueOf(shopId),
+                        BusinessUnit.CommunicationMedia,
+                        CurrentSite.TokopediaMarketplace,
+                        null
+                )
+        );
+    }
+
+    // 23138
+    public void eventCloseTickerReminder(long shopId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.CHAT_DETAIL,
+                        Category.MESSAGE_ROOM,
+                        Action.CLICK_CLOSE_TICKER,
                         String.valueOf(shopId),
                         BusinessUnit.CommunicationMedia,
                         CurrentSite.TokopediaMarketplace,
