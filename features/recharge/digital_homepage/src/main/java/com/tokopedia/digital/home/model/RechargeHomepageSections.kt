@@ -339,7 +339,7 @@ data class RechargeHomepageSwipeBannerModel(val section: RechargeHomepageSection
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is RechargeHomepageCarousellModel) {
+        return if (b is RechargeHomepageSwipeBannerModel) {
             section == b.section
         } else false
     }
