@@ -6,11 +6,8 @@ import com.google.gson.annotations.SerializedName
 
 data class OrderExtensionRespondResponse(
     @Expose
-    @SerializedName("data")
-    val `data`: Data = Data(),
-    @Expose
-    @SerializedName("status")
-    val status: String = ""
+    @SerializedName("order_extension_respond")
+    val `data`: Data = Data()
 ) {
 
     data class Data(

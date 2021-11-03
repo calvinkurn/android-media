@@ -588,6 +588,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
         if (isOrderExtend == true) {
             handleResultRefreshOnly()
+        } else {
+            bottomSheetManager.dismissBottomSheets()
         }
 
         if (!toasterMessage.isNullOrBlank()) {
