@@ -538,16 +538,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             if (inputNumberActionType != InputNumberActionType.MANUAL) {
                 inputNumberActionType = InputNumberActionType.MANUAL
             }
-            val dgCategoryIds = arrayListOf(
-                    TelcoCategoryType.CATEGORY_PULSA.toString(),
-                    TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                    TelcoCategoryType.CATEGORY_ROAMING.toString()
-            )
-
-            navigateFavoriteNumberPage(
-                    clientNumber, favNumberList,
-                    dgCategoryIds, topupAnalytics.getCategoryName(categoryId)
-            )
         }
     }
 
