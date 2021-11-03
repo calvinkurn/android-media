@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
 import com.google.gson.Gson
-import com.tokopedia.cart.view.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import io.mockk.*

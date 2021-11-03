@@ -4,10 +4,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.view.domain.usecase.*
-import com.tokopedia.cart.view.view.CartListPresenter
-import com.tokopedia.cart.view.view.ICartListPresenter
-import com.tokopedia.cart.view.view.ICartListView
+import com.tokopedia.cart.domain.usecase.*
+import com.tokopedia.cart.view.CartListPresenter
+import com.tokopedia.cart.view.ICartListPresenter
+import com.tokopedia.cart.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase

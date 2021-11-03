@@ -1,9 +1,9 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
-import com.tokopedia.cart.view.domain.model.updatecart.UpdateAndValidateUseData
-import com.tokopedia.cart.view.domain.model.updatecart.UpdateCartData
-import com.tokopedia.cart.view.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndValidateUseData
+import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest

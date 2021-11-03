@@ -1,6 +1,6 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.cart.view.view.subscriber.CartSeamlessLoginSubscriber
+import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verifyOrder

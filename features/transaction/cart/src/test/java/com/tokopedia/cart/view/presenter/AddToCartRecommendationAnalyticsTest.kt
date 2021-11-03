@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.cart.view.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.recommendation_widget_common.extension.LABEL_FULFILLMENT
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem

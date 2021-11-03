@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.cart.view.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.view.uimodel.CartShopHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import io.mockk.every
 import org.junit.Test
 

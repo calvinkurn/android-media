@@ -1,8 +1,8 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.cart.view.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.view.domain.model.updatecart.UpdateAndReloadCartListData
-import com.tokopedia.cart.view.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.domain.model.updatecart.UpdateAndReloadCartListData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import io.mockk.*
 import org.junit.Test

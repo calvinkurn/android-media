@@ -1,8 +1,8 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.cart.view.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.view.view.uimodel.CartItemHolderData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cartcommon.data.response.deletecart.Data
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import io.mockk.*

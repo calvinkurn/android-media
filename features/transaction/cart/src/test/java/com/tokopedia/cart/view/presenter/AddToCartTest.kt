@@ -2,10 +2,10 @@ package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.cart.view.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.view.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cart.view.view.uimodel.CartRecommendationItemHolderData
-import com.tokopedia.cart.view.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
+import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import io.mockk.*
 import org.junit.Test

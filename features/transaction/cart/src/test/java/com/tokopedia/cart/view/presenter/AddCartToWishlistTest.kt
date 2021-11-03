@@ -1,6 +1,6 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.cart.view.domain.model.cartlist.AddCartToWishlistData
+import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.network.exception.ResponseErrorException
 import io.mockk.every
 import io.mockk.verify

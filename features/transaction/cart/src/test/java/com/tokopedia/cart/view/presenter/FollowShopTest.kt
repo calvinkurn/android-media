@@ -1,7 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.cart.view.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.usecase.RequestParams
