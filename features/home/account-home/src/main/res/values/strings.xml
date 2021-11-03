@@ -111,6 +111,8 @@
     <string name="title_menu_favorites">Favorit Saya</string>
     <string name="title_menu_favorite_topic">Topik Favorit</string>
     <string name="label_menu_favorite_topic">Atur topik favorit Anda</string>
+    <string name="title_menu_tokopedia_affiliates">Tokopedia Affiliate</string>
+    <string name="label_menu_tokopedia_affiliates">Bagi inspirasi &amp; raih komisi hingga jutaan!</string>
     <string name="title_menu_last_seen">Terakhir Dilihat</string>
     <string name="label_menu_last_seen">Cek Produk terakhir yang dilihat</string>
     <string name="title_menu_favorite_shops">Toko Favorit</string>
@@ -269,5 +271,6 @@
 
     <string name="title_dark_mode">Dark Mode</string>
     <string name="subtitle_dark_mode">Aktifkan dark mode di Tokopedia</string>
+    <string name="menu_beta_feature">BETA</string>
 
 </resources>

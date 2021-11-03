@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
@@ -15,9 +13,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.databinding.FragmentSomContainerBinding
 import com.tokopedia.sellerorder.detail.presentation.fragment.tablet.SomDetailFragment
 import com.tokopedia.sellerorder.list.presentation.fragments.tablet.SomListFragment
-import kotlinx.android.synthetic.main.fragment_som_container.*
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickListener, SomDetailFragment.SomOrderDetailListener {
     companion object {
@@ -31,13 +30,15 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
                     putString(SomConsts.TAB_STATUS, bundle.getString(SomConsts.TAB_STATUS))
                     putString(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH, bundle.getString(AppLinkMapperSellerHome.QUERY_PARAM_SEARCH))
                     putString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, bundle.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID))
-                    putInt(SomConsts.FILTER_ORDER_TYPE, bundle.getInt(SomConsts.FILTER_ORDER_TYPE))
+                    putString(SomConsts.FILTER_ORDER_TYPE, bundle.getString(SomConsts.FILTER_ORDER_TYPE))
                 }
             }
         }
 
         private const val URL_WELCOME_ILLUSTRATION = "https://images.tokopedia.net/img/android/sellerorder/ic_som_welcome_page_illustration.png"
     }
+
+    private val binding by viewBinding(FragmentSomContainerBinding::bind)
 
     private var somListFragment: SomListFragment? = null
     private var somDetailFragment: SomDetailFragment? = null
@@ -71,10 +72,12 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
     }
 
     override fun closeOrderDetail() {
-        somDetailFragment?.closeOrderDetail()
-        fragmentDetail?.gone()
-        ivSomDetailWelcomeIllustration?.show()
-        tvSomDetailWelcome?.show()
+        binding?.run {
+            somDetailFragment?.closeOrderDetail()
+            fragmentDetail.gone()
+            ivSomDetailWelcomeIllustration.show()
+            tvSomDetailWelcome.show()
+        }
     }
 
     override fun onRefreshSelectedOrder(orderId: String) {
@@ -90,27 +93,16 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
     }
 
     private fun setupViews() {
-        ivSomDetailWelcomeIllustration?.loadImage(URL_WELCOME_ILLUSTRATION)
-    }
-
-    private fun setupSomListWidth(fragmentList: FrameLayout?) {
-        fragmentList?.let {
-            val layoutParamCopy = it.layoutParams
-            layoutParamCopy.width = it.width
-            it.layoutParams = layoutParamCopy
-        }
+        binding?.ivSomDetailWelcomeIllustration?.loadImage(URL_WELCOME_ILLUSTRATION)
     }
 
     private fun attachFragments() {
-        fragmentList.post {
-            setupSomListWidth(fragmentList)
-            initiateListFragment()
-            attachListFragment()
-            arguments?.let {
-                it.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).let { orderId ->
-                    if (!orderId.isNullOrEmpty()) {
-                        attachDetailFragment(orderId, true)
-                    }
+        initiateListFragment()
+        attachListFragment()
+        arguments?.let {
+            it.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).let { orderId ->
+                if (!orderId.isNullOrEmpty()) {
+                    attachDetailFragment(orderId, true)
                 }
             }
         }
@@ -150,20 +142,20 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
     }
 
     private fun attachDetailFragment(orderId: String, passOrderDetail: Boolean) {
-        if (somDetailFragment == null) {
-            if (!isAdded) return
-            initiateDetailFragment(orderId, passOrderDetail).let {
-                childFragmentManager.beginTransaction()
+        binding?.run {
+            if (somDetailFragment == null) {
+                if (!isAdded) return
+                initiateDetailFragment(orderId, passOrderDetail).let {
+                    childFragmentManager.beginTransaction()
                         .replace(R.id.fragmentDetail, it, it::class.java.simpleName)
                         .commitAllowingStateLoss()
+                }
+            } else {
+                somDetailFragment?.setOrderIdToShow(orderId)
             }
-        } else {
-            somDetailFragment?.setOrderIdToShow(orderId)
+            fragmentDetail.show()
+            ivSomDetailWelcomeIllustration.gone()
+            tvSomDetailWelcome.gone()
         }
-        fragmentDetail?.show()
-        ivSomDetailWelcomeIllustration?.gone()
-        tvSomDetailWelcome?.gone()
     }
-
-
 }

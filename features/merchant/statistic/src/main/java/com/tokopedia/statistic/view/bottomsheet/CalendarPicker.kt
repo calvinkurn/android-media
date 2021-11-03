@@ -5,17 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.databinding.BottomsheetStcCalendarPickerBinding
 import com.tokopedia.statistic.view.model.DateFilterItem
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottomsheet_stc_calendar_picker.view.*
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -24,10 +23,11 @@ import java.util.concurrent.TimeUnit
  * Created By @ilhamsuaib on 16/06/20
  */
 
-class CalendarPicker : BottomSheetUnify() {
+class CalendarPicker : BaseBottomSheet<BottomsheetStcCalendarPickerBinding>() {
 
     companion object {
         private const val KEY_FILTER_ITEM = "key_filter_item"
+        private const val DEF_DATE_FORMAT = "dd/MM/yyyy"
 
         fun newInstance(filterItem: DateFilterItem.Pick?): CalendarPicker {
             return CalendarPicker().apply {
@@ -49,7 +49,6 @@ class CalendarPicker : BottomSheetUnify() {
     }
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.SINGLE
     private var calendarView: CalendarPickerView? = null
-    private var childView: View? = null
     private val minDate by lazy {
         filterItem?.calendarPickerMinDate
             ?: Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAYS_365.toLong()))
@@ -58,36 +57,35 @@ class CalendarPicker : BottomSheetUnify() {
         filterItem?.calendarPickerMaxDate ?: Date()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(
-            DialogFragment.STYLE_NO_FRAME,
-            com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle
-        )
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setChild(inflater, container)
+        binding = BottomsheetStcCalendarPickerBinding.inflate(inflater).apply {
+            setChild(root)
+            calendarView = calendarPickerStc.calendarPickerView
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
-        val child = inflater.inflate(R.layout.bottomsheet_stc_calendar_picker, container, false)
-        childView = child
-        setChild(child)
-        calendarView = child.calendarPickerStc.calendarPickerView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupView()
         setupCalendarPickerView()
         setDefaultSelectedDate()
+    }
+
+    override fun setupView() = binding?.run {
+        edtStcStartDate.label = getString(R.string.stc_start_from)
+        edtStcEndDate.label = getString(R.string.stc_until)
+
+        if (mode == CalendarPickerView.SelectionMode.SINGLE) {
+            edtStcStartDate.label = getString(R.string.stc_date)
+            edtStcEndDate.invisible()
+        } else {
+            edtStcEndDate.visible()
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -102,18 +100,6 @@ class CalendarPicker : BottomSheetUnify() {
 
     fun showDatePicker(fm: FragmentManager, tag: String = CalendarPicker::class.java.simpleName) {
         show(fm, tag)
-    }
-
-    private fun setupView() = view?.run {
-        edtStcStartDate.label = context.getString(R.string.stc_start_from)
-        edtStcEndDate.label = context.getString(R.string.stc_until)
-
-        if (mode == CalendarPickerView.SelectionMode.SINGLE) {
-            edtStcStartDate.label = context.getString(R.string.stc_date)
-            edtStcEndDate.invisible()
-        } else {
-            edtStcEndDate.visible()
-        }
     }
 
     private fun setupCalendarPickerView() {
@@ -187,9 +173,10 @@ class CalendarPicker : BottomSheetUnify() {
 
     private fun selectCustomDateRangeSameMonth(cpv: CalendarPickerView) {
         if (cpv.selectedDates.isNotEmpty()) {
+            binding?.tickerStcCalendarPicker?.visible()
             val selected: Date = cpv.selectedDates.first()
             if (cpv.selectedDates.size == Const.DAY_1) {
-                updateMaxDate(cpv, selected)
+                updateMaxDateSameMonth(cpv, selected)
                 selectDate(cpv, selected)
 
                 val isMaxDate = getMaxDateStatus(selected)
@@ -220,7 +207,7 @@ class CalendarPicker : BottomSheetUnify() {
         return isMaxMonth || maxDateStr == selectedStr
     }
 
-    private fun updateMaxDate(cpv: CalendarPickerView, selected: Date) {
+    private fun updateMaxDateSameMonth(cpv: CalendarPickerView, selected: Date) {
         val cal = Calendar.getInstance(Locale.getDefault())
         cal.time = selected
         cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH))
@@ -237,7 +224,33 @@ class CalendarPicker : BottomSheetUnify() {
         if (isDateRangeSelected) {
             this.selectedDates = cpv.selectedDates
             dismiss()
+        } else {
+            if (cpv.selectedDates.isNotEmpty()) {
+                val newMaxDateMillis = TimeUnit.DAYS.toMillis(Const.DAYS_90.toLong())
+                val selectedDate = cpv.selectedDates.first()
+                val areDatesSame = getAreDatesSame(selectedDate, maxDate)
+
+                if (areDatesSame) {
+                    this.selectedDates = listOf(selectedDate, selectedDate)
+                    dismiss()
+                }
+
+                val tmpNewMaxDate = selectedDate.time.plus(newMaxDateMillis)
+                val newMaxDate = if (tmpNewMaxDate > maxDate.time) {
+                    maxDate
+                } else {
+                    Date(tmpNewMaxDate)
+                }
+                cpv.init(selectedDate, newMaxDate, emptyList()).inMode(mode)
+                selectDate(cpv, selectedDate)
+            }
         }
+    }
+
+    private fun getAreDatesSame(date: Date, otherDate: Date): Boolean {
+        val dateFmt = DateFormatUtils.getFormattedDate(date.time, DEF_DATE_FORMAT)
+        val otherDateFmt = DateFormatUtils.getFormattedDate(otherDate.time, DEF_DATE_FORMAT)
+        return dateFmt == otherDateFmt
     }
 
     private fun selectPerWeekDateRange(cpv: CalendarPickerView) {
@@ -321,16 +334,16 @@ class CalendarPicker : BottomSheetUnify() {
 
     private fun showStartDate(date: Date) {
         val formattedDate = DateTimeUtil.format(date.time, Const.FORMAT_DD_MM_YYYY)
-        childView?.edtStcStartDate?.valueStr = formattedDate
+        binding?.edtStcStartDate?.valueStr = formattedDate
     }
 
     private fun showEndDate(date: Date) {
         val formattedDate = DateTimeUtil.format(date.time, Const.FORMAT_DD_MM_YYYY)
-        childView?.edtStcEndDate?.valueStr = formattedDate
+        binding?.edtStcEndDate?.valueStr = formattedDate
     }
 
     private fun clearEndDate() {
-        childView?.edtStcEndDate?.run {
+        binding?.edtStcEndDate?.run {
             valueStr = ""
             hint = hint
         }

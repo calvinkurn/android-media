@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
-import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
@@ -25,69 +24,41 @@ class HotelSearchMapActivity : HotelBaseActivity(), HasComponent<HotelSearchMapC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
-        if (uri != null) {
-            //for newer applink
-            if (!uri.getQueryParameter(PARAM_ID).isNullOrEmpty()) {
-                hotelSearchModel.searchId = uri.getQueryParameter(PARAM_ID)
+        try{
+            if (uri != null) {
+                //for newer applink
+                if (!uri.getQueryParameter(PARAM_ID).isNullOrEmpty()) {
+                    hotelSearchModel.searchId = uri.getQueryParameter(PARAM_ID)
                         ?: ""
-                hotelSearchModel.searchType = uri.getQueryParameter(PARAM_TYPE)
+                    hotelSearchModel.searchType = uri.getQueryParameter(PARAM_TYPE)
                         ?: ""
-                hotelSearchModel.name = uri.getQueryParameter(PARAM_NAME)
+                    hotelSearchModel.name = uri.getQueryParameter(PARAM_NAME)
                         ?: ""
-            } else {
-                // for older applink
-                when {
-                    !uri.getQueryParameter(PARAM_HOTEL_ID).isNullOrEmpty() -> {
-                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_HOTEL_ID)
-                                ?: "0").toLong()
-                        hotelSearchModel.name = uri.getQueryParameter(PARAM_HOTEL_NAME)
-                                ?: ""
-                        hotelSearchModel.type = HotelTypeEnum.PROPERTY.value
-                    }
-                    !uri.getQueryParameter(PARAM_CITY_ID).isNullOrEmpty() -> {
-                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_CITY_ID)
-                                ?: "0").toLong()
-                        hotelSearchModel.name = uri.getQueryParameter(PARAM_CITY_NAME)
-                                ?: ""
-                        hotelSearchModel.type = HotelTypeEnum.CITY.value
-                    }
-                    !uri.getQueryParameter(PARAM_DISTRICT_ID).isNullOrEmpty() -> {
-                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_DISTRICT_ID)
-                                ?: "0").toLong()
-                        hotelSearchModel.name = uri.getQueryParameter(PARAM_DISTRICT_NAME)
-                                ?: ""
-                        hotelSearchModel.type = HotelTypeEnum.DISTRICT.value
-                    }
-                    !uri.getQueryParameter(PARAM_REGION_ID).isNullOrEmpty() -> {
-                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_REGION_ID)
-                                ?: "0").toLong()
-                        hotelSearchModel.name = uri.getQueryParameter(PARAM_REGION_NAME)
-                                ?: ""
-                        hotelSearchModel.type = HotelTypeEnum.REGION.value
-                    }
                 }
-            }
 
-            hotelSearchModel.checkIn = uri.getQueryParameter(PARAM_CHECK_IN)
+                hotelSearchModel.checkIn = uri.getQueryParameter(PARAM_CHECK_IN)
                     ?: ""
-            hotelSearchModel.checkOut = uri.getQueryParameter(PARAM_CHECK_OUT)
+                hotelSearchModel.checkOut = uri.getQueryParameter(PARAM_CHECK_OUT)
                     ?: ""
-            hotelSearchModel.room = uri.getQueryParameter(PARAM_ROOM)?.toInt()
+                hotelSearchModel.room = uri.getQueryParameter(PARAM_ROOM)?.toInt()
                     ?: 1
-            hotelSearchModel.adult = uri.getQueryParameter(PARAM_ADULT)?.toInt()
+                hotelSearchModel.adult = uri.getQueryParameter(PARAM_ADULT)?.toInt()
                     ?: 1
 
-            selectedParam.name = uri.getQueryParameter(PARAM_FILTER_ID)
+                selectedParam.name = uri.getQueryParameter(PARAM_FILTER_ID)
                     ?: ""
-            val values: String = uri.getQueryParameter(PARAM_FILTER_VALUE)
+                val values: String = uri.getQueryParameter(PARAM_FILTER_VALUE)
                     ?: ""
-            selectedParam.values = values.split(",").toMutableList()
+                selectedParam.values = values.split(",").toMutableList()
 
-            selectedSort = uri.getQueryParameter(PARAM_SORT) ?: ""
-        } else {
-            //when activity open from intent
-            hotelSearchModel = intent.getParcelableExtra(HotelSearchMapFragment.ARG_HOTEL_SEARCH_MODEL)
+                selectedSort = uri.getQueryParameter(PARAM_SORT) ?: ""
+            } else {
+                //when activity open from intent
+                hotelSearchModel = intent.getParcelableExtra(HotelSearchMapFragment.ARG_HOTEL_SEARCH_MODEL)
                     ?: HotelSearchModel()
+            }
+        } catch (t: Throwable){
+            //to prevent unsuccessful parsing, use default value
         }
 
         checkParameter()
@@ -117,12 +88,6 @@ class HotelSearchMapActivity : HotelBaseActivity(), HasComponent<HotelSearchMapC
 
         const val PARAM_HOTEL_ID = "hotel_id"
         const val PARAM_HOTEL_NAME = "hotel_name"
-        const val PARAM_DISTRICT_ID = "district_id"
-        const val PARAM_DISTRICT_NAME = "district_name"
-        const val PARAM_CITY_ID = "city_id"
-        const val PARAM_CITY_NAME = "city_name"
-        const val PARAM_REGION_ID = "region_id"
-        const val PARAM_REGION_NAME = "region_name"
         const val PARAM_FILTER_ID = "filter_selected_id"
         const val PARAM_FILTER_VALUE = "filter_selected_value"
         const val PARAM_SORT = "sort"

@@ -14,11 +14,12 @@ internal object TopAdsGtmTrackerConstant {
     const val NONE_OTHER = "none/other"
     const val DIMENSION83 = "dimension83"
     const val DIMENSION90 = "dimension90"
+    const val DIMENSION115 = "dimension115"
 
     const val PRODUCT_VIEW = "productView"
     const val SEARCH_RESULT = "search result"
     const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
-    const val SEARCH_PRODUCT_TOPADS_PRODUCTLIST = "/searchproduct - topads productlist"
+    const val SEARCH_PRODUCT_TOPADS_PRODUCTLIST = "/searchproduct - topads productlist - %s"
 
     object Product {
         const val NAME = "name"

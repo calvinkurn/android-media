@@ -80,10 +80,14 @@ object PlayServiceUtils {
 
     fun getInstallerPackageName(context: Context):String {
         return try {
-            val pm: PackageManager = context.packageManager
-            pm.getInstallerPackageName(context.packageName)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                context.packageManager.getInstallSourceInfo(context.packageName).installingPackageName
+                    ?: ""
+            } else {
+                context.packageManager.getInstallerPackageName(context.packageName) ?: ""
+            }
         } catch (e: Exception) {
-            "-"
+            ""
         }
     }
 

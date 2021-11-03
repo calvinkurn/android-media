@@ -11,9 +11,12 @@ import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChannelInfoModelBuilder
 import com.tokopedia.play.model.PlaySocketResponseBuilder
-import com.tokopedia.play.robot.play.andThen
+import com.tokopedia.play.repo.PlayViewerMockRepository
+import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.assertFalse
+import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.InteractiveTapTapAction
@@ -44,7 +47,9 @@ class PlayTapInteractiveTest {
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val mockChannelData = channelDataBuilder.buildChannelData(
-            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live)
+            channelDetail = channelInfoBuilder.buildChannelDetail(
+                    channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            ),
     )
 
     private val socketFlow = MutableStateFlow<WebSocketAction>(
@@ -77,7 +82,7 @@ class PlayTapInteractiveTest {
             return null
         }
 
-        override fun getActiveInteractiveId(): String? {
+        override fun getActiveInteractiveId(): String {
             return interactiveId
         }
 
@@ -96,6 +101,9 @@ class PlayTapInteractiveTest {
             interactiveStorage = mockInteractiveStorage
     )
 
+    private val repo = PlayViewerMockRepository.get(interactiveRepo = interactiveRepo)
+
+
     init {
         every { socket.listenAsFlow() } returns socketFlow
     }
@@ -112,19 +120,19 @@ class PlayTapInteractiveTest {
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = repo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isFalse()
+                    .assertFalse()
         }.andThen {
             viewModel.submitAction(InteractiveTapTapAction)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isTrue()
+                    .assertTrue()
         }
     }
 
@@ -140,19 +148,19 @@ class PlayTapInteractiveTest {
 
         givenPlayViewModelRobot(
                 playChannelWebSocket = socket,
-                interactiveRepo = interactiveRepo,
+                repo = repo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isFalse()
+                    .assertFalse()
         }.andThen {
             viewModel.submitAction(InteractiveTapTapAction)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isFalse()
+                    .assertFalse()
         }
     }
 }

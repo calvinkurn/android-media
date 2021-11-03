@@ -34,4 +34,5 @@
     <string name="digital_client_filter_chip_coachmark_title">Ini nomor yang sering kamu isi &#9757;</string>
     <string name="digital_client_filter_chip_coachmark_desc">Kalau mau diisi lagi, tinggal klik di sini aja.</string>
     <string name="telco_number_error_prefix_not_found">Hmm, nggak ketemu provider-nya. Cek lagi, ya.</string>
+    <string name="telco_choose_denom">Pilih Nominal</string>
 </resources>

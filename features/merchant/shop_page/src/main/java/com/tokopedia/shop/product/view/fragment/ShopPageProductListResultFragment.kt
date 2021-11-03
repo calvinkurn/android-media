@@ -3,7 +3,6 @@ package com.tokopedia.shop.product.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -67,7 +66,6 @@ import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseRules
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
@@ -77,6 +75,7 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
+import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -91,6 +90,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -99,7 +99,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         ShopProductImpressionListener, ShopProductEmptySearchListener, ShopProductChangeGridSectionListener,
-        ShopShowcaseEmptySearchListener,
+        ShopShowcaseEmptySearchListener, ShopProductSearchSuggestionListener,
         SortFilterBottomSheet.Callback {
 
     interface ShopPageProductListResultFragmentListener {
@@ -184,21 +184,27 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     var localCacheModel: LocalCacheModel? = null
     private var rvDefaultPaddingBottom = 0
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
+        val userSession = UserSession(context)
+        val _shopId = arguments?.getString(ShopParamConstant.EXTRA_SHOP_ID, "") ?: ""
+        val _isMyShop = ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
+
         return ShopProductAdapterTypeFactory(
-                null,
-                this,
-                this,
-                null,
-                this,
-                this,
-                null,
-                null,
-                this,
-                this,
-                this,
-                true,
-                0,
-                ShopTrackProductTypeDef.PRODUCT
+                membershipStampAdapterListener = null,
+                shopProductClickedListener = this,
+                shopProductImpressionListener = this,
+                shopCarouselSeeAllClickedListener = null,
+                emptyProductOnClickListener = this,
+                shopProductEtalaseListViewHolderListener = this,
+                shopProductAddViewHolderListener = null,
+                shopProductsEmptyViewHolderListener = null,
+                shopProductEmptySearchListener = this,
+                shopProductChangeGridSectionListener = this,
+                shopShowcaseEmptySearchListener = this,
+                shopProductSearchSuggestionListener = this,
+                isGridSquareLayout = true,
+                deviceWidth = 0,
+                shopTrackType = ShopTrackProductTypeDef.PRODUCT,
+                isShowTripleDot = !_isMyShop
         )
     }
 
@@ -235,7 +241,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 sortId = it.getString(ShopParamConstant.EXTRA_SORT_ID, Integer.MIN_VALUE.toString())
                 shopId = it.getString(ShopParamConstant.EXTRA_SHOP_ID, "")
                 shopRef = it.getString(ShopParamConstant.EXTRA_SHOP_REF, "")
-                isNeedToReloadData = it.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
+                isNeedToReloadData = it.getBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             }
         } else {
             selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST)
@@ -246,7 +252,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 //            sortId = savedInstanceState.getString(SAVED_SORT_VALUE, "")
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
             shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
-            needReloadData = savedInstanceState.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
+            needReloadData = savedInstanceState.getBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             shopProductFilterParameter = savedInstanceState.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
             isShopPageProductSearchResultTrackerAlreadySent = savedInstanceState.getBoolean(SAVED_IS_SHOP_PRODUCT_SEARCH_RESULT_TRACKER_ALREADY_SENT, false)
         }
@@ -485,10 +491,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val productList = it.data.listShopProductUiModel
                     val hasNextPage = it.data.hasNextPage
                     val totalProductData =  it.data.totalProductData
+                    val searchSuggestionData =  it.data.shopProductSuggestion
+
                     if(!isShopPageProductSearchResultTrackerAlreadySent) {
                         sendShopPageSearchResultTracker(it.data)
                     }
-                    renderProductList(productList, hasNextPage, totalProductData)
+                    renderProductList(productList, hasNextPage, totalProductData, searchSuggestionData)
                     if(!isAlreadyCheckRestrictionInfo) {
                         loadShopRestrictionInfo()
                     }
@@ -611,7 +619,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun renderProductList(
             productList: List<ShopProductUiModel>,
             hasNextPage: Boolean,
-            totalProductData: Int
+            totalProductData: Int,
+            searchSuggestionData: GetShopProductSuggestionUiModel
     ) {
         hideLoading()
         shopProductAdapter.clearAllNonDataElement()
@@ -621,8 +630,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
             if (productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
-                if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-                    changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
+                changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
+                if (searchSuggestionData.text.isNotEmpty()) {
+                    shopProductAdapter.addSuggestionSearchTextSection(
+                            searchSuggestionData.text,
+                            searchSuggestionData.query
+                    )
                 }
             } else {
                 if (keyword.isEmpty()) {
@@ -817,6 +830,24 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
+    override fun onSearchProductsBySuggestedKeyword(suggestedKeyword: String) {
+        keyword = suggestedKeyword
+        activity?.run {
+            startActivity(ShopProductListResultActivity.createIntent(
+                    context = this,
+                    shopId = shopId.orEmpty(),
+                    keyword = keyword,
+                    etalaseId = "",
+                    attribution = attribution,
+                    shopRef = shopRef
+            ).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            })
+            finish()
+        }
+    }
+
     override fun getSelectedEtalaseName(): String {
         return getSelectedEtalaseChip()
     }
@@ -986,8 +1017,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     return
                 }
                 data?.let {
-                    selectedEtalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID)
-                    selectedEtalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME)
+                    selectedEtalaseId = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_ID) ?: ""
+                    selectedEtalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME) ?: ""
                     selectedEtalaseType = data.getIntExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
                     needReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
 
@@ -1249,7 +1280,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId ?: "")
                 putString(ShopParamConstant.EXTRA_SORT_ID, sort ?: "")
                 putString(ShopParamConstant.EXTRA_ATTRIBUTION, attribution ?: "")
-                putBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData
+                putBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData
                         ?: false)
                 putString(ShopParamConstant.EXTRA_SOURCE_REDIRECTION, sourceRedirection.orEmpty())
             }

@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             android:text="@string/seller_migration_add_product_in_mainapp_desc"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@id/iv_add_product"

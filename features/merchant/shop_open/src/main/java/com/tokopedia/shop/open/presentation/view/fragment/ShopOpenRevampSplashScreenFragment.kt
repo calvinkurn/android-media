@@ -17,10 +17,10 @@ import com.tokopedia.shop.open.common.ImageAssets.IMG_SHOP_OPEN_SPLASH_SCREEN
 import com.tokopedia.shop.open.common.PageNameConstant
 import com.tokopedia.shop.open.common.ScreenNameTracker
 import com.tokopedia.shop.open.listener.FragmentNavigationInterface
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.fragment_shop_open_revamp_finish.*
 
 class ShopOpenRevampSplashScreenFragment : Fragment() {
 
@@ -28,6 +28,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
     private lateinit var imageViewShopCreated: ImageView
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
     private var fragmentNavigationInterface: FragmentNavigationInterface? = null
+    private var txtGreeting: Typography? = null
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(activity)
@@ -35,6 +36,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
 
     companion object {
         const val SECOND_FRAGMENT_TAG = "second"
+        const val DELAY_TIMER_IN_MILISECOND = 3000L
     }
 
     override fun onAttach(context: Context) {
@@ -52,6 +54,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view =  inflater.inflate(R.layout.fragment_shop_open_revamp_splash_screen, container, false)
         imageViewShopCreated = view.findViewById(R.id.img_icon_open_shop_finish)
+        txtGreeting = view.findViewById(R.id.txt_greeting)
         return view
     }
 
@@ -63,7 +66,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         val fullName = userSession.name
         val firstName = fullName.split(" ")[0]
         val greetingText = getString(R.string.open_shop_revamp_text_horay_name, firstName)
-        txt_greeting.text = greetingText
+        txtGreeting?.text = greetingText
         shopOpenRevampTracking?.sendScreenNameTracker(ScreenNameTracker.SCREEN_HOORAY)
         handler.postDelayed({
             context?.let{
@@ -71,7 +74,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
                     ?.navigateToNextPage(PageNameConstant.QUISIONER_PAGE, SECOND_FRAGMENT_TAG)
             }
             EspressoIdlingResource.decrement()
-        }, 3000)
+        }, DELAY_TIMER_IN_MILISECOND)
     }
 
     private fun setupIconImage(view: View) {

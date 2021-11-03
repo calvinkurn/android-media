@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.data.getcancellationreason
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -15,25 +16,9 @@ data class BuyerGetCancellationReasonData(
 			val getCancellationReason: GetCancellationReason = GetCancellationReason()) {
 
 		data class GetCancellationReason(
-				@SerializedName("cancellation_notes")
-				@Expose
-				val cancellationNotes: String = "",
-
 				@SerializedName("reasons")
 				@Expose
 				val reasons: List<ReasonsItem> = emptyList(),
-
-				@SerializedName("cancellation_min_time")
-				@Expose
-				val cancellationMinTime: String = "",
-
-				@SerializedName("is_requested_cancel")
-				@Expose
-				val isRequestedCancel: Boolean = false,
-
-				@SerializedName("is_requested_cancel_available")
-				@Expose
-				val isRequestedCancelAvailable: Boolean = false,
 
 				@SerializedName("is_eligible_instant_cancel")
 				@Expose
@@ -49,7 +34,15 @@ data class BuyerGetCancellationReasonData(
 
 				@SerializedName("order_details")
 				@Expose
-				val orderDetails: List<OrderDetailsCancellation> = emptyList()) {
+				val orderDetails: List<OrderDetailsCancellation> = emptyList(),
+
+				@SerializedName("have_product_bundle")
+				@Expose
+				val haveProductBundle: Boolean = false,
+
+				@SerializedName("bundle_detail")
+				@Expose
+				val bundleDetail: BundleDetail? = BundleDetail()) {
 
 			data class TickerInfo (
 					@SerializedName("text")
@@ -64,20 +57,12 @@ data class BuyerGetCancellationReasonData(
 					@Expose
 					val actionText: String = "",
 
-					@SerializedName("action_key")
-					@Expose
-					val actionKey: String = "",
-
 					@SerializedName("action_url")
 					@Expose
 					val actionUrl: String = ""
 			)
 
 			data class ReasonsItem(
-					@SerializedName("question")
-					@Expose
-					val question: String = "",
-
 					@SerializedName("sub_reasons")
 					@Expose
 					val subReasons: List<SubReasonsItem> = emptyList(),
@@ -94,6 +79,30 @@ data class BuyerGetCancellationReasonData(
 						@SerializedName("reason")
 						@Expose
 						val reason: String = ""
+				)
+			}
+
+			data class BundleDetail(
+					@SerializedName("bundle")
+					@Expose
+					val bundleList: List<Bundle> = listOf(),
+
+					@SerializedName("product_bundling_icon")
+					@Expose
+					val bundleIcon: String? = "",
+
+					@SerializedName("non_bundle")
+					@Expose
+					val nonBundleList: List<OrderDetailsCancellation> = listOf()
+			) {
+				data class Bundle(
+						@SerializedName("bundle_name")
+						@Expose
+						val bundleName: String = "",
+
+						@SerializedName("order_detail")
+						@Expose
+						val orderDetailList: List<OrderDetailsCancellation> = listOf()
 				)
 			}
 

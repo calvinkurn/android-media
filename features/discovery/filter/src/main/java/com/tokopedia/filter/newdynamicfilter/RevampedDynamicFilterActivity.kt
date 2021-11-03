@@ -29,7 +29,6 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView
 
-import java.util.ArrayList
 import java.util.HashMap
 
 import rx.Observable
@@ -37,6 +36,7 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import kotlin.collections.ArrayList
 
 class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
 
@@ -151,7 +151,7 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
 
     @Throws(RuntimeException::class)
     private fun getFilterListFromDbManager(manager: DynamicFilterDbManager): List<Filter> {
-        val data = DynamicFilterDbManager.getFilterData(this, intent.getStringExtra(EXTRA_CALLER_SCREEN_NAME))
+        val data = DynamicFilterDbManager.getFilterData(this, intent.getStringExtra(EXTRA_CALLER_SCREEN_NAME) ?: "")
         val listType = object : TypeToken<List<Filter>>() {}.type
         val gson = Gson()
         return gson.fromJson(data, listType)
@@ -178,8 +178,7 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
     }
 
     private fun handleResultFromDetailPage(data: Intent) {
-        val optionList: List<Option> = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT)
-
+        val optionList: List<Option>? = data.getParcelableArrayListExtra<Option>(AbstractDynamicFilterDetailActivity.EXTRA_RESULT)?.toList()
         filterController.setFilter(optionList)
     }
 
@@ -203,7 +202,7 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
     }
 
     private fun handleResultFromCategoryPage(data: Intent) {
-        val selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID)
+        val selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID) ?: ""
 
         val category = adapter?.filterList?.let { FilterHelper.getSelectedCategoryDetailsFromFilterList(it, selectedCategoryId) }
 

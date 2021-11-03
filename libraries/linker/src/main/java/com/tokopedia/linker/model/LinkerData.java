@@ -315,6 +315,27 @@ public class LinkerData implements Parcelable {
         return renderedUrl;
     }
 
+    public String renderShareUri(String url) {
+        if (url == null) {
+            return "";
+        }
+        String campaign = getCampaignName();
+
+        String renderedUrl;
+
+        if (url.contains("?")) {
+            Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s",
+                    url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
+            renderedUrl = uri.toString();
+        } else {
+            Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s",
+                    url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
+            renderedUrl = uri.toString();
+        }
+
+        return renderedUrl;
+    }
+
     public String getCampaignName() {
         if(TextUtils.isEmpty(getCampaign())) {
             String campaign = LABEL_PRODUCT_SHARE;

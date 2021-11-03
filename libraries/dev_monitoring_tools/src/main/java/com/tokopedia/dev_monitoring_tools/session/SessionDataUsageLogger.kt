@@ -143,7 +143,11 @@ class SessionDataUsageLogger constructor(
             diffTimeInMillis /= intervalSession.toFloat()
         }
 
-        return String.format(Locale.ENGLISH, TIME_FORMAT, diffTimeInMillis)
+        return try {
+            String.format(Locale.ENGLISH, TIME_FORMAT, diffTimeInMillis)
+        } catch (e: Exception) {
+            diffTimeInMillis.toString()
+        }
     }
 
     companion object {

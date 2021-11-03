@@ -160,7 +160,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         val isCod = productData.codProductData != null && productData.codProductData.isCodAvailable == 1
         shippingCourierBottomsheetListener?.onCourierChoosen(
                 shippingCourierUiModel, courierItemData, mRecipientAddress, cartPosition, isCod,
-                !TextUtils.isEmpty(productData.promoCode), isNeedPinpoint)
+                !TextUtils.isEmpty(productData.promoCode), isNeedPinpoint, mCourierModelList)
         bottomSheet?.dismiss()
     }
 

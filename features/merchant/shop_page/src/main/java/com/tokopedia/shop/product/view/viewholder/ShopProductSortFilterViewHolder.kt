@@ -10,7 +10,6 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.item_shop_product_sort_filter.view.*
 import com.tokopedia.kotlin.extensions.view.orZero
 
 /**
@@ -37,9 +36,10 @@ class ShopProductSortFilterViewHolder(
     }
 
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
+    private val sortFilterWidget: SortFilter? = itemView.findViewById(R.id.sort_filter)
 
     private val scrollListener = ViewTreeObserver.OnScrollChangedListener {
-        shopProductSortFilterUiModel?.scrollX = itemView.sort_filter?.sortFilterHorizontalScrollView?.scrollX
+        shopProductSortFilterUiModel?.scrollX = sortFilterWidget?.sortFilterHorizontalScrollView?.scrollX
                 ?: 0
     }
 
@@ -52,18 +52,18 @@ class ShopProductSortFilterViewHolder(
                 itemView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
-        itemView.sort_filter?.sortFilterItems?.removeAllViews()
+        sortFilterWidget?.sortFilterItems?.removeAllViews()
         if(data.isShowSortFilter){
-            itemView.sort_filter?.filterType = SortFilter.TYPE_ADVANCED
-            itemView.sort_filter?.filterRelationship = SortFilter.RELATIONSHIP_AND
-            itemView.sort_filter?.parentListener = {
+            sortFilterWidget?.filterType = SortFilter.TYPE_ADVANCED
+            sortFilterWidget?.filterRelationship = SortFilter.RELATIONSHIP_AND
+            sortFilterWidget?.parentListener = {
                 shopProductSortFilterViewHolderListener?.onFilterClicked()
             }
-            itemView.sort_filter?.textView?.text = itemView.context.getString(R.string.shop_sort_filter_chips_name)
-            itemView.sort_filter?.indicatorCounter = shopProductSortFilterUiModel?.filterIndicatorCounter.orZero()
+            sortFilterWidget?.textView?.text = itemView.context.getString(R.string.shop_sort_filter_chips_name)
+            sortFilterWidget?.indicatorCounter = shopProductSortFilterUiModel?.filterIndicatorCounter.orZero()
         }else{
-            itemView.sort_filter?.filterType = SortFilter.TYPE_QUICK
-            itemView.sort_filter?.filterRelationship = SortFilter.RELATIONSHIP_OR
+            sortFilterWidget?.filterType = SortFilter.TYPE_QUICK
+            sortFilterWidget?.filterRelationship = SortFilter.RELATIONSHIP_OR
         }
         val filterData = ArrayList<SortFilterItem>()
         var sortFilter: SortFilterItem? = null
@@ -102,7 +102,7 @@ class ShopProductSortFilterViewHolder(
             shopProductSortFilterViewHolderListener?.onEtalaseFilterClicked()
         }
         filterData.add(etalaseFilter)
-        itemView.sort_filter?.addItem(filterData)
+        sortFilterWidget?.addItem(filterData)
         if (data.isShowSortFilter) {
             sortFilter?.refChipUnify?.setChevronClickListener {
                 shopProductSortFilterViewHolderListener?.onSortFilterClicked()
@@ -116,10 +116,10 @@ class ShopProductSortFilterViewHolder(
     }
 
     private fun addScrollListener() {
-        itemView.sort_filter?.sortFilterHorizontalScrollView?.viewTreeObserver?.addOnScrollChangedListener(scrollListener)
+        sortFilterWidget?.sortFilterHorizontalScrollView?.viewTreeObserver?.addOnScrollChangedListener(scrollListener)
     }
 
     private fun removeOnScrollChangedListener() {
-        itemView.sort_filter?.sortFilterHorizontalScrollView?.viewTreeObserver?.removeOnScrollChangedListener(scrollListener)
+        sortFilterWidget?.sortFilterHorizontalScrollView?.viewTreeObserver?.removeOnScrollChangedListener(scrollListener)
     }
 }

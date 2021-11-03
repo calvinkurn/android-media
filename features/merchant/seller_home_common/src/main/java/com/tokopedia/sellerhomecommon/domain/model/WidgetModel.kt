@@ -33,6 +33,9 @@ data class WidgetModel(
     @SerializedName("tooltip")
     val tooltip: TooltipModel,
     @Expose
+    @SerializedName("tag")
+    val tag: String? = "",
+    @Expose
     @SerializedName("title")
     val title: String?,
     @Expose

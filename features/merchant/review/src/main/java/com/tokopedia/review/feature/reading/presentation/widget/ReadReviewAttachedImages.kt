@@ -32,8 +32,9 @@ class ReadReviewAttachedImages : BaseCustomView {
         reviewAttachedImages = findViewById(com.tokopedia.review.inbox.R.id.reviewAttachedImages)
     }
 
-    fun setImages(attachedImages: List<ProductReviewAttachments>, listener: ReadReviewAttachedImagesListener, productReview: ProductReview, shopId: String) {
-        val attachedImageAdapter = ReadReviewAttachedImagesAdapter(listener)
+    fun setImages(attachedImages: List<ProductReviewAttachments>, listener: ReadReviewAttachedImagesListener,
+                  productReview: ProductReview, shopId: String, viewHolderPosition: Int) {
+        val attachedImageAdapter = ReadReviewAttachedImagesAdapter(listener, viewHolderPosition)
         reviewAttachedImages?.apply {
             adapter = attachedImageAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

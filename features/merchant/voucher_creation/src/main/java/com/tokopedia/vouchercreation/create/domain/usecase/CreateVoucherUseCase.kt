@@ -40,7 +40,7 @@ class CreateVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
 
     override suspend fun executeOnBackground(): Int {
         val request = GraphqlRequest(MUTATION, CreateVoucherResponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
 
         val error = response.getError(CreateVoucherResponse::class.java)
         if (error.isNullOrEmpty()) {

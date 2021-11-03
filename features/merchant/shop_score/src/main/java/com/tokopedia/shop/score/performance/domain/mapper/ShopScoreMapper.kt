@@ -4,9 +4,10 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.gm.common.utils.GoldMerchantUtil
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.*
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_SPEED_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.COUNT_DAYS_NEW_SELLER
@@ -14,6 +15,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.ONE_HUNDRED_PERCENT
 import com.tokopedia.shop.score.common.ShopScoreConstant.OPEN_TOKOPEDIA_SELLER_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.ORDER_SUCCESS_RATE_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_NEW_SELLER
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_IDENTIFIER
 import com.tokopedia.shop.score.common.ShopScoreConstant.PRODUCT_REVIEW_WITH_FOUR_STARS_KEY
 import com.tokopedia.shop.score.common.ShopScoreConstant.READ_TIPS_MORE_INFO_URL
@@ -29,6 +31,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_LEVEL_ONE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_LEVEL_THREE
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_LEVEL_TWO
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_NINETY
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_NULL
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_ONE_HUNDRED
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SEVENTY
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_SEVENTY_NINE
@@ -42,18 +45,18 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.dayText
 import com.tokopedia.shop.score.common.ShopScoreConstant.minuteText
 import com.tokopedia.shop.score.common.ShopScoreConstant.peopleText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
-import com.tokopedia.shop.score.common.getLocale
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
 import com.tokopedia.user.session.UserSessionInterface
-import java.text.SimpleDateFormat
+import java.text.ParseException
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
 class ShopScoreMapper @Inject constructor(
     private val userSession: UserSessionInterface,
-    @ApplicationContext val context: Context?
+    @ApplicationContext val context: Context?,
+    private val shopScorePrefManager: ShopScorePrefManager
 ) {
 
     fun mapToShopPerformanceDetail(identifierPerformanceDetail: String): ShopPerformanceDetailUiModel {
@@ -120,6 +123,7 @@ class ShopScoreMapper @Inject constructor(
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
         val isEligiblePMPro = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePmPro
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
+        val powerMerchantData = shopScoreWrapperResponse.goldGetPMOStatusResponse
         val shopAge = if (shopScoreWrapperResponse.goldGetPMShopInfoResponse != null) {
             shopScoreWrapperResponse.goldGetPMShopInfoResponse?.shopAge
         } else {
@@ -135,13 +139,18 @@ class ShopScoreMapper @Inject constructor(
             officialStoreResponse?.status == OSStatus.ACTIVE
         }
 
+        val shopScore = shopScoreResult?.shopScore ?: SHOP_SCORE_NULL
+
         shopScoreVisitableList.apply {
             if (isNewSeller || shopAge < NEW_SELLER_DAYS) {
                 val mapTimerNewSeller =
-                    mapToTimerNewSellerUiModel(shopAge, shopInfoPeriodUiModel.isEndTenureNewSeller)
+                    mapToTimerNewSellerUiModel(
+                        shopAge,
+                        shopInfoPeriodUiModel.isEndTenureNewSeller, shopScore.toInt()
+                    )
                 if (mapTimerNewSeller.second) {
                     add(mapTimerNewSeller.first)
-                    if (shopAge >= SHOP_AGE_SIXTY) {
+                    if (shopAge < SHOP_AGE_NINETY_SIX && shopScore > 0) {
                         add(ItemLevelScoreProjectUiModel())
                     }
                 }
@@ -150,24 +159,39 @@ class ShopScoreMapper @Inject constructor(
             add(
                 mapToHeaderShopPerformance(
                     shopScoreWrapperResponse.shopScoreLevelResponse?.result,
-                    shopAge
+                    powerMerchantData,
+                    shopAge,
+                    shopInfoPeriodUiModel.dateShopCreated
                 )
             )
             add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreResult, isNewSeller))
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
-                addAll(mapToItemDetailPerformanceUiModel(shopScoreResult.shopScoreDetail, shopAge))
+                addAll(
+                    mapToItemDetailPerformanceUiModel(
+                        shopScoreResult.shopScoreDetail, shopAge,
+                        shopScore,
+                        shopInfoPeriodUiModel.dateShopCreated
+                    )
+                )
+            }
+
+            if (isShowProtectedParameter(shopAge.toInt(), shopInfoPeriodUiModel.dateShopCreated)) {
+                add(getProtectedParameterSection(shopScoreResult?.shopScoreDetail, shopAge.toInt()))
             }
 
             val recommendationTools =
                 shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools
             if (recommendationTools?.isNotEmpty() == true) {
-                add(mapToItemRecommendationPMUiModel
-                    (shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools))
+                add(
+                    mapToItemRecommendationPMUiModel
+                        (shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools)
+                )
             }
 
             when {
-                isOfficialStore || shopAge < SHOP_AGE_SIXTY -> {
-                    add(SectionFaqUiModel(mapToItemFaqUiModel(isOfficialStore)))
+                isOfficialStore || shopScore < 0 -> {
+                    add(SectionFaqUiModel(mapToItemFaqUiModel(isNewSeller, isOfficialStore)))
+                    return@apply
                 }
                 //PM PRO Section
                 powerMerchantResponse?.pmTier == PMTier.PRO -> {
@@ -183,30 +207,28 @@ class ShopScoreMapper @Inject constructor(
                     when {
                         //RM Section logic
                         powerMerchantResponse.status == PMStatusConst.INACTIVE -> {
-                            if (shopAge >= SHOP_AGE_SIXTY) {
-                                if (isNewSellerProjection) {
-                                    add(
-                                        mapToItemCurrentStatusRMUiModel(isNewSellerProjection)
-                                    )
-                                    return@apply
-                                } else {
-                                    when {
-                                        isEligiblePMPro == true -> {
-                                            add(mapToSectionRMEligibleToPMPro())
-                                            return@apply
-                                        }
-                                        isEligiblePM == true -> {
-                                            add(
-                                                mapToItemCurrentStatusRMUiModel(
-                                                    isNewSellerProjection
-                                                )
+                            if (isNewSeller) {
+                                add(
+                                    mapToItemCurrentStatusRMUiModel(isNewSeller)
+                                )
+                                return@apply
+                            } else {
+                                when {
+                                    isEligiblePMPro == true -> {
+                                        add(mapToSectionRMEligibleToPMPro())
+                                        return@apply
+                                    }
+                                    isEligiblePM == true -> {
+                                        add(
+                                            mapToItemCurrentStatusRMUiModel(
+                                                isNewSellerProjection
                                             )
-                                            return@apply
-                                        }
-                                        else -> {
-                                            add(mapToCardPotentialBenefitNonEligible())
-                                            return@apply
-                                        }
+                                        )
+                                        return@apply
+                                    }
+                                    else -> {
+                                        add(mapToCardPotentialBenefitNonEligible())
+                                        return@apply
                                     }
                                 }
                             }
@@ -214,16 +236,14 @@ class ShopScoreMapper @Inject constructor(
                         //PM Section logic
                         (powerMerchantResponse.status == PMStatusConst.ACTIVE)
                                 && !isOfficialStore -> {
-                            if (shopAge >= SHOP_AGE_SIXTY) {
-                                when (isEligiblePMPro) {
-                                    true -> {
-                                        add(mapToSectionPMEligibleToPMPro())
-                                        return@apply
-                                    }
-                                    else -> {
-                                        add(mapToItemPMUiModel(isNewSellerProjection))
-                                        return@apply
-                                    }
+                            when (isEligiblePMPro) {
+                                true -> {
+                                    add(mapToSectionPMEligibleToPMPro())
+                                    return@apply
+                                }
+                                else -> {
+                                    add(mapToItemPMUiModel())
+                                    return@apply
                                 }
                             }
                         }
@@ -241,34 +261,23 @@ class ShopScoreMapper @Inject constructor(
 
     private fun mapToHeaderShopPerformance(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
-        shopAge: Long
+        powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
+        shopAge: Long,
+        dateShopCreated: String
     ): HeaderShopPerformanceUiModel {
         val headerShopPerformanceUiModel = HeaderShopPerformanceUiModel()
         val shopScore = shopScoreLevelResponse?.shopScore ?: -1
         val shopLevel = shopScoreLevelResponse?.shopLevel ?: -1
         with(headerShopPerformanceUiModel) {
             when {
-                shopAge < SHOP_AGE_SIXTY -> {
+                shopScore < 0 || shopAge in ONE_NUMBER..TWO_NUMBER -> {
                     titleHeaderShopService = context?.getString(R.string.title_new_seller_level_0)
                         ?: ""
                     this.showCardNewSeller = true
-                    val nextSellerDays = SHOP_AGE_SIXTY - shopAge
-                    val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays.toInt())
-                    val dateNewSellerProjection =
-                        format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER)
-                    descHeaderShopService = context?.getString(
-                        R.string.desc_new_seller_level_0,
-                        dateNewSellerProjection
-                    )
+                    descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0)
                         ?: ""
                 }
-                shopScore < 0 || shopLevel < 0 -> {
-                    titleHeaderShopService = context?.getString(R.string.title_performance_below)
-                        ?: ""
-                    descHeaderShopService = context?.getString(R.string.desc_performance_below)
-                        ?: ""
-                }
-                shopAge in SHOP_AGE_SIXTY..COUNT_DAYS_NEW_SELLER -> {
+                shopAge in THREE_NUMBER..SHOP_SCORE_EIGHTY_NINE -> {
                     when {
                         shopScore < SHOP_SCORE_SIXTY -> {
                             titleHeaderShopService =
@@ -454,6 +463,7 @@ class ShopScoreMapper @Inject constructor(
                     }
                 }
             }
+            this.powerMerchantData = powerMerchantResponse
             this.shopAge = shopAge
             this.shopLevel =
                 if (shopLevel < 0) {
@@ -471,8 +481,10 @@ class ShopScoreMapper @Inject constructor(
 
             this.scorePenalty =
                 shopScoreLevelResponse?.shopScoreDetail?.find {
-                    it.identifier == PENALTY_IDENTIFIER }?.rawValue?.roundToLong()
-                    .orZero()
+                    it.identifier == PENALTY_IDENTIFIER
+                }?.rawValue?.roundToLong().orZero()
+
+            this.isShowPopupEndTenure = getIsShowPopupEndTenure(dateShopCreated)
         }
         return headerShopPerformanceUiModel
     }
@@ -485,7 +497,9 @@ class ShopScoreMapper @Inject constructor(
 
     private fun mapToItemDetailPerformanceUiModel(
         shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
-        shopAge: Long
+        shopAge: Long,
+        shopScore: Long,
+        dateShopCreated: String
     ): List<ItemDetailPerformanceUiModel> {
         return mutableListOf<ItemDetailPerformanceUiModel>().apply {
 
@@ -499,11 +513,22 @@ class ShopScoreMapper @Inject constructor(
                 OPEN_TOKOPEDIA_SELLER_KEY
             )
 
+            val isShowProtectedParameter =
+                isShowProtectedParameter(shopAge.toInt(), dateShopCreated)
+
             val shopScoreLevelFilter =
                 shopScoreLevelList?.filter { it.identifier in multipleFilterShopScore }
             val shopScoreLevelSize = shopScoreLevelFilter?.size.orZero()
             val sortShopScoreLevelParam = sortItemDetailPerformanceFormatted(shopScoreLevelFilter)
-            sortShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
+            val filterShopScoreLevelParam = if (isShowProtectedParameter) {
+                sortShopScoreLevelParam.filterNot {
+                    it.identifier == TOTAL_BUYER_KEY ||
+                            it.identifier == OPEN_TOKOPEDIA_SELLER_KEY
+                }
+            } else {
+                sortShopScoreLevelParam
+            }
+            filterShopScoreLevelParam.forEachIndexed { index, shopScoreDetail ->
 
                 val roundNextMinValue = shopScoreDetail.nextMinValue
 
@@ -593,10 +618,12 @@ class ShopScoreMapper @Inject constructor(
                         valueDetailPerformance = rawValueFormatted,
                         colorValueDetailPerformance = shopScoreDetail.colorText,
                         targetDetailPerformance = targetDetailPerformanceText,
-                        isDividerHide = index + 1 == shopScoreLevelSize,
+                        isDividerHide = if (isShowProtectedParameter) false
+                        else index + 1 == shopScoreLevelSize,
                         identifierDetailPerformance = shopScoreDetail.identifier,
                         parameterValueDetailPerformance = parameterItemDetailPerformance,
-                        shopAge = shopAge
+                        shopAge = shopAge,
+                        shopScore = shopScore
                     )
                 )
             }
@@ -628,13 +655,9 @@ class ShopScoreMapper @Inject constructor(
         return copyItemDetail
     }
 
-    private fun mapToItemPMUiModel(isNewSellerProjection: Boolean): ItemStatusPMUiModel {
+    private fun mapToItemPMUiModel(): ItemStatusPMUiModel {
         return ItemStatusPMUiModel(
-            descPM = if (isNewSellerProjection)
-                context?.getString(R.string.desc_pm_section_new_seller).orEmpty()
-            else
-                context?.getString(R.string.desc_content_pm_not_eligible_pm_pro).orEmpty(),
-            isNewSellerProjection = isNewSellerProjection
+            descPM = context?.getString(R.string.desc_content_pm_not_eligible_pm_pro).orEmpty()
         )
     }
 
@@ -657,8 +680,9 @@ class ShopScoreMapper @Inject constructor(
 
     private fun mapToItemRecommendationPMUiModel(
         recommendationTools: List<GetRecommendationToolsResponse
-            .ValuePropositionGetRecommendationTools.RecommendationTool>?)
-    : SectionShopRecommendationUiModel {
+        .ValuePropositionGetRecommendationTools.RecommendationTool>?
+    )
+            : SectionShopRecommendationUiModel {
         return SectionShopRecommendationUiModel(
             recommendationTools?.map {
                 SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
@@ -763,7 +787,10 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToItemFaqUiModel(isOfficialStore: Boolean): List<ItemFaqUiModel> {
+    private fun mapToItemFaqUiModel(
+        isNewSeller: Boolean,
+        isOfficialStore: Boolean
+    ): List<ItemFaqUiModel> {
         return mutableListOf<ItemFaqUiModel>().apply {
             add(
                 ItemFaqUiModel(
@@ -790,16 +817,6 @@ class ShopScoreMapper @Inject constructor(
                     parameterFaqList = mapToItemParameterFaq()
                 )
             )
-            if (!isOfficialStore) {
-                add(
-                    ItemFaqUiModel(
-                        title = context?.getString(R.string.title_changes_shop_score_during_transition)
-                            .orEmpty(),
-                        desc_first = context?.getString(R.string.desc_changes_shop_score_during_transition)
-                            .orEmpty()
-                    )
-                )
-            }
             add(
                 ItemFaqUiModel(
                     title = context?.getString(R.string.title_calculate_shop_performance_if_parameter_value_missing)
@@ -808,14 +825,16 @@ class ShopScoreMapper @Inject constructor(
                         .orEmpty(),
                 )
             )
-            add(
-                ItemFaqUiModel(
-                    title = context?.getString(R.string.title_calculate_shop_performance_for_new_seller)
-                        .orEmpty(),
-                    desc_first = context?.getString(R.string.desc_calculate_shop_performance_for_new_seller)
-                        .orEmpty(),
+            if (isNewSeller) {
+                add(
+                    ItemFaqUiModel(
+                        title = context?.getString(R.string.title_calculate_shop_performance_for_new_seller)
+                            .orEmpty(),
+                        desc_first = context?.getString(R.string.desc_calculate_shop_performance_for_new_seller)
+                            .orEmpty(),
+                    )
                 )
-            )
+            }
             if (isOfficialStore) {
                 add(
                     ItemFaqUiModel(
@@ -826,6 +845,14 @@ class ShopScoreMapper @Inject constructor(
                     )
                 )
             }
+            add(
+                ItemFaqUiModel(
+                    title = context?.getString(R.string.title_time_adjustment_what_relief_for_new_seller)
+                        .orEmpty(),
+                    desc_first = context?.getString(R.string.desc_time_adjustment_what_relief_for_new_seller)
+                        .orEmpty(),
+                )
+            )
         }
     }
 
@@ -849,7 +876,7 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToTimerNewSellerUiModel(shopAge: Long = 0, isEndTenure: Boolean)
+    private fun mapToTimerNewSellerUiModel(shopAge: Long = 0, isEndTenure: Boolean, shopScore: Int)
             : Pair<ItemTimerNewSellerUiModel, Boolean> {
         val nextSellerDays = COUNT_DAYS_NEW_SELLER - shopAge
 
@@ -859,9 +886,46 @@ class ShopScoreMapper @Inject constructor(
                 effectiveDate = effectiveDate,
                 effectiveDateText = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER),
                 isTenureDate = isEndTenure,
-                shopAge = shopAge
+                shopAge = shopAge,
+                shopScore = shopScore
             ), nextSellerDays > 0
         )
+    }
+
+    private fun getProtectedParameterSection(
+        shopScoreLevelList:
+        List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
+        shopAge: Int
+    ): ProtectedParameterSectionUiModel {
+        val totalBuyer =
+            shopScoreLevelList?.find { it.identifier == TOTAL_BUYER_KEY }?.title.orEmpty()
+        val openTokopediaSeller =
+            shopScoreLevelList?.find { it.identifier == OPEN_TOKOPEDIA_SELLER_KEY }?.title.orEmpty()
+        return ProtectedParameterSectionUiModel(
+            itemProtectedParameterList = listOf(
+                ItemProtectedParameterUiModel(totalBuyer),
+                ItemProtectedParameterUiModel(openTokopediaSeller)
+            ),
+            protectedParameterDate = getProtectedParameterDaysDate(shopAge)
+        )
+    }
+
+    private fun isShowProtectedParameter(shopAge: Int, dateShopCreated: String): Boolean {
+        return shopAge in GoldMerchantUtil.getNNStartShowProtectedParameterNewSeller(dateShopCreated)..SHOP_AGE_FIFTY_NINE
+    }
+
+    private fun getProtectedParameterDaysDate(shopAge: Int): String {
+        return try {
+            val date = Calendar.getInstance(getLocale())
+            val diffDays = (SHOP_AGE_FIFTY_NINE - shopAge)
+            val firstMondayDays = GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays, true)
+            val totalTargetDays = diffDays + firstMondayDays
+            date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + totalTargetDays)
+            format(date.timeInMillis, PATTERN_DATE_TEXT)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            ""
+        }
     }
 
     private fun getNNextDaysTimeCalendar(nextDays: Int): Calendar {
@@ -871,11 +935,6 @@ class ShopScoreMapper @Inject constructor(
         date.set(Calendar.MINUTE, 0)
         date.set(Calendar.SECOND, 0)
         return date
-    }
-
-    private fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): String {
-        val sdf = SimpleDateFormat(pattern, locale)
-        return sdf.format(timeMillis)
     }
 
     private fun getNumberFormatted(valueResponse: Double): String {
@@ -890,7 +949,47 @@ class ShopScoreMapper @Inject constructor(
         }
     }
 
+    private fun getIsShowPopupEndTenure(dateShopCreated: String): Boolean {
+        return if (shopScorePrefManager.getIsShowPopupEndTenure()) {
+            return getIsShowPopupCelebratoryEdgeCases(dateShopCreated)
+        } else false
+    }
+
+    private fun getIsShowPopupCelebratoryEdgeCases(
+        dateShopCreated: String
+    ): Boolean {
+        val shopAge = GoldMerchantUtil.totalDays(dateShopCreated)
+        return when (GoldMerchantUtil.getDayNameFromCreatedDate(dateShopCreated)) {
+            Calendar.SUNDAY -> {
+                false
+            }
+            Calendar.MONDAY -> {
+                shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX
+            }
+            Calendar.TUESDAY -> {
+                shopAge in SHOP_AGE_NINETY_ONE..SHOP_AGE_NINETY_SEVEN
+            }
+            Calendar.WEDNESDAY -> {
+                shopAge in SHOP_AGE_NINETY_TWO..SHOP_AGE_NINETY_EIGHT
+            }
+            Calendar.THURSDAY -> {
+                shopAge in SHOP_AGE_NINETY_THREE..SHOP_AGE_NINETY_NINE
+            }
+            Calendar.FRIDAY -> {
+                shopAge in SHOP_AGE_NINETY_FOUR..SHOP_AGE_ONE_HUNDRED
+            }
+            Calendar.SATURDAY -> {
+                shopAge in SHOP_AGE_NINETY_FIVE..SHOP_AGE_ONE_HUNDRED_ONE
+            }
+            else -> false
+        }
+    }
+
     companion object {
+        const val SHOP_AGE_NINETY = 90
+        const val SHOP_AGE_NINETY_SIX = 96
+        const val SHOP_AGE_FIFTY_NINE = 59
+        const val SHOP_AGE_THREE = 3
         const val ORDER_SUCCESS_RATE_INDEX = 0
         const val CHAT_DISCUSSION_REPLY_SPEED_INDEX = 1
         const val SPEED_SENDING_ORDERS_INDEX = 2

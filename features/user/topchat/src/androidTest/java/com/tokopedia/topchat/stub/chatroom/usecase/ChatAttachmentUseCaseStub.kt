@@ -1,16 +1,21 @@
 package com.tokopedia.topchat.stub.chatroom.usecase
 
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel.CampaignStatus
+import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.ChatAttachmentUseCase
+import com.tokopedia.topchat.common.*
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
 import javax.inject.Inject
 
 class ChatAttachmentUseCaseStub @Inject constructor(
-        private val gqlUseCase: GraphqlUseCaseStub<ChatAttachmentResponse>,
-        mapper: ChatAttachmentMapper,
-        dispatchers: CoroutineDispatchers
+    private val gqlUseCase: GraphqlUseCaseStub<ChatAttachmentResponse>,
+    mapper: ChatAttachmentMapper,
+    dispatchers: CoroutineDispatchers
 ) : ChatAttachmentUseCase(gqlUseCase, mapper, dispatchers) {
 
     var response = ChatAttachmentResponse()
@@ -18,4 +23,128 @@ class ChatAttachmentUseCaseStub @Inject constructor(
             gqlUseCase.response = value
             field = value
         }
+
+    private val broadcastCampaignLabelPath = "chat_attachment_banner_label.json"
+
+    fun createBroadcastCampaignStarted(bannerAttachmentId: String): ChatAttachmentResponse {
+        return alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { attachment ->
+                    attachment.addProperty(id, bannerAttachmentId)
+                },
+                attributesAltercation = { attr ->
+                    attr.addProperty(start_date, getNextWeekTimestamp())
+                    attr.addProperty(campaign_label, "Broadcast dimulai")
+                    attr.addProperty(status_campaign, CampaignStatus.STARTED)
+                }
+            )
+        }
+    }
+
+    fun createBroadcastCampaignOnGoing(bannerAttachmentId: String): ChatAttachmentResponse {
+        return alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { attachment ->
+                    attachment.addProperty(id, bannerAttachmentId)
+                },
+                attributesAltercation = { attr ->
+                    attr.addProperty(end_date, getNext6Hours())
+                    attr.addProperty(campaign_label, "Broadcast berlangsung")
+                    attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
+                }
+            )
+        }
+    }
+
+    fun createBroadcastCampaignAboutToEnd(bannerAttachmentId: String): ChatAttachmentResponse {
+        return alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { attachment ->
+                    attachment.addProperty(id, bannerAttachmentId)
+                },
+                attributesAltercation = { attr ->
+                    attr.addProperty(end_date, getNext3Seconds())
+                    attr.addProperty(campaign_label, "Broadcast berlangsung")
+                    attr.addProperty(wording_end_state, "Broadcast berakhir")
+                    attr.addProperty(status_campaign, CampaignStatus.ON_GOING)
+                }
+            )
+        }
+    }
+
+    fun createBroadcastCampaignEnded(bannerAttachmentId: String): ChatAttachmentResponse {
+        return alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { attachment ->
+                    attachment.addProperty(id, bannerAttachmentId)
+                },
+                attributesAltercation = { attr ->
+                    attr.addProperty(wording_end_state, "Broadcast berakhir")
+                    attr.addProperty(status_campaign, CampaignStatus.ENDED)
+                }
+            )
+        }
+    }
+
+    fun createBroadcastNoCampaign(bannerAttachmentId: String): ChatAttachmentResponse {
+        return alterResponseOf(broadcastCampaignLabelPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { attachment ->
+                    attachment.addProperty(id, bannerAttachmentId)
+                },
+                attributesAltercation = { attr ->
+                    attr.addProperty(is_campaign, false)
+                }
+            )
+        }
+    }
+
+    fun getCampaignLabel(response: ChatAttachmentResponse): String {
+        val attr = response.chatAttachments.list[0].attributes
+        return fromJson<ImageAnnouncementPojo>(attr).campaignLabel!!
+    }
+
+    fun getEndWordingBannerFrom(response: ChatAttachmentResponse): String {
+        val attr = response.chatAttachments.list[0].attributes
+        return fromJson<ImageAnnouncementPojo>(attr).endStateWording!!
+    }
+
+    private fun alterAttachmentAttributesAt(
+        position: Int,
+        responseObj: JsonObject,
+        attachmentAltercation: (JsonObject) -> Unit,
+        attributesAltercation: (JsonObject) -> Unit
+    ) {
+        val attachment = responseObj.getAsJsonObject(chatAttachments)
+            .getAsJsonArray(list).get(position).asJsonObject
+        attachmentAltercation(attachment)
+        val attr = attachment.get(attributes).asString
+        val attrObj = CommonUtil.fromJson<JsonObject>(attr, JsonObject::class.java)
+        attributesAltercation(attrObj)
+        attachment.addProperty(attributes, attrObj.toString())
+    }
+
+    private val chatAttachments = "chatAttachments"
+    private val list = "list"
+    private val attributes = "attributes"
+    private val id = "id"
+
+    // broadcast attributes
+    private val start_date = "start_date"
+    private val end_date = "end_date"
+    private val status_campaign = "status_campaign"
+    private val campaign_label = "campaign_label"
+    private val wording_end_state = "wording_end_state"
+    private val is_campaign = "is_campaign"
+
 }

@@ -1,52 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_penalty_secondary"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tickerShapeType="loose"
-        app:tickerType="warning"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_bottomsheet_secondary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:layout_below="@id/ticker_penalty_secondary"/>
-
-    <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/tf_extra_notes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_below="@id/rv_bottomsheet_secondary"
-        android:visibility="gone"/>
-
-    <FrameLayout
-        android:id="@+id/fl_btn_primary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_primary"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:unifyButtonVariant="filled"
-            app:unifyButtonSize="medium"
-            app:unifyButtonType="main"
-            android:text="@string/tolak_pesanan"
-            android:layout_marginBottom="@dimen/dp_8" />
+            android:layout_height="wrap_content">
 
-    </FrameLayout>
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_penalty_secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tickerShapeType="loose"
+                app:tickerType="warning"
+                tools:visibility="visible" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_bottomsheet_secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@id/ticker_penalty_secondary" />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/tf_extra_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/rv_bottomsheet_secondary" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:text="@string/tolak_pesanan"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tf_extra_notes"
+                app:layout_constraintVertical_bias="1"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

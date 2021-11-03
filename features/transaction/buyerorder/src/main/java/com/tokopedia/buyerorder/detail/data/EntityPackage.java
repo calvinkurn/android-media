@@ -13,9 +13,6 @@ public class EntityPackage {
     @Expose
     private String displayName;
 
-    @SerializedName("city")
-    private String city;
-
     public String getAddress() {
         return address;
     }
@@ -30,14 +27,6 @@ public class EntityPackage {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     @Override

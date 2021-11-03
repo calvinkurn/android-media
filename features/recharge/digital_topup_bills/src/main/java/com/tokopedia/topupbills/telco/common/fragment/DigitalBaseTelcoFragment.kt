@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
@@ -349,9 +350,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     }
                 } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
-                        if (!message.isNullOrEmpty()) {
-                            showErrorCartDigital(message)
+                        val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE) as Throwable
+                        if (!TextUtils.isEmpty(throwable.message)) {
+                            showErrorCartDigital(ErrorHandler.getErrorMessage(context, throwable))
                         }
                     }
                 } else if (requestCode == REQUEST_CODE_LOGIN) {
@@ -537,6 +538,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 Toaster.TYPE_ERROR,
                 getString(com.tokopedia.resources.common.R.string.general_label_ok)
             ).show()
+        }
+    }
+
+    override fun showErrorMessage(error: Throwable) {
+        view?.let { v ->
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
+                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

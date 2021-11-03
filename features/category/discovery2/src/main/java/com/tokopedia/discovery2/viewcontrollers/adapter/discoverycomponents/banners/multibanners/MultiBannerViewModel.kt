@@ -26,7 +26,7 @@ private const val PROMO_CODE = "Promo Code"
 
 class MultiBannerViewModel(val application: Application, var components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val bannerData: MutableLiveData<ComponentsItem> = MutableLiveData()
-    private val pushBannerStatus: MutableLiveData<Int> = MutableLiveData()
+    private val pushBannerStatus: MutableLiveData<Pair<Int, String>> = MutableLiveData()
     private val pushBannerSubscription: MutableLiveData<Int> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
     private val applinkCheck: MutableLiveData<String> = MutableLiveData()
@@ -43,14 +43,14 @@ class MultiBannerViewModel(val application: Application, var components: Compone
 
     init {
         bannerData.value = components
-        pushBannerStatus.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
+        pushBannerStatus.value = Pair(Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS, "")
         pushBannerSubscription.value = Utils.BANNER_SUBSCRIPTION_DEFAULT_STATUS
 
     }
 
 
     fun getComponentData(): LiveData<ComponentsItem> = bannerData
-    fun getPushBannerStatusData(): LiveData<Int> = pushBannerStatus
+    fun getPushBannerStatusData(): LiveData<Pair<Int, String>> = pushBannerStatus
     fun getShowLoginData(): LiveData<Boolean> = showLogin
     fun getPushBannerSubscriptionData(): LiveData<Int> = pushBannerSubscription
     fun getBannerUrlHeight() = Utils.extractDimension(bannerData.value?.data?.firstOrNull()?.imageUrlDynamicMobile)
@@ -97,7 +97,7 @@ class MultiBannerViewModel(val application: Application, var components: Compone
             launchCatchError(block = {
                 val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(getCampaignId(position))
                 if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
-                    pushBannerStatus.value = position
+                    pushBannerStatus.value = Pair(position, pushSubscriptionResponse.notifierSetReminder.errorMessage ?: "")
                 }
             }, onError = {
                 it.printStackTrace()

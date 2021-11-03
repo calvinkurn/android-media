@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.flight.R
+import com.tokopedia.flight.databinding.FragmentFlightOrderDetailWebCheckinBinding
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.adapter.FlightOrderDetailWebCheckInAdapter
 import com.tokopedia.flight.orderdetail.presentation.adapter.viewholder.FlightOrderDetailWebCheckInViewHolder
@@ -20,7 +20,7 @@ import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPass
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailWebCheckInViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_flight_order_detail_web_checkin.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -33,6 +33,8 @@ class FlightOrderDetailWebCheckInFragment : BaseDaggerFragment(),
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var flightOrderDetailWebCheckInViewModel: FlightOrderDetailWebCheckInViewModel
 
+    private var binding by autoClearedNullable<FragmentFlightOrderDetailWebCheckinBinding>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,8 +45,10 @@ class FlightOrderDetailWebCheckInFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_order_detail_web_checkin, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentFlightOrderDetailWebCheckinBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,9 +75,9 @@ class FlightOrderDetailWebCheckInFragment : BaseDaggerFragment(),
     private fun renderView(journeyList: List<FlightOrderDetailJourneyModel>, passengerList: List<FlightOrderDetailPassengerModel>) {
         context?.let {
             val adapter = FlightOrderDetailWebCheckInAdapter(journeyList, passengerList, this)
-            rvFlightOrderDetailWebCheckIn.layoutManager = LinearLayoutManager(it, RecyclerView.VERTICAL, false)
-            rvFlightOrderDetailWebCheckIn.setHasFixedSize(true)
-            rvFlightOrderDetailWebCheckIn.adapter = adapter
+            binding?.rvFlightOrderDetailWebCheckIn?.layoutManager = LinearLayoutManager(it, RecyclerView.VERTICAL, false)
+            binding?.rvFlightOrderDetailWebCheckIn?.setHasFixedSize(true)
+            binding?.rvFlightOrderDetailWebCheckIn?.adapter = adapter
         }
     }
 

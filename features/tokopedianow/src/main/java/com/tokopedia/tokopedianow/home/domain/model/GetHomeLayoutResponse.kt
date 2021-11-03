@@ -79,7 +79,9 @@ data class HomeLayoutResponse(
     val hasCloseButton: Boolean = false,
     @SerializedName("isAutoRefreshAfterExpired")
     val isAutoRefreshAfterExpired: Boolean = false,
+    @SerializedName("token")
     var token: String = "",
+    @SerializedName("timestamp")
     var timestamp: String = ""
 )
 
@@ -125,8 +127,8 @@ data class Grid(
     @SerializedName("minOrder")
     val minOrder: Int = 0,
     @Expose
-    @SerializedName("stock")
-    val stock: Int = 0,
+    @SerializedName("maxOrder")
+    val maxOrder: Int = 0,
     @Expose
     @SerializedName("shop")
     val shop: Shop = Shop(),

@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.statistic.di.StatisticScope
 import com.tokopedia.statistic.domain.model.GetUserRoleModel
@@ -21,7 +22,7 @@ class GetUserRoleUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): List<String> {
         val gqlRequest = GraphqlRequest(QUERY, GetUserRoleModel::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = gqlRepository.response(listOf(gqlRequest))
         val errors: List<GraphqlError>? = gqlResponse.getError(GetUserRoleModel::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetUserRoleModel>()
@@ -43,9 +44,9 @@ class GetUserRoleUseCase @Inject constructor(
             }
         """.trimIndent()
 
-        fun createParam(userId: Int): RequestParams {
+        fun createParam(userId: String): RequestParams {
             return RequestParams.create().apply {
-                putInt(USER_ID, userId)
+                putLong(USER_ID, userId.toLongOrZero())
             }
         }
     }

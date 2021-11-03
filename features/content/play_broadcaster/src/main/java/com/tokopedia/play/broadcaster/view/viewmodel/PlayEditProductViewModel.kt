@@ -17,7 +17,7 @@ import javax.inject.Inject
  */
 class PlayEditProductViewModel @Inject constructor(
         private val channelConfigStore: ChannelConfigStore,
-        private val dispatcher: CoroutineDispatchers,
+        dispatcher: CoroutineDispatchers,
         private val setupDataStore: PlayBroadcastSetupDataStore
 ) : ViewModel() {
 
@@ -46,7 +46,7 @@ class PlayEditProductViewModel @Inject constructor(
         job.cancelChildren()
     }
 
-    fun selectProduct(productId: Long, isSelected: Boolean) {
+    fun selectProduct(productId: String, isSelected: Boolean) {
         val product = selectedProductMap[productId] ?: throw IllegalStateException("Product not found")
         setupDataStore.selectProduct(
                 product,

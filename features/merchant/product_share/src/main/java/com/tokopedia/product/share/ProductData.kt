@@ -3,6 +3,7 @@ package com.tokopedia.product.share
 import android.net.Uri
 
 data class ProductData(
+        var userId: String = "",
         var priceText: String = "",
         var cashbacktext: String? = null,
         var productName: String? = "",

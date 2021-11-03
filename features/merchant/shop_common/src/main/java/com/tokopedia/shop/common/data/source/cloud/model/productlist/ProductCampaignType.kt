@@ -9,6 +9,9 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class ProductCampaignType(
         @Expose
+        @SerializedName("id")
+        val id: String? = "",
+        @Expose
         @SerializedName("name")
         val name: String? = "",
         @Expose

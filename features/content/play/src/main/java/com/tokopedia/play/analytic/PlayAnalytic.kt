@@ -8,6 +8,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -57,39 +58,22 @@ class PlayAnalytic(
         )
     }
 
-    fun clickLeaveRoom(duration: Long) {
+    fun clickLeaveRoom(durationInMs: Long) {
+        val durationInSec = TimeUnit.MILLISECONDS.toSeconds(durationInMs)
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_EVENT_ACTION to "leave room",
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_LABEL to "$mChannelId - $duration - ${mChannelType.value}",
+                KEY_EVENT_LABEL to "$mChannelId - $durationInSec - ${mChannelType.value}",
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 KEY_USER_ID to userId,
                 KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
                 KEY_CHANNEL to mChannelName,
-                "duration" to duration.toString()
+                "duration" to durationInSec.toString()
             )
-        )
-    }
-
-    fun clickShop(shopId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK - shop",
-                "$shopId - $mChannelId - ${mChannelType.value}"
-        )
-    }
-
-    fun clickFollowShop(shopId: String, action: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK $action shop",
-                "$mChannelId - $shopId - ${mChannelType.value}"
         )
     }
 
@@ -139,10 +123,6 @@ class PlayAnalytic(
 
     fun trackVideoError(message: String) {
         errorState("$ERR_STATE_VIDEO: $message")
-    }
-
-    fun trackSocketError(message: String) {
-        errorState("$ERR_STATE_SOCKET: $message")
     }
 
     fun trackGlobalError(message: String) {
@@ -525,6 +505,73 @@ class PlayAnalytic(
     fun getTrackingQueue() = trackingQueue
 
     /**
+     * Cast
+     */
+    fun impressCast(channelId: String, channelType: PlayChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "impression on chromecast button",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+            )
+        )
+    }
+
+    fun clickCast() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "click chromecast button",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+            )
+        )
+    }
+
+    fun connectCast(isSuccess: Boolean, id: String = mChannelId, type: PlayChannelType = mChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
+                KEY_EVENT_ACTION to "chromecast connecting state",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$id - ${type.value} - ${if(isSuccess) "success" else "failed"}",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+            )
+        )
+    }
+
+    fun recordCastDuration(duration: Long) {
+        /**
+         * When swipe screen, recordCastDuration() will be called first, followed by sendScreen()
+         * So, it will send tracking from the previous screen
+         */
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
+                KEY_EVENT_ACTION to "chromecast disconnected",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$channelId - ${mChannelType.value} - $duration",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+            )
+        )
+    }
+
+    /**
      * Private methods
      */
     private fun convertProductsToListOfObject(
@@ -600,7 +647,7 @@ class PlayAnalytic(
                                                     shopInfo: PlayPartnerInfo) {
         trackingQueue.putEETracking(
                 EventModel(
-                    KEY_TRACK_ADD_TO_CART,
+                        KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK buy in bottom sheet",
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
@@ -699,7 +746,7 @@ class PlayAnalytic(
                                          shopInfo: PlayPartnerInfo) {
         trackingQueue.putEETracking(
                 EventModel(
-                    KEY_TRACK_ADD_TO_CART,
+                        KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK beli in varian page",
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
@@ -722,29 +769,6 @@ class PlayAnalytic(
                     KEY_PRODUCT_NAME to product.title,
                     KEY_PRODUCT_URL to product.applink.toString(),
                     KEY_CHANNEL to mChannelName
-                )
-        )
-    }
-
-    private fun convertProductToHashMap(product: PlayProductUiModel.Product, cartId: String, page: String): MutableList<HashMap<String, Any>> {
-        return mutableListOf(
-                hashMapOf(
-                        "name" to product.title,
-                        "id" to product.id,
-                        "price" to when(product.price) {
-                            is DiscountedPrice -> product.price.discountedPriceNumber
-                            is OriginalPrice -> product.price.priceNumber
-                        },
-                        "brand" to "",
-                        "category" to "",
-                        "variant" to "",
-                        "quantity" to product.minQty,
-                        "dimension79" to product.shopId,
-                        "dimension81" to "", // shop type
-                        "dimension80" to "", // shop name
-                        "dimension82" to "", // category child id
-                        "dimension45" to cartId,
-                        "dimension40" to "/groupchat - $page"
                 )
         )
     }
@@ -773,7 +797,6 @@ class PlayAnalytic(
         private const val KEY_ITEM_LIST = "item_list"
 
         private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
-        private const val KEY_TRACK_CLICK_BACK = "clickBack"
         private const val KEY_TRACK_ADD_TO_CART = "addToCart"
         private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
         private const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
@@ -786,6 +809,5 @@ class PlayAnalytic(
 
         private const val ERR_STATE_VIDEO = "Video Player"
         private const val ERR_STATE_GLOBAL = "Global Error"
-        private const val ERR_STATE_SOCKET = "Socket Connection"
     }
 }

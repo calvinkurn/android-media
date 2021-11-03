@@ -3,8 +3,8 @@ package com.tokopedia.play_common.websocket
 /**
  * Created by jegul on 16/03/21
  */
-enum class WebSocketClosedReason {
+sealed class WebSocketClosedReason {
 
-    Intended,
-    Error
+    object Intended : WebSocketClosedReason()
+    data class Error(val error: Throwable) : WebSocketClosedReason()
 }

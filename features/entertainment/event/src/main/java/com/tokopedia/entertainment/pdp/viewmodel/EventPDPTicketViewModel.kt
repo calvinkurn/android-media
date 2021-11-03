@@ -119,7 +119,7 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, EventVerifyResponseV2::class.java, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<EventVerifyResponseV2>()
             if (data.eventVerify.error.isNullOrEmpty()) {
                 mutableVerifyResponse.value = data

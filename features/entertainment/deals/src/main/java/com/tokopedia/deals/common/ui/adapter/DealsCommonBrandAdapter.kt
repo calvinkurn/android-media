@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.ui.adapter.viewholder.DealsBrandViewHolder
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.databinding.ItemDealsBrandHomeBinding
+import com.tokopedia.deals.databinding.ItemDealsBrandPopularItemBinding
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 
 /**
@@ -24,8 +26,12 @@ class DealsCommonBrandAdapter(private val brandActionListener: DealsBrandActionL
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DealsBrandViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(layoutType, parent, false)
-        return DealsBrandViewHolder(view, brandActionListener, layoutType)
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val view = when(layoutType){
+            DealsBrandViewHolder.LAYOUT -> ItemDealsBrandPopularItemBinding.inflate(layoutInflater, parent, false)
+            else -> ItemDealsBrandHomeBinding.inflate(layoutInflater, parent, false)
+        }
+        return DealsBrandViewHolder(view.root, brandActionListener, layoutType)
     }
 
     override fun getItemCount(): Int = brandList.size

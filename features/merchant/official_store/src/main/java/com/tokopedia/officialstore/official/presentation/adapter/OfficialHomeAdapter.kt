@@ -8,6 +8,7 @@ import com.tokopedia.officialstore.base.diffutil.OfficialAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialHomeVisitable
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
 
 class OfficialHomeAdapter(private val adapterTypeFactory: OfficialHomeTypeFactory):
         OfficialAdapter<Visitable<*>, OfficialHomeTypeFactory>(adapterTypeFactory, OfficialDiffCallback) {
@@ -30,6 +31,9 @@ class OfficialHomeAdapter(private val adapterTypeFactory: OfficialHomeTypeFactor
             }
             getItem(position) is OfficialHomeVisitable -> {
                 (getItem(position) as OfficialHomeVisitable).type(adapterTypeFactory)
+            }
+            getItem(position) is RecommendationVisitable -> {
+                (getItem(position) as RecommendationVisitable).type(adapterTypeFactory)
             }
             else -> {
                 -1

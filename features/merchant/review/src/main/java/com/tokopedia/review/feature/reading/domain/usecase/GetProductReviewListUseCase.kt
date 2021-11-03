@@ -23,6 +23,7 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
               productrevGetProductReviewList(productID: ${'$'}productID, page: ${'$'}page, limit: ${'$'}limit, sortBy: ${'$'}sortBy, filterBy: ${'$'}filterBy) {
                 list {
                   feedbackID
+                  variantName
                   message
                   productRating
                   reviewCreateTime
@@ -46,6 +47,11 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
                   likeDislike {
                     totalLike
                     likeStatus
+                  }
+                  stats {
+                    key
+                    formatted
+                    count
                   }
                 }
                 shop {

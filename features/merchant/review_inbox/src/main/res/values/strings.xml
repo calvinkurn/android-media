@@ -149,6 +149,8 @@
     <string name="review_pending_deleted_product_error_toaster">Maaf, barang ini sudah dihapus. Simpan saja ulasanmu di hati.</string>
     <string name="review_pending_invalid_to_review">Oops, kamu sudah kasih ulasan untuk barang ini. Coba refresh, ya.</string>
     <string name="review_pending_shop_button">Mulai Belanja</string>
+    <string name="review_pending_credibility_coach_mark_title">Lihat kontribusi ulasanmu di sini</string>
+    <string name="review_pending_credibility_coach_mark_subtitle">Temukan berapa banyak rating dan ulasan lengkap yang sudah kamu kumpulkan tahun ini.</string>
 
     <string name="review_history_tab_title">Riwayat</string>
     <string name="review_history_search_bar_hint">Cari produk di sini</string>
@@ -281,7 +283,6 @@
     <string name="review_expand">&lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
 
     <!-- incentive -->
-    <string name="incentive_review_pending">Dapatkan TokoPoints</string>
     <string name="review_create_incomplete_title">Ulasanmu belum lengkap, nih</string>
     <string name="review_create_incomplete_subtitle">Dengan ulasan lengkap, kamu bisa dapat hadiah TokoPoints, lho!</string>
     <string name="review_create_incomplete_cancel">Lengkapi Ulasan Dulu</string>

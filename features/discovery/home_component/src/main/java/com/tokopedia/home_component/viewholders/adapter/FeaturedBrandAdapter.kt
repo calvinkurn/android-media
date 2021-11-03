@@ -13,13 +13,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.FeaturedBrandListener
-import com.tokopedia.home_component.listener.Lego4AutoBannerListener
-import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4AutoItem
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImageRounded
@@ -33,6 +29,11 @@ class FeaturedBrandAdapter(
         private val positionInWidget: Int,
         private val isCacheData: Boolean
 ) : RecyclerView.Adapter<FeaturedBrandAdapter.Holder>() {
+
+    companion object {
+        private const val MAX_ITEM = 4
+        private const val ROUNDED_12F = 12F
+    }
 
     private lateinit var dataModel: FeaturedBrandDataModel
     private var itemList: MutableList<Lego4AutoItem> = mutableListOf()
@@ -53,7 +54,7 @@ class FeaturedBrandAdapter(
         this.dataModel = dataModel
         itemList.clear()
         dataModel.channelModel.channelGrids.forEachIndexed { index, data ->
-            if (index < 4) {
+            if (index < MAX_ITEM) {
                 itemList.add(Lego4AutoItem(grid = data))
             }
         }
@@ -68,9 +69,9 @@ class FeaturedBrandAdapter(
 
 
         fun bind(item: Lego4AutoItem, parentPosition: Int, listener: FeaturedBrandListener?, channelModel: ChannelModel, isCacheData: Boolean) {
-            itemImage.loadImageRounded(item.grid.productImageUrl, 12f)
+            itemImage.loadImageRounded(item.grid.productImageUrl, ROUNDED_12F)
             if (item.grid.imageUrl.isNotEmpty()) {
-                itemLogo.loadImageRounded(item.grid.imageUrl, 12f)
+                itemLogo.loadImageRounded(item.grid.imageUrl, ROUNDED_12F)
             }
             if (item.grid.benefit.type.isNotEmpty()) {
                 itemDesc.text = constructBoldFont(item.grid.benefit.type, item.grid.benefit.value)
@@ -84,13 +85,19 @@ class FeaturedBrandAdapter(
             if (item.grid.backColor.isNotEmpty()) {
                 itemLayout.setGradientBackground(arrayListOf(item.grid.backColor))
             }
-            itemLayout.addOnImpressionListener(item.impressHolder){
+            itemLayout.addOnImpressionListener(item.impressHolder) {
                 if (!isCacheData) {
                     listener?.onLegoItemImpressed(channelModel, item.grid, adapterPosition, parentPosition)
                 }
             }
             itemLayout.setOnClickListener {
-                listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition)
+                listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition, item.grid.applink)
+            }
+            itemLogo.setOnClickListener {
+                listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition, item.grid.applink)
+            }
+            itemImage.setOnClickListener {
+                listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition, item.grid.applink)
             }
         }
 

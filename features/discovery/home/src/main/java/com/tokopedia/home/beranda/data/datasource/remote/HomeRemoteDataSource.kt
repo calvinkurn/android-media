@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.data.datasource.remote
 
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home.beranda.data.model.HomeAtfData
 import com.tokopedia.home.beranda.domain.interactor.*
@@ -24,10 +23,6 @@ class HomeRemoteDataSource(
 
     suspend fun getHomeFlagUseCase(): HomeFlagData? = withContext(dispatchers.io) {
         getHomeFlagUseCase.executeOnBackground()
-    }
-
-    suspend fun getHomePageBannerUseCase(): HomeBannerData? = withContext(dispatchers.io) {
-        getHomePageBannerUseCase.executeOnBackground()
     }
 
     suspend fun getHomeIconUseCase(param: String, locationParams: String): HomeIconData = withContext(dispatchers.io) {

@@ -47,7 +47,7 @@ class ValidatorViewModel @Inject constructor(
 
     private val _cassavaSource = MutableLiveData<CassavaSource>()
 
-    val listFiles = _cassavaSource.switchMap {
+    val listFiles: LiveData<List<Pair<String, String>>> = _cassavaSource.switchMap {
         liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
             runCatching { emit(journeyListUseCase.execute(it)) }
                     .onFailure { _snackBarMessage.postValue(it.message ?: "") }

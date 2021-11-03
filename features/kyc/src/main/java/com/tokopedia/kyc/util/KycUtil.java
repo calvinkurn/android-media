@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -29,12 +31,16 @@ import com.tokopedia.kyc.model.ConfirmSubmitResponse;
 import com.tokopedia.kyc.model.EligibilityBase;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
 
 import rx.Subscriber;
 
 public class KycUtil {
+
+    private static final int IMAGE_QUALITY = 95;
+
     public static void createKYCIdCameraFragment(Context context,
                                                  ActivityListener activityListener,
                                                  ActionCreator actionCreator,
@@ -73,15 +79,39 @@ public class KycUtil {
 
                 if (myBitmap != null) {
                     if (toBeFlipped) {
-                        imageView.setImageBitmap(ImageHandler.flip(myBitmap, true, false));
+                        loadImageFromBitmap(imageView, ImageHandler.flip(myBitmap, true, false));
                     } else {
-                        imageView.setImageBitmap(myBitmap);
+                        loadImageFromBitmap(imageView, myBitmap);
                     }
                 }
             }
         } catch (Throwable e) {
 
         }
+    }
+
+    private static void loadImageFromBitmap(final ImageView imageView, Bitmap bitmap) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int min, max;
+        if (width > height) {
+            min = height;
+            max = width;
+        } else {
+            min = width;
+            max = height;
+        }
+        boolean loadFitCenter = min != 0 && (max / min) > 2;
+        if (loadFitCenter)
+            Glide.with(imageView.getContext()).load(bitmapToByte(bitmap)).fitCenter().into(imageView);
+        else
+            Glide.with(imageView.getContext()).load(bitmapToByte(bitmap)).into(imageView);
+    }
+
+    private static byte[] bitmapToByte(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, stream);
+        return stream.toByteArray();
     }
 
     public static void sendEmail(Context context){

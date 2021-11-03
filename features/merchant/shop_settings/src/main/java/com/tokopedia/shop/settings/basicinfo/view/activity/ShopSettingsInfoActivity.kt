@@ -11,8 +11,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.databinding.ActivityShopSettingsInfoBinding
 
 /**
  * Created by Zulfikar on 5/19/2016.
@@ -20,9 +20,16 @@ import com.tokopedia.shop.settings.R
  */
 class ShopSettingsInfoActivity : BaseSimpleActivity() {
 
+    var binding : ActivityShopSettingsInfoBinding? = null
+
     override fun getNewFragment(): Fragment? = null
 
     override fun getLayoutRes(): Int = R.layout.activity_shop_settings_info
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        binding = ActivityShopSettingsInfoBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,13 +51,11 @@ class ShopSettingsInfoActivity : BaseSimpleActivity() {
         val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()
         navController.setGraph(R.navigation.shop_settings_navigation)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
-        navController.addOnDestinationChangedListener { _, _, _ ->
-            updateActivityToolbar()
-        }
+        updateActivityToolbar()
     }
 
     private fun updateActivityToolbar() {
-        findViewById<HeaderUnify>(R.id.header)?.let {
+        binding?.header?.let {
             setSupportActionBar(it)
             it.isShowShadow = true
             it.title = getString(R.string.shop_settings_info)

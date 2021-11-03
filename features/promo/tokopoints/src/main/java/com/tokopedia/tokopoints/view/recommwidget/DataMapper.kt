@@ -3,7 +3,7 @@ package com.tokopedia.tokopoints.view.recommwidget
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.tokopoints.view.tokopointhome.RecommendationWrapper
+import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
 import java.util.*
 
 class DataMapper {

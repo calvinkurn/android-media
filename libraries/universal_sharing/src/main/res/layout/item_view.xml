@@ -17,8 +17,8 @@
     <ImageView
         android:layout_marginTop="13dp"
         android:id="@+id/border_view"
-        android:layout_width="144dp"
-        android:layout_height="144dp"
+        android:layout_width="@dimen/dp_145"
+        android:layout_height="@dimen/dp_145"
         android:src="@drawable/universal_share_border"
         android:contentDescription="@string/desc_img_border"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -26,11 +26,13 @@
         app:layout_constraintTop_toTopOf="parent"/>
     <ImageView
         android:id="@+id/checked_circle"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="@dimen/dp_19"
+        android:layout_height="@dimen/dp_19"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:src="@drawable/universal_share_ic_check_circle"
+        android:background="@drawable/universal_sharing_circle_white"
+        android:scaleType="center"
         android:contentDescription="@string/desc_img_selector"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="@id/image"/>

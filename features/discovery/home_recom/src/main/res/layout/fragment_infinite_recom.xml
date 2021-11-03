@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/navToolbar"
+        android:tag="@string/tag_home_nav_toolbar_recom_infinite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:minHeight="?actionBarSize"
+        android:visibility="visible"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:toolbarContentType="typeTitle"
+        app:toolbarBackButton="back"
+        app:toolbarAlwaysShowShadow="true"
+        app:toolbarPageName="/"
+        app:toolbarInvertSearchBarColor="true"
+        app:toolbarInitialTheme="light" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

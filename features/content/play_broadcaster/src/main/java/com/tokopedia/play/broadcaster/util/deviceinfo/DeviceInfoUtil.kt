@@ -20,12 +20,7 @@ object DeviceInfoUtil {
         else supportedAbi.contains(Build.CPU_ABI)
     }
 
-    private fun checkDeviceApi(): Boolean {
-        return Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2
-    }
-
     fun isDeviceSupported(): Boolean {
         return checkDeviceAbi()
-                && checkDeviceApi()
     }
 }

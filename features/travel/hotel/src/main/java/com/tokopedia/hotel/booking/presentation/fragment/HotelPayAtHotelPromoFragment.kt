@@ -8,6 +8,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.databinding.FragmentHotelPayAtHotelPromoBinding
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class HotelPayAtHotelPromoFragment : HotelBaseFragment() {
@@ -19,8 +20,13 @@ class HotelPayAtHotelPromoFragment : HotelBaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentHotelPayAtHotelPromoBinding.inflate(inflater, container, false)
         binding?.root?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
-
         return binding?.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        binding?.ivPayAtHotelPromo?.loadImage(getString(R.string.hotel_url_no_promo))
     }
 
     override fun getScreenName(): String = getString(R.string.hotel_pay_at_hotel_promo_header_title)

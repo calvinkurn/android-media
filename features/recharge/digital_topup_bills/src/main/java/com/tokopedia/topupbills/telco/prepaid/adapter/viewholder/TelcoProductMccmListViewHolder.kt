@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.prepaid.adapter.viewholder
 
 import android.view.Gravity
 import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +37,7 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
                 }
 
                 telco_mccm_rv.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-                adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(PRODUCT_MCCM, object : TelcoProductViewHolder.OnClickListener {
+                adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(PRODUCT_MCCM, object : TelcoProductViewHolder.ActionListener {
                     override fun onClickItemProduct(element: TelcoProduct, position: Int) {
                         listener?.onClickMccm(element, position)
                     }
@@ -47,7 +46,10 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
                         listener?.onClickLihatDetail(element, position)
                     }
 
-                }, null))
+                    override fun onTrackSpecialProductImpression(itemProduct: TelcoProduct, position: Int) {
+                        // do nothing
+                    }
+                }, null, element.products.size == SINGLE_MCCM))
                 telco_mccm_rv.adapter = adapter
 
                 telco_mccm_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -79,18 +81,15 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
     }
 
     private fun trackFirstTimeVisibleProduct() {
-        with(itemView) {
-            telco_mccm_rv.viewTreeObserver
-                    .addOnGlobalLayoutListener(
-                            object : OnGlobalLayoutListener {
-                                override fun onGlobalLayout() {
-                                    // At this point the layout is complete and the
-                                    // dimensions of recyclerView and any child views
-                                    // are known.
-                                    trackCurrentVisibleMccmProduct()
-                                    telco_mccm_rv.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                                }
-                            })
+        itemView.run {
+            addOnLayoutChangeListener(object: View.OnLayoutChangeListener {
+                override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int,
+                    bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int
+                ) {
+                    trackCurrentVisibleMccmProduct()
+                    removeOnLayoutChangeListener(this)
+                }
+            })
         }
     }
 
@@ -126,5 +125,7 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_telco_mccm_list_section_product
+
+        private const val SINGLE_MCCM = 1
     }
 }

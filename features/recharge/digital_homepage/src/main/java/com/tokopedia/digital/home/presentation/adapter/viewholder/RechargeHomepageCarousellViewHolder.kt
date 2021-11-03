@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeCarousellBinding
 import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemCarousellAdapter
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemProductCardsDecorator
@@ -12,8 +13,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.view_recharge_home_carousell.view.*
-import kotlinx.android.synthetic.main.view_recharge_home_product_cards.view.*
 
 /**
  * @author by firman on 09/03/21.
@@ -23,16 +22,17 @@ class RechargeHomepageCarousellViewHolder(itemView: View, val listener: Recharge
         AbstractViewHolder<RechargeHomepageCarousellModel>(itemView) {
 
     override fun bind(element: RechargeHomepageCarousellModel) {
+        val bind = ViewRechargeHomeCarousellBinding.bind(itemView)
         val section = element.section
-        with(itemView) {
+        with(bind) {
             if (section.items.isNotEmpty()) {
-                view_container_recharge_home_carousell.show()
-                view_recharge_home_carousell_shimmering.hide()
+                viewContainerRechargeHomeCarousell.show()
+                viewRechargeHomeCarousellShimmering.root.hide()
 
-                tv_recharge_home_carousell_title.text = section.title
+                tvRechargeHomeCarousellTitle.text = section.title
                 val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 val displayMetrics = itemView.context.resources.displayMetrics
-                rv_recharge_home_carousell.apply {
+                rvRechargeHomeCarousell.apply {
                     while (itemDecorationCount > 0) {
                         removeItemDecorationAt(0)
                     }
@@ -42,12 +42,12 @@ class RechargeHomepageCarousellViewHolder(itemView: View, val listener: Recharge
                             PRODUCT_CARDS_SPACE_DP.dpToPx(displayMetrics)
                     ))
                 }
-                addOnImpressionListener(section) {
+                root.addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                view_container_recharge_home_carousell.hide()
-                view_recharge_home_carousell_shimmering.show()
+                viewContainerRechargeHomeCarousell.hide()
+                viewRechargeHomeCarousellShimmering.root.show()
 
                 listener.loadRechargeSectionData(element.visitableId())
             }

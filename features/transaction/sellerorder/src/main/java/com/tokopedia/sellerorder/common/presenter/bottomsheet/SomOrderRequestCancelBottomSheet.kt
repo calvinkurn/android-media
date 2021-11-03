@@ -10,11 +10,11 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.util.SomConsts
-import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
+import com.tokopedia.sellerorder.databinding.BottomsheetBuyerRequestCancelOrderBinding
 
 class SomOrderRequestCancelBottomSheet(
         context: Context
-) : SomBottomSheet(LAYOUT, true, true, false, context.getString(R.string.som_request_cancel_bottomsheet_title), context, true) {
+) : SomBottomSheet<BottomsheetBuyerRequestCancelOrderBinding>(LAYOUT, true, true, false, context.getString(R.string.som_request_cancel_bottomsheet_title), context, true) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_buyer_request_cancel_order
@@ -22,17 +22,20 @@ class SomOrderRequestCancelBottomSheet(
 
     private var listener: SomOrderRequestCancelBottomSheetListener? = null
 
+    override fun bind(view: View): BottomsheetBuyerRequestCancelOrderBinding {
+        return BottomsheetBuyerRequestCancelOrderBinding.bind(view)
+    }
+
     override fun setupChildView() {
-        childViews?.tickerPerformanceInfo?.setTextDescription(context.getString(R.string.som_shop_performance_info))
+        binding?.tickerPerformanceInfo?.setTextDescription(context.getString(R.string.som_shop_performance_info))
     }
 
     private fun setupBuyerRequestCancelBottomSheetButtons(
-            view: View,
-            reasonBuyer: String,
-            actionButtons: List<PopUp.ActionButton>,
-            statusCode: Int
+        reasonBuyer: String,
+        actionButtons: List<PopUp.ActionButton>,
+        statusCode: Int
     ) {
-        with(view) {
+        binding?.run {
             when (statusCode) {
                 SomConsts.STATUS_CODE_ORDER_CREATED, SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
                     val primaryButtonText = actionButtons.find {
@@ -41,32 +44,32 @@ class SomOrderRequestCancelBottomSheet(
                     val secondaryButtonText = actionButtons.find {
                         it.type == SomConsts.KEY_SECONDARY_DIALOG_BUTTON
                     }?.displayName.orEmpty()
-                    btnNegative?.text = secondaryButtonText
-                    btnPositive?.text = primaryButtonText
-                    btnNegative?.setOnClickListener {
+                    btnNegative.text = secondaryButtonText
+                    btnPositive.text = primaryButtonText
+                    btnNegative.setOnClickListener {
                         showBuyerRequestCancelOnClickButtonDialog(
-                                title = getBuyerRequestCancellationPopupTitle(statusCode),
-                                description = getBuyerRequestCancellationPopUpDescription(statusCode),
-                                primaryButtonText = getBuyerRequestCancellationRejectButton(statusCode),
-                                secondaryButtonText = context.getString(R.string.som_buyer_cancellation_cancel_button),
-                                primaryButtonClickAction = {
-                                    dismiss()
-                                    when (statusCode) {
-                                        SomConsts.STATUS_CODE_ORDER_CREATED -> {
-                                            listener?.onAcceptOrder(primaryButtonText)
-                                        }
-                                        SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
-                                            listener?.onRejectCancelRequest()
-                                        }
+                            title = getBuyerRequestCancellationPopupTitle(statusCode),
+                            description = getBuyerRequestCancellationPopUpDescription(statusCode),
+                            primaryButtonText = getBuyerRequestCancellationRejectButton(statusCode),
+                            secondaryButtonText = context.getString(R.string.som_buyer_cancellation_cancel_button),
+                            primaryButtonClickAction = {
+                                dismiss()
+                                when (statusCode) {
+                                    SomConsts.STATUS_CODE_ORDER_CREATED -> {
+                                        listener?.onAcceptOrder(primaryButtonText)
+                                    }
+                                    SomConsts.STATUS_CODE_ORDER_ORDER_CONFIRMED -> {
+                                        listener?.onRejectCancelRequest()
                                     }
                                 }
+                            }
                         )
                     }
-                    btnPositive?.setOnClickListener {
+                    btnPositive.setOnClickListener {
                         showPositiveButtonBuyerRequestCancelOnClickButtonDialog(reasonBuyer)
                     }
                 }
-                else -> containerButtonBuyerRequestCancel?.gone()
+                else -> containerButtonBuyerRequestCancel.gone()
             }
         }
     }
@@ -96,27 +99,26 @@ class SomOrderRequestCancelBottomSheet(
     }
 
     private fun showBuyerRequestCancelOnClickButtonDialog(
-            title: String,
-            description: String,
-            primaryButtonText: String,
-            secondaryButtonText: String,
-            primaryButtonClickAction: () -> Unit) {
-        context?.run {
-            DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                if (DeviceScreenInfo.isTablet(context)) {
-                    dialogMaxWidth = getScreenWidth() / 2
-                }
-                setTitle(title)
-                setDescription(description)
-                setPrimaryCTAText(primaryButtonText)
-                setSecondaryCTAText(secondaryButtonText)
-                setPrimaryCTAClickListener {
-                    primaryButtonClickAction()
-                    dismiss()
-                }
-                setSecondaryCTAClickListener { dismiss() }
-                show()
+        title: String,
+        description: String,
+        primaryButtonText: String,
+        secondaryButtonText: String,
+        primaryButtonClickAction: () -> Unit
+    ) {
+        DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            if (DeviceScreenInfo.isTablet(context)) {
+                dialogMaxWidth = getScreenWidth() / 2
             }
+            setTitle(title)
+            setDescription(description)
+            setPrimaryCTAText(primaryButtonText)
+            setSecondaryCTAText(secondaryButtonText)
+            setPrimaryCTAClickListener {
+                primaryButtonClickAction()
+                dismiss()
+            }
+            setSecondaryCTAClickListener { dismiss() }
+            show()
         }
     }
 
@@ -134,10 +136,10 @@ class SomOrderRequestCancelBottomSheet(
     }
 
     fun init(popUp: PopUp, reason: String, orderStatusCode: Int) {
-        childViews?.apply {
-            tv_buyer_request_cancel?.text = popUp.body
-            tvBuyerRequestCancelNotes?.text = reason.replace("\\n", System.getProperty("line.separator") ?: "")
-            setupBuyerRequestCancelBottomSheetButtons(this, reason, popUp.actionButtons, orderStatusCode)
+        binding?.run {
+            tvBuyerRequestCancel.text = popUp.body
+            tvBuyerRequestCancelNotes.text = reason.replace("\\n", System.getProperty("line.separator") ?: "")
+            setupBuyerRequestCancelBottomSheetButtons(reason, popUp.actionButtons, orderStatusCode)
         }
     }
 

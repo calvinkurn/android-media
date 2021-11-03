@@ -18,6 +18,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
+import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -53,7 +54,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         etalaseId = intent.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
         sort = if (intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null) "" else intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID)
         attribution = intent.getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION)
-        isNeedToReloadData = intent.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+        isNeedToReloadData = intent.getBooleanExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
         sourceRedirection = intent.getStringExtra(ShopParamConstant.EXTRA_SOURCE_REDIRECTION).orEmpty()
         keyword = getSearchKeywordData(savedInstanceState)
         var data = intent.data
@@ -79,7 +80,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         return if (savedInstanceState == null) {
             when{
                 intent.hasExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD) -> intent.getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD).orEmpty()
-                intent.hasExtra(KEY_QUERY_PARAM_EXTRA) -> intent.getBundleExtra(KEY_QUERY_PARAM_EXTRA)?.getString(QUERY_SEARCH, "").orEmpty()
+                intent.hasExtra(KEY_QUERY_PARAM_EXTRA) -> getSearchKeywordDataFromQueryParam(intent.getBundleExtra(KEY_QUERY_PARAM_EXTRA))
                 intent.data?.getQueryParameter(QUERY_SEARCH) != null -> intent.data?.getQueryParameter(QUERY_SEARCH).orEmpty()
                 intent.data?.getQueryParameter(SearchApiConst.Q) != null -> intent.data?.getQueryParameter(SearchApiConst.Q).orEmpty()
                 else -> ""
@@ -87,6 +88,16 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         } else {
             savedInstanceState.getString(SAVED_KEYWORD, "")
         }
+    }
+
+    private fun getSearchKeywordDataFromQueryParam(bundleExtra: Bundle?): String {
+        return bundleExtra?.let {
+            when {
+                it.containsKey(QUERY_SEARCH) -> it.getString(QUERY_SEARCH, "")
+                it.containsKey(SearchApiConst.Q) -> it.getString(SearchApiConst.Q, "")
+                else -> ""
+            }
+        }.orEmpty()
     }
 
     private fun getShopIdFromUri(data: Uri?, pathSegments: List<String>) {

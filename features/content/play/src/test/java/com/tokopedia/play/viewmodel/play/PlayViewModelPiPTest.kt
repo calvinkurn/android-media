@@ -3,9 +3,10 @@ package com.tokopedia.play.viewmodel.play
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayVideoModelBuilder
-import com.tokopedia.play.robot.play.andWhen
+import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PiPMode
 import com.tokopedia.play.view.type.PiPState
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
@@ -32,8 +33,7 @@ class PlayViewModelPiPTest {
         ) andWhen {
             setPiPState(PiPState.InPiP(PiPMode.WatchInPiP))
         } thenVerify {
-            pipStateFieldResult
-                    .pipMode
+            viewModel.pipState.mode
                     .isEqualTo(PiPMode.WatchInPiP)
         }
     }
@@ -45,8 +45,7 @@ class PlayViewModelPiPTest {
         ) andWhen {
             setPiPState(PiPState.InPiP(mode))
         } thenVerify {
-            pipStateFieldResult
-                    .pipMode
+            viewModel.pipState.mode
                     .isEqualTo(mode)
         }
     }
@@ -57,9 +56,10 @@ class PlayViewModelPiPTest {
         ) andWhen {
             setPiPState(PiPState.Stop)
         } thenVerify {
-            pipStateFieldResult
+            viewModel.pipState
                     .isEqualTo(PiPState.Stop)
-                    .pipMode
+
+            viewModel.pipState.mode
                     .isEqualTo(null)
         }
     }
@@ -82,7 +82,7 @@ class PlayViewModelPiPTest {
         } andWhen {
             isPiPAllowed()
         } thenVerify { result ->
-            result.isFalse()
+            result.assertFalse()
         }
     }
 
@@ -104,7 +104,7 @@ class PlayViewModelPiPTest {
         } andWhen {
             isPiPAllowed()
         } thenVerify { result ->
-            result.isTrue()
+            result.assertTrue()
         }
     }
 
@@ -126,7 +126,7 @@ class PlayViewModelPiPTest {
         } andWhen {
             isPiPAllowed()
         } thenVerify { result ->
-            result.isFalse()
+            result.assertFalse()
         }
     }
 
@@ -148,7 +148,7 @@ class PlayViewModelPiPTest {
         } andWhen {
             isPiPAllowed()
         } thenVerify { result ->
-            result.isFalse()
+            result.assertFalse()
         }
     }
 }

@@ -19,6 +19,8 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase;
+import com.tokopedia.topads.sdk.repository.TopAdsRepository;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
@@ -93,5 +95,10 @@ public class BuyerAccountModule {
     @Provides
     RemoteConfig provideRemoteConfig(@ApplicationContext Context context) {
         return new FirebaseRemoteConfigImpl(context);
+    }
+
+    @Provides
+    TopAdsImageViewUseCase provideTopAdsImageViewUseCase(UserSessionInterface userSession) {
+        return new TopAdsImageViewUseCase(userSession.getUserId(), new TopAdsRepository());
     }
 }

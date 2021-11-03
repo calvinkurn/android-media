@@ -5,34 +5,34 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.view.customview.CardValueCountdownView
-import kotlinx.android.synthetic.main.shc_card_widget.view.*
+import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
  * Created By @ilhamsuaib on 19/05/20
  */
 
 class CardViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<CardWidgetUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.shc_card_widget
     }
 
-    private var cardValueCountdownView: CardValueCountdownView? = null
-
-    init {
-        cardValueCountdownView = itemView?.findViewById(R.id.card_value_countdown_view)
+    private val binding by lazy {
+        ShcCardWidgetBinding.bind(itemView)
     }
 
     override fun bind(element: CardWidgetUiModel) {
         observeState(element)
 
-        itemView.tvCardTitle.text = element.title
+        binding.tvCardTitle.text = element.title
     }
 
     private fun observeState(element: CardWidgetUiModel) {
@@ -58,7 +58,7 @@ class CardViewHolder(
 
     private fun showViewComponent(element: CardWidgetUiModel, isShown: Boolean) {
         var shouldLoadAnimation = false
-        with(itemView) {
+        with(binding) {
             val visibility = if (isShown) View.VISIBLE else View.INVISIBLE
             tvCardTitle.visibility = visibility
             tvCardValue.visibility = visibility
@@ -71,29 +71,33 @@ class CardViewHolder(
                 if (previousValue?.equals(value) == false) {
                     shouldLoadAnimation = true
                     tvCardValue.invisible()
-                    cardValueCountdownView?.run {
+                    shcCardValueCountdownView.run {
                         visible()
                         setValue(previousValue, shownValue)
                     }
                 } else {
                     shouldLoadAnimation = false
                     tvCardValue.visible()
-                    cardValueCountdownView?.invisible()
+                    shcCardValueCountdownView.invisible()
                     tvCardValue.text = shownValue.parseAsHtml()
                 }
             }
         }
 
+        setTagNotification(element.tag)
+
         if (!isShown) return
 
-        with(itemView) {
+        with(binding) {
             if (element.appLink.isNotBlank()) {
                 val selectableItemBg = TypedValue()
-                context.theme.resolveAttribute(android.R.attr.selectableItemBackground,
-                        selectableItemBg, true)
+                root.context.theme.resolveAttribute(
+                    android.R.attr.selectableItemBackground,
+                    selectableItemBg, true
+                )
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
             } else {
-                containerCard.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                containerCard.setBackgroundColor(root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
 
             tvCardTitle.text = element.title
@@ -104,32 +108,60 @@ class CardViewHolder(
                 tvCardValue.text = (element.data?.value ?: "0").parseAsHtml()
             }
             tvCardSubValue.text = element.data?.description?.parseAsHtml()
-            addOnImpressionListener(element.impressHolder) {
+            root.addOnImpressionListener(element.impressHolder) {
                 listener.sendCardImpressionEvent(element)
             }
 
-            setOnClickListener {
+            root.setOnClickListener {
                 if (element.appLink.isNotBlank()) {
-                    if (RouteManager.route(context, element.appLink)) {
+                    if (RouteManager.route(root.context, element.appLink)) {
                         listener.sendCardClickTracking(element)
                     }
                 }
+            }
+
+            showCardState(element.data)
+        }
+    }
+
+    private fun showCardState(data: CardDataUiModel?) {
+        with(binding.imgShcCardState) {
+            when (data?.state) {
+                CardDataUiModel.State.WARNING, CardDataUiModel.State.DANGER -> {
+                    visible()
+                    loadImage(R.drawable.bg_shc_card_stata_warning)
+                }
+                CardDataUiModel.State.NORMAL -> gone()
+            }
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(binding) {
+            notifTagCard.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagCard.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
             }
         }
     }
 
     private fun showOnError(isError: Boolean) {
         if (!isError) return
-        with(itemView) {
+        with(binding) {
             tvCardTitle.visible()
             tvCardValue.visible()
-            tvCardValue.text = context.getString(R.string.shc_load_failed)
+            tvCardValue.text = root.context.getString(R.string.shc_load_failed)
             tvCardSubValue.text = ""
         }
     }
 
     private fun showShimmer(isLoading: Boolean) {
-        with(itemView) {
+        with(binding) {
             val visibility = if (isLoading) View.VISIBLE else View.GONE
             shimmerCardTitle.visibility = visibility
             shimmerCardValue.visibility = visibility

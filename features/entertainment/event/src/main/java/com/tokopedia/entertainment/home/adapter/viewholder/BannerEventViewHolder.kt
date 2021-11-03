@@ -1,8 +1,6 @@
 package com.tokopedia.entertainment.home.adapter.viewholder
 
-import android.app.Activity
 import android.content.Context
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -34,17 +32,8 @@ class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : Ab
         itemView.banner_home_ent?.setOnPromoScrolledListener(this)
         itemView.banner_home_ent?.setOnPromoLoadedListener(this)
         itemView.banner_home_ent?.setOnPromoDragListener(this)
-        itemView.banner_home_ent?.customWidth = getDisplayMetric(context).widthPixels -
-                context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-        itemView.banner_home_ent?.customHeight = context.resources.getDimensionPixelSize(R.dimen.dimen_dp_110)
         itemView.banner_home_ent?.setBannerSeeAllTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         itemView.banner_home_ent?.setBannerIndicator(Indicator.GREEN)
-    }
-
-    private fun getDisplayMetric(context: Context): DisplayMetrics {
-        val displayMetrics = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics
     }
 
     override fun onPromoClick(p: Int) {

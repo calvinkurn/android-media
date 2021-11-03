@@ -59,6 +59,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.kategori)
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
     implementation projectOrAar(rootProject.ext.features.findNative)
+    implementation projectOrAar(rootProject.ext.features.affiliateToko)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
     //Content
@@ -73,7 +74,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.voucherGame)
     implementation projectOrAar(rootProject.ext.features.rechargeOcr)
     implementation projectOrAar(rootProject.ext.features.rechargeGeneral)
-    implementation projectOrAar(rootProject.ext.features.digitalproduct)
     implementation projectOrAar(rootProject.ext.features.rechargeCreditCard)
     implementation projectOrAar(rootProject.ext.features.digitalEmoney)
     implementation projectOrAar(rootProject.ext.features.digitalBrizzi)
@@ -112,12 +112,16 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.atcVariant)
     implementation projectOrAar(rootProject.ext.features.reviewProduct)
     implementation projectOrAar(rootProject.ext.features.shopPage)
+    implementation projectOrAar(rootProject.ext.features.productBundle)
+    implementation projectOrAar(rootProject.ext.features.reviewShop)
+
     //Operational
 
     //Payment
     implementation projectOrAar(rootProject.ext.features.paymentSetting)
     implementation projectOrAar(rootProject.ext.features.instantDebitBca)
     implementation projectOrAar(rootProject.ext.features.pms)
+    implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 
     //Promo
@@ -132,7 +136,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingnotif)
     implementation projectOrAar(rootProject.ext.features.campaignShakeLanding)
     implementation projectOrAar(rootProject.ext.features.changePhoneNumber)
-    implementation projectOrAar(rootProject.ext.features.kyccentralized)
     implementation projectOrAar(rootProject.ext.features.managename)
     implementation projectOrAar(rootProject.ext.features.managepassword)
     implementation projectOrAar(rootProject.ext.features.notifCenter)
@@ -151,11 +154,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
     implementation projectOrAar(rootProject.ext.features.buyerorder)
     implementation projectOrAar(rootProject.ext.features.snapshot)
+    implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
     implementation projectOrAar(rootProject.ext.features.buyerorderdetail)
-
-    //Library
-    implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 }

@@ -2,7 +2,7 @@ package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Parcelize
@@ -31,6 +31,7 @@ class ShipmentCartItemModel : Parcelable {
     var shopLocation: String? = null
     var shopAlertMessage: String? = null
     var shopTypeInfoData: ShopTypeInfoData? = null
+    var isTokoNow: Boolean = false
 
     // Cart item state
     var cartString: String? = null

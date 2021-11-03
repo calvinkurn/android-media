@@ -1,30 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="sob_360dp">360dp</dimen>
-    <dimen name="sob_dimen_home_image_width">230dp</dimen>
-    <dimen name="sob_dimen_message_image_1_width">160dp</dimen>
-    <dimen name="sob_dimen_message_image_2_width">190dp</dimen>
-    <dimen name="sob_dimen_message_image_3_width">210dp</dimen>
-    <dimen name="sob_dimen_message_image_1_height">120dp</dimen>
-    <dimen name="sob_dimen_message_image_2_height">100dp</dimen>
-    <dimen name="sob_dimen_message_image_3_height">100dp</dimen>
-    <dimen name="sob_dimen_manage_image_1_width">200dp</dimen>
-    <dimen name="sob_dimen_manage_image_2_width">210dp</dimen>
-    <dimen name="sob_dimen_manage_image_1_height">200dp</dimen>
-    <dimen name="sob_dimen_manage_image_2_height">140dp</dimen>
-    <dimen name="sob_dimen_promo_image_1_width">240dp</dimen>
-    <dimen name="sob_dimen_statistic_image_1_width">205dp</dimen>
-    <dimen name="sob_title_top_margin">56dp</dimen>
+    <dimen name="sob_dimen_home_image_width">200dp</dimen>
+    <dimen name="sob_title_top_margin">72dp</dimen>
     <dimen name="sob_view_pager_bottom_margin">16dp</dimen>
     <dimen name="sob_skip_btn_top_margin">24dp</dimen>
-    <dimen name="sob_message_smart_reply_top_margin">88dp</dimen>
-    <dimen name="sob_message_broadcast_top_margin">80dp</dimen>
-    <dimen name="sob_message_bottom_margin">72dp</dimen>
-    <dimen name="sob_message_widget_start_margin">72dp</dimen>
-    <dimen name="sob_message_smart_reply_end_margin">80dp</dimen>
-    <dimen name="sob_message_broadcast_start_margin">88dp</dimen>
     <dimen name="sob_circle_bg_start_end_margin">32dp</dimen>
-    <dimen name="sob_manage_print_label_top_margin">24dp</dimen>
-    <dimen name="sob_manage_product_start_margin">84dp</dimen>
-    <dimen name="sob_manage_print_label_end_margin">84dp</dimen>
+    <dimen name="sob_dimen_20">20dp</dimen>
+    <dimen name="sob_dimen_28">28dp</dimen>
+    <dimen name="sob_dimen_48">48dp</dimen>
+    <dimen name="sob_dimen_72">72dp</dimen>
+    <dimen name="sob_dimen_88">88dp</dimen>
+    <dimen name="sob_dimen_104">104dp</dimen>
+    <dimen name="sob_dimen_112">112dp</dimen>
+    <dimen name="sob_dimen_120">120dp</dimen>
+    <dimen name="sob_dimen_144">144dp</dimen>
 </resources>

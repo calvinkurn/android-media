@@ -354,7 +354,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         }
     }
 
-    private fun changeLocationRequest(originId: Int?) {
+    private fun changeLocationRequest(originId: Long?) {
         progressDialog?.show()
         if (arguments?.getInt(MAP_MODE) == CREATE_SHOP_PAGE || arguments?.containsKey(RESUME_OPEN_SHOP_DATA_KEY) == true) {
             editShippingPresenter?.fetchDataByLocationOpenShop(originId.toString())

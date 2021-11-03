@@ -38,7 +38,7 @@
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:text="@string/play_widget_only_live_promo"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_Static_White"
         android:textSize="@dimen/fontSize_lvl10"
         app:layout_constraintEnd_toEndOf="@id/fl_bg_only_live"
         app:layout_constraintStart_toStartOf="@id/fl_bg_only_live"

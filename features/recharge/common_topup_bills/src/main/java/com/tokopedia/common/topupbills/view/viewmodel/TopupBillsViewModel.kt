@@ -90,7 +90,7 @@ class TopupBillsViewModel @Inject constructor(
             var data: TopupBillsEnquiryData
             do {
                 data = withContext(dispatcher.io) {
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                    graphqlRepository.response(listOf(graphqlRequest))
                 }.getSuccessData()
 
                 // If data is pending delay query call
@@ -123,7 +123,7 @@ class TopupBillsViewModel @Inject constructor(
                 val graphqlCacheStrategy =
                     GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * FIVE_MINS_CACHE_DURATION).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
             _menuDetailData.postValue(Success(data.catalogMenuDetailData))
@@ -137,7 +137,7 @@ class TopupBillsViewModel @Inject constructor(
             val data = withContext(dispatcher.io) {
                 val graphqlRequest =
                     GraphqlRequest(rawQuery, RechargeCatalogPlugin.Response::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeCatalogPlugin.Response>().response
 
             if (data != null) {
@@ -162,7 +162,7 @@ class TopupBillsViewModel @Inject constructor(
                 val graphqlCacheStrategy =
                     GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * FIVE_MINS_CACHE_DURATION).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<TopupBillsFavNumberData>()
 
             _favNumberData.postValue(Success(data.favNumber))
@@ -181,7 +181,7 @@ class TopupBillsViewModel @Inject constructor(
             val data = withContext(dispatcher.io) {
                 val graphqlRequest =
                     GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberData::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsSeamlessFavNumberData>()
 
             _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber to shouldRefreshInputNumber))
@@ -209,7 +209,7 @@ class TopupBillsViewModel @Inject constructor(
                     TopupBillsSeamlessFavNumberModData::class.java,
                     mapParam
                 )
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsSeamlessFavNumberModData>()
 
             when (actionType) {
@@ -278,7 +278,7 @@ class TopupBillsViewModel @Inject constructor(
             val data = withContext(dispatcher.io) {
                 val graphqlRequest =
                     GraphqlRequest(rawQuery, RechargeExpressCheckout.Response::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeExpressCheckout.Response>().response
 
             val result = when {

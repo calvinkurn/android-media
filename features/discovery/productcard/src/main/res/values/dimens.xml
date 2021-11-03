@@ -82,6 +82,8 @@
     <dimen name="product_card_button_notify_me_margin_top">8dp</dimen>
     <dimen name="product_card_button_notify_me_height">32dp</dimen>
 
+    <dimen name="product_card_button_similar_product_height">32dp</dimen>
+    <dimen name="product_card_button_similar_product_margin_top">8dp</dimen>
 
     <dimen name="product_card_flashsale_width">148dp</dimen>
 
@@ -132,8 +134,7 @@
     <dimen name="product_card_button_delete_cart_height">24dp</dimen>
 
     <dimen name="product_card_button_add_variant_with_quantity_margin_start">8dp</dimen>
-    <dimen name="product_card_button_add_variant_margin_start">8dp</dimen>
-    <dimen name="product_card_button_add_variant_with_quantity_margin_top">4dp</dimen>
+    <dimen name="product_card_button_add_variant_margin_start">0dp</dimen>
     <dimen name="product_card_button_add_variant_margin_top">8dp</dimen>
     <dimen name="product_card_button_add_variant_margin_end">8dp</dimen>
     <dimen name="product_card_button_add_variant_margin_bottom">0dp</dimen>

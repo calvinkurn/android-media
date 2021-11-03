@@ -94,6 +94,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         }
     var isInstantCheckout = false
     var inputFields: Map<String, String> = mapOf()
+    var isSpecialProduct = false
 
     var categoryName = ""
     var operatorName = ""
@@ -187,7 +188,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                                     productName,
                                     price,
                                     isInstantCheckout,
-                                    promoCode.isNotEmpty()
+                                    promoCode.isNotEmpty(),
+                                    isSpecialProduct
                             )
                             navigateToPayment(it.data)
                         }
@@ -250,10 +252,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                     pendingPromoNavigation = ""
                 }
                 REQUEST_CODE_CART_DIGITAL -> {
-                    data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { message ->
-                        view?.let {
-                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-                        }
+                    data?.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { throwable ->
+                        showErrorMessage(throwable as Throwable)
                     }
                 }
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
@@ -261,7 +261,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                         if (it.hasExtra(EXTRA_PROMO_DATA)) {
                             // Stop check voucher job to prevent previous promo override
                             topupBillsViewModel.stopCheckVoucher()
-                            val promoData: PromoData = it.getParcelableExtra(EXTRA_PROMO_DATA)
+                            val promoData: PromoData = it.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData()
                             setupPromoTicker(promoData)
                         }
                     }
@@ -425,12 +425,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun showErrorMessage(error: Throwable) {
-        view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
-                    ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-        }
-    }
+    abstract fun showErrorMessage(error: Throwable)
 
     private fun processExpressCheckout(checkOtp: Boolean = false) {
         // Check if promo code is valid

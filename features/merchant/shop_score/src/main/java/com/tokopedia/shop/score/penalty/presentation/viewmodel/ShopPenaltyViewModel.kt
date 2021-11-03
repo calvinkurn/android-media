@@ -5,7 +5,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.score.common.*
 import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
@@ -13,20 +12,22 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailParam
+import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
-import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltySummaryTypesUseCase
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import dagger.Lazy
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopPenaltyViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getShopPenaltySummaryTypesUseCase: GetShopPenaltySummaryTypesUseCase,
-    private val getShopPenaltyDetailUseCase: GetShopPenaltyDetailUseCase,
+    private val getShopPenaltyDetailMergeUseCase: Lazy<GetShopPenaltyDetailMergeUseCase>,
+    private val getShopPenaltyDetailUseCase: Lazy<GetShopPenaltyDetailUseCase>,
     private val penaltyMapper: PenaltyMapper
 ) : BaseViewModel(dispatchers.main) {
 
@@ -104,54 +105,25 @@ class ShopPenaltyViewModel @Inject constructor(
 
     fun getDataPenalty() {
         launchCatchError(block = {
-            val penaltySummaryTypeResponse = asyncCatchError(block = {
-                getShopPenaltySummaryTypesUseCase.requestParams =
-                    GetShopPenaltySummaryTypesUseCase.createParams(
-                        startDateSummary, endDateSummary
-                    )
-                getShopPenaltySummaryTypesUseCase.executeOnBackground()
-            }, onError = {
-                _penaltyPageData.postValue(Fail(it))
-                null
-            })
-
-            val penaltyDetailResponse = asyncCatchError(block = {
-                getShopPenaltyDetailUseCase.params = GetShopPenaltyDetailUseCase.crateParams(
-                    ShopScorePenaltyDetailParam(
-                        startDate = startDate,
-                        endDate = endDate,
-                        typeID = typeId,
-                        sort = sortBy
-                    )
+            val penaltyDetailMerge = withContext(dispatchers.io) {
+                getShopPenaltyDetailMergeUseCase.get().setParams(
+                    startDate = startDateSummary,
+                    endDate = endDateSummary,
+                    typeId = typeId,
+                    sort = sortBy
                 )
-                getShopPenaltyDetailUseCase.executeOnBackground()
-            }, onError = {
-                _penaltyPageData.postValue(Fail(it))
-                null
-            })
-
-            val penaltySummaryTypeData = penaltySummaryTypeResponse.await()
-            val penaltyDetailData = penaltyDetailResponse.await()
-
-            penaltySummaryTypeData?.let { penaltySummary ->
-                penaltyDetailData?.also { penaltyDetail ->
-                    val penaltyMapperData = penaltyMapper.mapToPenaltyData(
-                        penaltySummary,
-                        penaltyDetail,
-                        sortBy,
-                        typeId,
-                        Pair(startDate, endDate)
-                    )
-
-                    penaltyFilterUiModel = penaltyMapperData.penaltyFilterList?.toMutableList()
-                        ?: mutableListOf()
-                    itemSortFilterWrapperList =
-                        penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel)
-                            .toMutableList()
-                    _penaltyPageData.postValue(Success(penaltyMapperData))
-                }
+                getShopPenaltyDetailMergeUseCase.get().executeOnBackground()
             }
-        }, onError = {})
+
+            penaltyFilterUiModel = penaltyDetailMerge.penaltyFilterList.toMutableList()
+
+            itemSortFilterWrapperList =
+                penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel)
+                    .toMutableList()
+            _penaltyPageData.value = Success(penaltyDetailMerge)
+        }, onError = {
+            _penaltyPageData.value = Fail(it)
+        })
     }
 
     private fun initPenaltyDetail() {
@@ -176,7 +148,7 @@ class ShopPenaltyViewModel @Inject constructor(
     fun getPenaltyDetailListNext(page: Int = 1) {
         launchCatchError(block = {
             val penaltyDetail = withContext(dispatchers.io) {
-                getShopPenaltyDetailUseCase.params = GetShopPenaltyDetailUseCase.crateParams(
+                getShopPenaltyDetailUseCase.get().params = GetShopPenaltyDetailUseCase.crateParams(
                     ShopScorePenaltyDetailParam(
                         page = page,
                         startDate = startDate,
@@ -185,77 +157,71 @@ class ShopPenaltyViewModel @Inject constructor(
                         sort = sortBy
                     )
                 )
-                penaltyMapper.mapToItemPenaltyList(getShopPenaltyDetailUseCase.executeOnBackground())
+                penaltyMapper.mapToItemPenaltyList(
+                    getShopPenaltyDetailUseCase.get().executeOnBackground()
+                )
             }
-            shopPenaltyDetailMediator.postValue(Success(penaltyDetail))
+            shopPenaltyDetailMediator.value = Success(penaltyDetail)
         }, onError = {
-            shopPenaltyDetailMediator.postValue(Fail(it))
+            shopPenaltyDetailMediator.value = Fail(it)
         })
     }
 
     fun getFilterPenalty(filterPenaltyList: List<PenaltyFilterUiModel>) {
-        launchCatchError(block = {
+        launch {
             penaltyFilterUiModel = filterPenaltyList.toMutableList()
-            _filterPenaltyData.postValue(Success(penaltyFilterUiModel))
-        }, onError = {
-            _filterPenaltyData.postValue(Fail(it))
-        })
+            _filterPenaltyData.value = Success(penaltyFilterUiModel)
+        }
     }
 
     fun updateSortFilterSelected(titleFilter: String, chipType: String) {
-        launchCatchError(block = {
+        launch {
             val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
-            penaltyFilterUiModel.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilerList?.mapIndexed { index, chipsFilterPenaltyUiModel ->
-                if (chipsFilterPenaltyUiModel.title == titleFilter) {
-                    chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
-                    itemSortFilterWrapperList.getOrNull(index)?.isSelected = !updateChipsSelected
-                } else {
-                    chipsFilterPenaltyUiModel.isSelected = false
-                    itemSortFilterWrapperList.getOrNull(index)?.isSelected = false
-                }
-            }
+            val mapTransformUpdateSortFilterSelected =
+                penaltyMapper.transformUpdateSortFilterSelected(
+                    penaltyFilterUiModel,
+                    itemSortFilterWrapperList,
+                    titleFilter,
+                    updateChipsSelected
+                )
+            penaltyFilterUiModel = mapTransformUpdateSortFilterSelected.first
+            itemSortFilterWrapperList = mapTransformUpdateSortFilterSelected.second
             _updateSortFilterSelected.value = Success(itemSortFilterWrapperList)
-        }, onError = {
-            _updateSortFilterSelected.value = Fail(it)
-        })
+        }
     }
 
     fun updateFilterSelected(titleFilter: String, chipType: String, position: Int) {
-        launchCatchError(block = {
+        launch {
             val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
-            penaltyFilterUiModel.find { it.title == titleFilter }?.chipsFilerList?.mapIndexed { index, chipsFilterPenaltyUiModel ->
-                if (index == position) {
-                    chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
-                } else {
-                    chipsFilterPenaltyUiModel.isSelected = false
-                }
-            }
-            val chipsUiModelList =
-                penaltyFilterUiModel.find { it.title == titleFilter }?.chipsFilerList
-                    ?: listOf()
+            val mapTransformUpdateFilterSelected = penaltyMapper.transformUpdateFilterSelected(
+                titleFilter,
+                updateChipsSelected,
+                position,
+                penaltyFilterUiModel,
+                itemSortFilterWrapperList
+            )
+
+            penaltyFilterUiModel = mapTransformUpdateFilterSelected.first
+            itemSortFilterWrapperList = mapTransformUpdateFilterSelected.second
+            val chipsUiModelList = penaltyMapper.getChipsFilterList(titleFilter, penaltyFilterUiModel)
             _updateFilterSelected.value = Success(Pair(chipsUiModelList, titleFilter))
-        }, onError = {
-            _updateFilterSelected.value = Fail(it)
-        })
+        }
     }
 
     fun resetFilterSelected() {
-        launchCatchError(block = {
+        launch {
             penaltyFilterUiModel.map { penaltyFilterUiModel ->
                 if (penaltyFilterUiModel.title == ShopScoreConstant.TITLE_SORT) {
-                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_LATEST }?.isSelected =
-                        true
-                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_OLDEST }?.isSelected =
-                        false
+                    penaltyFilterUiModel.chipsFilterList.map {
+                        it.isSelected = it.title == SORT_LATEST
+                    }
                 } else {
-                    penaltyFilterUiModel.chipsFilerList.map {
+                    penaltyFilterUiModel.chipsFilterList.map {
                         it.isSelected = false
                     }
                 }
             }
             _resetFilterResult.value = Success(penaltyFilterUiModel)
-        }, onError = {
-            _resetFilterResult.value = Fail(it)
-        })
+        }
     }
 }

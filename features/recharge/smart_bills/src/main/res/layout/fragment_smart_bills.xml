@@ -46,9 +46,9 @@
                     app:typographyType="body_2"
                     app:typographyWeight="bold" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/view_smart_bills_select_all_checkbox_container"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_lvl4"
                     android:layout_marginTop="@dimen/spacing_lvl5"
@@ -59,17 +59,32 @@
 
                     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                         android:id="@+id/cb_smart_bills_select_all"
+                        android:layout_alignParentLeft="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
                     <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tg_smart_bills_select_all"
+                        android:layout_toRightOf="@+id/cb_smart_bills_select_all"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
                         android:text="@string/smart_bills_select_all"
                         app:typographyType="body_3"
                         app:typographyWeight="bold" />
 
-                </LinearLayout>
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_sbm_add_bills"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/smart_bills_add_bills_title"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:textColor="@color/Unify_G500"
+                        android:layout_alignParentRight="true"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold" />
+
+                </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_smart_bills_items"
@@ -77,6 +92,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl2"
                     app:layout_constraintTop_toBottomOf="@id/view_smart_bills_select_all_checkbox_container" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_smart_bills_accordion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    app:layout_constraintTop_toBottomOf="@id/rv_smart_bills_items" />
 
                 <include
                     android:id="@+id/view_smart_bills_shimmering"
@@ -135,5 +158,16 @@
             />
 
     </FrameLayout>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="@dimen/spacing_lvl6"
+        android:layout_height="@dimen/spacing_lvl6"
+        android:id="@+id/sbm_progress_bar"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

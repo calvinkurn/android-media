@@ -1,9 +1,9 @@
 package com.tokopedia.tokopedianow.data
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
@@ -17,10 +17,7 @@ import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
+import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
@@ -56,41 +53,6 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
     )
 }
 
-fun createHomeLayoutItemUiModelList(): List<HomeLayoutItemUiModel> {
-    return listOf(
-            HomeLayoutItemUiModel(
-                    BannerDataModel(
-                            channelModel= ChannelModel(
-                                    id="2222",
-                                    groupId="",
-                                    style= ChannelStyle.ChannelHome,
-                                    channelHeader= ChannelHeader(name="Banner Tokonow"),
-                                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
-                                    layout="banner_carousel_v2")
-                    ),
-                    HomeLayoutItemState.LOADED
-            ),
-            HomeLayoutItemUiModel(
-                    BannerDataModel(
-                            channelModel= ChannelModel(
-                                    id="2222",
-                                    groupId="",
-                                    style= ChannelStyle.ChannelHome,
-                                    channelHeader= ChannelHeader(name="Banner Tokonow"),
-                                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
-                                    layout="banner_carousel_v2")
-                    ),
-                    HomeLayoutItemState.LOADING
-            ),
-            HomeLayoutItemUiModel(
-                    HomeChooseAddressWidgetUiModel(
-                            id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID,
-                    ),
-                    HomeLayoutItemState.NOT_LOADED
-            )
-    )
-}
-
 fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
     return listOf(
             HomeLayoutResponse(
@@ -99,7 +61,8 @@ fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
-                    )
+                    ),
+                    token = "==aff1ed" // Dummy token
             )
     )
 }
@@ -111,27 +74,27 @@ fun createHomeLayoutData(): HomeLayoutResponse {
             header = Header(
                     name = "Banner Tokonow",
                     serverTimeUnix = 0
-            )
+            ),
+            token = "==aff1ed" // Dummy token
     )
 }
 
 fun createLoadingState(): HomeLayoutListUiModel {
-    val mutableList = mutableListOf<HomeLayoutItemUiModel>()
+    val mutableList = mutableListOf<Visitable<*>>()
     val loadingStateUiModel = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
-    mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
+    mutableList.add(loadingStateUiModel)
     return HomeLayoutListUiModel(
             items = mutableList,
-            state = TokoNowLayoutState.LOADING,
-            isInitialLoad = true
+            state = TokoNowLayoutState.LOADING
     )
 }
 
 fun createEmptyState(id: String): HomeLayoutListUiModel {
-    val mutableList = mutableListOf<HomeLayoutItemUiModel>()
-    val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
-    val emptyStateUiModel = HomeEmptyStateUiModel(id = id)
-    mutableList.add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
-    mutableList.add(HomeLayoutItemUiModel(emptyStateUiModel, HomeLayoutItemState.LOADED))
+    val mutableList = mutableListOf<Visitable<*>>()
+    val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
+    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, eventCategory = "tokonow - homepage")
+    mutableList.add(chooseAddressUiModel)
+    mutableList.add(emptyStateUiModel)
     return HomeLayoutListUiModel(
             mutableList,
             state = TokoNowLayoutState.HIDE
@@ -268,10 +231,10 @@ fun createSliderBannerDataModel(
 fun createCategoryGridDataModel(
     id: String,
     title: String,
-    categoryList: List<TokoNowCategoryItemUiModel>,
+    categoryList: List<TokoNowCategoryItemUiModel>?,
     @TokoNowLayoutState state: Int
 ): TokoNowCategoryGridUiModel {
-    return TokoNowCategoryGridUiModel(id, title, categoryList, state)
+    return TokoNowCategoryGridUiModel(id = id, title =  title, categoryList = categoryList, state = state)
 }
 
 fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): HomeTickerUiModel {
@@ -292,7 +255,7 @@ fun createHomeProductCardUiModel(
     quantity: Int = 0,
     parentId: String = "",
     product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.RECENT_PURCHASE
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
 ): TokoNowProductCardUiModel {
     return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
 }

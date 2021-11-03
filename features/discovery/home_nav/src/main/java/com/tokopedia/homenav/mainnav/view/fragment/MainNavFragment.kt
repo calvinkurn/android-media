@@ -39,6 +39,8 @@ import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.CONTROL
 import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.EXP_NAME
 import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.VARIANT
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
+import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.getProfileCacheData
+import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.setProfileCacheFromAccountModel
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingBuSection
@@ -46,7 +48,7 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.homenav.view.router.NavigationRouter
@@ -115,6 +117,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
+        context?.let {
+            viewModel.setProfileCache(getProfileCacheData(it))
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -174,6 +179,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 getNavPerformanceCallback()?.startNetworkRequestPerformanceMonitoring()
             } else {
                 getNavPerformanceCallback()?.stopNetworkRequestPerformanceMonitoring()
+            }
+        })
+
+        viewModel.profileDataLiveData.observe(viewLifecycleOwner, Observer { accountHeaderModel ->
+            context?.let { ctx ->
+                setProfileCacheFromAccountModel(ctx, accountHeaderModel)
             }
         })
     }
@@ -237,7 +248,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
-            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER) {
+            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if(homeNavMenuDataModel.applink.isNotEmpty()){
                     if (!handleClickFromPageSource(homeNavMenuDataModel)) {
                         RouteManager.route(context, homeNavMenuDataModel.applink)

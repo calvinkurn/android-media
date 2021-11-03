@@ -1,5 +1,7 @@
 package com.tokopedia.navigation_common.model;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
  * @author okasurya on 7/21/18.
  */
 public class TokopointTierModel {
+    @SuppressLint("Invalid Data Type")
     @SerializedName("id")
     @Expose
     private Integer id = 0;

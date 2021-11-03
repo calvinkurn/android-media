@@ -764,7 +764,8 @@ class AddEditProductVariantFragment :
             else ProductAddVariantTracking.pickProductVariantPhotos(shopId)
         }
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
-        intent.putImagePickerBuilder(builder);
+        intent.putImagePickerBuilder(builder)
+        intent.putParamPageSource(ImagePickerPageSource.ADD_EDIT_PRODUCT_PAGE)
         startActivityForResult(intent, REQUEST_CODE_VARIANT_PHOTO_IMAGE)
     }
 
@@ -1086,6 +1087,7 @@ class AddEditProductVariantFragment :
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
+        intent.putParamPageSource(ImagePickerPageSource.ADD_EDIT_PRODUCT_PAGE)
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
     }
 
@@ -1111,6 +1113,7 @@ class AddEditProductVariantFragment :
         )
         val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_EDITOR)
         intent.putImageEditorBuilder(builder)
+        intent.putParamPageSource(ImagePickerPageSource.ADD_EDIT_PRODUCT_PAGE)
         ImagePickerGlobalSettings.onImageEditorContinue = onImagePickerEditContinue(ctx, isEditMode)
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE)
     }

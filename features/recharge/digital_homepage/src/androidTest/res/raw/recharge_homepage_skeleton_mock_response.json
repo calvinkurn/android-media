@@ -2,6 +2,7 @@
   {
     "data": {
       "rechargeGetDynamicPageSkeleton": {
+        "search_bar_screen_name": "/top-up-tagihan",
         "sections": [
           {
             "id": 1,

@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -42,6 +43,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
@@ -104,6 +106,7 @@ class NewShopPageViewModel @Inject constructor(
     val shopPageP1Data = MutableLiveData<Result<NewShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     var productListData: ShopProduct.GetShopProduct = ShopProduct.GetShopProduct()
+    var homeWidgetLayoutData: ShopPageGetHomeType.HomeLayoutData = ShopPageGetHomeType.HomeLayoutData()
     val shopImagePath = MutableLiveData<String>()
 
     private val _shopUnmoderateData = MutableLiveData<Result<ShopRequestUnmoderateSuccessResponse>>()
@@ -199,6 +202,7 @@ class NewShopPageViewModel @Inject constructor(
                 productListDataAsync.await()?.let { shopProductData ->
                     productListData = shopProductData
                 }
+                homeWidgetLayoutData = shopPageHeaderP1Data.shopInfoHomeTypeData.homeLayoutData
                 shopHeaderWidgetDataAsync.await()?.let{ shopPageHeaderWidgetData ->
                     shopPageP1Data.postValue(Success(NewShopPageHeaderMapper.mapToShopPageP1HeaderData(
                             shopPageHeaderP1Data.isShopOfficialStore,
@@ -324,18 +328,20 @@ class NewShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopBroadcasterConfig(shopId: String): Broadcaster.Config {
-        var broadcasterConfig = Broadcaster.Config()
-        try {
-            getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
-            broadcasterConfig = getBroadcasterShopConfigUseCase.get().executeOnBackground()
-        } catch (t: Throwable) {
-        }
-        return broadcasterConfig
+        getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
+        return getBroadcasterShopConfigUseCase.get().executeOnBackground()
     }
 
-    fun getFollowStatusData(shopId: String) {
+    fun getFollowStatusData(shopId: String, followButtonVariantType: String) {
         launchCatchError(dispatcherProvider.io, block = {
-            getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId, SOURCE_SHOP_PAGE)
+            val pageSource = when (followButtonVariantType) {
+                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL, RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG -> {
+                    // set empty page source to get voucher icon white color
+                    ""
+                }
+                else -> SOURCE_SHOP_PAGE
+            }
+            getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId, pageSource)
             _followStatusData.postValue(Success(getFollowStatusUseCase.get().executeOnBackground()))
         }, onError = {
             _followStatusData.postValue(Fail(it))
@@ -376,7 +382,8 @@ class NewShopPageViewModel @Inject constructor(
             }
             _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
         }) {
-            _shopSellerPLayWidgetData.postValue(Fail(it))
+            val broadcasterConfig = Broadcaster.Config()
+            _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
         }
     }
 

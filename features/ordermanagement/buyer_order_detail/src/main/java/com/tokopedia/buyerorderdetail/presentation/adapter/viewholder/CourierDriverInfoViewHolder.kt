@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -40,6 +41,7 @@ class CourierDriverInfoViewHolder(
             setupDriverName(it.name)
             setupDriverPhoneNumber(it.phoneNumber)
             setupDriverPlateNumber(it.plateNumber)
+            setupCallingButton(it.phoneNumber)
         }
     }
 
@@ -58,6 +60,7 @@ class CourierDriverInfoViewHolder(
                     }
                     if (oldItem.phoneNumber != newItem.phoneNumber) {
                         setupDriverPhoneNumber(newItem.phoneNumber)
+                        setupCallingButton(newItem.phoneNumber)
                     }
                     if (oldItem.plateNumber != newItem.plateNumber) {
                         setupDriverPlateNumber(newItem.plateNumber)
@@ -85,14 +88,27 @@ class CourierDriverInfoViewHolder(
     }
 
     private fun setupDriverName(name: String) {
-        tvBuyerOrderDetailCourierDriverName?.text = name
+        tvBuyerOrderDetailCourierDriverName?.run {
+            text = name
+            showWithCondition(name.isNotBlank())
+        }
     }
 
     private fun setupDriverPhoneNumber(phoneNumber: String) {
-        tvBuyerOrderDetailCourierDriverPhoneNumber?.text = phoneNumber
+        tvBuyerOrderDetailCourierDriverPhoneNumber?.run {
+            text = phoneNumber
+            showWithCondition(phoneNumber.isNotBlank())
+        }
     }
 
     private fun setupDriverPlateNumber(plateNumber: String) {
-        tvBuyerOrderDetailCourierDriverPlateNumber?.text = plateNumber
+        tvBuyerOrderDetailCourierDriverPlateNumber?.run {
+            text = plateNumber
+            showWithCondition(plateNumber.isNotBlank())
+        }
+    }
+
+    private fun setupCallingButton(phoneNumber: String) {
+        btnBuyerOrderDetailCallCourierDriver?.showWithCondition(phoneNumber.isNotBlank())
     }
 }

@@ -30,16 +30,32 @@ class ClassBuilder {
     )
 
     fun getPlayChannelDetailsRecomMapper(
-            htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer()
+        htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer(),
+        realTimeNotificationMapper: PlayRealTimeNotificationMapper = getPlayRealTimeNotificationMapper(),
+        multipleLikesMapper: PlayMultipleLikesMapper = getPlayMultipleLikesMapper(),
     ) = PlayChannelDetailsWithRecomMapper(
-            htmlTextTransformer = htmlTextTransformer
+        htmlTextTransformer = htmlTextTransformer,
+        realTimeNotificationMapper = realTimeNotificationMapper,
+        multipleLikesMapper = multipleLikesMapper,
     )
+
+    private fun getPlayRealTimeNotificationMapper(
+            userSession: UserSessionInterface = mockk(relaxed = true),
+            htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer()
+    ) = PlayRealTimeNotificationMapper(
+            userSession = userSession,
+            htmlTextTransformer = htmlTextTransformer,
+    )
+
+    private fun getPlayMultipleLikesMapper() = PlayMultipleLikesMapper()
 
     fun getMapperExtraParams(
             channelId: String? = null,
-            videoStartMillis: Long? = null
+            videoStartMillis: Long? = null,
+            shouldTrack: Boolean = true,
     ) = PlayChannelDetailsWithRecomMapper.ExtraParams(
             channelId = channelId,
-            videoStartMillis = videoStartMillis
+            videoStartMillis = videoStartMillis,
+            shouldTrack = shouldTrack
     )
 }

@@ -16,6 +16,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -105,6 +106,11 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> listComponents.addAll(parseProductVerticalList(component))
+            ComponentNames.ProductCardSprintSaleCarousel.componentName,
+            ComponentNames.ProductCardCarousel.componentName -> {
+                updateCarouselWithCart(component)
+                listComponents.add(component)
+            }
             ComponentNames.QuickCoupon.componentName -> {
                 if (component.isApplicable) {
                     listComponents.add(component)
@@ -303,9 +309,13 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             } else {
                 listComponents.add(component)
                 component.getComponentsItem()?.let {
-                    listComponents.addAll(getDiscoveryComponentList(it))
+                    listComponents.addAll(getDiscoveryComponentList(it).apply {
+                        if(component.properties?.tokonowATCActive == true) {
+                            updateWithCart(it, getCartData(component.pageEndPoint))
+                        }
+                    })
                 }
-                if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0 && component.showVerticalLoader) {
+                if (Utils.nextPageAvailable(component,component.componentsPerPage) && component.showVerticalLoader) {
                     listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
                 } else if (component.getComponentsItem()?.size == 0) {
                     listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
@@ -327,6 +337,49 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         })
         return productState
     }
+
+    private fun updateCarouselWithCart(component: ComponentsItem){
+        if(component.properties?.tokonowATCActive == true) {
+            component.getComponentsItem()?.let {
+                if(updateWithCart(it,getCartData(component.pageEndPoint))){
+                    component.shouldRefreshComponent = true
+                }
+            }
+        }
+    }
+
+    private fun updateWithCart(list: List<ComponentsItem>, map: Map<String, MiniCartItem>?) : Boolean {
+        var shouldRefresh = false
+        if (map == null) return shouldRefresh
+        list.forEach { item ->
+            item.data?.firstOrNull()?.let { dataItem ->
+                if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
+                    map[dataItem.parentProductId]?.quantity?.let { quantity ->
+                        if(updateQuantity(quantity, item))
+                            shouldRefresh = true
+                    }
+                } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
+                    map[dataItem.productId]?.quantity?.let { quantity ->
+                        if(updateQuantity(quantity, item))
+                            shouldRefresh = true
+                    }
+                } else {
+                    if(updateQuantity(0, item))
+                        shouldRefresh = true
+                }
+            }
+        }
+        return shouldRefresh
+    }
+
+    private fun updateQuantity(quantity:Int,item:ComponentsItem):Boolean{
+        if (quantity != item.data?.firstOrNull()?.quantity) {
+            item.data?.firstOrNull()?.quantity = quantity
+            item.shouldRefreshComponent = true
+            return true
+        }
+        return false
+    }
 }
 
 fun getComponent(componentId: String, pageName: String): ComponentsItem? {
@@ -339,6 +392,18 @@ fun getComponent(componentId: String, pageName: String): ComponentsItem? {
 fun setComponent(componentId: String, pageName: String, componentsItem: ComponentsItem) {
     discoveryPageData[pageName]?.let {
         it.componentMap[componentId] = componentsItem
+    }
+}
+
+fun getCartData(pageName: String):MutableMap<String,MiniCartItem>?{
+    discoveryPageData[pageName]?.let {
+        return it.cartMap
+    }
+    return null
+}
+fun setCartData(cartMap:MutableMap<String,MiniCartItem>,pageName: String){
+    discoveryPageData[pageName]?.let {
+        it.cartMap = cartMap
     }
 }
 

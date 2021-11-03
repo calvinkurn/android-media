@@ -120,6 +120,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private var orderProfile: OrderProfile? = null
+    private var creditCardTenorListData: CreditCardTenorListData? = null
 
     private lateinit var adapter: OrderSummaryPageAdapter
 
@@ -602,7 +603,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                     }
                                 })
                         promoNotEligibleBottomSheet.dismissListener = {
-                            refresh()
+                            if (view != null) {
+                                refresh()
+                            }
                         }
                         promoNotEligibleBottomSheet.show(requireContext(), parentFragmentManager)
                         orderSummaryAnalytics.eventViewBottomSheetPromoError()
@@ -642,6 +645,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
                 is OccGlobalEvent.UpdateLocalCacheAddress -> {
                     updateLocalCacheAddressData(it.addressModel)
+                }
+                is OccGlobalEvent.AdjustAdminFeeError -> {
+                    view?.let { v ->
+                        Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                    }
                 }
             }
         }
@@ -1248,12 +1256,21 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
-            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                    override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
-                        viewModel.chooseInstallment(installment)
-                    }
-                })
+            val orderTotal = viewModel.orderTotal.value
+            if (orderTotal.buttonState != OccButtonState.LOADING) {
+                InstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment, creditCard, creditCardTenorListData,
+                        viewModel.orderCart, orderTotal.orderCost, userSession.get().userId,
+                        object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                            override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {
+                                viewModel.chooseInstallment(selectedInstallment, installmentList)
+                            }
+
+                            override fun onFailedLoadInstallment() {
+                                view?.let { v ->
+                                    Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                                }
+                            }
+                        })
             }
         }
 

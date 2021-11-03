@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -36,7 +37,10 @@ data class SearchProductModel(
 
         @SerializedName("searchInspirationWidget")
         @Expose
-        val searchInspirationWidget: SearchInspirationWidget = SearchInspirationWidget()
+        val searchInspirationWidget: SearchInspirationWidget = SearchInspirationWidget(),
+
+        @SerializedName("fetchLastFilter")
+        val lastFilter: LastFilter = LastFilter(),
 ) {
 
     private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
@@ -418,7 +422,11 @@ data class SearchProductModel(
 
             @SerializedName("productViewUrl")
             @Expose
-            val productViewUrl: String = ""
+            val productViewUrl: String = "",
+
+            @SerializedName("tag")
+            @Expose
+            val tag: Int = 0,
     )
 
     data class ProductShop(

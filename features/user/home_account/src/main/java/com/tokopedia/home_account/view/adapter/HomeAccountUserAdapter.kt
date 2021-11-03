@@ -1,7 +1,8 @@
 package com.tokopedia.home_account.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
-import com.tokopedia.home_account.view.delegate.*
+import com.tokopedia.home_account.view.adapter.delegate.*
+import com.tokopedia.home_account.view.delegate.HomeAccountTdnBannerDelegate
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -11,17 +12,18 @@ import com.tokopedia.user.session.UserSessionInterface
  */
 class HomeAccountUserAdapter(
         listener: HomeAccountUserListener,
-        financialAdapter: HomeAccountFinancialAdapter?,
+        balanceAndPointAdapter: HomeAccountBalanceAndPointAdapter?,
         memberAdapter: HomeAccountMemberAdapter?,
         userSession: UserSessionInterface
 ): BaseCommonAdapter() {
     init {
-        delegatesManager.addDelegate(HomeAccountUserAdapterDelegate(listener, financialAdapter, memberAdapter))
+        delegatesManager.addDelegate(HomeAccountUserAdapterDelegate(listener, balanceAndPointAdapter, memberAdapter))
         delegatesManager.addDelegate(HomeAccountUserSettingDelegate(listener))
         delegatesManager.addDelegate(HomeAccountRecommendationTitleDelegate())
         delegatesManager.addDelegate(TopAdsHeadlineViewDelegate(userSession))
         delegatesManager.addDelegate(HomeAccountRecommendationItemDelegate(listener))
         delegatesManager.addDelegate(HomeAccountSeparatorDelegate())
         delegatesManager.addDelegate(HomeAccountRecommendationLoaderDelegate())
+        delegatesManager.addDelegate(HomeAccountTdnBannerDelegate())
     }
 }

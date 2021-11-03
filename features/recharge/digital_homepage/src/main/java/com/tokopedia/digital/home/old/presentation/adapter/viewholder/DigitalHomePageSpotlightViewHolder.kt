@@ -7,30 +7,32 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common_digital.common.util.AnalyticUtils
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.LayoutDigitalHomeSpotlightBinding
 import com.tokopedia.digital.home.old.model.DigitalHomePageSpotlightModel
 import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_IMPRESSION
 import com.tokopedia.digital.home.old.presentation.adapter.adapter.DigitalItemSpotlightAdapter
 import com.tokopedia.digital.home.old.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.layout_digital_home_spotlight.view.*
 
 class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener: OnItemBindListener) :
         AbstractViewHolder<DigitalHomePageSpotlightModel>(itemView) {
 
     override fun bind(element: DigitalHomePageSpotlightModel) {
+        val bind = LayoutDigitalHomeSpotlightBinding.bind(itemView)
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
-        itemView.rv_digital_homepage_spotlight.layoutManager = layoutManager
+        bind.rvDigitalHomepageSpotlight.layoutManager = layoutManager
+
         if (element.isLoaded) {
             if (element.isSuccess
                     && element.data != null
                     && element.data.section.items.isNotEmpty()) {
                 with (element.data.section) {
-                    itemView.digital_homepage_spotlight_shimmering.hide()
-                    itemView.digital_homepage_spotlight_container.show()
-                    itemView.digital_homepage_spotlight_title.text = title
+                    bind.digitalHomepageSpotlightShimmering.hide()
+                    bind.digitalHomepageSpotlightContainer.show()
+                    bind.digitalHomepageSpotlightTitle.text = title
 
-                    itemView.rv_digital_homepage_spotlight.apply {
+                    bind.rvDigitalHomepageSpotlight.apply {
                         adapter = DigitalItemSpotlightAdapter(items, onItemBindListener)
 
                         while (itemDecorationCount > 0) removeItemDecorationAt(0)
@@ -60,12 +62,12 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
                     onItemBindListener.onSectionItemImpression(items, SPOTLIGHT_IMPRESSION)
                 }
             } else {
-                itemView.digital_homepage_spotlight_shimmering.hide()
-                itemView.digital_homepage_spotlight_container.hide()
+                bind.digitalHomepageSpotlightShimmering.hide()
+                bind.digitalHomepageSpotlightContainer.hide()
             }
         } else {
-            itemView.digital_homepage_spotlight_shimmering.show()
-            itemView.digital_homepage_spotlight_container.hide()
+            bind.digitalHomepageSpotlightShimmering.show()
+            bind.digitalHomepageSpotlightContainer.hide()
         }
     }
 

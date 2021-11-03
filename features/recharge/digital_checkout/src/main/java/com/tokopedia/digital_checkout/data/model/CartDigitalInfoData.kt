@@ -38,6 +38,8 @@ data class CartDigitalInfoData(
         var showSubscriptionsView: Boolean = false,
 
         var crossSellingConfig: CrossSellingConfig = CrossSellingConfig(),
+
+        var isSpecialProduct: Boolean = false
 ) : Parcelable {
 
     @Parcelize

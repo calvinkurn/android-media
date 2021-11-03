@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Telephony
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -31,6 +32,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -43,6 +45,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.io.File
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
@@ -77,13 +80,15 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         //Optons Flag
         private var isImageOnlySharing: Boolean = false
         private var screenShotImagePath: String = ""
-        //for screen shots
-        private var screenshotDetector: ScreenshotDetector? = null
 
         private const val DELAY_TIME_MILLISECOND = 500L
         private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
         const val CUSTOM_SHARE_SHEET = 1
         const val SCREENSHOT_SHARE_SHEET = 2
+        const val PREVIEW_IMG_SCREENSHOT_HEIGHT = 600
+        const val PREVIEW_IMG_SCREENSHOT_WIDTH = 1080
+        const val THUMBNAIL_IMG_SCREENSHOT_HEIGHT = 200
+        const val THUMBNAIL_IMG_SCREENSHOT_WIDTH = 360
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -107,30 +112,35 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                                              fragment: Fragment,
                                              remoteConfigKey: String = GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
                                              addFragmentLifecycleObserver: Boolean = false,
-                                             permissionListener: PermissionListener? = null){
+                                             permissionListener: PermissionListener? = null) : ScreenshotDetector?{
             val isEnabled: Boolean
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             isEnabled = remoteConfig.getBoolean(remoteConfigKey)
+            var screenshotDetector : ScreenshotDetector? = null
             if(isEnabled) {
-                if (screenshotDetector == null) {
-                    screenshotDetector = ScreenshotDetector(context.applicationContext, screenShotListener, permissionListener)
-                }
+                screenshotDetector = ScreenshotDetector(context.applicationContext, screenShotListener, permissionListener)
                 if(addFragmentLifecycleObserver){
-                    setFragmentLifecycleObserverForScreenShot(fragment)
+                    setFragmentLifecycleObserverForScreenShot(fragment, screenshotDetector)
                 }
-                screenshotDetector?.detectScreenshots(fragment)
+                screenshotDetector.detectScreenshots(fragment)
             }
+            return screenshotDetector
         }
 
-        fun setFragmentLifecycleObserverForScreenShot(fragment: Fragment){
+        fun setFragmentLifecycleObserverForScreenShot(fragment: Fragment, screenshotDetector: ScreenshotDetector?){
             fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
                 override fun onResume(owner: LifecycleOwner) {
                     super.onResume(owner)
-                    getScreenShotDetector()?.start()
+                    screenshotDetector?.start()
+                }
+                override fun onStop(owner: LifecycleOwner) {
+                    super.onStop(owner)
+                    clearState(screenshotDetector)
                 }
                 override fun onDestroy(owner: LifecycleOwner) {
+                    fragment.lifecycle.removeObserver(this)
+                    clearState(screenshotDetector)
                     super.onDestroy(owner)
-                    clearScreenShotDetector()
                 }
             })
         }
@@ -145,24 +155,34 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             return shareSheetType
         }
 
-        fun getScreenShotDetector(): ScreenshotDetector? {
-            return screenshotDetector
-        }
-
         fun clearData(){
             isImageOnlySharing = false
             screenShotImagePath = ""
         }
 
-        fun clearState(){
+        fun clearState(screenshotDetector: ScreenshotDetector?){
             screenshotDetector?.stop()
             clearData()
         }
 
-        fun clearScreenShotDetector(){
-            screenshotDetector?.stop()
-            screenshotDetector?.screenShotListener = null
-            screenshotDetector = null
+        fun removePreviousSavedImage(previousSavedImagePath: String, newSavedImagePath: String) {
+            if (!TextUtils.isEmpty(previousSavedImagePath) &&
+                !TextUtils.isEmpty(newSavedImagePath) &&
+                previousSavedImagePath != newSavedImagePath
+            ) {
+                removeFile(previousSavedImagePath)
+            }
+        }
+
+        private fun removeFile(filePath: String){
+            if (!TextUtils.isEmpty(filePath) &&
+                !filePath.contains(ScreenshotDetector.screenShotRegex, true)) {
+                File(filePath).apply {
+                    if (exists()) {
+                        delete()
+                    }
+                }
+            }
         }
     }
 
@@ -179,6 +199,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var previewImage: ImageUnify? = null
     private var revImageOptionsContainer: RecyclerView? = null
     private var imageListViewGroup : Group? = null
+    private var bottomBackgroundImage : ImageUnify? = null
 
     //Fixed sharing options
     private var copyLinkImage: ImageView? = null
@@ -201,6 +222,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
 
+    //observer flag
+    private var preserveImage: Boolean = false
+    //parent fragment
+    private var parentFragmentContainer: Fragment? = null
+    //parent fragment lifecycle observer
+    private lateinit var parentFragmentLifecycleObserver: DefaultLifecycleObserver
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -218,9 +246,28 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         this.bottomSheetListener = bottomSheetListener
     }
 
-    fun show(fragmentManager: FragmentManager?, fragment: Fragment) {
-        screenshotDetector?.detectScreenshots(fragment, {fragmentManager?.let { show(it, TAG) }}, true, fragment.requireView())
-            ?: fragmentManager?.let { show(it, TAG) }
+    fun show(fragmentManager: FragmentManager?, fragment: Fragment, screenshotDetector: ScreenshotDetector? = null) {
+        screenshotDetector?.detectScreenshots(fragment,
+            {fragmentManager?.let {
+                show(it, TAG)
+                setFragmentLifecycleObserverUniversalSharing(fragment)
+            }}, true, fragment.requireView())
+            ?: fragmentManager?.let {
+                show(it, TAG)
+                setFragmentLifecycleObserverUniversalSharing(fragment)
+            }
+    }
+
+    private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
+        parentFragmentContainer = fragment
+        parentFragmentLifecycleObserver = object: DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                removeFile(savedImagePath)
+                parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
+                super.onDestroy(owner)
+            }
+        }
+        parentFragmentContainer?.lifecycle?.addObserver(parentFragmentLifecycleObserver)
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -231,6 +278,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             previewImage = findViewById(R.id.preview_image)
             revImageOptionsContainer = findViewById(R.id.image_list_container)
             imageListViewGroup = findViewById(R.id.image_selection_view_group)
+            bottomBackgroundImage = findViewById(R.id.background_image)
+
+            //setting background image for light and dark mode
+            if (context?.isDarkMode() == true) {
+                // set dark mode background
+                bottomBackgroundImage?.setImageResource(R.drawable.universal_share_bottomsheet_image_dark_mode_bg)
+            } else {
+                // set light mode background
+                bottomBackgroundImage?.setImageResource(R.drawable.universal_share_bottomsheet_image_bg)
+            }
 
             //setting click listeners for fixed options
             copyLinkImage = findViewById(R.id.copy_link_img)
@@ -272,7 +329,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             revImageOptionsContainer?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     revImageOptionsContainer?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                    Handler().postDelayed({
+                    Handler(Looper.getMainLooper()).postDelayed({
                         revImageOptionsContainer?.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
                     }, DELAY_TIME_MILLISECOND)
                 }
@@ -371,13 +428,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }else{
             socialMediaList.add(ShareModel.Instagram().apply {
                 packageName = PACKAGE_NAME_INSTAGRAM
-                socialMediaName = context?.resources?.getString(R.string.label_instagram_msg)
+                socialMediaName = context?.resources?.getString(R.string.label_instagram_dm)
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelIgMessage
                 shareOnlyLink = false
                 appIntent = getAppIntent(MimeType.TEXT, packageName)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram_dm) }
             })
         }
         socialMediaList.add(ShareModel.Line().apply {
@@ -480,18 +537,24 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                     previewImgUrl: String = "",
                     imageList: ArrayList<String>? = null,
                     takeSS : ((view: View, imageSaved: ((String)->Unit)) -> Unit)? = null){
-        imageOptionsList = imageList
 
         if(isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)){
             previewImageUrl = screenShotImagePath
             savedImagePath = screenShotImagePath
             thumbNailImageUrl = screenShotImagePath
             thumbNailTitle = SCREENSHOT_TITLE
+            imageOptionsList = null
         }
         else {
             thumbNailTitle = tnTitle
             thumbNailImageUrl = tnImage
             previewImageUrl = previewImgUrl
+            imageOptionsList = imageList
+            imageOptionsList?.let {
+                if (it.size > 0){
+                    imageSaved(it[0])
+                }
+            }
         }
         if(takeSS == null){
             takeViewSS = (SharingUtil)::triggerSS
@@ -515,7 +578,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun setUserVisualData(){
         thumbNailTitleTxTv?.text = thumbNailTitle
         if(isImageOnlySharing){
-            thumbNailImage?.setImageURI(Uri.parse(File(thumbNailImageUrl).toString()))
+            context?.let { thumbNailImage?.let { imgView ->
+                Glide.with(it).load(thumbNailImageUrl).override(THUMBNAIL_IMG_SCREENSHOT_WIDTH, THUMBNAIL_IMG_SCREENSHOT_HEIGHT).into(
+                    imgView
+                )
+            } }
         }
         else{
             thumbNailImage?.setImageUrl(thumbNailImageUrl)
@@ -525,7 +592,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
         else {
             previewImage?.visibility = View.VISIBLE
-            previewImage?.setImageURI(Uri.parse(File(previewImageUrl).toString()))
+            if(isImageOnlySharing){
+                context?.let { previewImage?.let { imgView ->
+                    Glide.with(it).load(previewImageUrl).override(PREVIEW_IMG_SCREENSHOT_WIDTH, PREVIEW_IMG_SCREENSHOT_HEIGHT).into(
+                        imgView
+                    )
+                } }
+            }
+            else{
+                previewImage?.setImageURI(Uri.parse(File(previewImageUrl).toString()))
+            }
         }
         if(imageOptionsList != null){
             imageListViewGroup?.visibility = View.VISIBLE
@@ -567,11 +643,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             savedImagePath = screenShotImagePath
         }
         else {
+            removePreviousSavedImage(savedImagePath, imgPath)
             savedImagePath = imgPath
         }
     }
 
     fun executeShareOptionClick(shareModel: ShareModel){
+        preserveImage = true
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
         bottomSheetListener?.onShareOptionClicked(shareModel)
@@ -582,7 +660,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     override fun show(manager: FragmentManager, tag: String?) {
-        screenshotDetector?.stop()
         var customBottomSheetEnabled = true
         if(!TextUtils.isEmpty(featureFlagRemoteConfigKey)){
             val remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -608,15 +685,22 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         return otherOptionsShareModel
     }
 
+    private fun removeLifecycleObserverAndSavedImage(){
+        if(!preserveImage){
+            removeFile(savedImagePath)
+            parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
+        }
+    }
+
     override fun dismiss() {
         clearData()
-        screenshotDetector?.start()
+        removeLifecycleObserverAndSavedImage()
         super.dismiss()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         clearData()
-        screenshotDetector?.start()
+        removeLifecycleObserverAndSavedImage()
         super.onDismiss(dialog)
     }
 }
