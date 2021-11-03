@@ -16,7 +16,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:descendantFocusability="blocksDescendants"
-        android:layout_marginBottom="@dimen/dp_8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -31,7 +30,6 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:paddingLeft="12dp"
             android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"

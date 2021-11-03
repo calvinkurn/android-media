@@ -130,8 +130,6 @@ class RechargeHomepageAdapterTypeFactory(
         return 0
     }
 
-    override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
-
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RechargeHomepageLoadingViewholder.LAYOUT -> RechargeHomepageLoadingViewholder(parent)
