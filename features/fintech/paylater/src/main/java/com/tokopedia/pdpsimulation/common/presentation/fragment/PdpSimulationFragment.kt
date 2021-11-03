@@ -266,7 +266,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun handleRegisterWidgetVisibility(position: Int) {
-        if (position == SIMULATION_TAB_INDEX && !payLaterViewModel.isPayLaterProductActive)
+        if (position == SIMULATION_TAB_INDEX)
             showRegisterWidget()
         else {
             payLaterBorder.gone()
