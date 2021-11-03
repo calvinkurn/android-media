@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.searchbar.navigation_component.di.module.NavigationModule_ProvideUserSessionFactory
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
@@ -54,6 +55,7 @@ import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
@@ -97,6 +99,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private var digitalRecomTrackingQueue: TrackingQueue? = null
 
     lateinit var thanksPageData: ThanksPageData
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun initInjector() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
@@ -532,9 +537,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
-        val session = UserSession(requireContext().applicationContext)
         topadsHeadlineView.getHeadlineAds(
-            getHeadlineAdsParam(topadsHeadLinePage,session.userId),
+            getHeadlineAdsParam(topadsHeadLinePage,userSession.userId),
             this::showHeadlineView,
             this::hideHeadlineView
         )
