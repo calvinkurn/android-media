@@ -7,14 +7,17 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
+import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-open class TopChatViewModel @Inject constructor(
+class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
+    private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ): BaseViewModel(dispatcher.main) {
@@ -22,6 +25,10 @@ open class TopChatViewModel @Inject constructor(
     private val _messageId = MutableLiveData<Result<String>>()
     val messageId: LiveData<Result<String>>
         get() = _messageId
+
+    private val _shopFollowing = MutableLiveData<Result<ShopFollowingPojo>>()
+    val shopFollowing: LiveData<Result<ShopFollowingPojo>>
+        get() = _shopFollowing
 
     fun getMessageId(
         toUserId: String,
@@ -38,6 +45,15 @@ open class TopChatViewModel @Inject constructor(
             _messageId.value = Success(result.chatExistingChat.messageId)
         }, onError = {
             _messageId.value = Fail(it)
+        })
+    }
+
+    fun getShopFollowingStatus(shopId: Long) {
+        launchCatchError(block = {
+            val result = getShopFollowingUseCase(shopId)
+            _shopFollowing.value = Success(result)
+        }, onError = {
+            _shopFollowing.value = Fail(it)
         })
     }
 }
