@@ -231,7 +231,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             override fun getSpanSize(position: Int): Int {
                 return when (wishlistV2Adapter.getItemViewType(position)) {
                     WishlistV2Adapter.LAYOUT_LIST -> 2
-                    WishlistV2Adapter.LAYOUT_GRID, WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST -> 1
+                    WishlistV2Adapter.LAYOUT_GRID, WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST, WishlistV2Adapter.LAYOUT_TOPADS -> 1
                     else -> 2
                 }
             }
@@ -289,21 +289,24 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             when (result) {
                 is Success -> {
                     refreshHandler?.finishRefresh()
-                    result.data.let { wishlistV2 ->
-                        hideLoader()
-                        updateTotalLabel(wishlistV2.totalData)
-                        if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
-                            renderChipsFilter(wishlistV2.sortFilters)
-                        }
-                        if (wishlistV2.items.isNotEmpty()) {
-                            if (wishlistV2.hasNextPage) {
-                                currPage += 1
+                    val data = result.data
+                    if (data is WishlistV2Response.Data.WishlistV2) {
+                        data.let { wishlistV2 ->
+                            hideLoader()
+                            updateTotalLabel(wishlistV2.totalData)
+                            if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
+                                renderChipsFilter(wishlistV2.sortFilters)
                             }
-                            renderWishlist(wishlistV2.items)
+                            if (wishlistV2.items.isNotEmpty()) {
+                                if (wishlistV2.hasNextPage) {
+                                    currPage += 1
+                                }
+                                renderWishlist(wishlistV2.items)
 
-                        } else {
-                            if (currPage == 1) {
-                                loadRecommendationList()
+                            } else {
+                                if (currPage == 1) {
+                                    loadRecommendationList()
+                                }
                             }
                         }
                     }

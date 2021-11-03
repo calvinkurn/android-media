@@ -7,10 +7,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.data.model.DeleteWishlistV2Response
+import com.tokopedia.wishlist.data.model.WishlistV2Data
 import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.WishlistV2Response
 import com.tokopedia.wishlist.domain.DeleteWishlistV2UseCase
@@ -25,10 +27,12 @@ import javax.inject.Inject
 class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                               private val wishlistV2UseCase: WishlistV2UseCase,
                                               private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-                                              private val recommendationUseCase: GetRecommendationUseCase) : BaseViewModel(dispatcher.main) {
+                                              private val recommendationUseCase: GetRecommendationUseCase,
+                                              private val topAdsImageViewUseCase: TopAdsImageViewUseCase
+) : BaseViewModel(dispatcher.main) {
 
-    private val _wishlistV2Result = MutableLiveData<Result<WishlistV2Response.Data.WishlistV2>>()
-    val wishlistV2Result: LiveData<Result<WishlistV2Response.Data.WishlistV2>>
+    private val _wishlistV2Result = MutableLiveData<Result<WishlistV2Data>>()
+    val wishlistV2Result: LiveData<Result<WishlistV2Data>>
         get() = _wishlistV2Result
 
     private val _recommendationResult = MutableLiveData<Result<List<RecommendationWidget>>>()
