@@ -88,6 +88,8 @@ class TopAdsHeadlineViewHolder(view: View, val userId: String) :
         cpmModel.data?.let {
             if(it.size > 0){
                 titleView.show()
+            } else {
+                titleView.hide()
             }
         }
     }
