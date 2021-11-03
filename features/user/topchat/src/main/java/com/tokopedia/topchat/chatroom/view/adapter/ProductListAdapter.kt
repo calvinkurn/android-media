@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
@@ -42,7 +42,7 @@ class ProductListAdapter constructor(
 
     override fun onBindViewHolder(holder: TopchatProductAttachmentViewHolder, position: Int) {
         carousel?.products?.get(position)?.let {
-            holder.bind(it as ProductAttachmentViewModel, isUnifyBroadcast, parentMetaData)
+            holder.bind(it as ProductAttachmentUiModel, isUnifyBroadcast, parentMetaData)
         }
     }
 
@@ -54,7 +54,7 @@ class ProductListAdapter constructor(
 
     fun findProductPosition(productId: String): Int {
         return carousel?.products?.indexOfFirst { item ->
-            item is ProductAttachmentViewModel && item.productId == productId
+            item is ProductAttachmentUiModel && item.productId == productId
         } ?: RecyclerView.NO_POSITION
     }
 

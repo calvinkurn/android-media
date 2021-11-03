@@ -31,4 +31,5 @@
     <string name="telco_content_desc_content_book">contact book</string>
     <string name="digital_client_label">Nomor Telepon</string>
     <string name="telco_pick_product">Beli</string>
+    <string name="telco_choose_denom">Pilih Nominal</string>
 </resources>

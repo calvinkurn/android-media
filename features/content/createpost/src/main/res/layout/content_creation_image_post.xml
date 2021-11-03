@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content_post_image_layout"
+    android:background="@color/Unify_NN100"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/content_creation_post_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_0"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
+        android:backgroundTint="@color/Unify_NN50"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/product_tagging_parent_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_0"
+        app:layout_constraintStart_toStartOf="@id/content_creation_post_image"
+        app:layout_constraintEnd_toEndOf="@id/content_creation_post_image"
+        app:layout_constraintTop_toTopOf="@id/content_creation_post_image"
+        app:layout_constraintBottom_toBottomOf="@id/content_creation_post_image"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/product_tagging_button_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:minWidth="@dimen/layout_lvl3"
+        app:cardBackgroundColor="@color/Unify_NN900"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/product_content_tag_button"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                app:icon_color_light_enable="@color/Unify_N0"
+                app:icon_color_night_enable="@color/Unify_N0"
+                app:icon_name="PRODUCT"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/product_content_tag_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_image_type="circle" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/product_content_tag_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_3"
+                android:paddingEnd="8dp"
+                android:paddingStart="2dp"
+                android:paddingBottom="5dp"
+                android:text="@string/feed_content_post_tag_text"
+                android:textColor="@color/Unify_N0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/product_content_tag_button"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -266,7 +266,7 @@ private fun clickSeeAllRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, ite
     waitForData()
     try {
         Espresso.onView(allOf(ViewMatchers.withId(R.id.see_all_button),
-                ViewMatchers.hasSibling(ViewMatchers.withText("Beli Pulsa atau Bayar Tagihanmu")))).perform(ViewActions.click())
+                ViewMatchers.hasSibling(ViewMatchers.withText("Produk digital khusus kamu")))).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }

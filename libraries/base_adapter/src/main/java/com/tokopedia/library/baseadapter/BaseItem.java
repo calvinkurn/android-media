@@ -20,6 +20,10 @@ public class BaseItem {
         this.retryMessage = retryMessage;
     }
 
+    protected String getSearchQuery() {
+        return "";
+    }
+
     @Override
     public String toString() {
         return "BaseItem{" +

@@ -198,19 +198,19 @@ class PlayBroadcastPrepareFragment @Inject constructor(
      * Observe
      */
     private fun observeFollowers() {
-        viewModel.observableFollowers.observe(viewLifecycleOwner, Observer {
+        viewModel.observableFollowers.observe(viewLifecycleOwner) {
             followerView.setFollowersModel(it)
-        })
+        }
     }
 
     private fun observeChannelInfo() {
-        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableChannelInfo.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> openFinalPreparationPage()
                 NetworkResult.Loading -> {} //showLoading(true)
                 is NetworkResult.Fail -> view?.showErrorToaster(it.error)
             }
-        })
+        }
     }
     //endregion
 

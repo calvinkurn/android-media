@@ -10,8 +10,8 @@ kapt {
 }
 
 android {
-    viewBinding {
-        enabled true
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -30,6 +30,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
 

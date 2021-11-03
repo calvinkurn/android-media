@@ -1,11 +1,12 @@
 package com.tokopedia.play.robot.play
 
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.robot.Robot
+import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
@@ -26,22 +27,22 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import java.io.Closeable
 
 /**
  * Created by jegul on 10/02/21
  */
 class PlayViewModelRobot2(
-    private val playVideoBuilder: PlayVideoWrapper.Builder,
+    playVideoBuilder: PlayVideoWrapper.Builder,
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
     getChannelStatusUseCase: GetChannelStatusUseCase,
     getSocketCredentialUseCase: GetSocketCredentialUseCase,
-    private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    getReportSummariesUseCase: GetReportSummariesUseCase,
     getProductTagItemsUseCase: GetProductTagItemsUseCase,
     trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
@@ -55,40 +56,38 @@ class PlayViewModelRobot2(
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
     playChannelWebSocket: PlayChannelWebSocket,
     playChannelSSE: PlayChannelSSE,
-    private val repo: PlayViewerRepository,
+    repo: PlayViewerRepository,
     playAnalytic: PlayNewAnalytic,
     timerFactory: TimerFactory,
-) : Robot {
+    castPlayerHelper: CastPlayerHelper
+) : Closeable {
 
-    val viewModel: PlayViewModel
-
-    init {
-        viewModel = PlayViewModel(
-            playVideoBuilder,
-            videoStateProcessorFactory,
-            channelStateProcessorFactory,
-            videoBufferGovernorFactory,
-            getChannelStatusUseCase,
-            getSocketCredentialUseCase,
-            getReportSummariesUseCase,
-            getProductTagItemsUseCase,
-            trackProductTagBroadcasterUseCase,
-            trackVisitChannelBroadcasterUseCase,
-            playChannelReminderUseCase,
-            playSocketToModelMapper,
-            playUiModelMapper,
-            userSession,
-            dispatchers,
-            remoteConfig,
-            playPreference,
-            videoLatencyPerformanceMonitoring,
-            playChannelWebSocket,
-            playChannelSSE,
-            repo,
-            playAnalytic,
-            timerFactory,
-        )
-    }
+    val viewModel: PlayViewModel = PlayViewModel(
+        playVideoBuilder,
+        videoStateProcessorFactory,
+        channelStateProcessorFactory,
+        videoBufferGovernorFactory,
+        getChannelStatusUseCase,
+        getSocketCredentialUseCase,
+        getReportSummariesUseCase,
+        getProductTagItemsUseCase,
+        trackProductTagBroadcasterUseCase,
+        trackVisitChannelBroadcasterUseCase,
+        playChannelReminderUseCase,
+        playSocketToModelMapper,
+        playUiModelMapper,
+        userSession,
+        dispatchers,
+        remoteConfig,
+        playPreference,
+        videoLatencyPerformanceMonitoring,
+        playChannelWebSocket,
+        playChannelSSE,
+        repo,
+        playAnalytic,
+        timerFactory,
+        castPlayerHelper
+    )
 
     fun createPage(channelData: PlayChannelData) {
         viewModel.createPage(channelData)
@@ -98,7 +97,7 @@ class PlayViewModelRobot2(
         viewModel.focusPage(channelData)
     }
 
-    fun submitAction(action: PlayViewerNewAction) {
+    suspend fun submitAction(action: PlayViewerNewAction) = act {
         viewModel.submitAction(action)
     }
 
@@ -106,7 +105,11 @@ class PlayViewModelRobot2(
         every { userSession.isLoggedIn } returns isUserLoggedIn
     }
 
-    fun recordState(fn: PlayViewModelRobot2.() -> Unit): PlayViewerNewUiState {
+    fun setUserId(userId: String) {
+        every { userSession.userId } returns userId
+    }
+
+    fun recordState(fn: suspend PlayViewModelRobot2.() -> Unit): PlayViewerNewUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayViewerNewUiState
         scope.launch {
@@ -114,13 +117,13 @@ class PlayViewModelRobot2(
                 uiState = it
             }
         }
-        fn()
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
         dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiState
     }
 
-    fun recordEvent(fn: PlayViewModelRobot2.() -> Unit): List<PlayViewerNewUiEvent> {
+    fun recordEvent(fn: suspend PlayViewModelRobot2.() -> Unit): List<PlayViewerNewUiEvent> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         val uiEvents = mutableListOf<PlayViewerNewUiEvent>()
         scope.launch {
@@ -128,13 +131,13 @@ class PlayViewModelRobot2(
                 uiEvents.add(it)
             }
         }
-        fn()
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
         dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiEvents
     }
 
-    fun recordStateAndEvent(fn: PlayViewModelRobot2.() -> Unit): Pair<PlayViewerNewUiState, List<PlayViewerNewUiEvent>> {
+    fun recordStateAndEvent(fn: suspend PlayViewModelRobot2.() -> Unit): Pair<PlayViewerNewUiState, List<PlayViewerNewUiEvent>> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayViewerNewUiState
         val uiEvents = mutableListOf<PlayViewerNewUiEvent>()
@@ -148,10 +151,23 @@ class PlayViewModelRobot2(
                 uiEvents.add(it)
             }
         }
-        fn()
-        dispatchers.coroutineDispatcher.runCurrent()
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiState to uiEvents
+    }
+
+    fun cancelRemainingTasks() {
+        viewModel.viewModelScope.coroutineContext.cancelChildren()
+    }
+
+    private suspend fun act(fn: () -> Unit) {
+        fn()
+        yield()
+    }
+
+    override fun close() {
+        cancelRemainingTasks()
     }
 }
 
@@ -179,6 +195,7 @@ fun createPlayViewModelRobot(
     repo: PlayViewerRepository = mockk(relaxed = true),
     playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     timerFactory: TimerFactory = mockk(relaxed = true),
+    castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
     fn: PlayViewModelRobot2.() -> Unit = {}
 ): PlayViewModelRobot2 {
     return PlayViewModelRobot2(
@@ -205,6 +222,6 @@ fun createPlayViewModelRobot(
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,
-
+        castPlayerHelper = castPlayerHelper
     ).apply(fn)
 }

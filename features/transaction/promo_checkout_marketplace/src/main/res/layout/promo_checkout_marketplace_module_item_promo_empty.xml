@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_N0"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/empty_state_promo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_48" />
+        android:layout_marginTop="48dp" />
 
 </LinearLayout>

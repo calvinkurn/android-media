@@ -5,6 +5,7 @@
     <string name="path_open_catalog_picker">/open-catalog-picker</string>
     <string name="path_open_product_preview" translatable="false">/open-product-preview</string>
     <string name="path_product_draft" translatable="false">/product-draft</string>
+    <string name="path_product_bundle" translatable="false">/product-bundle/.*\\/</string>
     <string name="path_brandlist" translatable="false">/official-store/brand/.*\\/</string>
     <string name="path_brandlist_search" translatable="false">/official-store/brand/search</string>
 
@@ -12,4 +13,7 @@
     <string name="path_shop_showcase_add" translatable="false">/shop-showcase-add</string>
     <string name="path_shop_showcase_edit" translatable="false">/shop-showcase-edit</string>
     <string name="path_statistic_dashboard">/statistic_dashboard</string>
+    <string name="path_official_store" translatable="false">/official-store</string>
+
+    <string name="title_bundling_selection_page" translatable="false">Bundling Selection Page</string>
 </resources>

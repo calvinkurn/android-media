@@ -84,7 +84,16 @@ class MvcTracker{
         trackerImpl.userClickBottomSheetCTA(widgetType,label,userId)
     }
 
-    fun tokomemberImpressionOnPdp(shopId: String,userId: String?){
-        trackerImpl.tokomemberImpressionOnPdp(shopId,userId)
+    fun tokomemberImpressionOnPdp(shopId: String,userId: String?, isTokomember: Boolean){
+        trackerImpl.tokomemberImpressionOnPdp(shopId,userId, isTokomember)
+    }
+
+    //Multishop
+    fun viewMVCCoupon(label: String, mapData: HashMap< String,Any> , @MvcSource source: Int){
+        trackerImpl.viewMVCCoupon(label,mapData,source)
+    }
+
+    fun mvcMultiShopCardClick(shopName: String, eventAction: String, @MvcSource source: Int, userId: String?, label: String = ""){
+        trackerImpl.mvcMultiShopCardClick(shopName,eventAction,source,userId,label)
     }
 }

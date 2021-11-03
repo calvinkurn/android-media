@@ -76,7 +76,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
                 onNavigateToHome()
             } else {
                 // nfc enabled and process Mandiri NFC as default
-                showLoading()
+                showLoading(getOperatorName(ISSUER_ID_BRIZZI))
                 processBrizzi(intent)
             }
         }
@@ -249,7 +249,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
                     nfcDisabledView.visibility = View.GONE
 
                     if (eTollUpdateBalanceResultView.visibility == View.GONE) {
-                        emoneyAnalytics.onEnableNFC()
+                        emoneyAnalytics.onEnableNFC(getOperatorName(ISSUER_ID_BRIZZI))
                         tapETollCardView.visibility = View.VISIBLE
                     } else {
                         //do nothing

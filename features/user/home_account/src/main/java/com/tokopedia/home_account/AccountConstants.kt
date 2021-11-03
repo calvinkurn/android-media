@@ -232,6 +232,10 @@ object AccountConstants {
         const val TDN_INDEX = 4
     }
 
+    object DIMENSION {
+        const val LAYOUT_TITLE_LEFT_MARGIN = 20
+    }
+
     object LAYOUT {
         const val TYPE_ERROR = -1
     }

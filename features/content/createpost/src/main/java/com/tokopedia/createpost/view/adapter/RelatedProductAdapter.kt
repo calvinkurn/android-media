@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.createpost.TYPE_AFFILIATE
+import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_af_related_product.view.*
 
@@ -79,7 +79,7 @@ class RelatedProductAdapter(val listener: RelatedProductListener? = null, val ty
         }
     }
 
-    fun setList(list: MutableList<RelatedProductItem>) {
+    fun setList(list: ArrayList<RelatedProductItem>) {
         if (list.isEmpty() && shouldAddEmpty()) {
             list.add(emptyItem)
         }

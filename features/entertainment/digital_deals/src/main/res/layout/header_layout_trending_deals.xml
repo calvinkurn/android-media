@@ -4,6 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:padding="@dimen/dp_16"
+    android:padding="16dp"
     android:text="@string/trending_deals"
     android:textColor="@color/Unify_N700_32" />
