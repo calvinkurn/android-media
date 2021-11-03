@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.domain.usecases.InsertOrderExtensionRespon
 import com.tokopedia.buyerorderdetail.presentation.model.OrderExtensionRespondInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderExtensionRespondUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -30,6 +31,9 @@ abstract class BuyerOrderExtensionViewModelTestFixture {
     @RelaxedMockK
     lateinit var getOrderExtensionRespondInfoUseCase: Lazy<GetOrderExtensionRespondInfoUseCase>
 
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+
     lateinit var viewModel: BuyerOrderDetailExtensionViewModel
 
     protected val orderId = "123456"
@@ -39,6 +43,7 @@ abstract class BuyerOrderExtensionViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = BuyerOrderDetailExtensionViewModel(
             coroutineDispatchers,
+            userSession,
             insertOrderExtensionRespondUseCase,
             getOrderExtensionRespondInfoUseCase
         )

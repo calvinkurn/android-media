@@ -41,6 +41,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<OrderExtensionSubmissionExtendsBottomsheetBinding>()
     private var confirmedCancelledOrderDialog: OrderExtensionDialog? = null
+    private var respondInfo: OrderExtensionRespondInfoUiModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +61,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRespondInfo()
         setupView()
         setupCta()
         observeRespond()
@@ -100,10 +102,18 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         if (binding?.btnSubmissionExtends?.isLoading == true) {
             binding?.btnSubmissionExtends?.isLoading = false
         }
+
+        confirmedCancelledOrderDialog?.getDialog()?.run {
+            if (dialogPrimaryCTA.isLoading) {
+                dialogPrimaryCTA.isLoading = false
+            }
+            if (dialogSecondaryLongCTA.isLoading) {
+                dialogSecondaryLongCTA.isLoading = false
+            }
+        }
     }
 
     private fun setupView() = binding?.run {
-        val respondInfo = getRespondInfo().value
         tvSubmissionExtendsTitle.text = respondInfo?.confirmationTitle.orEmpty()
         tvSubmissionExtendsReason.text = respondInfo?.reasonExtension.orEmpty()
         dividerSubmissionExtends.setBackgroundResource(R.drawable.ic_divider_submission_extends)
@@ -116,6 +126,10 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         }
         btnSubmissionExtends.setOnClickListener {
             btnSubmissionExtends.isLoading = true
+            buyerOrderDetailExtensionViewModel.requestRespond(
+                orderId = getOrderId(),
+                action = EXTENSION_ACTION
+            )
         }
     }
 
@@ -154,8 +168,11 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun getOrderId(): String {
+       return respondInfo?.orderId.orEmpty()
+    }
+
     private fun getInstanceDialog(): Lazy<OrderExtensionDialog?> {
-        val respondInfo = getRespondInfo().value
         val nn950Color = com.tokopedia.unifyprinciples.R.color.Unify_NN950.toString()
         return lazy {
             context?.let {
@@ -179,38 +196,40 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getOrderId(): String {
-        return getRespondInfo().value?.orderId.orEmpty()
-    }
-
     private fun showConfirmedCancelledOrderDialog() {
         confirmedCancelledOrderDialog = getInstanceDialog().value
         confirmedCancelledOrderDialog?.getDialog()?.apply {
             setPrimaryCTAText(getString(R.string.order_extension_order_cancelled))
             setSecondaryCTAText(getString(R.string.order_extension_btn_secondary))
             setPrimaryCTAClickListener {
-                buyerOrderDetailExtensionViewModel.requestRespond(getOrderId(), CANCEL_ACTION)
+                dialogPrimaryCTA.isLoading = true
+                buyerOrderDetailExtensionViewModel.requestRespond(
+                    getOrderId(),
+                    CANCEL_ACTION
+                )
             }
             setSecondaryCTAClickListener {
-                buyerOrderDetailExtensionViewModel.requestRespond(getOrderId(), EXTENSION_ACTION)
+                dialogSecondaryLongCTA.isLoading = true
+                buyerOrderDetailExtensionViewModel.requestRespond(
+                    getOrderId(),
+                    EXTENSION_ACTION
+                )
             }
             show()
         }
     }
 
-    private fun getRespondInfo(): Lazy<OrderExtensionRespondInfoUiModel?> {
-        return lazy {
-            val cacheManager = context?.let {
-                SaveInstanceCacheManager(
-                    it,
-                    arguments?.getString(KEY_CACHE_MANAGER_ID)
-                )
-            }
-            cacheManager?.get<OrderExtensionRespondInfoUiModel>(
-                KEY_ITEM_RESPOND_INFO,
-                OrderExtensionRespondInfoUiModel::class.java
+    private fun setupRespondInfo() {
+        val cacheManager = context?.let {
+            SaveInstanceCacheManager(
+                it,
+                arguments?.getString(KEY_CACHE_MANAGER_ID)
             )
         }
+        respondInfo = cacheManager?.get<OrderExtensionRespondInfoUiModel>(
+            KEY_ITEM_RESPOND_INFO,
+            OrderExtensionRespondInfoUiModel::class.java
+        )
     }
 
     override fun onDestroyView() {

@@ -9,7 +9,7 @@ import javax.inject.Inject
 class BuyerOrderExtensionMapper @Inject constructor() {
 
     fun mapToOrderExtensionRespondInfo(
-        data: OrderExtensionRespondInfoResponse.Data,
+        data: OrderExtensionRespondInfoResponse.OrderExtensionRespondInfo,
         orderId: String
     ) = OrderExtensionRespondInfoUiModel(
         orderId = orderId,

@@ -55,9 +55,9 @@ class GetOrderExtensionRespondInfoUseCase @Inject constructor(
         private const val ORDER_ID_KEY = "order_id"
 
         private val QUERY = """
-            query OrderExtensionRespondInfo(${'$'}orderId: Int!) {
+            query OrderExtensionRespondInfo(${'$'}order_id: Int!) {
               order_extension_respond_info(input: {
-                order_id : ${'$'}orderId
+                order_id : ${'$'}order_id
               }) {
                 text
                 reject_text

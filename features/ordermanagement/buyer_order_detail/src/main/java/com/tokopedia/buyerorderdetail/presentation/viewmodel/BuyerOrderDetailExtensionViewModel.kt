@@ -13,12 +13,14 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class BuyerOrderDetailExtensionViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
     private val insertOrderExtensionRespondUseCase: Lazy<InsertOrderExtensionRespondUseCase>,
     private val getOrderExtensionRespondInfoUseCase: Lazy<GetOrderExtensionRespondInfoUseCase>
 ) : BaseViewModel(dispatcher.main) {
@@ -48,7 +50,8 @@ class BuyerOrderDetailExtensionViewModel @Inject constructor(
     fun requestRespond(orderId: String, action: Int) {
         launchCatchError(block = {
             val respondInfo = withContext(dispatcher.io) {
-                insertOrderExtensionRespondUseCase.get().setParams(orderId.toLongOrZero(), action)
+                insertOrderExtensionRespondUseCase.get()
+                    .setParams(orderId.toLongOrZero(), action, userSession.userId.toLongOrZero())
                 insertOrderExtensionRespondUseCase.get().executeOnBackground()
             }
             _orderExtensionRespond.value = Success(respondInfo)
