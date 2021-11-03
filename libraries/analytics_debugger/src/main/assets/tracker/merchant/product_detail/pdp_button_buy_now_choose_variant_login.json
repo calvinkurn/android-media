@@ -49,26 +49,38 @@
       "sessionIris": ".{1,}",
       "shopId": "\\d{1,}",
       "eventLabel": ".*",
-      "user_id": "\\d{1,}",
+      "userId": "\\d{1,}",
+      "businessUnit": ".*",
+      "currentSite": ".*",
+      "component": ".*",
       "layout": "layout:.*;catName:.*;catId:\\d{1,};",
       "items": [
         {
           "item_category": ".*",
           "item_brand": ".*",
-          "dimension54": ".*",
           "dimension80": ".*",
           "dimension81": ".*",
-          "dimension45": "\\d{1,}",
           "item_variant": ".*",
           "dimension83": ".*",
-          "dimension40": ".*",
           "dimension79": "\\d{1,}",
           "item_id": "\\d{1,}",
           "quantity": "\\d*.\\d*|\\d.\\d+E\\d",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "item_name": ".*",
           "dimension82": ".*",
-          "dimension38": ".*"
+          "dimension38": ".*",
+          "shop_id": ".*",
+          "shop_name": ".*",
+          "shop_type": ".*",
+          "dimension10": ".*",
+          "dimension12": ".*",
+          "dimension14": ".*",
+          "dimension16": ".*",
+          "dimension40": ".*",
+          "dimension45": ".*",
+          "dimension54": ".*",
+          "dimension120": ".* \\- .*",
+          "category_id": ".*"
         }
       ]
     }
