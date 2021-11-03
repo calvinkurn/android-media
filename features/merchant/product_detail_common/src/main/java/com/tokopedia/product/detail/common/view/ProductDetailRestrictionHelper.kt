@@ -9,6 +9,9 @@ import com.tokopedia.unifycomponents.toPx
  */
 object ProductDetailRestrictionHelper {
 
+    const val RESTRICTION_CATEGORIES_PADDING_BOTTOM = 8
+    const val CAMPAIGN_TIER_PADDING_BOTTOM = 16
+
     fun renderNplUi(reData: RestrictionData?,
                     isShopOwner: Boolean,
                     isFavoriteShop: Boolean,
@@ -50,7 +53,7 @@ object ProductDetailRestrictionHelper {
                                             isShopOwner: Boolean,
                                             shopFollowersView: PartialButtonShopFollowersView?) {
         val shouldShow = !reData.isEligible
-        if (shouldShow && !isShopOwner && reData.restrictionShopFollowersType()) {
+        if (shouldShow && !isShopOwner && reData.restrictionCategoriesType()) {
             if (shopFollowersView?.view?.isShown == false) {
                 shopFollowersView.view.translationY = 100.toPx().toFloat()
             }
@@ -64,9 +67,10 @@ object ProductDetailRestrictionHelper {
                     alreadyFollowShop = false,
                     centerImage = true,
                     buttonLabel = buttonLabel,
-                    iconUrl = badgeUrl)
+                    iconUrl = badgeUrl,
+                    customPaddingBottom = RESTRICTION_CATEGORIES_PADDING_BOTTOM)
         }
-        setupNplVisibility(shouldShow, isShopOwner, reData, shopFollowersView)
+        shopFollowersView?.setupVisibility = shouldShow && !isShopOwner
     }
     //endregion
 
@@ -84,7 +88,9 @@ object ProductDetailRestrictionHelper {
 
             val title = reData.action.firstOrNull()?.title ?: ""
             val desc = reData.action.firstOrNull()?.description ?: ""
-            shopFollowersView?.renderView(title, desc, alreadyFollowShop)
+            shopFollowersView?.renderView(title = title,
+                    desc = desc,
+                    alreadyFollowShop = alreadyFollowShop)
         }
         setupNplVisibility(shouldShowRe, isShopOwner, reData, shopFollowersView)
     }
@@ -115,6 +121,7 @@ object ProductDetailRestrictionHelper {
                     iconUrl = badgeUrl,
                     hideButton = true,
                     maxLine = 2,
+                    customPaddingBottom = CAMPAIGN_TIER_PADDING_BOTTOM,
                     centerImage = true)
         }
         setupExclusiveVisibility(reData.isNotEligibleExclusive(), isExclusiveType, nplExclusiveView)
