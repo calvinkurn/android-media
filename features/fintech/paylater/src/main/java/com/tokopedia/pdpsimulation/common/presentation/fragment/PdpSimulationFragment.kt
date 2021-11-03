@@ -20,6 +20,7 @@ import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.*
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterPagerAdapter
+import com.tokopedia.pdpsimulation.common.utils.Utils
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.CreditCardSimulationFragment
 import com.tokopedia.pdpsimulation.creditcard.presentation.tnc.CreditCardTncFragment
 import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
@@ -322,6 +323,21 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         }
 
     }
+
+    override fun setViewModelData(
+        updateViewModelVariable: Utils.UpdateViewModelVariable,
+        value: Any
+    ) {
+        when (updateViewModelVariable) {
+            Utils.UpdateViewModelVariable.SortPosition -> payLaterViewModel.sortPosition =
+                value as Int
+            Utils.UpdateViewModelVariable.PartnerPosition -> payLaterViewModel.partnerDisplayPosition =
+                value as Int
+            Utils.UpdateViewModelVariable.RefreshType -> payLaterViewModel.refreshData =
+                value as Boolean
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()

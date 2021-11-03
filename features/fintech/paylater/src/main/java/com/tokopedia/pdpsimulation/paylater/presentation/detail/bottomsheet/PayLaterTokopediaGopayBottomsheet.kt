@@ -4,24 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
-import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
+import com.tokopedia.pdpsimulation.common.utils.Utils
 import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterPaymentOptionsFragment.Companion.PAYLATER_PARTNER_POSITION
-import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.paylater_gopay_activation_bottomsheet.*
-import javax.inject.Inject
 
 class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
@@ -30,10 +25,6 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     private var isWebLink = true
 
 
-    @Inject
-    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private var component: PdpSimulationComponent? = null
-
     private var parterName: String? = ""
     private var tenure: Int? = 0
     private var montlyInstallment: Double? = 0.0
@@ -41,11 +32,6 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     private var redirectPosition = 0
 
 
-    private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider =
-            ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
-        viewModelProvider.get(PayLaterViewModel::class.java)
-    }
 
 
     init {
@@ -68,18 +54,12 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initInjector()
         getArgumentData()
         setDefaultParams()
         initBottomSheet()
 
     }
 
-    private fun initInjector() {
-        component =
-            PdpSimulationComponent::class.java.cast((activity as (HasComponent<PdpSimulationComponent>)).component)
-        component?.inject(this) ?: dismiss()
-    }
 
     private fun getArgumentData() {
         arguments?.let {
@@ -132,8 +112,11 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private fun openRouteView(androidUrl: String?) {
         if (isWebLink) {
-            payLaterViewModel.refreshData = true
-            payLaterViewModel.partnerDisplayPosition = redirectPosition
+            pdpSimulationCallback?.setViewModelData(Utils.UpdateViewModelVariable.RefreshType, true)
+            pdpSimulationCallback?.setViewModelData(
+                Utils.UpdateViewModelVariable.PartnerPosition,
+                redirectPosition
+            )
             val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + androidUrl
             RouteManager.route(context, webViewAppLink)
         } else {

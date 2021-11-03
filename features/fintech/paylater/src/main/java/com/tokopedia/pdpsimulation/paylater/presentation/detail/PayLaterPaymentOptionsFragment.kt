@@ -7,11 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone
@@ -20,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
-import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
+import com.tokopedia.pdpsimulation.common.utils.Utils
 import com.tokopedia.pdpsimulation.paylater.domain.model.Benefit
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
@@ -29,15 +26,13 @@ import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayL
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterAdditionalFeeInfo
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet
-import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.android.synthetic.main.fragment_paylater_cards_info.*
-import javax.inject.Inject
 
-class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
+class PayLaterPaymentOptionsFragment : Fragment() {
 
     private val responseData by lazy {
         arguments?.getParcelable<Detail>(PAY_LATER_PARTNER_DATA)
@@ -47,14 +42,6 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
         arguments?.getInt(PAYLATER_PARTNER_POSITION, 0)
     }
 
-    @Inject
-    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-
-    private val payLaterViewModel: PayLaterViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider =
-            ViewModelProviders.of(getGrandParent(), viewModelFactory.get())
-        viewModelProvider.get(PayLaterViewModel::class.java)
-    }
 
     private var buttonStatus: RedirectionType? = null
     private var gatewayType: GatewayStatusType? = null
@@ -77,18 +64,9 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
         setData()
     }
 
-    private fun getGrandParent(): Fragment {
-        return requireParentFragment().requireParentFragment()
-    }
 
 
-    override fun getScreenName(): String {
-        return "Detail Penawaran"
-    }
 
-    override fun initInjector() {
-        getComponent(PdpSimulationComponent::class.java).inject(this)
-    }
 
     private fun updateHighLightList() {
         rvPaymentDesciption.apply {
@@ -122,9 +100,17 @@ class PayLaterPaymentOptionsFragment : BaseDaggerFragment() {
 
                     RedirectionType.RedirectionWebView -> {
                         if (!urlToRedirect.isNullOrEmpty()) {
-                            payLaterViewModel.isPayLaterProductActive = true
-                            payLaterViewModel.refreshData = true
-                            payLaterViewModel.partnerDisplayPosition = position ?: 0
+                            (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let { pdpCallBack ->
+                                pdpCallBack.setViewModelData(
+                                    Utils.UpdateViewModelVariable.RefreshType,
+                                    true
+                                )
+                                pdpCallBack.setViewModelData(
+                                    Utils.UpdateViewModelVariable.PartnerPosition,
+                                    position ?: 0
+                                )
+                            }
+
                             RouteManager.route(
                                 activity,
                                 ApplinkConstInternalGlobal.WEBVIEW,
