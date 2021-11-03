@@ -162,7 +162,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
-import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtil
+import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.bottomsheet.ShopStatusInfoBottomSheet
@@ -344,7 +344,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this, viewModel.userId) }
     private val coachMarkBoePref by lazy { CoachMarkLocalCache(context) }
     private val adapter by lazy {
-        val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
+        val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtilCallback())
                 .build()
         ProductDetailAdapter(asyncDifferConfig, this, adapterFactory)
     }

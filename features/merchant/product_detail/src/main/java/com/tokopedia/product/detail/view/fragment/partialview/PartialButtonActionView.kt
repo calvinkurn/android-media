@@ -70,7 +70,7 @@ class PartialButtonActionView private constructor(val view: View,
     private val btnChat = view.findViewById<UnifyButton>(R.id.btn_topchat)
 
     companion object {
-        fun build(_view: View, _buttonListener: PartialButtonActionListener) = PartialButtonActionView(_view, _buttonListener)
+        fun build(view: View, buttonListener: PartialButtonActionListener) = PartialButtonActionView(view, buttonListener)
 
         private const val QUANTITY_REGEX = "[^0-9]"
         private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 500L

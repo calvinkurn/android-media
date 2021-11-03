@@ -53,9 +53,9 @@ class ProductCustomMovementMethod(val listener: (String) -> Unit) : ArrowKeyMove
     }
 
     private fun isBranchIoLink(url: String): Boolean {
-        val BRANCH_IO_HOST = "tokopedia.link"
+        val branchIoHost = "tokopedia.link"
         val uri = Uri.parse(url)
-        return uri.host != null && uri.host == BRANCH_IO_HOST
+        return uri.host != null && uri.host == branchIoHost
     }
 
 }
