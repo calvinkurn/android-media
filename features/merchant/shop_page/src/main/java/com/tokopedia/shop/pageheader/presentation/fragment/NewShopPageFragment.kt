@@ -108,6 +108,7 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
+import com.tokopedia.shop.common.constant.ShopPageConstant.HOME_V2_EXTRA
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShopReviewPage
@@ -1674,7 +1675,8 @@ class NewShopPageFragment :
     }
 
     private fun isUsingNewShopHomeTab(): Boolean {
-        return ShopUtil.isUsingNewShopHomeTab()
+        val isBypassNewHome = activity?.intent?.extras?.getString(HOME_V2_EXTRA).toBoolean()
+        return ShopUtil.isUsingNewShopHomeTab(isBypassNewHome)
     }
 
     private fun onErrorGetShopPageTabData(e: Throwable?) {

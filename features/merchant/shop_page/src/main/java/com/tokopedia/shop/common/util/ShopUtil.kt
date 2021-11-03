@@ -113,12 +113,16 @@ object ShopUtil {
         return shopReviewAbTestKey.equals(NEW_REVIEW_SHOP, true)
     }
 
-    fun isUsingNewShopHomeTab(): Boolean {
-        val newShopHomeTabAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                AB_TEST_SHOP_NEW_HOME_TAB,
-                ""
-        ).orEmpty()
-        return newShopHomeTabAbTestKey.isNotEmpty()
+    fun isUsingNewShopHomeTab(isBypass: Boolean = false): Boolean {
+        return if (isBypass)
+            true
+        else {
+            val newShopHomeTabAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                    AB_TEST_SHOP_NEW_HOME_TAB,
+                    ""
+            ).orEmpty()
+            newShopHomeTabAbTestKey.isNotEmpty()
+        }
     }
 
     fun <E> MutableList<E>.setElement(index: Int, element: E){
