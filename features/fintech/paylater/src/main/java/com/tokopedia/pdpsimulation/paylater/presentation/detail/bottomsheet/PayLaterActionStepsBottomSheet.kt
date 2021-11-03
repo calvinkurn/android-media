@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -22,20 +21,7 @@ import java.net.URLEncoder
 
 class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
-    init {
-        setShowListener {
-            bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(view: View, slideOffset: Float) {
-                }
 
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        dismiss()
-                    }
-                }
-            })
-        }
-    }
 
     private var pdpSimulationCallback: PdpSimulationCallback? = null
     private val childLayoutRes = R.layout.paylater_action_steps_bottomsheet_widget

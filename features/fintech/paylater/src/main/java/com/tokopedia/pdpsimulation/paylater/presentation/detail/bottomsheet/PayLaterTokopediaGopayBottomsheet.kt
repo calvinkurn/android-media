@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -34,20 +33,6 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
 
 
-    init {
-        setShowListener {
-            bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(view: View, slideOffset: Float) {
-                }
-
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        dismiss()
-                    }
-                }
-            })
-        }
-    }
 
     private val childLayoutRes = R.layout.paylater_gopay_activation_bottomsheet
 
