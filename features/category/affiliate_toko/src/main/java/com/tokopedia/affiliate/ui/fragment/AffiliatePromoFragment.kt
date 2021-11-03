@@ -84,9 +84,6 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         promotion_recycler_view.layoutManager = layoutManager
         promotion_recycler_view.adapter = adapter
         product_link_et.run {
-            clearIconView.setOnClickListener {
-                showDefaultState()
-            }
             setRelatedView(dim_layer)
             setDoneAction {
                 affiliatePromoViewModel.getSearch(editText.text.toString())

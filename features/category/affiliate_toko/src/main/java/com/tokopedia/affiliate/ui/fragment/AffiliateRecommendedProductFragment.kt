@@ -139,8 +139,10 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             if (visibility != null) {
                 if (visibility)
                     adapter.startShimmer(true)
-                else
+                else {
                     adapter.stopShimmer()
+                    adapter.notifyItemRangeChanged(0,4)
+                }
             }
         })
 
@@ -162,6 +164,11 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
         affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(this, { itemCount ->
 
+        })
+
+        affiliateRecommendedProductViewModel.getErrorMessage().observe(this, { errorMessage ->
+            swipe_refresh_layout.hide()
+            error_group.show()
         })
     }
 

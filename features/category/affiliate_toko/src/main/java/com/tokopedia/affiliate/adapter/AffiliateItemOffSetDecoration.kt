@@ -34,13 +34,13 @@ class AffiliateItemOffSetDecoration : RecyclerView.ItemDecoration() {
             var top=0
             if(position<2) top=parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
             val left = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-            setMargins(view, left = left,top = top)
+            //setMargins(view, left = left,top = top)
         } else {
             //settings for right column
             var top=0
             if(position<2) top = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
             val right = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-            setMargins(view, right = right,top = top)
+            //setMargins(view, right = right,top = top)
         }
     }
 
