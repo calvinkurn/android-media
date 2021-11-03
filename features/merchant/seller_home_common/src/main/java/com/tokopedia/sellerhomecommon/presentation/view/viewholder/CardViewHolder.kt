@@ -4,7 +4,13 @@ import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
@@ -23,6 +29,7 @@ class CardViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_card_widget
+        private const val ZERO_STR = "0"
     }
 
     private val binding by lazy {
@@ -30,9 +37,19 @@ class CardViewHolder(
     }
 
     override fun bind(element: CardWidgetUiModel) {
-        observeState(element)
-
         binding.tvCardTitle.text = element.title
+        observeState(element)
+    }
+
+    private fun setupTitle(element: CardWidgetUiModel) {
+        with(binding) {
+            notifTagCard.setNotification(
+                element.tag,
+                NotificationUnify.TEXT_TYPE,
+                NotificationUnify.COLOR_TEXT_TYPE
+            )
+            notifTagCard.isVisible = element.tag.isNotBlank()
+        }
     }
 
     private fun observeState(element: CardWidgetUiModel) {
@@ -47,11 +64,13 @@ class CardViewHolder(
                 showShimmer(false)
                 showOnError(true)
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
+                setupTitle(element)
             }
             else -> {
                 showOnError(false)
                 showShimmer(false)
                 showViewComponent(element, true)
+                setupTitle(element)
             }
         }
     }
@@ -59,14 +78,13 @@ class CardViewHolder(
     private fun showViewComponent(element: CardWidgetUiModel, isShown: Boolean) {
         var shouldLoadAnimation = false
         with(binding) {
-            val visibility = if (isShown) View.VISIBLE else View.INVISIBLE
-            tvCardTitle.visibility = visibility
-            tvCardValue.visibility = visibility
-            tvCardSubValue.visibility = visibility
+            tvCardTitle.isVisible = isShown
+            tvCardValue.isVisible = isShown
+            tvCardSubValue.isVisible = isShown
             val value = element.data?.value
             val previousValue = element.data?.previousValue
             if (isShown) {
-                val shownValue = if (value.isNullOrBlank()) "0" else value
+                val shownValue = if (value.isNullOrBlank()) ZERO_STR else value
                 element.data?.previousValue = shownValue
                 if (previousValue?.equals(value) == false) {
                     shouldLoadAnimation = true
@@ -84,8 +102,6 @@ class CardViewHolder(
             }
         }
 
-        setTagNotification(element.tag)
-
         if (!isShown) return
 
         with(binding) {
@@ -100,12 +116,11 @@ class CardViewHolder(
                 containerCard.setBackgroundColor(root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
 
-            tvCardTitle.text = element.title
             if (shouldLoadAnimation) {
                 tvCardValue.invisible()
             } else {
                 tvCardValue.visible()
-                tvCardValue.text = (element.data?.value ?: "0").parseAsHtml()
+                tvCardValue.text = (element.data?.value ?: ZERO_STR).parseAsHtml()
             }
             tvCardSubValue.text = element.data?.description?.parseAsHtml()
             root.addOnImpressionListener(element.impressHolder) {
@@ -132,20 +147,6 @@ class CardViewHolder(
                     loadImage(R.drawable.bg_shc_card_stata_warning)
                 }
                 CardDataUiModel.State.NORMAL -> gone()
-            }
-        }
-    }
-
-    private fun setTagNotification(tag: String) {
-        val isTagVisible = tag.isNotBlank()
-        with(binding) {
-            notifTagCard.showWithCondition(isTagVisible)
-            if (isTagVisible) {
-                notifTagCard.setNotification(
-                    tag,
-                    NotificationUnify.TEXT_TYPE,
-                    NotificationUnify.COLOR_TEXT_TYPE
-                )
             }
         }
     }
