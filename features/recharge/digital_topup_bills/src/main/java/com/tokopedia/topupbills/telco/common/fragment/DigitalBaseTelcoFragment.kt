@@ -397,11 +397,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 isValid = false
                 clientNumberWidget.setErrorInputNumber(validation.message)
                 break
-            } else {
-                clientNumberWidget.clearErrorState()
             }
         }
-        if (isValid) isValidTracking.invoke()
+        if (isValid) {
+            isValidTracking.invoke()
+            clientNumberWidget.clearErrorState()
+        }
         buyWidget?.setVisibilityLayout(isValid)
     }
 
