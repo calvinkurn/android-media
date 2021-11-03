@@ -15,8 +15,6 @@ class PromptToActivateSmartReplyTest : TopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentUseCase.defaultSrwPrompt
         launchChatRoomActivity()
 
-        // When
-
         // Then
         assertChatRecyclerview(
             hasViewHolderItemAtPosition(
