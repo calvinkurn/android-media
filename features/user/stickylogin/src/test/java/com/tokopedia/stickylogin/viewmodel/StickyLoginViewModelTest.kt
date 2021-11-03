@@ -3,9 +3,8 @@ package com.tokopedia.stickylogin.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.domain.data.StickyLoginTickerDataModel
-import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
 import com.tokopedia.stickylogin.view.viewModel.StickyLoginViewModel
-import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
 import androidx.lifecycle.Observer
