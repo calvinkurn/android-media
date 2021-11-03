@@ -85,7 +85,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
             tokoToGoPayHeader.text = cta.bottomSheet?.bottomSheetTitle ?: ""
             tokoToGoPaySubHeader.text = cta.bottomSheet?.bottomSheetDescription ?: ""
             btnRegister.text = cta.bottomSheet?.bottomSheetButtonText ?: ""
-            if (cta.cta_type == 1)
+            if (cta.cta_type == REDIRECT_TOKO_ENV)
                 isWebLink = false
         }
     }
@@ -162,6 +162,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
         const val TENURE = " tenure"
         const val EMI_AMOUNT = "emiAmount"
         const val PRODUCT_ID = "productID"
+        const val REDIRECT_TOKO_ENV = 1
 
         fun show(
             bundle: Bundle,

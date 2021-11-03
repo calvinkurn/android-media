@@ -72,7 +72,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
             partnerName = it.gateway_detail?.name ?: ""
             actionUrl = it.cta?.android_url ?: ""
             tenure = payLaterItemProductData.tenure ?: 0
-            if (it.cta?.cta_type == 1) {
+            if (it.cta?.cta_type == REDIRECT_TOKO_ENV) {
                 isWebUrl = false
             } else {
                 if (it.cta?.cta_type == HOWTOUSE) {
@@ -183,10 +183,11 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
         private const val TAG = "PayLaterActionStepsBottomSheet"
         const val STEPS_DATA = "stepsData"
-        const val PRODUCT_URL = "productUrl"
 
         // If CTA type is 4 the show How to Use list else show how to apply list
         const val HOWTOUSE = 4
+        const val REDIRECT_TOKO_ENV = 1
+
 
         fun show(
             bundle: Bundle,
