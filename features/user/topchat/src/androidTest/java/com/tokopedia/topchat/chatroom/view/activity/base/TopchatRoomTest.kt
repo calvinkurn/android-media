@@ -97,6 +97,12 @@ abstract class TopchatRoomTest {
     protected lateinit var getChatUseCase: GetChatUseCaseStub
 
     @Inject
+    protected lateinit var reminderTickerUseCase: GetReminderTickerUseCaseStub
+
+    @Inject
+    protected lateinit var closeReminderTicker: CloseReminderTickerStub
+
+    @Inject
     protected lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
 
     @Inject

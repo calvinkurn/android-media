@@ -31,10 +31,18 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_first_page_as_seller.json"
     private val chatWithBuyerPath =
         "success_get_chat_first_page_as_buyer.json"
+    private val sellerSrwPromptPath =
+        "seller/success_get_chat_replies_with_srw_reply_prompt.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
             gqlUseCase.response = value
+            field = value
+        }
+
+    var isError = false
+        set(value) {
+            gqlUseCase.isError = value
             field = value
         }
 
@@ -51,6 +59,17 @@ class GetChatUseCaseStub @Inject constructor(
     fun getCurrentRoomMetaData(msgId: String): RoomMetaData {
         return mapper.generateRoomMetaData(msgId, response)
     }
+
+    /**
+     * <!--- Start SRW Prompt --->
+     */
+
+    val defaultSrwPrompt: GetExistingChatPojo
+        get() = alterResponseOf(sellerSrwPromptPath) { }
+
+    /**
+     * <!--- End SRW Prompt --->
+     */
 
     /**
      * <!--- Start Reply bubble --->
@@ -96,12 +115,6 @@ class GetChatUseCaseStub @Inject constructor(
     /**
      * <!--- End Reply bubble --->
      */
-
-    var isError = false
-        set(value) {
-            gqlUseCase.isError = value
-            field = value
-        }
 
     /**
      * <!--- Start Broadcast responses --->
