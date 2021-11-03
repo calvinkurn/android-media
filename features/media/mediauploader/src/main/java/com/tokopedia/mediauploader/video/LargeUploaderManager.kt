@@ -1,6 +1,7 @@
 package com.tokopedia.mediauploader.video
 
 import com.tokopedia.mediauploader.common.data.consts.CHUNK_UPLOAD
+import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -32,15 +33,18 @@ class LargeUploaderManager @Inject constructor(
     private var partNumber = 1
 
     // save the current source id
-    private var currentSourceId: String = ""
+    private var currentSourceId = ""
 
     // save the current upload id comes from init upload
     private var currentUploadId = ""
 
     // save the estimation of chunk total
-    private var chunkTotal: Int = 0
+    private var chunkTotal = 0
 
-    suspend operator fun invoke(file: File, sourceId: String, policy: SourcePolicy): UploadResult {
+    // set max retry of transcoding checker
+    private var maxRetryTranscoding = 0
+
+    suspend operator fun invoke(file: File, sourceId: String, policy: SourcePolicy, withTranscode: Boolean): UploadResult {
         // getting the upload size of chunk in MB for calculate the chunk size and as size of part numbers
         val sizePerChunk = (policy.videoPolicy?.largeChunkSize?: 10).mbToBytes()
 
@@ -79,19 +83,31 @@ class LargeUploaderManager @Inject constructor(
         val videoUrl = completeUpload()
 
         // 4. this using loop for retrying transcoding checker within 5-sec delayed
-        while(true) {
-            val transcoding = transcodingUseCase(currentUploadId)
+        if (withTranscode) {
+            while(true) {
+                if (maxRetryTranscoding >= MAX_RETRY_TRANSCODING) {
+                    resetUpload()
 
-            if (transcoding.isCompleted()) break
+                    return UploadResult.Error(TRANSCODING_FAILED)
+                }
 
-            delay(5000)
+                if (transcodingUseCase(currentUploadId).isCompleted()) {
+                    break
+                }
+
+                maxRetryTranscoding++
+                delay(5000)
+            }
         }
 
         // 5. if the transcoding success, return the video url!
         return if (videoUrl.isNotEmpty()) {
             resetUpload()
 
-            UploadResult.Success(videoUrl = videoUrl)
+            UploadResult.Success(
+                videoUrl = videoUrl,
+                uploadId = currentUploadId
+            )
         } else {
             UploadResult.Error(UPLOAD_ABORT)
         }
@@ -101,6 +117,7 @@ class LargeUploaderManager @Inject constructor(
         val abortUseCase = abortUseCase(currentUploadId)
 
         if (abortUseCase.isSuccess()) {
+            resetUpload()
             abort()
         }
     }
@@ -174,9 +191,14 @@ class LargeUploaderManager @Inject constructor(
     }
 
     private fun resetUpload() {
+        maxRetryTranscoding = 0
         currentUploadId = ""
         hasInit = false
         partNumber = 1
+    }
+
+    companion object {
+        private const val MAX_RETRY_TRANSCODING = 24
     }
 
 }
