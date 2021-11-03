@@ -11,6 +11,7 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.bundle.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -48,7 +49,7 @@ class ShipmentCrossSellViewHolder(itemView: View, private val shipmentAdapterAct
                 shipmentAdapterActionListener.onCrossSellItemChecked(isChecked, shipmentCrossSellModel.crossSellModel, index)
             }
         } else {
-            cbCrossSell.isEnabled = false
+            cbCrossSell.gone()
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
             }
