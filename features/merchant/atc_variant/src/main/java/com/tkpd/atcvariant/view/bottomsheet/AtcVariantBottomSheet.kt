@@ -894,7 +894,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             favoriteShop()
         } else if (reData.restrictionCategoriesType()) {
             reData.action.firstOrNull()?.buttonLink?.let {
-                RouteManager.route(context, it)
+                if (it.isEmpty()) {
+                    activity?.finish()
+                } else {
+                    RouteManager.route(context, it)
+                }
             }
         }
     }

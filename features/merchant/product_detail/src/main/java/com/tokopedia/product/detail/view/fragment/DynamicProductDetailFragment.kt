@@ -2135,7 +2135,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             DynamicProductDetailTracking.Click.eventClickFollowNpl(viewModel.getDynamicProductInfoP1, viewModel.userId)
             onShopFavoriteClick(isNplFollowType = true)
         } else if (reData.restrictionCategoriesType()) {
-            reData.action.firstOrNull()?.buttonLink?.let { goToApplink(it) }
+            reData.action.firstOrNull()?.buttonLink?.let {
+                if (it.isEmpty()) {
+                    activity?.finish()
+                } else {
+                    goToApplink(it)
+                }
+            }
         }
     }
 
