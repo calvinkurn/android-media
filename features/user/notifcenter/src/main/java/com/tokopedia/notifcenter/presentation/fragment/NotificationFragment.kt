@@ -609,7 +609,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             AtcVariantHelper.goToAtcVariant(
                 context = ctx,
                 productId = productId,
-                pageSource = PAGE_SOURCE_NOTIF_CENTER,
+                pageSource = AtcVariantHelper.NOTIFCENTER_PAGESOURCE,
                 isTokoNow = false,
                 shopId = shopId,
                 startActivitResult = { intent, requestCode ->
@@ -761,7 +761,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     companion object {
         private const val REQUEST_CHECKOUT = 0
-        private const val PAGE_SOURCE_NOTIF_CENTER = "notif-center"
     }
 
 }
