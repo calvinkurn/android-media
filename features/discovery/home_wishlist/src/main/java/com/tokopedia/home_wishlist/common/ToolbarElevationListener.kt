@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat.setElevation
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.home_wishlist.R
-import com.tokopedia.kotlin.extensions.view.toDp
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -16,7 +15,7 @@ class ToolbarElevationOffsetListener(private val mActivity: AppCompatActivity, p
     private var mTargetElevation: Float = 0.toFloat()
 
     init {
-        mTargetElevation = 4f.toDp()
+        mTargetElevation = mActivity.resources.getDimension(R.dimen.dp_4)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
