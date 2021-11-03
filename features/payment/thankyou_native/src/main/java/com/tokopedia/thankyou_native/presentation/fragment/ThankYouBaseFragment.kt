@@ -32,6 +32,7 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.helper.addContainer
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
@@ -201,12 +202,6 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
         if (::thanksPageData.isInitialized)
             iRecommendationView?.loadRecommendation(thanksPageData, this)
-    }
-
-    private fun LinearLayout.addContainer(tag: String) {
-        val ll = LinearLayout(context)
-        ll.tag = tag
-        addView(ll)
     }
 
     private fun addDigitalRecommendation(pgCategoryIds: List<Int> = listOf(), pageType: ThankPageType) {
