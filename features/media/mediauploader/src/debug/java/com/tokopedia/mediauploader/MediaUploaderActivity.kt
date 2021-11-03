@@ -147,6 +147,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             btnAbort.show()
 
             btnAbort.setOnClickListener {
+                viewModel.setUploadingStatus(UploadState.Aborted)
                 launch {
                     uploaderUseCase.abortUpload {
                         coroutineContext.cancelChildren()
