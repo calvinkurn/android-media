@@ -20,6 +20,9 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -79,6 +82,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private var searchQuery = ""
     private var activityWishlistV2 = ""
     private var isBulkDeleteShow = false
+    private val listBulkDelete: ArrayList<String> = arrayListOf()
+
     private var recommendationList: List<RecommendationWidget> = listOf()
 
     @Inject
@@ -139,6 +144,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         prepareLayout()
         observingWishlistV2()
         observingDeleteWishlistV2()
+        observingBulkDeleteWishlistV2()
         observingRecommendationList()
     }
 
@@ -190,7 +196,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             var pageSource = ""
             if(activityWishlistV2 != PARAM_HOME) {
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                statusbar.visibility = View.GONE
+                statusbar.gone()
             } else {
                 pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH
             }
@@ -344,6 +350,35 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         })
     }
 
+    private fun observingBulkDeleteWishlistV2() {
+        wishlistViewModel.bulkDeleteWishlistV2Result.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    result.data.let { bulkDeleteWishlistV2 ->
+                        if (bulkDeleteWishlistV2.success) {
+                            val listId = bulkDeleteWishlistV2.id.replace("[","").replace("]","").split(",").toList()
+                            var msg = getString(R.string.wishlist_v2_bulk_delete_msg_toaster, listId.size)
+                            if (bulkDeleteWishlistV2.message.isNotEmpty()) {
+                                msg = bulkDeleteWishlistV2.message
+                            }
+
+                            var btnText = getString(R.string.wishlist_oke_label)
+                            if (bulkDeleteWishlistV2.button.text.isNotEmpty()) {
+                                btnText = bulkDeleteWishlistV2.button.text
+                            }
+
+                            showToaster(msg, btnText, Toaster.TYPE_NORMAL)
+                            refreshHandler?.startRefresh()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
     @SuppressLint("SetTextI18n")
     private fun updateTotalLabel(totalData: Int) {
         binding?.run {
@@ -380,15 +415,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private fun showLoader() {
         wishlistV2Adapter.showLoader()
         binding?.run {
-            rlWishlistSort.visibility = View.GONE
-            rlWishlistSortLoader.visibility = View.VISIBLE
+            rlWishlistSort.gone()
+            rlWishlistSortLoader.visible()
         }
     }
 
     private fun hideLoader() {
         binding?.run {
-            rlWishlistSort.visibility = View.VISIBLE
-            rlWishlistSortLoader.visibility = View.GONE
+            rlWishlistSort.visible()
+            rlWishlistSortLoader.gone()
         }
     }
 
@@ -546,6 +581,43 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
+    }
+
+    override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean) {
+        if (isChecked) {
+            listBulkDelete.add(productId)
+        } else {
+            listBulkDelete.remove(productId)
+        }
+        val showButton = listBulkDelete.isNotEmpty()
+        if (showButton) {
+            binding?.run {
+                containerDelete.visible()
+                deleteButton.apply {
+                    setText(getString(R.string.wishlist_v2_delete_text, listBulkDelete.size))
+                    setOnClickListener {
+                        showPopupBulkDeleteConfirmation(listBulkDelete)
+                    }
+                }
+            }
+        } else {
+            binding?.run {
+                containerDelete.gone()
+            }
+        }
+    }
+
+    private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(getString(R.string.wishlist_v2_popup_delete_bulk_title, listBulkDelete.size))
+        dialog?.setPrimaryCTAText(getString(R.string.wishlist_delete_label))
+        dialog?.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            wishlistViewModel.bulkDeleteWishlistV2(listBulkDelete, userSession.userId)
+        }
+        dialog?.setSecondaryCTAText(getString(R.string.wishlist_cancel_manage_label))
+        dialog?.setSecondaryCTAClickListener { dialog.dismiss() }
+        dialog?.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

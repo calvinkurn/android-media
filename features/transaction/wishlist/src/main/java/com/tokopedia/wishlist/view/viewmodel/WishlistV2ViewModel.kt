@@ -10,9 +10,11 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.data.model.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.DeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.WishlistV2Response
+import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
@@ -25,6 +27,7 @@ import javax.inject.Inject
 class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                               private val wishlistV2UseCase: WishlistV2UseCase,
                                               private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+                                              private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
                                               private val recommendationUseCase: GetRecommendationUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _wishlistV2Result = MutableLiveData<Result<WishlistV2Response.Data.WishlistV2>>()
@@ -39,6 +42,9 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val deleteWishlistV2Result: LiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>
         get() = _deleteWishlistV2Result
 
+    private val _bulkDeleteWishlistV2Result = MutableLiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>()
+    val bulkDeleteWishlistV2Result: LiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>
+        get() = _bulkDeleteWishlistV2Result
 
     fun loadWishlistV2(params: WishlistV2Params) {
         launch {
@@ -49,6 +55,12 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     fun deleteWishlistV2(productId: String, userId: String) {
         launch {
             _deleteWishlistV2Result.value = deleteWishlistV2UseCase.executeSuspend(productId, userId)
+        }
+    }
+
+    fun bulkDeleteWishlistV2(listProductId: List<String>, userId: String) {
+        launch {
+            _bulkDeleteWishlistV2Result.value = bulkDeleteWishlistV2UseCase.executeSuspend(listProductId, userId)
         }
     }
 
