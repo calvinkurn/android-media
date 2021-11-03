@@ -468,7 +468,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/tracking_preview_static_black"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/icon_close"
