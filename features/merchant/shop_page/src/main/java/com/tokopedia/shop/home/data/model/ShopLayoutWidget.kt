@@ -95,6 +95,8 @@ data class ShopLayoutWidget(
                 val totalNotify: Int = 0,
                 @SerializedName("totalNotifyWording")
                 val totalNotifyWording: String = "",
+                @SerializedName("totalProduct")
+                val totalProduct: Int = 0,
                 @SerializedName("totalProductWording")
                 val totalProductWording: String = "",
                 @SerializedName("dynamicRule")

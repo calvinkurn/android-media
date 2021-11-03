@@ -44,6 +44,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var recommendationType: String? = null
     var minimumOrder: Int = 1
     var isProductPlaceHolder: Boolean = false
+    var totalProduct: Int = 0
     var totalProductWording: String = ""
 
     override fun type(typeFactory: BaseAdapterTypeFactory): Int {

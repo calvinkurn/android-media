@@ -351,6 +351,7 @@ object ShopPageHomeMapper {
                 it.timeCounter,
                 it.totalNotify,
                 it.totalNotifyWording,
+                it.totalProduct,
                 it.totalProductWording,
                 mapCampaignFlashSaleListProduct(it.statusCampaign, it.listProduct),
                 false
