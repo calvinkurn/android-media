@@ -14,6 +14,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LOADER_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LOADER_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.view.adapter.viewholder.*
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 
@@ -31,6 +32,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_RECOMMENDATION_TITLE = 5
         const val LAYOUT_RECOMMENDATION_LIST = 6
         const val LAYOUT_EMPTY_NOT_FOUND = 7
+        const val LAYOUT_TOPADS = 8
     }
 
     interface ActionListener {
@@ -75,6 +77,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 val binding = WishlistV2RecommendationItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
                 WishlistV2RecommendationItemViewHolder(binding, actionListener)
             }
+            LAYOUT_TOPADS -> {
+                val binding = WishlistV2TdnItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                WishlistV2TdnViewHolder(binding)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -100,6 +106,9 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             is WishlistV2RecommendationItemViewHolder -> {
                 holder.bind(element)
             }
+            is WishlistV2TdnViewHolder -> {
+                holder.bind(element)
+            }
         }
     }
 
@@ -117,6 +126,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_EMPTY_NOT_FOUND -> LAYOUT_EMPTY_NOT_FOUND
             TYPE_RECOMMENDATION_LIST -> LAYOUT_RECOMMENDATION_LIST
             TYPE_RECOMMENDATION_TITLE -> LAYOUT_RECOMMENDATION_TITLE
+            TYPE_TOPADS -> LAYOUT_TOPADS
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
