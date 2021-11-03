@@ -585,7 +585,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
 
         /* Constant for toads headlines widget*/
-        const val TOP_ADS_SRC = "inbox"
+        const val TOP_ADS_SRC = "thank_you_page"
         const val TOP_ADS_HEADLINE_ABOVE_RECOM = "variant1"
         const val TOP_ADS_HEADLINE_BELOW_RECOM = "variant2"
     }
