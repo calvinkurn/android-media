@@ -922,7 +922,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             shipmentCostModel.setListCrossSell(listCheckedCrossModel);
         }
-        shipmentCostModel.setTotalPrice(totalPrice);
 
         if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             updateEmasCostModel();
@@ -936,6 +935,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             notifyDataSetChanged();
         }
 
+        shipmentCostModel.setTotalPrice(totalPrice);
         shipmentCostModel.setBookingFee(totalBookingFee);
         updateCheckoutButtonData(null);
     }
