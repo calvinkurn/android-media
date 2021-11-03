@@ -91,8 +91,8 @@ object TrackingPageQuery {
     """.trimIndent()
 
     val getDriverTip = """
-        query logistic_driver_tip_info (${'$'}input: Input! ){
-          logistic_driver_tip_info(input: ${'$'}input) {
+        mutation mpLogisticDriverTipInfo (${'$'}input: MPLogisticDriverTipInfoInputs! ){
+          mpLogisticDriverTipInfo(input: ${'$'}input) {
             message_error
             status
             data {
