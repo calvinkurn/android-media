@@ -463,7 +463,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 getString(R.string.telco_number_error_prefix_not_found)
             )
             buyWidget.setBuyButtonState(false)
-        }i
+        }
     }
 
     private fun hitTrackingForInputNumber(selectedOperator: RechargePrefix) {
