@@ -63,6 +63,8 @@ public class RouteManager {
     private static final String SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key";
     private static final boolean SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE = false;
 
+    private static Toast toast;
+
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
      */
@@ -252,7 +254,9 @@ public class RouteManager {
      */
     private static void showAndCopyApplink(Context context, String applink) {
         if (context.getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, Context.MODE_PRIVATE).getBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE)) {
-            Toast.makeText(context, applink, Toast.LENGTH_LONG).show();
+            toast.cancel();
+            toast = Toast.makeText(context, applink, Toast.LENGTH_SHORT);
+            toast.show();
 
             ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, applink);
