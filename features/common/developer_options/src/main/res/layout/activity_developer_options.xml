@@ -114,6 +114,15 @@
             app:unifyButtonSize="medium" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+            android:id="@+id/toggle_show_applink_and_copy_to_clipboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="@string/show_applink_on_toast_and_copy_the_link_to_clipboard" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_chuck"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
