@@ -2,7 +2,7 @@ package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemSelectAllBundleBinding
+import com.tokopedia.cart.databinding.ItemSelectAllBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -11,10 +11,10 @@ import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounc
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 
-class CartSelectAllViewHolder(private val binding: ItemSelectAllBundleBinding, val listener: ActionListener?, val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
+class CartSelectAllViewHolder(private val binding: ItemSelectAllBinding, val listener: ActionListener?, val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
-        val LAYOUT = R.layout.item_select_all_bundle
+        val LAYOUT = R.layout.item_select_all
     }
 
     fun bind(data: CartSelectAllHolderData) {

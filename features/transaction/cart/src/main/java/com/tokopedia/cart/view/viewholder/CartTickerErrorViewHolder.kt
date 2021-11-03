@@ -2,11 +2,11 @@ package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBundleBinding
+import com.tokopedia.cart.databinding.HolderItemCartTickerErrorBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
 
-class CartTickerErrorViewHolder(private val binding: HolderItemCartTickerErrorBundleBinding, private val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class CartTickerErrorViewHolder(private val binding: HolderItemCartTickerErrorBinding, private val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     fun bindData(data: CartItemTickerErrorHolderData) {
         val errorInfoTemplate = itemView.context?.getString(R.string.cart_error_message) ?: ""
@@ -17,6 +17,6 @@ class CartTickerErrorViewHolder(private val binding: HolderItemCartTickerErrorBu
     }
 
     companion object {
-        val TYPE_VIEW_TICKER_CART_ERROR = R.layout.holder_item_cart_ticker_error_bundle
+        val TYPE_VIEW_TICKER_CART_ERROR = R.layout.holder_item_cart_ticker_error
     }
 }

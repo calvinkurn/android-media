@@ -139,11 +139,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean, getCartState: Int) {
         view?.let {
-            if (it.isBundleToggleChanged()) {
-                it.recreateActivity()
-                return
-            }
-
             CartIdlingResource.increment()
             if (initialLoad) {
                 it.renderLoadGetCartData()
@@ -287,11 +282,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun processUpdateCartData(fireAndForget: Boolean, onlyTokoNowProducts: Boolean) {
         view?.let {
             if (!fireAndForget) {
-                if (it.isBundleToggleChanged()) {
-                    it.recreateActivity()
-                    return
-                }
-
                 it.showProgressLoading()
                 CartIdlingResource.increment()
             }

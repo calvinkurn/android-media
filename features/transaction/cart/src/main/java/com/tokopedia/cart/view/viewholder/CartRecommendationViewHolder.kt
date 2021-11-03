@@ -2,7 +2,7 @@ package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartRecommendationBundleBinding
+import com.tokopedia.cart.databinding.ItemCartRecommendationBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -13,11 +13,11 @@ import com.tokopedia.unifycomponents.UnifyButton
  * Created by Irfan Khoirul on 2019-05-29.
  */
 
-class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBundleBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         @JvmStatic
-        val LAYOUT = R.layout.item_cart_recommendation_bundle
+        val LAYOUT = R.layout.item_cart_recommendation
     }
 
     internal var isTopAds = false

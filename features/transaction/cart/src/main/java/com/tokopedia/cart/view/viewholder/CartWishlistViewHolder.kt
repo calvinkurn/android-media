@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.cart.R
-import com.tokopedia.cart.databinding.ItemCartWishlistBundleBinding
+import com.tokopedia.cart.databinding.ItemCartWishlistBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
@@ -14,12 +14,12 @@ import com.tokopedia.cart.view.uimodel.CartWishlistHolderData
  * Created by Irfan Khoirul on 2019-05-31.
  */
 
-class CartWishlistViewHolder(private val binding: ItemCartWishlistBundleBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+class CartWishlistViewHolder(private val binding: ItemCartWishlistBinding, val listener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     var wishlistAdapter: CartWishlistAdapter? = null
 
     companion object {
-        val LAYOUT = R.layout.item_cart_wishlist_bundle
+        val LAYOUT = R.layout.item_cart_wishlist
     }
 
     fun bind(element: CartWishlistHolderData) {

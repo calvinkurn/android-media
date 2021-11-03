@@ -5,14 +5,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.widget.Toolbar
-import com.tokopedia.cart.databinding.CartToolbarViewBundleBinding
+import com.tokopedia.cart.databinding.CartToolbarViewBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 
 class CartToolbarView : Toolbar, CartToolbar {
 
     lateinit var listener: CartToolbarListener
-    lateinit var binding: CartToolbarViewBundleBinding
+    lateinit var binding: CartToolbarViewBinding
 
     constructor(context: Context) : super(context) {
         init()
@@ -27,7 +27,7 @@ class CartToolbarView : Toolbar, CartToolbar {
     }
 
     private fun init() {
-        binding = CartToolbarViewBundleBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = CartToolbarViewBinding.inflate(LayoutInflater.from(context), this, true)
         with(binding) {
             btnWishlist.setOnClickListener { listener.onWishlistClicked() }
             btnWishlistLottie.setOnClickListener { listener.onWishlistClicked() }

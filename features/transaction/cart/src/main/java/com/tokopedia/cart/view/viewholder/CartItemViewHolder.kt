@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cart.databinding.ItemCartProductBundleBinding
+import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
@@ -26,7 +26,7 @@ import kotlinx.coroutines.*
 import java.util.*
 
 @SuppressLint("ClickableViewAccessibility")
-class CartItemViewHolder constructor(private val binding: ItemCartProductBundleBinding,
+class CartItemViewHolder constructor(private val binding: ItemCartProductBinding,
                                      private var actionListener: CartItemAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     private var context: Context? = null
@@ -816,7 +816,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
     }
 
     companion object {
-        val TYPE_VIEW_ITEM_CART = R.layout.item_cart_product_bundle
+        val TYPE_VIEW_ITEM_CART = R.layout.item_cart_product
 
         const val LABEL_CASHBACK = "cashback"
         const val LABEL_DISCOUNT = "label diskon"

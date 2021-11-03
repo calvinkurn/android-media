@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cart.databinding.ItemCartProductBundleBinding
+import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder.Companion.TYPE_VIEW_ITEM_CART
@@ -20,7 +20,7 @@ class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val binding = ItemCartProductBundleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemCartProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CartItemViewHolder(binding, actionListener)
     }
 

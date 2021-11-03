@@ -66,7 +66,7 @@ import com.tokopedia.cart.view.di.DaggerCartComponent
 import com.tokopedia.cart.view.mapper.*
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
-import com.tokopedia.cart.databinding.FragmentCartBundleBinding
+import com.tokopedia.cart.databinding.FragmentCartBinding
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_HOMEPAGE
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_RETRY
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_START_SHOPPING
@@ -105,7 +105,6 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
-import com.tokopedia.purchase_platform.common.utils.Switch
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -130,7 +129,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -142,7 +140,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
         TickerAnnouncementActionListener, SellerCashbackListener {
 
-    private var binding by autoClearedNullable<FragmentCartBundleBinding>()
+    private var binding by autoClearedNullable<FragmentCartBinding>()
 
     lateinit var toolbar: CartToolbar
 
@@ -286,7 +284,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentCartBundleBinding.inflate(inflater, container, false)
+        binding = FragmentCartBinding.inflate(inflater, container, false)
         val view = binding?.root
         view?.viewTreeObserver?.addOnGlobalLayoutListener {
             val heightDiff = view.rootView?.height?.minus(view.height) ?: 0
@@ -692,7 +690,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun getFragmentLayout(): Int {
-        return R.layout.fragment_cart_bundle
+        return R.layout.fragment_cart
     }
 
     private fun onClickChevronSummaryTransaction() {
@@ -3391,22 +3389,4 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             startActivityForResult(intent, NAVIGATION_EDIT_BUNDLE)
         }
     }
-
-    override fun isBundleToggleChanged(): Boolean {
-        activity?.let {
-            if (!Switch.isBundleToggleOn(it)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    override fun recreateActivity() {
-        try {
-            activity?.recreate()
-        } catch (t: Throwable) {
-            Timber.d(t)
-        }
-    }
-
 }

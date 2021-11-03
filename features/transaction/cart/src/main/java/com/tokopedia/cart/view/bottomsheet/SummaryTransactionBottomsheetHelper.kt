@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.view.adapter.cart.CartPromoSummaryAdapter
-import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBundleBinding
+import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -28,7 +28,7 @@ fun showSummaryTransactionBottomsheet(summaryTransactionUiModel: SummaryTransact
         customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
     }
 
-    val binding = LayoutBottomsheetSummaryTransactionBundleBinding.inflate(LayoutInflater.from(context))
+    val binding = LayoutBottomsheetSummaryTransactionBinding.inflate(LayoutInflater.from(context))
 
     renderPriceTotal(binding, summaryTransactionUiModel)
     renderDiscount(binding, summaryTransactionUiModel)
@@ -43,7 +43,7 @@ fun showSummaryTransactionBottomsheet(summaryTransactionUiModel: SummaryTransact
     bottomSheet.show(fragmentManager, "Cart Summary Transaction")
 }
 
-private fun renderSeparatorBenefit(binding: LayoutBottomsheetSummaryTransactionBundleBinding, summaryTransactionUiModel: SummaryTransactionUiModel, promoSummaryUiModel: PromoSummaryData?) {
+private fun renderSeparatorBenefit(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel, promoSummaryUiModel: PromoSummaryData?) {
     if (promoSummaryUiModel?.details?.isNotEmpty() == true || summaryTransactionUiModel.sellerCashbackValue > 0) {
         binding.separatorBenefit.show()
     } else {
@@ -51,7 +51,7 @@ private fun renderSeparatorBenefit(binding: LayoutBottomsheetSummaryTransactionB
     }
 }
 
-private fun renderSellerCashback(binding: LayoutBottomsheetSummaryTransactionBundleBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
+private fun renderSellerCashback(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
     if (summaryTransactionUiModel.sellerCashbackValue > 0) {
         binding.textTotalCashbackValue.apply {
             text = CurrencyFormatUtil.convertPriceValueToIdrFormat(summaryTransactionUiModel.sellerCashbackValue, false)
@@ -71,7 +71,7 @@ private fun renderSellerCashback(binding: LayoutBottomsheetSummaryTransactionBun
     }
 }
 
-private fun renderPromo(binding: LayoutBottomsheetSummaryTransactionBundleBinding, promoSummaryData: PromoSummaryData) {
+private fun renderPromo(binding: LayoutBottomsheetSummaryTransactionBinding, promoSummaryData: PromoSummaryData) {
     with(binding) {
         if (promoSummaryData.details.isNotEmpty()) {
             if (promoSummaryData.title.isNotEmpty()) {
@@ -95,7 +95,7 @@ private fun renderPromo(binding: LayoutBottomsheetSummaryTransactionBundleBindin
     }
 }
 
-private fun renderPaymentTotal(binding: LayoutBottomsheetSummaryTransactionBundleBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
+private fun renderPaymentTotal(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
     binding.textTotalPayTitle.apply {
         summaryTransactionUiModel.paymentTotalWording.let {
             text = it
@@ -107,7 +107,7 @@ private fun renderPaymentTotal(binding: LayoutBottomsheetSummaryTransactionBundl
     }
 }
 
-private fun renderDiscount(binding: LayoutBottomsheetSummaryTransactionBundleBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
+private fun renderDiscount(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
     if (summaryTransactionUiModel.discountValue > 0) {
         binding.textDiscountTotalValue.apply {
             text = CurrencyFormatUtil.convertPriceValueToIdrFormat(summaryTransactionUiModel.discountValue * -1, false).removeDecimalSuffix()
@@ -127,7 +127,7 @@ private fun renderDiscount(binding: LayoutBottomsheetSummaryTransactionBundleBin
     }
 }
 
-private fun renderPriceTotal(binding: LayoutBottomsheetSummaryTransactionBundleBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
+private fun renderPriceTotal(binding: LayoutBottomsheetSummaryTransactionBinding, summaryTransactionUiModel: SummaryTransactionUiModel) {
     binding.textPriceTotalTitle.apply {
         summaryTransactionUiModel.totalWording.let {
             text = it.replace("[0-9]+".toRegex(), summaryTransactionUiModel.qty)
