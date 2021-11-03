@@ -20,6 +20,7 @@ import com.tokopedia.cart.bundle.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -536,7 +537,6 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                 }
             }
 
-            textFieldNotes.editText.requestFocus()
             textNotes.gone()
             textFieldNotes.show()
             textNotesChange.gone()
@@ -559,6 +559,13 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
 
                 }
             })
+            textFieldNotes.editText.setOnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    KeyboardHandler.DropKeyboard(v.context, v)
+                }
+            }
+            textFieldNotes.editText.requestFocus()
+            showSoftKeyboard(textFieldNotes.context, textFieldNotes.editText)
         }
     }
 
