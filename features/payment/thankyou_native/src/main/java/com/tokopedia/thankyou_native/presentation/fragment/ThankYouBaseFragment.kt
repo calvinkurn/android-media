@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
@@ -23,7 +22,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.searchbar.navigation_component.di.module.NavigationModule_ProvideUserSessionFactory
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
@@ -32,7 +30,10 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.helper.ThanksPageHelper
 import com.tokopedia.thankyou_native.helper.addContainer
+import com.tokopedia.thankyou_native.helper.attachTopAdsHeadlinesView
+import com.tokopedia.thankyou_native.helper.getTopAdsHeadlinesView
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
@@ -48,14 +49,11 @@ import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlac
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.utils.*
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -85,8 +83,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private val marketRecommendationPlaceLayout = R.layout.thank_layout_market_place_recom
 
-    private val topadsHeadlineLayoutId = R.layout.thanks_item_top_ads_headlines_view
-    private val topadsHeadlineView by lazy { attachTopAdsView() }
+    private val topadsHeadlineView by lazy { requireContext().getTopAdsHeadlinesView() }
 
     private var iDigitalRecommendationView: IDigitalRecommendationView? = null
 
@@ -140,17 +137,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             addRecommendation()
             getTopTickerData()
             thanksPageDataViewModel.resetAddressToDefault()
-            loadTopAdsRecommendationView()
+            topadsHeadlineView.getHeadlineAds(
+                ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
+                this::showTopAdsHeadlineView,
+                this::hideTopAdsHeadlineView
+            )
         }
-    }
-
-    private fun loadTopAdsRecommendationView() {
-
-        fetchTopadsHeadlineAds(0)
-    }
-
-    private fun attachTopAdsView(): TopAdsHeadlineView {
-        return LayoutInflater.from(context).inflate(topadsHeadlineLayoutId, null, false) as TopAdsHeadlineView
     }
 
     private fun getFeatureRecommendationData() {
@@ -531,49 +523,19 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         view?.let { Toaster.make(it, message, Toaster.LENGTH_SHORT) }
     }
 
-    private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
-        topadsHeadlineView.getHeadlineAds(
-            getHeadlineAdsParam(topadsHeadLinePage,userSession.userId),
-            this::showHeadlineView,
-            this::hideHeadlineView
-        )
-    }
-
-    private fun hideHeadlineView() {
+    private fun hideTopAdsHeadlineView() {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.hide()
     }
 
-    private fun showHeadlineView(cpmModel: CpmModel) {
+    private fun showTopAdsHeadlineView(cpmModel: CpmModel) {
         topadsHeadlineView.show()
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.displayAds(cpmModel)
 
-        attachTopAdsView(cpmModel.data?.get(0)?.cpm?.layout == 0)
-    }
-
-    private fun attachTopAdsView(above: Boolean) {
-        if(above) {
-            getRecommendationContainer()?.findViewWithTag<LinearLayout>(TOP_ADS_HEADLINE_ABOVE_RECOM)
-                ?.addView(topadsHeadlineView)
-        } else {
-            getRecommendationContainer()?.findViewWithTag<LinearLayout>(TOP_ADS_HEADLINE_BELOW_RECOM)
-                ?.addView(topadsHeadlineView)
-        }
-    }
-
-    private fun getHeadlineAdsParam(topadsHeadLinePage: Int, userId: String): String {
-        return UrlParamHelper.generateUrlParamString(
-            mutableMapOf(
-                PARAM_DEVICE to VALUE_DEVICE,
-                PARAM_PAGE to topadsHeadLinePage,
-                PARAM_EP to VALUE_EP,
-                PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
-                PARAM_ITEM to VALUE_ITEM,
-                PARAM_SRC to TOP_ADS_SRC,
-                PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-                PARAM_USER_ID to userId,
-            )
+        getRecommendationContainer()?.attachTopAdsHeadlinesView(
+            cpmModel.data?.get(0)?.cpm?.layout == 0,
+            topadsHeadlineView
         )
     }
 
