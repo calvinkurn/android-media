@@ -19,9 +19,9 @@ class Constants {
         const val EVENT_ANDROID_NEW_RELIC = "android"
         const val EVENT_ANDROID_SF_NEW_RELIC = "android-sf"
 
-        const val SEVERITY_SR = 10
         const val SEVERITY_HIGH = 1
         const val SEVERITY_MEDIUM = 2
+        const val SEVERITY_SR = 3
 
         val LOG_SERVICE_DELAY = 30L
         // to prevent bursting scheduling

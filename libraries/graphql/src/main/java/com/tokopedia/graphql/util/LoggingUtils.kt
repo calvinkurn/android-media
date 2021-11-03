@@ -10,14 +10,16 @@ object LoggingUtils {
 
     @JvmStatic
     fun logGqlSuccessRate(operationName: String, gqlResult: String) {
-        ServerLogger.log(
-            Priority.SF,
-            "GQL_PARSE_SUCCESS",
-            mapOf(
-                "on" to operationName,
-                "isSuccess" to gqlResult
+        if (operationName.isNotBlank()) {
+            ServerLogger.log(
+                Priority.SF,
+                "GP",
+                mapOf(
+                    "on" to operationName,
+                    "s" to gqlResult
+                )
             )
-        )
+        }
     }
 
     @JvmStatic

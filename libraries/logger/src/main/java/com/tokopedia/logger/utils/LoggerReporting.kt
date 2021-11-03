@@ -28,9 +28,9 @@ class LoggerReporting {
                             userId: String): Logger? {
         val timeStamp = System.currentTimeMillis()
         val priorityText = when (priority) {
-            Priority.P1 -> "P1"
-            Priority.P2 -> "P2"
-            Priority.SF -> "SF"
+            Priority.P1 -> P1
+            Priority.P2 -> P2
+            Priority.SF -> SF
         }
         val tagMapKey = StringBuilder(priorityText).append(DELIMITER_TAG_MAPS).append(tag).toString()
 
@@ -74,9 +74,8 @@ class LoggerReporting {
         }
 
         with(mapMessage) {
+            put(Constants.PRIORITY_LOG, p.toString())
             if (priority == SF) {
-                //this field for flag on repository logic, it will be removed before sent to server
-                put(Constants.PRIORITY_LOG, p.toString())
                 for (item in message) {
                     if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
                         put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
@@ -97,7 +96,6 @@ class LoggerReporting {
                 put("log_packageName", packageName.toString())
                 put("log_installer", installer.toString())
                 put("log_debug", debug.toString())
-                put(Constants.PRIORITY_LOG, p.toString())
                 for (item in message) {
                     if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
                         put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
@@ -146,6 +144,7 @@ class LoggerReporting {
         }
     }
 
+    //P1#DEV_CRASH#100#offline
     fun setPopulateTagMapsNewRelic(tags: List<String>?) {
         tagMapsNewRelic.clear()
         if (tags.isNullOrEmpty()) {

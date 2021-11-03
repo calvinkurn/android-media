@@ -82,6 +82,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
             if (response.getOriginalResponse() != null) {
                 for (int i = 0; i < response.getOriginalResponse().size(); i++) {
+                    String operationName = requests.get(i).getOperationName();
                     try {
                         JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                         if (data != null && !data.isJsonNull()) {
@@ -99,10 +100,9 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                             errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
                             }.getType()));
                         }
-                        String operationName = requests.get(i).getOperationName();
+                        LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
                         LoggingUtils.logGqlSuccessRate(operationName, "1");
                     } catch (JsonSyntaxException jse) {
-                        String operationName = CommonUtils.getOperationNameFromException(requests);
                         LoggingUtils.logGqlSuccessRate(operationName, "0");
                         jse.printStackTrace();
                         LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
@@ -127,12 +127,14 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
     }
 
     private Observable<GraphqlResponseInternal> getCloudResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
+        String operationName = "";
         try {
             List<GraphqlRequest> copyRequests = new ArrayList<>();
             copyRequests.addAll(requests);
 
             int counter = copyRequests.size();
             for (int i = 0; i < counter; i++) {
+                operationName = requests.get(i).getOperationName();
                 if (copyRequests.get(i).isNoCache()) {
                     continue;
                 }
@@ -157,11 +159,10 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 requests.remove(copyRequests.get(i));
 
                 Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests.get(i).getQuery()) + " KEY: " + copyRequests.get(i).cacheKey());
-                String operationName = requests.get(i).getOperationName();
+                LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
                 LoggingUtils.logGqlSuccessRate(operationName, "1");
             }
         } catch (JsonSyntaxException jse) {
-            String operationName = CommonUtils.getOperationNameFromException(requests);
             LoggingUtils.logGqlSuccessRate(operationName, "0");
             LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
         } catch (Exception e) {

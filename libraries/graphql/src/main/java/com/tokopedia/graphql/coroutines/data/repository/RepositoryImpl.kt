@@ -9,10 +9,7 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.CacheHelper
-import com.tokopedia.graphql.util.Const
 import com.tokopedia.graphql.util.LoggingUtils
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import timber.log.Timber
 import java.lang.reflect.Type
 import javax.inject.Inject
@@ -83,6 +80,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
         val tempRequest = requests.regroup(indexOfEmptyCached)
 
         originalResponse?.forEachIndexed { index, jsonElement ->
+            val operationName = tempRequest.getOrNull(index)?.operationName.orEmpty()
             try {
                 val typeOfT = tempRequest[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
@@ -97,10 +95,9 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 if (error != null && !error.isJsonNull) {
                     errors[typeOfT] = CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
-                val operationName = tempRequest.getOrNull(index)?.operationName.orEmpty()
+                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
                 LoggingUtils.logGqlSuccessRate(operationName, "1")
             } catch (jse: JsonSyntaxException) {
-                val operationName = CommonUtils.getOperationNameFromException(requests)
                 LoggingUtils.logGqlSuccessRate(operationName, "0")
                 LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
                 jse.printStackTrace()
@@ -130,11 +127,14 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
             isCachedData: MutableMap<Type, Boolean>,
             requests: MutableList<GraphqlRequest>,
             cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
+        var operationName = ""
         try {
             val copyRequests = mutableListOf<GraphqlRequest>()
             copyRequests.addAll(requests);
 
             for (i in 0 until copyRequests.size) {
+                operationName = copyRequests.getOrNull(i)?.operationName.orEmpty()
+
                 if (copyRequests[i].isNoCache) {
                     continue
                 }
@@ -155,11 +155,10 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 requests.remove(copyRequests[i])
 
                 Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
-                val operationName = copyRequests.getOrNull(i)?.operationName.orEmpty()
+                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
                 LoggingUtils.logGqlSuccessRate(operationName, "1")
             }
         } catch (jse: JsonSyntaxException) {
-            val operationName = CommonUtils.getOperationNameFromException(requests)
             LoggingUtils.logGqlSuccessRate(operationName, "0")
             LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
             jse.printStackTrace()
