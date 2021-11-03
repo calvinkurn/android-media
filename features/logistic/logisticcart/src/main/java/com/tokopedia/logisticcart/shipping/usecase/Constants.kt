@@ -82,6 +82,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           checksum
           ut
           promo_code
+          ui_rates_hidden
           price {
             price
             formatted_price
