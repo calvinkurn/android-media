@@ -56,6 +56,7 @@ class HomeTopAdsVerificationTest {
     var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
+            disableCoachMark(context)
             loginInstrumentationTestTopAdsUser()
             setupTopAdsDetector()
         }
