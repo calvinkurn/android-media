@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class NotifcenterDeleteReminderBumpUseCase @Inject constructor(
-    private val gqlUseCase: GraphqlUseCase<DeleteReminderResponse>
+        private val gqlUseCase: GraphqlUseCase<DeleteReminderResponse>
 ) {
 
     fun deleteReminder(
-        productId: String,
-        notifId: String
+            productId: String,
+            notifId: String
     ) = flow {
         emit(Resource.loading(null))
         val param = generateParam(productId, notifId)
@@ -25,11 +25,11 @@ class NotifcenterDeleteReminderBumpUseCase @Inject constructor(
     }
 
     private fun generateParam(
-        productId: String, notifId: String
+            productId: String, notifId: String
     ): Map<String, Any?> {
         return mapOf(
-            PARAM_ID to productId,
-            PARAM_NOTIF_ID to notifId
+                PARAM_ID to productId,
+                PARAM_NOTIF_ID to notifId
         )
     }
 
