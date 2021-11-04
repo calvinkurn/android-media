@@ -25,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="12dp"
-        android:layout_marginBottom="-4dp"
         android:clipToPadding="false"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -33,7 +32,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_marginTop="-8dp"
         tools:visibility="visible"
         tools:background="@color/Unify_B500" />
 </LinearLayout>
