@@ -875,6 +875,10 @@ abstract class TopchatRoomTest {
     protected fun waitForIt(timeMillis: Long) {
         Thread.sleep(timeMillis)
     }
+
+    protected fun clickBroadcastHandlerFollowShop() {
+        onView(withId(R.id.btn_follow_shop)).perform(click())
+    }
 }
 
 /*
