@@ -6,15 +6,15 @@
     android:layout_height="match_parent"
     android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@color/discovery_common_dms_card_background"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_4"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/dp_8">
+        android:paddingBottom="8dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/optionInfoImage"
@@ -27,14 +27,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/optionInfoTitle"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/inspiration_carousel_option_title"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_68"
@@ -46,14 +46,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/optionInfoName"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/inspiration_carousel_product_name"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
             android:maxLines="2"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_96"
@@ -65,14 +65,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/optionInfoDesc"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/inspiration_carousel_product_description"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
             android:maxLines="6"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_96"

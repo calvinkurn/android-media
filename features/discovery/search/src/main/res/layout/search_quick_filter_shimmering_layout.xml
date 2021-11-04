@@ -2,10 +2,10 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginLeft="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -18,22 +18,22 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:layout_width="92dp"
         android:layout_height="32dp"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         app:corners="20" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:layout_width="92dp"
         android:layout_height="32dp"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         app:corners="20" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:layout_width="92dp"
         android:layout_height="32dp"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         app:corners="20" />
 
 </LinearLayout>

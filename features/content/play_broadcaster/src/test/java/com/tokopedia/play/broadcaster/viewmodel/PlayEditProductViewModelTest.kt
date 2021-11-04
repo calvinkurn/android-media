@@ -49,9 +49,9 @@ class PlayEditProductViewModelTest {
         modelBuilder.buildProductData(id = (it + 1).toString())
     }
 
-    val productId1 = 1.toString()
-    val productId2 = 2.toString()
-    val productId3 = 3.toString()
+    private val productId1 = 1.toString()
+    private val productId2 = 2.toString()
+    private val productId3 = 3.toString()
 
     @Before
     fun setUp() {

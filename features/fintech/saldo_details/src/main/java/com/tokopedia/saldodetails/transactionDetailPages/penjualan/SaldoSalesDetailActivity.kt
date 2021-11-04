@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.WindowManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.DetailScreenParams.Companion.SUMMARY_ID
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
@@ -30,15 +29,8 @@ class SaldoSalesDetailActivity : BaseSimpleActivity(), HasComponent<SaldoDetails
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
         setupToolbar()
         saldoComponent.inject(this)
-    }
-
-    private fun setSecureWindowFlag() {
-        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
     }
 
     private fun setupToolbar() {

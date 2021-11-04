@@ -277,7 +277,3 @@
 -keep class com.newrelic.** { *; }
 -dontwarn com.newrelic.**
 -keepattributes Exceptions, Signature, InnerClasses, LineNumberTable, SourceFile, EnclosingMethod
-
-# otaliastudios.zoom library
--dontwarn com.otaliastudios.zoom.**
--keep class com.otaliastudios.zoom.*{ *; }

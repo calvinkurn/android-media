@@ -17,7 +17,7 @@ class ProductPreviewLoadingViewHolder(
         gridLayoutManager: GridLayoutManager
 ) : BaseViewHolder(itemView), SpacingProvider {
 
-    val loaderPreview: LoaderUnify = itemView.findViewById(R.id.loader_preview)
+    private val loaderPreview: LoaderUnify = itemView.findViewById(R.id.loader_preview)
 
     override val spacing = itemView.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
 
