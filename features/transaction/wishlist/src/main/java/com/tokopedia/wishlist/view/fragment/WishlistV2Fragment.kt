@@ -41,10 +41,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.data.model.WishlistV2Params
-import com.tokopedia.wishlist.data.model.WishlistV2Response
+import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
-import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.di.DaggerWishlistV2Component
 import com.tokopedia.wishlist.di.WishlistV2Module
 import com.tokopedia.wishlist.util.WishlistUtils
@@ -52,6 +50,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -140,6 +139,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         observingWishlistV2()
         observingDeleteWishlistV2()
         observingRecommendationList()
+        observingWishlistV2Counter()
+    }
+
+    private fun observingWishlistV2Counter() {
+        wishlistViewModel.wishlistCount.observe(viewLifecycleOwner, Observer {
+            updateTotalLabel(it)
+        })
     }
 
     private fun observingRecommendationList() {
@@ -231,7 +237,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             override fun getSpanSize(position: Int): Int {
                 return when (wishlistV2Adapter.getItemViewType(position)) {
                     WishlistV2Adapter.LAYOUT_LIST -> 2
-                    WishlistV2Adapter.LAYOUT_GRID, WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST, WishlistV2Adapter.LAYOUT_TOPADS -> 1
+                    WishlistV2Adapter.LAYOUT_GRID, WishlistV2Adapter.LAYOUT_RECOMMENDATION_LIST -> 1
                     else -> 2
                 }
             }
@@ -290,26 +296,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 is Success -> {
                     refreshHandler?.finishRefresh()
                     val data = result.data
-                    if (data is WishlistV2Response.Data.WishlistV2) {
-                        data.let { wishlistV2 ->
-                            hideLoader()
-                            updateTotalLabel(wishlistV2.totalData)
-                            if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
-                                renderChipsFilter(wishlistV2.sortFilters)
-                            }
-                            if (wishlistV2.items.isNotEmpty()) {
-                                if (wishlistV2.hasNextPage) {
-                                    currPage += 1
-                                }
-                                renderWishlist(wishlistV2.items)
-
-                            } else {
-                                if (currPage == 1) {
-                                    loadRecommendationList()
-                                }
-                            }
-                        }
-                    }
+                    hideLoader()
+                    wishlistV2Adapter.addList(renderWishlistV2Data(data))
                 }
                 is Fail -> {
                     refreshHandler?.finishRefresh()
@@ -317,6 +305,36 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 }
             }
         })
+    }
+
+    private fun renderWishlistV2Data(data: List<WishlistV2Data>) : ArrayList<WishlistV2TypeLayoutData> {
+        val adapterData = arrayListOf<WishlistV2TypeLayoutData>()
+        data.forEach {
+            when(it) {
+                is WishlistV2TopAdsWrapper -> {
+                    adapterData.add(WishlistV2TypeLayoutData(it.topAdsData, TYPE_TOPADS))
+                }
+                is WishlistV2RecommendationWrapper -> {
+                    adapterData.add(WishlistV2TypeLayoutData(it.recommendationData, TYPE_RECOMMENDATION_LIST))
+                }
+                is WishlistV2Response.Data.WishlistV2 -> {
+                    if (currPage == 1 && it.sortFilters.isNotEmpty()) {
+                        renderChipsFilter(it.sortFilters)
+                    }
+                    if (it.items.isNotEmpty()) {
+                        if (it.hasNextPage) {
+                            currPage += 1
+                        }
+                        renderWishlist(it.items)
+                    } else {
+                        if (currPage == 1) {
+                            loadRecommendationList()
+                        }
+                    }
+                }
+            }
+        }
+        return adapterData
     }
 
     private fun observingDeleteWishlistV2() {
