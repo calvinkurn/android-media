@@ -133,7 +133,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 }
             },
             message.indexOf("Hubungi"),
@@ -187,7 +187,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
                 "Belum tersambung"
             },
             partnerName = "Gojek",
-            linkDate = "Tersambung ${formatDate(linkedDate)}"
+            linkDate = "Tersambung ${formatDateLocalTimezone(linkedDate)}"
         )
     }
 
@@ -199,11 +199,13 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
         }
     }
 
-    private fun formatDate(mDate: String): String {
+    fun formatDateLocalTimezone(mDate: String): String {
         return try {
-            val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", getIndonesiaLocale()).parse(mDate) ?: ""
-            SimpleDateFormat("dd MMM yyyy", getIndonesiaLocale()).format(date)
+            val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", getIndonesiaLocale())
+            date.timeZone = TimeZone.getTimeZone("UTC")
+            return SimpleDateFormat("dd MMM yyyy", getIndonesiaLocale()).format(date.parse(mDate) ?: "")
         } catch (e: Exception) {
+            e.printStackTrace()
             mDate
         }
     }
