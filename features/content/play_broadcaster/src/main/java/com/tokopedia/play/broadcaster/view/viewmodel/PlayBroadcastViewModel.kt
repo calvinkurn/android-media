@@ -200,7 +200,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private val _pinnedMessageUiState = _pinnedMessage.map {
         PinnedMessageUiState(
-            message = if (it.isActive) it.message else "",
+            message = if (it.isActive && it.id.isNotBlank()) it.message else "",
             editStatus = it.editStatus
         )
     }
