@@ -119,6 +119,20 @@ class PromptToActivateSmartReplyTest : TopchatRoomTest() {
         )
     }
 
-    // TODO: Should not show ticker if no ticker available to exist from GetReminderTicker
+    @Test
+    fun should_not_show_ticker_if_no_ticker_available_to_exist(){
+        // Given
+        reminderTickerUseCase.response = reminderTickerUseCase.falseSrwPrompt
+        val triggerText = reminderTickerUseCase.response.getReminderTicker.regexMessage
+        getChatUseCase.response = getChatUseCase.getSrwPromptWithTriggerText(triggerText)
+        chatAttachmentUseCase.response = chatAttachmentUseCase.defaultSrwPrompt
+        launchChatRoomActivity()
+
+        // Then
+        assertChatRecyclerview(
+            not(hasViewHolderOf(ReminderTickerViewHolder::class.java))
+        )
+    }
+
     // TODO: Should go to chat setting if clicked from hamburger menu item
 }

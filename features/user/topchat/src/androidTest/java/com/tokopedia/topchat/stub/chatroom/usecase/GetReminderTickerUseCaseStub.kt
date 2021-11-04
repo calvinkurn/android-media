@@ -23,4 +23,15 @@ class GetReminderTickerUseCaseStub @Inject constructor(
 
     val defaultSrwPrompt: GetReminderTickerResponse
         get() = alterResponseOf(defaultResponse) { }
+
+    val falseSrwPrompt: GetReminderTickerResponse
+        get() = alterResponseOf(defaultResponse) {
+            val ticker = it.getAsJsonObject(GetReminderTicker)
+            ticker.addProperty(enable, false)
+        }
+
+    companion object {
+        const val GetReminderTicker = "GetReminderTicker"
+        const val enable = "enable"
+    }
 }
