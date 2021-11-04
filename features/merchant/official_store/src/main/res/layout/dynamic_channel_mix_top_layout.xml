@@ -35,7 +35,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:textSize="@dimen/sp_18"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/banner_description"
         app:layout_constraintEnd_toStartOf="@+id/banner_button"
         app:layout_constraintStart_toStartOf="parent"
