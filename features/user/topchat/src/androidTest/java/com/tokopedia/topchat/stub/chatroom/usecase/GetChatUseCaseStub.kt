@@ -76,6 +76,17 @@ class GetChatUseCaseStub @Inject constructor(
             }
         }
 
+    fun getInTheMiddleOfThePageSrwPrompt(triggerText: String): GetExistingChatPojo {
+        return alterResponseOf(sellerSrwPromptPath) { response ->
+            alterChatAttribute(0, 0, 1, response) { chat ->
+                chat.addProperty(msg, triggerText)
+            }
+            val chatReplies = response.getAsJsonObject(chatReplies)
+            chatReplies.addProperty("hasNext", true)
+            chatReplies.addProperty("hasNextAfter", true)
+        }
+    }
+
     fun getSrwPromptWithTriggerText(triggerText: String): GetExistingChatPojo {
         return alterResponseOf(sellerSrwPromptPath) { response ->
             alterChatAttribute(0, 0, 1, response) { chat ->

@@ -104,7 +104,21 @@ class PromptToActivateSmartReplyTest : TopchatRoomTest() {
         )
     }
 
-    // TODO: Should not show ticker if user is in the middle of the page
+    @Test
+    fun should_not_show_ticker_if_user_is_in_the_middle_of_the_page() {
+        // Given
+        reminderTickerUseCase.response = reminderTickerUseCase.defaultSrwPrompt
+        val triggerText = reminderTickerUseCase.response.getReminderTicker.regexMessage
+        getChatUseCase.response = getChatUseCase.getInTheMiddleOfThePageSrwPrompt(triggerText)
+        chatAttachmentUseCase.response = chatAttachmentUseCase.defaultSrwPrompt
+        launchChatRoomActivity()
+
+        // Then
+        assertChatRecyclerview(
+            not(hasViewHolderOf(ReminderTickerViewHolder::class.java))
+        )
+    }
+
     // TODO: Should not show ticker if no ticker available to exist from GetReminderTicker
     // TODO: Should go to chat setting if clicked from hamburger menu item
 }
