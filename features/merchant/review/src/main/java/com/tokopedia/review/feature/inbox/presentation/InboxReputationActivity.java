@@ -102,12 +102,12 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
         goToBuyerReview = getIntent().getBooleanExtra(GO_TO_BUYER_REVIEW, false);
         String tab = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_TAB);
         String source = getIntent().getData().getQueryParameter(ReviewInboxConstants.PARAM_SOURCE);
         canFireTracking = !goToReputationHistory;
-        super.onCreate(savedInstanceState);
         getComponent().inject(this);
         if (!GlobalConfig.isSellerApp()) {
             startActivity(ReviewInboxActivity.Companion.createNewInstance(this, tab, source));
