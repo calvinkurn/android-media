@@ -1,8 +1,13 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
@@ -32,15 +37,15 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideGetChatUseCase(
-            stub: GetChatUseCaseStub
+        stub: GetChatUseCaseStub
     ): GetChatUseCase = stub
 
     @Provides
     @ChatScope
     fun provideGetChatUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<GetExistingChatPojo>,
-            mapper: TopChatRoomGetExistingChatMapper,
-            dispatchers: CoroutineDispatchers
+        gqlUseCase: GraphqlUseCaseStub<GetExistingChatPojo>,
+        mapper: TopChatRoomGetExistingChatMapper,
+        dispatchers: CoroutineDispatchers
     ): GetChatUseCaseStub {
         return GetChatUseCaseStub(gqlUseCase, mapper, dispatchers)
     }
@@ -50,15 +55,15 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideChatAttachmentUseCase(
-            stub: ChatAttachmentUseCaseStub
+        stub: ChatAttachmentUseCaseStub
     ): ChatAttachmentUseCase = stub
 
     @Provides
     @ChatScope
     fun provideChatAttachmentUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<ChatAttachmentResponse>,
-            mapper: ChatAttachmentMapper,
-            dispatchers: CoroutineDispatchers
+        gqlUseCase: GraphqlUseCaseStub<ChatAttachmentResponse>,
+        mapper: ChatAttachmentMapper,
+        dispatchers: CoroutineDispatchers
     ): ChatAttachmentUseCaseStub {
         return ChatAttachmentUseCaseStub(gqlUseCase, mapper, dispatchers)
     }
@@ -68,15 +73,15 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideStickerGroupUseCase(
-            stub: ChatListGroupStickerUseCaseStub
+        stub: ChatListGroupStickerUseCaseStub
     ): ChatListGroupStickerUseCase = stub
 
     @Provides
     @ChatScope
     fun provideStickerGroupUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<ChatListGroupStickerResponse>,
-            cacheManager: TopchatCacheManager,
-            dispatchers: CoroutineDispatchers
+        gqlUseCase: GraphqlUseCaseStub<ChatListGroupStickerResponse>,
+        cacheManager: TopchatCacheManager,
+        dispatchers: CoroutineDispatchers
     ): ChatListGroupStickerUseCaseStub {
         return ChatListGroupStickerUseCaseStub(gqlUseCase, cacheManager, dispatchers)
     }
@@ -86,15 +91,15 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideStickerListUseCase(
-            stub: ChatListStickerUseCaseStub
+        stub: ChatListStickerUseCaseStub
     ): ChatListStickerUseCase = stub
 
     @Provides
     @ChatScope
     fun provideStickerListUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<StickerResponse>,
-            cacheManager: TopchatCacheManager,
-            dispatchers: CoroutineDispatchers
+        gqlUseCase: GraphqlUseCaseStub<StickerResponse>,
+        cacheManager: TopchatCacheManager,
+        dispatchers: CoroutineDispatchers
     ): ChatListStickerUseCaseStub {
         return ChatListStickerUseCaseStub(gqlUseCase, cacheManager, dispatchers)
     }
@@ -110,14 +115,14 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideGetTemplateChatRoomUseCase(
-            stub: GetTemplateChatRoomUseCaseStub
+        stub: GetTemplateChatRoomUseCaseStub
     ): GetTemplateChatRoomUseCase = stub
 
     @Provides
     @ChatScope
     fun provideGetTemplateChatRoomUseCaseStub(
-            api: ChatRoomApiStub,
-            mapper: GetTemplateChatRoomMapper
+        api: ChatRoomApiStub,
+        mapper: GetTemplateChatRoomMapper
     ): GetTemplateChatRoomUseCaseStub {
         return GetTemplateChatRoomUseCaseStub(api, mapper)
     }
@@ -127,17 +132,21 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideUploadImageUseCase(
-            stub: TopchatUploadImageUseCaseStub
+        stub: TopchatUploadImageUseCaseStub
     ): TopchatUploadImageUseCase = stub
 
     @Provides
     @ChatScope
     fun provideUploadImageUseCaseStub(
-            uploadImageUseCase: UploaderUseCase,
-            chatImageServerUseCase: ChatImageServerUseCase,
-            dispatchers: CoroutineDispatchers
+        uploadImageUseCase: UploaderUseCase,
+        chatImageServerUseCase: ChatImageServerUseCase,
+        dispatchers: CoroutineDispatchers
     ): TopchatUploadImageUseCaseStub {
-        return TopchatUploadImageUseCaseStub(uploadImageUseCase, chatImageServerUseCase, dispatchers)
+        return TopchatUploadImageUseCaseStub(
+            uploadImageUseCase,
+            chatImageServerUseCase,
+            dispatchers
+        )
     }
 
     // -- separator -- //
@@ -149,7 +158,7 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideChatReplyGQLUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<ChatReplyPojo>
+        gqlUseCase: GraphqlUseCaseStub<ChatReplyPojo>
     ): ReplyChatGQLUseCaseStub {
         return ReplyChatGQLUseCaseStub(gqlUseCase)
     }
@@ -159,13 +168,13 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideSmartReplyQuestionUseCase(
-            stub: SmartReplyQuestionUseCaseStub
+        stub: SmartReplyQuestionUseCaseStub
     ): SmartReplyQuestionUseCase = stub
 
     @Provides
     @ChatScope
     fun provideSmartReplyQuestionUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<ChatSmartReplyQuestionResponse>
+        gqlUseCase: GraphqlUseCaseStub<ChatSmartReplyQuestionResponse>
     ): SmartReplyQuestionUseCaseStub {
         return SmartReplyQuestionUseCaseStub(gqlUseCase)
     }
@@ -175,13 +184,13 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideOrderProgressUseCase(
-            stub: OrderProgressUseCaseStub
+        stub: OrderProgressUseCaseStub
     ): OrderProgressUseCase = stub
 
     @Provides
     @ChatScope
     fun provideOrderProgressUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<OrderProgressResponse>
+        gqlUseCase: GraphqlUseCaseStub<OrderProgressResponse>
     ): OrderProgressUseCaseStub {
         return OrderProgressUseCaseStub(gqlUseCase)
     }
@@ -191,15 +200,15 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideChatBackgroundUseCase(
-            stub: ChatBackgroundUseCaseStub
+        stub: ChatBackgroundUseCaseStub
     ): ChatBackgroundUseCase = stub
 
     @Provides
     @ChatScope
     fun provideChatBackgroundUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<ChatBackgroundResponse>,
-            cacheManager: TopchatCacheManager,
-            dispatchers: CoroutineDispatchers
+        gqlUseCase: GraphqlUseCaseStub<ChatBackgroundResponse>,
+        cacheManager: TopchatCacheManager,
+        dispatchers: CoroutineDispatchers
     ): ChatBackgroundUseCaseStub {
         return ChatBackgroundUseCaseStub(gqlUseCase, cacheManager, dispatchers)
     }
@@ -209,13 +218,13 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideChatRoomSettingUseCaseUseCase(
-            stub: GetChatRoomSettingUseCaseStub
+        stub: GetChatRoomSettingUseCaseStub
     ): GetChatRoomSettingUseCase = stub
 
     @Provides
     @ChatScope
     fun provideChatRoomSettingUseCaseaseStub(
-            gqlUseCase: GraphqlUseCaseStub<RoomSettingResponse>
+        gqlUseCase: GraphqlUseCaseStub<RoomSettingResponse>
     ): GetChatRoomSettingUseCaseStub {
         return GetChatRoomSettingUseCaseStub(gqlUseCase)
     }
@@ -225,13 +234,13 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideChatTokoNowWarehouseUseCase(
-            stub: ChatTokoNowWarehouseUseCaseStub
+        stub: ChatTokoNowWarehouseUseCaseStub
     ): ChatTokoNowWarehouseUseCase = stub
 
     @Provides
     @ChatScope
     fun provideChatTokoNowWarehouseUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<ChatTokoNowWarehouseResponse>
+        gqlUseCase: GraphqlUseCaseStub<ChatTokoNowWarehouseResponse>
     ): ChatTokoNowWarehouseUseCaseStub {
         return ChatTokoNowWarehouseUseCaseStub(gqlUseCase)
     }
@@ -268,5 +277,27 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetShopFollowingUseCaseStub {
         return GetShopFollowingUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideAddToCartOccMultiUseCase(
+        stub: AddToCartOccMultiUseCaseStub
+    ): AddToCartOccMultiUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideAddToCartOccMultiUseCaseStub(
+        @ApplicationContext repository: GraphqlRepository,
+        addToCartDataMapper: AddToCartDataMapper,
+        chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
+    ): AddToCartOccMultiUseCaseStub {
+        return AddToCartOccMultiUseCaseStub(
+            repository,
+            addToCartDataMapper,
+            chosenAddressAddToCartRequestHelper
+        )
     }
 }

@@ -45,8 +45,13 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
         super.onDetach()
     }
 
+    override fun isOCCActive(): Boolean {
+        return isOCCActive
+    }
+
     companion object {
         var SUCCESS_CHANGE_ADDRESS = true
+        var isOCCActive = false
         fun createInstance(
                 bundle: Bundle
         ): TopChatRoomFragmentStub {

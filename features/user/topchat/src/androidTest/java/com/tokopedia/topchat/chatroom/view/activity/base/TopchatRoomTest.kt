@@ -136,6 +136,9 @@ abstract class TopchatRoomTest {
     protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub
 
     @Inject
+    protected lateinit var addToCartOccMultiUseCase: AddToCartOccMultiUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
 
     protected open lateinit var activity: TopChatRoomActivityStub
