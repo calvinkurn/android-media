@@ -106,7 +106,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.hansel.hanselsdk.Hansel;
-import okhttp3.Authenticator;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import retrofit2.Call;
@@ -160,11 +159,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initResourceDownloadManager();
     }
 
-    private RefreshTokenGql getRefreshTokenUseCase() {
-        return new RefreshTokenGql();
-    }
-
-    private Authenticator getAuthenticator() {
+    private TkpdAuthenticatorGql getAuthenticator() {
         return TkpdAuthenticatorGql.Companion.createAuthenticator(this, this, new UserSession(context), new RefreshTokenGql());
     }
 
