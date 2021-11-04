@@ -76,6 +76,23 @@ class GetChatUseCaseStub @Inject constructor(
         }
     }
 
+    fun carouselSrwPrompt(triggerText: String): GetExistingChatPojo {
+        return alterResponseOf(sellerSrwPromptPath) { response ->
+            alterRepliesAttribute(0, 0, response) {
+                val product = it.get(0)
+                val chats = it.deepCopy()
+                it.removeAll { true }
+                it.apply {
+                    add(product)
+                    addAll(chats)
+                }
+            }
+            alterChatAttribute(0, 0, 2, response) { chat ->
+                chat.addProperty(msg, triggerText)
+            }
+        }
+    }
+
     fun multipleSrwPrompt(triggerText: String): GetExistingChatPojo {
         return alterResponseOf(sellerSrwPromptPath) { response ->
             alterRepliesAttribute(0, 0, response) {
