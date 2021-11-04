@@ -30,7 +30,7 @@ class ValidateSilentVerificationUseCase @Inject constructor(@ApplicationContext 
             ${'$'}signature: String,
             ${'$'}timeUnix: String,
             ${'$'}userId: Int,
-            ${'$'}tokenId: Int,
+            ${'$'}TokenID: String,
         ){
             OTPValidate(
                 code: ${'$'}code, 
@@ -42,7 +42,7 @@ class ValidateSilentVerificationUseCase @Inject constructor(@ApplicationContext 
                 signature: ${'$'}signature, 
                 time_unix: ${'$'}timeUnix, 
                 UserID: ${'$'}userId,
-                TokenID: ${'$'}tokenId
+                TokenID: ${'$'}TokenID
             ) {
                 success
                 message
@@ -64,6 +64,6 @@ class ValidateSilentVerificationUseCase @Inject constructor(@ApplicationContext 
         const val PARAM_MODE = "mode"
         const val PARAM_USERID = "userId"
         const val PARAM_MSISDN = "msisdn"
-        const val PARAM_TOKEN_ID = "tokenId"
+        const val PARAM_TOKEN_ID = "TokenID"
     }
 }
