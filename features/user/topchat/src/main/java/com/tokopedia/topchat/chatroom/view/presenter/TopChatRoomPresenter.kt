@@ -104,7 +104,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
-    private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     private var addToCartUseCase: AddToCartUseCase,
     private var compressImageUseCase: CompressImageUseCase,
@@ -752,20 +751,11 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun getShopFollowingStatus(
-        shopId: Long,
-        onError: (Throwable) -> Unit,
-        onSuccessGetShopFollowingStatus: (Boolean) -> Unit
-    ) {
-        getShopFollowingUseCase.getStatus(shopId, onError, onSuccessGetShopFollowingStatus)
-    }
-
     override fun detachView() {
         destroyWebSocket()
         getChatUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
-        getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()
         groupStickerUseCase.safeCancel()

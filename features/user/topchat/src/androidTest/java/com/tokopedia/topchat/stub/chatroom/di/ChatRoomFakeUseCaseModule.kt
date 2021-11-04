@@ -9,7 +9,6 @@ import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
-import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
@@ -121,23 +120,6 @@ class ChatRoomFakeUseCaseModule {
             mapper: GetTemplateChatRoomMapper
     ): GetTemplateChatRoomUseCaseStub {
         return GetTemplateChatRoomUseCaseStub(api, mapper)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
-    fun provideGetShopFollowingUseCase(
-            stub: GetShopFollowingUseCaseStub
-    ): GetShopFollowingUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideGetShopFollowingUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<ShopFollowingPojo>,
-            dispatchers: CoroutineDispatchers
-    ): GetShopFollowingUseCaseStub {
-        return GetShopFollowingUseCaseStub(gqlUseCase, dispatchers)
     }
 
     // -- separator -- //
@@ -269,5 +251,22 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetExistingMessageIdUseCaseStub {
         return GetExistingMessageIdUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideGetShopFollowingUseCase(
+        stub: GetShopFollowingUseCaseStub
+    ): GetShopFollowingUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetShopFollowingUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetShopFollowingUseCaseStub {
+        return GetShopFollowingUseCaseStub(repository, dispatchers)
     }
 }

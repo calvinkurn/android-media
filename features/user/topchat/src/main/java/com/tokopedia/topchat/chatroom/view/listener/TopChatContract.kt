@@ -126,12 +126,6 @@ interface TopChatContract {
             onSuccessDeleteConversation: () -> Unit
         )
 
-        fun getShopFollowingStatus(
-            shopId: Long,
-            onError: (Throwable) -> Unit,
-            onSuccessGetShopFollowingStatus: (Boolean) -> Unit
-        )
-
         fun followUnfollowShop(
             shopId: String,
             onError: (Throwable) -> Unit,

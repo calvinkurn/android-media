@@ -130,7 +130,7 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.setStateToLoading(item: HomeLayoutItemUiModel) {
-        item.layout.let { layout ->
+        item.layout?.let { layout ->
             updateItemById(layout.getVisitableId()) {
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADING)
             }
@@ -347,11 +347,6 @@ object HomeLayoutMapper {
             }
         }
     }
-
-    fun MutableList<HomeLayoutItemUiModel>.setQuantityToZero(
-        productId: String,
-        @TokoNowLayoutType type: String
-    ) = updateProductQuantity(productId, DEFAULT_QUANTITY, type)
 
     fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String) {
         getItemIndex(id)?.let { removeAt(it) }
