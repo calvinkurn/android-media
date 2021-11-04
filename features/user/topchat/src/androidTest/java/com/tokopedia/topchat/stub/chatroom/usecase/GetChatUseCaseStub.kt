@@ -67,6 +67,14 @@ class GetChatUseCaseStub @Inject constructor(
     val defaultSrwPrompt: GetExistingChatPojo
         get() = alterResponseOf(sellerSrwPromptPath) { }
 
+    fun getSrwPromptWithTriggerText(triggerText: String): GetExistingChatPojo {
+        return alterResponseOf(sellerSrwPromptPath) { response ->
+            alterChatAttribute(0, 0, 1, response) { chat ->
+                chat.addProperty(msg, triggerText)
+            }
+        }
+    }
+
     /**
      * <!--- End SRW Prompt --->
      */
@@ -270,15 +278,27 @@ class GetChatUseCaseStub @Inject constructor(
         responseObj: JsonObject,
         altercation: (JsonObject) -> Unit
     ) {
-        val attachment = responseObj.getAsJsonObject(chatReplies)
+        alterChatAttribute(listPosition, chatsPosition, repliesPosition, responseObj) {
+            val attachment = it.getAsJsonObject(attachment)
+            val attr = attachment.getAsJsonPrimitive(attributes).asString
+            val attrObj = CommonUtil.fromJson<JsonObject>(attr, JsonObject::class.java)
+            altercation(attrObj)
+            attachment.addProperty(attributes, attrObj.toString())
+        }
+    }
+
+    private fun alterChatAttribute(
+        listPosition: Int,
+        chatsPosition: Int,
+        repliesPosition: Int,
+        responseObj: JsonObject,
+        altercation: (JsonObject) -> Unit
+    ) {
+        val chat = responseObj.getAsJsonObject(chatReplies)
             .getAsJsonArray(list).get(listPosition).asJsonObject
             .getAsJsonArray(chats).get(chatsPosition).asJsonObject
             .getAsJsonArray(replies).get(repliesPosition).asJsonObject
-            .getAsJsonObject(attachment)
-        val attr = attachment.getAsJsonPrimitive(attributes).asString
-        val attrObj = CommonUtil.fromJson<JsonObject>(attr, JsonObject::class.java)
-        altercation(attrObj)
-        attachment.addProperty(attributes, attrObj.toString())
+        altercation(chat)
     }
 
     private fun alterResponseOf(

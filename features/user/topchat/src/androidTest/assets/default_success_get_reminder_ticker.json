@@ -7,6 +7,6 @@
     "url": "tokopedia://home",
     "urlLabel": "Coba Smart Reply",
     "enableClose": true,
-    "regexMessage": "trigger"
+    "regexMessage": "this is trigger message"
   }
 }

@@ -68,7 +68,7 @@
                 "replyTime": "1627377033992402000",
                 "status": 1,
                 "attachmentID": 0,
-                "isOpposite": false,
+                "isOpposite": true,
                 "isHighlight": false,
                 "isRead": true,
                 "blastId": 0,

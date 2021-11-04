@@ -10,8 +10,9 @@ class PromptToActivateSmartReplyTest : TopchatRoomTest() {
     @Test
     fun should_show_ticker_below_matched_bubble_if_previous_msg_is_single_product() {
         // Given
-        getChatUseCase.response = getChatUseCase.defaultSrwPrompt
         reminderTickerUseCase.response = reminderTickerUseCase.defaultSrwPrompt
+        val triggerText = reminderTickerUseCase.response.getReminderTicker.regexMessage
+        getChatUseCase.response = getChatUseCase.getSrwPromptWithTriggerText(triggerText)
         chatAttachmentUseCase.response = chatAttachmentUseCase.defaultSrwPrompt
         launchChatRoomActivity()
 
