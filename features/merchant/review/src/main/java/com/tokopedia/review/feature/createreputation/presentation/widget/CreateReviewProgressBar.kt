@@ -51,6 +51,14 @@ class CreateReviewProgressBar : BaseCustomView {
                 }
                 setBadRatingCompleteText()
             }
+            progress.isNeedBadRatingReason() -> {
+                setEmptyProgress()
+                if (progress.isPhotosFilled || progress.isTextAreaFilled) {
+                    setBadRatingCompleteReasonText()
+                    return
+                }
+                setBadRatingNeedReasonText()
+            }
             progress.isNeedPhoto() -> {
                 setPartiallyCompleteProgress()
                 if (progress.isGoodRating) {
@@ -66,10 +74,6 @@ class CreateReviewProgressBar : BaseCustomView {
                     return
                 }
                 setBadRatingNeedReviewText()
-            }
-            progress.isNeedBadRating() -> {
-                setEmptyProgress()
-                setBadRatingNeedReasonText()
             }
             else -> {
                 setEmptyProgress()
@@ -137,5 +141,9 @@ class CreateReviewProgressBar : BaseCustomView {
 
     private fun setBadRatingNeedReasonText() {
         progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_bad_rating_reason)
+    }
+
+    private fun setBadRatingCompleteReasonText() {
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_text)
     }
 }

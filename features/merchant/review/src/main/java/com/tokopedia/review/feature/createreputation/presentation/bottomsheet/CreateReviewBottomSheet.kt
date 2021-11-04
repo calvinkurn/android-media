@@ -331,6 +331,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 textArea?.clearFocus()
             }
         } else {
+            if (badRatingCategoryId == BAD_RATING_OTHER_ID) {
+                textArea?.apply {
+                    setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                    clearFocus()
+                }
+            }
             createReviewViewModel.removeBadRatingCategory(badRatingCategoryId.toString())
         }
         updateButtonState(isGoodRating(), textArea?.isEmpty()?.not() ?: false)
