@@ -12,10 +12,12 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSessionInterface
 
 class SellerHomeNavigator(
@@ -39,6 +41,9 @@ class SellerHomeNavigator(
     @FragmentType
     private var currentSelectedPage: Int? = null
     private val pages: MutableMap<Fragment?, String?> = mutableMapOf()
+    private val sellerFeedbackUtil by lazy {
+        SellerFeedbackUtil(context.applicationContext)
+    }
 
     init {
         initFragments()
@@ -157,7 +162,13 @@ class SellerHomeNavigator(
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, "0", "", "")
+        somListFragment = sellerHomeRouter?.getSomListFragment(
+            context,
+            SomTabConst.STATUS_ALL_ORDER,
+            SomTabConst.DEFAULT_ORDER_TYPE_FILTER,
+            "",
+            ""
+        )
         otherSettingsFragment =
             if (useRevampedOtherMenu()) {
                 OtherMenuFragment.createInstance()
@@ -237,7 +248,13 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch, page.orderId)
+        somListFragment = sellerHomeRouter?.getSomListFragment(
+            context,
+            page.tabPage,
+            page.orderType,
+            page.keywordSearch,
+            page.orderId
+        )
         return somListFragment
     }
 
@@ -265,6 +282,18 @@ class SellerHomeNavigator(
 
     private fun setSelectedPage(@FragmentType page: Int) {
         currentSelectedPage = page
+        setSelectedPageSellerFeedback()
+    }
+
+    fun setSelectedPageSellerFeedback() {
+        val selectedPage = when (currentSelectedPage) {
+            FragmentType.HOME -> SellerFeedbackUtil.SELLER_HOME_PAGE
+            FragmentType.PRODUCT -> SellerFeedbackUtil.PRODUCT_MANAGE_PAGE
+            FragmentType.ORDER -> SellerFeedbackUtil.SOM_PAGE
+            FragmentType.CHAT -> SellerFeedbackUtil.CHAT_PAGE
+            else -> SellerHomeConst.EMPTY_STRING
+        }
+        sellerFeedbackUtil.setSelectedPage(selectedPage)
     }
 
     private fun isActivityResumed(): Boolean {

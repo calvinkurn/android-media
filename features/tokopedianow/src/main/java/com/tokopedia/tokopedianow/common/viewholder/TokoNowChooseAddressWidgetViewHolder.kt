@@ -11,8 +11,11 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowChooseAddressWidgetBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeCategoryBinding
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE_TRACKING
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowChooseAddressWidgetViewHolder(
         itemView: View,
@@ -25,6 +28,8 @@ class TokoNowChooseAddressWidgetViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_choose_address_widget
         const val ENABLE_CHOOSE_ADDRESS_WIDGET = "android_tokopedianow_enable_choose_address_widget_on_home_page"
     }
+
+    private var binding: ItemTokopedianowChooseAddressWidgetBinding? by viewBinding()
 
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var coachMark: CoachMark2? = null
@@ -44,9 +49,11 @@ class TokoNowChooseAddressWidgetViewHolder(
                     tokoNowChooseAddressWidgetListener?.onChooseAddressWidgetRemoved()
                 }
 
-                override fun onLocalizingAddressLoginSuccess() {
-                    tokoNowView.refreshLayoutPage()
+                override fun onClickChooseAddressTokoNowTracker() {
+                    tokoNowChooseAddressWidgetListener?.onClickChooseAddressWidgetTracker()
                 }
+
+                override fun needToTrackTokoNow(): Boolean = true
 
                 override fun getLocalizingAddressHostFragment(): Fragment = fragment
 
@@ -57,12 +64,14 @@ class TokoNowChooseAddressWidgetViewHolder(
                 override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
 
                 override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */ }
+
+                override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */ }
             })
         }
     }
 
     private fun setupChooseAddressWidget() {
-        chooseAddressWidget = itemView.findViewById(R.id.choose_address_widget)
+        chooseAddressWidget = binding?.chooseAddressWidget
         bindChooseAddressWidget()
         showCoachMark()
     }
@@ -97,5 +106,6 @@ class TokoNowChooseAddressWidgetViewHolder(
 
     interface TokoNowChooseAddressWidgetListener {
         fun onChooseAddressWidgetRemoved()
+        fun onClickChooseAddressWidgetTracker()
     }
 }

@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
 import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -22,7 +24,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.media.loader.loadImage
@@ -31,16 +32,19 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
 import com.tokopedia.shop.settings.common.view.bottomsheet.MenuBottomSheet
+import com.tokopedia.shop.settings.databinding.FragmentShopSettingsInfoBinding
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
 import java.util.*
 import javax.inject.Inject
@@ -65,6 +69,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     @Inject
     lateinit var shopSettingsInfoViewModel: ShopSettingsInfoViewModel
 
+    private var binding by autoClearedNullable<FragmentShopSettingsInfoBinding>()
+
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var bottomSheet: MenuBottomSheet? = null
@@ -73,8 +79,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     private var progressDialog: ProgressDialog? = null
     private var shopBadge: String = ""
-    private var viewContent: View? = null
-    private var loadingView: View? = null
+    private var viewContent: ConstraintLayout? = null
+    private var loadingView: LinearLayout? = null
     private var btnChangeShopInfo: View? = null
     private var vgShopStatusContainer: View? = null
     private var tvPowerMerchantType: Typography? = null
@@ -105,7 +111,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_settings_info, container, false)
+        binding = FragmentShopSettingsInfoBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     private fun showShopStatusManageMenu() {
@@ -197,7 +204,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView()
         setupToolbar()
         btnChangeShopInfo?.setOnClickListener {
             moveToShopEditBasicInfoFragment()
@@ -221,28 +228,28 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         observeUpdateScheduleData()
     }
 
-    private fun initView(view: View) {
-        viewContent = view.findViewById(R.id.viewContent)
-        loadingView = view.findViewById(R.id.loadingView)
-        btnChangeShopInfo = view.findViewById(R.id.btnChangeShopInfo)
-        vgShopStatusContainer = view.findViewById(R.id.vgShopStatusContainer)
-        tvPowerMerchantType = view.findViewById(R.id.tv_power_merchant_type)
-        ivLogoPowerMerchant = view.findViewById(R.id.iv_logo_power_merchant)
-        tvOfficialStore = view.findViewById(R.id.tv_official_store)
-        tvOfficialStoreExpiration = view.findViewById(R.id.tv_official_store_expiration)
-        ivLogoOfficialStore = view.findViewById(R.id.iv_logo_official_store)
-        tvShopName = view.findViewById(R.id.tvShopName)
-        tvShopDomain = view.findViewById(R.id.tvShopDomain)
-        ivShopLogo = view.findViewById(R.id.ivShopLogo)
-        tvShopSloganTitle = view.findViewById(R.id.tvShopSloganTitle)
-        tvShopSlogan = view.findViewById(R.id.tvShopSlogan)
-        tvShopDescriptionTitle = view.findViewById(R.id.tvShopDescriptionTitle)
-        tvShopDescription = view.findViewById(R.id.tvShopDescription)
-        tvShopStatus = view.findViewById(R.id.tvShopStatus)
-        containerRegularMerchant = view.findViewById(R.id.container_regular_merchant)
-        containerPowerMerchant = view.findViewById(R.id.container_power_merchant)
-        containerOfficialStore = view.findViewById(R.id.container_official_store)
-        tvRegularMerchantType = view.findViewById(R.id.tv_regular_merchant_type)
+    private fun initView() {
+        viewContent = binding?.viewContent?.viewMainContainer
+        loadingView = binding?.loadingView?.loadingMainContainer
+        btnChangeShopInfo = binding?.viewContent?.btnChangeShopInfo
+        vgShopStatusContainer = binding?.viewContent?.vgShopStatusContainer
+        tvPowerMerchantType = binding?.viewContent?.tvPowerMerchantType
+        ivLogoPowerMerchant = binding?.viewContent?.ivLogoPowerMerchant
+        tvOfficialStore = binding?.viewContent?.tvOfficialStore
+        tvOfficialStoreExpiration = binding?.viewContent?.tvOfficialStoreExpiration
+        ivLogoOfficialStore = binding?.viewContent?.ivLogoOfficialStore
+        tvShopName = binding?.viewContent?.tvShopName
+        tvShopDomain = binding?.viewContent?.tvShopDomain
+        ivShopLogo = binding?.viewContent?.ivShopLogo
+        tvShopSloganTitle = binding?.viewContent?.tvShopSloganTitle
+        tvShopSlogan = binding?.viewContent?.tvShopSlogan
+        tvShopDescriptionTitle = binding?.viewContent?.tvShopDescriptionTitle
+        tvShopDescription = binding?.viewContent?.tvShopDescription
+        tvShopStatus = binding?.viewContent?.tvShopStatus
+        containerRegularMerchant = binding?.viewContent?.containerRegularMerchant
+        containerPowerMerchant = binding?.viewContent?.containerPowerMerchant
+        containerOfficialStore = binding?.viewContent?.containerOfficialStore
+        tvRegularMerchantType = binding?.viewContent?.tvRegularMerchantType
     }
 
     private fun observeShopBadgeData() {
@@ -281,7 +288,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        activity?.findViewById<HeaderUnify>(R.id.header)?.apply {
+        (activity as? ShopSettingsInfoActivity)?.binding?.header?.apply {
             actionTextView?.hide()
         }
     }

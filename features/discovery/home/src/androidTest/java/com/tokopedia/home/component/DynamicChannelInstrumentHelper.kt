@@ -70,6 +70,8 @@ fun disableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, true)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, true)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, true)
 }
 
 fun enableCoachMark(context: Context){
@@ -82,6 +84,8 @@ fun enableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_WALLETAPP_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, false)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, false)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, false)
 }
 
 fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
@@ -266,7 +270,7 @@ private fun clickSeeAllRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, ite
     waitForData()
     try {
         Espresso.onView(allOf(ViewMatchers.withId(R.id.see_all_button),
-                ViewMatchers.hasSibling(ViewMatchers.withText("Beli Pulsa atau Bayar Tagihanmu")))).perform(ViewActions.click())
+                ViewMatchers.hasSibling(ViewMatchers.withText("Produk digital khusus kamu")))).perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
     }

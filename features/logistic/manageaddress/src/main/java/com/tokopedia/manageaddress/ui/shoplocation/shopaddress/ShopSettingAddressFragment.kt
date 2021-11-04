@@ -20,13 +20,12 @@ import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.adapter.ShopLocationOldTypeFactory
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.viewholder.ShopLocationViewHolder
-import com.tokopedia.shop.settings.address.presenter.ShopLocationOldPresenter
-import com.tokopedia.shop.settings.address.view.listener.ShopLocationOldView
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.listener.ShopLocationOldView
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class ShopSettingAddressFragment : BaseListFragment<ShopLocationOldUiModel, ShopLocationOldTypeFactory>(),
-        ShopLocationOldView, ShopLocationViewHolder.OnIconMoreClicked, BaseEmptyViewHolder.Callback {
+    ShopLocationOldView, ShopLocationViewHolder.OnIconMoreClicked, BaseEmptyViewHolder.Callback {
 
     @Inject
     lateinit var oldPresenter: ShopLocationOldPresenter

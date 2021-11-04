@@ -94,7 +94,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             walletUiModel.isActive,
             walletUiModel.isFailed
         )
-        if (walletUiModel.isFailed && walletUiModel.id != AccountConstants.WALLET.SALDO) {
+        if (walletUiModel.isFailed) {
             adapter?.changeItemToShimmer(UiModelMapper.getWalletShimmeringUiModel(walletUiModel))
             viewModel.getBalanceAndPoint(walletUiModel.id)
         } else if (!walletUiModel.applink.isEmpty()) {
@@ -147,36 +147,23 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         addTitleView()
         if (centralizedUserAssetConfig.assetConfigVertical.isNotEmpty()) {
             centralizedUserAssetConfig.assetConfigVertical.forEach {
-                if (it.id == AccountConstants.WALLET.SALDO) {
-                    adapter?.addItem(UiModelMapper.getWalletUiModel(it))
-                } else {
-                    adapter?.addItem(UiModelMapper.getWalletShimmeringUiModel(it))
+                adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletShimmeringUiModel(it))
+                if (it.id != AccountConstants.WALLET.GOPAY &&
+                    it.id != AccountConstants.WALLET.GOPAYLATER
+                ) {
+                    viewModel.getBalanceAndPoint(it.id)
                 }
             }
         }
 
         if (centralizedUserAssetConfig.assetConfigHorizontal.isNotEmpty()) {
             addSubtitleView()
-            val fundAndInvestmentPlaceholders = mutableListOf<WalletUiModel>()
             centralizedUserAssetConfig.assetConfigHorizontal.forEach {
-                fundAndInvestmentPlaceholders.add(UiModelMapper.getWalletUiModel(it))
+                adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletUiModel(it))
             }
-            addWalletView(fundAndInvestmentPlaceholders)
         }
 
         viewModel.getGopayWalletEligible()
-        getBalanceAndPoints(centralizedUserAssetConfig)
-    }
-
-    private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
-        centralizedUserAssetConfig.assetConfigVertical.forEach {
-            if (it.id != AccountConstants.WALLET.GOPAY &&
-                it.id != AccountConstants.WALLET.GOPAYLATER &&
-                it.id != AccountConstants.WALLET.SALDO
-            ) {
-                viewModel.getBalanceAndPoint(it.id)
-            }
-        }
     }
 
     private fun onFailedGetCentralizedAssetConfig() {
@@ -204,11 +191,12 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             if (eligibility[0].isEligible) {
                 if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAY).orFalse()) {
                     viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+                    adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
                 }
                 if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAYLATER).orFalse()) {
                     viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER)
+                    adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
                 }
-                adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
             } else {
                 adapter?.removeById(AccountConstants.WALLET.GOPAY)
                 adapter?.removeById(AccountConstants.WALLET.GOPAYLATER)
@@ -246,10 +234,6 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
 
     private fun addSubtitleView() {
         adapter?.addItemAndAnimateChanges(SubtitleUiModel(getString(R.string.funds_and_investment_try_another)))
-    }
-
-    private fun addWalletView(walletUiModel: List<WalletUiModel>) {
-        adapter?.addItemsAndAnimateChanges(walletUiModel)
     }
 
     private fun onRefresh() {

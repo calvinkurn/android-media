@@ -75,7 +75,6 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
 class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerPromos: RecyclerView? = null
-    private var persistentAdsData: PersistentAdsData? = null
 
     @Inject
     lateinit var viewFactory: ViewModelFactory
@@ -103,7 +102,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         mUsersession = UserSession(context)
-        persistentAdsData = context?.let { PersistentAdsData(it) }
         super.onCreate(savedInstanceState)
     }
 
@@ -563,8 +561,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mPagerPromos?.adapter = null
         mPagerPromos?.layoutManager = null
         adapter = null
-        persistentAdsData?.deletePreference()
-        persistentAdsData = null
     }
 
     override fun showLoading() {

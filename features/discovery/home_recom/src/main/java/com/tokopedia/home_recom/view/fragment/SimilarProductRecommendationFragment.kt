@@ -347,13 +347,17 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         activity?.finish()
     }
 
-    private fun setRecommendationFilterAndSort(filters: List<SortFilterItem>, dynamicFilterModel: DynamicFilterModel){
+    override fun onShowSnackbarError(throwable: Throwable) {
+        showToastError(throwable)
+    }
+
+    private fun setRecommendationFilterAndSort(filters: List<SortFilterItem>, dynamicFilterModel: DynamicFilterModel) {
         sortFilterView?.let { sortFilterView ->
-            if(dynamicFilterModel.data.filter.isEmpty() && dynamicFilterModel.data.sort.isEmpty()){
+            if (dynamicFilterModel.data.filter.isEmpty() && dynamicFilterModel.data.sort.isEmpty()) {
                 sortFilterView.sortFilterPrefix.hide()
                 sortFilterView.hide()
             } else {
-                if(!sortFilterView.isVisible){
+                if (!sortFilterView.isVisible) {
                     sortFilterView.resetAllFilters()
                     sortFilterView.show()
                     sortFilterView.sortFilterPrefix.show()

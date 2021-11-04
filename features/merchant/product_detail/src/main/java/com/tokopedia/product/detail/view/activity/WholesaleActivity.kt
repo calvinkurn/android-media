@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.view.adapter.WholesaleAdapter
-import kotlinx.android.synthetic.main.activity_wholesale_detail.*
 
 /**
  * @author Angga.Prasetiyo on 02/11/2015.
@@ -31,6 +31,8 @@ class WholesaleActivity : BaseSimpleActivity() {
         }
     }
 
+    private var recyclerView: RecyclerView? = null
+
     override fun getLayoutRes(): Int {
         return R.layout.activity_wholesale_detail
     }
@@ -49,9 +51,10 @@ class WholesaleActivity : BaseSimpleActivity() {
     }
 
     private fun setupRecyclerView() {
-        recycler_view.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recycler_view.adapter = wholesaleAdapter
-        recycler_view.addItemDecoration(DividerItemDecoration(this@WholesaleActivity))
+        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerView?.adapter = wholesaleAdapter
+        recyclerView?.addItemDecoration(DividerItemDecoration(this@WholesaleActivity))
     }
 
     fun showData() {

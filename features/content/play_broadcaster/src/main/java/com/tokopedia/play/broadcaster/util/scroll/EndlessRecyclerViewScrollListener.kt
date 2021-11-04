@@ -13,20 +13,16 @@ abstract class EndlessRecyclerViewScrollListener(
 ) : RecyclerView.OnScrollListener() {
 
     private val threshold = 2
-    private val visibleThreshold: Int
+    private val visibleThreshold: Int = when (layoutManager) {
+        is GridLayoutManager -> threshold * layoutManager.spanCount
+        is StaggeredGridLayoutManager -> threshold * layoutManager.spanCount
+        is LinearLayoutManager -> threshold
+        else -> threshold
+    }
     private var currentPage: Int = STARTING_PAGE_INDEX
     private var currentItemCount = 0
     private var loading = false
     private var hasNextPage = true
-
-    init {
-        visibleThreshold = when (layoutManager) {
-            is GridLayoutManager -> threshold * layoutManager.spanCount
-            is StaggeredGridLayoutManager -> threshold * layoutManager.spanCount
-            is LinearLayoutManager -> threshold
-            else -> threshold
-        }
-    }
 
     protected fun init() {}
 

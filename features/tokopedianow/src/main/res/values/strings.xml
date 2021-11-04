@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="tokopedianow_common_empty_state_title">Yaah, saat ini Tokopedia NOW! belum bisa antar ke tempatmu</string>
-    <string name="tokopedianow_common_empty_state_desc_1">Melayani kebutuhan harianmu hanya dalam 2 jam pengiriman agar produk tetap fresh.</string>
-    <string name="tokopedianow_common_empty_state_desc_2">Saat ini, kami baru ada di daerah tertentu. Tunggu Tokopedia NOW! di kotamu, ya!</string>
+    <string name="tokopedianow_home_title">Tokopedia NOW!</string>
+
+    <string name="tokopedianow_common_empty_state_title">Tunggu Tokopedia NOW! hadir di lokasimu</string>
+    <string name="tokopedianow_common_empty_state_desc">Siap-siap nikmati layanan 2 jam tiba &amp; gratis ongkir. Nantikan kabar dari kami, ya!</string>
     <string name="tokopedianow_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokopedianow_common_empty_state_button_return">Belanja di Tokopedia</string>
     <string name="tokopedianow_common_empty_state_bullet_symbol">•</string>
@@ -32,7 +33,7 @@
     <string name="tokopedianow_search_category_product_count_template">%s Produk</string>
     <string name="tokopedianow_category_aisle_header">Lihat kategori lainnya</string>
     <string name="tokopedianow_content_desc_image_empty_product">Image Empty Product</string>
-    <string name="tokopedianow_find_item_in_tokopedia_now">Cari barang di Tokopedia NOW!</string>
+    <string name="tokopedianow_find_item_in_tokopedia_now">Cari Barang di Tokopedia NOW!</string>
 
     <string name="tokopedianow_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>
     <string name="tokopedianow_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>
@@ -53,16 +54,17 @@
     <string name="tokopedianow_home_educational_information_two_hours">2 jam tiba</string>
     <string name="tokopedianow_home_educational_information_stock_available">Stok pasti tersedia</string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality">Kualitas terjamin</string>
-    <string name="tokopedianow_home_educational_information_two_hours_bottomsheet"><![CDATA[<b>2 jam tiba.</b> Terima belanjaan dalam 2 jam setelah pembayaran berhasil & nikmati <b>gratis ongkir</b> juga!]]></string>
-    <string name="tokopedianow_home_educational_information_stock_available_bottomsheet"><![CDATA[<b>Stok pasti tersedia.</b> Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia.]]></string>
-    <string name="tokopedianow_home_educational_information_guaranteed_quality_bottomsheet"><![CDATA[<b>Kualitas terjamin.</b> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
-    <string name="tokopedianow_home_educational_information_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'#42b549\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now?utm_campaign=Help-13808288-a-2981-100921&utm_source=salinlink&utm_medium=share">Pelajari</a></font>]]></string>
-    <string name="tokopedianow_home_educational_information_terms_and_conditions_bottomsheet"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'#42b549\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now">syarat & ketentuan.</a></font>]]></string>
-    <string name="tokopedianow_home_educational_information_title">Untung pakai Tokopedia NOW!</string>
+    <string name="tokopedianow_home_educational_information_two_hours_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>2 jam tiba.</b></font> Terima belanjaan dalam 2 jam setelah pembayaran berhasil & nikmati <font color=\'%2$s\'><b>gratis ongkir</b></font> juga!]]></string>
+    <string name="tokopedianow_home_educational_information_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Stok pasti tersedia.</b></font> Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia.]]></string>
+    <string name="tokopedianow_home_educational_information_guaranteed_quality_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Kualitas terjamin.</b></font> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
+    <string name="tokopedianow_home_educational_information_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">Pelajari</a></font>]]></string>
+    <string name="tokopedianow_home_educational_information_terms_and_conditions_bottomsheet"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now">syarat & ketentuan.</a></font>]]></string>
+    <string name="tokopedianow_home_educational_information_title">Untungnya pakai Tokopedia NOW!</string>
 
-    <string name="tokopedianow_repurchase_empty_state_no_history_title">Tidak ada history repurchase</string>
-    <string name="tokopedianow_repurchase_empty_state_no_history_desc_filter">Coba ubah filter yang kamu gunakan atau cari barang serupa dengan explore tokonow</string>
-    <string name="tokopedianow_repurchase_empty_state_no_history_desc_search">Coba ubah kata kunci yang kamu gunakan atau cari barang serupa dengan explore tokonow</string>
+    <string name="tokopedianow_repurchase_empty_state_no_history_title_filter">Tidak ada pembelian sesuai filtermu</string>
+    <string name="tokopedianow_repurchase_empty_state_no_history_title_search">Belum ada pembelianmu yang sesuai kata kunci</string>
+    <string name="tokopedianow_repurchase_empty_state_no_history_desc_filter">Coba ubah filter, atau cari barang di Tokopedia NOW!.</string>
+    <string name="tokopedianow_repurchase_empty_state_no_history_desc_search">Coba ubah kata kuncimu, atau cari barang di Tokopedia NOW!.</string>
     <string name="tokopedianow_repurchase_empty_state_no_history_button">Belanja di Tokopedia NOW!</string>
     <string name="tokopedianow_repurchase_category_grid_title">Mau belanja apa?</string>
     <string name="tokopedianow_repurchase_title_page">Beli Lagi</string>

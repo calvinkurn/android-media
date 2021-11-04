@@ -2,19 +2,19 @@ package com.tokopedia.tokopedianow.common.viewholder
 
 import android.app.Activity
 import android.view.View
-import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
-import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowEmptyStateOocBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowEmptyStateOocViewHolder(
         itemView: View,
-        private val tokoNowListener: TokoNowView? = null,
+        private val listener: TokoNowEmptyStateOocListener? = null,
 ) : AbstractViewHolder<TokoNowEmptyStateOocUiModel>(itemView) {
 
     companion object {
@@ -23,20 +23,16 @@ class TokoNowEmptyStateOocViewHolder(
         const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
     }
 
-    private var emptyStateAddressOoc: NoAddressEmptyStateView? = null
-    private var layout: RelativeLayout? = null
+    private var binding: ItemTokopedianowEmptyStateOocBinding? by viewBinding()
+    private var hostSource = ""
 
-    init {
-        emptyStateAddressOoc = itemView.findViewById(R.id.empty_state_occ)
-        layout = itemView.findViewById(R.id.layout)
+    override fun bind(element: TokoNowEmptyStateOocUiModel) {
+        hostSource = element.hostSource
+        showEmptyStateNoAddress(listener?.onGetEventCategory().orEmpty())
     }
 
-    override fun bind(element: TokoNowEmptyStateOocUiModel?) {
-        showEmptyStateNoAddress()
-    }
-
-    private fun showEmptyStateNoAddress() {
-        emptyStateAddressOoc?.actionListener = object : NoAddressEmptyStateView.ActionListener {
+    private fun showEmptyStateNoAddress(eventCategory: String) {
+        binding?.emptyStateOcc?.actionListener = object : NoAddressEmptyStateView.ActionListener {
             override fun onChangeAddressClicked() {
                 showBottomSheetChooseAddress()
             }
@@ -44,17 +40,20 @@ class TokoNowEmptyStateOocViewHolder(
             override fun onReturnClick() {
                 (itemView.context as? Activity)?.finish()
             }
+
+            override fun onGetNoAddressEmptyStateEventCategoryTracker(): String {
+                return eventCategory
+            }
         }
     }
-
 
     private fun showBottomSheetChooseAddress() {
         val chooseAddressBottomSheet = ChooseAddressBottomSheet()
         chooseAddressBottomSheet.setListener(object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
-            override fun getLocalizingAddressHostSourceBottomSheet(): String = SOURCE
+            override fun getLocalizingAddressHostSourceBottomSheet(): String = hostSource
 
             override fun onAddressDataChanged() {
-                tokoNowListener?.refreshLayoutPage()
+                listener?.onRefreshLayoutPage()
             }
 
             override fun onLocalizingAddressServerDown() { /* to do : nothing */ }
@@ -63,8 +62,14 @@ class TokoNowEmptyStateOocViewHolder(
 
             override fun onDismissChooseAddressBottomSheet() { /* to do : nothing */ }
         })
-        tokoNowListener?.getFragmentManagerPage()?.let {
+        listener?.onGetFragmentManager()?.let {
             chooseAddressBottomSheet.show(it, SHIPPING_CHOOSE_ADDRESS_TAG)
         }
+    }
+
+    interface TokoNowEmptyStateOocListener {
+        fun onRefreshLayoutPage()
+        fun onGetFragmentManager(): FragmentManager
+        fun onGetEventCategory(): String
     }
 }

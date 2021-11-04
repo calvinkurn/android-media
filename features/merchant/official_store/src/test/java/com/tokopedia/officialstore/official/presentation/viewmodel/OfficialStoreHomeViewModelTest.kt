@@ -495,7 +495,7 @@ class OfficialStoreHomeViewModelTest {
         verifyGetOfficialStoreBannersUseCaseCalled()
 
         viewModel.officialStoreBannersResult
-                .assertSuccess(expectedOSBanners)
+                .assertPairSuccess(expectedOSBanners)
     }
 
     private fun verifyOfficialStoreBenefitsEquals(
@@ -554,7 +554,7 @@ class OfficialStoreHomeViewModelTest {
         coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
 
         viewModel.officialStoreBannersResult
-                .assertError(expectedError)
+                .assertPairError(expectedError)
     }
 
     private fun verifyOfficialStoreBenefitsError(expectedError: Fail) {
@@ -607,12 +607,23 @@ class OfficialStoreHomeViewModelTest {
         assertEquals(expectedValue, actualValue)
     }
 
+    private fun <T> LiveData<T>.assertPairSuccess(expectedValue: Success<*>) {
+        val actualValue = (value as? Pair<Any, Any>)?.second
+        assertEquals(expectedValue, actualValue)
+    }
+
     private fun ((Boolean, Throwable?) -> Unit).assertSuccess() {
         coVerify { this@assertSuccess.invoke(true, null) }
     }
 
     private fun <T> LiveData<T>.assertError(error: Fail) {
         val actualError = value.toString()
+        val expectedError = error.toString()
+        assertEquals(expectedError, actualError)
+    }
+
+    private fun <T> LiveData<T>.assertPairError(error: Fail) {
+        val actualError = (value as? Pair<Any, Any>)?.second.toString()
         val expectedError = error.toString()
         assertEquals(expectedError, actualError)
     }

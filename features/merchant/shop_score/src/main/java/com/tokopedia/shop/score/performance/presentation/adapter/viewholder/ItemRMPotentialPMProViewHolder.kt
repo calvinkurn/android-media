@@ -4,10 +4,11 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemPotentialRmToPmProBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMProBenefitAdapter
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemRMPotentialPMProListener
 import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
-import kotlinx.android.synthetic.main.item_potential_rm_to_pm_pro.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemRMPotentialPMProViewHolder(
     view: View,
@@ -20,14 +21,15 @@ class ItemRMPotentialPMProViewHolder(
     }
 
     private var itemPMProBenefitAdapter: ItemPMProBenefitAdapter? = null
+    private val binding: ItemPotentialRmToPmProBinding? by viewBinding()
 
     override fun bind(element: SectionRMPotentialPMProUiModel?) {
         itemPMProBenefitAdapter = ItemPMProBenefitAdapter()
-        with(itemView) {
-            tv_see_all_benefit_pm_pro?.setOnClickListener {
+        binding?.run {
+            tvSeeAllBenefitPmPro.setOnClickListener {
                 itemStatusPMProListener.onGotoPMProPage()
             }
-            ic_chevron_right_benefit_pm_pro?.setOnClickListener {
+            icChevronRightBenefitPmPro.setOnClickListener {
                 itemStatusPMProListener.onGotoPMProPage()
             }
         }
@@ -35,8 +37,8 @@ class ItemRMPotentialPMProViewHolder(
     }
 
     private fun setPotentialPMProBenefitAdapter(element: SectionRMPotentialPMProUiModel?) {
-        with(itemView) {
-            rv_shop_pm_pro_potential_benefit?.apply {
+        binding?.run {
+            rvShopPmProPotentialBenefit.run {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemPMProBenefitAdapter
             }

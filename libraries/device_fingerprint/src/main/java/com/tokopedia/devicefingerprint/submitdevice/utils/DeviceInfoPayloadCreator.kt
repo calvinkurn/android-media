@@ -3,6 +3,7 @@ package com.tokopedia.devicefingerprint.submitdevice.utils
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Typeface
@@ -136,6 +137,7 @@ class DeviceInfoPayloadCreator @Inject constructor(
         return try {
             val pm = context.packageManager
             val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+                    .filter { (it.flags and ApplicationInfo.FLAG_SYSTEM) == 0 }
             val packageList = mutableListOf<String>()
             for (packageInfo in packages) {
                 packageList.add(packageInfo.packageName.sha256())

@@ -14,6 +14,18 @@ data class TokopointsBalanceDataModel(
     var data: WalletappGetAccountBalance = WalletappGetAccountBalance()
 )
 
+data class SaldoBalanceDataModel(
+    @SerializedName("midasGetSaldoWidgetBalance")
+    @Expose
+    var data: WalletappGetAccountBalance = WalletappGetAccountBalance()
+)
+
+data class CoBrandCCBalanceDataModel(
+    @SerializedName("cc_cobrand_getstatesforaccounts")
+    @Expose
+    var data: WalletappGetAccountBalance = WalletappGetAccountBalance()
+)
+
 data class WalletappGetAccountBalance(
     @SerializedName("id") @Expose
     var id: String = "",

@@ -5,7 +5,6 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.datetimepicker.DateTimePicker
@@ -14,7 +13,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
-import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.extension.toCalendar
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
@@ -22,8 +20,8 @@ import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -167,23 +165,19 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
 
     private fun onUpdateFail(error: Throwable) {
         btnSet?.isLoading = false
-        showToasterError(
-                message = error.localizedMessage
-        )
+        showToasterError(error)
     }
 
-    private fun showToasterError(
-            message: String
-    ) {
+    private fun showToasterError(err: Throwable) {
         if (toasterBottomMargin == 0) {
-            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val offset8 =
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             toasterBottomMargin = btnSet?.height.orZero() + offset8
         }
 
-        container.showToaster(
-                message = message,
-                type = Toaster.TYPE_ERROR,
-                bottomMargin = toasterBottomMargin
+        container.showErrorToaster(
+            err = err,
+            bottomMargin = toasterBottomMargin
         )
     }
 
@@ -192,7 +186,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
      * Observe
      */
     private fun observeSetBroadcastSchedule() {
-        viewModel.observableSetBroadcastSchedule.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSetBroadcastSchedule.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> onUpdateSuccess()
                 is NetworkResult.Fail -> onUpdateFail(it.error)
@@ -200,7 +194,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
                     btnSet?.isLoading = true
                 }
             }
-        })
+        }
     }
     //endregion
 

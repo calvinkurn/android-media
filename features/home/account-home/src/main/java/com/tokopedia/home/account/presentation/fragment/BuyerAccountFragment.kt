@@ -82,8 +82,6 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
 
     private var shouldRefreshOnResume = true
-    private var UOH_AB_TEST_KEY = "uoh_android_v2"
-    private var UOH_AB_TEST_VALUE = "uoh_android_v2"
     private var canGoToShopAccount = true
 
     override fun onCreate(savedInstanceState: Bundle?) {

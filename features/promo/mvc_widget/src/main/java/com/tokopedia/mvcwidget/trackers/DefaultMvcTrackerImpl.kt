@@ -1,8 +1,7 @@
 package com.tokopedia.mvcwidget.trackers
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.mvcwidget.FollowWidgetType
-import com.tokopedia.mvcwidget.trackers.MvcSource
-import com.tokopedia.mvcwidget.trackers.Tracker
 
 open class DefaultMvcTrackerImpl:MvcTrackerImpl {
     //1 Pdp
@@ -338,15 +337,54 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
-    override fun tokomemberImpressionOnPdp(shopId: String,userId: String?){
+    override fun tokomemberImpressionOnPdp(shopId: String,userId: String?, isTokomember: Boolean){
         val map = mutableMapOf<String, Any>()
-        map[Tracker.Constants.EVENT] = Tracker.Event.VIEW_SHOP
-        map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.SHOP_PAGE_BUYER
-        map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.SHOP_PAGE}-$shopId"
+        map[Tracker.Constants.EVENT] = Tracker.Event.VIEW_MV
+        map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER
+        map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.PDP_VIEW}-$shopId"
         map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_TOKOMEMBER
+
+        if(!isTokomember){
+            map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.SEE_ENTRY_POINT
+            map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.MERCHANT_VOUCHER
+        }
 
         Tracker.fillCommonItems(map, userId, Tracker.Constants.PHYSICALGOODS_BUSINESSUNIT)
         Tracker.getTracker().sendGeneralEvent(map)
     }
+
+    override fun viewMVCCoupon(label: String, mapData: HashMap< String,Any> , @MvcSource source: Int) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = Tracker.Event.EVENT_VIEW_PROMO
+        map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.REWARDS_CATEGORY
+        map[Tracker.Constants.EVENT_LABEL] = label
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_MVC_COUPON
+        map[Tracker.Constants.ECOMMERCE] = DataLayer.mapOf("promoView", mapData)
+
+        if (source == MvcSource.REWARDS) {
+            Tracker.fillCommonItems(map, "", Tracker.Constants.TOKOPOINT_BUSINESSUNIT)
+        }
+        Tracker.getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    override fun mvcMultiShopCardClick(
+        shopName: String,
+        eventAction: String,
+        @MvcSource source: Int,
+        userId: String?,
+        label: String
+    ) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = Tracker.Event.CLICK_KUPON
+        map[Tracker.Constants.EVENT_CATEGORY] = Tracker.Category.REWARDS_CATEGORY
+        map[Tracker.Constants.EVENT_ACTION] = eventAction
+        map[Tracker.Constants.EVENT_LABEL] = label
+
+        if (source == MvcSource.REWARDS) {
+            Tracker.fillCommonItems(map, userId, Tracker.Constants.TOKOPOINT_BUSINESSUNIT)
+        }
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
 
 }

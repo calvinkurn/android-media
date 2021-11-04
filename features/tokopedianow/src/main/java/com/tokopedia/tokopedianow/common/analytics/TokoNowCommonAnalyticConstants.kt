@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.analytics
 object TokoNowCommonAnalyticConstants {
 
     object EVENT{
+        const val EVENT_VIEW_TOKONOW_IRIS = "viewTokoNowIris"
         const val EVENT_CLICK_TOKONOW = "clickTokoNow"
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_ITEM = "view_item"
@@ -11,6 +12,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_PRODUCT_CLICK = "productClick"
         const val EVENT_ATC = "addToCart"
         const val EVENT_ADD_TO_CART = "add_to_cart"
+        const val EVENT_OPEN_SCREEN = "openScreen"
     }
 
     object CATEGORY{
@@ -62,6 +64,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_ADD = "add"
         const val KEY_ACTION_FIELD = "actionField"
         const val KEY_PRODUCTS = "products"
+        const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
     }
 
     object VALUE {
@@ -70,5 +73,10 @@ object TokoNowCommonAnalyticConstants {
         const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
         const val LIST_HOME_PAGE_PAST_PURCHASE_WIDGET = "/tokonow - homepage - past_purchase_widget"
         const val CURRENCY_CODE_IDR = "IDR"
+    }
+
+    object ACTION{
+        const val EVENT_ACTION_CLICK_CHANGE_ADDRESS_ON_OOC = "click change address on ooc"
+        const val EVENT_ACTION_CLICK_SHOP_ON_TOKOPEDIA = "click belanja di tokopedia on ooc"
     }
 }

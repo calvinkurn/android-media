@@ -25,6 +25,7 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageMapper
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.product.data.model.ShopFeaturedProductParams
 import com.tokopedia.shop.product.view.datamodel.*
@@ -32,7 +33,6 @@ import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.shop.review.shop.data.network.ErrorMessageException
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -197,7 +197,7 @@ class ShopPageProductListViewModel @Inject constructor(
             val response =  mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
             val code = response.data?.resultStatus?.code
             if (code != ShopHomeViewModel.CODE_STATUS_SUCCESS) {
-                val errorMessage = ErrorHandler.getErrorMessage(context, ErrorMessageException(response.data?.resultStatus?.message.toString()))
+                val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(response.data?.resultStatus?.message.toString()))
                 ShopPageExceptionHandler.logExceptionToCrashlytics(
                         ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
                         Throwable(errorMessage)
@@ -265,21 +265,23 @@ class ShopPageProductListViewModel @Inject constructor(
             widgetUserAddressLocalData: LocalCacheModel,
             rating: String = "",
             pmax: Int = 0,
-            pmin: Int = 0
+            pmin: Int = 0,
+            fcategory: Int? = null
     ): GetShopProductUiModel {
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
-                page,
-                perPage,
-                keyword,
-                etalaseId,
-                sortId,
-                rating,
-                pmax,
-                pmin,
-                widgetUserAddressLocalData.district_id,
-                widgetUserAddressLocalData.city_id,
-                widgetUserAddressLocalData.lat,
-                widgetUserAddressLocalData.long
+                page = page,
+                perPage = perPage,
+                searchKeyword = keyword,
+                etalaseMenu = etalaseId,
+                sort = sortId,
+                rating = rating,
+                pmax = pmax,
+                pmin = pmin,
+                fcategory = fcategory,
+                userDistrictId = widgetUserAddressLocalData.district_id,
+                userCityId = widgetUserAddressLocalData.city_id,
+                userLat = widgetUserAddressLocalData.lat,
+                userLong = widgetUserAddressLocalData.long
         ))
         val productListResponse = useCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
@@ -322,7 +324,8 @@ class ShopPageProductListViewModel @Inject constructor(
                         widgetUserAddressLocalData,
                         shopProductFilterParameter.getRating(),
                         shopProductFilterParameter.getPmax(),
-                        shopProductFilterParameter.getPmin()
+                        shopProductFilterParameter.getPmin(),
+                        shopProductFilterParameter.getCategory()
                 )
             }
             productListData.postValue(Success(listShopProduct))
@@ -419,10 +422,10 @@ class ShopPageProductListViewModel @Inject constructor(
         ))
     }
 
-    fun getBottomSheetFilterData() {
+    fun getBottomSheetFilterData(shopId: String = "") {
         launchCatchError(coroutineContext, block = {
             val filterBottomSheetData = withContext(dispatcherProvider.io) {
-                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
+                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams(shopId)
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
             }
             filterBottomSheetData.data.let {
@@ -463,6 +466,7 @@ class ShopPageProductListViewModel @Inject constructor(
                 tempShopProductFilterParameter.getRating(),
                 tempShopProductFilterParameter.getPmax(),
                 tempShopProductFilterParameter.getPmin(),
+                tempShopProductFilterParameter.getCategory(),
                 widgetUserAddressLocalData.district_id,
                 widgetUserAddressLocalData.city_id,
                 widgetUserAddressLocalData.lat,

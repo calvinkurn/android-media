@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.zxing.integration.android.IntentIntegrator
 import com.journeyapps.barcodescanner.CaptureActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -35,12 +36,11 @@ import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.confirmshipping.presentation.adapter.SomBottomSheetCourierListAdapter
 import com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel.SomConfirmShippingViewModel
-import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
+import com.tokopedia.sellerorder.databinding.FragmentSomConfirmShippingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.bottomsheet_secondary.view.*
-import kotlinx.android.synthetic.main.fragment_som_confirm_shipping.*
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import javax.inject.Inject
 
 /**
@@ -71,6 +71,8 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         }
         false
     }
+
+    private val binding by viewBinding(FragmentSomConfirmShippingBinding::bind)
 
     companion object {
         private const val ERROR_CONFIRM_SHIPPING = "Error when confirm shipping."
@@ -120,9 +122,24 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        data?.let { it ->
+            val barcode = getBarcode(requestCode, resultCode, it)
+            binding?.tfNoResi?.textFieldInput?.setText(barcode)
+            super.onActivityResult(requestCode, resultCode, it)
+        }
+    }
+
+    private fun getBarcode(requestCode: Int, resultCode: Int, data: Intent): String {
+        val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        return if (scanResult?.contents != null) {
+            scanResult.contents
+        } else ""
+    }
+
     private fun setupLayout() {
         bottomSheetUnify = BottomSheetUnify()
-        tf_no_resi?.apply {
+        binding?.tfNoResi?.apply {
             setLabelStatic(true)
             textFiedlLabelText.text = getString(R.string.nomor_resi)
             setMessage(getString(R.string.tf_no_resi_message))
@@ -131,10 +148,10 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         }
 
         if (currIsChangeShipping) {
-            switch_change_courier?.isChecked = true
+            binding?.switchChangeCourier?.isChecked = true
             setBtnToChangeCourier()
         } else {
-            switch_change_courier?.isChecked = false
+            binding?.switchChangeCourier?.isChecked = false
             setBtnToConfirmShipping()
         }
         view?.setOnTouchListener(hideKeyboardTouchListener)
@@ -142,19 +159,19 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
     private fun setupListeners() {
         // set onclick scan resi
-        tf_no_resi?.getFirstIcon()?.setOnClickListener {
+        binding?.tfNoResi?.getFirstIcon()?.setOnClickListener {
             requestBarcodeScanner(activity as Activity, CaptureActivity::class.java)
         }
 
         if (currIsChangeShipping) {
-            switch_change_courier?.isSelected = true
+            binding?.switchChangeCourier?.isSelected = true
             setBtnToChangeCourier()
         } else {
             setBtnToConfirmShipping()
         }
 
         // set onchange switch
-        switch_change_courier?.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding?.switchChangeCourier?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 setBtnToChangeCourier()
             } else {
@@ -164,12 +181,12 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun setBtnToChangeCourier() {
-        cl_change_courier?.visibility = View.VISIBLE
-        btn_confirm_shipping?.setOnClickListener {
+        binding?.clChangeCourier?.visibility = View.VISIBLE
+        binding?.btnConfirmShipping?.setOnClickListener {
             val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_change_courier)
             val queryString = rawQuery
                     .replace(INPUT_ORDER_ID, currOrderId)
-                    .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
+                    .replace(INPUT_SHIPPING_REF, binding?.tfNoResi?.textFieldInput?.text.toString())
                     .replace(INPUT_AGENCY_ID, currShipmentId.toString())
                     .replace(INPUT_SP_ID, currShipmentProductId)
             processChangeCourier(queryString)
@@ -177,12 +194,12 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     private fun setBtnToConfirmShipping() {
-        cl_change_courier?.visibility = View.GONE
-        btn_confirm_shipping?.setOnClickListener {
+        binding?.clChangeCourier?.visibility = View.GONE
+        binding?.btnConfirmShipping?.setOnClickListener {
             val rawQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_som_confirm_shipping)
             val queryString = rawQuery
                     .replace(INPUT_ORDER_ID, currOrderId)
-                    .replace(INPUT_SHIPPING_REF, tf_no_resi?.textFieldInput?.text.toString())
+                    .replace(INPUT_SHIPPING_REF, binding?.tfNoResi?.textFieldInput?.text.toString())
             processConfirmShipping(queryString)
         }
         observingConfirmShipping()
@@ -229,7 +246,9 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CONFIRM_SHIPPING)
                     SomAnalytics.eventClickKonfirmasi(false)
-                    Utils.showToasterError(it.throwable.localizedMessage, view)
+                    context?.run {
+                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                    }
                 }
             }
         })
@@ -243,26 +262,26 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
                     if (courierListResponse.isNotEmpty()) {
                         currShipmentId = courierListResponse.first().shipmentId.toLongOrZero()
-                        label_choosen_courier?.text = courierListResponse.first().shipmentName
+                        binding?.labelChoosenCourier?.text = courierListResponse.first().shipmentName
 
                         val listServiceCourier = courierListResponse.first().listShipmentPackage
                         if (listServiceCourier.isNotEmpty()) {
                             currShipmentProductId = listServiceCourier.first().spId
-                            label_choosen_courier_service?.text = listServiceCourier.first().name
+                            binding?.labelChoosenCourierService?.text = listServiceCourier.first().name
                         }
                     }
 
-                    label_choosen_courier?.setOnClickListener {
+                    binding?.labelChoosenCourier?.setOnClickListener {
                         view.hideKeyboard()
                         showBottomSheetCourier(false)
                     }
-                    iv_choose_courier?.setOnClickListener {
+                    binding?.ivChooseCourier?.setOnClickListener {
                         view.hideKeyboard()
                         showBottomSheetCourier(false)
                     }
 
-                    label_choosen_courier_service?.setOnClickListener { showBottomSheetCourier(true) }
-                    iv_choose_courier_service?.setOnClickListener { showBottomSheetCourier(true) }
+                    binding?.labelChoosenCourierService?.setOnClickListener { showBottomSheetCourier(true) }
+                    binding?.ivChooseCourierService?.setOnClickListener { showBottomSheetCourier(true) }
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
@@ -286,7 +305,9 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CHANGE_COURIER)
-                    Utils.showToasterError(it.throwable.localizedMessage, view)
+                    context?.run {
+                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                    }
                 }
             }
         })
@@ -295,16 +316,17 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     private fun showBottomSheetCourier(isCourierService: Boolean) {
         somBottomSheetCourierListAdapter = SomBottomSheetCourierListAdapter(this)
         if (bottomSheetUnify.isAdded) bottomSheetUnify.dismiss()
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_secondary, null)
-        viewBottomSheet.rv_bottomsheet_secondary?.apply {
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-            adapter = somBottomSheetCourierListAdapter
-        }
-        viewBottomSheet.tf_extra_notes?.visibility = View.GONE
+        View.inflate(context, R.layout.bottomsheet_secondary, null).run {
+            findViewById<RecyclerView>(R.id.rv_bottomsheet_secondary)?.apply {
+                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
+                adapter = somBottomSheetCourierListAdapter
+            }
+            findViewById<View>(R.id.tf_extra_notes)?.visibility = View.GONE
 
-        bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
-        bottomSheetUnify.setChild(viewBottomSheet)
-        fragmentManager?.let { bottomSheetUnify.show(it, TAG_BOTTOMSHEET) }
+            bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
+            bottomSheetUnify.setChild(this)
+            childFragmentManager.let { bottomSheetUnify.show(it, TAG_BOTTOMSHEET) }
+        }
 
         if (isCourierService) {
             setCourierServiceListData(currShipmentId)
@@ -334,10 +356,10 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     override fun onChooseCourierAgent(shipmentId: Long, courierName: String) {
         bottomSheetUnify.dismiss()
         currShipmentId = shipmentId
-        label_choosen_courier?.text = courierName
+        binding?.labelChoosenCourier?.text = courierName
         courierListResponse.forEach {
             if (it.shipmentId.toLongOrZero() == shipmentId) {
-                label_choosen_courier_service?.text = it.listShipmentPackage.first().name
+                binding?.labelChoosenCourierService?.text = it.listShipmentPackage.first().name
                 currShipmentProductId = it.listShipmentPackage.first().spId
             }
         }
@@ -346,6 +368,6 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     override fun onChooseCourierService(spId: String, courierServiceName: String) {
         bottomSheetUnify.dismiss()
         currShipmentProductId = spId
-        label_choosen_courier_service?.text = courierServiceName
+        binding?.labelChoosenCourierService?.text = courierServiceName
     }
 }

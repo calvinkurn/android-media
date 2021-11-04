@@ -4,8 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmSingleCtaBinding
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetSingleCtaUiModel
-import kotlinx.android.synthetic.main.widget_pm_single_cta.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 04/03/21
@@ -17,11 +18,13 @@ class SingleCtaWidget(itemView: View) : AbstractViewHolder<WidgetSingleCtaUiMode
         val RES_LAYOUT = R.layout.widget_pm_single_cta
     }
 
+    private val binding: WidgetPmSingleCtaBinding? by viewBinding()
+
     override fun bind(element: WidgetSingleCtaUiModel) {
-        with(itemView) {
+        binding?.run {
             tvPmSingleCta.text = element.ctaText
-            setOnClickListener {
-                RouteManager.route(context, element.urlOrAppLink)
+            root.setOnClickListener {
+                RouteManager.route(root.context, element.urlOrAppLink)
             }
         }
     }

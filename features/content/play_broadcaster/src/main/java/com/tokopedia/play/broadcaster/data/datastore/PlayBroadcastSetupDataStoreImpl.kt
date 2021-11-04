@@ -9,7 +9,6 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.model.result.map
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
@@ -96,7 +95,7 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         productDataStore.selectProduct(product, isSelected)
     }
 
-    override fun isProductSelected(productId: Long): Boolean {
+    override fun isProductSelected(productId: String): Boolean {
         return productDataStore.isProductSelected(productId)
     }
 
@@ -106,7 +105,6 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     override suspend fun uploadSelectedProducts(channelId: String): NetworkResult<Unit> {
         val uploadResult = productDataStore.uploadSelectedProducts(channelId)
-                .map { Unit }
         if (uploadResult is NetworkResult.Success) validateCover()
         return uploadResult
     }

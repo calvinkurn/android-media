@@ -6,11 +6,12 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.shop.score.databinding.BottomSheetProtectedParameterBinding
 
-class BottomSheetProtectedParameter : BaseBottomSheetShopScore() {
+class BottomSheetProtectedParameter :
+    BaseBottomSheetShopScore<BottomSheetProtectedParameterBinding>() {
 
-    private var tvDescProtectedParameter: Typography? = null
+    override fun bind(view: View) = BottomSheetProtectedParameterBinding.bind(view)
 
     override fun getLayoutResId(): Int = R.layout.bottom_sheet_protected_parameter
 
@@ -27,13 +28,12 @@ class BottomSheetProtectedParameter : BaseBottomSheetShopScore() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.setupView()
+        binding?.setupView()
     }
 
-    private fun View.setupView() = this.run {
+    private fun BottomSheetProtectedParameterBinding?.setupView() = this?.run {
         val protectedParameterDesc = arguments?.getString(PROTECTED_PARAMETER_DESC_KEY).orEmpty()
-        tvDescProtectedParameter = findViewById(R.id.tvDescProtectedParameter)
-        tvDescProtectedParameter?.text =
+        tvDescProtectedParameter.text =
             MethodChecker.fromHtml(
                 getString(
                     R.string.desc_relief_parameter_for_new_seller_bottom_sheet,

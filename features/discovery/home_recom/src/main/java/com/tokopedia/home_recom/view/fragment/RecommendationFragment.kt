@@ -390,6 +390,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         this.activity?.finish()
     }
 
+    override fun onShowSnackbarError(throwable: Throwable) {
+        showToastError(throwable)
+    }
+
     /**
      * This void from Callback [RecommendationListener]
      * It handling wishlist click from item
@@ -441,6 +445,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         productDetailData.imageUrl)
             }
         }
+    }
+
+    override fun onProductAnchorImpressionHitGTM(productInfoDataModel: ProductInfoDataModel) {
         RecommendationPageTracking.eventImpressionPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
     }
 

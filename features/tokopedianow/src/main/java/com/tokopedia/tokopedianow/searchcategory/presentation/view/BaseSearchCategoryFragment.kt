@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
@@ -38,8 +38,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
-import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
@@ -47,6 +45,8 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
@@ -62,7 +62,9 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
+import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
@@ -73,7 +75,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAdd
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -83,6 +84,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 abstract class BaseSearchCategoryFragment:
@@ -90,22 +92,24 @@ abstract class BaseSearchCategoryFragment:
         ChooseAddressListener,
         BannerComponentListener,
         TitleListener,
-        CategoryFilterListener,
-        QuickFilterListener,
-        SortFilterBottomSheet.Callback,
-        CategoryChooserBottomSheet.Callback,
-        MiniCartWidgetListener,
-        ProductItemListener,
-        TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-        ChooseAddressBottomSheetListener,
-        OutOfCoverageListener,
-        TokoNowProductCardListener,
-        TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener {
+    CategoryFilterListener,
+    QuickFilterListener,
+    SortFilterBottomSheet.Callback,
+    CategoryChooserBottomSheet.Callback,
+    MiniCartWidgetListener,
+    ProductItemListener,
+    TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    TokoNowProductCardListener,
+    TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
+    TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
+        protected const val REQUEST_CODE_LOGIN = 69
     }
+
+    private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -132,13 +136,16 @@ abstract class BaseSearchCategoryFragment:
 
     protected abstract val toolbarPageName: String
 
+    private val recomWidgetViewModel: RecomWidgetViewModel? by initRecomWidgetViewModel()
+
     private val searchCategoryToolbarHeight: Int
         get() {
             val defaultHeight = resources
-                    .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
+                .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
 
             val height = (navToolbar?.height ?: defaultHeight)
-            val padding = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val padding =
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
             return height + padding
         }
@@ -149,16 +156,9 @@ abstract class BaseSearchCategoryFragment:
         context?.let { trackingQueue = TrackingQueue(it) }
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
-    ): View? {
-        return inflater.inflate(
-                R.layout.fragment_tokopedianow_search_category,
-                container,
-                false
-        )
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentTokopedianowSearchCategoryBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -177,15 +177,15 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun findViews(view: View) {
-        navToolbar = view.findViewById(R.id.tokonowSearchCategoryNavToolbar)
-        recyclerView = view.findViewById(R.id.tokonowSearchCategoryRecyclerView)
-        miniCartWidget = view.findViewById(R.id.tokonowSearchCategoryMiniCart)
-        stickyView = view.findViewById(R.id.tokonowSearchCategoryStickyView)
-        swipeRefreshLayout = view.findViewById(R.id.tokonowSearchCategorySwipeRefreshLayout)
-        statusBarBackground = view.findViewById(R.id.tokonowSearchCategoryStatusBarBackground)
-        headerBackground = view.findViewById(R.id.tokonowSearchCategoryBackgroundImage)
-        loaderUnify = view.findViewById(R.id.tokonowSearchCategoryLoader)
-        container = view.findViewById(R.id.tokonowSearchCategoryContainer)
+        navToolbar = binding?.tokonowSearchCategoryNavToolbar
+        recyclerView = binding?.tokonowSearchCategoryRecyclerView
+        miniCartWidget = binding?.tokonowSearchCategoryMiniCart
+        stickyView = binding?.tokonowSearchCategoryStickyView
+        swipeRefreshLayout = binding?.tokonowSearchCategorySwipeRefreshLayout
+        statusBarBackground = binding?.tokonowSearchCategoryStatusBarBackground
+        headerBackground = binding?.tokonowSearchCategoryBackgroundImage
+        loaderUnify = binding?.tokonowSearchCategoryLoader
+        container = binding?.tokonowSearchCategoryContainer
     }
 
     protected open fun configureNavToolbar() {
@@ -215,7 +215,6 @@ abstract class BaseSearchCategoryFragment:
                     applyPadding = false,
             )
         }
-
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
 
         recyclerView?.addOnScrollListener(createNavRecyclerViewOnScrollListener(navToolbar))
@@ -328,6 +327,18 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun getKeyword() =
         getViewModel().queryParam[SearchApiConst.Q] ?: ""
+
+    protected open fun createTokoNowEmptyStateOocListener(eventCategory: String): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+        return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+            override fun onRefreshLayoutPage() {
+                getViewModel().onLocalizingAddressSelected()
+            }
+
+            override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
+
+            override fun onGetEventCategory(): String = eventCategory
+        }
+    }
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
@@ -455,6 +466,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().addToCartRepurchaseWidgetTrackingLiveData.observe(
             ::sendAddToCartRepurchaseProductTrackingEvent
         )
+        getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -616,10 +628,12 @@ abstract class BaseSearchCategoryFragment:
         miniCartSimplifiedData ?: return
 
         miniCartWidget?.updateData(miniCartSimplifiedData)
+        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
+        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
@@ -768,32 +782,6 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewRemoveFilter(option)
     }
 
-    override fun onChangeAddressClicked() {
-        val parentFragmentManager = parentFragmentManager
-
-        ChooseAddressBottomSheet().also {
-            it.setListener(this)
-            it.show(parentFragmentManager, OUT_OF_COVERAGE_CHOOSE_ADDRESS)
-        }
-    }
-
-    override fun onReturnClick() {
-        RouteManager.route(context, ApplinkConst.HOME)
-    }
-
-    override fun getLocalizingAddressHostSourceBottomSheet() =
-            SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
-
-    override fun onAddressDataChanged() {
-        getViewModel().onLocalizingAddressSelected()
-    }
-
-    override fun onLocalizingAddressServerDown() { }
-
-    override fun onLocalizingAddressLoginSuccessBottomSheet() { }
-
-    override fun onDismissChooseAddressBottomSheet() { }
-
     override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
         carouselScrollPosition.put(adapterPosition, scrollPosition)
     }
@@ -875,9 +863,9 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onAddVariantRecommendationCarouselItem(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
+        recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
     ) {
         val productId = recomItem.productId.toString()
         val shopId = recomItem.shopId.toString()
@@ -886,7 +874,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun sendAddToCartRecommendationTrackingEvent(
-            atcTrackingData: Triple<Int, String, RecommendationItem>
+        atcTrackingData: Triple<Int, String, RecommendationItem>
     ) {
         val (quantity, cartId, recommendationItem) = atcTrackingData
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -904,6 +892,49 @@ abstract class BaseSearchCategoryFragment:
                 listValue = getListValue(false, recommendationItem),
             )
         )
+    }
+
+    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        getViewModel().refreshMiniCart()
+    }
+
+    override fun onRecomTokonowAtcSuccess(message: String) {
+        showSuccessATCMessage(message)
+    }
+
+    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
+        context?.let {
+            showErrorATCMessage(ErrorHandler.getErrorMessage(it, throwable))
+        }
+    }
+
+    override fun onRecomTokonowAtcNeedToSendTracker(
+        recommendationItem: RecommendationItem
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            ProductRecommendationTracking.getAddToCartClickProductTracking(
+                recommendationItem = recommendationItem,
+                position = recommendationItem.position,
+                isLoggedIn = userSession.isLoggedIn,
+                userId = userSession.userId,
+                eventLabel = getEventLabel(false),
+                headerTitle = "",
+                quantity = recommendationItem.quantity,
+                cartId = recommendationItem.cartId,
+                eventAction = getAtcEventAction(false),
+                eventCategory = getEventCategory(false),
+                listValue = getListValue(false, recommendationItem),
+            )
+        )
+    }
+
+    override fun onRecomTokonowDeleteNeedToSendTracker(
+        recommendationItem: RecommendationItem
+    ) {
+    }
+
+    override fun onClickItemNonLoginState() {
+        goToLogin()
     }
 
     abstract fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String
@@ -941,4 +972,20 @@ abstract class BaseSearchCategoryFragment:
     ) {
 
     }
+
+
+    protected open fun goToLogin() {
+        activity?.let {
+            startActivityForResult(
+                RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
+        }
+    }
+
+    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+        viewLifecycleOwner.lifecycle.addObserver(observer)
+    }
+
+    protected abstract fun sendOOCOpenScreenTracking(isTracked: Boolean)
 }

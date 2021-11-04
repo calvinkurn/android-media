@@ -338,7 +338,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     (parentFragment as? NewShopPageFragment)?.expandHeader()
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex)
-                    (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+                    hideScrollToTopButton()
                 latestCompletelyVisibleItemIndex = firstCompletelyVisibleItemPosition
             }
 
@@ -347,7 +347,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 if(state == RecyclerView.SCROLL_STATE_IDLE){
                     val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
                     if (firstCompletelyVisibleItemPosition > 0) {
-                        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+                        showScrollToTopButton()
                     }
                 }
             }
@@ -1072,6 +1072,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun onResume() {
         loadInitialDataAfterOnViewCreated()
         super.onResume()
+        checkShowScrollToTopButton()
+    }
+
+    private fun checkShowScrollToTopButton() {
+        if (isShowScrollToTopButton()) {
+            showScrollToTopButton()
+        } else {
+            hideScrollToTopButton()
+        }
     }
 
     private fun loadInitialDataAfterOnViewCreated() {
@@ -1278,6 +1287,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun onSuccessGetBottomSheetFilterData(model: DynamicFilterModel) {
         model.defaultSortValue = DEFAULT_SORT_ID
+
         sortFilterBottomSheet?.setDynamicFilterModel(model)
     }
 
@@ -1488,7 +1498,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         sortFilterBottomSheet?.setOnDismissListener {
             sortFilterBottomSheet = null
         }
-        viewModel.getBottomSheetFilterData()
+        viewModel.getBottomSheetFilterData(shopId)
     }
 
     fun setInitialProductListData(initialProductListData: ShopProduct.GetShopProduct) {
@@ -1574,4 +1584,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun isShowScrollToTopButton(): Boolean {
         return latestCompletelyVisibleItemIndex > 0
     }
+
+    private fun hideScrollToTopButton(){
+        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+    }
+
+    private fun showScrollToTopButton(){
+        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+    }
+
 }
