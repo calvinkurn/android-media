@@ -15,7 +15,7 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
-import com.tokopedia.kotlin.extensions.view.toDp
+import com.tokopedia.home_component.util.toDpInt
 import java.util.*
 
 /**
@@ -48,9 +48,9 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         // 2nd dp8 comes from N50 divider in home recommendation feed viewholder
         // 3rd dp8 comes from N0 divider in home recommendation feed viewholder
         layoutParams?.height = listener.windowHeight - listener.homeMainToolbarHeight +
-                8f.toDp().toInt() +
-                8f.toDp().toInt() +
-                8f.toDp().toInt()
+                8f.toDpInt(itemView.context) +
+                8f.toDpInt(itemView.context) +
+                8f.toDpInt(itemView.context)
         container?.layoutParams = layoutParams
 
         recommendationTabDataModelList = homeRecommendationFeedDataModel.recommendationTabDataModel

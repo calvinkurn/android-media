@@ -7,12 +7,10 @@ import android.graphics.drawable.*
 import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
 
@@ -66,7 +64,7 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
 
 //function check is gradient all white, if empty default color is white
 fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>, context: Context) : Boolean {
-    val colorWhite = getHexColorFromIdColor(context, R.color.Unify_Static_White)
+    val colorWhite = getHexColorFromIdColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
     if (colorArray.isNotEmpty()) {
         if (colorArray.size > 1) {
             val colorArrayNotWhite = colorArray.filter { it != colorWhite }

@@ -36,10 +36,10 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.util.ViewUtils
 import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.util.toSp
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.media.loader.loadIcon
 import kotlin.math.roundToInt
 
@@ -431,7 +431,7 @@ class OvoWidgetView: FrameLayout {
                         val shapeDrawable = drawable as GradientDrawable?
                         shapeDrawable!!.setColorFilter(Color.parseColor(sectionContentItem.tagAttributes.backgroundColour), PorterDuff.Mode.SRC_ATOP)
                         tokopointsTextView.background = shapeDrawable
-                        val horizontalPadding = 2f.toDp().toInt()
+                        val horizontalPadding = 2f.toDpInt(context)
                         tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 8f.toSp())
                         tokopointsTextView.setTypeface(null, Typeface.NORMAL)
                         tokopointsTextView.setPadding(horizontalPadding, 0, horizontalPadding, 0)

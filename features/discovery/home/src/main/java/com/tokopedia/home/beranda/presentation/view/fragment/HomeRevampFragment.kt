@@ -107,6 +107,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -453,7 +454,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         beautyFestEvent = BEAUTY_FEST_NOT_SET
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
-        startToTransitionOffset = 1f.toDp().toInt()
+        startToTransitionOffset = 1f.toDpInt(requireContext())
         registerBroadcastReceiverTokoCash()
         getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
@@ -2768,7 +2769,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 navToolbar?.let {
                     height = navToolbar?.height
                         ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                    height += 8f.toDp().toInt()
+                    height += 8f.toDpInt(requireContext())
                 }
             }
             return height
@@ -2927,7 +2928,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             errorToaster = null
         }
         if (errorToaster == null || errorToaster?.isShown == false) {
-            Toaster.toasterCustomBottomHeight = 56f.toDp().toInt()
+            Toaster.toasterCustomBottomHeight = 56f.toDpInt(requireContext())
             errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
             errorToaster?.show()
         }
@@ -3099,7 +3100,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showSuccessResetPasswordDialog() {
-        Toaster.toasterCustomBottomHeight = 56f.toDp().toInt()
+        Toaster.toasterCustomBottomHeight = 56f.toDpInt(requireContext())
         Toaster.build(root,
                 getString(R.string.text_dialog_success_reset_password),
                 DELAY_TOASTER_RESET_PASSWORD,

@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -20,7 +21,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
-import com.tokopedia.kotlin.extensions.view.toDp
 
 /**
  * Created by devarafikry on 12/08/19.
@@ -62,7 +62,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
 
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                10f.toDp().toInt(),
+                10f.toDpInt(itemView.context),
                 true))
 
         recyclerView.layoutManager = GridLayoutManager(

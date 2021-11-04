@@ -31,15 +31,11 @@ import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProdu
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder.Companion.CONTENT_DEFAULT
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder.Companion.DEFAULT_VIEW_ALL_ID
-import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.GravitySnapHelper
-import com.tokopedia.home_component.util.setGradientBackground
-import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
+import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
@@ -155,7 +151,7 @@ class MixTopComponentViewHolder(
     private fun mappingHeader(channel: ChannelModel){
         val bannerItem = channel.channelBanner
         val ctaData = channel.channelBanner.cta
-        var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Unify_N50)
+        var textColor = ContextCompat.getColor(bannerTitle.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)
@@ -169,14 +165,14 @@ class MixTopComponentViewHolder(
         if(bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(bannerItem.gradientColor, itemView.context)) {
             background.gone()
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, 0, 0, 7f.toDp().toInt())
+            layoutParams.setMargins(0, 0, 0, 7f.toDpInt(itemView.context))
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
         } else {
             background.visible()
             background.setGradientBackground(bannerItem.gradientColor)
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card), 0, 12f.toDp().toInt())
+            layoutParams.setMargins(0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card), 0, 12f.toDpInt(itemView.context))
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = 0f
         }

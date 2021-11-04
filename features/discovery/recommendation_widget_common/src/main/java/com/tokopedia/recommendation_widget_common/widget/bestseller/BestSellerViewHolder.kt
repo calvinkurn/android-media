@@ -8,11 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.ChannelWidgetUtil
+import com.tokopedia.recommendation_widget_common.viewutil.toDpInt
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipFilterAdapter
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.decoration.CommonMarginStartDecoration
@@ -107,14 +107,14 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             if (itemView.best_seller_recommendation_recycler_view.itemDecorationCount == 0) {
                 itemView.best_seller_recommendation_recycler_view.addItemDecoration(
                         CommonMarginStartDecoration(
-                                marginStart = 12f.toDp().toInt()
+                                marginStart = 12f.toDpInt(itemView.context)
                         )
                 )
             }
             if (itemView.best_seller_chip_filter_recyclerview.itemDecorationCount == 0) {
                 itemView.best_seller_chip_filter_recyclerview.addItemDecoration(
                         CommonMarginStartDecoration(
-                                marginStart = 8f.toDp().toInt()
+                                marginStart = 8f.toDpInt(itemView.context)
                         )
                 )
             }

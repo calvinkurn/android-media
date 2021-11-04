@@ -41,12 +41,11 @@ import com.tokopedia.home.beranda.presentation.view.helper.isHexColor
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.home.util.HomeServerLogger.TYPE_ERROR_SUBMIT_WALLET
 import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.util.toSp
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.searchbar.helper.Ease
 import com.tokopedia.searchbar.helper.EasingInterpolator
-import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
-import com.tokopedia.searchbar.navigation_component.icons.IconList
 import kotlinx.android.synthetic.main.item_balance_widget.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -514,7 +513,7 @@ class BalanceAdapter(
                 (drawable as GradientDrawable?)?.let {
                     it.setColorFilter(Color.parseColor(tagAttr.backgroundColour), PorterDuff.Mode.SRC_ATOP)
                     textView.background = it
-                    val horizontalPadding = 2f.toDp().toInt()
+                    val horizontalPadding = 2f.toDpInt(itemView.context)
                     textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 8f.toSp())
                     textView.setTypeface(null, Typeface.NORMAL)
                     textView.setPadding(horizontalPadding, 0, horizontalPadding, 0)

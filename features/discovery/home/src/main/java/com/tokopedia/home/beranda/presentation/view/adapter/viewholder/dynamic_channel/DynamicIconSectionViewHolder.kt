@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon
@@ -51,7 +52,7 @@ class DynamicIconSectionViewHolder(val view: View,
 
         if (recyclerView.itemDecorationCount == 0) {
             recyclerView.addItemDecoration(CarouselDecoration(
-                    16f.toDp().toInt(),
+                    16f.toDpInt(itemView.context),
                     width,
                     5,
                     itemView.context.resources.getDimensionPixelOffset(

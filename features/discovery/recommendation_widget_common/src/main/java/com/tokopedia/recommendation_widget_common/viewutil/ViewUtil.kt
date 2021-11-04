@@ -2,6 +2,7 @@ package com.tokopedia.recommendation_widget_common.viewutil
 
 import android.content.Context
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Color
 import android.util.TypedValue
 import androidx.annotation.ColorInt
@@ -61,3 +62,12 @@ object ChannelWidgetUtil {
         }
     }
 }
+
+fun Float.toSp(): Float = Resources.getSystem().displayMetrics.scaledDensity * this
+
+fun Float.toDpInt(context: Context): Int =
+    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics)
+        .toInt()
+
+fun Float.toDpFloat(context: Context): Float =
+    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics)
