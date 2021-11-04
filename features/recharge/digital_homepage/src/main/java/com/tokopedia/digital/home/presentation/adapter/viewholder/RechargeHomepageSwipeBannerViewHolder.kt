@@ -57,6 +57,9 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
     }
 
     override fun onActiveIndexChanged(prev: Int, current: Int) {
+        if(current >= 0 && current < slidesList.size){
+            listener.onRechargeSectionItemImpression(slidesList[current])
+        }
     }
 
     companion object {
