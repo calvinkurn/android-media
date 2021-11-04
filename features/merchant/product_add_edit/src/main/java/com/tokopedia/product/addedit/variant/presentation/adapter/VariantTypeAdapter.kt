@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeViewHolder
+import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeViewHolder.ViewHolderState
 
 class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     : RecyclerView.Adapter<VariantTypeViewHolder>(), VariantTypeViewHolder.OnVariantTypeViewHolderClickListener {
@@ -13,11 +14,12 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     interface OnVariantTypeClickListener {
         fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail)
         fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean
+        fun onVariantTypeChanged(selectedCount: Int)
     }
 
     private var items: MutableList<VariantDetail> = mutableListOf()
     private var maxSelectedItems = 0
-    private var selectedItems: ArrayList<VariantTypeViewHolder.ViewHolderState> = arrayListOf()
+    private var selectedItems: ArrayList<ViewHolderState> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VariantTypeViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_variant_type, parent, false)
@@ -35,11 +37,13 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     override fun onVariantTypeSelected(position: Int) {
         if (position < 0 || position > selectedItems.lastIndex) return
         // from normal to selected
-        selectedItems[position] = VariantTypeViewHolder.ViewHolderState.SELECTED
+        selectedItems[position] = ViewHolderState.SELECTED
         // disable unselected items when maximum selected items reached
-        manageUnselectedItems(getSelectedCount())
+        val selectedCount = getSelectedCount()
+        manageUnselectedItems(selectedCount)
         // execute the callback function
         clickListener.onVariantTypeSelected(position, items[position])
+        clickListener.onVariantTypeChanged(selectedCount)
     }
 
     override fun onVariantTypeDeselected(position: Int): Boolean {
@@ -47,25 +51,23 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         // execute the callback function
         val isConfirmed = clickListener.onVariantTypeDeselected(position, items[position])
         // from selected to normal if confirmed
-        if (isConfirmed) selectedItems[position] = VariantTypeViewHolder.ViewHolderState.NORMAL
+        if (isConfirmed) selectedItems[position] = ViewHolderState.NORMAL
         // disable unselected items when maximum selected items reached
-        manageUnselectedItems(getSelectedCount())
+        val selectedCount = getSelectedCount()
+        manageUnselectedItems(selectedCount)
+        clickListener.onVariantTypeChanged(selectedCount)
         return isConfirmed
     }
 
-    fun addData(variantName: String) {
-        items.add(VariantDetail(
-            name = variantName
-        ))
-        selectedItems.add(
-            VariantTypeViewHolder.ViewHolderState.NORMAL
-        )
+    fun addData(variantDetail: VariantDetail) {
+        items.add(variantDetail)
+        selectedItems.add(ViewHolderState.SELECTED)
         notifyDataSetChanged()
     }
 
     fun setData(items: List<VariantDetail>) {
         this.items = items.toMutableList()
-        selectedItems = ArrayList(items.map { VariantTypeViewHolder.ViewHolderState.NORMAL })
+        selectedItems = ArrayList(items.map { ViewHolderState.NORMAL })
         notifyDataSetChanged()
     }
 
@@ -78,13 +80,13 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     }
 
     fun deselectItem(adapterPosition: Int) {
-        selectedItems[adapterPosition] = VariantTypeViewHolder.ViewHolderState.NORMAL
+        selectedItems[adapterPosition] = ViewHolderState.NORMAL
         manageUnselectedItems(getSelectedCount())
     }
 
     fun getSelectedItems(): List<VariantDetail> {
         return items.filterIndexed { index, _ ->
-            selectedItems.getOrNull(index) == VariantTypeViewHolder.ViewHolderState.SELECTED
+            selectedItems.getOrNull(index) == ViewHolderState.SELECTED
         }
     }
 
@@ -95,7 +97,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
             }
             if (isVariantIdExist) {
                 items.getOrNull(position)?.let {
-                    selectedItems[position] = VariantTypeViewHolder.ViewHolderState.SELECTED
+                    selectedItems[position] = ViewHolderState.SELECTED
                 }
             }
         }
@@ -108,13 +110,13 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     }
 
     private fun getSelectedCount(): Int {
-        return selectedItems.count { it == VariantTypeViewHolder.ViewHolderState.SELECTED }
+        return selectedItems.count { it == ViewHolderState.SELECTED }
     }
 
     private fun disableUnselectedItems() {
         selectedItems.forEachIndexed { index, viewHolderState ->
-            if (viewHolderState == VariantTypeViewHolder.ViewHolderState.NORMAL) {
-                selectedItems[index] = VariantTypeViewHolder.ViewHolderState.DISABLED
+            if (viewHolderState == ViewHolderState.NORMAL) {
+                selectedItems[index] = ViewHolderState.DISABLED
             }
         }
         notifyDataSetChanged()
@@ -122,8 +124,8 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
 
     private fun enableUnselectedItems() {
         selectedItems.forEachIndexed { index, viewHolderState ->
-            if (viewHolderState == VariantTypeViewHolder.ViewHolderState.DISABLED) {
-                selectedItems[index] = VariantTypeViewHolder.ViewHolderState.NORMAL
+            if (viewHolderState == ViewHolderState.DISABLED) {
+                selectedItems[index] = ViewHolderState.NORMAL
             }
         }
         notifyDataSetChanged()

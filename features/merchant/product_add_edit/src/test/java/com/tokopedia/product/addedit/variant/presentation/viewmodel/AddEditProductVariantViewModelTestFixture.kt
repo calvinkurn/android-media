@@ -3,10 +3,12 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
+import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValidationUseCase
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.domain.GetVariantCategoryCombinationUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.impl.annotations.RelaxedMockK
@@ -32,6 +34,9 @@ abstract class AddEditProductVariantViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getVariantCategoryCombinationUseCase: GetVariantCategoryCombinationUseCase
+
+    @RelaxedMockK
+    lateinit var titleValidationUseCase: GetProductTitleValidationUseCase
 
     @Suppress("UNCHECKED_CAST")
     private val mIsInputValid: MediatorLiveData<Boolean> by lazy {
@@ -134,16 +139,14 @@ abstract class AddEditProductVariantViewModelTestFixture {
     val variantDetailsTest = listOf(variantDetailTest1, variantDetailTest2)
 
     protected val spiedViewModel: AddEditProductVariantViewModel by lazy {
-        spyk(AddEditProductVariantViewModel(
-                testCoroutineDispatcher,
-                getVariantCategoryCombinationUseCase
+        spyk(AddEditProductVariantViewModel(CoroutineTestDispatchersProvider,
+                getVariantCategoryCombinationUseCase, titleValidationUseCase
         ))
     }
 
     protected val viewModel: AddEditProductVariantViewModel by lazy {
-        AddEditProductVariantViewModel(
-                testCoroutineDispatcher,
-                getVariantCategoryCombinationUseCase)
+        AddEditProductVariantViewModel(CoroutineTestDispatchersProvider,
+            getVariantCategoryCombinationUseCase, titleValidationUseCase)
     }
 
     @Before

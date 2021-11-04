@@ -64,7 +64,6 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.AddEditProductVariantSizechartDialogFragment
 import com.tokopedia.product.addedit.variant.presentation.dialog.CustomVariantInputBottomSheet
-import com.tokopedia.product.addedit.variant.presentation.dialog.CustomVariantManageBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.model.PictureVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantViewModel
@@ -177,11 +176,12 @@ class AddEditProductVariantFragment :
         buttonAddVariantType.setOnClickListener {
             val bottomSheet = CustomVariantInputBottomSheet()
             bottomSheet.setOnDataSubmitted {
-                variantTypeAdapter?.addData(it)
+                val customVariantTypeDetail = viewModel.createCustomVariantTypeModel(it)
+                variantTypeAdapter?.addData(customVariantTypeDetail)
             }
             bottomSheet.show(childFragmentManager)
         }
-        CustomVariantManageBottomSheet().show(childFragmentManager)
+        //CustomVariantManageBottomSheet().show(childFragmentManager)
         showCoachmarkCustomVariantType()
 
         variantTypeAdapter = VariantTypeAdapter(this)
@@ -217,7 +217,7 @@ class AddEditProductVariantFragment :
         observeSizechartVisibility()
         observeVariantPhotosVisibility()
         observeIsEditMode()
-        observeisRemovingVariant()
+        observeIsRemovingVariant()
 
         cardSizechart.setOnClickListener {
             onSizechartClicked()
@@ -383,6 +383,10 @@ class AddEditProductVariantFragment :
             deselectVariantType(layoutPosition, adapterPosition, variantDetail)
             true
         }
+    }
+
+    override fun onVariantTypeChanged(selectedCount: Int) {
+        buttonAddVariantType.isEnabled = selectedCount < MAX_SELECTED_VARIANT_TYPE
     }
 
     fun onBackPressed() {
@@ -899,7 +903,7 @@ class AddEditProductVariantFragment :
         })
     }
 
-    private fun observeisRemovingVariant() {
+    private fun observeIsRemovingVariant() {
         viewModel.isRemovingVariant.observe(viewLifecycleOwner, Observer {
             buttonSave.text = if (it) {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_save)
