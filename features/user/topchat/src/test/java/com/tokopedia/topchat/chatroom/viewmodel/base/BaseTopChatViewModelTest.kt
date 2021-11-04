@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.viewmodel.base
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
@@ -23,6 +24,9 @@ abstract class BaseTopChatViewModelTest {
     lateinit var getShopFollowingUseCase: GetShopFollowingUseCase
 
     @RelaxedMockK
+    lateinit var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -31,6 +35,7 @@ abstract class BaseTopChatViewModelTest {
     protected val testShopId = "123"
     protected val testUserId = "345"
     protected val source = "testSource"
+    protected val expectedThrowable = Throwable("Oops!")
 
     @Before
     fun before() {
@@ -38,6 +43,7 @@ abstract class BaseTopChatViewModelTest {
         viewModel = TopChatViewModel(
             getExistingMessageIdUseCase,
             getShopFollowingUseCase,
+            toggleFavouriteShopUseCase,
             dispatchers,
             remoteConfig
         )
