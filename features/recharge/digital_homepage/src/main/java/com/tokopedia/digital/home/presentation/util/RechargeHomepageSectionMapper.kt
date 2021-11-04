@@ -284,10 +284,10 @@ object RechargeHomepageSectionMapper {
 
     private fun getLayoutType(template:String): Int {
         return when(template){
-            DigitalHomepageSearchEnumLayoutType.SINGLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.SINGLE_LINE.ordinal
-            DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.ordinal
-            DigitalHomepageSearchEnumLayoutType.HEADER.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.HEADER.ordinal
-            DigitalHomepageSearchEnumLayoutType.DEFAULT.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DEFAULT.ordinal
+            DigitalHomepageSearchEnumLayoutType.SINGLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.SINGLE_LINE.layoutType
+            DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.layoutType
+            DigitalHomepageSearchEnumLayoutType.HEADER.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.HEADER.layoutType
+            DigitalHomepageSearchEnumLayoutType.DEFAULT.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DEFAULT.layoutType
             else -> DigitalHomepageSearchEnumLayoutType.DEFAULT.ordinal
         }
     }
