@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.view.customview.fragment.NotFoundFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormKtpFragment
@@ -79,7 +80,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
     override fun getListFragment(): List<Fragment> {
         return if (projectId == KYCConstant.STATUS_DEFAULT) {
             val notFoundList = ArrayList<Fragment>()
-            notFoundList.add(createInstance())
+            notFoundList.add(NotFoundFragment.createInstance())
             notFoundList
         } else {
             if(fragmentList.isEmpty()) {
@@ -93,7 +94,13 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
 
     override fun setupFragment(savedinstancestate: Bundle?) {
         if (listFragment.size >= currentPosition) {
-            val fragment = listFragment[currentPosition - 1]
+            val fragment = when(listFragment[currentPosition - 1]) {
+                is UserIdentificationFormKtpFragment -> UserIdentificationFormKtpFragment.createInstance()
+                is UserIdentificationFormFaceFragment -> UserIdentificationFormFaceFragment.createInstance()
+                is UserIdentificationFormFinalFragment -> UserIdentificationFormFinalFragment.createInstance(projectId)
+                is NotFoundFragment -> NotFoundFragment.createInstance()
+                else -> throw Exception()
+            }
             val fragmentArguments = fragment.arguments
             val bundle: Bundle
             bundle = fragmentArguments ?: Bundle()
