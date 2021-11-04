@@ -274,7 +274,6 @@ class HomeFragmentUiTest {
             titleRes = R.string.onboarding_coachmark_title,
             descRes = R.string.onboarding_coachmark_description
         )
-
     }
 
     private fun assertCoachmarkAndNext(
