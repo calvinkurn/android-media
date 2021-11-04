@@ -48,7 +48,6 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -72,7 +71,6 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
     var fragmentShippingHeader: ShippingHeaderLayout? = null
     var addressLayout: ShippingAddressLayout? = null
     var submitButtonCreateShop: TextView? = null
-    var tvUserConsent: TextView? = null
     private var editShippingPresenter: EditShippingPresenter? = null
     private var mainProgressDialog: ProgressDialog? = null
     private var progressDialog: ProgressDialog? = null
@@ -148,8 +146,6 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         addressLayout = mainView.findViewById<View>(R.id.shipping_address_layout) as com.tokopedia.editshipping.ui.customview.ShippingAddressLayout
         submitButtonCreateShop = mainView.findViewById<View>(R.id.submit_button_create_shop) as TextView
         submitButtonCreateShop?.setOnClickListener { submitButtonOnClickListener() }
-        tvUserConsent = mainView.findViewById<TextView>(R.id.tv_user_consent)
-        LogisticCommonUtil.displayUserConsent(activity as Context, tvUserConsent, getString(R.string.submit_but))
     }
 
     private val isEditShipping: Boolean
