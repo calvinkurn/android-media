@@ -58,7 +58,31 @@ class PromptToActivateSmartReplyTest : TopchatRoomTest() {
         )
     }
 
-    // TODO: Should show ticker below matched bubble if success get GetReminderTicker and matched bubble is on page two or more
+    @Test
+    fun should_show_ticker_below_matched_bubble_if_eligible_position_found_in_page_2_or_more() {
+        // Given
+        reminderTickerUseCase.response = reminderTickerUseCase.defaultSrwPrompt
+        val triggerText = reminderTickerUseCase.response.getReminderTicker.regexMessage
+        getChatUseCase.response = getChatUseCase.noTriggerTextSrwPrompt
+        chatAttachmentUseCase.response = chatAttachmentUseCase.defaultSrwPrompt
+        launchChatRoomActivity()
+
+        // When
+        val lastIndex = getChatUseCase.getLastIndexOf(getChatUseCase.response)
+        getChatUseCase.response = getChatUseCase.getSrwPromptWithTriggerText(triggerText)
+        scrollChatToPosition(lastIndex)
+        val newlastIndex = lastIndex + getChatUseCase.getLastIndexOf(getChatUseCase.response)
+        scrollChatToPosition(newlastIndex)
+
+        // Then
+        val expectedTickerPosition = lastIndex + 2
+        assertChatRecyclerview(
+            hasViewHolderItemAtPosition(
+                expectedTickerPosition, ReminderTickerViewHolder::class.java
+            )
+        )
+    }
+
     // TODO: Should close ticker when close btn closed
     // TODO: Should not show ticker if user is in the middle of the page
     // TODO: Should not show ticker if no ticker available to exist from GetReminderTicker
