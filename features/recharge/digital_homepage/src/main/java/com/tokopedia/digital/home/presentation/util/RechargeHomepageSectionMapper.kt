@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.presentation.util
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomepageSearchEnumLayoutType
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
@@ -250,6 +251,21 @@ object RechargeHomepageSectionMapper {
         }
     }
 
+    fun mapSearchAutoCompletetoSearch(autoComplete: DigitalHomePageSearchAutoComplete): List<DigitalHomePageSearchCategoryModel> {
+        val searchCategoryModels = mutableListOf<DigitalHomePageSearchCategoryModel>()
+        autoComplete.digiPersoSearchSuggestion.data.items.map{ item ->
+           searchCategoryModels.add(DigitalHomePageSearchCategoryModel(
+                   id = "",
+                   name = item.title,
+                   applink = item.applink,
+                   icon =  item.iconTitle,
+                   typeLayout = getLayoutType(item.template)
+           ))
+        }
+        return searchCategoryModels
+    }
+
+
     private fun isExpired(section: RechargeHomepageSections.Section): Boolean {
         section.items.firstOrNull()?.run {
             if (dueDate.isNotEmpty()) {
@@ -264,5 +280,15 @@ object RechargeHomepageSectionMapper {
 
     private fun getServerTime(serverTimeString: String): Date {
         return DateHelper.getExpiredTime(serverTimeString)
+    }
+
+    private fun getLayoutType(template:String): Int {
+        return when(template){
+            DigitalHomepageSearchEnumLayoutType.SINGLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.SINGLE_LINE.ordinal
+            DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.ordinal
+            DigitalHomepageSearchEnumLayoutType.HEADER.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.HEADER.ordinal
+            DigitalHomepageSearchEnumLayoutType.DEFAULT.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DEFAULT.ordinal
+            else -> DigitalHomepageSearchEnumLayoutType.DEFAULT.ordinal
+        }
     }
 }

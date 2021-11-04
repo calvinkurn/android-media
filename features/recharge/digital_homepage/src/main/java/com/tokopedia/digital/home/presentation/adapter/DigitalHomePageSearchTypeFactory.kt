@@ -11,7 +11,7 @@ class DigitalHomePageSearchTypeFactory(val onSearchCategoryClickListener: Digita
     : BaseAdapterTypeFactory() {
 
     fun type(digitalHomePageSearchCategoryModel: DigitalHomePageSearchCategoryModel): Int {
-        return DigitalHomePageSearchViewHolder.LAYOUT
+        return digitalHomePageSearchCategoryModel.typeLayout
     }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {

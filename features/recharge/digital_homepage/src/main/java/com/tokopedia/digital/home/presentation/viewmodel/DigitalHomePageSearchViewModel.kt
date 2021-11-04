@@ -7,6 +7,7 @@ import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconU
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.digital.home.old.domain.SearchAutoCompleteHomePageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class DigitalHomePageSearchViewModel @Inject constructor(
         private val searchCategoryHomePageUseCase: SearchCategoryHomePageUseCase,
         private val searchByDynamicIconUseCase: DigitalHomepageSearchByDynamicIconUseCase,
+        private val searchAutoCompleteHomePageUseCase: SearchAutoCompleteHomePageUseCase,
         private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
@@ -50,5 +52,18 @@ class DigitalHomePageSearchViewModel @Inject constructor(
             mutableSearchCategoryList.postValue(Fail(it))
         }
     }
+
+    fun searchAutoComplete(map: Map<String, Any>){
+        launchCatchError(block = {
+            val data = withContext(dispatcher.io) {
+                searchAutoCompleteHomePageUseCase.searchAutoCompleteList(map)
+            }
+            mutableSearchCategoryList.postValue(Success(data))
+        }) {
+            mutableSearchCategoryList.postValue(Fail(it))
+        }
+    }
+
+
 
 }
