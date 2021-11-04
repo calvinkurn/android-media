@@ -141,7 +141,7 @@ class ShopScoreMapper @Inject constructor(
 
         val shopScore = shopScoreResult?.shopScore ?: SHOP_SCORE_NULL
 
-        val sellerType = getSellerType(shopScoreResult?.shopScoreDetail).value
+        val sellerType = getSellerType(shopScoreResult?.shopScoreDetail)
 
         shopScoreVisitableList.apply {
             when (sellerType) {
@@ -302,7 +302,7 @@ class ShopScoreMapper @Inject constructor(
         var headerShopPerformanceUiModel = HeaderShopPerformanceUiModel()
         val shopScore = shopScoreLevelResponse?.shopScore ?: SHOP_SCORE_NULL
         val shopLevel = shopScoreLevelResponse?.shopLevel ?: SHOP_SCORE_NULL
-        val sellerType = getSellerType(shopScoreLevelResponse?.shopScoreDetail).value
+        val sellerType = getSellerType(shopScoreLevelResponse?.shopScoreDetail)
         with(headerShopPerformanceUiModel) {
             when (sellerType) {
                 SellerTypeConstants.NEW_SELLER -> {
@@ -998,21 +998,31 @@ class ShopScoreMapper @Inject constructor(
             shopScoreLevelList?.find { it.identifier == TOTAL_BUYER_KEY }?.title.orEmpty()
         val openTokopediaSeller =
             shopScoreLevelList?.find { it.identifier == OPEN_TOKOPEDIA_SELLER_KEY }?.title.orEmpty()
-        val descParameterRelief =
-            if (getSellerType(shopScoreLevelList).value == SellerTypeConstants.REACTIVATED_SELLER) {
-                context?.getString(R.string.desc_relief_parameter_for_reactivated_seller_bottom_sheet)
-                    .orEmpty()
+        val (titleParameterRelief, descParameterRelief) =
+            if (getSellerType(shopScoreLevelList) == SellerTypeConstants.REACTIVATED_SELLER) {
+                Pair(
+                    context?.getString(R.string.title_relief_parameter_for_new_seller_bottom_sheet)
+                        .orEmpty(),
+                    context?.getString(R.string.desc_relief_parameter_for_reactivated_seller_bottom_sheet)
+                        .orEmpty()
+                )
             } else {
-                context?.getString(
-                    R.string.desc_relief_parameter_for_new_seller_bottom_sheet,
-                    getProtectedParameterDaysDate(shopAge)
-                ).orEmpty()
+                Pair(
+                    context?.getString(
+                        R.string.title_parameter_relief_new_seller,
+                    ).orEmpty(),
+                    context?.getString(
+                        R.string.desc_relief_parameter_for_new_seller_bottom_sheet,
+                        getProtectedParameterDaysDate(shopAge)
+                    ).orEmpty()
+                )
             }
         return ProtectedParameterSectionUiModel(
             itemProtectedParameterList = listOf(
                 ItemProtectedParameterUiModel(totalBuyer),
                 ItemProtectedParameterUiModel(openTokopediaSeller)
             ),
+            titleParameterRelief = titleParameterRelief,
             descParameterRelief = descParameterRelief
         )
     }
@@ -1092,7 +1102,7 @@ class ShopScoreMapper @Inject constructor(
         shopScore: Long,
         shopScoreDetail: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?
     ): Boolean {
-        return getSellerType(shopScoreDetail).value == SellerTypeConstants.REACTIVATED_SELLER
+        return getSellerType(shopScoreDetail) == SellerTypeConstants.REACTIVATED_SELLER
                 && shopScore < SHOP_SCORE_ZERO
     }
 
@@ -1104,18 +1114,16 @@ class ShopScoreMapper @Inject constructor(
         shopScore: Long,
         shopScoreDetail: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?
     ): Boolean {
-        return getSellerType(shopScoreDetail).value == SellerTypeConstants.REACTIVATED_SELLER
+        return getSellerType(shopScoreDetail) == SellerTypeConstants.REACTIVATED_SELLER
                 && shopScore > SHOP_SCORE_NULL
     }
 
     private fun getSellerType(
         shopScoreDetail: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?
-    ): Lazy<Double?> {
-        return lazy {
-            shopScoreDetail?.find {
-                it.identifier == SellerTypeConstants.SELLER_TYPE_IDENTIFIER
-            }?.rawValue
-        }
+    ): Double? {
+        return shopScoreDetail?.find {
+            it.identifier == SellerTypeConstants.SELLER_TYPE_IDENTIFIER
+        }?.rawValue
     }
 
     private fun isPowerMerchantOrProIdle(

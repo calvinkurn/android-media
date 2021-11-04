@@ -75,7 +75,6 @@ object ShopScoreConstant {
         "https://images.tokopedia.net/img/android/shop_score/img_reactivated_seller_comeback@2x.png"
 
     const val PENALTY_IDENTIFIER = "penalty"
-    const val SELLER_TYPE_IDENTIFIER = "seller_type"
 
     const val minuteText = "menit"
     const val percentText = "%"

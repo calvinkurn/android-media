@@ -24,7 +24,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
-        android:text="@string/title_parameter_relief_new_seller"
+        tools:text="@string/title_parameter_relief_new_seller"
         app:layout_constraintBottom_toBottomOf="@id/icProtectionCheck"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icProtectionCheck"

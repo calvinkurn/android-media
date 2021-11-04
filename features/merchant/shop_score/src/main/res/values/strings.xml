@@ -312,7 +312,7 @@
     <string name="title_relief_parameter_for_new_seller_bottom_sheet">Keringanan parameter untukmu</string>
     <string name="desc_relief_parameter_for_new_seller_bottom_sheet">Selama 59 hari pertama berjualan, kamu akan mendapatkan keringanan berupa nilai dasar dari Tokopedia, khusus untuk parameter Jumlah Pembeli dan Membuka Tokopedia Seller.
     &lt;br /&gt;&lt;br /&gt;Tokomu akan dapat keringanan hingga: %s</string>
-    <string name="desc_relief_parameter_for_reactivated_seller_bottom_sheet">Selama 59 hari, kamu akan mendapatkan keringanan berupa nilai dasar dari Tokopedia, khusus untuk parameter Jumlah Pembeli dan Membuka Tokopedia Seller.</string>
+    <string name="desc_relief_parameter_for_reactivated_seller_bottom_sheet">Kamu akan mendapatkan keringanan untuk parameter ini selama 59 hari.</string>
     <string name="title_oke_understand">Oke, Saya Mengerti</string>
     <string name="title_score_new_seller_label">Skor:</string>
     <string name="title_warning_new_seller_shop_score_pm_pro">Karena skormu di bawah 60, status Power Merchant PRO kamu nonaktif</string>
