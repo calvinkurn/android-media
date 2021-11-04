@@ -822,14 +822,14 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     coachMarkIsShowing = true
                     coachmark = CoachMark2(ctx)
                     coachmark?.let {
-                        it.setOnDismissListener {
+                        it.onDismissListener = {
                             coachMarkItem.forEach { item ->
                                 item.setCoachmarkShownPref()
                             }
                             showBalanceWidgetCoachmark(
-                                ctx,
-                                containsNewGopayAndTokopoints,
-                                tokopointsBalanceCoachmark
+                                    ctx,
+                                    containsNewGopayAndTokopoints,
+                                    tokopointsBalanceCoachmark
                             )
                         }
                         try {
