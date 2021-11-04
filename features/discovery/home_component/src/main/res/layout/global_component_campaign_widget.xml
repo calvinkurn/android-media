@@ -13,38 +13,26 @@
         tools:visibility="visible"
         tools:background="@color/Unify_Static_Black" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
-        android:descendantFocusability="blocksDescendants"
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/home_component_header_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="-4dp"/>
 
-        <com.tokopedia.home_component.customview.DynamicChannelHeaderView
-            android:id="@+id/home_component_header_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="-4dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="12dp"
-            android:clipToPadding="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="12dp"
+        android:clipToPadding="false"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/home_component_divider_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_marginTop="-4dp"
+        android:layout_marginTop="-3dp"
         tools:visibility="visible"
         tools:background="@color/Unify_B500" />
 </LinearLayout>
