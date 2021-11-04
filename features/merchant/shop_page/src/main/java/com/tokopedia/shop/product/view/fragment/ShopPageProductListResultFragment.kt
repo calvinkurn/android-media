@@ -1338,7 +1338,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         sortFilterBottomSheet?.setOnDismissListener {
             sortFilterBottomSheet = null
         }
-        viewModel.getBottomSheetFilterData()
+        viewModel.getBottomSheetFilterData(shopId?: "")
     }
 
 

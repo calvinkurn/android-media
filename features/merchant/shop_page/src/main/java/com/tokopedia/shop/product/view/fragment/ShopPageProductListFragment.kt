@@ -1289,6 +1289,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun onSuccessGetBottomSheetFilterData(model: DynamicFilterModel) {
         model.defaultSortValue = DEFAULT_SORT_ID
+
         sortFilterBottomSheet?.setDynamicFilterModel(model)
     }
 
@@ -1500,7 +1501,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         sortFilterBottomSheet?.setOnDismissListener {
             sortFilterBottomSheet = null
         }
-        viewModel.getBottomSheetFilterData()
+        viewModel.getBottomSheetFilterData(shopId)
     }
 
     fun setInitialProductListData(initialProductListData: ShopProduct.GetShopProduct) {

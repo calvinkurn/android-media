@@ -290,6 +290,7 @@ class ShopHomeViewModel @Inject constructor(
                     rating = shopProductFilterParameter.getRating()
                     pmax = shopProductFilterParameter.getPmax()
                     pmin = shopProductFilterParameter.getPmin()
+                    fcategory = shopProductFilterParameter.getCategory()
                     userDistrictId = widgetUserAddressLocalData.district_id
                     userCityId = widgetUserAddressLocalData.city_id
                     userLat = widgetUserAddressLocalData.lat
@@ -429,10 +430,10 @@ class ShopHomeViewModel @Inject constructor(
     }
 
 
-    fun getBottomSheetFilterData() {
+    fun getBottomSheetFilterData(shopId: String = "") {
         launchCatchError(coroutineContext, block = {
             val filterBottomSheetData = withContext(dispatcherProvider.io) {
-                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
+                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams(shopId)
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
             }
             filterBottomSheetData.data.let {
@@ -475,6 +476,7 @@ class ShopHomeViewModel @Inject constructor(
                 tempShopProductFilterParameter.getRating(),
                 tempShopProductFilterParameter.getPmax(),
                 tempShopProductFilterParameter.getPmin(),
+                tempShopProductFilterParameter.getCategory(),
                 widgetUserAddressLocalData.district_id,
                 widgetUserAddressLocalData.city_id,
                 widgetUserAddressLocalData.lat,
