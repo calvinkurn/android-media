@@ -28,12 +28,14 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverag
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.CategoryFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.LoadingMoreViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductCountViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.QuickFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TitleViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.OutOfCoverageViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProgressBarViewHolder
 
 abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val chooseAddressListener: ChooseAddressListener,
@@ -80,6 +82,8 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
 
+    override fun type(progressBarDataView: ProgressBarDataView): Int = ProgressBarViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(view, productItemListener)
@@ -99,6 +103,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
                 recommendationCarouselListener,
                 recommendationCarouselBindPageNameListener
             )
+            ProgressBarViewHolder.LAYOUT -> ProgressBarViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
