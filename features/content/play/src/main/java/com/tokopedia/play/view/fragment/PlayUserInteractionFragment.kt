@@ -850,6 +850,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
+                renderViewAllProductView(state.viewAllProduct)
             }
         }
     }
@@ -1525,6 +1526,11 @@ class PlayUserInteractionFragment @Inject constructor(
         rtnView?.setLifespan(rtn.lifespanInMs)
         if (rtn.shouldShow) rtnView?.show()
         else rtnView?.invisible()
+    }
+
+    private fun renderViewAllProductView(viewAllProduct: PlayViewAllProductUiState) {
+        if(viewAllProduct.shouldShow) productSeeMoreView?.show()
+        else productSeeMoreView?.hide()
     }
 
     private fun castViewOnStateChanged(

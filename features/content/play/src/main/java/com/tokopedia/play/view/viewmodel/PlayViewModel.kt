@@ -242,6 +242,14 @@ class PlayViewModel @Inject constructor(
         )
     }.flowOn(dispatchers.computation)
 
+    private val _viewAllProductUiState = combine(
+        _channelDetail, _bottomInsets
+    ) { _, bottomInsets ->
+        PlayViewAllProductUiState(
+            shouldShow = !bottomInsets.isAnyShown
+        )
+    }.flowOn(dispatchers.computation)
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -258,7 +266,8 @@ class PlayViewModel @Inject constructor(
         _shareUiState.distinctUntilChanged(),
         _rtnUiState.distinctUntilChanged(),
         _titleUiState.distinctUntilChanged(),
-    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title ->
+        _viewAllProductUiState.distinctUntilChanged()
+    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct ->
         PlayViewerNewUiState(
             interactiveView = interactive,
             partner = partner,
@@ -269,6 +278,7 @@ class PlayViewModel @Inject constructor(
             share = share,
             rtn = rtn,
             title = title,
+            viewAllProduct = viewAllProduct
         )
     }.flowOn(dispatchers.computation)
 
