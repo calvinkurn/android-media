@@ -1382,6 +1382,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 if (it == null || it == false) {
                     onSendAndReceiveMessage()
                     presenter.startUploadImages(model)
+                    topchatViewState?.scrollToBottom()
                 } else {
                     presenter.startCompressImages(model)
                 }
