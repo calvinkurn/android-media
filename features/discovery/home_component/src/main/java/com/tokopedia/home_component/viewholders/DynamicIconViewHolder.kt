@@ -16,7 +16,6 @@ import com.tokopedia.home_component.util.loadImage
 import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.toDp
 import kotlinx.android.synthetic.main.home_component_dynamic_icon.view.*
 import kotlinx.android.synthetic.main.home_component_dynamic_icon_item.view.*
 

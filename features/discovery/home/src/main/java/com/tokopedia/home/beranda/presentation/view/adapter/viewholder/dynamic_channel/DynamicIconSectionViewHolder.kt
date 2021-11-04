@@ -24,7 +24,10 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CarouselDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * @author by errysuprayogi on 11/28/17.

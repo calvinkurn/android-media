@@ -18,7 +18,11 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
-import com.tokopedia.home_component.util.*
+import com.tokopedia.home_component.util.DateHelper
+import com.tokopedia.home_component.util.convertDpToPixel
+import com.tokopedia.home_component.util.getLink
+import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show

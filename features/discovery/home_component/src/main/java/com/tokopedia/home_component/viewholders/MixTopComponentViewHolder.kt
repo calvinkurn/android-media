@@ -31,7 +31,11 @@ import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProdu
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder.Companion.CONTENT_DEFAULT
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder.Companion.DEFAULT_VIEW_ALL_ID
-import com.tokopedia.home_component.util.*
+import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
