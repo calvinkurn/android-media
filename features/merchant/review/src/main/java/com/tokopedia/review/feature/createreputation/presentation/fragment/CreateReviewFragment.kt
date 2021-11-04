@@ -104,7 +104,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         const val RATING_3 = 3
         const val RATING_4 = 4
         const val RATING_5 = 5
-        private const val SAME_ARGS_ERROR = 3
+        private const val SAME_ARGS_ERROR = 9
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
