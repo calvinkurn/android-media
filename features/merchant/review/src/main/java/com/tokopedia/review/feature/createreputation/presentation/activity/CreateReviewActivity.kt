@@ -48,13 +48,12 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     private var createReviewBottomSheet: BottomSheetUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getDataFromApplinkOrIntent()
+        super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
         if (!isNewFormVariant() || isEditMode) {
             setWhiteTheme()
             setToolbar()
         }
-        super.onCreate(savedInstanceState)
         adjustOrientation()
         if (isNewView()) {
             handleDimming()
@@ -71,6 +70,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     override fun getNewFragment(): Fragment? {
+        getDataFromApplinkOrIntent()
         if (isNewView()) {
             return null
         }
