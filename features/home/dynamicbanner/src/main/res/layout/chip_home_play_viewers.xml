@@ -13,15 +13,15 @@
     android:minHeight="14dp"
     android:paddingLeft="4dp"
     android:paddingRight="4dp"
-    android:paddingTop="@dimen/dp_1"
-    android:paddingBottom="@dimen/dp_1"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
     android:visibility="gone"
     tools:visibility="visible"
     android:orientation="horizontal"
     android:gravity="center">
 
     <ImageView
-        android:layout_width="@dimen/dp_18"
+        android:layout_width="18dp"
         android:layout_height="17dp"
         android:contentDescription="@string/content_desc_play_widget"
         app:srcCompat="@drawable/ic_chip_home_play_viewers"/>
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:textColor="@color/dynamicbanner_dms_text_total_viewers"
-        android:textSize="@dimen/sp_11"
+        android:textSize="11dp"
         android:layout_marginStart="4dp"
         android:layout_marginLeft="4dp"
         android:visibility="visible"

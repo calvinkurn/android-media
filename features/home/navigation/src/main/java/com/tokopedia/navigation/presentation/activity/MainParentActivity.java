@@ -879,7 +879,7 @@ public class MainParentActivity extends BaseActivity implements
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
                 .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                .shadowColorRes(R.color.Unify_N700_68)
+                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                 .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
                 .textSizeRes(R.dimen.sp_12)

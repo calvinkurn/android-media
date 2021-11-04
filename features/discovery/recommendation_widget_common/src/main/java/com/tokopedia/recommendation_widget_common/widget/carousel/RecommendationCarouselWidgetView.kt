@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -394,7 +395,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         itemView.post {
             layoutManager.scrollToPositionWithOffset(
                     scrollToPosition,
-                    context.applicationContext.resources.getDimensionPixelOffset(R.dimen.dp_16)
+                    16f.toDp().toInt()
             )
         }
     }

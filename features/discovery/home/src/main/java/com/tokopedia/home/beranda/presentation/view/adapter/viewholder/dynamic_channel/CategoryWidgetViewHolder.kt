@@ -16,8 +16,8 @@ import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.home_dc_category_widget.view.*
 import kotlinx.android.synthetic.main.home_dc_category_widget.view.home_component_divider_footer
@@ -53,7 +53,7 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
                 false)
 
         if (recyclerView.itemDecorationCount == 0) {
-            val dimens = 0f.toDp().toInt()
+            val dimens = 0f.toDpInt(itemView.context)
             recyclerView.addItemDecoration(CategoryWidgetSpacingItemDecoration(
                     CATEGORY_WIDGET_SPAN_COUNT,
                     itemView.context.resources.getDimensionPixelOffset(dimens)

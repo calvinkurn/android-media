@@ -87,6 +87,13 @@ fun convertDpToPixel(dp: Float, context: Context): Int {
 
 fun Float.toSp(): Float = Resources.getSystem().displayMetrics.scaledDensity * this
 
+fun Float.toDpInt(context: Context): Int =
+    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics)
+        .toInt()
+
+fun Float.toDpFloat(context: Context): Float =
+    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics)
+
 fun RecyclerView.removeAllItemDecoration() {
     if (this.itemDecorationCount > 0)
     for (i in 0 until this.itemDecorationCount) {

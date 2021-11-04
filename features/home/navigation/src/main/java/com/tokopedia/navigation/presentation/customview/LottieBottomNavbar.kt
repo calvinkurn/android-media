@@ -17,7 +17,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
-import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.navigation.R
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
@@ -75,20 +74,20 @@ class LottieBottomNavbar : LinearLayout {
         if (badgeValue == 0) {
             badgeText?.layoutParams = emptyBadgeLayoutParam
             badgeText?.setPadding(
-                    5f.toDp().toInt(),
-                    1f.toDp().toInt(),
-                    2f.toDp().toInt(),
-                    1f.toDp().toInt()
+                    5f.toDpInt(context),
+                    1f.toDpInt(context),
+                    2f.toDpInt(context),
+                    1f.toDpInt(context)
             )
             badgeText?.text = ""
             badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circle)
         } else {
             badgeText?.layoutParams = badgeLayoutParam
             badgeText?.setPadding(
-                    5f.toDp().toInt(),
-                    2f.toDp().toInt(),
-                    5f.toDp().toInt(),
-                    2f.toDp().toInt()
+                    5f.toDpInt(context),
+                    2f.toDpInt(context),
+                    5f.toDpInt(context),
+                    2f.toDpInt(context)
             )
 
             badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circular)
@@ -107,21 +106,21 @@ class LottieBottomNavbar : LinearLayout {
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-                0f.toDp().toInt(),
-                1f.toDp().toInt(),
+                0f.toDpInt(context),
+                1f.toDpInt(context),
                 badgeRightMargin,
-                1f.toDp().toInt()
+                1f.toDpInt(context)
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-                12f.toDp().toInt(),
-                12f.toDp().toInt())
+                12f.toDpInt(context),
+                12f.toDpInt(context))
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-                0f.toDp().toInt(),
-                1f.toDp().toInt(),
-                badgeRightMargin+12f.toDp().toInt(),
-                1f.toDp().toInt()
+                0f.toDpInt(context),
+                1f.toDpInt(context),
+                badgeRightMargin+12f.toDpInt(context),
+                1f.toDpInt(context)
         )
 
         badgeTextViewList?.forEach {
@@ -168,28 +167,28 @@ class LottieBottomNavbar : LinearLayout {
         titleList.clear()
         containerList.clear()
 
-        val llLayoutParam = LinearLayout.LayoutParams(itemWidth, 28f.toDp().toInt())
+        val llLayoutParam = LinearLayout.LayoutParams(itemWidth, 28f.toDpInt(context))
         val imgLayoutParam = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                28f.toDp().toInt())
+                28f.toDpInt(context))
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-                0f.toDp().toInt(),
-                1f.toDp().toInt(),
-                20f.toDp().toInt(),
-                1f.toDp().toInt()
+                0f.toDpInt(context),
+                1f.toDpInt(context),
+                20f.toDpInt(context),
+                1f.toDpInt(context)
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-                12f.toDp().toInt(),
-                12f.toDp().toInt())
+                12f.toDpInt(context),
+                12f.toDpInt(context))
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-                0f.toDp().toInt(),
-                1f.toDp().toInt(),
-                25f.toDp().toInt(),
-                1f.toDp().toInt()
+                0f.toDpInt(context),
+                1f.toDpInt(context),
+                25f.toDpInt(context),
+                1f.toDpInt(context)
         )
 
         val txtLayoutParam = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -480,6 +479,6 @@ interface IBottomClickListener {
     fun menuReselected(position: Int, id: Int)
 }
 
-fun Float.toDp(context: Context): Int {
-    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics).toInt()
-}
+fun Float.toDpInt(context: Context): Int =
+    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics)
+        .toInt()

@@ -13,6 +13,7 @@ import com.tokopedia.home_component.decoration.CommonSpacingDecoration
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.util.loadImage
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toDp
@@ -47,7 +48,7 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
             if (itemView.dynamic_icon_recycler_view.itemDecorationCount == 0) {
                 itemView.dynamic_icon_recycler_view.addItemDecoration(
                         CommonSpacingDecoration(
-                                8f.toDp().toInt()
+                                8f.toDpInt(itemView.context)
                         )
                 )
             }
