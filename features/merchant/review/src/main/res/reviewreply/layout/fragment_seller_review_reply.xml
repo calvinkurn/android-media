@@ -44,21 +44,6 @@
                 android:layout_height="match_parent"
                 android:paddingBottom="@dimen/spacing_lvl4" />
 
-            <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
-                android:id="@+id/review_reply_bad_rating_reason"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp" />
-
-            <com.tokopedia.review.common.presentation.widget.ReviewBadRatingDisclaimerWidget
-                android:id="@+id/badRatingReasonDisclaimer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:visibility="gone"
-                android:layout_marginTop="4dp" />
-
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -419,8 +419,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
             feedbackUiModel?.let { feedback ->
                 binding?.feedbackItemReplyWidget?.setData(feedback, productReply)
-                binding?.reviewReplyBadRatingReason?.showBadRatingReason(feedback.badRatingReason)
-                binding?.badRatingReasonDisclaimer?.setDisclaimer(feedback.badRatingDisclaimer)
             }
         }
         binding?.reviewReplyTextBoxWidget?.setReplyAction()
