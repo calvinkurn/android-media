@@ -3,10 +3,14 @@ package com.tokopedia.managepassword.addpassword.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordData
+import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordParam
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordUseCase
+import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordV2Params
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordV2UseCase
 import com.tokopedia.managepassword.common.ManagePasswordConstant
 import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
@@ -15,17 +19,15 @@ import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class AddPasswordViewModel @Inject constructor(
-        private val usecase: AddPasswordUseCase,
-        private val addPasswordV2UseCase: AddPasswordV2UseCase,
-        private val getProfileCompletionUseCase: GetProfileCompletionUseCase,
-        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+    private val addPasswordUseCase: AddPasswordUseCase,
+    private val addPasswordV2UseCase: AddPasswordV2UseCase,
+    private val getProfileCompletionUseCase: GetProfileCompletionUseCase,
+    private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
+    dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.main) {
 
     private val _response = MutableLiveData<Result<AddPasswordData>>()
     val response: LiveData<Result<AddPasswordData>>
@@ -44,25 +46,26 @@ class AddPasswordViewModel @Inject constructor(
         get() = _profileData
 
     fun checkPassword() {
-        getProfileCompletionUseCase.getData(onSuccess = {
-            _profileData.postValue(Success(it))
-        }, onError = {
-            _profileData.postValue(Fail(it))
+        launchCatchError(coroutineContext, {
+            val response = getProfileCompletionUseCase(Unit)
+            _profileData.value = Success(response)
+        }, {
+            _profileData.value = Fail(it)
         })
     }
 
     fun createPassword(password: String, confirmationPassword: String) {
         launchCatchError(coroutineContext, {
-            usecase.params = createRequestParams(password, confirmationPassword)
-            usecase.submit(onSuccess = {
-                if (it.addPassword.isSuccess) {
-                    _response.postValue(Success(it.addPassword))
-                } else {
-                    _response.postValue(Fail(Throwable(it.addPassword.errorMessage)))
-                }
-            }, onError = {
-                _response.postValue(Fail(it))
-            })
+            val response = addPasswordUseCase(AddPasswordParam(
+                password = password,
+                passwordConfirmation = confirmationPassword
+            ))
+
+            if (response.addPassword.isSuccess) {
+                _response.postValue(Success(response.addPassword))
+            } else {
+                _response.postValue(Fail(Throwable(response.addPassword.errorMessage)))
+            }
         }, {
             _response.postValue(Fail(it))
         })
@@ -76,16 +79,17 @@ class AddPasswordViewModel @Inject constructor(
                 val encryptedPassword = RsaUtils.encrypt(password, decodedKey, true)
                 val encryptedConfirmPassword = RsaUtils.encrypt(confirmationPassword, decodedKey, true)
 
-                addPasswordV2UseCase.setParams(encryptedPassword, encryptedConfirmPassword, key.hash)
-                addPasswordV2UseCase.submit(onSuccess = {
-                    if (it.addPassword.isSuccess) {
-                        _response.postValue(Success(it.addPassword))
-                    } else {
-                        _response.postValue(Fail(Throwable(it.addPassword.errorMessage)))
-                    }
-                }, onError = {
-                    _response.postValue(Fail(it))
-                })
+                val response = addPasswordV2UseCase(AddPasswordV2Params(
+                    password = encryptedPassword,
+                    passwordConfirmation = encryptedConfirmPassword,
+                    hash = key.hash
+                ))
+
+                if (response.addPassword.isSuccess) {
+                    _response.postValue(Success(response.addPassword))
+                } else {
+                    _response.postValue(Fail(Throwable(response.addPassword.errorMessage)))
+                }
             } else {
                 _response.postValue(Fail(Throwable("")))
             }
@@ -126,11 +130,6 @@ class AddPasswordViewModel @Inject constructor(
                 _validatePasswordConfirmation.postValue(Success(""))
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        usecase.cancelJobs()
     }
 
     companion object {

@@ -14,7 +14,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.managepassword.common.ManagePasswordConstant.IS_SUCCESS_RESET
 import com.tokopedia.managepassword.common.ManagePasswordConstant.KEY_IS_CONTAINS_LOGIN_APPLINK
 import com.tokopedia.managepassword.common.ManagePasswordConstant.KEY_MANAGE_PASSWORD
-import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
 
 class ManagePasswordWebViewFragment : BaseWebViewFragment() {
