@@ -1,8 +1,11 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
+import com.tokopedia.test.application.matcher.hasViewHolderOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.tickerreminder.TickerReminderRobot.clickTickerCloseButtonAt
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReminderTickerViewHolder
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class PromptToActivateSmartReplyTest : TopchatRoomTest() {
@@ -83,7 +86,24 @@ class PromptToActivateSmartReplyTest : TopchatRoomTest() {
         )
     }
 
-    // TODO: Should close ticker when close btn closed
+    @Test
+    fun should_close_ticker_when_close_btn_closed() {
+        // Given
+        reminderTickerUseCase.response = reminderTickerUseCase.defaultSrwPrompt
+        val triggerText = reminderTickerUseCase.response.getReminderTicker.regexMessage
+        getChatUseCase.response = getChatUseCase.getSrwPromptWithTriggerText(triggerText)
+        chatAttachmentUseCase.response = chatAttachmentUseCase.defaultSrwPrompt
+        launchChatRoomActivity()
+
+        // When
+        clickTickerCloseButtonAt(1)
+
+        // Then
+        assertChatRecyclerview(
+            not(hasViewHolderOf(ReminderTickerViewHolder::class.java))
+        )
+    }
+
     // TODO: Should not show ticker if user is in the middle of the page
     // TODO: Should not show ticker if no ticker available to exist from GetReminderTicker
     // TODO: Should go to chat setting if clicked from hamburger menu item

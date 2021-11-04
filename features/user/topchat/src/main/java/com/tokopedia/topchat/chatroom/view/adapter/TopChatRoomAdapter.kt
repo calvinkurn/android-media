@@ -403,6 +403,16 @@ class TopChatRoomAdapter constructor(
         return null
     }
 
+    fun removeViewHolder(element: Visitable<*>, position: Int) {
+        val itemPair = getUpToDateUiModelPosition(
+            position, element
+        )
+        val latestPosition = itemPair.first
+        if (latestPosition != RecyclerView.NO_POSITION) {
+            visitables.removeAt(latestPosition)
+            notifyItemRemoved(latestPosition)
+        }
+    }
 
     fun updateReviewState(
         review: ReviewUiModel,

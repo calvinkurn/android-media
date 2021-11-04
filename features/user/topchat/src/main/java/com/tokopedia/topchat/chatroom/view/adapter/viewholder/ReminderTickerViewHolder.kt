@@ -25,7 +25,7 @@ class ReminderTickerViewHolder(
     private val ticker: Ticker? = itemView?.findViewById(R.id.tk_prompt)
 
     interface Listener {
-        fun closeReminderTicker(element: ReminderTickerUiModel)
+        fun closeReminderTicker(element: ReminderTickerUiModel, position: Int)
     }
 
     override fun bind(element: ReminderTickerUiModel) {
@@ -79,7 +79,7 @@ class ReminderTickerViewHolder(
                 commonListener.getAnalytic().eventCloseTickerReminder(
                     commonListener.getCommonShopId()
                 )
-                listener?.closeReminderTicker(element)
+                listener?.closeReminderTicker(element, adapterPosition)
             }
         })
     }

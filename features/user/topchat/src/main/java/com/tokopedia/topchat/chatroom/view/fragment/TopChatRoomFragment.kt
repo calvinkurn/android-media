@@ -141,7 +141,6 @@ import android.content.*
 
 import android.content.ClipData
 import android.widget.LinearLayout
-import android.widget.Toast
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
@@ -2488,8 +2487,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun closeReminderTicker(element: ReminderTickerUiModel) {
+    override fun closeReminderTicker(element: ReminderTickerUiModel, position: Int) {
         viewModel.closeTickerReminder(element)
+        adapter.removeViewHolder(element, position)
     }
 
     companion object {
