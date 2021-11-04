@@ -213,10 +213,7 @@ abstract class BaseSearchCategoryFragment:
         val navToolbar = navToolbar ?: return
 
         activity?.let {
-            navToolbar.setupToolbarWithStatusBar(
-                    activity = it,
-                    applyPadding = false,
-            )
+            navToolbar.setupToolbarWithStatusBar(activity = it)
         }
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
 
@@ -333,9 +330,14 @@ abstract class BaseSearchCategoryFragment:
 
     private fun configureSwipeRefreshLayout() {
         swipeRefreshLayout?.setOnRefreshListener {
+            resetMovingPosition()
             carouselScrollPosition.clear()
             getViewModel().onViewReloadPage()
         }
+    }
+
+    private fun resetMovingPosition() {
+        movingPosition = 0
     }
 
     private fun configureStatusBar() {
@@ -401,7 +403,12 @@ abstract class BaseSearchCategoryFragment:
 
     private fun evaluateNavToolbarShadow(recyclerView: RecyclerView, dy: Int) {
         movingPosition += dy
-        headerBackground?.y = -(movingPosition.toFloat())
+        headerBackground?.y = if(movingPosition >= 0) {
+            -(movingPosition.toFloat())
+        } else {
+            resetMovingPosition()
+            movingPosition.toFloat()
+        }
         if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
             navToolbar?.showShadow(lineShadow = false)
         } else {
