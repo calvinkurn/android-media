@@ -298,7 +298,7 @@
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
     <string name="review_create_bottom_sheet_text_area_empty">Tulis min. 40 karakter buat dapetin hadiahnya ✍️</string>
     <string name="review_create_bottom_sheet_text_area_partial">Lengkapi sedikit lagi biar dapet hadiahnya 🙌</string>
-    <string name="review_create_bottom_sheet_text_area_eligible">Tulisanmu sudah lengkap? Sertain foto juga, ya  📸</string>
+    <string name="review_create_bottom_sheet_text_area_eligible">Oke siap dikirim. Pastikan kamu sertain foto juga!  📸</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>
