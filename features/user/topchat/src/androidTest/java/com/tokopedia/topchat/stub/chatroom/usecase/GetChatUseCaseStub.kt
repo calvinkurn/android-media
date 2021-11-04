@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.stub.chatroom.usecase
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -70,6 +71,28 @@ class GetChatUseCaseStub @Inject constructor(
     fun getSrwPromptWithTriggerText(triggerText: String): GetExistingChatPojo {
         return alterResponseOf(sellerSrwPromptPath) { response ->
             alterChatAttribute(0, 0, 1, response) { chat ->
+                chat.addProperty(msg, triggerText)
+            }
+        }
+    }
+
+    fun multipleSrwPrompt(triggerText: String): GetExistingChatPojo {
+        return alterResponseOf(sellerSrwPromptPath) { response ->
+            alterRepliesAttribute(0, 0, response) {
+                val product = it.get(0)
+                val msg = it.get(1)
+                val chats = it.deepCopy()
+                it.removeAll { true }
+                it.apply {
+                    add(product)
+                    add(msg)
+                    addAll(chats)
+                }
+            }
+            alterChatAttribute(0, 0, 1, response) { chat ->
+                chat.addProperty(msg, triggerText)
+            }
+            alterChatAttribute(0, 0, 3, response) { chat ->
                 chat.addProperty(msg, triggerText)
             }
         }
@@ -294,11 +317,23 @@ class GetChatUseCaseStub @Inject constructor(
         responseObj: JsonObject,
         altercation: (JsonObject) -> Unit
     ) {
-        val chat = responseObj.getAsJsonObject(chatReplies)
+        alterRepliesAttribute(listPosition, chatsPosition, responseObj) { replies ->
+            val chat = replies.get(repliesPosition).asJsonObject
+            altercation(chat)
+        }
+    }
+
+    private fun alterRepliesAttribute(
+        listPosition: Int,
+        chatsPosition: Int,
+        responseObj: JsonObject,
+        altercation: (JsonArray) -> Unit
+    ) {
+        val replies = responseObj.getAsJsonObject(chatReplies)
             .getAsJsonArray(list).get(listPosition).asJsonObject
             .getAsJsonArray(chats).get(chatsPosition).asJsonObject
-            .getAsJsonArray(replies).get(repliesPosition).asJsonObject
-        altercation(chat)
+            .getAsJsonArray(replies)
+        altercation(replies)
     }
 
     private fun alterResponseOf(
