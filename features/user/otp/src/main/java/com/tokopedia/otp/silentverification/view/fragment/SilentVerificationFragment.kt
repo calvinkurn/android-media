@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
-import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -31,18 +30,21 @@ import com.tokopedia.otp.databinding.FragmentSilentVerificationBinding
 import com.tokopedia.otp.silentverification.di.SilentVerificationComponent
 import com.tokopedia.otp.silentverification.domain.model.RequestSilentVerificationResult
 import com.tokopedia.otp.silentverification.helper.NetworkClientHelper
-import com.tokopedia.otp.silentverification.view.NetworkRequestListener
 import com.tokopedia.otp.silentverification.view.viewmodel.SilentVerificationViewModel
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import okhttp3.*
+import java.io.IOException
 import java.net.URLDecoder
 import java.util.*
 import javax.inject.Inject
+
 
 /**
  * Created by Yoris on 18/10/21.
@@ -231,7 +233,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             renderFinalSuccess()
             Handler().postDelayed({
                 onFinishSilentVerif(data)
-            }, 1000)
+            }, 1500)
         }
     }
 
@@ -293,7 +295,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private fun handleBokuResult(resultCode: String) {
         try {
             val result = mapBokuResult(resultCode)
-            println("verify:$resultCode")
+            Toaster.build(requireView(), resultCode, Toaster.LENGTH_LONG).show()
             if (result[KEY_ERROR_CODE] == "0" &&
                 result[KEY_ERROR_DESC].equals(VALUE_SUCCESS, true)
             ) {
@@ -302,6 +304,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                 onVerificationError(Throwable("Verification Failed"))
             }
         }catch (e: Exception) {
+            Toaster.build(requireView(), e.message ?: "error handle boku result", Toaster.LENGTH_LONG).show()
             onVerificationError(Throwable("Verification Failed"))
         }
     }
@@ -327,20 +330,51 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     private fun onVerificationError(throwable: Throwable) {
         throwable.printStackTrace()
+        Toaster.build(requireView(), throwable.message?: "onVerificationError",Toaster.LENGTH_LONG).show()
         showErrorState()
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     fun verify(url: String) {
-        context?.run {
-            networkClientHelper.makeNetworkRequest(this, object: NetworkRequestListener {
-                override fun onSuccess(network: Network) {
-                    viewModel.verifyBoku(network, url)
+        // for testing purpose only, please use later merhod
+        verifyWithoutSwitching(url)
+
+//        context?.run {
+//            networkClientHelper.makeNetworkRequest(this, object: NetworkRequestListener {
+//                override fun onSuccess(network: Network) {
+//                    viewModel.verifyBoku(network, url)
+//                }
+//                override fun onError(throwable: Throwable) {
+//                    onVerificationError(Throwable("Network Unavailable"))
+//                }
+//            })
+//        }
+    }
+
+    // to be deleted, for testing purpose only
+    private fun verifyWithoutSwitching(url: String) {
+        val okHttpClient =
+            OkHttpClient.Builder().build()
+        val request: Request = Request.Builder()
+            .url(url)
+            .build()
+        try {
+            okHttpClient.newCall(request).enqueue(object: Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    val result = response.body()?.string()
+                    println("verify:onResponse:$result")
+                    handleBokuResult(result ?: "")
                 }
-                override fun onError(throwable: Throwable) {
-                    onVerificationError(Throwable("Network Unavailable"))
+
+                override fun onFailure(call: Call, e: IOException) {
+                    e.printStackTrace()
+                    onVerificationError(e)
+                    println("verify:onResponse:${e.message}")
                 }
             })
+        } catch (ex: Exception) {
+            onVerificationError(ex)
+            ex.printStackTrace()
         }
     }
 

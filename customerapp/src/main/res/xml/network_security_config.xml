@@ -14,5 +14,9 @@
         <domain includeSubdomains="true">wst.laku6.com</domain>
         <domain includeSubdomains="true">gojek.com</domain>
         <domain includeSubdomains="true">grab.com</domain>
+
+        <!--    For testing purpose only, will be deleted once testing done    -->
+        <domain includeSubdomains="false">wso2am-prod-gdhsi-h3g.dhubckh.com</domain>
+        <domain includeSubdomains="false">mi-id.dnlsrv.com</domain>
     </domain-config>
 </network-security-config>
