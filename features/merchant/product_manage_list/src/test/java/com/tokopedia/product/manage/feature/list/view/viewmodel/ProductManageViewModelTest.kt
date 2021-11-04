@@ -101,7 +101,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import rx.Observable
-import rx.Subscriber
 import java.util.concurrent.TimeUnit
 
 class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
@@ -1785,7 +1784,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         verifyAll {
             gqlGetShopInfoUseCase.cancelJobs()
             topAdsGetShopDepositGraphQLUseCase.unsubscribe()
-            popupManagerAddProductUseCase.cancelJobs()
+            getShopManagerPopupsUseCase.cancelJobs()
             getProductListUseCase.cancelJobs()
             setFeaturedProductUseCase.cancelJobs()
         }
@@ -2230,13 +2229,13 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     private fun onGetPopupsInfo_thenReturn(showPopup: Boolean) {
         coEvery {
-            popupManagerAddProductUseCase.execute(any())
+            getShopManagerPopupsUseCase.execute(any())
         } returns showPopup
     }
 
     private fun onGetPopupsInfo_thenReturn(error: Throwable) {
         coEvery {
-            popupManagerAddProductUseCase.execute(any())
+            getShopManagerPopupsUseCase.execute(any())
         } throws error
     }
 
