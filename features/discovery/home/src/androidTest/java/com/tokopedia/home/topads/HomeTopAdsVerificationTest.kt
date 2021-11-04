@@ -44,6 +44,10 @@ import org.junit.*
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
 class HomeTopAdsVerificationTest {
+    companion object {
+        val LIMIT_COUNT_TO_IDLE = 5
+    }
+
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var topAdsCount = 0
@@ -68,7 +72,7 @@ class HomeTopAdsVerificationTest {
             activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
             recyclerView = recyclerView,
-            limitCountToIdle = 0
+            limitCountToIdle = LIMIT_COUNT_TO_IDLE
         )
         IdlingRegistry.getInstance().register(homeRecyclerViewIdlingResource)
         activityRule.deleteHomeDatabase()
@@ -83,9 +87,6 @@ class HomeTopAdsVerificationTest {
     @Test
     fun testTopAdsHome() {
         Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(isDisplayed()))
-
-        waitForData()
-
         val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
         val itemCount = homeRecyclerView.adapter?.itemCount?:0
 
