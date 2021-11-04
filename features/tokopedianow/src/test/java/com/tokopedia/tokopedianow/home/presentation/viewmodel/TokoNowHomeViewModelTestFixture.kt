@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
@@ -137,15 +138,15 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetCategoryListResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
+    protected fun verifyGetCategoryListResponseSuccess(expectedResponse: Visitable<*>) {
         val homeLayoutList = viewModel.homeLayoutList.value
-        val actualResponse = (homeLayoutList as Success).data.items.find { it?.layout is TokoNowCategoryGridUiModel }
+        val actualResponse = (homeLayoutList as Success).data.items.find { it is TokoNowCategoryGridUiModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetBannerResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
+    protected fun verifyGetBannerResponseSuccess(expectedResponse: Visitable<*>) {
         val homeLayoutList = viewModel.homeLayoutList.value
-        val actualResponse = (homeLayoutList as Success).data.items.find { it?.layout is BannerDataModel }
+        val actualResponse = (homeLayoutList as Success).data.items.find { it is BannerDataModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
@@ -362,7 +363,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun addHomeLayoutItem(item: HomeLayoutItemUiModel) {
-        privateHomeLayoutItemList?.add(item)
+        privateHomeLayoutItemList.add(item)
     }
 
     protected fun onGetHomeLayoutItemList_returnNull() {

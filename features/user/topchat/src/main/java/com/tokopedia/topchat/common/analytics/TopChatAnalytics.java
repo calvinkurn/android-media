@@ -162,6 +162,7 @@ public class TopChatAnalytics {
         String VIEW_SRW = "view smart reply widget";
         String CLICK_SRW = "click smart reply widget";
         String CLICK_UPDATE_STOCK = "click on update stock";
+        String CLICK_THREE_BULLET_MENU = "click header - three bullet";
     }
 
     public interface Label {
@@ -173,6 +174,7 @@ public class TopChatAnalytics {
 
     interface BusinessUnit {
         String Communication = "communication";
+        String CommunicationMedia = "Communication & Media";
     }
 
     interface CurrentSite {
@@ -685,6 +687,21 @@ public class TopChatAnalytics {
                         BusinessUnit.Communication,
                         CurrentSite.TokopediaMarketplace,
                         userId
+                )
+        );
+    }
+
+    // 23139
+    public void eventClickChatSetting(long shopId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.CHAT_DETAIL,
+                        Category.MESSAGE_ROOM,
+                        Action.CLICK_THREE_BULLET_MENU,
+                        "pengaturan chat - " + shopId,
+                        BusinessUnit.CommunicationMedia,
+                        CurrentSite.TokopediaMarketplace,
+                        null
                 )
         );
     }

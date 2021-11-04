@@ -581,8 +581,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
-                android:id="@+id/buttonAlwaysOldNavigation"
-                android:text="@string/always_old_nav"
+                android:id="@+id/buttonAlwaysNewNavigation"
+                android:text="@string/always_new_nav"
                 app:unifyButtonType="alternate"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="ghost"/>
@@ -592,8 +592,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                android:id="@+id/buttonAlwaysNewNavigation"
-                android:text="@string/always_new_nav"
+                android:id="@+id/buttonAlwaysExpOsBottomNavigation"
+                android:text="@string/always_os_experiment"
                 app:unifyButtonType="alternate"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="ghost"/>
