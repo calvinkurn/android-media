@@ -234,19 +234,15 @@ class PlayViewModel @Inject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _titleUiState = combine(
-        _channelDetail, _bottomInsets
-    ) { channelDetail, _ ->
+    private val _titleUiState = _channelDetail.map {
         PlayTitleUiState(
-            title = channelDetail.channelInfo.title
+            title = it.channelInfo.title
         )
     }.flowOn(dispatchers.computation)
 
-    private val _viewAllProductUiState = combine(
-        _channelDetail, _bottomInsets
-    ) { _, bottomInsets ->
+    private val _viewAllProductUiState = _bottomInsets.map {
         PlayViewAllProductUiState(
-            shouldShow = !bottomInsets.isAnyShown
+            shouldShow = !it.isAnyShown
         )
     }.flowOn(dispatchers.computation)
 
@@ -278,7 +274,7 @@ class PlayViewModel @Inject constructor(
             share = share,
             rtn = rtn,
             title = title,
-            viewAllProduct = viewAllProduct
+            viewAllProduct = viewAllProduct,
         )
     }.flowOn(dispatchers.computation)
 
