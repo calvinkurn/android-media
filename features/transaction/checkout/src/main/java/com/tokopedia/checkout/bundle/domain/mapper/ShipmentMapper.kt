@@ -24,9 +24,7 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
-import com.tokopedia.purchase_platform.common.utils.convertToString
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
-import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import java.util.*
 import javax.inject.Inject
 
@@ -54,7 +52,7 @@ class ShipmentMapper @Inject constructor() {
             isBlackbox = shipmentAddressFormDataResponse.isBlackbox == 1
             errorCode = shipmentAddressFormDataResponse.errorCode
             isError = shipmentAddressFormDataResponse.errors.isNotEmpty()
-            errorMessage = convertToString(shipmentAddressFormDataResponse.errors)
+            errorMessage = shipmentAddressFormDataResponse.errors.joinToString()
             isShowOnboarding = shipmentAddressFormDataResponse.isShowOnboarding
             isIneligiblePromoDialogEnabled = shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
             isOpenPrerequisiteSite = shipmentAddressFormDataResponse.isOpenPrerequisiteSite
@@ -95,7 +93,7 @@ class ShipmentMapper @Inject constructor() {
             groupAddressListResult.add(
                     GroupAddress().apply {
                         isError = !groupAddress.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                        errorMessage = convertToString(groupAddress.errors)
+                        errorMessage = groupAddress.errors.joinToString()
                         userAddress = mapUserAddress(groupAddress)
                         groupShop = mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
                     }
@@ -112,9 +110,9 @@ class ShipmentMapper @Inject constructor() {
             groupShopListResult.add(
                     GroupShop().apply {
                         isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
-                        errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else convertToString(it.errors)
+                        errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else it.errors.joinToString()
                         hasUnblockingError = !it.unblockingErrors.isNullOrEmpty()
-                        unblockingErrorMessage = convertToString(it.unblockingErrors)
+                        unblockingErrorMessage = it.unblockingErrors.joinToString()
                         shippingId = it.shippingId
                         spId = it.spId
                         dropshipperName = it.dropshiper.name
@@ -742,10 +740,10 @@ class ShipmentMapper @Inject constructor() {
                 var defaultErrorMessage = ""
                 var allProductsHaveSameError = true
                 for ((isError, errorMessage) in groupShop.products) {
-                    if (isError || !isNullOrEmpty(errorMessage)) {
+                    if (isError || errorMessage.isNotEmpty()) {
                         hasError = true
                         totalProductError++
-                        if (isNullOrEmpty(defaultErrorMessage)) {
+                        if (defaultErrorMessage.isEmpty()) {
                             defaultErrorMessage = errorMessage
                         } else if (allProductsHaveSameError && defaultErrorMessage != errorMessage) {
                             allProductsHaveSameError = false

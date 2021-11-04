@@ -41,7 +41,7 @@ class SubmitHelpTicketUseCaseTest {
 
     @Test
     fun `Success Submit Ticket`() {
-        val useCase = SubmitHelpTicketUseCase("", graphqlUseCase)
+        val useCase = SubmitHelpTicketUseCase(graphqlUseCase)
         val successMessage = "success"
 
         // Given
@@ -60,7 +60,7 @@ class SubmitHelpTicketUseCaseTest {
 
     @Test
     fun `Fail Submit Ticket`() {
-        val useCase = SubmitHelpTicketUseCase("", graphqlUseCase)
+        val useCase = SubmitHelpTicketUseCase(graphqlUseCase)
         val errorMessage = "failure"
 
         // Given

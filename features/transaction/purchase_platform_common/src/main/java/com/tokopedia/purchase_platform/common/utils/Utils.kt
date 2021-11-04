@@ -62,21 +62,7 @@ object Utils {
     }
 }
 
-fun convertToString(stringList: List<String>?): String {
-    return if (stringList.isNullOrEmpty()) {
-        ""
-    } else {
-        stringList.joinToString()
-    }
-}
-
 fun isNullOrEmpty(string: String?): Boolean = string.isNullOrEmpty()
-
-fun <T : Any> List<T>.each(action: T.() -> Unit) {
-    for (item in this) {
-        item.action()
-    }
-}
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 
