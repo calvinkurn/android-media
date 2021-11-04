@@ -795,7 +795,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 errorMessage,
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(R.string.shop_string_ok)
+                getString(R.string.shop_page_label_oke)
             ).show()
         }
         shopHomeAdapter.updateRemindMeStatusCampaignFlashSaleWidgetData(campaignId)
@@ -813,7 +813,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 it,
                 data.message,
                 Snackbar.LENGTH_LONG,
-                Toaster.TYPE_NORMAL
+                Toaster.TYPE_NORMAL,
+                getString(R.string.shop_page_label_oke)
             ).show()
         }
     }
