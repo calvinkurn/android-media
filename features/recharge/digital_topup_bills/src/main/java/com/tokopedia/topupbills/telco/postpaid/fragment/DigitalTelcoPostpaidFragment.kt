@@ -438,19 +438,19 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     operatorName = operator.attributes.name
                     productName = operatorName
 
-                    postpaidClientNumberWidget.run {
-                        setIconOperator(operator.attributes.imageUrl)
+                    val isInputvalid = validatePhoneNumber(operatorData, postpaidClientNumberWidget)
+
+                    if (isInputvalid) {
+                        hitTrackingForInputNumber(this)
+                        postpaidClientNumberWidget.clearErrorState()
                     }
+                    postpaidClientNumberWidget.setIconOperator(operator.attributes.imageUrl)
+
                     if (postpaidClientNumberWidget.getInputNumber().length in VALID_MIN_INPUT_NUMBER..VALID_MAX_INPUT_NUMBER) {
                         onInputNewNumberUpdateLayout()
                         postpaidClientNumberWidget.setButtonEnquiry(true)
                     } else {
                         postpaidClientNumberWidget.setButtonEnquiry(false)
-                    }
-                    val isInputvalid = validatePhoneNumber(operatorData, postpaidClientNumberWidget)
-
-                    if (isInputvalid) {
-                        hitTrackingForInputNumber(this)
                     }
                 }
             }
@@ -572,6 +572,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.setFilterChipShimmer(false, data.favoriteNumbers.isEmpty())
         postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers)
         postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
+    }
+
+    override fun reloadSortFilterChip() {
+        getFavoriteNumber(
+            categoryIds = listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()),
+            oldCategoryId = TelcoComponentType.FAV_NUMBER_POSTPAID
+        )
     }
 
     private fun performanceMonitoringStopTrace() {

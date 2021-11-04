@@ -319,8 +319,6 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     val orderClientNumber =
                         data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
 
-                    var actionType = TopupBillsSearchNumberFragment
-                        .InputNumberActionType.values()[orderClientNumber.inputNumberActionTypeIndex]
                     handleCallbackAnySearchNumber(
                         orderClientNumber.clientName,
                         orderClientNumber.clientNumber,
@@ -331,15 +329,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 } else {
                     handleCallbackAnySearchNumberCancel()
                 }
-                getFavoriteNumber(
-                    categoryIds = listOf(
-                        TelcoCategoryType.CATEGORY_PULSA.toString(),
-                        TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                        TelcoCategoryType.CATEGORY_ROAMING.toString()
-                    ),
-                    oldCategoryId = TelcoComponentType.FAV_NUMBER_PREPAID,
-                    false
-                )
+                reloadSortFilterChip()
             } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                 if (data != null) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
@@ -633,6 +623,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected abstract fun setInputNumberFromContact(contactNumber: String)
 
     protected abstract fun setContactNameFromContact(contactName: String)
+
+    protected abstract fun reloadSortFilterChip()
 
     override fun onDestroy() {
         listMenu.clear()

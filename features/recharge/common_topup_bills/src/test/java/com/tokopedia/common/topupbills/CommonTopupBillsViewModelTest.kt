@@ -289,7 +289,7 @@ class CommonTopupBillsViewModelTest {
         val resultData = (actualData as Success).data
         assertNotNull(resultData)
 
-        assertThat(resultData.favoriteNumbers[0].clientNumber == "081288888888")
+        assertThat(resultData.first.favoriteNumbers[0].clientNumber == "081288888888")
     }
 
     @Test

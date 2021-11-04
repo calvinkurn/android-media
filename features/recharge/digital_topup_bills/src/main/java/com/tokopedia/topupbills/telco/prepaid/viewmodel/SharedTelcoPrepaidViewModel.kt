@@ -3,6 +3,7 @@ package com.tokopedia.topupbills.telco.prepaid.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -26,8 +27,8 @@ import javax.inject.Inject
  * Created by nabillasabbaha on 20/05/19.
  */
 class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                      private val dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+                                                      private val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.io) {
 
     private val _expandView = MutableLiveData<Boolean>()
     val expandView: LiveData<Boolean>
@@ -124,9 +125,9 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                               autoSelectProductId: Int = 0, clientNumber: String,
                               isDelayed: Boolean = false
     ) {
-        launchCatchError(block = {
-            getCatalogProductListJob?.cancel()
-            getCatalogProductListJob = CoroutineScope(coroutineContext).launch {
+        getCatalogProductListJob?.cancel()
+        getCatalogProductListJob = CoroutineScope(coroutineContext).launch {
+            launchCatchError(block = {
                 if (isDelayed) {
                     delay(PRODUCT_LIST_DELAY_TIME)
                 }
@@ -139,7 +140,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                     mapParam[KEY_FILTER_DATA] = filterData
                 }
 
-                val data = withContext(dispatcher) {
+                val data = withContext(dispatcher.io) {
                     val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
                     graphqlRepository.response(listOf(graphqlRequest))
                 }.getSuccessData<TelcoCatalogProductInputMultiTab>()
@@ -151,10 +152,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                     _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
                     setSelectedProductById(autoSelectProductId.toString())
                 }
+            }){
+                _loadingProductList.postValue(false)
+                _productList.postValue(Fail(it))
             }
-        }) {
-            _loadingProductList.postValue(false)
-            _productList.postValue(Fail(it))
         }
     }
 

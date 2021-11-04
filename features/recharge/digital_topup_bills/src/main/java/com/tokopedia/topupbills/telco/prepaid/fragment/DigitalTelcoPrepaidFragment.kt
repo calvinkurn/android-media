@@ -735,6 +735,18 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.setFilterChipShimmer(false, true)
     }
 
+    override fun reloadSortFilterChip() {
+        getFavoriteNumber(
+            categoryIds = listOf(
+                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                TelcoCategoryType.CATEGORY_ROAMING.toString()
+            ),
+            oldCategoryId = TelcoComponentType.FAV_NUMBER_PREPAID,
+            false
+        )
+    }
+
     private fun performanceMonitoringStopTrace() {
         if (!traceStop) {
             performanceMonitoring.stopTrace()
