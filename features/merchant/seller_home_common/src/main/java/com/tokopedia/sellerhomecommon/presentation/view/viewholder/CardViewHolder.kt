@@ -41,14 +41,17 @@ class CardViewHolder(
         observeState(element)
     }
 
-    private fun setupTitle(element: CardWidgetUiModel) {
+    private fun setupTag(element: CardWidgetUiModel) {
         with(binding) {
-            notifTagCard.setNotification(
-                element.tag,
-                NotificationUnify.TEXT_TYPE,
-                NotificationUnify.COLOR_TEXT_TYPE
-            )
-            notifTagCard.isVisible = element.tag.isNotBlank()
+            val isTagVisible = element.tag.isNotBlank()
+            notifTagCard.isVisible = isTagVisible
+            if (isTagVisible) {
+                notifTagCard.setNotification(
+                    element.tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
         }
     }
 
@@ -64,13 +67,13 @@ class CardViewHolder(
                 showShimmer(false)
                 showOnError(true)
                 listener.setOnErrorWidget(adapterPosition, element, data.error)
-                setupTitle(element)
+                setupTag(element)
             }
             else -> {
                 showOnError(false)
                 showShimmer(false)
                 showViewComponent(element, true)
-                setupTitle(element)
+                setupTag(element)
             }
         }
     }
