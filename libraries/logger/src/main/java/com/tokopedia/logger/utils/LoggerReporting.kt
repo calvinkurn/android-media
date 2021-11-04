@@ -144,7 +144,6 @@ class LoggerReporting {
         }
     }
 
-    //P1#DEV_CRASH#100#offline
     fun setPopulateTagMapsNewRelic(tags: List<String>?) {
         tagMapsNewRelic.clear()
         if (tags.isNullOrEmpty()) {
