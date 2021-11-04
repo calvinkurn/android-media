@@ -88,8 +88,9 @@ class AccountAdminInfoUseCase @Inject constructor(private val refreshShopBasicDa
 
     fun setStrategyCloudThenCache() {
         setCacheStrategy(
-                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                         .setExpiryTime(5 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                        .setSessionIncluded(true)
                         .build())
     }
 }
