@@ -77,8 +77,7 @@ class AccountHeaderMapper(
                             shopId =  it.info.shopId,
                             shopOrderCount = getTotalOrderCount(notificationPojo),
                             isError = false,
-                            isLoading = false,
-                            shopAvatar = it.info.shopAvatar
+                            isLoading = false
                     )
                 }
 

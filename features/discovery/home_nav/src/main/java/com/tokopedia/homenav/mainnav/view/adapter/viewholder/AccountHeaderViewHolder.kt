@@ -133,7 +133,6 @@ class AccountHeaderViewHolder(itemView: View,
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
         val tvShopNotif: NotificationUnify = layoutLogin.findViewById(R.id.usr_shop_notif)
-        val usrShopAvatar: ImageUnify = layoutLogin.findViewById(R.id.usr_shop_avatar)
         val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
         val btnTryAgainShopInfo: CardView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
         val shimmerTryAgainShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_btn_try_again)
@@ -338,7 +337,6 @@ class AccountHeaderViewHolder(itemView: View,
                 shimmerTryAgainShopInfo.visible()
             } else if (profileSeller.isGetShopError) {
                 btnTryAgainShopInfo.visible()
-                usrShopAvatar.gone()
                 tvShopInfo.visible()
                 tvShopTitle.gone()
                 shimmerShopInfo.gone()
@@ -347,30 +345,25 @@ class AccountHeaderViewHolder(itemView: View,
                 arrowRight.gone()
                 tvShopInfo.text = getString(R.string.error_state_shop_info)
             } else if (!profileSeller.isGetShopError) {
+                btnTryAgainShopInfo.gone()
+                shimmerShopInfo.gone()
+                shimmerTryAgainShopInfo.gone()
                 tvShopInfo.visible()
                 tvShopTitle.visible()
                 tvShopNotif.visible()
                 arrowRight.visible()
-                btnTryAgainShopInfo.gone()
-                shimmerShopInfo.gone()
-                shimmerTryAgainShopInfo.gone()
 
                 val shopTitle: String
                 val shopInfo: CharSequence
                 if (!profileSeller.hasShop){
-                    usrShopAvatar.gone()
                     shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
                     shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
                 } else if (!profileSeller.adminRoleText.isNullOrEmpty()) {
                     shopTitle = itemView.context?.getString(R.string.account_header_store_title_role).orEmpty()
                     shopInfo = profileSeller.adminRoleText.orEmpty()
-                    usrShopAvatar.visible()
-                    usrShopAvatar.loadImage(profileSeller.shopAvatar)
                 } else {
                     shopTitle = ""
                     shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
-                    usrShopAvatar.visible()
-                    usrShopAvatar.loadImage(profileSeller.shopAvatar)
                 }
                 tvShopTitle.run {
                     visible()

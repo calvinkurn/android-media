@@ -23,7 +23,6 @@ class GetShopInfoUseCase @Inject constructor(
                     info{
                         shop_name
                         shop_id
-                        shop_avatar
                     }
                  }
                  notifications {

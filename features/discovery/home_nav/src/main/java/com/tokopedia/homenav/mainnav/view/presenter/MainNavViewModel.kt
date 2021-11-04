@@ -529,17 +529,10 @@ class MainNavViewModel @Inject constructor(
                         val shopId: String
                         val adminRole: String?
                         val orderCount: Int
-                        if (isShopActive) {
-                            shopName = it.userShopInfo.info.shopName
-                            shopId = it.userShopInfo.info.shopId
-                            orderCount = getTotalOrderCount(it.notifications)
-                            adminRole = adminRoleText
-                        } else {
-                            shopName = ""
-                            shopId = DEFAULT_SHOP_ID_NOT_OPEN
-                            adminRole = null
-                            orderCount = 0
-                        }
+                        shopName = it.userShopInfo.info.shopName
+                        shopId = it.userShopInfo.info.shopId
+                        orderCount = getTotalOrderCount(it.notifications)
+                        adminRole = null
                         setUserShopName(shopName, shopId, orderCount)
                         setAdminData(adminRole, canGoToSellerAccount)
                     }
