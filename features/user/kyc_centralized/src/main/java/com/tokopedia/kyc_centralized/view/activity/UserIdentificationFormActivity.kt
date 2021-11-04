@@ -31,7 +31,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
-import com.tokopedia.kyc_centralized.view.customview.fragment.NotFoundFragment.Companion.createInstance
+import com.tokopedia.utils.file.FileUtil
 import kotlin.collections.ArrayList
 
 /**
@@ -93,17 +93,18 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
     }
 
     override fun setupFragment(savedinstancestate: Bundle?) {
-        if (listFragment.size >= currentPosition) {
-            val fragment = when(listFragment[currentPosition - 1]) {
+        val actualPosition = currentPosition - 1
+        if (listFragment.size >= currentPosition && actualPosition >= 0) {
+            val fragment = when(listFragment[actualPosition]) {
                 is UserIdentificationFormKtpFragment -> UserIdentificationFormKtpFragment.createInstance()
                 is UserIdentificationFormFaceFragment -> UserIdentificationFormFaceFragment.createInstance()
                 is UserIdentificationFormFinalFragment -> UserIdentificationFormFinalFragment.createInstance(projectId)
                 is NotFoundFragment -> NotFoundFragment.createInstance()
                 else -> throw Exception()
             }
+            fragmentList[actualPosition] = fragment
             val fragmentArguments = fragment.arguments
-            val bundle: Bundle
-            bundle = fragmentArguments ?: Bundle()
+            val bundle: Bundle = fragmentArguments ?: Bundle()
             bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
             fragment.arguments = bundle
             supportFragmentManager.beginTransaction()
@@ -208,9 +209,15 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         }
     }
 
+    override fun onDestroy() {
+        FileUtil.deleteFolder(externalCacheDir?.absolutePath + FILE_NAME_KYC)
+        super.onDestroy()
+    }
+
     companion object {
         @JvmField
         var isSupportedLiveness = true
+        const val FILE_NAME_KYC = "/KYC"
         fun getIntent(context: Context?): Intent {
             val intent = Intent(context, UserIdentificationFormActivity::class.java)
             val bundle = Bundle()
