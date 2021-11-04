@@ -40,11 +40,10 @@ class BuyerOrderExtensionActivity: BaseSimpleActivity(), HasComponent<BuyerOrder
     }
 
     override fun onBackPressed() {
-        setResultFinish()
+        setResultFinish(Activity.RESULT_CANCELED)
     }
 
-    fun setResultFinish() {
-        val isOrderExtended: Boolean? = null
+    fun setResultFinish(resultCode: Int, isOrderExtended: Boolean? = null) {
         val toasterType: Int? = null
         val intent = Intent()
 
@@ -62,7 +61,7 @@ class BuyerOrderExtensionActivity: BaseSimpleActivity(), HasComponent<BuyerOrder
             )
         }
 
-        setResult(Activity.RESULT_CANCELED, intent)
+        setResult(resultCode, intent)
         finish()
     }
 }

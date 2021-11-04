@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -129,7 +130,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
         val bottomSheet =
             SubmissionOrderExtensionBottomSheet.newInstance(cacheManager?.id.orEmpty(), isFromUoh)
         bottomSheet.setOnDismissListener {
-            (activity as? BuyerOrderExtensionActivity)?.setResultFinish()
+            (activity as? BuyerOrderExtensionActivity)?.setResultFinish(Activity.RESULT_CANCELED)
         }
         binding?.loaderBuyerOrderExtension?.hide()
         bottomSheet.show(childFragmentManager)
@@ -152,7 +153,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
                 dismiss()
             }
             setOnDismissListener {
-                (activity as? BuyerOrderExtensionActivity)?.setResultFinish()
+                (activity as? BuyerOrderExtensionActivity)?.setResultFinish(Activity.RESULT_OK, true)
             }
             show()
         }
