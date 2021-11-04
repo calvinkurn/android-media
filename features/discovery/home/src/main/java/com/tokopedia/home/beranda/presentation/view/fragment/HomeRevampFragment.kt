@@ -1816,28 +1816,31 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setupPlayWidgetCoordinator()
         bannerCarouselCallback = BannerComponentCallback(context, this)
         val adapterFactory = HomeAdapterFactory(
-                this,
-                this,
-                this,
-                homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
-                this,
-                HomeComponentCallback(this),
-                DynamicLegoBannerComponentCallback(context, this),
-                RecommendationListCarouselComponentCallback(this),
-                MixLeftComponentCallback(this),
-                MixTopComponentCallback(this),
-                HomeReminderWidgetCallback(RechargeRecommendationCallback(context, this),
-                        SalamWidgetCallback(context, this, getUserSession())),
-                ProductHighlightComponentCallback(this),
-                Lego4AutoBannerComponentCallback(context, this),
-                FeaturedShopComponentCallback(context, this),
-                playWidgetCoordinator,
-                this,
-                CategoryNavigationCallback(context, this),
-                RechargeBUWidgetCallback(context, this),
-                bannerCarouselCallback,
-                DynamicIconComponentCallback(context, this),
-                Lego6AutoBannerComponentCallback(context, this)
+            this,
+            this,
+            this,
+            homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
+            this,
+            HomeComponentCallback(this),
+            DynamicLegoBannerComponentCallback(context, this),
+            RecommendationListCarouselComponentCallback(this),
+            MixLeftComponentCallback(this),
+            MixTopComponentCallback(this),
+            HomeReminderWidgetCallback(
+                RechargeRecommendationCallback(context, this),
+                SalamWidgetCallback(context, this, getUserSession())
+            ),
+            ProductHighlightComponentCallback(this),
+            Lego4AutoBannerComponentCallback(context, this),
+            FeaturedShopComponentCallback(context, this),
+            playWidgetCoordinator,
+            this,
+            CategoryNavigationCallback(context, this),
+            RechargeBUWidgetCallback(context, this),
+            bannerCarouselCallback,
+            DynamicIconComponentCallback(context, this),
+            Lego6AutoBannerComponentCallback(context, this),
+            CampaignWidgetComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
