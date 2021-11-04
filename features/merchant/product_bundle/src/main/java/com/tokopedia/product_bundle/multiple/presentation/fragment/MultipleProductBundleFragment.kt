@@ -216,7 +216,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             errorMessage?.run {
                 // show error message
                 Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.action_oke)).show()
+                    getString(R.string.action_oke)).setAnchorView(productBundleOverView?.bottomContentView).show()
             }
         })
     }
@@ -439,7 +439,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 productId = selectedProductIds
             )
             // open variant bottom sheet
-            AtcVariantNavigation.showVariantBottomSheet(this, productVariant)
+            AtcVariantNavigation.showVariantBottomSheet(this, productVariant, variantProductId)
         }
     }
 

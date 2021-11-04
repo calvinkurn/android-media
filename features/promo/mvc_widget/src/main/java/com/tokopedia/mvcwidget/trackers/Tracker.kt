@@ -78,6 +78,7 @@ object Tracker {
         const val CLICK_MULAI_BELANJA = "click mulai belanja"
         const val VIEW_TOKOMEMBER = "view coupon tokomember"
         const val VIEW_MVC_COUPON = "impression-mvc"
+        const val SEE_ENTRY_POINT = "see entry point"
     }
         object Label {
             const val PDP_VIEW = "pdp view"

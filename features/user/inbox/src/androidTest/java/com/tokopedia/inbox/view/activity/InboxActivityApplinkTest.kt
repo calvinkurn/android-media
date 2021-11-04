@@ -37,9 +37,6 @@ class InboxActivityApplinkTest {
         applyAbKeyValue(
             RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_NEW_INBOX
         )
-        applyAbKeyValue(
-            RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_REVAMP
-        )
     }
 
     @Test

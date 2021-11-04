@@ -99,6 +99,7 @@ class ProductRecommendationViewHolder(
                     }
                 }
             }
+            binding.baseRecom.show()
         }
     }
 
