@@ -13,14 +13,10 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.PARAMS
 import javax.inject.Inject
 
 class WishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
-    suspend fun executeSuspend(param: WishlistV2Params): Result<WishlistV2Response.Data.WishlistV2> {
-        return try {
-            val request = GraphqlRequest(QUERY, WishlistV2Response.Data::class.java, generateParam(param))
-            val response = gqlRepository.response(listOf(request)).getSuccessData<WishlistV2Response.Data>()
-            Success(response.wishlistV2)
-        } catch (e: Exception) {
-            Fail(e)
-        }
+    suspend fun executeSuspend(param: WishlistV2Params): WishlistV2Response.Data.WishlistV2 {
+        val request = GraphqlRequest(QUERY, WishlistV2Response.Data::class.java, generateParam(param))
+        val response = gqlRepository.response(listOf(request)).getSuccessData<WishlistV2Response.Data.WishlistV2>()
+        return response
     }
 
     private fun generateParam(param: WishlistV2Params): Map<String, Any?> {
