@@ -19,7 +19,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.NewValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.usecase.RequestParams
@@ -27,7 +27,7 @@ import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>,
+class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUsePromoRevampUseCase: Lazy<NewValidateUsePromoRevampUseCase>,
                                                          private val clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>,
                                                          private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                          private val executorDispatchers: CoroutineDispatchers) {
@@ -37,9 +37,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
-                val result = validateUsePromoRevampUseCase.get().createObservable(RequestParams.create().apply {
-                    putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
-                }).toBlocking().single()
+                val result = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
                 var isPromoReleased = false
                 if (!lastValidateUsePromoRevampUiModel?.promoUiModel?.codes.isNullOrEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
                     isPromoReleased = true
@@ -95,9 +93,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
-                val response = validateUsePromoRevampUseCase.get().createObservable(RequestParams.create().apply {
-                    putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
-                }).toBlocking().single()
+                val response = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
                 if (response.status.equals(STATUS_OK, true)) {
                     val voucherOrderUiModel = response.promoUiModel.voucherOrderUiModels.firstOrNull { it.code == logisticPromoCode }
                     if (voucherOrderUiModel != null && voucherOrderUiModel.messageUiModel.state != "red") {
@@ -121,9 +117,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         OccIdlingResource.increment()
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
-                val response = validateUsePromoRevampUseCase.get().createObservable(RequestParams.create().apply {
-                    putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
-                }).toBlocking().single()
+                val response = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
                 val (isSuccess, newGlobalEvent) = checkIneligiblePromo(response, orderCart)
                 return@withContext Triple(response, isSuccess, newGlobalEvent)
             } catch (t: Throwable) {
