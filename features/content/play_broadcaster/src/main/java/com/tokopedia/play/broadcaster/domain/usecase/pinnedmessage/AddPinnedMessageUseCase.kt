@@ -17,7 +17,7 @@ import javax.inject.Inject
 class AddPinnedMessageUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
     private val dispatchers: CoroutineDispatchers,
-) : RetryableGraphqlUseCase<AddPinnedMessageResponse>(gqlRepository) {
+) : RetryableGraphqlUseCase<AddPinnedMessageResponse>(gqlRepository, HIGH_RETRY_COUNT) {
 
     init {
         setGraphqlQuery(AddPinnedMessageUseCaseQuery.GQL_QUERY)
