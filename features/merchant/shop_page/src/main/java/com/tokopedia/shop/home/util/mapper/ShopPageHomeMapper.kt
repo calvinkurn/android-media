@@ -415,7 +415,6 @@ object ShopPageHomeMapper {
                     StatusCampaign.UPCOMING.statusCampaign -> {
                         // hide discount percentage for upcoming flash sale product
                         discountPercentage = ZERO_PRODUCT_DISCOUNT
-                        hideGimmick = true
                     }
                 }
                 labelGroupList  = it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
