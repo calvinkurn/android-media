@@ -144,6 +144,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 return
             }
 
+            CartIdlingResource.increment()
             if (initialLoad) {
                 it.renderLoadGetCartData()
             } else if (!isLoadingTypeRefresh) {
@@ -172,6 +173,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             it.renderErrorInitialGetCartListData(throwable)
             it.stopCartPerformanceTrace()
             CartLogger.logOnErrorLoadCartPage(throwable)
+            CartIdlingResource.decrement()
         }
     }
 
@@ -191,6 +193,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartData)
             it.stopCartPerformanceTrace()
+            CartIdlingResource.decrement()
         }
     }
 
@@ -290,6 +293,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
 
                 it.showProgressLoading()
+                CartIdlingResource.increment()
             }
 
             val cartItemDataList: List<CartItemHolderData> = if (fireAndForget) {
@@ -351,6 +355,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
                 CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(updateCartV2Data.data.error), cartItemDataList)
             }
+            CartIdlingResource.decrement()
         }
     }
 

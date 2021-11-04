@@ -179,11 +179,11 @@ class HotelHomepageActivityTest {
         val checkInDate = sdf.format(DateUtil.getCurrentDate())
         val checkoutDate = sdf.format(DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 2))
         try {
-            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkInDate), 0)).perform(click())
-            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkoutDate), 0)).perform(click())
-        } catch (e: Exception) {
             onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkInDate), 1)).perform(click())
             onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkoutDate), 1)).perform(click())
+        } catch (e: Exception) {
+            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkInDate), 0)).perform(click())
+            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkoutDate), 0)).perform(click())
         }
 
         Thread.sleep(1000)
