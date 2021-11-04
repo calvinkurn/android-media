@@ -7,7 +7,6 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -28,9 +27,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataMod
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.unifycomponents.*
