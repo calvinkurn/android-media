@@ -200,4 +200,37 @@ class AddToCartTest : BaseCartTest() {
         }
     }
 
+    @Test
+    fun `WHEN add to cart wishlist item with view is detached THEN should not render view`() {
+        // GIVEN
+        val productModel = CartWishlistItemHolderData(id = "0", shopId = "0")
+        val successMessage = "Success message add to cart"
+        val addToCartDataModel = AddToCartDataModel().apply {
+            status = AddToCartDataModel.STATUS_OK
+            data = DataModel().apply {
+                message = arrayListOf<String>().apply {
+                    add(successMessage)
+                }
+                success = 1
+            }
+        }
+        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartData) -> Unit>().invoke(CartData())
+        }
+        every { userSessionInterface.userId } returns "123"
+
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.processAddToCart(productModel)
+
+        // THEN
+        verify(inverse = true) {
+            view.showProgressLoading()
+        }
+    }
+
 }

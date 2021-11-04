@@ -98,4 +98,38 @@ class GetRecommendationTest : BaseCartTest() {
         }
 
     }
+
+    @Test
+    fun `WHEN get recommendation with view is detached THEN should not render`() {
+        // GIVEN
+        val recommendationWidgetStringData = """
+                {
+                    "recommendationItemList":
+                    [
+                        {
+                            "productId":0
+                        }
+                    ]
+                }
+            """.trimIndent()
+
+        val response = mutableListOf<RecommendationWidget>().apply {
+            val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
+            add(recommendationWidget)
+        }
+
+        every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
+        every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.processGetRecommendationData(1, emptyList())
+
+        // THEN
+        verify(inverse = true) {
+            view.showItemLoading()
+        }
+    }
+
 }

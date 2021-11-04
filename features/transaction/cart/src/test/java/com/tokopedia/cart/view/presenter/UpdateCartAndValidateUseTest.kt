@@ -102,4 +102,19 @@ class UpdateCartAndValidateUseTest : BaseCartTest() {
             view.hideProgressLoading()
         }
     }
+
+    @Test
+    fun `WHEN update and validate with view is detached THEN should not render view`() {
+        // GIVEN
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.doUpdateCartAndValidateUse(ValidateUsePromoRequest())
+
+        // THEN
+        verify(inverse = true) {
+            view.updatePromoCheckoutStickyButton(any())
+        }
+    }
+
 }

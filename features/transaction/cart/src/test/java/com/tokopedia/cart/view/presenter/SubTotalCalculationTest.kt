@@ -219,7 +219,7 @@ class SubTotalCalculationTest : BaseCartTest() {
             }
         }
 
-        // WHAN
+        // WHEN
         cartListPresenter?.reCalculateSubTotal(cartShops)
 
         // THEN
@@ -262,7 +262,7 @@ class SubTotalCalculationTest : BaseCartTest() {
     }
 
     @Test
-    fun `WHEN all item selected with same priced product variant THEN should have '4084' on subtotal and '400' on cashback from '6' items`() {
+    fun `WHEN all item selected with same priced product variant THEN should have '4300' on subtotal and '400' on cashback from '6' items`() {
         // GIVEN
         initializeData()
         firstProductFirstShop.isSelected = true

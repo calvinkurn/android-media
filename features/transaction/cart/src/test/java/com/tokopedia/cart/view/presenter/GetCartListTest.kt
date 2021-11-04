@@ -123,4 +123,21 @@ class GetCartListTest : BaseCartTest() {
             view.stopCartPerformanceTrace()
         }
     }
+
+    @Test
+    fun `WHEN initial load cart list with view is not attached THEN should not render view`() {
+        // GIVEN
+        val cartData = CartData()
+
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.processInitialGetCartData("", true, false)
+
+        // THEN
+        verify(inverse = true) {
+            view.renderInitialGetCartListDataSuccess(cartData)
+        }
+    }
+
 }

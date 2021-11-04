@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
 import io.mockk.every
 import io.mockk.slot
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
 
@@ -90,4 +91,21 @@ class SeamlessLoginTest : BaseCartTest() {
             view.showToastMessageRed()
         }
     }
+
+    @Test
+    fun `WHEN get seamless login url with view is detached THEN should not render view`() {
+        // GIVEN
+        val url = "http://"
+
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.redirectToLite(url)
+
+        // THEN
+        verify(inverse = true) {
+            view.showProgressLoading()
+        }
+    }
+
 }

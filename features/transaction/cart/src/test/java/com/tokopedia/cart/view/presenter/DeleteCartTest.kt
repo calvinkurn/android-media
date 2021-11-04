@@ -84,4 +84,21 @@ class DeleteCartTest : BaseCartTest() {
             view.showToastMessageRed(throwable)
         }
     }
+
+    @Test
+    fun `WHEN delete all cart item with view is detached THEN should not render view`() {
+        // GIVEN
+        val cartItemData = CartItemHolderData(cartId = "0")
+
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.processDeleteCartItem(arrayListOf(cartItemData), arrayListOf(cartItemData), false, false, true, false)
+
+        // THEN
+        verify(inverse = true) {
+            view.onDeleteCartDataSuccess(arrayListOf("0"), true, false, false, true, false)
+        }
+    }
+
 }

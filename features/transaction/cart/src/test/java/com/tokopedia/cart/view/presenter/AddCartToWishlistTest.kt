@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view.presenter
 
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
 import com.tokopedia.network.exception.ResponseErrorException
 import io.mockk.every
@@ -87,4 +88,25 @@ class AddCartToWishlistTest : BaseCartTest() {
             view.showToastMessageRed(exception)
         }
     }
+
+    @Test
+    fun `WHEN add cart item to wishlist with view is not attached THEN should not render view`() {
+        // GIVEN
+        val productId = "1"
+        val cartId = "2"
+        val isLastItem = false
+        val source = "source"
+        val forceExpandCollapsedUnavailableItems = false
+
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.processAddCartToWishlist(productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+
+        // THEN
+        verify(inverse = true) {
+            view.onAddCartToWishlistSuccess(any(), any(), any(), any(), any(), any())
+        }
+    }
+
 }

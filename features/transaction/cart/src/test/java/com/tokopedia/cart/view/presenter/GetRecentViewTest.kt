@@ -93,4 +93,37 @@ class GetRecentViewTest : BaseCartTest() {
         }
 
     }
+
+    @Test
+    fun `WHEN get recent view with view is detached THEN should not render view`() {
+        // GIVEN
+        val recommendationWidgetStringData = """
+                {
+                    "recommendationItemList":
+                    [
+                        {
+                            "productId":0
+                        }
+                    ]
+                }
+            """.trimIndent()
+        val response = mutableListOf<RecommendationWidget>().apply {
+            val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
+            add(recommendationWidget)
+        }
+
+        every { getRecentViewUseCase.createObservable(any()) } returns Observable.just(response)
+        every { getRecentViewUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.processGetRecentViewData(emptyList())
+
+        // THEN
+        verify(inverse = true) {
+            view.showItemLoading()
+        }
+    }
+
 }

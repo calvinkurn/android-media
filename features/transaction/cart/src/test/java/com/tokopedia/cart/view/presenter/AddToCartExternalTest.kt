@@ -3,6 +3,7 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.every
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Observable
@@ -54,4 +55,29 @@ class AddToCartExternalTest : BaseCartTest() {
         }
 
     }
+
+    @Test
+    fun `WHEN add to cart with view is detached THEN should not render view`() {
+        // Given
+        val addToCartExternalModel = AddToCartExternalModel().apply {
+            success = 1
+            message = arrayListOf<String>().apply {
+                add("Success message")
+            }
+        }
+
+        every { addToCartExternalUseCase.createObservable(any()) } returns Observable.just(addToCartExternalModel)
+        every { userSessionInterface.userId } returns "123"
+
+        cartListPresenter?.detachView()
+
+        // When
+        cartListPresenter?.processAddToCartExternal(1)
+
+        // Then
+        verify(inverse = true) {
+            view.showProgressLoading()
+        }
+    }
+
 }

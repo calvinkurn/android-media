@@ -46,4 +46,24 @@ class ClearPromoTest : BaseCartTest() {
             view.onSuccessClearRedPromosThenGoToCheckout()
         }
     }
+
+    @Test
+    fun `WHEN clear promo with view is detached THEN should not render view`() {
+        // GIVEN
+        val clearPromoModel = ClearPromoUiModel()
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(clearPromoModel)
+
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.doClearRedPromosBeforeGoToCheckout(ArrayList())
+
+        // THEN
+        verify(inverse = true) {
+            view.showItemLoading()
+        }
+    }
+
 }

@@ -59,4 +59,33 @@ class FollowShopTest : BaseCartTest() {
             view.showToastMessageRed(exception)
         }
     }
+
+    @Test
+    fun `WHEN follow shop with view is detached THEN should not render view`() {
+        // GIVEN
+        val dataFollowShop = DataFollowShop().apply {
+            followShop = FollowShop().apply {
+                isSuccess = true
+                message = "Success"
+            }
+        }
+
+        every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
+        every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
+        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartData) -> Unit>().invoke(CartData())
+        }
+
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.followShop("1")
+
+        // THEN
+        verify(inverse = true) {
+            view.showProgressLoading()
+        }
+    }
+
 }

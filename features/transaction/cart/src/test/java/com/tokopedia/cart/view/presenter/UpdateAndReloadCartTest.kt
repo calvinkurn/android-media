@@ -77,4 +77,19 @@ class UpdateAndReloadCartTest : BaseCartTest() {
             view.showToastMessageRed(exception)
         }
     }
+
+    @Test
+    fun `WHEN update cart and reload with view is detched THEN should not render view`() {
+        // GIVEN
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.processToUpdateAndReloadCartData("0")
+
+        // THEN
+        verify(inverse = true) {
+            view.hideProgressLoading()
+        }
+    }
+
 }

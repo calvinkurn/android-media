@@ -296,4 +296,18 @@ class UpdateCartTest : BaseCartTest() {
         }
     }
 
+    @Test
+    fun `WHEN update cart for checkout with view is detached THEN should not render view`() {
+        // GIVEN
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.processUpdateCartData(false)
+
+        // THEN
+        verify(inverse = true) {
+            view.renderToShipmentFormSuccess(any(), any(), any(), any())
+        }
+    }
+
 }

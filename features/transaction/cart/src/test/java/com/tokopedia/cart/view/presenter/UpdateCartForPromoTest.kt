@@ -78,4 +78,19 @@ class UpdateCartForPromoTest : BaseCartTest() {
             updateCartUseCase.execute(any(), any())
         }
     }
+
+    @Test
+    fun `WHEN update cart for promo with view detached THEN should not render view`() {
+        // GIVEN
+        cartListPresenter?.detachView()
+
+        // WHEN
+        cartListPresenter?.doUpdateCartForPromo()
+
+        // THEN
+        verify(inverse = true) {
+            view.navigateToPromoRecommendation()
+        }
+    }
+
 }
