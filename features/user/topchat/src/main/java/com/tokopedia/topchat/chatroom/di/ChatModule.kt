@@ -19,6 +19,8 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
@@ -245,5 +247,11 @@ class ChatModule {
     @Provides
     fun provideRemoteConfig(@TopchatContext context: Context) : RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideAbTestPlatform() : AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 }

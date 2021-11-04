@@ -565,7 +565,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 if (product.isPreOrder) {
                     it.setText(R.string.title_topchat_pre_order_camel)
                 } else {
-                    it.setText(com.tokopedia.chat_common.R.string.action_buy)
+                    if(listener?.isOCCActive() == true && product.doesNotHaveVariant()) {
+                        it.setText(com.tokopedia.chat_common.R.string.action_occ)
+                    } else {
+                        it.setText(com.tokopedia.chat_common.R.string.action_buy)
+                    }
                 }
                 it.setOnClickListener {
                     listener?.onClickBuyFromProductAttachment(product)

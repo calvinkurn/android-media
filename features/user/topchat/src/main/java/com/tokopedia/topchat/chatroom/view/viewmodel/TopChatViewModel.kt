@@ -4,7 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
@@ -18,6 +23,7 @@ import javax.inject.Inject
 class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
     private var getShopFollowingUseCase: GetShopFollowingUseCase,
+    private var addToCartOccUseCase: AddToCartOccMultiUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ): BaseViewModel(dispatcher.main) {
@@ -29,6 +35,10 @@ class TopChatViewModel @Inject constructor(
     private val _shopFollowing = MutableLiveData<Result<ShopFollowingPojo>>()
     val shopFollowing: LiveData<Result<ShopFollowingPojo>>
         get() = _shopFollowing
+
+    private val _occProduct = MutableLiveData<Result<String>>()
+    val occProduct: LiveData<Result<String>>
+        get() = _occProduct
 
     fun getMessageId(
         toUserId: String,
@@ -55,5 +65,41 @@ class TopChatViewModel @Inject constructor(
         }, onError = {
             _shopFollowing.value = Fail(it)
         })
+    }
+
+    fun occProduct(
+        userId: String,
+        product: ProductAttachmentUiModel
+    ) {
+        launchCatchError(block = {
+            val params = getAddToCartOccMultiRequestParams(userId, product)
+            addToCartOccUseCase.setParams(params)
+            val result = addToCartOccUseCase.executeOnBackground()
+            if(result.isStatusError()) {
+                _occProduct.value = Fail(MessageErrorException(result.getAtcErrorMessage()))
+            } else {
+                _occProduct.value = Success(product.productId)
+            }
+        }, onError = {
+            _occProduct.value = Fail(it)
+        })
+    }
+
+    private fun getAddToCartOccMultiRequestParams(
+        userId: String,
+        product: ProductAttachmentUiModel
+    ): AddToCartOccMultiRequestParams {
+        return AddToCartOccMultiRequestParams(
+            carts = listOf(AddToCartOccMultiCartParam(
+                productId = product.productId,
+                shopId = product.shopId.toString(),
+                quantity = product.minOrder.toString(),
+                //analytics data
+                productName = product.productName,
+                category = product.category,
+                price = product.productPrice
+            )),
+            userId = userId
+        )
     }
 }

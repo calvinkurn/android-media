@@ -146,6 +146,7 @@ import android.content.*
 import android.content.ClipData
 import android.widget.LinearLayout
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
@@ -190,6 +191,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
+
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
 
     private lateinit var fpm: PerformanceMonitoring
     private lateinit var customMessage: String
@@ -637,6 +641,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun trackClickUpdateStock(product: ProductAttachmentUiModel) {
         analytics.trackClickUpdateStock(product)
+    }
+
+    override fun isOCCActive(): Boolean {
+//        return abTestPlatform.getBoolean(ROLLENCE_OCC)
+        return true
     }
 
     private fun initFireBase() {
@@ -1475,13 +1484,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickBuyProductAttachment(element)
-        doBuyAndAtc(element) {
-            analytics.trackSuccessDoBuyAndAtc(
-                element, it,
-                topchatViewState?.chatRoomViewModel?.shopName ?: "",
-                element.getBuyEventAction()
-            )
-            RouteManager.route(context, ApplinkConst.CART)
+        if(isOCCActive() && element.doesNotHaveVariant()) {
+            doOCC(element)
+        } else {
+             doBuyAndAtc(element) {
+                analytics.trackSuccessDoBuyAndAtc(
+                    element, it,
+                    topchatViewState?.chatRoomViewModel?.shopName ?: "",
+                    element.getBuyEventAction()
+                )
+                RouteManager.route(context, ApplinkConst.CART)
+            }
         }
     }
 
@@ -1508,6 +1521,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 ).show()
             }
         }
+    }
+
+    private fun doOCC(element: ProductAttachmentUiModel) {
+        viewModel.occProduct(getUserSession().userId, element)
+        //TODO: Track OCC
     }
 
     private fun doBuyAndAtc(
@@ -2375,6 +2393,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 is Fail -> onErrorGetShopFollowingStatus()
             }
         })
+
+        viewModel.occProduct.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> goToOCC(it.data)
+                is Fail -> onError(it.throwable)
+            }
+        })
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
@@ -2460,6 +2485,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    private fun goToOCC(productId: String) {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT,
+            productId
+        )
+        startActivity(intent)
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
@@ -2480,6 +2514,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val SECOND_DIVIDER = 1000
+
+        private const val ROLLENCE_OCC = "topchat_occ"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
