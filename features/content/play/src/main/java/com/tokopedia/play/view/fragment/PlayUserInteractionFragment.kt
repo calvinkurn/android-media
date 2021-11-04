@@ -1613,7 +1613,13 @@ class PlayUserInteractionFragment @Inject constructor(
             }
         } else {
             view?.changeConstraint {
-                connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
+                if(quickReplyView?.isShown() == true) {
+                    sendChatView?.let {
+                        connect(quickReplyViewId, ConstraintSet.BOTTOM, it.id, ConstraintSet.TOP, offset8)
+                    }
+                } else {
+                    connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
+                }
             }
         }
     }
