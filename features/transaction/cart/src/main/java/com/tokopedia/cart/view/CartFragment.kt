@@ -2513,7 +2513,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return cartAdapter.allShopGroupDataList
     }
 
-    override fun getAllSelectedCartDataList(): List<CartItemHolderData>? {
+    override fun getAllSelectedCartDataList(): List<CartItemHolderData> {
         return cartAdapter.selectedCartItemData
     }
 

@@ -334,4 +334,29 @@ class SubTotalCalculationTest : BaseCartTest() {
         }
     }
 
+    @Test
+    fun `WHEN some item selected with slash price THEN should have '1004' on subtotal and '100' on cashback from '5' items`() {
+        // GIVEN
+        initializeData()
+        firstProductFirstShop.isSelected = true
+        firstProductFirstShop.productOriginalPrice = 2000
+        firstShop.isPartialSelected = true
+
+        secondProductSecondShop.isSelected = true
+        secondShop.isPartialSelected = true
+
+        every { view.getAllAvailableCartDataList() } answers {
+            cartShops.flatMap {
+                it.productUiModelList
+            }
+        }
+
+        cartListPresenter?.reCalculateSubTotal(cartShops)
+
+        verifyOrder {
+            view.updateCashback(100.0)
+            view.renderDetailInfoSubTotal("5", 1004.0, false)
+        }
+    }
+
 }

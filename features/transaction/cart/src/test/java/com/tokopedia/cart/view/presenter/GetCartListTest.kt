@@ -1,6 +1,10 @@
 package com.tokopedia.cart.view.presenter
 
 import com.google.gson.Gson
+import com.tokopedia.cart.data.model.response.promo.CartPromoData
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromo
+import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
+import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -120,6 +124,29 @@ class GetCartListTest : BaseCartTest() {
         // THEN
         verify {
             view.renderErrorInitialGetCartListData(exception)
+            view.stopCartPerformanceTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN initial load cart list success with promo last apply data THEN should render success`() {
+        // GIVEN
+        val cartData = CartData(promo = CartPromoData(lastApplyPromo = LastApplyPromo(lastApplyPromoData = LastApplyPromoData(codes = listOf("ABC"), listVoucherOrders = listOf(VoucherOrders())))))
+
+        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartData) -> Unit>().invoke(cartData)
+        }
+
+        every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
+
+        // WHEN
+        cartListPresenter?.processInitialGetCartData("", true, false)
+
+        // THEN
+        verifyOrder {
+            view.renderLoadGetCartDataFinish()
+            view.renderInitialGetCartListDataSuccess(cartData)
             view.stopCartPerformanceTrace()
         }
     }

@@ -1390,8 +1390,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         view?.let { view ->
             view.showProgressLoading()
 
-            val updateCartRequestList = getUpdateCartRequest(view.getAllSelectedCartDataList()
-                    ?: emptyList())
+            val updateCartRequestList = getUpdateCartRequest(view.getAllSelectedCartDataList())
             if (updateCartRequestList.isNotEmpty()) {
                 updateCartUseCase.setParams(updateCartRequestList, UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES)
                 updateCartUseCase.execute(

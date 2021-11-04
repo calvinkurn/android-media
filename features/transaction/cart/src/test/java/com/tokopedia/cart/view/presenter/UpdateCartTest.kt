@@ -4,6 +4,9 @@ import com.tokopedia.cart.view.utils.DataProvider
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.cartcommon.data.response.common.OutOfService
+import com.tokopedia.cartcommon.data.response.updatecart.Data
+import com.tokopedia.cartcommon.data.response.updatecart.ToasterAction
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.network.exception.ResponseErrorException
 import io.mockk.*
@@ -16,9 +19,31 @@ class UpdateCartTest : BaseCartTest() {
         // GIVEN
         val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
             add(CartItemHolderData().apply {
+                isError = false
+                isBundlingItem = false
                 isCod = true
                 productPrice = 1000
                 quantity = 10
+                trackerAttribution = "t"
+                category = "c"
+            })
+            add(CartItemHolderData().apply {
+                isError = false
+                isBundlingItem = true
+                isCod = true
+                productPrice = 1000
+                quantity = 10
+                trackerAttribution = "t"
+                category = "c"
+            })
+            add(CartItemHolderData().apply {
+                isError = true
+                isBundlingItem = true
+                isCod = true
+                productPrice = 1000
+                quantity = 10
+                trackerAttribution = "t"
+                category = "c"
             })
         }
 
@@ -249,6 +274,94 @@ class UpdateCartTest : BaseCartTest() {
     }
 
     @Test
+    fun `WHEN update cart for checkout failed with out of service THEN should render out of service error`() {
+        // GIVEN
+        val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
+            add(CartItemHolderData().apply {
+                isCod = true
+                productPrice = 1000
+                quantity = 10
+            })
+        }
+
+        val outOfService = OutOfService(id = "503")
+        val mockResponse = UpdateCartV2Data(data = Data(status = false, outOfService = outOfService))
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        }
+        every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
+        every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+
+        // WHEN
+        cartListPresenter?.processUpdateCartData(false)
+
+        // THEN
+        verify {
+            view.renderErrorToShipmentForm(outOfService)
+        }
+    }
+
+    @Test
+    fun `WHEN update cart for checkout failed with other error and no need to show cta THEN should render error with no cta`() {
+        // GIVEN
+        val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
+            add(CartItemHolderData().apply {
+                isCod = true
+                productPrice = 1000
+                quantity = 10
+            })
+        }
+
+        val errorMessage = "error message"
+        val mockResponse = UpdateCartV2Data(data = Data(status = false, error = errorMessage, toasterAction = ToasterAction(showCta = false)))
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        }
+        every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
+        every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+
+        // WHEN
+        cartListPresenter?.processUpdateCartData(false)
+
+        // THEN
+        verify {
+            view.renderErrorToShipmentForm(errorMessage, "")
+        }
+    }
+
+    @Test
+    fun `WHEN update cart for checkout failed with other error and need to show cta THEN should render error with cta`() {
+        // GIVEN
+        val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
+            add(CartItemHolderData().apply {
+                isCod = true
+                productPrice = 1000
+                quantity = 10
+            })
+        }
+
+        val errorMessage = "error message"
+        val cta = "Oke"
+        val mockResponse = UpdateCartV2Data(data = Data(status = false, error = errorMessage, toasterAction = ToasterAction(showCta = true, text = cta)))
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        }
+        every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
+        every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+
+        // WHEN
+        cartListPresenter?.processUpdateCartData(false)
+
+        // THEN
+        verify {
+            view.renderErrorToShipmentForm(errorMessage, cta)
+        }
+    }
+
+    @Test
     fun `WHEN update cart failed THEN should render error`() {
         // GIVEN
         val throwable = ResponseErrorException("error")
@@ -295,6 +408,63 @@ class UpdateCartTest : BaseCartTest() {
             updateCartUseCase.execute(any(), any())
         }
     }
+
+    @Test
+    fun `WHEN update cart for on fragment stopped THEN should call API`() {
+        // GIVEN
+        val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
+            add(CartItemHolderData().apply {
+                isCod = true
+                productPrice = 1000
+                quantity = 10
+            })
+        }
+
+        val mockResponse = DataProvider.provideUpdateCartSuccess()
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        }
+        every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
+        every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+
+        // WHEN
+        cartListPresenter?.processUpdateCartData(true)
+
+        // THEN
+        verify {
+            updateCartUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun `WHEN update cart for on fragment stopped THEN should not show loading`() {
+        // GIVEN
+        val cartItemDataList = mutableListOf<CartItemHolderData>().apply {
+            add(CartItemHolderData().apply {
+                isCod = true
+                productPrice = 1000
+                quantity = 10
+            })
+        }
+
+        val mockResponse = DataProvider.provideUpdateCartSuccess()
+        coEvery { updateCartUseCase.setParams(any(), any()) } just Runs
+        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(mockResponse)
+        }
+        every { view.getAllAvailableCartDataList() } answers { cartItemDataList }
+        every { view.getAllSelectedCartDataList() } answers { cartItemDataList }
+
+        // WHEN
+        cartListPresenter?.processUpdateCartData(true)
+
+        // THEN
+        verify(inverse = true) {
+            view.showProgressLoading()
+        }
+    }
+
 
     @Test
     fun `WHEN update cart for checkout with view is detached THEN should not render view`() {

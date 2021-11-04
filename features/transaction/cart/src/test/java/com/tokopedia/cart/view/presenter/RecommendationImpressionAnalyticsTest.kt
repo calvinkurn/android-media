@@ -50,6 +50,23 @@ class RecommendationImpressionAnalyticsTest : BaseCartTest() {
     }
 
     @Test
+    fun `WHEN generate recommendation impression data analytics with 1 top ads item selected and cart is not empty THEN key 'list' value should be 'top ads'`() {
+        // GIVEN
+        var result: Map<String, Any>? = null
+
+        val recommendationDataList = mutableListOf<CartRecommendationItemHolderData>().apply {
+            add(CartRecommendationItemHolderData(recommendationItem = RecommendationItem(isTopAds = true)))
+        }
+
+        // WHEN
+        result = cartListPresenter?.generateRecommendationImpressionDataAnalytics(0, recommendationDataList, false)
+
+        // THEN
+        val impression = result?.get(EnhancedECommerceCartMapData.KEY_IMPRESSIONS) as List<Map<String, Any>>
+        assertTrue((impression[0][EnhancedECommerceProductCartMapData.KEY_LIST] as String).contains(EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_TOPADS_TYPE))
+    }
+
+    @Test
     fun `WHEN generate recommendation impression data analytics with 1 item selected and cart is not empty THEN key 'category' should be 'cat1cat2cat3'`() {
         //GIVEN
         var result: Map<String, Any>? = null

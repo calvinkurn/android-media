@@ -6,7 +6,10 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import io.mockk.*
 import org.junit.Test
 import rx.Observable
@@ -197,6 +200,78 @@ class AddToCartTest : BaseCartTest() {
         // THEN
         verify {
             view.showToastMessageRed(addToCartDataModel.errorMessage[0])
+        }
+    }
+
+    @Test
+    fun `WHEN add to cart shop ads item success THEN should render success`() {
+        // GIVEN
+        val productModel = BannerShopProductViewModel(CpmData(), ProductCardModel(), "", "", "")
+        productModel.apply {
+            productId = "1"
+            shopId = "1"
+            productName = "a"
+            productCategory = "s"
+            productPrice = "1"
+            productMinOrder = 1
+        }
+        val successMessage = "Success message add to cart"
+        val addToCartDataModel = AddToCartDataModel().apply {
+            status = AddToCartDataModel.STATUS_OK
+            data = DataModel().apply {
+                message = arrayListOf<String>().apply {
+                    add(successMessage)
+                }
+                success = 1
+            }
+        }
+        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
+        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
+        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartData) -> Unit>().invoke(CartData())
+        }
+        every { userSessionInterface.userId } returns "123"
+
+        // WHEN
+        cartListPresenter?.processAddToCart(productModel)
+
+        // THEN
+        verifyOrder {
+            view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
+            view.showToastMessageGreen(addToCartDataModel.data.message[0])
+        }
+    }
+
+    @Test
+    fun `WHEN add to cart shop ads item failed THEN should render error`() {
+        // GIVEN
+        val errorMessage = "Add to cart error"
+        val productModel = BannerShopProductViewModel(CpmData(), ProductCardModel(), "", "", "")
+        productModel.apply {
+            productId = "1"
+            shopId = "1"
+            productName = "a"
+            productCategory = "s"
+            productPrice = "1"
+            productMinOrder = 1
+        }
+        val addToCartDataModel = AddToCartDataModel().apply {
+            this.status = AddToCartDataModel.STATUS_ERROR
+            this.data = DataModel()
+            this.errorMessage = arrayListOf<String>().apply {
+                add(errorMessage)
+            }
+        }
+        every { addToCartUseCase.createObservable(any()) } returns Observable.just(addToCartDataModel)
+        every { userSessionInterface.userId } returns "123"
+
+        // WHEN
+        cartListPresenter?.processAddToCart(productModel)
+
+        // THEN
+        verify {
+            view.showToastMessageRed(errorMessage)
         }
     }
 
