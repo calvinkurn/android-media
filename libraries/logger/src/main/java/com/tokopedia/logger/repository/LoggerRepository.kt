@@ -55,6 +55,7 @@ class LoggerRepository(
         val currentTimestamp = System.currentTimeMillis()
         logDao.deleteExpiredHighPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
         logDao.deleteExpiredLowPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
+        logDao.deleteExpiredSFPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
     }
 
     override suspend fun sendLogToServer(queryLimits: List<Int>) {
@@ -66,10 +67,14 @@ class LoggerRepository(
             Constants.SEVERITY_MEDIUM,
             logDao.getServerChannel(LoggerReporting.P2, queryLimits[1])
         )
+        sendLogToServer(
+            Constants.SEVERITY_SR,
+            logDao.getServerChannel(LoggerReporting.SF, queryLimits[0])
+        )
     }
 
     private suspend fun sendLogToServer(priorityScalyr: Int, logs: List<Logger>) {
-        val tokenIndex = priorityScalyr - 1
+        val priorityScalyrIndex = priorityScalyr - 1
 
         coroutineScope {
             launch {
@@ -83,7 +88,7 @@ class LoggerRepository(
                 if (scalyrMessageList.isNotEmpty()) {
                     val jobScalyr = async {
                         sendScalyrLogToServer(
-                            scalyrConfigs[tokenIndex],
+                            scalyrConfigs[priorityScalyrIndex],
                             logs,
                             scalyrMessageList
                         )
@@ -157,9 +162,19 @@ class LoggerRepository(
             }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
                 if (priorityName == LoggerReporting.SF) {
-                    messageNewRelicList.add(addEventNewRelicSuccessRate(message))
+                    messageNewRelicList.add(
+                        addEventNewRelic(
+                            message,
+                            Constants.EVENT_ANDROID_SF_NEW_RELIC
+                        )
+                    )
                 } else {
-                    messageNewRelicList.add(addEventNewRelic(message))
+                    messageNewRelicList.add(
+                        addEventNewRelic(
+                            message,
+                            Constants.EVENT_TYPE_NEW_RELIC
+                        )
+                    )
                 }
             }
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
@@ -191,15 +206,9 @@ class LoggerRepository(
         return loggerCloudEmbraceImpl.sendToLogServer(embraceBodyList)
     }
 
-    private fun addEventNewRelic(message: String): String {
+    private fun addEventNewRelic(message: String, eventType: String): String {
         val gson = Gson().fromJson(message, JsonObject::class.java)
-        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
-        return gson.toString()
-    }
-
-    private fun addEventNewRelicSuccessRate(message: String): String {
-        val gson = Gson().fromJson(message, JsonObject::class.java)
-        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_SF_NEW_RELIC)
+        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, eventType)
         return gson.toString()
     }
 
