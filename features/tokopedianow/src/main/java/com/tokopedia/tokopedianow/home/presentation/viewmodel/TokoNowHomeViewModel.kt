@@ -420,7 +420,7 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param item TokopediaNOW component item
      * @param warehouseId Id obtained from choose address widget
      */
-    private suspend fun getTokoNowGlobalComponent(item: Visitable<*>, warehouseId: String) {
+    private suspend fun getTokoNowGlobalComponent(item: Visitable<*>?, warehouseId: String) {
         when(item) {
             is TokoNowCategoryGridUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
