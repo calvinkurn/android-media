@@ -368,8 +368,8 @@ public interface ApplinkConst {
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
-    String CATEGORY_BELANJA = "toDDDkopedia://category_belanja/{CATEGORY_NAME}";
-
+    String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
+    
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
     String PM_BENEFIT_PACKAGE = "tokopedia://power_merchant/benefit_package";
     String POWER_MERCHANT_PRO_INTERRUPT = "tokopedia://power_merchant/interrupt";
