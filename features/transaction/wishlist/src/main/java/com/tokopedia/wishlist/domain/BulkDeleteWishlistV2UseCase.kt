@@ -24,21 +24,22 @@ class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext privat
 
     private fun generateParam(productId: List<String>, userId: String): Map<String, Any?> {
         return mapOf(
-                WishlistV2Consts.PRODUCT_ID to productId,
-                WishlistV2Consts.USER_ID to userId)
+                WishlistV2Consts.PRODUCT_IDs to productId,
+                WishlistV2Consts.USER_ID to Integer.parseInt(userId))
     }
 
     companion object {
         val QUERY = """
-            mutation WishlistBulkRemoveV2(${'$'}productID: [SuperInteger], ${'$'}userID: SuperInteger) {
-              wishlist_bulk_remove_v2(productID:${'$'}productID, userID:${'$'}userID) {
-                id
-                success
-                message
-                button {
-                    text
-                    action
-                    url
+            mutation WishlistBulkRemoveV2(${'$'}productIDs: [SuperInteger], ${'$'}userID: SuperInteger) {
+                    wishlist_bulk_remove_v2(productID: ${'$'}productIDs, userID: ${'$'}userID) {
+                    id
+                    success
+                    message
+                    button {
+                      text
+                      action
+                      url
+                    }
                 }
             }
             """.trimIndent()
