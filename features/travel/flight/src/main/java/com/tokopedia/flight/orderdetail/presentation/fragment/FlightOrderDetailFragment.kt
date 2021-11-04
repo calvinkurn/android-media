@@ -367,7 +367,8 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         /* Render Contact Us */
         binding?.tgFlightOrderContactUs?.text = MethodChecker.fromHtml(getString(R.string.flight_order_detail_contact_us))
         binding?.tgFlightOrderContactUs?.setOnClickListener {
-            RouteManager.route(requireContext(), data.contactUsURL)
+            val tokopediaCareUrl = "tokopedia://webview?url= ${data.contactUsURL}"
+            RouteManager.route(requireContext(), tokopediaCareUrl)
         }
 
         hideLoading()
