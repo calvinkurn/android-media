@@ -151,6 +151,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     }
                 }
             })
+
+            sharedModelPrepaid.selectedProductById.observe(viewLifecycleOwner, {
+                val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
+                if (activeCategory == titleProduct) {
+                    telcoTelcoProductView.selectProductById(it.toString())
+                }
+            })
         }
 
         telcoTelcoProductView.setListener(this)
@@ -222,6 +229,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
 
     override fun onScrollToPositionItem(position: Int) {
         sharedModelPrepaid.setPositionScrollToItem(position)
+    }
+
+    override fun onFailedAutoSelectById() {
+        sharedModelPrepaid.resetSelectedProduct()
     }
 
     private fun renderSeeMoreBottomSheet(itemProduct: TelcoProduct, bottomSheetListener: DigitalProductBottomSheet.ActionListener) {
@@ -335,12 +346,12 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
             }
         }
 
-        sharedModelPrepaid.favNumberSelected.observe(viewLifecycleOwner, Observer { productId ->
-            val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
-            if (activeCategory == titleProduct) {
-                telcoTelcoProductView.selectProductFromFavNumber(productId)
-            }
-        })
+//        sharedModelPrepaid.selectedProductById.observe(viewLifecycleOwner, { productId ->
+//            val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
+//            if (activeCategory == titleProduct) {
+//                telcoTelcoProductView.selectProductById(productId)
+//            }
+//        })
     }
 
     private fun clearFilterIfTabNotActive() {

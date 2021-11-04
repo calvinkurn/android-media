@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -71,6 +72,11 @@ open class TopupBillsSavedNumberActivity : BaseSimpleActivity(),
         return TopupBillsSavedNumberFragment
             .newInstance(clientNumberType, number, operatorData,
                 currentCategoryName, dgCategoryIds, isSwitchChecked)
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK, null)
+        super.onBackPressed()
     }
 
     companion object {

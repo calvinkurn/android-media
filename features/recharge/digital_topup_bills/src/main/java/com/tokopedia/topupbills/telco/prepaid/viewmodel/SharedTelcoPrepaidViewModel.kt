@@ -20,9 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.concurrent.Delayed
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by nabillasabbaha on 20/05/19.
@@ -42,10 +40,6 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     private val _productAutoCheckout = MutableLiveData<TelcoProduct>()
     val productAutoCheckout: LiveData<TelcoProduct>
         get() = _productAutoCheckout
-
-    private val _favNumberSelected = MutableLiveData<String>()
-    val favNumberSelected: LiveData<String>
-        get() = _favNumberSelected
 
     private val _showTotalPrice = MutableLiveData<Boolean>()
     val showTotalPrice: LiveData<Boolean>
@@ -75,6 +69,14 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val inputWidgetFocus: LiveData<Boolean>
         get() = _inputWidgetFocus
 
+    private val _selectedProductById = MutableLiveData<String>()
+    val selectedProductById: LiveData<String>
+        get() = _selectedProductById
+
+    private val _resetSelectedProduct = MutableLiveData<Boolean>()
+    val resetSelectedProduct: LiveData<Boolean>
+        get() = _resetSelectedProduct
+
     private var getCatalogProductListJob: Job? = null
 
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
@@ -87,10 +89,6 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
     fun setPositionScrollToItem(position: Int) {
         _positionScrollItem.postValue(position)
-    }
-
-    fun setFavNumberSelected(productId: String) {
-        _favNumberSelected.postValue(productId)
     }
 
     fun setVisibilityTotalPrice(show: Boolean) {
@@ -113,12 +111,21 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _productList.value = Success(emptyList())
     }
 
+    fun setSelectedProductById(productId: String) {
+        _selectedProductById.postValue(productId)
+    }
+
+    fun resetSelectedProduct() {
+        _resetSelectedProduct.postValue(true)
+    }
+
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
                               filterData: ArrayList<HashMap<String, Any>>?,
                               autoSelectProductId: Int = 0, clientNumber: String,
                               isDelayed: Boolean = false
     ) {
         launchCatchError(block = {
+            getCatalogProductListJob?.cancel()
             getCatalogProductListJob = CoroutineScope(coroutineContext).launch {
                 if (isDelayed) {
                     delay(PRODUCT_LIST_DELAY_TIME)
@@ -142,7 +149,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                     _productList.postValue(Fail(MessageErrorException()))
                 } else {
                     _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
-                    setFavNumberSelected(autoSelectProductId.toString())
+                    setSelectedProductById(autoSelectProductId.toString())
                 }
             }
         }) {
@@ -171,6 +178,6 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
         const val EXP_TIME = 10
         const val DELAY_TIME: Long = 100
-        const val PRODUCT_LIST_DELAY_TIME: Long = 1000
+        const val PRODUCT_LIST_DELAY_TIME: Long = 250
     }
 }

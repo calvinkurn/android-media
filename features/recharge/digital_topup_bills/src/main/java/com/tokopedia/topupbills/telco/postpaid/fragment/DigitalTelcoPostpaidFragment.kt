@@ -440,7 +440,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
                     postpaidClientNumberWidget.run {
                         setIconOperator(operator.attributes.imageUrl)
-                        clearErrorState()
                     }
                     if (postpaidClientNumberWidget.getInputNumber().length in VALID_MIN_INPUT_NUMBER..VALID_MAX_INPUT_NUMBER) {
                         onInputNewNumberUpdateLayout()
@@ -448,7 +447,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     } else {
                         postpaidClientNumberWidget.setButtonEnquiry(false)
                     }
-                    validatePhoneNumber(operatorData, postpaidClientNumberWidget, null) {
+                    val isInputvalid = validatePhoneNumber(operatorData, postpaidClientNumberWidget)
+
+                    if (isInputvalid) {
                         hitTrackingForInputNumber(this)
                     }
                 }
@@ -457,7 +458,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             postpaidClientNumberWidget.setErrorInputNumber(
                 getString(R.string.telco_number_error_prefix_not_found)
             )
-            buyWidget.setBuyButtonState(false)
         }
     }
 
@@ -557,8 +557,17 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.setFilterChipShimmer(false, true)
     }
 
-    override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
+    override fun setSeamlessFavNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    ) {
         performanceMonitoringStopTrace()
+        if (data.favoriteNumbers.isNotEmpty() && shouldRefreshInputNumber) {
+            postpaidClientNumberWidget.run {
+                setInputNumber(data.favoriteNumbers[0].clientNumber)
+                setContactName(data.favoriteNumbers[0].clientName)
+            }
+        }
         seamlessFavNumberList.addAll(data.favoriteNumbers)
         postpaidClientNumberWidget.setFilterChipShimmer(false, data.favoriteNumbers.isEmpty())
         postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers)

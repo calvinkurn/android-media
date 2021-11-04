@@ -85,16 +85,16 @@ class SharedTelcoPrepaidViewModelTest {
         assertEquals(position, actualData)
     }
 
-    @Test
-    fun setFavNumberSelected_validData() {
-        //given
-        val favNumber = "08123232323"
-        //when
-        sharedTelcoPrepaidViewModel.setFavNumberSelected(favNumber)
-        //then
-        val actualData = sharedTelcoPrepaidViewModel.favNumberSelected.value
-        assertEquals(favNumber, actualData)
-    }
+//    @Test
+//    fun setFavNumberSelected_validData() {
+//        //given
+//        val favNumber = "08123232323"
+//        //when
+//        sharedTelcoPrepaidViewModel.setFavNumberSelected(favNumber)
+//        //then
+//        val actualData = sharedTelcoPrepaidViewModel.favNumberSelected.value
+//        assertEquals(favNumber, actualData)
+//    }
 
     @Test
     fun setVisibilityTotalPrice_validData() {

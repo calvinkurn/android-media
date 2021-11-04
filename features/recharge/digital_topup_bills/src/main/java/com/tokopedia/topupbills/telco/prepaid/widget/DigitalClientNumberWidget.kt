@@ -118,14 +118,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 }
             })
 
-            setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    hideSoftKeyboard()
-                }
-            }
-
             setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     clearFocus()
                     hideSoftKeyboard()
                 }
@@ -263,7 +257,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         ImageHandler.LoadImage(imgOperator, url)
         ImageHandler.LoadImage(imgOperatorResult, url)
         imgOperator.visibility = View.VISIBLE
-//        clearErrorState()
     }
 
     fun setVisibleResultNumber(show: Boolean) {

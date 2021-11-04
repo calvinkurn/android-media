@@ -287,67 +287,70 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        data?.let {
-            if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
+                if (data != null) {
                     activity?.let {
                         val contactURI = data.data
                         val contact = contactURI?.covertContactUriToContactData(it.contentResolver)
                         setInputNumberFromContact(contact?.contactNumber ?: "")
                         setContactNameFromContact(contact?.givenName ?: "")
                     }
-                } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
-                    if (data != null) {
-                        val inputNumberActionType =
-                            data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
-                        val orderClientNumber =
-                            data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsFavNumberItem
-                        handleCallbackAnySearchNumber(
-                            "",
-                            orderClientNumber.clientNumber,
-                            orderClientNumber.productId,
-                            orderClientNumber.categoryId,
-                            inputNumberActionType
-                        )
-                    } else {
-                        handleCallbackAnySearchNumberCancel()
-                    }
-                } else if (requestCode == REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
-                    if (data != null) {
-                        val orderClientNumber =
-                            data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
+                }
+            } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
+                if (data != null) {
+                    val inputNumberActionType =
+                        data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
+                    val orderClientNumber =
+                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsFavNumberItem
+                    handleCallbackAnySearchNumber(
+                        "",
+                        orderClientNumber.clientNumber,
+                        orderClientNumber.productId,
+                        orderClientNumber.categoryId,
+                        inputNumberActionType
+                    )
+                } else {
+                    handleCallbackAnySearchNumberCancel()
+                }
+            } else if (requestCode == REQUEST_CODE_DIGITAL_SAVED_NUMBER) {
+                /* next improvement: only re-fetch favorite number if any favnum updated */
+                if (data != null) {
+                    val orderClientNumber =
+                        data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSavedNumber
 
-                        var actionType = TopupBillsSearchNumberFragment
-                            .InputNumberActionType.values()[orderClientNumber.inputNumberActionTypeIndex]
-
-                        if (actionType == TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE) {
-                            getFavoriteNumber(
-                                categoryIds = listOf(
-                                    TelcoCategoryType.CATEGORY_PULSA.toString(),
-                                    TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
-                                    TelcoCategoryType.CATEGORY_ROAMING.toString()
-                                ),
-                                oldCategoryId = TelcoComponentType.FAV_NUMBER_PREPAID
-                            )
-                        }
-                        handleCallbackAnySearchNumber(
-                            orderClientNumber.clientName,
-                            orderClientNumber.clientNumber,
-                            orderClientNumber.productId,
-                            orderClientNumber.categoryId,
-                            orderClientNumber.inputNumberActionTypeIndex
-                        )
-                    } else {
-                        handleCallbackAnySearchNumberCancel()
-                    }
-                } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
+                    var actionType = TopupBillsSearchNumberFragment
+                        .InputNumberActionType.values()[orderClientNumber.inputNumberActionTypeIndex]
+                    handleCallbackAnySearchNumber(
+                        orderClientNumber.clientName,
+                        orderClientNumber.clientNumber,
+                        orderClientNumber.productId,
+                        orderClientNumber.categoryId,
+                        orderClientNumber.inputNumberActionTypeIndex
+                    )
+                } else {
+                    handleCallbackAnySearchNumberCancel()
+                }
+                getFavoriteNumber(
+                    categoryIds = listOf(
+                        TelcoCategoryType.CATEGORY_PULSA.toString(),
+                        TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                        TelcoCategoryType.CATEGORY_ROAMING.toString()
+                    ),
+                    oldCategoryId = TelcoComponentType.FAV_NUMBER_PREPAID,
+                    false
+                )
+            } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
+                if (data != null) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
                         val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE) as Throwable
                         if (!TextUtils.isEmpty(throwable.message)) {
                             showErrorCartDigital(ErrorHandler.getErrorMessage(context, throwable))
                         }
                     }
-                } else if (requestCode == REQUEST_CODE_LOGIN) {
+                }
+            } else if (requestCode == REQUEST_CODE_LOGIN) {
+                if (data != null) {
                     if (userSession.isLoggedIn) {
                         addToCart()
                     }
@@ -385,10 +388,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected fun validatePhoneNumber(
         operatorData: TelcoCatalogPrefixSelect,
-        clientNumberWidget: DigitalClientNumberWidget,
-        buyWidget: TopupBillsCheckoutWidget?,
-        isValidTracking: () -> Unit
-    ) {
+        clientNumberWidget: DigitalClientNumberWidget
+    ): Boolean {
         var isValid = true
         for (validation in operatorData.rechargeCatalogPrefixSelect.validations) {
             val phoneIsValid = Pattern.compile(validation.rule)
@@ -399,11 +400,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 break
             }
         }
-        if (isValid) {
-            isValidTracking.invoke()
-            clientNumberWidget.clearErrorState()
-        }
-        buyWidget?.setVisibilityLayout(isValid)
+        return isValid
     }
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
@@ -473,15 +470,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
             getClientInputNumber().run {
                 setInputType(InputType.TYPE_CLASS_TEXT)
             }
-
-            if (shouldRefreshInputNumber) {
-                getClientInputNumber().run {
-                    setInputNumber(data.favoriteNumbers[0].clientNumber)
-                    setContactName(data.favoriteNumbers[0].clientName)
-                }
-            }
         }
-        setSeamlessFavNumbers(data)
+        setSeamlessFavNumbers(data, shouldRefreshInputNumber)
     }
 
     override fun onEnquiryError(error: Throwable) {
@@ -503,9 +493,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     /**
      * oldCategoryId: Parameter sent to old favorite number query
      * */
-    fun getFavoriteNumber(categoryIds: List<String>, oldCategoryId: Int) {
+    fun getFavoriteNumber(
+        categoryIds: List<String>,
+        oldCategoryId: Int,
+        shouldRefreshInputNumber: Boolean = true
+    ) {
         if (isSeamlessFavoriteNumber(requireContext())) {
-            getSeamlessFavoriteNumbers(categoryIds)
+            getSeamlessFavoriteNumbers(categoryIds, shouldRefreshInputNumber)
         } else {
             getFavoriteNumbers(oldCategoryId)
         }
@@ -617,7 +611,10 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun setFavNumbers(data: TopupBillsFavNumber)
 
-    protected abstract fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber)
+    protected abstract fun setSeamlessFavNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    )
 
     protected abstract fun errorSetFavNumbers()
 

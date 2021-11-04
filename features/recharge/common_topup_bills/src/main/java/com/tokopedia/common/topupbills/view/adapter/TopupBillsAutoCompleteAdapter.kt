@@ -59,11 +59,11 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     private fun getAutoCompleteEmptyView(view: View?, inflater: LayoutInflater): View {
-        return view ?: inflater.inflate(R.layout.item_topup_bills_autocomplete_empty, null)
+        return inflater.inflate(R.layout.item_topup_bills_autocomplete_empty, null)
     }
 
     private fun getAutoCompleteHeaderView(view: View?, inflater: LayoutInflater): View {
-        return view ?: inflater.inflate(R.layout.item_topup_bills_autocomplete_header, null)
+        return inflater.inflate(R.layout.item_topup_bills_autocomplete_header, null)
     }
 
     private fun getAutoCompleteNumberView(view: View?, inflater: LayoutInflater, pos: Int): View {
@@ -105,14 +105,14 @@ class TopupBillsAutoCompleteAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (suggestions.size > 1) {
-            if (position == 0) {
-                TopupBillsAutoCompleteView.HEADER.type
+        return if (position == 0) {
+            if (suggestions[position] is TopupBillsAutoCompleteEmptyDataView) {
+                TopupBillsAutoCompleteView.EMPTY_STATE.type
             } else {
-                TopupBillsAutoCompleteView.CONTACT.type
+                TopupBillsAutoCompleteView.HEADER.type
             }
         } else {
-            TopupBillsAutoCompleteView.EMPTY_STATE.type
+            TopupBillsAutoCompleteView.CONTACT.type
         }
     }
 
