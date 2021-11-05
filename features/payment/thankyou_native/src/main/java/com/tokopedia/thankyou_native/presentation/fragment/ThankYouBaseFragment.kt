@@ -531,7 +531,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         topadsHeadlineView.displayAds(cpmModel)
 
         getRecommendationContainer()?.attachTopAdsHeadlinesView(
-            cpmModel.data?.get(0)?.cpm?.layout == 0,
+            cpmModel.data?.get(0)?.cpm?.layout == 1,
             topadsHeadlineView
         )
     }
