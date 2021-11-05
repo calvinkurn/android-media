@@ -20,6 +20,7 @@ import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
@@ -72,6 +73,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         const val CREATE_REVIEW_TEXT_AREA_BOTTOM_SHEET_TAG = "CreateReviewTextAreaBottomSheet"
         const val TEMPLATES_ROW_COUNT = 2
         const val BAD_RATING_OTHER_ID = 6
+        const val BAD_RATING_FLOW_EXPERIMENT_KEY = "Bad_ReviewForm_AB"
+        const val OLD_FORM_VARIANT = "old_form"
+        const val BAD_RATING_FORM_VARIANT = "bad_rating_form"
+
         fun createInstance(
             rating: Int,
             productId: String,
@@ -474,7 +479,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun observeProgressBarState() {
         createReviewViewModel.progressBarState.observe(this, {
-            progressBar?.setProgressBarValue(it)
+            if (shouldShowBadRatingFlow()) {
+                progressBar?.setProgressBarValue(it)
+                return@observe
+            }
+            progressBar?.setProgressBarValueForOldFlow(it)
         })
     }
 
@@ -1256,6 +1265,17 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
             adapter = badRatingCategoriesAdapter
             addItemDecoration(ReviewBadRatingItemDecoration())
+        }
+    }
+
+    private fun shouldShowBadRatingFlow(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                BAD_RATING_FLOW_EXPERIMENT_KEY,
+                OLD_FORM_VARIANT
+            ) == BAD_RATING_FORM_VARIANT
+        } catch (t: Throwable) {
+            false
         }
     }
 }

@@ -594,7 +594,6 @@ object CreateReviewTracking {
                 ),
                 ReviewTrackingConstant.EVENT_CATEGORY to CreateReviewTrackingConstants.EVENT_CATEGORY_REVIEW_BOTTOM_SHEET,
                 CreateReviewTrackingConstants.KEY_PRODUCT_ID to productId,
-                ReviewTrackingConstant.EVENT_CATEGORY to CreateReviewTrackingConstants.EVENT_CATEGORY,
                 ReviewTrackingConstant.KEY_USER_ID to userId,
                 CreateReviewTrackingConstants.KEY_BUSINESS_UNIT to CreateReviewTrackingConstants.BUSINESS_UNIT,
                 CreateReviewTrackingConstants.KEY_CURRENT_SITE to CreateReviewTrackingConstants.CURRENT_SITE,
