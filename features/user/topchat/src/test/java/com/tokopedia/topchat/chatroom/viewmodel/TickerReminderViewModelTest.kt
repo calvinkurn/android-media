@@ -32,6 +32,22 @@ class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
     }
 
     @Test
+    fun should_do_nothing_when_error_get_ticker_reminder() {
+        //Given
+        coEvery {
+            reminderTickerUseCase.invoke(any())
+        } throws IllegalStateException()
+
+        //When
+        viewModel.getTickerReminder()
+
+        //Then
+        assertEquals(
+            viewModel.srwTickerReminder.value, null
+        )
+    }
+
+    @Test
     fun should_remove_ticker_reminder_when_removed() {
         //Given
         val expectedResponse = GetReminderTickerResponse()
