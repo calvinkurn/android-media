@@ -492,8 +492,11 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 }
             })
             rvChips.adapter = chipsAdapter
+            chipsAdapter?.submitList(carouselData?.filterData ?: listOf())
+            rvChips.show()
+        } else {
+            rvChips.hide()
         }
-        chipsAdapter?.submitList(carouselData?.filterData ?: listOf())
     }
 
     private fun doActionBasedOnRecomState(
