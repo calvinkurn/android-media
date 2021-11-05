@@ -65,6 +65,8 @@ class MainActivity : AppCompatActivity() {
             RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
         }
 
+        etAppLink.setText(getDefaultAppLink())
+
         goToButton.setOnClickListener { goTo() }
     }
 
@@ -113,5 +115,14 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+        val appLink = etAppLink.text.toString()
+        RouteManager.route(this, appLink)
+    }
+
+    fun getDefaultAppLink(): String {
+        /*
+         * Put your default applink here
+         */
+        return ""
     }
 }
