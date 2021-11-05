@@ -114,7 +114,7 @@
     <string name="label_link_acc_not_linked">Belum tersambung</string>
     <string name="label_link_acc_gojek">Gojek</string>
     <string name="label_link_acc_linked_date">Tersambung %1$s</string>
-    <string name="label_link_acc_phone">+%1$s - </string>
+    <string name="label_link_acc_phone">+%1$s -\u0020</string>
 
     <string name="label_link_acc_unknown_error">Hubungi</string>
 
