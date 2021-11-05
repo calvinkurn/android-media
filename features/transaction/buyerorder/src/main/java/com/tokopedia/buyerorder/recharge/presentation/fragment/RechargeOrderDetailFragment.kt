@@ -262,7 +262,6 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                         it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
                     })
                     showRecyclerView()
-                    rechargeViewModel.fetchTopAdsData()
                 }
                 is Fail -> {
 
@@ -288,6 +287,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         rechargeViewModel.recommendationPosition.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
+                    rechargeViewModel.fetchTopAdsData()
                     rechargeViewModel.getOrderDetailResultData()?.let { orderData ->
                         adapter.updateItems(
                                 orderData,
