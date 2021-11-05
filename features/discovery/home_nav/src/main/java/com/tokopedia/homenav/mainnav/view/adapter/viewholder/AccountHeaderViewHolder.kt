@@ -355,9 +355,6 @@ class AccountHeaderViewHolder(itemView: View,
                 if (!profileSeller.hasShop){
                     shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
                     shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
-                } else if (!profileSeller.adminRoleText.isNullOrEmpty()) {
-                    shopTitle = itemView.context?.getString(R.string.account_header_store_title_role).orEmpty()
-                    shopInfo = profileSeller.adminRoleText.orEmpty()
                 } else {
                     shopTitle = ""
                     shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
