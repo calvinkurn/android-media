@@ -109,9 +109,7 @@ class OSTopAdsVerificationTest {
          * This function needed to trigger product recommendation usecase in official store,
          * official store page only hit recommendation usecase on scroll in the end of current list
          */
-        while (!itemAdapter.currentList.any { it is ProductRecommendationDataModel }) {
-            Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
-        }
+        Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
 
         waitForData()
 
