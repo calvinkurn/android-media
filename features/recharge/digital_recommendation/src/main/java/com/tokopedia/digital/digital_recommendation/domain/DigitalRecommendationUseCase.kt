@@ -69,6 +69,9 @@ class DigitalRecommendationUseCase @Inject constructor(
     }
 
     companion object {
+        const val DG_RECOM_NAME = "dg_order_detail"
+        const val PG_RECOM_NAME = "pg_top_ads"
+
         const val DG_PERSO_CHANNEL_NAME = "dg_order_detail"
         const val PG_PERSO_CHANNEL_NAME = "pg_order_detail"
         const val OD_SKELETON_CHANNEL_NAME = "dg_od_skeleton"

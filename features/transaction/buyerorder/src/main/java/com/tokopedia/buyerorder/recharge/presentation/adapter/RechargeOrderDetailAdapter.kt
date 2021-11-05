@@ -37,9 +37,9 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
             setupPaymentSection(data.paymentSectionModel)
             recommendationWidgetPosition?.let {
                 for (item in it.items) {
-                    if (item.categoryName == DigitalRecommendationUseCase.DG_PERSO_CHANNEL_NAME)
+                    if (item.categoryName == DigitalRecommendationUseCase.DG_RECOM_NAME)
                         setupDigitalRecommendationWidget()
-                    else if (item.categoryName == DigitalRecommendationUseCase.PG_PERSO_CHANNEL_NAME)
+                    else if (item.categoryName == DigitalRecommendationUseCase.PG_RECOM_NAME)
                         topAdsData?.let { topAds ->
                             setupTopAdsWidget(topAds)
                         }
