@@ -420,8 +420,9 @@ class OfficialHomeContainerFragment
     }
 
     private fun getToolbarIcons(): IconBuilder {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                        .addIcon(getInboxIcon()) {}
+        val icons =
+            IconBuilder(IconBuilderFlag(pageSource = if (activityOfficialStore == PARAM_HOME) ApplinkConsInternalNavigation.SOURCE_HOME else ""))
+                .addIcon(getInboxIcon()) {}
         if(activityOfficialStore != PARAM_HOME)
         {
             maintoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
