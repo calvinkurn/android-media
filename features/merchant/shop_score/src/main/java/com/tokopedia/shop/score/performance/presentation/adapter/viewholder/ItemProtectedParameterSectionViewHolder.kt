@@ -32,7 +32,7 @@ class ItemProtectedParameterSectionViewHolder(
             tvDescParameterRelief.text = element?.descParameterRelief.orEmpty()
             cardDescParameterRelief.setOnClickListener {
                 protectedParameterListener.onProtectedParameterChevronClicked(
-                    element?.descParameterRelief.orEmpty()
+                    element?.descParameterReliefBottomSheet.orEmpty()
                 )
             }
             icDescParameterRelief.setOnClickListener {

@@ -389,7 +389,8 @@ class ShopScoreMapper @Inject constructor(
                     it.identifier == PENALTY_IDENTIFIER
                 }?.rawValue?.roundToLong().orZero()
 
-            this.isShowPopupEndTenure = getIsShowPopupEndTenure(dateShopCreated)
+            this.isShowPopupEndTenure =
+                getIsShowPopupEndTenure(dateShopCreated, shopScoreLevelResponse?.shopScoreDetail)
         }
         return headerShopPerformanceUiModel
     }
@@ -1001,7 +1002,8 @@ class ShopScoreMapper @Inject constructor(
         val (titleParameterRelief, descParameterRelief, descParameterReliefBottomSheet) =
             if (getSellerType(shopScoreLevelList) == SellerTypeConstants.REACTIVATED_SELLER) {
                 Triple(
-                    context?.getString(R.string.title_relief_parameter_for_new_seller_bottom_sheet).orEmpty(),
+                    context?.getString(R.string.title_relief_parameter_for_new_seller_bottom_sheet)
+                        .orEmpty(),
                     context?.getString(R.string.desc_relief_parameter_for_reactivated_seller)
                         .orEmpty(),
                     context?.getString(R.string.desc_relief_parameter_for_reactivated_seller_bottom_sheet)
@@ -1063,8 +1065,13 @@ class ShopScoreMapper @Inject constructor(
         }
     }
 
-    private fun getIsShowPopupEndTenure(dateShopCreated: String): Boolean {
-        return if (shopScorePrefManager.getIsShowPopupEndTenure()) {
+    private fun getIsShowPopupEndTenure(
+        dateShopCreated: String,
+        shopScoreDetail: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?
+    ): Boolean {
+        return if (shopScorePrefManager.getIsShowPopupEndTenure() &&
+            getSellerType(shopScoreDetail) != SellerTypeConstants.REACTIVATED_SELLER
+        ) {
             return getIsShowPopupCelebratoryEdgeCases(dateShopCreated)
         } else false
     }
