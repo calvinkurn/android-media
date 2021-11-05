@@ -488,7 +488,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 //                        ), adapterPosition, position
 //                    )
                     itemView.loadingRecom.show()
-                    recyclerView.gone()
+                    recyclerView.invisible()
                 }
             })
             rvChips.adapter = chipsAdapter
