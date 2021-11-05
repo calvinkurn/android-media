@@ -230,8 +230,8 @@ class TopupBillsFavoriteNumberFragment:
         clientNumbers = newClientNumbers
         val namedFavNumber = clientNumbers.count { it.clientName.isNotEmpty() }
         commonTopupBillsAnalytics.eventImpressionTotalFavoriteNumber(
-            totalNamedFavNumber = namedFavNumber,
             totalUnnamedFavNumber = clientNumbers.size - namedFavNumber,
+            totalNamedFavNumber = namedFavNumber,
             userId = userSession.userId
         )
 

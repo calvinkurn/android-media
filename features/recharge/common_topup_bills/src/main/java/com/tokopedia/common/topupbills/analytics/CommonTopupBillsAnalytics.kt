@@ -400,13 +400,13 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventImpressionTotalFavoriteNumber(totalNamedFavNumber: Int, totalUnnamedFavNumber: Int, userId: String) {
+    fun eventImpressionTotalFavoriteNumber(totalUnnamedFavNumber: Int, totalNamedFavNumber: Int, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             DataLayer.mapOf(
                 TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
                 TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
                 TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_IMPRESSION_FAV_NUMBER_AND_CONTACT,
-                TrackAppUtils.EVENT_LABEL, "$totalNamedFavNumber - $totalUnnamedFavNumber",
+                TrackAppUtils.EVENT_LABEL, "$totalUnnamedFavNumber - $totalNamedFavNumber",
                 DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                 DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
                 DigitalTrackingConst.Label.USER_ID, userId
