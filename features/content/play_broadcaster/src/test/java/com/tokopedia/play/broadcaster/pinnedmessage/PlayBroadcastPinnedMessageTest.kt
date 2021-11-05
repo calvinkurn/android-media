@@ -40,6 +40,7 @@ class PlayBroadcastPinnedMessageTest {
     fun `given there is active pinned message, when live stream start, then show correct pinned message`() {
         val message = "message test"
         val mockPinned = uiModelBuilder.buildPinnedMessageUiModel(
+            id = "1",
             message = message,
             isActive = true
         )
@@ -111,7 +112,7 @@ class PlayBroadcastPinnedMessageTest {
 
     @Test
     fun `given network error, when set pinned message, then pinned message will not be changed`() {
-        val prevPinned = uiModelBuilder.buildPinnedMessageUiModel(message = "message 1")
+        val prevPinned = uiModelBuilder.buildPinnedMessageUiModel(id = "1", message = "message 1")
         val newMessage = "abc"
         coEvery { mockRepo.getActivePinnedMessage(any()) } returns prevPinned
         coEvery { mockRepo.setPinnedMessage(any(), any(), any()) } throws IllegalStateException()
@@ -137,7 +138,7 @@ class PlayBroadcastPinnedMessageTest {
 
     @Test
     fun `given network is fine, when set pinned message, then pinned message will be changed`() {
-        val prevPinned = uiModelBuilder.buildPinnedMessageUiModel(message = "message 1")
+        val prevPinned = uiModelBuilder.buildPinnedMessageUiModel(id = "1", message = "message 1")
         val newMessage = "abc"
         coEvery { mockRepo.getActivePinnedMessage(any()) } returns prevPinned
         coEvery { mockRepo.setPinnedMessage(any(), any(), any()) } returns prevPinned.copy(
