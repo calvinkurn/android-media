@@ -532,9 +532,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         override fun onShowFilterChip(isLabeled: Boolean) {
             if (isLabeled) {
-                topupAnalytics.impressionFavoriteNumberChips(categoryId, userSession.userId)
-            } else {
                 topupAnalytics.impressionFavoriteContactChips(categoryId, userSession.userId)
+            } else {
+                topupAnalytics.impressionFavoriteNumberChips(categoryId, userSession.userId)
             }
         }
 
@@ -542,9 +542,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             autoSelectTabProduct = true
             inputNumberActionType = InputNumberActionType.CHIP
             if (isLabeled) {
-                topupAnalytics.clickFavoriteNumberChips(categoryId, userSession.userId)
-            } else {
                 topupAnalytics.clickFavoriteContactChips(categoryId, userSession.userId)
+            } else {
+                topupAnalytics.clickFavoriteNumberChips(categoryId, userSession.userId)
             }
         }
 
