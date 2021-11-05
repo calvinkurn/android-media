@@ -326,7 +326,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_PILIH_LOKASI_DAN_LANJUT_ISI_ALAMAT)
-                .appendEventLabel(eventLabel)
+                .appendEventLabel()
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
