@@ -290,7 +290,7 @@ object RechargeHomepageSectionMapper {
             DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.layoutType
             DigitalHomepageSearchEnumLayoutType.HEADER.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.HEADER.layoutType
             DigitalHomepageSearchEnumLayoutType.DEFAULT.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DEFAULT.layoutType
-            else -> DigitalHomepageSearchEnumLayoutType.DEFAULT.ordinal
+            else -> DigitalHomepageSearchEnumLayoutType.DEFAULT.layoutType
         }
     }
 }

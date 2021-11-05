@@ -11,7 +11,7 @@ class DigitalHomePageSearchCategoryModel(id: String = "",
                                          icon: String = "",
                                          var searchQuery: String = "",
                                          var typeLayout: Int = DigitalHomePageSearchViewHolder.LAYOUT,
-                                         subtitle: String = "",
+                                         var subtitle: String = "",
 )
     : DigitalHomePageCategoryModel.Submenu(id, name, label, applink, icon), Visitable<DigitalHomePageSearchTypeFactory> {
 
