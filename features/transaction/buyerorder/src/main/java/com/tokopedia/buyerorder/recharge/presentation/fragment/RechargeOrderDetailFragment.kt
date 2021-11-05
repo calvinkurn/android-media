@@ -273,9 +273,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         rechargeViewModel.topadsData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    adapter.updateItems(rechargeViewModel.getOrderDetailResultData(),
-                            result.data,
-                            rechargeViewModel.getRecommendationWidgetPositionData())
+                    rechargeViewModel.getOrderDetailResultData()?.let { orderData ->
+                        adapter.updateItems(orderData,
+                                result.data,
+                                rechargeViewModel.getRecommendationWidgetPositionData())
+                    }
                 }
                 is Fail -> {
                     adapter.removeTopAds()
@@ -286,11 +288,13 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         rechargeViewModel.recommendationPosition.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    adapter.updateItems(
-                            rechargeViewModel.getOrderDetailResultData(),
-                            rechargeViewModel.getTopAdsData(),
-                            result.data
-                    )
+                    rechargeViewModel.getOrderDetailResultData()?.let { orderData ->
+                        adapter.updateItems(
+                                orderData,
+                                rechargeViewModel.getTopAdsData(),
+                                result.data
+                        )
+                    }
                 }
                 is Fail -> {
 
