@@ -53,10 +53,10 @@ class DigitalHomePageSearchViewModel @Inject constructor(
         }
     }
 
-    fun searchAutoComplete(map: Map<String, Any>){
+    fun searchAutoComplete(map: Map<String, Any>, searchQuery: String){
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
-                searchAutoCompleteHomePageUseCase.searchAutoCompleteList(map)
+                searchAutoCompleteHomePageUseCase.searchAutoCompleteList(map, searchQuery)
             }
             mutableSearchCategoryList.postValue(Success(data))
         }) {
@@ -64,6 +64,15 @@ class DigitalHomePageSearchViewModel @Inject constructor(
         }
     }
 
+    fun mapAutoCompleteParams(navSource: String, query: String): Map<String, Any>{
+        return mapOf(
+            PARAM to String.format(PARAM_FORMAT, navSource, query)
+        )
+    }
 
+    companion object {
+        const val PARAM = "param"
+        const val PARAM_FORMAT = "navsource=%s&q=%s&source=search&categoryid="
+    }
 
 }

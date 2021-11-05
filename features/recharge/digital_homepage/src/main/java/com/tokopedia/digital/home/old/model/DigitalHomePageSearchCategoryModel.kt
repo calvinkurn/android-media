@@ -10,7 +10,9 @@ class DigitalHomePageSearchCategoryModel(id: String = "",
                                          applink: String = "",
                                          icon: String = "",
                                          var searchQuery: String = "",
-                                         var typeLayout: Int = DigitalHomePageSearchViewHolder.LAYOUT)
+                                         var typeLayout: Int = DigitalHomePageSearchViewHolder.LAYOUT,
+                                         subtitle: String = "",
+)
     : DigitalHomePageCategoryModel.Submenu(id, name, label, applink, icon), Visitable<DigitalHomePageSearchTypeFactory> {
 
     override fun type(typeFactory: DigitalHomePageSearchTypeFactory): Int {

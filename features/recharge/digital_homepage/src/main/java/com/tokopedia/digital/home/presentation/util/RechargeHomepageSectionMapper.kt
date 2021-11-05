@@ -251,14 +251,16 @@ object RechargeHomepageSectionMapper {
         }
     }
 
-    fun mapSearchAutoCompletetoSearch(autoComplete: DigitalHomePageSearchAutoComplete): List<DigitalHomePageSearchCategoryModel> {
+    fun mapSearchAutoCompletetoSearch(autoComplete: DigitalHomePageSearchAutoComplete, searchQuery:String): List<DigitalHomePageSearchCategoryModel> {
         val searchCategoryModels = mutableListOf<DigitalHomePageSearchCategoryModel>()
         autoComplete.digiPersoSearchSuggestion.data.items.map{ item ->
            searchCategoryModels.add(DigitalHomePageSearchCategoryModel(
                    id = "",
-                   name = item.title,
+                   label = item.title,
+                   subtitle = item.subtitle,
                    applink = item.applink,
-                   icon =  item.iconTitle,
+                   icon =  item.imageUrl,
+                   searchQuery = searchQuery,
                    typeLayout = getLayoutType(item.template)
            ))
         }

@@ -62,7 +62,7 @@ data class Items (
         @SerializedName("type")
         @Expose
         val type : String = "",
-        @SerializedName("applink")
+        @SerializedName("appLink")
         @Expose
         val applink : String = "",
         @SerializedName("url")
@@ -83,7 +83,7 @@ data class Items (
         @SerializedName("shortcutImage")
         @Expose
         val shortcutImage : String = "",
-        @SerializedName("imageUrl")
+        @SerializedName("imageURL")
         @Expose
         val imageUrl : String = "",
         @SerializedName("urlTracker")
