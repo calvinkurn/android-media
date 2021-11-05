@@ -9,7 +9,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
 import org.junit.Test
 
-class TickerReminderTest : BaseTopChatViewModelTest() {
+class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
 
     @Test
     fun should_get_ticker_reminder_when_successfull() {
