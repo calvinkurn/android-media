@@ -518,7 +518,7 @@ class MainNavViewModel @Inject constructor(
                 result?.let {
                     accountModel.run {
                         val shopName = it.userShopInfo.info.shopName
-                        val shopId: String = it.userShopInfo.info.shopId
+                        val shopId: String = if(it.userShopInfo.info.shopId.isBlank()) AccountHeaderDataModel.DEFAULT_SHOP_ID_NOT_OPEN else it.userShopInfo.info.shopId
                         val adminRole = null
                         val orderCount = getTotalOrderCount(it.notifications)
                         setUserShopName(shopName, shopId, orderCount)
