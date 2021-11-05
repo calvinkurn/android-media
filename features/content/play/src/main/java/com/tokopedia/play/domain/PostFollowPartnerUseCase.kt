@@ -36,8 +36,6 @@ class PostFollowPartnerUseCase @Inject constructor(
             } else return data.followShop.isFollowing
         } else {
             val errorMessage = error.mapNotNull { it.message }.joinToString(separator = ", ")
-            LoggingUtils.logGqlErrorBackend("executeOnBackground", listOf(gqlRequest).toString()
-                ,errorMessage, gqlResponse.httpStatusCode.toString())
             throw MessageErrorException(errorMessage, gqlResponse.httpStatusCode.toString())
         }
     }
