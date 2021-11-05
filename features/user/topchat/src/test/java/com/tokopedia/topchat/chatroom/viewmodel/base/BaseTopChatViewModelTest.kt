@@ -4,7 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.CloseReminderTicker
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -27,6 +29,12 @@ abstract class BaseTopChatViewModelTest {
     lateinit var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
 
     @RelaxedMockK
+    lateinit var reminderTickerUseCase: GetReminderTickerUseCase
+
+    @RelaxedMockK
+    lateinit var closeReminderTicker: CloseReminderTicker
+
+    @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -44,6 +52,8 @@ abstract class BaseTopChatViewModelTest {
             getExistingMessageIdUseCase,
             getShopFollowingUseCase,
             toggleFavouriteShopUseCase,
+            reminderTickerUseCase,
+            closeReminderTicker,
             dispatchers,
             remoteConfig
         )
