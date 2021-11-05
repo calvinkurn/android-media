@@ -23,8 +23,7 @@ class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCateg
             val spannableString = SpannableStringBuilder(element.label)
             val searchQueryIndex = element.label.indexOf(element.searchQuery, ignoreCase = true)
             if (searchQueryIndex > -1) {
-                spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, searchQueryIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spannableString.setSpan(StyleSpan(Typeface.BOLD), searchQueryIndex + element.searchQuery.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableString.setSpan(StyleSpan(Typeface.BOLD), searchQueryIndex, searchQueryIndex + element.searchQuery.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
             digitalHomepageSearchCategoryName.text = spannableString
 
