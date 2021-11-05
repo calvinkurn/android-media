@@ -1,38 +1,13 @@
 package com.tokopedia.affiliate.model.raw
 
-val GQL_Affiliate_Recommended_Product : String = """query recommendedAffiliateProduct(${"$"}userID: [String]!, ${"$"}identifier: [String]!){
-  searchAffiliate(userID: ${"$"}userID, identifier: ${"$"}identifier) {
+val GQL_Affiliate_Recommended_Product : String = """query recommendedAffiliateProduct(${"$"}identifier: String!,${"$"}page: Int,${"$"}limit: Int){
+  recommendedAffiliateProduct(identifier: ${"$"}identifier,page: ${"$"}page,limit: ${"$"}limit) {
     data {
       status
-      error {
-        errorType
-        title
-        message
-        errorImage {
-          DesktopURL
-          MobileURL
-          AndroidURL
-          IosURL
-        }
-        errorStatus
-        errorCta {
-          ctaText
-          ctaType
-          ctaAction
-          ctaLink {
-            DesktopURL
-            MobileURL
-            AndroidURL
-            IosURL
-          }
-        }
-      }
       cards {
         id
-        hasMore
         title
         items {
-          productID
           title
           image {
             DesktopURL
@@ -45,12 +20,15 @@ val GQL_Affiliate_Recommended_Product : String = """query recommendedAffiliatePr
             type
             color
           }
-          cardUrl
+          cardUrl {
+            DesktopURL
+            MobileURL
+            AndroidURL
+            IosURL
+          }
           commission {
-            amount
-            amountFormatted
             percentage
-            percentageFormatted
+            amount
           }
           footer {
             footerType
@@ -58,15 +36,26 @@ val GQL_Affiliate_Recommended_Product : String = """query recommendedAffiliatePr
             footerText
           }
           rating
-          status {
-            messages {
-              title
-              description
-              messageType
-            }
-            isLinkGenerationAllowed
-          }
+          productID
         }
+      }
+      pageInfo {
+        hasNext
+        hasPrev
+        currentPage
+        totalPage
+        totalCount
+      }
+    }
+    error {
+      ErrorType
+      Message
+      CtaText
+      CtaLink {
+        DesktopURL
+        MobileURL
+        AndroidURL
+        IosURL
       }
     }
   }

@@ -58,6 +58,7 @@
 
     <androidx.cardview.widget.CardView
         android:visibility="gone"
+        tools:visibility="visible"
         android:layout_marginTop="@dimen/dp_16"
         android:id="@+id/affiliate_announcement_ticker_cv"
         app:cardCornerRadius="@dimen/dp_8"
@@ -94,6 +95,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_28"
+        android:visibility="gone"
         android:layout_marginEnd="@dimen/dp_16"
         android:text="@string/affiliate_promoted_products"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -151,7 +153,7 @@
         android:visibility="gone"
         app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_product.png"
         app:imageDpiSupportType="singleDpi"
-        app:layout_constraintTop_toBottomOf="@id/user_image"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker_cv"
         tools:visibility="gone" />
 
 

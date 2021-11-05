@@ -187,14 +187,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
         affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
             affiliate_progress_bar?.gone()
-            if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
-                affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
-            }else {
-                validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
-                    activity?.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                }
-                activity?.finish()
-            }
+            affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
         })
 
         affiliateHomeViewModel.getAffiliateDataItems().observe(this ,{ dataList ->

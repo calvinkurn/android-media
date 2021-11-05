@@ -32,9 +32,9 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
                 totalItemsCount.value = it.pageInfo?.totalCount
                 val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
                 it.cards?.firstOrNull()?.items?.let { items ->
-                    for (product in items) {
+                    for (product in items){
                         product?.let {
-                            tempList.add(AffiliateStaggeredPromotionCardModel(product))
+                           tempList.add(AffiliateStaggeredPromotionCardModel(product))
                         }
                     }
                     affiliateDataList.value = tempList

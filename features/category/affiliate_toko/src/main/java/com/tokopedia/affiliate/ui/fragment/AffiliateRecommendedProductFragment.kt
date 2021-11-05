@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tkpd.remoteresourcerequest.type.SingleDPIImageType
-import com.tkpd.remoteresourcerequest.view.ImageDensityType
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.affiliate.PAGE_ZERO
@@ -90,13 +89,9 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             errorSecondaryAction.gone()
             setButtonFull(true)
             if(identifier == BOUGHT_IDENTIFIER){
-                affiliate_no_product_seen_iv.hide()
-                affiliate_no_product_bought_iv.show()
                 errorTitle.text = getString(R.string.no_product_bought_on_tokopedia_yet)
                 errorDescription.text = getString(R.string.no_product_bought_on_tokopedia_yet_content)
             }else {
-                affiliate_no_product_seen_iv.show()
-                affiliate_no_product_bought_iv.hide()
                 errorTitle.text = getString(R.string.no_product_seen_on_tokopedia_yet)
                 errorDescription.text = getString(R.string.no_product_seen_on_tokopedia_yet_content)
             }
@@ -106,6 +101,20 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             }
 
         }
+    }
+
+    private fun showEmptyState() {
+        if(identifier == BOUGHT_IDENTIFIER) emptyStateRecentPurchase() else emptyStateLastSeen()
+    }
+
+    private fun emptyStateLastSeen() {
+        affiliate_no_product_seen_iv.show()
+        affiliate_no_product_bought_iv.hide()
+    }
+
+    private fun emptyStateRecentPurchase() {
+        affiliate_no_product_seen_iv.hide()
+        affiliate_no_product_bought_iv.show()
     }
 
     private fun setUpRecyclerView(){
@@ -158,17 +167,19 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
                 loadMoreTriggerListener?.updateStateAfterGetData()
             } else {
                 error_group.show()
+                showEmptyState()
                 swipe_refresh_layout.hide()
             }
         })
 
         affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(this, { itemCount ->
-
+            Toast.makeText(context,"${itemCount}",Toast.LENGTH_LONG).show()
         })
 
         affiliateRecommendedProductViewModel.getErrorMessage().observe(this, { errorMessage ->
             swipe_refresh_layout.hide()
             error_group.show()
+            showEmptyState()
         })
     }
 

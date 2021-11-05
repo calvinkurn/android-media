@@ -7,155 +7,128 @@ data class AffiliateRecommendedProductData(
     var recommendedAffiliateProduct: RecommendedAffiliateProduct?
 ) {
     data class RecommendedAffiliateProduct(
-        @SerializedName("data")
-        var `data`: Data?
+            @SerializedName("data")
+            val `data`: Data?,
+            @SerializedName("error")
+            val error: Error?
     ) {
         data class Data(
-            @SerializedName("cards")
-            var cards: List<Card?>?,
-            @SerializedName("error")
-            var error: Error?,
-            @SerializedName("status")
-            var status: Int?,
-            @SerializedName("pageInfo")
-            var pageInfo: PageInfo?,
+                @SerializedName("cards")
+                val cards: List<Card?>?,
+                @SerializedName("pageInfo")
+                val pageInfo: PageInfo?,
+                @SerializedName("status")
+                val status: Int?
         ) {
             data class Card(
-                @SerializedName("hasMore")
-                var hasMore: Boolean?,
-                @SerializedName("id")
-                var id: String?,
-                @SerializedName("items")
-                var items: List<Item?>?,
-                @SerializedName("title")
-                var title: String?
+                    @SerializedName("id")
+                    val id: String?,
+                    @SerializedName("items")
+                    val items: List<Item?>?,
+                    @SerializedName("title")
+                    val title: String?
             ) {
                 data class Item(
-                    @SerializedName("productID")
-                    var productID: String,
-                    @SerializedName("additionalInformation")
-                    var additionalInformation: List<AdditionalInformation?>?,
-                    @SerializedName("cardUrl")
-                    var cardUrl: String?,
-                    @SerializedName("commission")
-                    var commission: Commission?,
-                    @SerializedName("footer")
-                    var footer: List<Footer?>?,
-                    @SerializedName("image")
-                    var image: Image?,
-                    @SerializedName("rating")
-                    var rating: Int?,
-                    @SerializedName("status")
-                    var status: Status?,
-                    @SerializedName("title")
-                    var title: String?
+                        @SerializedName("additionalInformation")
+                        val additionalInformation: List<AdditionalInformation?>?,
+                        @SerializedName("cardUrl")
+                        val cardUrl: CardUrl?,
+                        @SerializedName("commission")
+                        val commission: Commission?,
+                        @SerializedName("footer")
+                        val footer: List<Footer?>?,
+                        @SerializedName("image")
+                        val image: Image?,
+                        @SerializedName("productID")
+                        val productID: String?,
+                        @SerializedName("rating")
+                        val rating: Int?,
+                        @SerializedName("title")
+                        val title: String?
                 ) {
                     data class AdditionalInformation(
-                        @SerializedName("color")
-                        var color: String?,
-                        @SerializedName("htmlText")
-                        var htmlText: String?,
-                        @SerializedName("type")
-                        var type: Int?
+                            @SerializedName("color")
+                            val color: String?,
+                            @SerializedName("htmlText")
+                            val htmlText: String?,
+                            @SerializedName("type")
+                            val type: Int?
+                    )
+
+                    data class CardUrl(
+                            @SerializedName("AndroidURL")
+                            val androidURL: String?,
+                            @SerializedName("DesktopURL")
+                            val desktopURL: String?,
+                            @SerializedName("IosURL")
+                            val iosURL: String?,
+                            @SerializedName("MobileURL")
+                            val mobileURL: String?
                     )
 
                     data class Commission(
-                        @SerializedName("amount")
-                        var amount: Int?,
-                        @SerializedName("amountFormatted")
-                        var amountFormatted: String?,
-                        @SerializedName("percentage")
-                        var percentage: Int?,
-                        @SerializedName("percentageFormatted")
-                        var percentageFormatted: String?
+                            @SerializedName("amount")
+                            val amount: Int?,
+                            @SerializedName("percentage")
+                            val percentage: Int?
                     )
 
                     data class Footer(
-                        @SerializedName("footerIcon")
-                        var footerIcon: String?,
-                        @SerializedName("footerText")
-                        var footerText: String?,
-                        @SerializedName("footerType")
-                        var footerType: Int?
+                            @SerializedName("footerIcon")
+                            val footerIcon: String?,
+                            @SerializedName("footerText")
+                            val footerText: String?,
+                            @SerializedName("footerType")
+                            val footerType: Int?
                     )
 
                     data class Image(
-                        @SerializedName("AndroidURL")
-                        var androidURL: String?,
-                        @SerializedName("DesktopURL")
-                        var desktopURL: String?,
-                        @SerializedName("IosURL")
-                        var iosURL: String?,
-                        @SerializedName("MobileURL")
-                        var mobileURL: String?
+                            @SerializedName("AndroidURL")
+                            val androidURL: String?,
+                            @SerializedName("DesktopURL")
+                            val desktopURL: String?,
+                            @SerializedName("IosURL")
+                            val iosURL: String?,
+                            @SerializedName("MobileURL")
+                            val mobileURL: String?
                     )
-
-                    data class Status(
-                        @SerializedName("isLinkGenerationAllowed")
-                        var isLinkGenerationAllowed: Boolean?,
-                        @SerializedName("messages")
-                        var messages: List<Messages?>?
-                    ){
-                        data class Messages(
-                                @SerializedName("title")
-                                var title: String?,
-                                @SerializedName("description")
-                                var description: String?,
-                                @SerializedName("messageType")
-                                var messageType: Int?,
-                        )
-                    }
                 }
             }
 
-            data class PageInfo (
-                    @SerializedName("hasNext") val hasNext : Int?,
-                    @SerializedName("hasPrev") val hasPrev : Int?,
-                    @SerializedName("currentPage") val currentPage : Int?,
-                    @SerializedName("totalPage") val totalPage : Int?,
-                    @SerializedName("totalCount") val totalCount : Int?
+            data class PageInfo(
+                    @SerializedName("currentPage")
+                    val currentPage: Int?,
+                    @SerializedName("hasNext")
+                    val hasNext: Boolean?,
+                    @SerializedName("hasPrev")
+                    val hasPrev: Boolean?,
+                    @SerializedName("totalCount")
+                    val totalCount: Int?,
+                    @SerializedName("totalPage")
+                    val totalPage: Int?
             )
+        }
 
-            data class Error(
-                @SerializedName("errorCta")
-                var errorCta: List<ErrorCta?>?,
-                @SerializedName("errorImage")
-                var errorImage: ErrorImage?,
-                @SerializedName("errorStatus")
-                var errorStatus: Int?,
-                @SerializedName("errorType")
-                var errorType: Int?,
-                @SerializedName("message")
-                var message: String?,
-                @SerializedName("title")
-                var title: String?
-            ) {
-                data class ErrorCta (
-                        @SerializedName("ctaText") val ctaText : String?,
-                        @SerializedName("ctaType") val ctaType : Int?,
-                        @SerializedName("ctaAction") val ctaAction : Int?,
-                        @SerializedName("ctaLink") val ctaLink : CtaLink?,
-                ){
-
-                    data class CtaLink (
-                            @SerializedName("DesktopURL") val desktopUrl : String?,
-                            @SerializedName("MobileURL") val mobileUrl : String?,
-                            @SerializedName("IosURL") val iosUrl : String?,
-                            @SerializedName("AndroidURL") val androidUrl : String?
-                    )
-                }
-
-                data class ErrorImage(
+        data class Error(
+                @SerializedName("CtaLink")
+                val ctaLink: CtaLink?,
+                @SerializedName("CtaText")
+                val ctaText: String?,
+                @SerializedName("ErrorType")
+                val errorType: Int?,
+                @SerializedName("Message")
+                val message: String?
+        ) {
+            data class CtaLink(
                     @SerializedName("AndroidURL")
-                    var androidURL: String?,
+                    val androidURL: String?,
                     @SerializedName("DesktopURL")
-                    var desktopURL: String?,
+                    val desktopURL: String?,
                     @SerializedName("IosURL")
-                    var iosURL: String?,
+                    val iosURL: String?,
                     @SerializedName("MobileURL")
-                    var mobileURL: String?
-                )
-            }
+                    val mobileURL: String?
+            )
         }
     }
 }

@@ -10,7 +10,7 @@
         android:id="@+id/error_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="recommended_global_error,affiliate_no_product_bought_iv"
+        app:constraint_referenced_ids="recommended_global_error,affiliate_no_product_bought_iv,affiliate_no_product_seen_iv"
         />
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
