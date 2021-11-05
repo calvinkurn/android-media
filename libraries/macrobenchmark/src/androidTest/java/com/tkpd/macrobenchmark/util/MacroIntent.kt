@@ -56,4 +56,18 @@ object MacroIntent {
             return intent
         }
     }
+
+    object TokopediaNowHome {
+        /**
+         * Target recyclerview
+         * Capture view by resource id
+         */
+        const val RV_RESOURCE_ID = "rv_home"
+
+        fun getIntent(): Intent {
+            val intent = Intent()
+            intent.data = Uri.parse("tokopedia-android-internal://now/home")
+            return intent
+        }
+    }
 }
