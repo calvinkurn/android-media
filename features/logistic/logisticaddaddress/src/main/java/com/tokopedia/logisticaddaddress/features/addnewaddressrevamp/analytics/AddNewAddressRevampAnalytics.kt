@@ -7,7 +7,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object AddNewAddressRevampAnalytics : BaseTrackerConst() {
 
     private const val CLICK_SEARCH = "clickSearch"
-    private const val CLICK_PINPOINT = "clickPinpoint"
+    private const val CLICK_PINPOINT = "clickPinPoint"
     private const val VIEW_PINPOINT_IRIS = "viewPinPointIris"
     private const val VIEW_ADDRESS_IRIS = "viewAddressIris"
     private const val CLICK_ADDRESS = "clickAddress"
@@ -326,7 +326,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_PILIH_LOKASI_DAN_LANJUT_ISI_ALAMAT)
-                .appendEventLabel("")
+                .appendEventLabel(eventLabel)
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
