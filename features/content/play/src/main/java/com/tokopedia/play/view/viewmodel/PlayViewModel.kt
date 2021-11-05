@@ -1559,7 +1559,6 @@ class PlayViewModel @Inject constructor(
         val shouldFollow = if (shouldForceFollow) true else !followStatus.isFollowing
         val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
 
-//        _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(shouldFollow)) }
         _partnerInfo.setValue { (copy(isLoadingFollow = true)) }
 
         viewModelScope.launchCatchError(block = {

@@ -22,7 +22,7 @@ class PartnerInfoViewComponent(
     private val btnFollow: UnifyButton = findViewById(R.id.btn_follow)
 
     init {
-        tvPartnerName.setOnClickListener {
+        rootView.setOnClickListener {
             listener.onPartnerNameClicked(this)
         }
 
