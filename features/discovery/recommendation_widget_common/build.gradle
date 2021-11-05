@@ -7,6 +7,17 @@ apply plugin: 'io.hansel.preprocessor.module'
 repositories {
 }
 
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 buildscript {
     repositories {
         google()

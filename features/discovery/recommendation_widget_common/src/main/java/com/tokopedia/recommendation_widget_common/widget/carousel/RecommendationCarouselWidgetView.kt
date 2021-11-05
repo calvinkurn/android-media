@@ -14,14 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
@@ -30,6 +29,7 @@ import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewMo
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_LOADING
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
+import com.tokopedia.recommendation_widget_common.widget.carousel.chips.RecomChipsAdapter
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.CommonRecomCarouselCardTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.CommonRecomCarouselCardTypeFactoryImpl
@@ -72,7 +72,9 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private var carouselData: RecommendationCarouselData? = null
     private lateinit var typeFactory: CommonRecomCarouselCardTypeFactory
     private lateinit var recyclerView: RecyclerView
+    private lateinit var rvChips: RecyclerView
     private var adapter: RecommendationCarouselAdapter? = null
+    private var chipsAdapter: RecomChipsAdapter? = null
     private lateinit var layoutManager: LinearLayoutManager
     private var scrollListener: ((Parcelable?) -> Unit)? = null
     private var userSession: UserSessionInterface? = null
@@ -89,6 +91,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         val view = LayoutInflater.from(context)
             .inflate(R.layout.layout_widget_recommendation_carousel, this)
         recyclerView = view.findViewById(R.id.rv_product)
+        rvChips = view.findViewById(R.id.rv_chips)
         this.itemView = view
         this.itemContext = view.context
         this.userSession = UserSession(itemContext)
@@ -440,6 +443,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun bindWidgetWithData(carouselData: RecommendationCarouselData) {
         this.carouselData = carouselData
         initVar()
+        initChips()
         doActionBasedOnRecomState(carouselData.state,
             onLoad = {
                 itemView.loadingRecom.visible()
@@ -449,12 +453,47 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 impressChannel(carouselData)
                 setHeaderComponent(carouselData)
                 setData(carouselData)
+                recyclerView.show()
                 scrollCarousel(widgetMetadata.scrollToPosition)
             },
             onFailed = {
                 itemView.loadingRecom.gone()
             }
         )
+    }
+
+    private fun initChips() {
+        if (chipsAdapter == null && carouselData?.filterData?.isNotEmpty() == true) {
+            chipsAdapter = RecomChipsAdapter(object : RecomChipsAdapter.RecomChipsListener {
+                override fun onFilterAnnotationClicked(
+                    annotationChip: AnnotationChip,
+                    position: Int
+                ) {
+                    chipsAdapter?.submitList(
+                        carouselData?.filterData?.map {
+                            it.copy(
+                                recommendationFilterChip = it.recommendationFilterChip.copy(
+                                    isActivated =
+                                    annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
+                                            && !annotationChip.recommendationFilterChip.isActivated
+                                )
+                            )
+                        } ?: listOf()
+                    )
+//                    listener.onChipFilterClicked(
+//                        element, annotationChip.copy(
+//                            recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
+//                                isActivated = !annotationChip.recommendationFilterChip.isActivated
+//                            )
+//                        ), adapterPosition, position
+//                    )
+                    itemView.loadingRecom.show()
+                    recyclerView.gone()
+                }
+            })
+            rvChips.adapter = chipsAdapter
+        }
+        chipsAdapter?.submitList(carouselData?.filterData ?: listOf())
     }
 
     private fun doActionBasedOnRecomState(
@@ -512,6 +551,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                         bindWidgetWithData(
                             RecommendationCarouselData(
                                 recommendationData = it,
+                                filterData = mapToAnnotateChip(it),
                                 state = STATE_READY,
                                 isUsingWidgetViewModel = true
                             )
@@ -602,6 +642,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 val localAddress = ChooseAddressUtils.getLocalizingAddressData(itemContext)
                 viewModel?.getMiniCart(localAddress?.shop_id ?: "", widgetMetadata.pageName)
             }
+        }
+    }
+
+    private fun mapToAnnotateChip(data: RecommendationWidget): List<AnnotationChip> {
+        return data.recommendationFilterChips.map {
+            AnnotationChip(it)
         }
     }
 

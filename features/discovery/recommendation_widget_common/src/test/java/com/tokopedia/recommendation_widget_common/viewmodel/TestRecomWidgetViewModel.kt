@@ -13,6 +13,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecomErrorModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -49,6 +50,7 @@ class TestRecomWidgetViewModel {
         mockk<GetMiniCartListSimplifiedUseCase>(relaxed = true)
     private val updateCartUseCase = mockk<UpdateCartUseCase>(relaxed = true)
     private val deleteCartUseCase = mockk<DeleteCartUseCase>(relaxed = true)
+    private val getRecommendationFilterChips = mockk<GetRecommendationFilterChips>(relaxed = true)
 
     private val viewModel = RecomWidgetViewModel(
         userSession = userSessionInterface,
@@ -57,7 +59,8 @@ class TestRecomWidgetViewModel {
         miniCartListSimplifiedUseCase = { miniCartListSimplifiedUseCase },
         updateCartUseCase = { updateCartUseCase },
         deleteCartUseCase = { deleteCartUseCase },
-        dispatcher = CoroutineTestDispatchersProvider
+        dispatcher = CoroutineTestDispatchersProvider,
+        getRecommendationFilterChips = {getRecommendationFilterChips}
     )
     private val recomItem = RecommendationItem(productId = 1234, shopId = 123)
     private val pageName = "testPageName"
