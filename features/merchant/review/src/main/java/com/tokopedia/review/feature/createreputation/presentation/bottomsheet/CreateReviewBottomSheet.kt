@@ -19,6 +19,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
@@ -591,7 +592,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onFailSubmitReview(throwable: Throwable) {
         stopButtonLoading()
-        showToasterError(throwable.message ?: getString(R.string.review_create_fail_toaster))
+        showToasterError(context?.let { ErrorHandler.getErrorMessage(it, throwable) }
+            ?: getString(R.string.review_create_fail_toaster))
         logToCrashlytics(throwable)
     }
 
@@ -688,7 +690,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onErrorGetReviewForm(throwable: Throwable) {
         logToCrashlytics(throwable)
-        finishIfRoot(false, throwable.message ?: getString(R.string.review_toaster_page_error))
+        finishIfRoot(
+            false,
+            context?.let { ErrorHandler.getErrorMessage(it, throwable) }
+                ?: getString(R.string.review_toaster_page_error))
     }
 
     private fun updateTitleBasedOnSelectedRating(position: Int) {
@@ -945,7 +950,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         if (isGoodRating) {
             createReviewViewModel.updateButtonState(isGoodRating)
         } else {
-            createReviewViewModel.updateButtonState(createReviewViewModel.isBadRatingReasonSelected(isTextAreaNotEmpty))
+            createReviewViewModel.updateButtonState(
+                createReviewViewModel.isBadRatingReasonSelected(
+                    isTextAreaNotEmpty
+                )
+            )
         }
     }
 
