@@ -9,9 +9,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 data class RecommendationCarouselData(
         val recommendationData: RecommendationWidget = RecommendationWidget(),
-        val filterData: List<AnnotationChip> = listOf(),
         val state: Int = 0,
-        val isUsingWidgetViewModel: Boolean = false
+        val isUsingWidgetViewModel: Boolean = false,
+        val filterData: List<AnnotationChip> = listOf()
 ): ImpressHolder() {
     companion object {
         const val STATE_LOADING: Int = 0

@@ -42,8 +42,8 @@ class ProductRecomWidgetViewHolder(
             element.recomWidgetData?.let {
                 recomWidget.bind(
                     carouselData = RecommendationCarouselData(
-                        it,
-                        RecommendationCarouselData.STATE_READY
+                        recommendationData = it,
+                        state = RecommendationCarouselData.STATE_READY
                     ),
                     adapterPosition = adapterPosition,
                     basicListener = this,
