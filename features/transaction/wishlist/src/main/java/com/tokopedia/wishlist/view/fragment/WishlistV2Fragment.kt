@@ -297,7 +297,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     refreshHandler?.finishRefresh()
                     val data = result.data
                     hideLoader()
-                    wishlistV2Adapter.addList(renderWishlistV2Data(data))
+                    wishlistV2Adapter.appendList(renderWishlistV2Data(data))
                 }
                 is Fail -> {
                     refreshHandler?.finishRefresh()
