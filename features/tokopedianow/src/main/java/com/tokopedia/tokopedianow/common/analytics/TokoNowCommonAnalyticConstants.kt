@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.analytics
 object TokoNowCommonAnalyticConstants {
 
     object EVENT{
+        const val EVENT_VIEW_TOKONOW_IRIS = "viewTokoNowIris"
         const val EVENT_CLICK_TOKONOW = "clickTokoNow"
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_ITEM = "view_item"
