@@ -998,23 +998,23 @@ class ShopScoreMapper @Inject constructor(
             shopScoreLevelList?.find { it.identifier == TOTAL_BUYER_KEY }?.title.orEmpty()
         val openTokopediaSeller =
             shopScoreLevelList?.find { it.identifier == OPEN_TOKOPEDIA_SELLER_KEY }?.title.orEmpty()
-        val (titleParameterRelief, descParameterRelief) =
+        val (titleParameterRelief, descParameterRelief, descParameterReliefBottomSheet) =
             if (getSellerType(shopScoreLevelList) == SellerTypeConstants.REACTIVATED_SELLER) {
-                Pair(
-                    context?.getString(R.string.title_relief_parameter_for_new_seller_bottom_sheet)
+                Triple(
+                    context?.getString(R.string.title_relief_parameter_for_new_seller_bottom_sheet).orEmpty(),
+                    context?.getString(R.string.desc_relief_parameter_for_reactivated_seller)
                         .orEmpty(),
                     context?.getString(R.string.desc_relief_parameter_for_reactivated_seller_bottom_sheet)
                         .orEmpty()
                 )
             } else {
-                Pair(
-                    context?.getString(
-                        R.string.title_parameter_relief_new_seller,
-                    ).orEmpty(),
+                Triple(
+                    context?.getString(R.string.title_parameter_relief_new_seller).orEmpty(),
+                    context?.getString(R.string.desc_new_seller_parameter_relief).orEmpty(),
                     context?.getString(
                         R.string.desc_relief_parameter_for_new_seller_bottom_sheet,
                         getProtectedParameterDaysDate(shopAge)
-                    ).orEmpty()
+                    ).orEmpty(),
                 )
             }
         return ProtectedParameterSectionUiModel(
@@ -1023,7 +1023,8 @@ class ShopScoreMapper @Inject constructor(
                 ItemProtectedParameterUiModel(openTokopediaSeller)
             ),
             titleParameterRelief = titleParameterRelief,
-            descParameterRelief = descParameterRelief
+            descParameterRelief = descParameterRelief,
+            descParameterReliefBottomSheet = descParameterReliefBottomSheet
         )
     }
 

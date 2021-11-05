@@ -37,7 +37,7 @@ class ItemProtectedParameterSectionViewHolder(
             }
             icDescParameterRelief.setOnClickListener {
                 protectedParameterListener.onProtectedParameterChevronClicked(
-                    element?.descParameterRelief.orEmpty()
+                    element?.descParameterReliefBottomSheet.orEmpty()
                 )
             }
         }
