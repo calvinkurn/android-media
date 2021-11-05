@@ -16,7 +16,8 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
-        private const val PADDING_AND_MARGIN = 40
+        // 12 + 12 + 4 + 8 + 4 + 12 + 12
+        private const val PADDING_AND_MARGIN = 64
     }
 
     private var uiModel: ShopHomeProductUiModel? = null
