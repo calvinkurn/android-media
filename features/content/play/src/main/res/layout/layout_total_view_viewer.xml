@@ -18,7 +18,7 @@
         app:icon_name="VISIBILITY" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_play_total_views"
+        android:id="@+id/tv_play_total_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
