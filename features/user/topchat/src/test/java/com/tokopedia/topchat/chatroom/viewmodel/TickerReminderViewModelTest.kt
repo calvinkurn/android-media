@@ -80,4 +80,16 @@ class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
             closeReminderTicker(any())
         }
     }
+
+    @Test
+    fun should_do_nothing_when_error_close_ticker_reminder() {
+        //Given
+        val response = GetReminderTickerResponse()
+        coEvery {
+            closeReminderTicker.invoke(any())
+        } throws IllegalStateException()
+
+        //When
+        viewModel.closeTickerReminder(response.getReminderTicker)
+    }
 }
