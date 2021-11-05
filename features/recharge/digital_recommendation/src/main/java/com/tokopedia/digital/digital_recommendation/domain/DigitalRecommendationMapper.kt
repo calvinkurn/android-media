@@ -25,7 +25,7 @@ class DigitalRecommendationMapper {
                                         TYPE_CATEGORY -> item.trackingData.categoryName
                                         else -> item.title
                                     }
-                                } else "",
+                                } else item.title,
                                 productName = item.subtitle,
                                 applink = item.appLink,
                                 tracking = transform(item.trackingData),

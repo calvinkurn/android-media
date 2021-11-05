@@ -68,7 +68,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 viewLifecycleOwner,
                 DigitalRecommendationAdditionalTrackingData(
                         userType = "",
-                        widgetPosition = "1"
+                        widgetPosition = rechargeViewModel.getDigitalRecommendationPosition().toString()
                 ),
                 DigitalRecommendationPage.DIGITAL_GOODS
         )
@@ -255,7 +255,9 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
             hideLoading()
             when (result) {
                 is Success -> {
-                    adapter.updateItems(result.data, rechargeViewModel.getTopAdsData())
+                    adapter.updateItems(result.data,
+                            rechargeViewModel.getTopAdsData(),
+                            rechargeViewModel.getRecommendationWidgetPositionData())
                     setupStickyButton(result.data.actionButtonList.actionButtons.firstOrNull {
                         it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
                     })
@@ -271,10 +273,27 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         rechargeViewModel.topadsData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    adapter.updateItems(rechargeViewModel.getOrderDetailResultData(), result.data)
+                    adapter.updateItems(rechargeViewModel.getOrderDetailResultData(),
+                            result.data,
+                            rechargeViewModel.getRecommendationWidgetPositionData())
                 }
                 is Fail -> {
                     adapter.removeTopAds()
+                }
+            }
+        })
+
+        rechargeViewModel.recommendationPosition.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    adapter.updateItems(
+                            rechargeViewModel.getOrderDetailResultData(),
+                            rechargeViewModel.getTopAdsData(),
+                            result.data
+                    )
+                }
+                is Fail -> {
+
                 }
             }
         })

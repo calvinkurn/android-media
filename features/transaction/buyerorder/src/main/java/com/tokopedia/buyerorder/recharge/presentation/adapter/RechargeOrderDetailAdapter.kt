@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.recharge.presentation.model.*
+import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 /**
@@ -13,9 +15,11 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
         BaseAdapter<RechargeOrderDetailTypeFactory>(typeFactory) {
 
-    fun updateItems(data: RechargeOrderDetailModel?, topAdsData: BestSellerDataModel?) {
+    fun updateItems(data: RechargeOrderDetailModel?,
+                    topAdsData: BestSellerDataModel?,
+                    recommendationWidgetPosition: DigitalRecommendationModel?) {
         data?.let {
-            val newItems = setupItems(it, topAdsData)
+            val newItems = setupItems(it, topAdsData, recommendationWidgetPosition)
             visitables.clear()
             visitables.addAll(newItems)
             notifyDataSetChanged()
@@ -24,15 +28,22 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
 
     private fun setupItems(
             data: RechargeOrderDetailModel,
-            topAdsData: BestSellerDataModel?
+            topAdsData: BestSellerDataModel?,
+            recommendationWidgetPosition: DigitalRecommendationModel?
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             setupTopSection(data.topSectionModel)
             setupDetailSection(data.detailsSection)
             setupPaymentSection(data.paymentSectionModel)
-            setupDigitalRecommendationWidget()
-            topAdsData?.let {
-                setupTopAdsWidget(it)
+            recommendationWidgetPosition?.let {
+                for (item in it.items) {
+                    if (item.categoryName == DigitalRecommendationUseCase.DG_PERSO_CHANNEL_NAME)
+                        setupDigitalRecommendationWidget()
+                    else if (item.categoryName == DigitalRecommendationUseCase.PG_PERSO_CHANNEL_NAME)
+                        topAdsData?.let { topAds ->
+                            setupTopAdsWidget(topAds)
+                        }
+                }
             }
             setupSBMStaticButton()
             setupLanggananStaticButton()

@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.domain.RechargeOrderDetailUseCase
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailModel
+import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -15,7 +18,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.async
 import javax.inject.Inject
 
 /**
@@ -25,6 +27,7 @@ class RechargeOrderDetailViewModel @Inject constructor(
         private val orderDetailUseCase: RechargeOrderDetailUseCase,
         private val getRecommendationUseCaseCoroutine: GetRecommendationUseCase,
         private val bestSellerMapper: BestSellerMapper,
+        private val recommendationUseCase: DigitalRecommendationUseCase,
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
@@ -36,14 +39,38 @@ class RechargeOrderDetailViewModel @Inject constructor(
     val topadsData: LiveData<Result<BestSellerDataModel>>
         get() = _topadsData
 
+    private val _recommendationPosition = MutableLiveData<Result<DigitalRecommendationModel>>()
+    val recommendationPosition: LiveData<Result<DigitalRecommendationModel>>
+        get() = _recommendationPosition
+
     fun fetchData(requestParams: RechargeOrderDetailRequest) {
         launchCatchError(block = {
-            val orderDetailDeferred = fetchOrderDetailDataAsync(requestParams)
-            _orderDetailData.postValue(orderDetailDeferred.await())
+            val orderDetailValue = orderDetailUseCase.execute(requestParams)
+            _orderDetailData.postValue(orderDetailValue)
+
+            val skeletonData = recommendationUseCase.execute(
+                    DigitalRecommendationPage.RECOMMENDATION_SKELETON,
+                    emptyList(),
+                    emptyList()
+            )
+            _recommendationPosition.postValue(skeletonData)
         }) {
             it.printStackTrace()
         }
     }
+
+    fun getDigitalRecommendationPosition(): Int =
+            if (recommendationPosition.value != null &&
+                    (recommendationPosition.value is Success) &&
+                    (recommendationPosition.value as Success).data.items.isNotEmpty()) {
+                if ((recommendationPosition.value as Success).data.items[0].categoryName == DigitalRecommendationUseCase.DG_PERSO_CHANNEL_NAME) {
+                    FIRST_POSITION
+                } else {
+                    SECOND_POSITION
+                }
+            } else {
+                ZERO_POSITION
+            }
 
     fun getOrderDetailResultData(): RechargeOrderDetailModel? =
             orderDetailData.value?.let {
@@ -63,6 +90,15 @@ class RechargeOrderDetailViewModel @Inject constructor(
                 }
             }
 
+    fun getRecommendationWidgetPositionData(): DigitalRecommendationModel? =
+            recommendationPosition.value?.let {
+                if (it is Success) {
+                    it.data
+                } else {
+                    null
+                }
+            }
+
     fun fetchTopAdsData() {
         launchCatchError(block = {
             val data = getRecommendationUseCaseCoroutine.getData(GetRecommendationRequestParam())
@@ -73,9 +109,10 @@ class RechargeOrderDetailViewModel @Inject constructor(
         }
     }
 
-    private fun fetchOrderDetailDataAsync(requestParams: RechargeOrderDetailRequest) =
-            async {
-                orderDetailUseCase.execute(requestParams)
-            }
+    companion object {
+        private const val FIRST_POSITION = 1
+        private const val SECOND_POSITION = 2
+        private const val ZERO_POSITION = 0
+    }
 
 }
