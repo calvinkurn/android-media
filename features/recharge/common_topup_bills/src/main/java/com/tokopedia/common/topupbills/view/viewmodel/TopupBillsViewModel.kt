@@ -484,7 +484,7 @@ class TopupBillsViewModel @Inject constructor(
         const val CATEGORY_ID_PASCABAYAR = 9
 
         const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
-        const val FAVORITE_NUMBER_LIMIT = 20
+        const val FAVORITE_NUMBER_LIMIT = 10
         const val RETRY_DURATION = 0
         const val MS_TO_S_DURATION = 1000
         const val FIVE_MINS_CACHE_DURATION = 5
