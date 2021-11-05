@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -27,7 +28,8 @@ class WishlistV2ViewModel @Inject constructor(
     private val wishlistV2UseCase: WishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private val recommendationUseCase: GetRecommendationUseCase,
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val getSingleRecommendationUseCase: GetSingleRecommendationUseCase,
 ) : BaseViewModel(dispatcher.main) {
 
     private val _wishlistV2Result = MutableLiveData<Result<List<WishlistV2Data>>>()
@@ -59,7 +61,7 @@ class WishlistV2ViewModel @Inject constructor(
                     _wishlistCount.postValue(wishlistData.totalData)
                     when {
                         wishlistData.items.size < recommendationPositionInPage -> {
-                            val recommendationList = getRecomList(pageNumber = params.page)
+                            val recommendationList = getRecomList(pageNumber = params.page, true)
                             _wishlistV2Result.value = Success(
                                 listOf(
                                     wishlistData,
@@ -70,7 +72,7 @@ class WishlistV2ViewModel @Inject constructor(
 
                         // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
                         wishlistData.items.size == recommendationPositionInPage -> {
-                            val recommendationList = getRecomList(pageNumber = params.page)
+                            val recommendationList = getRecomList(pageNumber = params.page, true)
                             val topAdsBanner = getTopAds(checkPageTokenForTopAds(listOf(wishlistData), params.page))
                             _wishlistV2Result.value = Success(
                                 listOf(
@@ -88,7 +90,7 @@ class WishlistV2ViewModel @Inject constructor(
                                 _wishlistV2Result.value =
                                     Success(listOf(wishlistData, topAdsBanner))
                             } else {
-                                val recommendationList = getRecomList(pageNumber = params.page)
+                                val recommendationList = getRecomList(pageNumber = params.page, true)
                                 _wishlistV2Result.value = Success(
                                     listOf(
                                         wishlistData,
@@ -129,7 +131,7 @@ class WishlistV2ViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getRecomList(pageNumber: Int): WishlistV2RecommendationWrapper =
+    private suspend fun getRecomList(pageNumber: Int, isCarousel: Boolean): WishlistV2RecommendationWrapper =
         withContext(dispatcher.io) {
             return@withContext WishlistV2RecommendationWrapper(
                 recommendationUseCase.getData(
@@ -137,7 +139,7 @@ class WishlistV2ViewModel @Inject constructor(
                         pageNumber = pageNumber,
                         pageName = WishlistV2Consts.PAGE_NAME
                     )
-                )
+                ), isCarousel = isCarousel
             )
         }
 

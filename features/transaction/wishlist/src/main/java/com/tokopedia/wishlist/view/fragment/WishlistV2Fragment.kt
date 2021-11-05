@@ -48,6 +48,7 @@ import com.tokopedia.wishlist.di.WishlistV2Module
 import com.tokopedia.wishlist.util.WishlistUtils
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
@@ -315,7 +316,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     adapterData.add(WishlistV2TypeLayoutData(it.topAdsData, TYPE_TOPADS))
                 }
                 is WishlistV2RecommendationWrapper -> {
-                    adapterData.add(WishlistV2TypeLayoutData(it.recommendationData, TYPE_RECOMMENDATION_LIST))
+                    if (it.isCarousel) {
+                        adapterData.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_CAROUSEL))
+                    } else {
+                        recommendationList.firstOrNull()?.recommendationItemList?.forEach { recommendationItem ->
+                            adapterData.add(WishlistV2TypeLayoutData(recommendationItem, TYPE_RECOMMENDATION_LIST))
+                        }
+                    }
                 }
                 is WishlistV2Response.Data.WishlistV2 -> {
                     if (currPage == 1 && it.sortFilters.isNotEmpty()) {

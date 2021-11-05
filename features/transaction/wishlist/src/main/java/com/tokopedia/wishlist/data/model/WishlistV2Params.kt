@@ -7,7 +7,7 @@ data class WishlistV2Params(
         var page: Int = 1,
 
         @SerializedName("limit")
-        var limit: Int = 8,
+        var limit: Int = 4,
 
         @SerializedName("offset")
         var offset: Int = 0,

@@ -12,6 +12,7 @@ object WishlistV2Consts {
     const val TYPE_EMPTY_NOT_FOUND = "not_found"
     const val TYPE_RECOMMENDATION_TITLE = "recommendation_title"
     const val TYPE_RECOMMENDATION_LIST = "recommendation_list"
+    const val TYPE_RECOMMENDATION_CAROUSEL = "recommendation_carousel"
     const val TYPE_TOPADS = "topads"
     const val PAGE_NAME = "wishlist"
     const val PARAMS = "params"

@@ -68,6 +68,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.features.carouselProductCard)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
