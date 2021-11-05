@@ -416,7 +416,7 @@
                 app:text_field_label_static="true"
                 app:text_field_label=""
                 app:text_field_input_type="text"
-                android:layout_marginEnd="@dimen/dp_5"/>
+                android:layout_marginEnd="5dp"/>
 
             <com.tokopedia.unifycomponents.TextFieldUnify
                 android:id="@+id/et_change_version_code"
@@ -428,7 +428,7 @@
                 app:text_field_label=""
                 app:text_field_input_type="number"
                 app:text_field_counter="9"
-                android:layout_marginStart="@dimen/dp_5"/>
+                android:layout_marginStart="5dp"/>
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_change_version"
@@ -501,7 +501,7 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="10dp"
             android:id="@+id/resetOnboardingNavigation"
             android:text="@string/reset_onboarding_nav"
             app:unifyButtonType="alternate"
@@ -510,7 +510,7 @@
 
 
         <com.tokopedia.unifyprinciples.Typography
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/rollence_ab_testing"/>
@@ -519,7 +519,7 @@
             android:id="@+id/input_rollence_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             app:text_field_placeholder="@string/input_rollence_key"
             app:text_field_label_static="true"
             app:text_field_label=""
@@ -529,7 +529,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dp_4">
+            android:layout_marginTop="4dp">
 
             <com.tokopedia.unifycomponents.TextFieldUnify
                 android:id="@+id/input_rollence_variant"
@@ -565,7 +565,7 @@
             app:unifyButtonSize="medium" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/home_nav_revamp_switcher"/>
@@ -573,16 +573,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:id="@+id/buttonAlwaysOldNavigation"
-                android:text="@string/always_old_nav"
+                android:layout_marginEnd="4dp"
+                android:id="@+id/buttonAlwaysNewNavigation"
+                android:text="@string/always_new_nav"
                 app:unifyButtonType="alternate"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="ghost"/>
@@ -591,9 +591,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="@dimen/dp_4"
-                android:id="@+id/buttonAlwaysNewNavigation"
-                android:text="@string/always_new_nav"
+                android:layout_marginStart="4dp"
+                android:id="@+id/buttonAlwaysExpOsBottomNavigation"
+                android:text="@string/always_os_experiment"
                 app:unifyButtonType="alternate"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="ghost"/>
@@ -602,12 +602,12 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10">
+            android:layout_marginTop="10dp">
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginEnd="4dp"
                 android:id="@+id/buttonAlwaysOldBalanceWidget"
                 android:text="@string/always_old_balance_widget"
                 app:unifyButtonType="alternate"
@@ -620,7 +620,7 @@
             <com.tokopedia.unifycomponents.UnifyButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginStart="4dp"
                 android:id="@+id/buttonAlwaysNewBalanceWidget"
                 android:text="@string/always_new_balance_widget"
                 app:unifyButtonType="alternate"
@@ -634,7 +634,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <com.tokopedia.unifycomponents.UnifyButton
@@ -642,7 +642,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAllCaps="false"
-                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginEnd="4dp"
                 android:id="@+id/btn_always_old_inbox"
                 android:text="@string/always_old_inbox"
                 app:unifyButtonType="alternate"
@@ -654,7 +654,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAllCaps="false"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginStart="4dp"
                 android:id="@+id/btn_always_new_inbox"
                 android:text="@string/always_new_inbox"
                 app:unifyButtonType="alternate"
@@ -665,7 +665,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <com.tokopedia.unifycomponents.UnifyButton
@@ -673,7 +673,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAllCaps="false"
-                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginEnd="4dp"
                 android:id="@+id/btn_always_old_cart_checkout"
                 android:text="Old Cart Checkout"
                 app:unifyButtonType="alternate"
@@ -685,7 +685,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAllCaps="false"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginStart="4dp"
                 android:id="@+id/btn_always_new_cart_checkout"
                 android:text="New Cart Checkout Bundling"
                 app:unifyButtonType="alternate"

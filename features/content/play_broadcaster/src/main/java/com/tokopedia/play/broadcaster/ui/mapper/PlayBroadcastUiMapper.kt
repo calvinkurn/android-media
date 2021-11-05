@@ -7,13 +7,11 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
