@@ -173,13 +173,15 @@ class HomeAnalytics {
         )
     }
 
-    fun onClickShareToOthers() {
+    fun onClickShareToOthers(userId: String) {
+        val dataLayer = getDataLayer(
+            event = EVENT_CLICK_TOKONOW,
+            action = EVENT_ACTION_CLICK_SHARE_TO_OTHERS,
+            category = EVENT_CATEGORY_HOME_PAGE
+        )
+        dataLayer[KEY_USER_ID] = userId
         hitCommonHomeTracker(
-            getDataLayer(
-                event = EVENT_CLICK_TOKONOW,
-                action = EVENT_ACTION_CLICK_SHARE_TO_OTHERS,
-                category = EVENT_CATEGORY_HOME_PAGE
-            )
+            dataLayer
         )
     }
 
