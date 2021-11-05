@@ -9,9 +9,9 @@ import javax.inject.Inject
 open class CloseReminderTicker @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<GetReminderTickerUseCase.Param, Any>(dispatcher.io) {
+) : CoroutineUseCase<GetReminderTickerUseCase.Param, Unit>(dispatcher.io) {
 
-    override suspend fun execute(params: GetReminderTickerUseCase.Param): Any {
+    override suspend fun execute(params: GetReminderTickerUseCase.Param) {
         val param = generateParam(params)
         return repository.request(graphqlQuery(), param)
     }
