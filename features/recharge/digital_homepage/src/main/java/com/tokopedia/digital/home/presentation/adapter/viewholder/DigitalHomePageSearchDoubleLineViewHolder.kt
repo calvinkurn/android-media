@@ -9,7 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewDigitalHomeSearchDoubleLineItemBinding
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageCircle
 
 
 class DigitalHomePageSearchDoubleLineViewHolder (itemView: View?) :
@@ -18,7 +19,10 @@ class DigitalHomePageSearchDoubleLineViewHolder (itemView: View?) :
     override fun bind(element: DigitalHomePageSearchCategoryModel) {
         val bind = ViewDigitalHomeSearchDoubleLineItemBinding.bind(itemView)
         with(bind){
-            imgDoubleLine.loadImageCircle(element.icon)
+            imgDoubleLine.apply {
+                loadImageCircle(element.icon)
+                adjustViewBounds = true
+            }
             val spannableString = SpannableStringBuilder(element.label)
             val searchQueryIndex = element.label.indexOf(element.searchQuery, ignoreCase = true)
             if (searchQueryIndex > -1) {
