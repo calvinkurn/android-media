@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
@@ -302,7 +303,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Then
         val intent = RouteManager.getIntent(context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1160424090", "6115659", "chat", "false", "") //Product from firstPageChatAsBuyer
+            "1160424090", "6115659", AtcVariantHelper.TOPCHAT_PAGESOURCE, "false", "") //Product from firstPageChatAsBuyer
         intended(hasData(intent.data))
     }
 
@@ -322,7 +323,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Then
         val intent = RouteManager.getIntent(context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
-            "1160424090", "6115659", "chat", "false", "") //Product from firstPageChatAsBuyer
+            "1160424090", "6115659", AtcVariantHelper.TOPCHAT_PAGESOURCE, "false", "") //Product from firstPageChatAsBuyer
         intended(hasData(intent.data))
     }
 

@@ -9,7 +9,6 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
@@ -124,19 +123,6 @@ interface TopChatContract {
             messageId: String,
             onError: (Throwable) -> Unit,
             onSuccessDeleteConversation: () -> Unit
-        )
-
-        fun getShopFollowingStatus(
-            shopId: Long,
-            onError: (Throwable) -> Unit,
-            onSuccessGetShopFollowingStatus: (Boolean) -> Unit
-        )
-
-        fun followUnfollowShop(
-            shopId: String,
-            onError: (Throwable) -> Unit,
-            onSuccess: (Boolean) -> Unit,
-            action: ToggleFavouriteShopUseCase.Action? = null
         )
 
         fun sendAttachmentsAndMessage(
