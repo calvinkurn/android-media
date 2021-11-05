@@ -72,7 +72,6 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
     }
 
     override fun trackOnBackPressed() {
-        FileUtil.deleteFolder(context?.externalCacheDir?.absolutePath + FILE_NAME_KYC)
         analytics?.eventClickBackKtpPage()
     }
 

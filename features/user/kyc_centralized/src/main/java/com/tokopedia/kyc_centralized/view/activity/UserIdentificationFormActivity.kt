@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.util.KycStorageWorker
 import com.tokopedia.kyc_centralized.view.customview.fragment.NotFoundFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment
@@ -32,7 +33,6 @@ import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.file.FileUtil
-import kotlin.collections.ArrayList
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -49,7 +49,8 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
-            projectId = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
+            projectId = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)
+                .toIntOrZero()
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         } catch (e: NumberFormatException) {
             projectId = KYCConstant.STATUS_DEFAULT
@@ -65,7 +66,13 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
             createNewStepperModel()
         }
         super.onCreate(savedInstanceState)
-        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        toolbar.setTitleTextColor(
+            MethodChecker.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            )
+        )
+        scheduleKycStorageCleanup()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -83,7 +90,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
             notFoundList.add(NotFoundFragment.createInstance())
             notFoundList
         } else {
-            if(fragmentList.isEmpty()) {
+            if (fragmentList.isEmpty()) {
                 fragmentList.add(UserIdentificationFormKtpFragment.createInstance())
                 fragmentList.add(UserIdentificationFormFaceFragment.createInstance())
                 fragmentList.add(UserIdentificationFormFinalFragment.createInstance(projectId))
@@ -95,10 +102,12 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
     override fun setupFragment(savedinstancestate: Bundle?) {
         val actualPosition = currentPosition - 1
         if (listFragment.size >= currentPosition && actualPosition >= 0) {
-            val fragment = when(listFragment[actualPosition]) {
+            val fragment = when (listFragment[actualPosition]) {
                 is UserIdentificationFormKtpFragment -> UserIdentificationFormKtpFragment.createInstance()
                 is UserIdentificationFormFaceFragment -> UserIdentificationFormFaceFragment.createInstance()
-                is UserIdentificationFormFinalFragment -> UserIdentificationFormFinalFragment.createInstance(projectId)
+                is UserIdentificationFormFinalFragment -> UserIdentificationFormFinalFragment.createInstance(
+                    projectId
+                )
                 is NotFoundFragment -> NotFoundFragment.createInstance()
                 else -> throw Exception()
             }
@@ -108,8 +117,8 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
             bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
             fragment.arguments = bundle
             supportFragmentManager.beginTransaction()
-                    .replace(parentView, fragment, fragment.javaClass.simpleName)
-                    .commit()
+                .replace(parentView, fragment, fragment.javaClass.simpleName)
+                .commit()
         }
     }
 
@@ -128,7 +137,8 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
     override fun onBackEvent() {
         if (listFragment.size == currentPosition) {
             val fragmentId = listFragment[currentPosition - 1].id
-            val fragment = supportFragmentManager.findFragmentById(fragmentId) as UserIdentificationFormFinalFragment?
+            val fragment =
+                supportFragmentManager.findFragmentById(fragmentId) as UserIdentificationFormFinalFragment?
             fragment?.clickBackAction()
             showDocumentAlertDialog(fragment)
         } else {
@@ -180,7 +190,11 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         val span = SpannableString(text)
         val radius = dpToPx(4)
         val gapWidth = dpToPx(12)
-        val color = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N100, null)
+        val color = ResourcesCompat.getColor(
+            resources,
+            com.tokopedia.unifyprinciples.R.color.Unify_N100,
+            null
+        )
         val bulletSpan: BulletSpan
         bulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             BulletSpan(gapWidth, color, radius)
@@ -190,7 +204,10 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         span.setSpan(bulletSpan, 0, text.length, 0)
         tv.setType(BODY_2)
         tv.text = span
-        tv.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        tv.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
         val margin = dpToPx(8)
         setMargins(tv, 0, 0, 0, margin)
         layout.addView(tv)
@@ -209,9 +226,20 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         }
     }
 
+    /**
+     * Schedule worker to delete KYC folder the next day
+     * Case : User kill the app, onDestroy is not called
+     */
+    private fun scheduleKycStorageCleanup() {
+        KycStorageWorker.scheduleWorker(this, externalCacheDir?.absolutePath + FILE_NAME_KYC)
+    }
+
     override fun onDestroy() {
-        FileUtil.deleteFolder(externalCacheDir?.absolutePath + FILE_NAME_KYC)
         super.onDestroy()
+        //Delete KYC folder immediately, if onDestroy is not called, we rely on worker
+        if(isFinishing) {
+            FileUtil.deleteFolder(externalCacheDir?.absolutePath + FILE_NAME_KYC)
+        }
     }
 
     companion object {
