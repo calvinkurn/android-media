@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.topads
 import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
@@ -24,6 +25,7 @@ import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestActivity
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestFullActivity
@@ -91,9 +93,26 @@ class OSTopAdsVerificationTest {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
         val itemAdapter: OfficialHomeAdapter = recyclerView.adapter as OfficialHomeAdapter
 
-        Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
-        Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
-        Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
+        /**
+         * This function needed to remove any loading view, because any infinite loop rendered view such as loading view,
+         * shimmering, progress bar, etc can block instrumentation test
+         */
+        recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val checkLoadingView: View? = activityRule.activity.findViewById<View>(R.id.loading_view)
+                checkLoadingView?.let { checkLoadingView.gone() }
+            }
+        })
+
+        /**
+         * This function needed to trigger product recommendation usecase in official store,
+         * official store page only hit recommendation usecase on scroll in the end of current list
+         */
+        while (!itemAdapter.currentList.any { it is ProductRecommendationDataModel }) {
+            Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
+        }
+
         waitForData()
 
         val itemList = itemAdapter.currentList
@@ -102,6 +121,8 @@ class OSTopAdsVerificationTest {
         val itemCount = itemList.size
 
         for (i in 0 until itemCount) {
+            val checkLoadingView: View? = activityRule.activity.findViewById<View>(R.id.loading_view)
+            checkLoadingView?.let { checkLoadingView.gone() }
             scrollHomeRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
         }
