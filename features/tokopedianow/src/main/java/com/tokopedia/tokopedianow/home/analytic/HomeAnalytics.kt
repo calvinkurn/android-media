@@ -95,6 +95,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_VARI
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_HALAL_LABEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_VARIANT
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SHARE_TO_OTHERS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -125,6 +126,7 @@ class HomeAnalytics {
         const val EVENT_ACTION_CLICK_PAST_PURCHASE = "click product on past purchase widget"
         const val EVENT_ACTION_ATC_PAST_PURCHASE = "click atc on past purchase widget"
         const val EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART = "click add to cart on tokonow product recom homepage"
+        const val EVENT_ACTION_CLICK_SHARE_TO_OTHERS = "click share to others"
     }
 
     object VALUE {
@@ -161,7 +163,6 @@ class HomeAnalytics {
         )
     }
 
-    //this is not P0 and right now we will not implement it
     fun onClickShareButton() {
         hitCommonHomeTracker(
                 getDataLayer(
@@ -169,6 +170,16 @@ class HomeAnalytics {
                         action = EVENT_ACTION_CLICK_SHARE_BUTTON,
                         category = EVENT_CATEGORY_TOP_NAV
                 )
+        )
+    }
+
+    fun onClickShareToOthers() {
+        hitCommonHomeTracker(
+            getDataLayer(
+                event = EVENT_CLICK_TOKONOW,
+                action = EVENT_ACTION_CLICK_SHARE_TO_OTHERS,
+                category = EVENT_CATEGORY_HOME_PAGE
+            )
         )
     }
 
