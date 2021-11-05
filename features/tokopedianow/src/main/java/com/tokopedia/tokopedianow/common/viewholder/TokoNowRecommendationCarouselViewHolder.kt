@@ -48,9 +48,9 @@ class TokoNowRecommendationCarouselViewHolder(
                     adapterPosition = adapterPosition,
                     scrollToPosition = scrollToPosition.orZero(),
                     isForceRefresh = element.isFirstLoad,
-                    isTokonow = true,
-                    categoryIds = element.categoryId,
-                    keyword = element.keywords
+//                    isTokonow = true,
+//                    categoryIds = element.categoryId,
+//                    keyword = element.keywords
                 )
                 element.isFirstLoad = false
             }
