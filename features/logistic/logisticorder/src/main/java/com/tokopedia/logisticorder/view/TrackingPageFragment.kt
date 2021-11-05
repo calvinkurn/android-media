@@ -31,7 +31,6 @@ import com.tokopedia.logisticorder.utils.DateUtil
 import com.tokopedia.logisticorder.utils.TrackingPageUtil
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
-import com.tokopedia.logisticorder.view.imagepreview.ImagePreviewLogisticActivity
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -405,9 +404,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             binding?.imagePreviewLarge?.visibility = View.GONE
         }
 
-        /*startActivity(activity?.let {
-            url?.let { url -> ImagePreviewLogisticActivity.createIntent(it, arrayListOf(url)) }
-        })*/
     }
 
 }
