@@ -508,7 +508,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
                 TelcoCategoryType.CATEGORY_ROAMING.toString()
             )
-            sharedModelPrepaid.setVisibilityTotalPrice(false)
             navigateContact(
                 clientNumber, favNumberList,
                 dgCategoryIds, topupAnalytics.getCategoryName(categoryId),
