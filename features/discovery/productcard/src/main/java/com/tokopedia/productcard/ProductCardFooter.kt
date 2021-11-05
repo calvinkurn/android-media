@@ -35,7 +35,9 @@ internal fun View.renderProductCardFooter(
     }
 
     buttonSecondary?.showWithCondition(productCardModel.hasSecondaryButton)
-    buttonTambahKeranjang?.showWithCondition(productCardModel.hasTambahKeranjangButton)
+    rlPrimaryButtonWishlist?.showWithCondition(productCardModel.tambahKeranjangButton || productCardModel.lihatBarangSerupaButton)
+    buttonTambahKeranjang?.showWithCondition(productCardModel.tambahKeranjangButton)
+    buttonLihatBarangSerupa?.showWithCondition(productCardModel.lihatBarangSerupaButton)
 }
 
 internal fun renderStockBar(progressBarStock: ProgressBarUnify?, textViewStock: Typography?, productCardModel: ProductCardModel) {

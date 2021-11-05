@@ -127,6 +127,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         const val PARAM_HOME = "home"
         const val SHARE_LINK_PRODUCT = "SHARE_LINK_PRODUCT"
         const val DELETE_WISHLIST = "DELETE_WISHLIST"
+        const val ATC_WISHLIST = "ADD_TO_CART"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -286,7 +287,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private fun triggerSearch() {
         paramWishlistV2.query = searchQuery
         refreshHandler?.startRefresh()
-        // scrollRecommendationListener.resetState()
+        scrollRecommendationListener.resetState()
     }
 
     private fun observingWishlistV2() {
@@ -514,6 +515,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private fun renderWishlist(items: List<WishlistV2Response.Data.WishlistV2.Item>) {
         val listItem = arrayListOf<WishlistV2TypeLayoutData>()
         items.forEach { item ->
+            val listGroupLabel = arrayListOf<ProductCardModel.LabelGroup>()
+
+            item.labelGroup.forEach { labelGroupItem ->
+                val labelGroup = ProductCardModel.LabelGroup(
+                        position = labelGroupItem.position,
+                        title = labelGroupItem.title,
+                        type = labelGroupItem.type,
+                        imageUrl = labelGroupItem.url)
+                listGroupLabel.add(labelGroup)
+            }
+
+            val isButtonAtc = item.buttons.primaryButton.action == ATC_WISHLIST
+
             val productModel = ProductCardModel(
                     productImageUrl = item.imageUrl,
                     isWishlistVisible = true,
@@ -523,7 +537,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     shopLocation = item.shop.location,
                     isShopRatingYellow = true,
                     hasSecondaryButton = true,
-                    hasTambahKeranjangButton = true)
+                    tambahKeranjangButton = isButtonAtc,
+                    lihatBarangSerupaButton = !isButtonAtc,
+                    labelGroupList = listGroupLabel)
             listItem.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item))
         }
 
@@ -605,6 +621,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 containerDelete.gone()
             }
         }
+    }
+
+    override fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item) {
+        println("++ onAtc")
+    }
+
+    override fun onCheckSimilarProduct(url: String) {
+        println("++ onCheckSimilarProduct - url = $url")
     }
 
     private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {

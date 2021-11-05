@@ -1,6 +1,5 @@
 package com.tokopedia.wishlist.view.adapter.viewholder
 
-import android.view.View
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,6 +20,12 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
             binding.wishlistCheckbox.setOnCheckedChangeListener(checkboxListener(item.wishlistItem))
         } else {
             binding.wishlistCheckbox.gone()
+        }
+
+        if (item.dataObject.tambahKeranjangButton) {
+            binding.wishlistItem.setTambahKeranjangButtonClickListener { actionListener?.onAtc(item.wishlistItem) }
+        } else {
+            binding.wishlistItem.setLihatBarangSerupaButtonClickListener { actionListener?.onCheckSimilarProduct(item.wishlistItem.buttons.primaryButton.url) }
         }
 
         binding.wishlistItem.setSecondaryButtonClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
