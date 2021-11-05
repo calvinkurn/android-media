@@ -46,6 +46,9 @@
     <string name="play_action_ok">Oke</string>
     <string name="play_out_of_stock">Stok habis</string>
 
+    <!--Pinned Message-->
+    <string name="play_pinned_msg_applink_text">Ayo Lihat</string>
+
     <!--Engagement Tools-->
     <string name="play_interactive_prestart_timer_text">Dimulai dalam:</string>
     <string name="play_interactive_prestart_follow_button">Follow Buat Ikutan</string>
@@ -67,6 +70,7 @@
 
     <string name="play_featured_product_check_product">Cek Barang</string>
 
+    <!--Upcoming page-->
     <string name="play_remind_me">Ingatkan Saya</string>
     <string name="play_remind_me_success">Berhasil diingatkan</string>
     <string name="play_watch_now">Tonton Sekarang</string>
@@ -74,6 +78,7 @@
     <string name="play_failed_remind_me">Oops, gagal tersambung</string>
     <string name="play_try_again">Coba Lagi</string>
 
+    <!--Chromecast-->
     <string name="play_connecting_chromecast">Connecting to Chromecast</string>
     <string name="play_casting_chromecast">Casting to Chromecast</string>
     <string name="play_disconnect_chromecast">Disconnected from Chromecast</string>

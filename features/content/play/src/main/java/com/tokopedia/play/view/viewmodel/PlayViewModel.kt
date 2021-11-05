@@ -1394,7 +1394,7 @@ class PlayViewModel @Inject constructor(
                 val mappedResult = playSocketToModelMapper.mapPinnedMessage(result)
                 _observablePinnedMessage.value = currentPinnedMessage.copy(
                         id = mappedResult.id,
-                        applink = mappedResult.applink,
+                        appLink = mappedResult.appLink,
                         title = mappedResult.title,
                 )
             }
