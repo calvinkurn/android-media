@@ -1,11 +1,16 @@
 package com.tokopedia.home.topads
 
 import android.Manifest
+import android.app.Activity
+import android.app.Instrumentation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.platform.app.InstrumentationRegistry
@@ -45,7 +50,7 @@ import org.junit.*
  */
 class HomeTopAdsVerificationTest {
     companion object {
-        val LIMIT_COUNT_TO_IDLE = 5
+        val LIMIT_COUNT_TO_IDLE = 10
     }
 
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
@@ -57,7 +62,7 @@ class HomeTopAdsVerificationTest {
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
+    var activityRule = object: IntentsTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             disableCoachMark(context)
@@ -68,6 +73,7 @@ class HomeTopAdsVerificationTest {
 
     @Before
     fun setupEnvironment() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         val recyclerView: RecyclerView =
             activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
