@@ -289,6 +289,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 override fun getFilterText(): String {
                     return inputNumberField.editText.text.toString()
                 }
+
+                override fun setInputNumberActionTypeAutocomplete() {
+                    listener.onClickClearInput()
+                }
             }
         )
 
@@ -346,6 +350,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         fun onClickClearInput()
         fun onShowFilterChip(isLabeled: Boolean)
         fun onClickFilterChip(isLabeled: Boolean)
+        fun onClickAutoComplete()
         fun onUserManualType()
     }
 

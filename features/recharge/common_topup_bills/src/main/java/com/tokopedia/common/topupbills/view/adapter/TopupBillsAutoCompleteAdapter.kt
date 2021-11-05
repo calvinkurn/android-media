@@ -140,7 +140,10 @@ class TopupBillsAutoCompleteAdapter(
 
         override fun convertResultToString(resultValue: Any?): CharSequence {
             return when (resultValue) {
-                is TopupBillsAutoCompleteContactDataView -> resultValue.phoneNumber
+                is TopupBillsAutoCompleteContactDataView -> {
+                    listener.setInputNumberActionTypeAutocomplete()
+                    resultValue.phoneNumber
+                }
                 else -> ""
             }
         }
@@ -224,6 +227,7 @@ class TopupBillsAutoCompleteAdapter(
 
     interface ContactArrayListener {
         fun getFilterText(): String
+        fun setInputNumberActionTypeAutocomplete()
     }
 
     companion object {

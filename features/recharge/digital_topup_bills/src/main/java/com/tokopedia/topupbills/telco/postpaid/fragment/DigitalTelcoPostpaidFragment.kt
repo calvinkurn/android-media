@@ -337,6 +337,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     inputNumberActionType = InputNumberActionType.MANUAL
                 }
             }
+
+            override fun onClickAutoComplete() {
+                inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
+            }
         })
 
         enquiryViewModel.enquiryResult.observe(viewLifecycleOwner, Observer {

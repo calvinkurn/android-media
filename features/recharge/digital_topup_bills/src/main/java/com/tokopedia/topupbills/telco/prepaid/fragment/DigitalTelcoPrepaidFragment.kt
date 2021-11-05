@@ -540,6 +540,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         override fun onClickFilterChip(isLabeled: Boolean) {
             autoSelectTabProduct = true
+            inputNumberActionType = InputNumberActionType.CHIP
             if (isLabeled) {
                 topupAnalytics.clickFavoriteNumberChips(categoryId, userSession.userId)
             } else {
@@ -555,6 +556,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             if (inputNumberActionType != InputNumberActionType.MANUAL) {
                 inputNumberActionType = InputNumberActionType.MANUAL
             }
+        }
+
+        override fun onClickAutoComplete() {
+            inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
         }
     }
 
