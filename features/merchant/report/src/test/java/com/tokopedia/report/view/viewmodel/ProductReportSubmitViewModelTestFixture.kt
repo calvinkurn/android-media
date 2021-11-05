@@ -1,7 +1,7 @@
 package com.tokopedia.report.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.report.domain.interactor.SubmitReportUseCase
 import io.mockk.MockKAnnotations
