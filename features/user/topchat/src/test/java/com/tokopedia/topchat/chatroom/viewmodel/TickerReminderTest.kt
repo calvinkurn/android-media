@@ -5,6 +5,7 @@ import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import org.hamcrest.CoreMatchers.`is`
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
 import org.junit.Test
 
@@ -25,6 +26,24 @@ class TickerReminderTest : BaseTopChatViewModelTest() {
         assertThat(
             viewModel.srwTickerReminder.value,
             `is`(Success(expectedResponse.getReminderTicker))
+        )
+    }
+
+    @Test
+    fun should_remove_ticker_reminder_when_removed() {
+        //Given
+        val expectedResponse = GetReminderTickerResponse()
+        coEvery {
+            reminderTickerUseCase.invoke(any())
+        } returns expectedResponse
+
+        //When
+        viewModel.getTickerReminder()
+        viewModel.removeTicker()
+
+        //Then
+        assertEquals(
+            viewModel.srwTickerReminder.value, null
         )
     }
 
