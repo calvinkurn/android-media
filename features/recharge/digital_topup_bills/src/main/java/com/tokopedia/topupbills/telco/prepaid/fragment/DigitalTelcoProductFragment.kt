@@ -345,13 +345,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                 //do nothing
             }
         }
-
-//        sharedModelPrepaid.selectedProductById.observe(viewLifecycleOwner, { productId ->
-//            val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
-//            if (activeCategory == titleProduct) {
-//                telcoTelcoProductView.selectProductById(productId)
-//            }
-//        })
     }
 
     private fun clearFilterIfTabNotActive() {

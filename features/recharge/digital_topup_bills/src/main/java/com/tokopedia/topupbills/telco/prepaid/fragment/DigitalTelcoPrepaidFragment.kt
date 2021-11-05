@@ -768,7 +768,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             autoSelectTabProduct = false
         }
         if (productId.isNotEmpty() && categoryId.toIntOrNull() ?: 0 == this@DigitalTelcoPrepaidFragment.categoryId) {
-//            sharedModelPrepaid.setSelectedProductById(productId)
             if (isCheckoutPassDataInitialized()) {
                 checkoutPassData.productId = productId
             }
