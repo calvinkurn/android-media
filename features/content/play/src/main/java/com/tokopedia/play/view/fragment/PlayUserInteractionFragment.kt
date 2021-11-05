@@ -69,6 +69,7 @@ import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
+import com.tokopedia.play.view.viewcomponent.partnerinfo.PartnerInfoViewComponent
 import com.tokopedia.play.view.viewcomponent.realtimenotif.RealTimeNotificationViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -107,6 +108,7 @@ class PlayUserInteractionFragment @Inject constructor(
         PlayMoreActionBottomSheet.Listener,
         PlayFragmentContract,
         ToolbarRoomViewComponent.Listener,
+        PartnerInfoViewComponent.Listener,
         VideoControlViewComponent.Listener,
         LikeViewComponent.Listener,
         ShareLinkViewComponent.Listener,
@@ -128,6 +130,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
     private val toolbarView by viewComponent { ToolbarRoomViewComponent(it, R.id.view_toolbar_room, this) }
+    private val partnerInfoView by viewComponent { PartnerInfoViewComponent(it, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
@@ -312,6 +315,14 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickCopyLink()
     }
 
+    override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {
+        playViewModel.submitAction(ClickPartnerNameAction)
+    }
+
+    override fun onFollowButtonClicked(view: PartnerInfoViewComponent) {
+        playViewModel.submitAction(ClickFollowAction)
+    }
+
     /**
      * VideoControl View Component Listener
      */
@@ -351,7 +362,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * QuickReply View Component Listener
+     * Pinned View Component Listener
      */
     override fun onPinnedMessageActionClicked(view: PinnedViewComponent, appLink: String, message: String) {
         analytic.clickPinnedMessage(message, appLink)
@@ -846,6 +857,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderInteractiveView(prevState?.interactiveView, state.interactiveView, state.partner)
                 renderWinnerBadgeView(state.winnerBadge)
                 renderToolbarView(state.title, state.share)
+                renderPartnerInfoView(prevState?.partner, state.partner)
                 renderLikeView(prevState?.like, state.like)
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
@@ -1493,6 +1505,11 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         toolbarView.setTitle(title.title)
         shareLinkView?.setIsShareable(share.shouldShow)
+    }
+
+    private fun renderPartnerInfoView(prevState: PlayPartnerUiState?, state: PlayPartnerUiState) {
+        if (prevState == state) return
+        partnerInfoView.setInfo(state)
     }
 
     private fun renderLikeView(

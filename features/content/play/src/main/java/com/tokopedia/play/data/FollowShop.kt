@@ -12,7 +12,9 @@ data class FollowShop(
         @SerializedName("message")
         val message: String = "",
         @SerializedName("isFirstTime")
-        val isFirstTime: Boolean = false
+        val isFirstTime: Boolean = false,
+        @SerializedName("isFollowing")
+        val isFollowing: Boolean = false,
 ) {
 
     data class Response(
