@@ -420,8 +420,9 @@ class OfficialHomeContainerFragment
     }
 
     private fun getToolbarIcons(): IconBuilder {
+        val pageSource = if (activityOfficialStore == PARAM_HOME) ApplinkConsInternalNavigation.SOURCE_HOME else ""
         val icons =
-            IconBuilder(IconBuilderFlag(pageSource = if (activityOfficialStore == PARAM_HOME) ApplinkConsInternalNavigation.SOURCE_HOME else ""))
+            IconBuilder(IconBuilderFlag(pageSource = pageSource))
                 .addIcon(getInboxIcon()) {}
         if(activityOfficialStore != PARAM_HOME)
         {
