@@ -29,17 +29,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl1" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.product.addedit.common.customview.AddItemButton
         android:id="@+id/buttonAddVariantType"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl1"
-        android:text="@string/action_variant_custom_add"
-        android:textColor="@color/Unify_GN500"
-        app:typographyType="heading_5"
-        android:gravity="center_vertical"
-        android:drawableStart="@drawable/iconunify_add_circle"
-        android:drawablePadding="6dp"
-        app:drawableTint="@color/Unify_GN500" />
+        app:addItemButtonText="@string/action_variant_custom_add" />
 
 </LinearLayout>

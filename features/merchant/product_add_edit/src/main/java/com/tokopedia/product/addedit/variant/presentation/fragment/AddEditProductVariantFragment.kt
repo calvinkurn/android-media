@@ -181,8 +181,8 @@ class AddEditProductVariantFragment :
             }
             bottomSheet.show(childFragmentManager)
         }
-        //CustomVariantManageBottomSheet().show(childFragmentManager)
         showCoachmarkCustomVariantType()
+        //CustomVariantManageBottomSheet().show(childFragmentManager)
 
         variantTypeAdapter = VariantTypeAdapter(this)
         variantValueAdapterLevel1 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_ONE_POSITION)
@@ -202,8 +202,8 @@ class AddEditProductVariantFragment :
         // setup base cancellation dialog
         context?.run {
             cancellationDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            cancellationDialog?.setPrimaryCTAText(getString(com.tokopedia.product.addedit.R.string.action_cancel_cancellation))
-            cancellationDialog?.setSecondaryCTAText(getString(com.tokopedia.product.addedit.R.string.action_confirm_cancellation))
+            cancellationDialog?.setPrimaryCTAText(getString(R.string.action_cancel_cancellation))
+            cancellationDialog?.setSecondaryCTAText(getString(R.string.action_confirm_cancellation))
             cancellationDialog?.setPrimaryCTAClickListener {
                 cancellationDialog?.dismiss()
             }

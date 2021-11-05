@@ -62,6 +62,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     fun addData(variantDetail: VariantDetail) {
         items.add(variantDetail)
         selectedItems.add(ViewHolderState.SELECTED)
+        onVariantTypeSelected(selectedItems.lastIndex) // set as selected, trigger onVariantTypeSelected
         notifyDataSetChanged()
     }
 

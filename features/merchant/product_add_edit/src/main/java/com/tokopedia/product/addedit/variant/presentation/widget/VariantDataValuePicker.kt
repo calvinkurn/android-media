@@ -95,6 +95,8 @@ class VariantDataValuePicker : LinearLayout {
 
         // set empty message visibility
         typographyEmptyVariantValue.isVisible = variantUnitValues.isEmpty()
+        typographyEmptyVariantValue.text = context.getString(R.string.label_variant_value_empty,
+            variantData.name, variantData.name)
 
         // populate the listItemUnifyList with data
         variantUnitValues.forEach {
