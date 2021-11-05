@@ -1564,7 +1564,7 @@ class PlayUserInteractionFragment @Inject constructor(
         val pinnedMessageId = pinnedView?.id ?: return
         if (videoPlayer.isYouTube && channelType.isVod) {
             view?.changeConstraint {
-                connect(pinnedMessageId, ConstraintSet.BOTTOM, likeView.id, ConstraintSet.BOTTOM, 0)
+                connect(pinnedMessageId, ConstraintSet.BOTTOM, likeView.id, ConstraintSet.TOP, offset8)
             }
         } else if (channelType.isLive || pinnedVoucherView?.isShown() == true || productFeaturedView?.isShown() == true) {
             val pinnedVoucherId = pinnedVoucherView?.id ?: return

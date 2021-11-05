@@ -132,7 +132,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_pinned_voucher"
-        app:layout_constraintEnd_toStartOf="@id/view_like"
+        app:layout_constraintEnd_toStartOf="@id/view_share_link"
         app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
