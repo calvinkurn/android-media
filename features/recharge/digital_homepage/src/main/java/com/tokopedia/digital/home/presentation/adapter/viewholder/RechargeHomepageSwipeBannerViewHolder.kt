@@ -43,7 +43,6 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
             if(element.section.items.isNotEmpty()){
                 autoplayDuration = 5000L
                 autoplay = true
-                infinite = true
             }
             else {
                 listener.loadRechargeSectionData(element.visitableId())
