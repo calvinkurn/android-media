@@ -82,5 +82,9 @@
     <string name="fragment_silent_verif_subtitle_success">Selamat belanja di Tokopedia, ya!</string>
     <string name="fragment_silent_verif_title_fail">Oops, ada sedikit gangguan</string>
     <string name="fragment_silent_verif_subtitle_fail">Nomor HP kamu belum berhasil diverifikasi.\nCoba sekali lagi, yuk!</string>
+    <string name="fragment_silent_verif_title_fail_limit">Coba metode lainnya, yuk!</string>
+    <string name="fragment_silent_verif_subtitle_fail_limit">Kamu udah coba metode ini tiga kali, ubah metode biar bisa lanjut verifikasi.</string>
+    <string name="fragment_silent_verif_label_button_change_method">Ubah Metode Verifikasi</string>
+    <string name="fragment_silent_verif_subtitle_fail_change_method">Nomor HP kamu belum berhasil diverifikasi.\nCoba metode lain, yuk!</string>
 
 </resources>

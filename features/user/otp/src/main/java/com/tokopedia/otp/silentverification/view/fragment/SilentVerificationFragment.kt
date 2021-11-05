@@ -261,19 +261,54 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             analytics.trackSilentVerificationResult(TrackingOtpConstant.Label.LABEL_SUCCESS)
             renderSuccessPage(data)
         } else {
+            onValidateFailed()
             analytics.trackSilentVerificationResult("${TrackingOtpConstant.Label.LABEL_FAILED}isSuccess:${data.success} - ${data.errorMessage}")
         }
     }
 
     private fun onRequestSuccess(data: RequestSilentVerificationResult) {
         activity?.let {
-            if (data.evUrl.isNotEmpty() && data.tokenId.isNotEmpty() && data.errorMessage.isEmpty()) {
+            if (data.evUrl.isNotEmpty() && data.tokenId.isNotEmpty() && data.errorCode.isEmpty()) {
                 tokenId = data.tokenId
                 verify(data.evUrl)
-            } else {
+            } else if(data.errorCode.isNotEmpty()) {
+                when(data.errorCode) {
+                    ERROR_LIMIT_CODE -> {
+                        onErrorLimit()
+                    }
+                    ERROR_GENERAL -> {
+                        onVerificationError(Throwable(ERROR_GENERAL))
+                    }
+                }
+            }
+            else {
                 onVerificationError(Throwable(data.errorMessage))
             }
         }
+    }
+
+    private fun onValidateFailed() {
+        binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_fail_limit)
+        binding?.fragmentSilentVerifSubtitle?.text = getString(R.string.fragment_silent_verif_subtitle_fail_change_method)
+
+        binding?.fragmentSilentVerifTryAgainBtn?.show()
+        binding?.fragmentSilentVerifTryAgainBtn?.text = getString(R.string.fragment_silent_verif_label_button_change_method)
+        binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
+            activity?.finish()
+        }
+        binding?.fragmentSilentVerifTryChangeMethodBtn?.hide()
+    }
+
+    private fun onErrorLimit() {
+        binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_fail_limit)
+        binding?.fragmentSilentVerifSubtitle?.text = getString(R.string.fragment_silent_verif_subtitle_fail_limit)
+
+        binding?.fragmentSilentVerifTryAgainBtn?.show()
+        binding?.fragmentSilentVerifTryAgainBtn?.text = getString(R.string.fragment_silent_verif_label_button_change_method)
+        binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
+            activity?.finish()
+        }
+        binding?.fragmentSilentVerifTryChangeMethodBtn?.hide()
     }
 
     private fun mapBokuResult(query: String): Map<String, String> {
@@ -384,6 +419,9 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         private const val KEY_CARRIER = "Carrier"
 
         private const val VALUE_SUCCESS = "Success"
+
+        private const val ERROR_LIMIT_CODE = "110001"
+        private const val ERROR_GENERAL = "110002"
 
         private const val LOTTIE_SUCCESS_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_success.json"
         private const val LOTTIE_BG_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_animation_bg_small.json"
