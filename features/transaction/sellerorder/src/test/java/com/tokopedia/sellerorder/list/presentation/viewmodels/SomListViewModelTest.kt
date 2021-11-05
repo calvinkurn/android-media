@@ -1,32 +1,67 @@
 package com.tokopedia.sellerorder.list.presentation.viewmodels
 
 import androidx.lifecycle.MediatorLiveData
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
 import com.tokopedia.sellerorder.common.util.BulkRequestPickupStatus
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
-import com.tokopedia.sellerorder.list.domain.usecases.*
-import com.tokopedia.sellerorder.list.presentation.models.*
-import com.tokopedia.sellerorder.util.observeAwaitSpecificValue
+import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkAcceptOrderUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkRequestPickupUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetBulkAcceptOrderStatusUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetFilterListUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetMultiShippingStatusUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetOrderListUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTickerUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTopAdsCategoryUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetWaitingPaymentUseCase
+import com.tokopedia.sellerorder.list.presentation.models.AllNotEligible
+import com.tokopedia.sellerorder.list.presentation.models.AllSuccess
+import com.tokopedia.sellerorder.list.presentation.models.AllValidationFail
+import com.tokopedia.sellerorder.list.presentation.models.FailRetry
+import com.tokopedia.sellerorder.list.presentation.models.MultiShippingStatusUiModel
+import com.tokopedia.sellerorder.list.presentation.models.NotEligibleAndFail
+import com.tokopedia.sellerorder.list.presentation.models.PartialSuccess
+import com.tokopedia.sellerorder.list.presentation.models.PartialSuccessNotEligible
+import com.tokopedia.sellerorder.list.presentation.models.PartialSuccessNotEligibleFail
+import com.tokopedia.sellerorder.list.presentation.models.RefreshOrder
+import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderStatusUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPickupUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
+import com.tokopedia.sellerorder.util.TestHelper.invokeSuspend
 import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.Ordering
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.spyk
+import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.lang.reflect.Field
 import java.lang.reflect.Method
+import kotlin.coroutines.Continuation
 
+@ExperimentalCoroutinesApi
 class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
     @RelaxedMockK
@@ -69,8 +104,13 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     private lateinit var retryRequestPickup: Field
     private lateinit var retryRequestPickupUser: Field
     private lateinit var getSuccessBulkAcceptOrderResult: Method
-
-    private val dispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
+    private lateinit var getFailingOrderIdsFromBulkRequestPickupStatus: Method
+    private lateinit var getSuccessBulkRequestPickupResultData: Method
+    private lateinit var getTotalNotEligibleOrderFromBulkRequestPickupResult: Method
+    private lateinit var getTotalEligibleOrderFromBulkRequestPickupResult: Method
+    private lateinit var getBulkRequestPickupJobID: Method
+    private lateinit var getBulkRequestPickupStatus: Method
+    private lateinit var waitForGetFiltersCompleted: Method
 
     private val partialSuccessGetBulkAcceptOrderStatus = SomListBulkAcceptOrderStatusUiModel(
         SomListBulkAcceptOrderStatusUiModel.Data(
@@ -88,11 +128,28 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     @Before
     override fun setUp() {
         super.setUp()
-        viewModel = spyk(SomListViewModel(somAcceptOrderUseCase,
-                somRejectOrderUseCase, somRejectCancelOrderUseCase, somEditRefNumUseCase, somValidateOrderUseCase,
-                userSessionInterface, dispatcher, somListGetTickerUseCase, somListGetFilterListUseCase,
-                somListGetWaitingPaymentUseCase, somListGetOrderListUseCase, somListGetTopAdsCategoryUseCase,
-                bulkAcceptOrderStatusUseCase, bulkAcceptOrderUseCase, bulkRequestPickupUseCase, multiShippingStatusUseCase, authorizeAccessUseCase, authorizeMultiAcceptAccessUseCase))
+        viewModel = spyk(
+            SomListViewModel(
+                somAcceptOrderUseCase,
+                somRejectOrderUseCase,
+                somRejectCancelOrderUseCase,
+                somEditRefNumUseCase,
+                somValidateOrderUseCase,
+                userSessionInterface,
+                coroutineTestRule.dispatchers,
+                somListGetTickerUseCase,
+                somListGetFilterListUseCase,
+                somListGetWaitingPaymentUseCase,
+                somListGetOrderListUseCase,
+                somListGetTopAdsCategoryUseCase,
+                bulkAcceptOrderStatusUseCase,
+                bulkAcceptOrderUseCase,
+                bulkRequestPickupUseCase,
+                multiShippingStatusUseCase,
+                authorizeAccessUseCase,
+                authorizeMultiAcceptAccessUseCase
+            )
+        )
 
         somGetOrderListJobField = viewModel::class.java.getDeclaredField("getOrderListJob").apply {
             isAccessible = true
@@ -115,57 +172,78 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         getSuccessBulkAcceptOrderResult = viewModel::class.java.getDeclaredMethod("getSuccessBulkAcceptOrderResult").apply {
             isAccessible = true
         }
+        getFailingOrderIdsFromBulkRequestPickupStatus = viewModel::class.java.getDeclaredMethod("getFailingOrderIdsFromBulkRequestPickupStatus", MultiShippingStatusUiModel::class.java).apply {
+            isAccessible = true
+        }
+        getSuccessBulkRequestPickupResultData = viewModel::class.java.getDeclaredMethod("getSuccessBulkRequestPickupResultData").apply {
+            isAccessible = true
+        }
+        getTotalNotEligibleOrderFromBulkRequestPickupResult = viewModel::class.java.getDeclaredMethod("getTotalNotEligibleOrderFromBulkRequestPickupResult").apply {
+            isAccessible = true
+        }
+        getTotalEligibleOrderFromBulkRequestPickupResult = viewModel::class.java.getDeclaredMethod("getTotalEligibleOrderFromBulkRequestPickupResult").apply {
+            isAccessible = true
+        }
+        getBulkRequestPickupJobID = viewModel::class.java.getDeclaredMethod("getBulkRequestPickupJobID").apply {
+            isAccessible = true
+        }
+        getBulkRequestPickupStatus = viewModel::class.java.getDeclaredMethod("getBulkRequestPickupStatus").apply {
+            isAccessible = true
+        }
+        waitForGetFiltersCompleted = viewModel::class.java.getDeclaredMethod("waitForGetFiltersCompleted", Continuation::class.java).apply {
+            isAccessible = true
+        }
     }
 
-    override fun acceptOrder_shouldReturnSuccess() {
+    override fun acceptOrder_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         quickActionRefreshOrderTest(true) {
             super.acceptOrder_shouldReturnSuccess()
         }
     }
 
-    override fun acceptOrder_shouldReturnFail() {
+    override fun acceptOrder_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         quickActionRefreshOrderTest(false) {
             super.acceptOrder_shouldReturnFail()
         }
     }
 
-    override fun rejectOrder_shouldReturnSuccess() {
+    override fun rejectOrder_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         quickActionRefreshOrderTest(true) {
             super.rejectOrder_shouldReturnSuccess()
         }
     }
 
-    override fun rejectOrder_shouldReturnFail() {
+    override fun rejectOrder_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         quickActionRefreshOrderTest(false) {
             super.rejectOrder_shouldReturnFail()
         }
     }
 
-    override fun editAwb_shouldReturnSuccess() {
+    override fun editAwb_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         quickActionRefreshOrderTest(true) {
             super.editAwb_shouldReturnSuccess()
         }
     }
 
-    override fun editAwb_shouldReturnFail() {
+    override fun editAwb_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         quickActionRefreshOrderTest(false) {
             super.editAwb_shouldReturnFail()
         }
     }
 
-    override fun rejectCancelOrder_shouldReturnSuccess() {
+    override fun rejectCancelOrder_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         quickActionRefreshOrderTest(true) {
             super.rejectCancelOrder_shouldReturnSuccess()
         }
     }
 
-    override fun rejectCancelOrder_shouldReturnFail() {
+    override fun rejectCancelOrder_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         quickActionRefreshOrderTest(false) {
             super.rejectCancelOrder_shouldReturnFail()
         }
     }
 
-    private fun quickActionRefreshOrderTest(shouldRefresh: Boolean, quickAction: () -> Unit) {
+    private fun quickActionRefreshOrderTest(shouldRefresh: Boolean, quickAction: () -> Unit) = coroutineTestRule.runBlockingTest {
         every {
             viewModel.getFilters(false)
             viewModel.refreshSelectedOrder(orderId, invoice)
@@ -184,7 +262,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         }
     }
 
-    private fun doGetTopAdsCategory_shouldSuccess(result: Int = 1) {
+    private fun doGetTopAdsCategory_shouldSuccess(result: Int = 1) = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetTopAdsCategoryUseCase.executeOnBackground()
         } returns result
@@ -199,7 +277,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         assert(topAdsCategoryResult is Success && topAdsCategoryResult.data == result)
     }
 
-    private fun setGetDataOrderListParams() {
+    private fun setGetDataOrderListParams() = coroutineTestRule.runBlockingTest {
         val newParams = viewModel.getDataOrderListParams().apply {
             search = "keyword"
             startDate = "12/12/2014"
@@ -214,79 +292,67 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun bulkAcceptOrder_shouldSuccess() {
+    fun bulkAcceptOrder_shouldSuccess() = coroutineTestRule.runBlockingTest {
         val orderIds = listOf("0", "1", "2")
-
-        coEvery {
-            bulkAcceptOrderUseCase.executeOnBackground()
-        } returns SomListBulkAcceptOrderUiModel(SomListBulkAcceptOrderUiModel.Data())
-
-        viewModel.bulkAcceptOrder(orderIds)
-
+        viewModel.bulkAcceptOrderResult.observe({lifecycle}) {}
+        doSuccessBulkAcceptOrder(orderIds)
         coVerify(ordering = Ordering.SEQUENCE) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
             bulkAcceptOrderUseCase.executeOnBackground()
         }
-
-        assert(viewModel.bulkAcceptOrderResult.observeAwaitValue() is Success)
+        assert(viewModel.bulkAcceptOrderResult.value is Success)
     }
 
     @Test
-    fun bulkAcceptOrder_shouldFailed() {
+    fun bulkAcceptOrder_shouldFailed() = coroutineTestRule.runBlockingTest {
         val orderIds = listOf("0", "1", "2")
-
-        coEvery {
+        viewModel.bulkAcceptOrderResult.observe({lifecycle}) {}
+        doFailedBulkAcceptOrder(orderIds)
+        coVerify(ordering = Ordering.SEQUENCE) {
+            bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
             bulkAcceptOrderUseCase.executeOnBackground()
-        } throws Throwable()
-
-        viewModel.bulkAcceptOrder(orderIds)
-
-        assert(viewModel.bulkAcceptOrderResult.observeAwaitValue() is Fail)
+        }
+        assert(viewModel.bulkAcceptOrderResult.value is Fail)
     }
 
     @Test
-    fun getBulkAcceptOrderStatus_shouldSuccess() {
+    fun getBulkAcceptOrderStatus_shouldNotExecuteWhenBulkAcceptOrderIsFail() = coroutineTestRule.runBlockingTest {
+        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        bulkAcceptOrder_shouldFailed()
+        coVerify(inverse = true) {
+            bulkAcceptOrderStatusUseCase.executeOnBackground()
+        }
+        assertNull(viewModel.bulkAcceptOrderStatusResult.value)
+    }
+
+    @Test
+    fun getBulkAcceptOrderStatus_shouldSuccess() = coroutineTestRule.runBlockingTest {
         val orderIds = listOf("0", "1", "2")
-
-        coEvery {
-            bulkAcceptOrderUseCase.executeOnBackground()
-        } returns SomListBulkAcceptOrderUiModel(SomListBulkAcceptOrderUiModel.Data())
-
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         } returns allSuccessBulkAcceptOrderStatus
-
-        viewModel.bulkAcceptOrder(orderIds)
-        viewModel.bulkAcceptOrderStatusResult.observeForever{}
-
-        coVerify(ordering = Ordering.ORDERED, timeout = 60000) {
+        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        doSuccessBulkAcceptOrder(orderIds)
+        coVerify(ordering = Ordering.ORDERED) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
             bulkAcceptOrderUseCase.executeOnBackground()
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        coVerify(exactly = 1, timeout = 60000) {
+        coVerify(exactly = 1) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitSpecificValue(
-            expected = Success(allSuccessBulkAcceptOrderStatus)
-        )
-        assert(result is Success && result.data == allSuccessBulkAcceptOrderStatus)
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assert(result is Success)
+        assertEquals((result as Success).data, allSuccessBulkAcceptOrderStatus)
     }
 
     @Test
-    fun getBulkAcceptOrderStatus_shouldPartialSuccessThenFullSuccessAfterRetry() {
+    fun getBulkAcceptOrderStatus_shouldPartialSuccessThenFullSuccessAfterRetry() = coroutineTestRule.runBlockingTest {
         var count = 0
         val orderIds = listOf("0", "1", "2")
-
-        coEvery {
-            bulkAcceptOrderUseCase.executeOnBackground()
-        } returns SomListBulkAcceptOrderUiModel(SomListBulkAcceptOrderUiModel.Data())
-
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
-        } coAnswers {
+        } answers {
             count++
             if (count == 1) {
                 partialSuccessGetBulkAcceptOrderStatus
@@ -294,38 +360,28 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 allSuccessBulkAcceptOrderStatus
             }
         }
-
-        viewModel.bulkAcceptOrder(orderIds)
-        viewModel.bulkAcceptOrderStatusResult.observeForever{}
-
-        coVerify(ordering = Ordering.ORDERED, timeout = 60000) {
+        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        doSuccessBulkAcceptOrder(orderIds)
+        coVerify(ordering = Ordering.ORDERED) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
             bulkAcceptOrderUseCase.executeOnBackground()
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        coVerify(exactly = 2, timeout = 60000) {
+        coVerify(exactly = 2) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitSpecificValue(
-            expected = Success(allSuccessBulkAcceptOrderStatus)
-        )
-        assert(result is Success && result.data == allSuccessBulkAcceptOrderStatus)
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assert(result is Success)
+        assertEquals((result as Success).data, allSuccessBulkAcceptOrderStatus)
     }
 
     @Test
     fun getBulkAcceptOrderStatus_shouldFailedThenSuccessAfterAutoRetry() {
         var count = 0
         val orderIds = listOf("0", "1", "2")
-
-        coEvery {
-            bulkAcceptOrderUseCase.executeOnBackground()
-        } returns SomListBulkAcceptOrderUiModel(SomListBulkAcceptOrderUiModel.Data())
-
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
-        } coAnswers {
+        } answers {
             count++
             if (count == 1) {
                 throw Throwable()
@@ -333,38 +389,28 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 allSuccessBulkAcceptOrderStatus
             }
         }
-
-        viewModel.bulkAcceptOrder(orderIds)
-        viewModel.bulkAcceptOrderStatusResult.observeForever{}
-
-        coVerify(ordering = Ordering.ORDERED, timeout = 60000) {
+        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        doSuccessBulkAcceptOrder(orderIds)
+        coVerify(ordering = Ordering.ORDERED, timeout = 5000) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
             bulkAcceptOrderUseCase.executeOnBackground()
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        coVerify(exactly = 2, timeout = 60000) {
+        coVerify(exactly = 2, timeout = 5000) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitSpecificValue(
-            expected = Success(allSuccessBulkAcceptOrderStatus)
-        )
-        assert(result is Success && result.data == allSuccessBulkAcceptOrderStatus)
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assert(result is Success)
+        assertEquals((result as Success).data, allSuccessBulkAcceptOrderStatus)
     }
 
     @Test
-    fun getBulkAcceptOrderStatus_shouldFinallySuccessAfterAutoRetryWithFailedInBetweenRetry() {
+    fun getBulkAcceptOrderStatus_shouldFinallySuccessAfterAutoRetryWithFailedInBetweenRetry() = coroutineTestRule.runBlockingTest {
         var count = 0
         val orderIds = listOf("0", "1", "2")
-
-        coEvery {
-            bulkAcceptOrderUseCase.executeOnBackground()
-        } returns SomListBulkAcceptOrderUiModel(SomListBulkAcceptOrderUiModel.Data())
-
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
-        } coAnswers {
+        } answers {
             count++
             if (count == 1) {
                 partialSuccessGetBulkAcceptOrderStatus
@@ -374,70 +420,49 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 allSuccessBulkAcceptOrderStatus
             }
         }
-
-        viewModel.bulkAcceptOrder(orderIds)
-        viewModel.bulkAcceptOrderStatusResult.observeForever{}
-
-        coVerify(ordering = Ordering.ORDERED, timeout = 60000) {
+        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        doSuccessBulkAcceptOrder(orderIds)
+        coVerify(ordering = Ordering.ORDERED) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
             bulkAcceptOrderUseCase.executeOnBackground()
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        coVerify(exactly = 3, timeout = 60000) {
+        coVerify(exactly = 3) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitSpecificValue(
-            expected = Success(allSuccessBulkAcceptOrderStatus)
-        )
-        assert(result is Success && result.data == allSuccessBulkAcceptOrderStatus)
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assert(result is Success)
+        assertEquals((result as Success).data, allSuccessBulkAcceptOrderStatus)
     }
 
     @Test
     fun getBulkAcceptOrderStatus_shouldPartialSuccessWhenAlwaysGetPartialSuccessResult() {
-        var count = 0
         val orderIds = listOf("0", "1", "2")
-
-        coEvery {
-            bulkAcceptOrderUseCase.executeOnBackground()
-        } returns SomListBulkAcceptOrderUiModel(SomListBulkAcceptOrderUiModel.Data())
-
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         } returns partialSuccessGetBulkAcceptOrderStatus
-
-        viewModel.bulkAcceptOrder(orderIds)
-        viewModel.bulkAcceptOrderStatusResult.observeForever{}
-
-        coVerify(ordering = Ordering.ORDERED, timeout = 60000) {
+        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        doSuccessBulkAcceptOrder(orderIds)
+        coVerify(ordering = Ordering.ORDERED, timeout = 5000) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
             bulkAcceptOrderUseCase.executeOnBackground()
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        coVerify(exactly = 20, timeout = 60000) {
+        coVerify(exactly = 20, timeout = 5000) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitSpecificValue(
-            expected = Success(partialSuccessGetBulkAcceptOrderStatus)
-        )
-        assert(result is Success && result.data == partialSuccessGetBulkAcceptOrderStatus)
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assert(result is Success)
+        assertEquals((result as Success).data, partialSuccessGetBulkAcceptOrderStatus)
     }
 
     @Test
     fun getBulkAcceptOrderStatus_shouldShowLastPartialSuccessWhenNeverGetAllSuccessResult() {
         var count = 0
         val orderIds = listOf("0", "1", "2")
-
-        coEvery {
-            bulkAcceptOrderUseCase.executeOnBackground()
-        } returns SomListBulkAcceptOrderUiModel(SomListBulkAcceptOrderUiModel.Data())
-
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
-        } coAnswers {
+        } answers {
             count++
             if (count == 1) {
                 partialSuccessGetBulkAcceptOrderStatus
@@ -445,83 +470,68 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 throw Throwable()
             }
         }
-
-        viewModel.bulkAcceptOrder(orderIds)
-        viewModel.bulkAcceptOrderStatusResult.observeForever{}
-
-        coVerify(ordering = Ordering.ORDERED, timeout = 60000) {
+        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        doSuccessBulkAcceptOrder(orderIds)
+        coVerify(ordering = Ordering.ORDERED, timeout = 5000) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
             bulkAcceptOrderUseCase.executeOnBackground()
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        coVerify(exactly = 20, timeout = 60000) {
+        coVerify(exactly = 20, timeout = 5000) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitSpecificValue(
-            expected = Success(partialSuccessGetBulkAcceptOrderStatus)
-        )
-        assert(result is Success && result.data == partialSuccessGetBulkAcceptOrderStatus)
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assert(result is Success)
+        assertEquals((result as Success).data, partialSuccessGetBulkAcceptOrderStatus)
     }
 
     @Test
     fun getBulkAcceptOrderStatus_shouldAlwaysFailed() {
         val orderIds = listOf("0", "1", "2")
-
-        coEvery {
-            bulkAcceptOrderUseCase.executeOnBackground()
-        } returns SomListBulkAcceptOrderUiModel(SomListBulkAcceptOrderUiModel.Data())
-
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         } throws Throwable()
-
-        viewModel.bulkAcceptOrder(orderIds)
-        viewModel.bulkAcceptOrderStatusResult.observeForever{}
-
-        coVerify(ordering = Ordering.ORDERED, timeout = 60000) {
+        viewModel.bulkAcceptOrderStatusResult.observe({lifecycle}) {}
+        doSuccessBulkAcceptOrder(orderIds)
+        coVerify(ordering = Ordering.ORDERED, timeout = 5000) {
             bulkAcceptOrderUseCase.setParams(orderIds, userSessionInterface.userId)
             bulkAcceptOrderUseCase.executeOnBackground()
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        coVerify(exactly = 20, timeout = 60000) {
+        coVerify(exactly = 20, timeout = 5000) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitValue()
-        assert(result == null)
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assertTrue(result is Fail)
     }
 
     @Test
     fun retryGetBulkAcceptOrderStatus_shouldSuccess() {
         getBulkAcceptOrderStatus_shouldAlwaysFailed()
-
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         } returns allSuccessBulkAcceptOrderStatus
-
-        viewModel.retryGetBulkAcceptOrderStatus()
-
-        coVerify(exactly = 21, timeout = 60000) {
+        coVerify(exactly = 20, timeout = 5000) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitSpecificValue(
-            expected = Success(allSuccessBulkAcceptOrderStatus)
-        )
-        assert(result is Success && result.data == allSuccessBulkAcceptOrderStatus)
+        coroutineTestRule.runBlockingTest {
+            viewModel.retryGetBulkAcceptOrderStatus()
+        }
+        coVerify(exactly = 21, timeout = 5000) {
+            bulkAcceptOrderStatusUseCase.executeOnBackground()
+        }
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assert(result is Success)
+        assertEquals((result as Success).data, allSuccessBulkAcceptOrderStatus)
     }
 
     @Test
     fun retryGetBulkAcceptOrderStatus_shouldPartialSuccessThenFullSuccessAfterRetry() {
         getBulkAcceptOrderStatus_shouldAlwaysFailed()
         var count = 0
-
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
-        } coAnswers {
+        } answers {
             count++
             if (count == 1) {
                 partialSuccessGetBulkAcceptOrderStatus
@@ -529,27 +539,24 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 allSuccessBulkAcceptOrderStatus
             }
         }
-
-        viewModel.retryGetBulkAcceptOrderStatus()
-
-        coVerify(exactly = 22, timeout = 60000) {
+        coroutineTestRule.runBlockingTest {
+            viewModel.retryGetBulkAcceptOrderStatus()
+        }
+        coVerify(exactly = 22, timeout = 5000) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitSpecificValue(
-            expected = Success(allSuccessBulkAcceptOrderStatus)
-        )
-        assert(result is Success && result.data == allSuccessBulkAcceptOrderStatus)
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assert(result is Success)
+        assertEquals((result as Success).data, allSuccessBulkAcceptOrderStatus)
     }
 
     @Test
     fun retryGetBulkAcceptOrderStatus_shouldFailedThenSuccessAfterAutoRetry() {
         getBulkAcceptOrderStatus_shouldAlwaysFailed()
         var count = 0
-
         coEvery {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
-        } coAnswers {
+        } answers {
             count++
             if (count == 1) {
                 throw Throwable()
@@ -557,71 +564,69 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 allSuccessBulkAcceptOrderStatus
             }
         }
-
-        viewModel.retryGetBulkAcceptOrderStatus()
-
-        coVerify(exactly = 22, timeout = 60000) {
+        coroutineTestRule.runBlockingTest {
+            viewModel.retryGetBulkAcceptOrderStatus()
+        }
+        coVerify(exactly = 22, timeout = 5000) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitSpecificValue(
-            expected = Success(allSuccessBulkAcceptOrderStatus)
-        )
-        assert(result is Success && result.data == allSuccessBulkAcceptOrderStatus)
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assert(result is Success)
+        assertEquals((result as Success).data, allSuccessBulkAcceptOrderStatus)
     }
 
     @Test
     fun retryGetBulkAcceptOrderStatus_shouldAlwaysFailed() {
         getBulkAcceptOrderStatus_shouldAlwaysFailed()
-
-        coEvery {
-            bulkAcceptOrderStatusUseCase.executeOnBackground()
-        } throws Throwable()
-
-        viewModel.retryGetBulkAcceptOrderStatus()
-        val result = viewModel.bulkAcceptOrderStatusResult.observeAwaitValue()
-
-        coVerify(exactly = 40, timeout = 60000) {
+        coroutineTestRule.runBlockingTest {
+            viewModel.retryGetBulkAcceptOrderStatus()
+        }
+        coVerify(exactly = 40, timeout = 5000) {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
-
-        assert(result == null)
+        val result = viewModel.bulkAcceptOrderStatusResult.value
+        assertTrue(result is Fail)
     }
 
     @Test
-    fun bulkRequestPickup_shouldSuccess() = runBlocking {
-        val orderIds = listOf("0234", "1456", "2678")
-
-        coEvery {
-            bulkRequestPickupUseCase.executeOnBackground()
-        } returns SomListBulkRequestPickupUiModel(data = SomListBulkRequestPickupUiModel.Data())
-
-        viewModel.bulkRequestPickup(orderIds)
-
-        delay(DELAY_REQUEST_PICK_UP)
-
+    fun bulkRequestPickup_shouldSuccess() = coroutineTestRule.runBlockingTest {
+        val bulkRequestPickupResultData = SomListBulkRequestPickupUiModel(
+            data = SomListBulkRequestPickupUiModel.Data()
+        )
+        viewModel.bulkRequestPickupResult.observe({lifecycle}) {}
+        doSuccessBulkRequestPickup(bulkRequestPickupResultData)
         coVerify {
             bulkRequestPickupUseCase.executeOnBackground()
         }
-
-        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is Success)
+        val result = viewModel.bulkRequestPickupResult.value
+        assert(result is Success)
     }
 
     @Test
-    fun bulkRequestPickup_shouldFailed() {
-        val orderIds = listOf("0", "1", "2")
-
-        coEvery {
+    fun bulkRequestPickup_shouldFailed() = coroutineTestRule.runBlockingTest {
+        viewModel.bulkRequestPickupResult.observe({ lifecycle }) {}
+        doFailedBulkRequestPickup()
+        coVerify {
             bulkRequestPickupUseCase.executeOnBackground()
-        } throws Throwable()
-
-        viewModel.bulkRequestPickup(orderIds)
-
-        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is Fail)
+        }
+        val result = viewModel.bulkRequestPickupResult.value
+        assert(result is Fail)
     }
 
     @Test
-    fun getMultiShippingStatus_shouldSuccess() = runBlocking {
+    fun getMultiShippingStatus_shouldNotExecuteWhenBulkRequestPickupIsFail() =
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickupStatusResult.observe({ lifecycle }) {}
+            bulkRequestPickup_shouldFailed()
+            coVerify(inverse = true) {
+                multiShippingStatusUseCase.executeOnBackground()
+            }
+            val result = viewModel.bulkRequestPickupStatusResult.value
+            assertNull(result)
+        }
+
+    @Test
+    fun getMultiShippingStatus_shouldSuccess() {
         val orderIds = listOf("0", "1", "2")
         val batchId = "1234566"
 
@@ -635,19 +640,20 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
-        viewModel.bulkRequestPickup(orderIds)
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
 
-        delay(DELAY_REQUEST_PICK_UP)
-
-        coVerify {
+        coVerify(timeout = 5000) {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
-        assert(viewModel.bulkRequestPickupResult.observeAwaitValue() is Success)
+        val result = viewModel.bulkRequestPickupResult.value
+        assert(result is Success)
     }
 
     @Test
-    fun getMultiShippingStatus_shouldFail() = runBlocking {
+    fun getMultiShippingStatus_shouldFail() {
         val orderIds = listOf("0", "1", "2")
         val batchId = "1234566"
 
@@ -661,20 +667,21 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
-        viewModel.bulkRequestPickup(orderIds)
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
 
-        delay(DELAY_REQUEST_PICK_UP)
-
-        coVerify {
+        coVerify(timeout = 5000) {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupStatusResult.observeAwaitValue() is Fail)
+        val result = viewModel.bulkRequestPickupStatusResult.value
+        assert(result is Fail)
     }
 
     @Test
-    fun bulkRequestPickup_shouldAllSuccess() = runBlocking {
+    fun bulkRequestPickup_shouldAllSuccess() {
         val orderIds = listOf("0", "1", "2")
         val batchId = "1234566"
 
@@ -688,20 +695,130 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
-        viewModel.bulkRequestPickup(orderIds)
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
 
-        delay(DELAY_REQUEST_PICK_UP)
-
-        coVerify {
+        coVerify(timeout = 5000) {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is AllSuccess)
+        val result = viewModel.bulkRequestPickupFinalResult.value
+        assert(result is AllSuccess)
     }
 
     @Test
-    fun bulkRequestPickup_shouldPartialSuccessThereIsFailed() = runBlocking {
+    fun bulkRequestPickup_shouldRecheckStatusUntilAllOrdersProcessed() {
+        var count = 0
+        val orderIds = listOf("0", "1", "2")
+        val batchId = "1234566"
+        val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(
+            totalOnProcess = 5,
+            jobId = batchId
+        )
+        val partialSuccessMultiShippingStatusUiModel = MultiShippingStatusUiModel(
+            total_order = 5,
+            processed = 3,
+            success = 3
+        )
+        val allSuccessMultiShippingStatusUiModel = MultiShippingStatusUiModel(
+            total_order = 5,
+            processed = 5,
+            success = 5
+        )
+
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } returns SomListBulkRequestPickupUiModel(somListBulkRequestPickupUiModel)
+        coEvery {
+            multiShippingStatusUseCase.executeOnBackground()
+        } answers {
+            count++
+            if (count == 1) {
+                partialSuccessMultiShippingStatusUiModel
+            } else {
+                allSuccessMultiShippingStatusUiModel
+            }
+        }
+
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
+
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
+
+        coVerify(exactly = 1, timeout = 5000) {
+            bulkRequestPickupUseCase.executeOnBackground()
+        }
+        coVerify(exactly = 2, timeout = 5000) {
+            multiShippingStatusUseCase.executeOnBackground()
+        }
+
+        val result = viewModel.bulkRequestPickupFinalResult.value
+        assert(result is AllSuccess)
+    }
+
+    @Test
+    fun bulkRequestPickup_shouldRecheckStatusWhenContainsOnlySuccessAndThereIsSomeUnprocessedUntilReachRetryLimit() {
+        val orderIds = listOf("0", "1", "2")
+        val batchId = "1234566"
+        val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(totalOnProcess = 5, jobId = batchId)
+        val partialSuccessMultiShippingStatusUiModel = MultiShippingStatusUiModel(total_order = 5, success = 3)
+
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } returns SomListBulkRequestPickupUiModel(somListBulkRequestPickupUiModel)
+        coEvery {
+            multiShippingStatusUseCase.executeOnBackground()
+        } returns partialSuccessMultiShippingStatusUiModel
+
+        viewModel.bulkRequestPickupStatusResult.observe({ lifecycle }) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
+
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
+
+        coVerify(exactly = 1, timeout = 5000) {
+            bulkRequestPickupUseCase.executeOnBackground()
+        }
+        coVerify(exactly = 11, timeout = 5000) {
+            multiShippingStatusUseCase.executeOnBackground()
+        }
+    }
+
+    @Test
+    fun bulkRequestPickup_shouldRecheckStatusWhenContainsSuccessFailAndNotEligibleUntilReachRetryLimit() {
+        val orderIds = listOf("0", "1", "2")
+        val batchId = "1234566"
+        val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(totalOnProcess = 5, jobId = batchId)
+        val partialSuccessMultiShippingStatusUiModel = MultiShippingStatusUiModel(total_order = 5, success = 3)
+
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } returns SomListBulkRequestPickupUiModel(somListBulkRequestPickupUiModel)
+        coEvery {
+            multiShippingStatusUseCase.executeOnBackground()
+        } returns partialSuccessMultiShippingStatusUiModel
+
+        viewModel.bulkRequestPickupStatusResult.observe({ lifecycle }) {}
+        viewModel.bulkRequestPickupFinalResultMediator.observe({ lifecycle }) {}
+
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
+
+        coVerify(exactly = 1, timeout = 5000) {
+            bulkRequestPickupUseCase.executeOnBackground()
+        }
+        coVerify(exactly = 11, timeout = 5000) {
+            multiShippingStatusUseCase.executeOnBackground()
+        }
+    }
+
+    @Test
+    fun bulkRequestPickup_shouldPartialSuccessThereIsFailed() {
         val orderIds = listOf("0", "1", "2")
         val batchId = "1234566"
         val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(totalOnProcess = 5, jobId = batchId)
@@ -719,20 +836,21 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
-        viewModel.bulkRequestPickup(orderIds)
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
 
-        delay(DELAY_REQUEST_PICK_UP)
-
-        coVerify {
+        coVerify(timeout = 5000) {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is PartialSuccess)
+        val result = viewModel.bulkRequestPickupFinalResult.value
+        assert(result is PartialSuccess)
     }
 
     @Test
-    fun bulkRequestPickup_shouldPartialSuccessThereNotEligible() = runBlocking {
+    fun bulkRequestPickup_shouldPartialSuccessThereNotEligible() {
         val orderIds = listOf("0", "1", "2", "4", "5")
         val batchId = "1234566"
         val failList = mutableListOf<SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup>().apply {
@@ -754,20 +872,21 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
-        viewModel.bulkRequestPickup(orderIds)
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
 
-        delay(DELAY_REQUEST_PICK_UP)
-
-        coVerify {
+        coVerify(timeout = 5000) {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is PartialSuccessNotEligible)
+        val result = viewModel.bulkRequestPickupFinalResult.value
+        assert(result is PartialSuccessNotEligible)
     }
 
     @Test
-    fun bulkRequestPickup_shouldPartialSuccessThereIsNotEligibleAndFailed() = runBlocking {
+    fun bulkRequestPickup_shouldPartialSuccessThereIsNotEligibleAndFailed() {
         val orderIds = listOf("0", "1", "2", "4", "5", "6", "7")
         val batchId = "1234566"
         val failList = mutableListOf<SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup>().apply {
@@ -789,20 +908,21 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
-        viewModel.bulkRequestPickup(orderIds)
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
 
-        delay(DELAY_REQUEST_PICK_UP)
-
-        coVerify {
+        coVerify(timeout = 5000) {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is PartialSuccessNotEligibleFail)
+        val result = viewModel.bulkRequestPickupFinalResult.value
+        assert(result is PartialSuccessNotEligibleFail)
     }
 
     @Test
-    fun bulkRequestPickup_shouldNotEligibleAndAllFailed() = runBlocking {
+    fun bulkRequestPickup_shouldNotEligibleAndAllFailed() {
         val orderIds = listOf("0", "1", "2", "4", "5", "6", "7")
         val batchId = "1234566"
         val failList = mutableListOf<SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup>().apply {
@@ -824,20 +944,21 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
-        viewModel.bulkRequestPickup(orderIds)
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
 
-        delay(DELAY_REQUEST_PICK_UP)
-
-        coVerify {
+        coVerify(timeout = 5000) {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is NotEligibleAndFail)
+        val result = viewModel.bulkRequestPickupFinalResult.value
+        assert(result is NotEligibleAndFail)
     }
 
     @Test
-    fun bulkRequestPickup_shouldAllValidationFail() = runBlocking {
+    fun bulkRequestPickup_shouldAllValidationFail() {
         val orderIds = listOf("0", "1", "2", "4", "5", "6", "7")
         val batchId = "1234566"
         val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(jobId = batchId)
@@ -854,20 +975,21 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
-        viewModel.bulkRequestPickup(orderIds)
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
 
-        delay(DELAY_REQUEST_PICK_UP)
-
-        coVerify {
+        coVerify(timeout = 5000) {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is AllValidationFail)
+        val result = viewModel.bulkRequestPickupFinalResult.value
+        assert(result is AllValidationFail)
     }
 
     @Test
-    fun bulkRequestPickup_shouldAllNotEligible() = runBlocking {
+    fun bulkRequestPickup_shouldAllNotEligible() {
         val orderIds = listOf("0", "1", "2", "5", "6", "7")
         val batchId = "1234566"
         val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(jobId = batchId)
@@ -887,19 +1009,20 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
-        viewModel.bulkRequestPickup(orderIds)
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
 
-        delay(DELAY_REQUEST_PICK_UP)
-
-        coVerify {
+        coVerify(timeout = 5000) {
             bulkRequestPickupUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is AllNotEligible)
+        val result = viewModel.bulkRequestPickupFinalResult.value
+        assert(result is AllNotEligible)
     }
 
     @Test
-    fun bulkRequestPickup_shouldFailRetry() = runBlocking {
+    fun bulkRequestPickup_shouldFailRetry() {
         val orderIds = listOf("0", "1", "2", "4", "5", "6", "7")
         val batchId = "1234566"
         val somListBulkRequestPickupUiModel = SomListBulkRequestPickupUiModel.Data(jobId = batchId)
@@ -916,20 +1039,21 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         viewModel.bulkRequestPickupFinalResultMediator.observe( {lifecycle}) {}
 
-        viewModel.bulkRequestPickup(orderIds)
+        coroutineTestRule.runBlockingTest {
+            viewModel.bulkRequestPickup(orderIds)
+        }
 
-        delay(DELAY_REQUEST_PICK_UP)
-
-        coVerify {
+        coVerify(timeout = 5000) {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()
         }
 
-        assert(viewModel.bulkRequestPickupFinalResult.observeAwaitValue() is FailRetry)
+        val result = viewModel.bulkRequestPickupFinalResult.value
+        assert(result is FailRetry)
     }
 
     @Test
-    fun getTickers_shouldSuccess() {
+    fun getTickers_shouldSuccess() = coroutineTestRule.runBlockingTest {
         val ticker = mockk<TickerData>(relaxed = true)
         coEvery {
             somListGetTickerUseCase.executeOnBackground()
@@ -945,7 +1069,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getTickers_shouldFailed() {
+    fun getTickers_shouldFailed() = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetTickerUseCase.executeOnBackground()
         } throws Throwable()
@@ -960,7 +1084,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getFiltersFromCacheAndCloud_shouldSuccess() {
+    fun getFiltersFromCacheAndCloud_shouldSuccess() = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetFilterListUseCase.executeOnBackground(any())
         } answers {
@@ -986,7 +1110,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getFiltersFromCloud_shouldSuccess() {
+    fun getFiltersFromCloud_shouldSuccess() = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetFilterListUseCase.executeOnBackground(any())
         } answers {
@@ -1011,7 +1135,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getFiltersFromCacheAndCloud_shouldFailed() {
+    fun getFiltersFromCacheAndCloud_shouldFailed() = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetFilterListUseCase.executeOnBackground(any())
         } throws Throwable()
@@ -1033,7 +1157,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getFiltersFromCloud_shouldFailed() {
+    fun getFiltersFromCloud_shouldFailed() = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetFilterListUseCase.executeOnBackground(any())
         } throws Throwable()
@@ -1054,24 +1178,24 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getFilters_shouldNotSendRequest_whenCannotShowOrderData() {
+    fun getFilters_shouldNotSendRequest_whenCannotShowOrderData() = coroutineTestRule.runBlockingTest {
         every {
             somListGetFilterListUseCase.isFirstLoad
         } returns true
 
         getAdminPermission_shouldFail()
-        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
+        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observe({ lifecycle }) {}
         viewModel.getFilters(false)
 
         coVerify(exactly = 0) {
             somListGetFilterListUseCase.executeOnBackground(any())
         }
 
-        assert(viewModel.filterResult.observeAwaitValue() == null)
+        assert(viewModel.filterResult.value == null)
     }
 
     @Test
-    fun getWaitingPaymentCounter_shouldSuccess() {
+    fun getWaitingPaymentCounter_shouldSuccess() = coroutineTestRule.runBlockingTest {
         val waitingPaymentCounterData = WaitingPaymentCounter()
         coEvery {
             somListGetWaitingPaymentUseCase.executeOnBackground()
@@ -1087,7 +1211,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getWaitingPaymentCounter_shouldFailed() {
+    fun getWaitingPaymentCounter_shouldFailed() = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetWaitingPaymentUseCase.executeOnBackground()
         } throws Throwable()
@@ -1102,7 +1226,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getWaitingPaymentCounter_shouldNotSuccess_whenCannotShowOrderData() {
+    fun getWaitingPaymentCounter_shouldNotSuccess_whenCannotShowOrderData() = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetWaitingPaymentUseCase.executeOnBackground(any())
         } returns WaitingPaymentCounter()
@@ -1118,7 +1242,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         assertFalse(viewModel.waitingPaymentCounterResult.observeAwaitValue() is Success)
     }
     @Test
-    fun getOrderList_shouldSuccessAndClearAllFailedRefreshOrder() {
+    fun getOrderList_shouldSuccessAndClearAllFailedRefreshOrder() = coroutineTestRule.runBlockingTest {
         val orderId = "1234567890"
         val invoice = "INV/20200922/XX/IX/123456789"
         var counter = 0
@@ -1147,7 +1271,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getOrderList_shouldSuccessNotClearAllFailedRefreshOrder() {
+    fun getOrderList_shouldSuccessNotClearAllFailedRefreshOrder() = coroutineTestRule.runBlockingTest {
         val orderId = "1234567890"
         val invoice = "INV/20200922/XX/IX/123456789"
         var counter = 0
@@ -1176,7 +1300,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getOrderList_shouldCancelOldJobAndSuccess() {
+    fun getOrderList_shouldCancelOldJobAndSuccess() = coroutineTestRule.runBlockingTest {
         val getOrderListJob = mockk<Job>(relaxed = true)
         coEvery {
             somListGetOrderListUseCase.executeOnBackground(any())
@@ -1194,7 +1318,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getOrderList_shouldFailed() {
+    fun getOrderList_shouldFailed() = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetOrderListUseCase.executeOnBackground(any())
         } throws Throwable()
@@ -1210,7 +1334,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getOrderList_shouldNotSuccess_whenCannotShowOrderData() {
+    fun getOrderList_shouldNotSuccess_whenCannotShowOrderData() = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetOrderListUseCase.executeOnBackground(any())
         } returns ("0" to listOf())
@@ -1227,7 +1351,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun refreshSelectedOrder_shouldSuccess() {
+    fun refreshSelectedOrder_shouldSuccess() = coroutineTestRule.runBlockingTest {
         val orderId = "1234567890"
         val invoice = "INV/20200922/XX/IX/123456789"
         val order = SomListOrderUiModel(searchParam = invoice, orderId = orderId)
@@ -1248,7 +1372,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun refreshSelectedOrder_shouldFailed() {
+    fun refreshSelectedOrder_shouldFailed() = coroutineTestRule.runBlockingTest {
         val orderId = "1234567890"
         val invoice = "INV/20200922/XX/IX/123456789"
 
@@ -1268,7 +1392,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun refreshSelectedOrder_shouldNotRefreshingWhenFetchingInitialOrderList() {
+    fun refreshSelectedOrder_shouldNotRefreshingWhenFetchingInitialOrderList() = coroutineTestRule.runBlockingTest {
         val orderId = "1234567890"
         val invoice = "INV/20200922/XX/IX/123456789"
         val order = SomListOrderUiModel(searchParam = invoice, orderId = orderId)
@@ -1291,7 +1415,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun retryRefreshSelectedOrder_shouldSuccess() {
+    fun retryRefreshSelectedOrder_shouldSuccess() = coroutineTestRule.runBlockingTest {
         val somRefreshOrderJob1 = mockk<Job>(relaxed = true)
         val somRefreshOrderJob2 = mockk<Job>(relaxed = true)
         val orderId1 = "1234567890"
@@ -1318,7 +1442,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun retryRefreshSelectedOrder_shouldNotRetryWhenThereIsNoFailedJob() {
+    fun retryRefreshSelectedOrder_shouldNotRetryWhenThereIsNoFailedJob() = coroutineTestRule.runBlockingTest {
         val somRefreshOrderJob1 = mockk<Job>(relaxed = true)
         val orderId1 = "1234567890"
         val invoice1 = "INV/20200922/XX/IX/123456789"
@@ -1337,12 +1461,12 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getTopAdsCategory_shouldSuccess() {
+    fun getTopAdsCategory_shouldSuccess() = coroutineTestRule.runBlockingTest {
         doGetTopAdsCategory_shouldSuccess()
     }
 
     @Test
-    fun getTopAdsCategory_shouldFailed() {
+    fun getTopAdsCategory_shouldFailed() = coroutineTestRule.runBlockingTest {
         coEvery {
             somListGetTopAdsCategoryUseCase.executeOnBackground()
         } throws Throwable()
@@ -1357,7 +1481,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getAdminPermission_shouldSuccess() {
+    fun getAdminPermission_shouldSuccess() = coroutineTestRule.runBlockingTest {
         coEvery {
             authorizeAccessUseCase.execute(any())
         } returns true
@@ -1381,7 +1505,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getAdminPermission_shouldFail() {
+    fun getAdminPermission_shouldFail() = coroutineTestRule.runBlockingTest {
         coEvery {
             authorizeAccessUseCase.execute(any())
         } throws Throwable()
@@ -1402,7 +1526,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getAdminPermission_whenIsShopOwner_shouldNotRunAndUserShouldEligible() {
+    fun getAdminPermission_whenIsShopOwner_shouldNotRunAndUserShouldEligible() = coroutineTestRule.runBlockingTest {
         coEvery {
             userSessionInterface.isShopOwner
         } returns true
@@ -1416,7 +1540,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getAdminPermission_whenIsNotShopOwnerButIsShopAdmin_shouldRun() {
+    fun getAdminPermission_whenIsNotShopOwnerButIsShopAdmin_shouldRun() = coroutineTestRule.runBlockingTest {
         coEvery {
             userSessionInterface.isShopOwner
         } returns false
@@ -1432,47 +1556,47 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun isTopAdsActive_shouldReturnFalseWhenSuccess() {
+    fun isTopAdsActive_shouldReturnFalseWhenSuccess() = coroutineTestRule.runBlockingTest {
         doGetTopAdsCategory_shouldSuccess()
 
         assert(!viewModel.isTopAdsActive())
     }
 
     @Test
-    fun isTopAdsActive_shouldReturnFalse() {
+    fun isTopAdsActive_shouldReturnFalse() = coroutineTestRule.runBlockingTest {
         doGetTopAdsCategory_shouldSuccess(2)
 
         assert(!viewModel.isTopAdsActive())
     }
 
     @Test
-    fun isTopAdsActive_shouldReturnFalseWhenFailed() {
+    fun isTopAdsActive_shouldReturnFalseWhenFailed() = coroutineTestRule.runBlockingTest {
         getTopAdsCategory_shouldFailed()
 
         assert(!viewModel.isTopAdsActive())
     }
 
     @Test
-    fun isTopAdsActive_shouldReturnFalseWhenValueIsNull() {
+    fun isTopAdsActive_shouldReturnFalseWhenValueIsNull() = coroutineTestRule.runBlockingTest {
         assert(!viewModel.isTopAdsActive())
     }
 
     @Test
-    fun isTopAdsActive_shouldReturnTrueWhenUsingManualAds() {
+    fun isTopAdsActive_shouldReturnTrueWhenUsingManualAds() = coroutineTestRule.runBlockingTest {
         doGetTopAdsCategory_shouldSuccess(3)
 
         assert(viewModel.isTopAdsActive())
     }
 
     @Test
-    fun isTopAdsActive_shouldReturnTrueWhenUsingAutoAds() {
+    fun isTopAdsActive_shouldReturnTrueWhenUsingAutoAds() = coroutineTestRule.runBlockingTest {
         doGetTopAdsCategory_shouldSuccess(4)
 
         assert(viewModel.isTopAdsActive())
     }
 
     @Test
-    fun setStatusOrderFilterTest() {
+    fun setStatusOrderFilterTest() = coroutineTestRule.runBlockingTest {
         val statusOrderIds = listOf(220, 400)
         setGetDataOrderListParams()
         viewModel.setStatusOrderFilter(statusOrderIds)
@@ -1481,7 +1605,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun resetGetOrderListParamTest() {
+    fun resetGetOrderListParamTest() = coroutineTestRule.runBlockingTest {
         val somListGetOrderListParam = SomListGetOrderListParam()
         setGetDataOrderListParams()
 
@@ -1491,19 +1615,19 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun hasNextPage_shouldReturnFalse() {
+    fun hasNextPage_shouldReturnFalse() = coroutineTestRule.runBlockingTest {
         viewModel.resetGetOrderListParam()
         assert(!viewModel.hasNextPage())
     }
 
     @Test
-    fun hasNextPage_shouldReturnTrue() {
+    fun hasNextPage_shouldReturnTrue() = coroutineTestRule.runBlockingTest {
         setGetDataOrderListParams()
         assert(viewModel.hasNextPage())
     }
 
     @Test
-    fun setOrderTypeFilterTest() {
+    fun setOrderTypeFilterTest() = coroutineTestRule.runBlockingTest {
         val orderTypes = mutableSetOf(1, 2, 3, 4, 5)
         setGetDataOrderListParams()
         viewModel.setOrderTypeFilter(orderTypes)
@@ -1511,7 +1635,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun setSortOrderByTest() {
+    fun setSortOrderByTest() = coroutineTestRule.runBlockingTest {
         val sortBy = SomConsts.SORT_BY_TOTAL_OPEN_DESCENDING
         setGetDataOrderListParams()
         viewModel.setSortOrderBy(sortBy)
@@ -1519,27 +1643,27 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun setIsMultiSelectEnabledTest() {
+    fun setIsMultiSelectEnabledTest() = coroutineTestRule.runBlockingTest {
         val mockMultiSelectEnabled = true
         viewModel.isMultiSelectEnabled = mockMultiSelectEnabled
         assert(viewModel.isMultiSelectEnabled == mockMultiSelectEnabled)
     }
 
     @Test
-    fun setSearchParamTest() {
+    fun setSearchParamTest() = coroutineTestRule.runBlockingTest {
         val searchParam = "Produk pembasmi hama"
         viewModel.setSearchParam(searchParam)
         assert(viewModel.getDataOrderListParams().search == searchParam)
     }
 
     @Test
-    fun isRefreshingAllOrder_shouldReturnFalseWhenJobIsNull() {
+    fun isRefreshingAllOrder_shouldReturnFalseWhenJobIsNull() = coroutineTestRule.runBlockingTest {
         somGetOrderListJobField.set(viewModel, null)
         assert(!viewModel.isRefreshingAllOrder())
     }
 
     @Test
-    fun isRefreshingAllOrder_shouldReturnFalseWhenJobIsCompleted() {
+    fun isRefreshingAllOrder_shouldReturnFalseWhenJobIsCompleted() = coroutineTestRule.runBlockingTest {
         val somGetOrderListJob = mockk<Job>(relaxed = true)
         somGetOrderListJobField.set(viewModel, somGetOrderListJob)
 
@@ -1551,7 +1675,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun isRefreshingAllOrder_shouldReturnTrueWhenJobIsNotYetComplete() {
+    fun isRefreshingAllOrder_shouldReturnTrueWhenJobIsNotYetComplete() = coroutineTestRule.runBlockingTest {
         val somGetOrderListJob = mockk<Job>(relaxed = true)
         somGetOrderListJobField.set(viewModel, somGetOrderListJob)
 
@@ -1563,7 +1687,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun isRefreshingSelectedOrder_shouldReturnFalseWhenThereIsNoRunningJob() {
+    fun isRefreshingSelectedOrder_shouldReturnFalseWhenThereIsNoRunningJob() = coroutineTestRule.runBlockingTest {
         val somRefreshOrderJob = mockk<Job>(relaxed = true)
         val somRefreshOrder = RefreshOrder("", "", somRefreshOrderJob)
         somRefreshOrderJobField.set(viewModel, arrayListOf(somRefreshOrder))
@@ -1579,7 +1703,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun isRefreshingSelectedOrder_shouldReturnTrueWhenThereIsAnyRunningJob() {
+    fun isRefreshingSelectedOrder_shouldReturnTrueWhenThereIsAnyRunningJob() = coroutineTestRule.runBlockingTest {
         val somRefreshOrderJob = mockk<Job>(relaxed = true)
         val somRefreshOrder = RefreshOrder("", "", somRefreshOrderJob)
         somRefreshOrderJobField.set(viewModel, arrayListOf(somRefreshOrder))
@@ -1592,44 +1716,237 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun isRefreshingOrder_shouldReturnFalseWhenNotRefreshingOrderAndNotFetchingOrderList() {
+    fun isRefreshingOrder_shouldReturnFalseWhenNotRefreshingOrderAndNotFetchingOrderList() = coroutineTestRule.runBlockingTest {
         isRefreshingAllOrder_shouldReturnFalseWhenJobIsCompleted()
         isRefreshingSelectedOrder_shouldReturnFalseWhenThereIsNoRunningJob()
         assert(!viewModel.isRefreshingOrder())
     }
 
     @Test
-    fun isRefreshingOrder_shouldReturnTrueWhenFetchingOrderList() {
+    fun isRefreshingOrder_shouldReturnTrueWhenFetchingOrderList() = coroutineTestRule.runBlockingTest {
         isRefreshingAllOrder_shouldReturnTrueWhenJobIsNotYetComplete()
         isRefreshingSelectedOrder_shouldReturnFalseWhenThereIsNoRunningJob()
         assert(viewModel.isRefreshingOrder())
     }
 
     @Test
-    fun isRefreshingOrder_shouldReturnTrueWhenRefreshingOrder() {
+    fun isRefreshingOrder_shouldReturnTrueWhenRefreshingOrder() = coroutineTestRule.runBlockingTest {
         isRefreshingAllOrder_shouldReturnFalseWhenJobIsCompleted()
         isRefreshingSelectedOrder_shouldReturnTrueWhenThereIsAnyRunningJob()
         assert(viewModel.isRefreshingOrder())
     }
 
     @Test
-    fun isRefreshingOrder_shouldReturnTrueWhenRefreshingOrderAndFetchingOrderList() {
+    fun isRefreshingOrder_shouldReturnTrueWhenRefreshingOrderAndFetchingOrderList() = coroutineTestRule.runBlockingTest {
         isRefreshingAllOrder_shouldReturnTrueWhenJobIsNotYetComplete()
         isRefreshingSelectedOrder_shouldReturnTrueWhenThereIsAnyRunningJob()
         assert(viewModel.isRefreshingOrder())
     }
 
     @Test
-    fun isOrderStatusIdsChanged_shouldReturnFalse() {
+    fun isOrderStatusIdsChanged_shouldReturnFalse() = coroutineTestRule.runBlockingTest {
         viewModel.setStatusOrderFilter(listOf(1, 2, 3, 4, 5))
         val isChanged = viewModel.isOrderStatusIdsChanged(listOf(1, 2, 3, 4, 5))
         assertFalse(isChanged)
     }
 
     @Test
-    fun isOrderStatusIdsChanged_shouldReturnTrue() {
+    fun isOrderStatusIdsChanged_shouldReturnTrue() = coroutineTestRule.runBlockingTest {
         viewModel.setStatusOrderFilter(listOf())
         val isChanged = viewModel.isOrderStatusIdsChanged(listOf(1, 2, 3, 4, 5))
         assertTrue(isChanged)
+    }
+
+    @Test
+    fun getFailingOrderIdsFromBulkRequestPickupStatus_shouldReturnNonEmptyList() = coroutineTestRule.runBlockingTest {
+        val multiShippingStatusResult = MultiShippingStatusUiModel(
+            listError = listOf(
+                MultiShippingStatusUiModel.ErrorMultiShippingStatusUiModel("Error", "123")
+            )
+        )
+        val result = getFailingOrderIdsFromBulkRequestPickupStatus.invoke(viewModel, multiShippingStatusResult)
+
+        assert((result as List<*>).isNotEmpty())
+    }
+
+    @Test
+    fun getFailingOrderIdsFromBulkRequestPickupStatus_shouldReturnEmptyList() = coroutineTestRule.runBlockingTest {
+        val multiShippingStatusResult = MultiShippingStatusUiModel()
+        val result = getFailingOrderIdsFromBulkRequestPickupStatus.invoke(viewModel, multiShippingStatusResult)
+
+        assert((result as List<*>).isEmpty())
+    }
+
+    @Test
+    fun getSuccessBulkRequestPickupResultData_shouldReturnNonNullData() = coroutineTestRule.runBlockingTest {
+        bulkRequestPickup_shouldSuccess()
+        val result = getSuccessBulkRequestPickupResultData.invoke(viewModel)
+
+        assert(result != null)
+    }
+
+    @Test
+    fun getSuccessBulkRequestPickupResultData_shouldReturnNullData() = coroutineTestRule.runBlockingTest {
+        bulkRequestPickup_shouldFailed()
+        val result = getSuccessBulkRequestPickupResultData.invoke(viewModel)
+        assert(result == null)
+    }
+
+    @Test
+    fun getTotalNotEligibleOrderFromBulkRequestPickupResult_shouldReturnNonZeroWhenThereIsAnyNotEligibleOrder() = coroutineTestRule.runBlockingTest {
+        val expectedResult = 1
+        val bulkRequestPickupResultData = SomListBulkRequestPickupUiModel(
+            data = SomListBulkRequestPickupUiModel.Data(),
+            errors = listOf(
+                SomListBulkRequestPickupUiModel.ErrorBulkRequestPickup(
+                    message = "Error",
+                    orderId = "123"
+                )
+            )
+        )
+
+        doSuccessBulkRequestPickup(bulkRequestPickupResultData)
+        val result = getTotalNotEligibleOrderFromBulkRequestPickupResult.invoke(viewModel)
+
+        assert(result == expectedResult)
+    }
+
+    @Test
+    fun getTotalNotEligibleOrderFromBulkRequestPickupResult_shouldReturnZeroWhenThereIsNoNotEligibleOrder() = coroutineTestRule.runBlockingTest {
+        val orderIds = listOf("0234", "1456", "2678")
+
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } returns SomListBulkRequestPickupUiModel(
+            data = SomListBulkRequestPickupUiModel.Data()
+        )
+
+        viewModel.bulkRequestPickup(orderIds)
+        val result = getTotalNotEligibleOrderFromBulkRequestPickupResult.invoke(viewModel)
+
+        assert(result == Int.ZERO)
+    }
+
+    @Test
+    fun getTotalNotEligibleOrderFromBulkRequestPickupResult_shouldReturnZeroWhenBulkRequestPickupResultIsFail() = coroutineTestRule.runBlockingTest {
+        bulkRequestPickup_shouldFailed()
+        val result = getTotalNotEligibleOrderFromBulkRequestPickupResult.invoke(viewModel)
+        assert(result == Int.ZERO)
+    }
+
+    @Test
+    fun getTotalEligibleOrderFromBulkRequestPickupResult_shouldReturnNonZeroWhenThereIsAnyEligibleOrder() = coroutineTestRule.runBlockingTest {
+        val expectedResult = 1
+        val bulkRequestPickupResultData = SomListBulkRequestPickupUiModel(
+            data = SomListBulkRequestPickupUiModel.Data(
+                totalOnProcess = 1
+            )
+        )
+
+        doSuccessBulkRequestPickup(bulkRequestPickupResultData)
+        val result = getTotalEligibleOrderFromBulkRequestPickupResult.invoke(viewModel)
+
+        assert(result == expectedResult)
+    }
+
+    @Test
+    fun getTotalEligibleOrderFromBulkRequestPickupResult_shouldReturnZeroWhenThereIsNoEligibleOrder() = coroutineTestRule.runBlockingTest {
+        val bulkRequestPickupResultData = SomListBulkRequestPickupUiModel(
+            data = SomListBulkRequestPickupUiModel.Data()
+        )
+        doSuccessBulkRequestPickup(bulkRequestPickupResultData)
+        val result = getTotalEligibleOrderFromBulkRequestPickupResult.invoke(viewModel)
+
+        assert(result == Int.ZERO)
+    }
+
+    @Test
+    fun getTotalEligibleOrderFromBulkRequestPickupResult_shouldReturnZeroWhenBulkRequestPickupResultIsFail() = coroutineTestRule.runBlockingTest {
+        bulkRequestPickup_shouldFailed()
+        val result = getTotalEligibleOrderFromBulkRequestPickupResult.invoke(viewModel)
+        assert(result == Int.ZERO)
+    }
+
+    @Test
+    fun getBulkRequestPickupJobID_shouldReturnExpectedJobID() = coroutineTestRule.runBlockingTest {
+        val expectedJobID = "12345"
+        val bulkRequestPickupResultData = SomListBulkRequestPickupUiModel(
+            data = SomListBulkRequestPickupUiModel.Data(
+                jobId = expectedJobID
+            )
+        )
+        doSuccessBulkRequestPickup(bulkRequestPickupResultData)
+        val result = getBulkRequestPickupJobID.invoke(viewModel)
+        assert(result == expectedJobID)
+    }
+
+    @Test
+    fun getBulkRequestPickupJobID_shouldReturnEmptyStringWhenBulkRequestPickupResultIsFail() = coroutineTestRule.runBlockingTest {
+        val expectedJobID = ""
+        bulkRequestPickup_shouldFailed()
+        val result = getBulkRequestPickupJobID.invoke(viewModel)
+        assert(result == expectedJobID)
+    }
+
+    @Test
+    fun getBulkRequestPickupStatus_shouldReturnExpectedStatus() = coroutineTestRule.runBlockingTest {
+        val expectedStatus = 220
+        val bulkRequestPickupResultData = SomListBulkRequestPickupUiModel(
+            status = 220
+        )
+        doSuccessBulkRequestPickup(bulkRequestPickupResultData)
+        val result = getBulkRequestPickupStatus.invoke(viewModel)
+        assert(result == expectedStatus)
+    }
+
+    @Test
+    fun getBulkRequestPickupStatus_shouldReturnZeroWhenBulkRequestPickupResultIsFail() = coroutineTestRule.runBlockingTest {
+        val expectedStatus = 0
+        bulkRequestPickup_shouldFailed()
+        val result = getBulkRequestPickupStatus.invoke(viewModel)
+        assert(result == expectedStatus)
+    }
+
+    @Test
+    fun waitForGetFiltersCompleted_shouldWaitUntilComplete() = coroutineTestRule.runBlockingTest {
+        somGetFiltersJobField.set(viewModel, launch { delay(1000) })
+        waitForGetFiltersCompleted.invokeSuspend(viewModel)
+        assert((somGetFiltersJobField.get(viewModel) as? Job)?.isCompleted == true)
+    }
+
+    private fun doSuccessBulkAcceptOrder(
+        orderIds: List<String>
+    ) = coroutineTestRule.runBlockingTest {
+        coEvery {
+            bulkAcceptOrderUseCase.executeOnBackground()
+        } returns SomListBulkAcceptOrderUiModel(SomListBulkAcceptOrderUiModel.Data())
+        viewModel.bulkAcceptOrder(orderIds)
+    }
+
+    private fun doFailedBulkAcceptOrder(
+        orderIds: List<String>
+    ) = coroutineTestRule.runBlockingTest {
+        coEvery {
+            bulkAcceptOrderUseCase.executeOnBackground()
+        } throws Throwable()
+        viewModel.bulkAcceptOrder(orderIds)
+    }
+
+    private fun doSuccessBulkRequestPickup(
+        data: SomListBulkRequestPickupUiModel
+    ) = coroutineTestRule.runBlockingTest {
+        val orderIds = listOf("0234", "1456", "2678")
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } returns data
+        viewModel.bulkRequestPickup(orderIds)
+    }
+
+    private fun doFailedBulkRequestPickup() = coroutineTestRule.runBlockingTest {
+        val orderIds = listOf("0", "1", "2")
+        coEvery {
+            bulkRequestPickupUseCase.executeOnBackground()
+        } throws Throwable()
+        viewModel.bulkRequestPickup(orderIds)
     }
 }
