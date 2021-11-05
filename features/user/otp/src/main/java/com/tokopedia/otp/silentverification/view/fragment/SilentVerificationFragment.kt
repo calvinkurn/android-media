@@ -19,10 +19,7 @@ import com.airbnb.lottie.LottieTask
 import com.tkpd.util.Base64
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
@@ -354,8 +351,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                 viewModel.validate(
                     otpType = otpType.toString(),
                     msisdn = msisdn,
-                    mode = modeListData?.modeText ?: "",
-                    userId = userId,
+                    mode = modeListData?.modeText.toString(),
+                    userId = otpData?.userId.toIntOrZero(),
                     tokenId = tokenId,
                     signature = generateAuthenticitySignature()
                 )

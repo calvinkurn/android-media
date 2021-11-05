@@ -65,7 +65,7 @@ class SilentVerificationViewModel @Inject constructor(
         otpType: String,
         msisdn: String,
         mode: String,
-        userId: String,
+        userId: Int,
         tokenId: String,
         signature: String
     ) {

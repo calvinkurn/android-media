@@ -99,7 +99,7 @@ class SilentVerificationViewModelTest {
 
         coEvery { validateSilentVerificationUseCase.invoke(params) } returns response
 
-        viewModel.validate("112", "082241231231", "silent_verif", "12345", "abc123", "abc")
+        viewModel.validate("112", "082241231231", "silent_verif", 0, "abc123", "abc")
 
         /* Then */
         verify {
@@ -112,7 +112,7 @@ class SilentVerificationViewModelTest {
         /* When */
         coEvery { validateSilentVerificationUseCase.invoke(any()) } throws throwable
 
-        viewModel.validate("112", "082241231231", "silent_verif", "12345", "abc123", "abc")
+        viewModel.validate("112", "082241231231", "silent_verif", 0, "abc123", "abc")
 
         /* Then */
         verify { validationObserver.onChanged(Fail(throwable)) }
