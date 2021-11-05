@@ -101,7 +101,10 @@ class RechargeOrderDetailViewModel @Inject constructor(
 
     fun fetchTopAdsData() {
         launchCatchError(block = {
-            val data = getRecommendationUseCaseCoroutine.getData(GetRecommendationRequestParam())
+            val data = getRecommendationUseCaseCoroutine.getData(GetRecommendationRequestParam(
+                    pageName = TOPADS_PAGE_NAME,
+                    xSource = TOPADS_SOURCE
+            ))
             val bestSellerDataModel = bestSellerMapper.mappingRecommendationWidget(data.first())
             _topadsData.postValue(Success(bestSellerDataModel))
         }) {
@@ -113,6 +116,9 @@ class RechargeOrderDetailViewModel @Inject constructor(
         private const val FIRST_POSITION = 1
         private const val SECOND_POSITION = 2
         private const val ZERO_POSITION = 0
+
+        private const val TOPADS_PAGE_NAME = "dg_order_details"
+        private const val TOPADS_SOURCE = "recom_widget"
     }
 
 }
