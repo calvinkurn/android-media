@@ -519,18 +519,18 @@ class OldShopHomeViewModel @Inject constructor(
             widgetUserAddressLocalData: LocalCacheModel
     ): Int {
         val filter = ShopProductFilterInput(
-                ShopPageConstant.START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
-                "",
-                ALL_SHOWCASE_ID,
-                tempShopProductFilterParameter.getSortId().toIntOrZero(),
-                tempShopProductFilterParameter.getRating(),
-                tempShopProductFilterParameter.getPmax(),
-                tempShopProductFilterParameter.getPmin(),
-                widgetUserAddressLocalData.district_id,
-                widgetUserAddressLocalData.city_id,
-                widgetUserAddressLocalData.lat,
-                widgetUserAddressLocalData.long
+                page = ShopPageConstant.START_PAGE,
+                perPage = ShopPageConstant.DEFAULT_PER_PAGE,
+                searchKeyword = "",
+                etalaseMenu = ALL_SHOWCASE_ID,
+                sort = tempShopProductFilterParameter.getSortId().toIntOrZero(),
+                rating = tempShopProductFilterParameter.getRating(),
+                pmax = tempShopProductFilterParameter.getPmax(),
+                pmin = tempShopProductFilterParameter.getPmin(),
+                userDistrictId = widgetUserAddressLocalData.district_id,
+                userCityId = widgetUserAddressLocalData.city_id,
+                userLat = widgetUserAddressLocalData.lat,
+                userLong = widgetUserAddressLocalData.long
         )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
                 shopId,

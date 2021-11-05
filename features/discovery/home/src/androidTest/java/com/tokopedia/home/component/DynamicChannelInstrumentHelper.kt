@@ -70,7 +70,6 @@ fun disableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, true)
-    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, true)
 }
@@ -84,6 +83,7 @@ fun enableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_WALLETAPP_COACHMARK_BALANCE, false)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, false)
 }

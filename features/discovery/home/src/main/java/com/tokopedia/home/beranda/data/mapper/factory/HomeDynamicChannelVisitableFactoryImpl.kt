@@ -149,17 +149,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_RECHARGE_BU_WIDGET -> {
                     createRechargeBUWidget(channel, position, isCache)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_CAMPAIGN_WIDGET -> {
+                    createCampaignWidget(channel, position, isCache)
+                }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET,
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> {
                     createDynamicChannel(
-                            channel,
-                            trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                                    channel.grids.toList(),
-                                    userSessionInterface?.userId ?: "",
-                                    false,
-                                    channel
-                            ),
-                            isCombined = false
+                        channel,
+                        trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
+                            channel.grids.toList(),
+                            userSessionInterface?.userId ?: "",
+                            false,
+                            channel
+                        ),
+                        isCombined = false
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
@@ -329,6 +332,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
         }
     }
 
+    private fun createCampaignWidget(
+            channel: DynamicHomeChannel.Channels,
+            verticalPosition: Int,
+            isCache: Boolean
+    ) {
+        if (!isCache) {
+            visitableList.add(
+                    mappingCampaignWidgetComponent(
+                            channel, isCache, verticalPosition
+                    )
+            )
+        }
+    }
+
     private fun setDynamicChannelPromoName(position: Int, channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT) {
@@ -336,7 +353,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL) {
                 // do nothing
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_6_IMAGE) {
-                channel.promoName = String.format(PROMO_NAME_LEGO_6_IMAGE, position.toString(), channel.header.name)
+                channel.promoName =
+                    String.format(PROMO_NAME_LEGO_6_IMAGE, position.toString(), channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_6_AUTO) {
                 channel.promoName = String.format(PROMO_NAME_LEGO_6_AUTO_IMAGE, position.toString(), "individual_grid", channel.header.name)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE) {
@@ -469,30 +487,66 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
-    private fun mappingMixTopComponent(channel: DynamicHomeChannel.Channels,
-                                       isCache: Boolean,
-                                       verticalPosition: Int): Visitable<*> {
+    private fun mappingMixTopComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
         return MixTopDataModel(
-                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
-                isCache = isCache
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
         )
     }
 
-    private fun mappingLego4BannerAutoComponent(channel: DynamicHomeChannel.Channels,
-                                                isCache: Boolean,
-                                                verticalPosition: Int): Visitable<*> {
+    private fun mappingLego4BannerAutoComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
         return Lego4AutoDataModel(
-                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
-                isCache = isCache
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
+    private fun mappingCampaignWidgetComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return CampaignWidgetDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
         )
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
-        if (!isCache) visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+        if (!isCache) visitableList.add(
+            PopularKeywordListDataModel(
+                popularKeywordList = mutableListOf(),
+                channel = channel
+            )
+        )
     }
 
     private fun createBannerChannel(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
-        visitableList.add(BannerDataModel(DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition), isCache))
+        visitableList.add(
+            BannerDataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                    channel,
+                    verticalPosition
+                ), isCache
+            )
+        )
     }
 
     private fun createTopAdsBannerModel(channel: DynamicHomeChannel.Channels) {
