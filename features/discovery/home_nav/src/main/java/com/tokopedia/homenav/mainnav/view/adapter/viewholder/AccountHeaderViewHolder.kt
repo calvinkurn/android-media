@@ -120,7 +120,7 @@ class AccountHeaderViewHolder(itemView: View,
         val usrOvoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_ovo_badge)
         val btnSettings: IconUnify = layoutLoginHeader.findViewById(R.id.btn_settings)
         val btnTryAgain: CardView = layoutLoginHeader.findViewById(R.id.btn_try_again)
-        val usrSaldoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_saldo_badge)
+        val usrSaldoBadge: IconUnify = layoutLoginHeader.findViewById(R.id.usr_saldo_badge)
         val tvName: Typography = layoutLoginHeader.findViewById(R.id.tv_name)
         val tvOvo: Typography = layoutLoginHeader.findViewById(R.id.tv_ovo)
         val tvSaldo: Typography = layoutLoginHeader.findViewById(R.id.tv_saldo)
@@ -217,7 +217,6 @@ class AccountHeaderViewHolder(itemView: View,
                 }
 
                 !profileSaldo.isGetSaldoError -> {
-                    usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
                     if (profileSaldo.saldo.isEmpty()) {
                         sectionSaldo.visible()
                     } else {

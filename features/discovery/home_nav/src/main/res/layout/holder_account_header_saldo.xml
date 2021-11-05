@@ -17,12 +17,13 @@
         android:visibility="visible"
         tools:visibility="visible"/>
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         tools:visibility="invisible"
         android:id="@+id/usr_saldo_badge"
         android:layout_width="14dp"
         android:layout_height="14dp"
         android:scaleType="fitCenter"
+        app:icon_name="SALDO"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_saldo"
         app:layout_constraintBottom_toBottomOf="@id/tv_saldo"
