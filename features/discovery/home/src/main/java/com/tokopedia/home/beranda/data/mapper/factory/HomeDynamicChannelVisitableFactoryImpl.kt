@@ -333,15 +333,15 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createCampaignWidget(
-            channel: DynamicHomeChannel.Channels,
-            verticalPosition: Int,
-            isCache: Boolean
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int,
+        isCache: Boolean
     ) {
         if (!isCache) {
             visitableList.add(
-                    mappingCampaignWidgetComponent(
-                            channel, isCache, verticalPosition
-                    )
+               mappingCampaignWidgetComponent(
+                       channel, isCache, verticalPosition
+               )
             )
         }
     }
