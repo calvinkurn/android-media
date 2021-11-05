@@ -4,6 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerVariantPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewVariantPhoto"
         android:layout_width="wrap_content"
@@ -13,9 +20,9 @@
         android:text="@string/label_variant_photo"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dividerVariantPhoto"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        app:typographyType="heading_4" />
+        app:typographyType="heading_5" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"

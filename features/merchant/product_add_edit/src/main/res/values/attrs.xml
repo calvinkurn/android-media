@@ -14,4 +14,9 @@
     <declare-styleable name="AddItemButton">
         <attr name="addItemButtonText" format="string" />
     </declare-styleable>
+    <declare-styleable name="TitleLayoutView">
+        <attr name="titleLayoutViewTitle" format="string" />
+        <attr name="titleLayoutViewSubtitle" format="string" />
+        <attr name="titleLayoutViewActionText" format="string" />
+    </declare-styleable>
 </resources>

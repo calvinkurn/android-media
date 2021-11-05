@@ -22,7 +22,7 @@
                 layout="@layout/add_edit_product_variant_type_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl5" />
+                android:layout_marginTop="16dp" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:layout_width="match_parent"

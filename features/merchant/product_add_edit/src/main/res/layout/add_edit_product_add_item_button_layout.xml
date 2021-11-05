@@ -12,8 +12,8 @@
         app:icon_color_light_disabled="@color/Unify_NN300"
         app:icon_color_night_enable="@color/Unify_GN500"
         app:icon_color_night_disabled="@color/Unify_NN300"
-        android:layout_width="28dp"
-        android:layout_height="28dp" />
+        android:layout_width="26dp"
+        android:layout_height="26dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography_add"
@@ -23,7 +23,7 @@
         android:gravity="center_vertical"
         android:textColor="@color/Unify_GN500"
         tools:text="dummy text"
-        app:typographyType="body_2"
+        app:typographyType="body_3"
         app:typographyWeight="bold"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

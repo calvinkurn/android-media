@@ -305,6 +305,7 @@
     <string name="action_confirm_exit">Ya</string>
     <string name="action_cancel_exit">Batal</string>
     <string name="action_variant_custom_add">Buat Tipe Varian</string>
+    <string name="action_variant_custom_edit">Atur Varian</string>
     <string name="label_variant_type">Tipe Varian</string>
     <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian.</string>
     <string name="label_variant_photo">Foto Varian</string>
