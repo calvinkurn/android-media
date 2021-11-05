@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">logisticCommon</string>
     <string name="label_main_address">Utama</string>
+    <string name="tnc_description">Dengan klik \"%1$s\", kamu menyetujui Syarat &amp; Ketentuan.</string>
 </resources>
