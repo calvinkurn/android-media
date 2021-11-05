@@ -34,6 +34,7 @@ class AddPinnedMessageUseCase @Inject constructor(
     companion object {
         private const val PARAM_CHANNEL_ID = "channelID"
         private const val PARAM_TITLE = "title"
+        private const val PARAM_MESSAGE = "message"
         const val QUERY_NAME = "AddPinnedMessageUseCaseQuery"
 
         const val QUERY = """
@@ -48,6 +49,7 @@ class AddPinnedMessageUseCase @Inject constructor(
                             {
                                 status: 1,
                                 $PARAM_TITLE: ${"$$PARAM_TITLE"},
+                                $PARAM_MESSAGE: ${"$$PARAM_TITLE"},
                                 weight: 1
                             }
                         ]

@@ -37,6 +37,7 @@ class UpdatePinnedMessageUseCase @Inject constructor(
         private const val PARAM_ID = "ID"
         private const val PARAM_CHANNEL_ID = "channelID"
         private const val PARAM_TITLE = "title"
+        private const val PARAM_MESSAGE = "message"
         private const val PARAM_STATUS = "status"
         const val QUERY_NAME = "UpdatePinnedMessageUseCaseQuery"
 
@@ -53,6 +54,7 @@ class UpdatePinnedMessageUseCase @Inject constructor(
                         $PARAM_CHANNEL_ID: ${"$$PARAM_CHANNEL_ID"},
                         $PARAM_STATUS: ${"$$PARAM_STATUS"},
                         $PARAM_TITLE: ${"$$PARAM_TITLE"},
+                        $PARAM_MESSAGE: ${"$$PARAM_TITLE"},
                         weight: 1
                     }
                 ) {
