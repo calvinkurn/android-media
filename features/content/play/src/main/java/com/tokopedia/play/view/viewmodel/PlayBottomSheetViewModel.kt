@@ -35,7 +35,6 @@ import javax.inject.Inject
  */
 class PlayBottomSheetViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val postAddToCartUseCase: PostAddToCartUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers,
         private val repo: PlayViewerRepository,
