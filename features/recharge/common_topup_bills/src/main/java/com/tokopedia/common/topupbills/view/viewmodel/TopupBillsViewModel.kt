@@ -353,7 +353,7 @@ class TopupBillsViewModel @Inject constructor(
             FAVORITE_NUMBER_PARAM_FIELDS to mapOf(
                 FAVORITE_NUMBER_PARAM_SOURCE to paramSource,
                 FAVORITE_NUMBER_PARAM_CATEGORY_IDS to categoryIds,
-                FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION to getTodayDate(),
+                FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION to "",
                 FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION to "",
                 FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE to "",
                 FAVORITE_NUMBER_PARAM_SUBSCRIPTION to false,
@@ -419,12 +419,6 @@ class TopupBillsViewModel @Inject constructor(
         return mapOf(EXPRESS_PARAM_NAME to key, EXPRESS_PARAM_VALUE to value)
     }
 
-    private fun getTodayDate(): String {
-        val date = Date()
-        date.year = date.year - 1
-        return date.toFormattedString(DATE_FORMAT)
-    }
-
     companion object {
         const val PARAM_FIELDS = "fields"
         const val PARAM_FILTERS = "filters"
@@ -486,12 +480,11 @@ class TopupBillsViewModel @Inject constructor(
         const val ERROR_FETCH_AFTER_UNDO_DELETE = "ERROR_UNDO_DELETE"
 
         const val NULL_RESPONSE = "null response"
-        const val DATE_FORMAT = "yyyyMMddHHmmss"
 
         const val CATEGORY_ID_PASCABAYAR = 9
 
         const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
-        const val FAVORITE_NUMBER_LIMIT = 0
+        const val FAVORITE_NUMBER_LIMIT = 20
         const val RETRY_DURATION = 0
         const val MS_TO_S_DURATION = 1000
         const val FIVE_MINS_CACHE_DURATION = 5
