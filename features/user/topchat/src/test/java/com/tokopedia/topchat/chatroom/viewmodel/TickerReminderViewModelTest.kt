@@ -4,6 +4,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.GetReminderT
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.verify
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThat
@@ -47,4 +49,20 @@ class TickerReminderViewModelTest : BaseTopChatViewModelTest() {
         )
     }
 
+    @Test
+    fun should_close_ticker_reminder_when_closed() {
+        //Given
+        val expectedResponse = GetReminderTickerResponse()
+        coEvery {
+            closeReminderTicker.invoke(any())
+        } returns expectedResponse
+
+        //When
+        viewModel.closeTickerReminder(expectedResponse.getReminderTicker)
+
+        //Then
+        coVerify {
+            closeReminderTicker(any())
+        }
+    }
 }
