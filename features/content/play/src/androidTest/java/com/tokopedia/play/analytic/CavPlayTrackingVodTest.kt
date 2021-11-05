@@ -57,7 +57,6 @@ class CavPlayTrackingVodTest {
     }
 
     private fun performPinnedProduct() {
-        Espresso.onView(ViewMatchers.withId(R.id.tv_pinned_action)).perform(ViewActions.click())
         register(idlResVouchers)
         Espresso.onView(ViewMatchers.withId(R.id.rv_voucher_list)).perform(ViewActions.swipeLeft())
         unregister(idlResVouchers)
