@@ -178,7 +178,7 @@ class PlayViewModel @Inject constructor(
     }.flowOn(dispatchers.computation)
 
     private val _partnerUiState = _partnerInfo.map {
-        PlayPartnerUiState(it.name, it.status)
+        PlayPartnerUiState(it.name, it.status, it.iconUrl, it.badgeUrl, it.isLoadingFollow)
     }.flowOn(dispatchers.computation)
 
     private val _winnerBadgeUiState = combine(
@@ -1559,14 +1559,20 @@ class PlayViewModel @Inject constructor(
         val shouldFollow = if (shouldForceFollow) true else !followStatus.isFollowing
         val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
 
-        _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(shouldFollow)) }
+        _partnerInfo.setValue { (copy(isLoadingFollow = true)) }
 
         viewModelScope.launchCatchError(block = {
-            repo.postFollowStatus(
+            val isFollowing = repo.postFollowStatus(
                     shopId = shopId.toString(),
                     followAction = followAction,
             )
-        }) {}
+            _partnerInfo.setValue {
+                copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(isFollowing))
+            }
+        }) {
+            _partnerInfo.setValue { (copy(isLoadingFollow = false)) }
+            _uiEvent.emit(ShowErrorEvent(it))
+        }
 
         return followAction
     }

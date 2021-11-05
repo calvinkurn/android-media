@@ -69,6 +69,7 @@ import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
+import com.tokopedia.play.view.viewcomponent.partnerinfo.PartnerInfoViewComponent
 import com.tokopedia.play.view.viewcomponent.realtimenotif.RealTimeNotificationViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -103,29 +104,31 @@ class PlayUserInteractionFragment @Inject constructor(
         private val castPlayer: CastPlayer,
         private val castAnalyticHelper: CastAnalyticHelper
 ) :
-        TkpdBaseV4Fragment(),
-        PlayMoreActionBottomSheet.Listener,
-        PlayFragmentContract,
-        ToolbarViewComponent.Listener,
-        VideoControlViewComponent.Listener,
-        LikeViewComponent.Listener,
-        SendChatViewComponent.Listener,
-        QuickReplyViewComponent.Listener,
-        PinnedViewComponent.Listener,
-        VideoSettingsViewComponent.Listener,
-        ImmersiveBoxViewComponent.Listener,
-        PlayButtonViewComponent.Listener,
-        PiPViewComponent.Listener,
-        ProductFeaturedViewComponent.Listener,
-        PinnedVoucherViewComponent.Listener,
-        InteractiveViewComponent.Listener,
-        InteractiveWinnerBadgeViewComponent.Listener,
-        RealTimeNotificationViewComponent.Listener,
-        CastViewComponent.Listener
+    TkpdBaseV4Fragment(),
+    PlayMoreActionBottomSheet.Listener,
+    PlayFragmentContract,
+    ToolbarViewComponent.Listener,
+    PartnerInfoViewComponent.Listener,
+    VideoControlViewComponent.Listener,
+    LikeViewComponent.Listener,
+    SendChatViewComponent.Listener,
+    QuickReplyViewComponent.Listener,
+    PinnedViewComponent.Listener,
+    VideoSettingsViewComponent.Listener,
+    ImmersiveBoxViewComponent.Listener,
+    PlayButtonViewComponent.Listener,
+    PiPViewComponent.Listener,
+    ProductFeaturedViewComponent.Listener,
+    PinnedVoucherViewComponent.Listener,
+    InteractiveViewComponent.Listener,
+    InteractiveWinnerBadgeViewComponent.Listener,
+    RealTimeNotificationViewComponent.Listener,
+    CastViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
+    private val partnerInfoView by viewComponent { PartnerInfoViewComponent(it, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
@@ -325,6 +328,14 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickCopyLink()
     }
 
+    override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {
+        playViewModel.submitAction(ClickPartnerNameAction)
+    }
+
+    override fun onFollowButtonClicked(view: PartnerInfoViewComponent) {
+        playViewModel.submitAction(ClickFollowAction)
+    }
+
     /**
      * VideoControl View Component Listener
      */
@@ -364,7 +375,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * QuickReply View Component Listener
+     * Pinned View Component Listener
      */
     override fun onPinnedMessageActionClicked(view: PinnedViewComponent, appLink: String, message: String) {
         analytic.clickPinnedMessage(message, appLink)
@@ -855,6 +866,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderInteractiveView(prevState?.interactiveView, state.interactiveView, state.partner)
                 renderWinnerBadgeView(state.winnerBadge)
                 renderToolbarView(state.partner, state.share, state.cart)
+                renderPartnerInfoView(prevState?.partner, state.partner)
                 renderLikeView(prevState?.like, state.like)
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
@@ -1507,6 +1519,11 @@ class PlayUserInteractionFragment @Inject constructor(
 
         toolbarView.showCart(cart.shouldShow)
         toolbarView.setCartCount(cart.count)
+    }
+
+    private fun renderPartnerInfoView(prevState: PlayPartnerUiState?, state: PlayPartnerUiState) {
+        if (prevState == state) return
+        partnerInfoView.setInfo(state)
     }
 
     private fun renderLikeView(
