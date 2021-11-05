@@ -200,7 +200,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private val _pinnedMessageUiState = _pinnedMessage.map {
         PinnedMessageUiState(
-            message = if (it.isActive && it.id.isNotBlank()) it.message else "",
+            message = if (it.isActive && !it.isInvalidId) it.message else "",
             editStatus = it.editStatus
         )
     }
@@ -857,9 +857,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
 
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            val pinnedMessageId = _pinnedMessage.value.id
+            val pinnedMessage = _pinnedMessage.value
             _pinnedMessage.value = repo.setPinnedMessage(
-                id = if (pinnedMessageId.isBlank()) null else pinnedMessageId,
+                id = if (pinnedMessage.isInvalidId) null else pinnedMessage.id,
                 channelId = channelId,
                 message = message
             )

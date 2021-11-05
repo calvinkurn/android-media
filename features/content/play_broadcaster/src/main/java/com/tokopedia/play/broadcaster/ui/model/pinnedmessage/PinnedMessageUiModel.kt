@@ -10,6 +10,9 @@ data class PinnedMessageUiModel(
     val editStatus: PinnedMessageEditStatus,
 ) {
 
+    val isInvalidId: Boolean
+        get() = id.isBlank() || id == "0"
+
     companion object {
         fun Empty() = PinnedMessageUiModel(
             id = "",
