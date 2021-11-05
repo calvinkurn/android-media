@@ -6,9 +6,11 @@ import com.tokopedia.utils.file.FileUtil
 import java.util.concurrent.TimeUnit
 
 /**
- * Worker for deleting KYC folder with delay 1 day
+ * Schedule worker to delete KYC folder the next day (delay 1 day)
+ * Case : User kill the app, onDestroy is not called
  */
-class KycStorageWorker(context: Context, params: WorkerParameters) :
+
+class KycCleanupStorageWorker(context: Context, params: WorkerParameters) :
     CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
@@ -26,7 +28,7 @@ class KycStorageWorker(context: Context, params: WorkerParameters) :
             try {
                 val data = Data.Builder().putString(INPUT_DIRECTORY_TO_CLEAN, directory).build()
                 val worker = OneTimeWorkRequest
-                    .Builder(KycStorageWorker::class.java)
+                    .Builder(KycCleanupStorageWorker::class.java)
                     .setInputData(data)
                     .setInitialDelay(THRESHOLD_LAST_MODIFICATION_TIME, TimeUnit.MILLISECONDS)
                     .build()

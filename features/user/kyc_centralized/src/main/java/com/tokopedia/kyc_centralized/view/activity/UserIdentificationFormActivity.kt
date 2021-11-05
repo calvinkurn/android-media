@@ -22,7 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.util.KycStorageWorker
+import com.tokopedia.kyc_centralized.util.KycCleanupStorageWorker
 import com.tokopedia.kyc_centralized.view.customview.fragment.NotFoundFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment
@@ -72,7 +72,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_96
             )
         )
-        scheduleKycStorageCleanup()
+        KycCleanupStorageWorker.scheduleWorker(this, externalCacheDir?.absolutePath + FILE_NAME_KYC)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -99,6 +99,9 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         }
     }
 
+    /**
+     * Hacky solution to mitigate Fragment initialization issue in BaseStepperActivity
+     */
     override fun setupFragment(savedinstancestate: Bundle?) {
         val actualPosition = currentPosition - 1
         if (listFragment.size >= currentPosition && actualPosition >= 0) {
@@ -224,14 +227,6 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
             p.setMargins(left, top, right, bottom)
             view.requestLayout()
         }
-    }
-
-    /**
-     * Schedule worker to delete KYC folder the next day
-     * Case : User kill the app, onDestroy is not called
-     */
-    private fun scheduleKycStorageCleanup() {
-        KycStorageWorker.scheduleWorker(this, externalCacheDir?.absolutePath + FILE_NAME_KYC)
     }
 
     override fun onDestroy() {
