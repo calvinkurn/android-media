@@ -21,5 +21,8 @@ data class BadRatingCategory(
     val id: Int = 0,
     @SerializedName("description")
     @Expose
-    val description: String = ""
+    val description: String = "",
+    @SerializedName("isTextFocused")
+    @Expose
+    val shouldRequestFocus: Boolean = false
 )

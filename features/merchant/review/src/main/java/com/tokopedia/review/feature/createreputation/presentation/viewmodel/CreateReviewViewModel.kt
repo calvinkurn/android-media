@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
@@ -355,11 +355,15 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     fun isBadRatingReasonSelected(isTextAreaNotEmpty: Boolean): Boolean {
-        return if (isOtherCategoryOnly()) {
+        return if (isOtherCategorySelected()) {
             isTextAreaNotEmpty
         } else {
             selectedBadRatingCategories.isNotEmpty()
         }
+    }
+
+    fun isOtherCategorySelected(): Boolean {
+        return selectedBadRatingCategories.contains(CreateReviewBottomSheet.BAD_RATING_OTHER_ID.toString())
     }
 
     fun isOtherCategoryOnly(): Boolean {

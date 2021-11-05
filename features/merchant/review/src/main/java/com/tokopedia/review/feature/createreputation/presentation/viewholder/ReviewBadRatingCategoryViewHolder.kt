@@ -28,7 +28,7 @@ class ReviewBadRatingCategoryViewHolder(
                 val checkBox = findViewById<CheckboxUnify>(R.id.review_bad_rating_category_checkbox)
                 checkBox.apply {
                     setOnCheckedChangeListener { compoundButton, b ->
-                        badRatingCategoryListener.onBadRatingCategoryClicked(description, checkBox.isChecked, this@with.id)
+                        badRatingCategoryListener.onBadRatingCategoryClicked(description, checkBox.isChecked, this@with.id, shouldRequestFocus)
                     }
                 }
                 setOnClickListener {

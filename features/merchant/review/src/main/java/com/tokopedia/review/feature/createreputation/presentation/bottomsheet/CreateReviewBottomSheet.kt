@@ -317,7 +317,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     override fun onBadRatingCategoryClicked(
         title: String,
         isSelected: Boolean,
-        badRatingCategoryId: Int
+        badRatingCategoryId: Int,
+        shouldRequestFocus: Boolean
     ) {
         CreateReviewTracking.eventClickBadRatingReason(
             getOrderId(),
@@ -329,10 +330,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         if (isSelected) {
             createReviewViewModel.addBadRatingCategory(badRatingCategoryId.toString())
             if (badRatingCategoryId == BAD_RATING_OTHER_ID) {
-                textArea?.apply {
-                    requestFocus()
-                    setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
-                }
+                textArea?.setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
+            }
+            if (shouldRequestFocus) {
+                textArea?.requestFocus()
             } else {
                 textArea?.clearFocus()
             }

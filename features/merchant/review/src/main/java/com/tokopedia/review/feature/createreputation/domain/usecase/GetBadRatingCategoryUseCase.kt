@@ -21,6 +21,7 @@ class GetBadRatingCategoryUseCase @Inject constructor(graphqlRepository: Graphql
                 list {
                   badRatingCategoryID
                   description
+                  isTextFocused
                 }
               }
             }
