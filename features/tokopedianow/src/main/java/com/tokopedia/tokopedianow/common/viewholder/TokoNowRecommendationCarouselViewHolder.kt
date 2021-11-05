@@ -42,6 +42,7 @@ class TokoNowRecommendationCarouselViewHolder(
                 recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(it)
                 it.bind(
                     pageName = PAGENAME_PDP_3,
+                    parentProductId = "842872966",
                     tokonowPageNameListener = this,
                     basicListener = this,
                     adapterPosition = adapterPosition,
