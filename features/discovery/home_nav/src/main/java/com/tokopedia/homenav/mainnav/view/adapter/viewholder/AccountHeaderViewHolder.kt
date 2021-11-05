@@ -369,9 +369,6 @@ class AccountHeaderViewHolder(itemView: View,
                 tvShopInfo.run {
                     visible()
                     text = shopInfo
-                    setOnClickListener {
-                        shopClicked(profileSeller, context)
-                    }
                 }
                 containerShop.setOnClickListener {
                     shopClicked(profileSeller, it.context)
