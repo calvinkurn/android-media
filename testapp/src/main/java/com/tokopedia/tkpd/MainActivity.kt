@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         setLoginStatus()
     }
 
-    fun goTo() {
+    private fun goTo() {
         /* @example: open groupchat module;
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
         RouteManager.route(this, appLink)
     }
 
-    fun getDefaultAppLink(): String {
+    private fun getDefaultAppLink(): String {
         /*
          * Put your default applink here
          */
