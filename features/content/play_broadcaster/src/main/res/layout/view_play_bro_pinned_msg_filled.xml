@@ -1,55 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
     android:orientation="horizontal"
     tools:background="@color/Unify_Static_Black_32"
     >
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icon_pinned"
-        android:layout_width="@dimen/play_dp_12"
-        android:layout_height="@dimen/play_dp_12"
-        android:layout_marginTop="@dimen/play_dp_6"
-        android:layout_marginBottom="@dimen/play_dp_6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         app:icon_color_light_enable="@color/Unify_Y300"
         app:icon_color_night_enable="@color/Unify_Y300"
-        app:icon_name="PUSH_PIN"
+        app:icon_name="PUSH_PIN_FILLED"
         />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_pinned_msg"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/play_dp_6"
-        android:layout_marginEnd="@dimen/play_dp_6"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/icon_edit"
-        app:layout_constraintStart_toEndOf="@id/icon_pinned"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3"
-        tools:text="Kunjungi koleksi baru kami di sini!"
+        tools:text="Kunjungi koleksi baru kami di sini"
         />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icon_edit"
-        android:layout_width="@dimen/play_dp_12"
-        android:layout_height="@dimen/play_dp_12"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="EDIT"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

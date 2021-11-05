@@ -17,7 +17,7 @@ import javax.inject.Inject
 class AddPinnedMessageUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
     private val dispatchers: CoroutineDispatchers,
-) : RetryableGraphqlUseCase<AddPinnedMessageResponse>(gqlRepository) {
+) : RetryableGraphqlUseCase<AddPinnedMessageResponse>(gqlRepository, HIGH_RETRY_COUNT) {
 
     init {
         setGraphqlQuery(AddPinnedMessageUseCaseQuery.GQL_QUERY)
@@ -34,6 +34,7 @@ class AddPinnedMessageUseCase @Inject constructor(
     companion object {
         private const val PARAM_CHANNEL_ID = "channelID"
         private const val PARAM_TITLE = "title"
+        private const val PARAM_MESSAGE = "message"
         const val QUERY_NAME = "AddPinnedMessageUseCaseQuery"
 
         const val QUERY = """
@@ -48,6 +49,7 @@ class AddPinnedMessageUseCase @Inject constructor(
                             {
                                 status: 1,
                                 $PARAM_TITLE: ${"$$PARAM_TITLE"},
+                                $PARAM_MESSAGE: ${"$$PARAM_TITLE"},
                                 weight: 1
                             }
                         ]

@@ -735,6 +735,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 tag = PINNED_MSG_FORM_TAG
             }
             view.addView(theView)
+            theView.visibility = View.GONE
             theView
         }
 
