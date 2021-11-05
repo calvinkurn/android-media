@@ -305,6 +305,49 @@ class SubTotalCalculationTest : BaseCartTest() {
     }
 
     @Test
+    fun `WHEN all item selected with same priced product variant different quantity THEN should have '6300' on subtotal and '600' on cashback from '8' items`() {
+        // GIVEN
+        initializeData()
+        firstProductFirstShop.isSelected = true
+        secondProductFirstShop.isSelected = true
+        firstShop.isAllSelected = true
+
+        firstProductSecondShop.isSelected = true
+        secondProductSecondShop.isSelected = true
+        secondShop.isAllSelected = true
+
+        firstProductSecondShop.quantity = 1
+        firstProductSecondShop.productPrice = 100
+        secondProductSecondShop.quantity = 1
+        secondProductSecondShop.productPrice = 200
+
+        firstProductFirstShop.parentId = "9"
+        firstProductFirstShop.productPrice = 1000
+        firstProductFirstShop.productCashBack = "10%"
+        firstProductFirstShop.quantity = 2
+
+        secondProductFirstShop.parentId = "9"
+        secondProductFirstShop.productPrice = 1000
+        secondProductFirstShop.productCashBack = "10%"
+        secondProductFirstShop.quantity = 4
+
+        every { view.getAllAvailableCartDataList() } answers {
+            cartShops.flatMap {
+                it.productUiModelList
+            }
+        }
+
+        // WHEN
+        cartListPresenter?.reCalculateSubTotal(cartShops)
+
+        // THEN
+        verifyOrder {
+            view.updateCashback(600.0)
+            view.renderDetailInfoSubTotal("8", 6300.0, false)
+        }
+    }
+
+    @Test
     fun `WHEN bundling item selected THEN should have '101684' on subtotal from '12' items`() {
         // GIVEN
         initializeData()
