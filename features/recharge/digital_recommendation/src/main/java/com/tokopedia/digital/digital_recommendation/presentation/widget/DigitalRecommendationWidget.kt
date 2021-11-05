@@ -63,6 +63,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
                             with(binding) {
                                 tgDigitalRecommendationTitle.show()
+                                tgDigitalRecommendationTitle.text = it.data.title
                                 rvDigitalRecommendation.layoutManager = LinearLayoutManager(context,
                                         LinearLayoutManager.HORIZONTAL, false)
                                 rvDigitalRecommendation.adapter = adapter

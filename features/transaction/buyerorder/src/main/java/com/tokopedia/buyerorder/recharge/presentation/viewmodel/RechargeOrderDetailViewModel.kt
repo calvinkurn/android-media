@@ -118,7 +118,7 @@ class RechargeOrderDetailViewModel @Inject constructor(
         private const val ZERO_POSITION = 0
 
         private const val TOPADS_PAGE_NAME = "dg_order_details"
-        private const val TOPADS_SOURCE = "recom_widget"
+        private const val TOPADS_SOURCE = "digital"
     }
 
 }

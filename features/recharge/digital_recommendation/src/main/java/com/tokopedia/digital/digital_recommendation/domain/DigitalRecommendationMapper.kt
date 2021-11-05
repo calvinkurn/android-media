@@ -44,6 +44,7 @@ class DigitalRecommendationMapper {
 
             return DigitalRecommendationModel(
                     userType = response.personalizedItems.trackingData.userType,
+                    title = response.personalizedItems.title,
                     items = newData
             )
         }
