@@ -2106,7 +2106,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         stickyLoginView?.loadContent()
         loadEggData()
-        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
     override fun onChooseAddressUpdated() {
@@ -2159,7 +2158,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         stickyLoginView?.loadContent()
         loadEggData()
-        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
     private fun resetFeedState() {
@@ -2184,7 +2182,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.addOneTimeGlobalLayoutListener {
             homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache)
             homePerformanceMonitoringListener = null
-            fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
             if (fragmentCreatedForFirstTime) {
                 fragmentCreatedForFirstTime = false
                 conditionalViewModelRefresh()
@@ -2728,12 +2725,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         super.onHiddenChanged(hidden)
         userVisibleHint = !hidden
         fragmentFramePerformanceIndexMonitoring.onFragmentHidden(hidden)
-    }
-
-    private fun fetchTokopointsNotification(type: String) {
-        if (activity != null) {
-            TokoPointsNotificationManager.fetchNotification(activity, type, childsFragmentManager)
-        }
     }
 
     override fun hideEggOnScroll() {
