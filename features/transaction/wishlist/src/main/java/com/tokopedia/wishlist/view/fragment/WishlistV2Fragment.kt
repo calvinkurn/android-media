@@ -9,21 +9,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.MainParentStateListener
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
@@ -43,6 +45,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.WishlistV2Response
@@ -68,6 +71,9 @@ import javax.inject.Inject
  * Created by fwidjaja on 14/10/21.
  */
 class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, WishlistV2Adapter.ActionListener {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private var binding by autoClearedNullable<FragmentWishlistV2Binding>()
     private lateinit var wishlistV2Adapter: WishlistV2Adapter
     private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
@@ -83,14 +89,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private var activityWishlistV2 = ""
     private var isBulkDeleteShow = false
     private val listBulkDelete: ArrayList<String> = arrayListOf()
-
     private var recommendationList: List<RecommendationWidget> = listOf()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private val wishlistViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[WishlistV2ViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[WishlistV2ViewModel::class.java]
     }
 
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
@@ -128,6 +130,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         const val SHARE_LINK_PRODUCT = "SHARE_LINK_PRODUCT"
         const val DELETE_WISHLIST = "DELETE_WISHLIST"
         const val ATC_WISHLIST = "ADD_TO_CART"
+        const val CTA_ATC = "Lihat"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -143,10 +146,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
+        observingData()
+    }
+
+    private fun observingData() {
         observingWishlistV2()
         observingDeleteWishlistV2()
         observingBulkDeleteWishlistV2()
         observingRecommendationList()
+        observingAtc()
     }
 
     private fun observingRecommendationList() {
@@ -380,6 +388,40 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         })
     }
 
+    private fun observingAtc() {
+        wishlistViewModel.atcResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    if (it.data.isStatusError()) {
+                        val atcErrorMessage = it.data.getAtcErrorMessage()
+                        if (atcErrorMessage != null) {
+                            showToaster(atcErrorMessage, "", Toaster.TYPE_ERROR)
+                        } else {
+                            context?.getString(R.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
+                        }
+                    } else {
+                        val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
+                        showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
+                    }
+                }
+                is Fail -> {
+                    context?.also { ctx ->
+                        val throwable = it.throwable
+                        var errorMessage = if (throwable is ResponseErrorException) {
+                            throwable.message ?: ""
+                        } else {
+                            ErrorHandler.getErrorMessage(ctx, throwable, ErrorHandler.Builder().withErrorCode(false))
+                        }
+                        if (errorMessage.isBlank()) {
+                            errorMessage = ctx.getString(R.string.wishlist_v2_common_error_msg)
+                        }
+                        showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    }
+                }
+            }
+        })
+    }
+
     @SuppressLint("SetTextI18n")
     private fun updateTotalLabel(totalData: Int) {
         binding?.run {
@@ -559,6 +601,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         }
     }
 
+    private fun showToasterAtc(message: String, type: Int) {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC, View.OnClickListener {
+                RouteManager.route(context, ApplinkConst.CART)
+            }).show()
+        }
+    }
+
     private fun getAbTestPlatform(): AbTestPlatform {
         if (!::remoteConfigInstance.isInitialized) {
             remoteConfigInstance = RemoteConfigInstance(activity?.application)
@@ -624,11 +675,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     override fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item) {
-        println("++ onAtc")
+        val atcParam = AddToCartRequestParams(
+                productId = wishlistItem.id.toLong(),
+                productName = wishlistItem.name,
+                price = wishlistItem.originalPriceFmt,
+                quantity = wishlistItem.minOrder.toInt(),
+                shopId = wishlistItem.shop.id.toInt(),
+                // category = wishlistItem.category.,
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST)
+        wishlistViewModel.doAtc(atcParam)
     }
 
     override fun onCheckSimilarProduct(url: String) {
-        println("++ onCheckSimilarProduct - url = $url")
+        RouteManager.route(context, url)
     }
 
     private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {

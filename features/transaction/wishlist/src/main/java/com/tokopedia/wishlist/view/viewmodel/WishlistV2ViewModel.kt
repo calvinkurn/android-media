@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -19,6 +22,7 @@ import com.tokopedia.wishlist.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -28,7 +32,8 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                               private val wishlistV2UseCase: WishlistV2UseCase,
                                               private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
                                               private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
-                                              private val recommendationUseCase: GetRecommendationUseCase) : BaseViewModel(dispatcher.main) {
+                                              private val recommendationUseCase: GetRecommendationUseCase,
+                                              private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _wishlistV2Result = MutableLiveData<Result<WishlistV2Response.Data.WishlistV2>>()
     val wishlistV2Result: LiveData<Result<WishlistV2Response.Data.WishlistV2>>
@@ -45,6 +50,10 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     private val _bulkDeleteWishlistV2Result = MutableLiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>()
     val bulkDeleteWishlistV2Result: LiveData<Result<BulkDeleteWishlistV2Response.Data.WishlistBulkRemoveV2>>
         get() = _bulkDeleteWishlistV2Result
+
+    private val _atcResult = MutableLiveData<Result<AddToCartDataModel>>()
+    val atcResult: LiveData<Result<AddToCartDataModel>>
+        get() = _atcResult
 
     fun loadWishlistV2(params: WishlistV2Params) {
         launch {
@@ -76,6 +85,19 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 _recommendationResult.value = Success(data)
             } catch (e: Exception) {
                 _recommendationResult.value = Fail(e.fillInStackTrace())
+            }
+        }
+    }
+
+    fun doAtc(atcParams: AddToCartRequestParams) {
+        launch {
+            try {
+                atcUseCase.setParams(atcParams)
+                val result = atcUseCase.executeOnBackground()
+                _atcResult.value = Success(result)
+            } catch (e: Exception) {
+                Timber.d(e)
+                _atcResult.value = Fail(e)
             }
         }
     }
