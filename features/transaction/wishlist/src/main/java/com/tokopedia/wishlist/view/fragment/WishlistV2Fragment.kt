@@ -139,28 +139,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         prepareLayout()
         observingWishlistV2()
         observingDeleteWishlistV2()
-        observingRecommendationList()
         observingWishlistV2Counter()
     }
 
     private fun observingWishlistV2Counter() {
         wishlistViewModel.wishlistCount.observe(viewLifecycleOwner, Observer {
             updateTotalLabel(it)
-        })
-    }
-
-    private fun observingRecommendationList() {
-        wishlistViewModel.recommendationResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    currRecommendationListPage += 1
-                    recommendationList = it.data
-                    renderEmptyState()
-                }
-                is Fail -> {
-
-                }
-            }
         })
     }
 
@@ -299,6 +283,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     val data = result.data
                     hideLoader()
                     wishlistV2Adapter.appendList(renderWishlistV2Data(data))
+                    scrollRecommendationListener.updateStateAfterGetData()
                 }
                 is Fail -> {
                     refreshHandler?.finishRefresh()
@@ -319,6 +304,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     if (it.isCarousel) {
                         adapterData.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_CAROUSEL))
                     } else {
+                        if (currRecommendationListPage == 0) {
+                            adapterData.add(WishlistV2TypeLayoutData(getString(R.string.recommendation_title), TYPE_RECOMMENDATION_TITLE))
+                            if (searchQuery.isNotEmpty()) {
+                                adapterData.add(WishlistV2TypeLayoutData(searchQuery, TYPE_EMPTY_NOT_FOUND))
+                            } else {
+                                adapterData.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
+                            }
+                        }
+                        currRecommendationListPage += 1
                         recommendationList.firstOrNull()?.recommendationItemList?.forEach { recommendationItem ->
                             adapterData.add(WishlistV2TypeLayoutData(recommendationItem, TYPE_RECOMMENDATION_LIST))
                         }

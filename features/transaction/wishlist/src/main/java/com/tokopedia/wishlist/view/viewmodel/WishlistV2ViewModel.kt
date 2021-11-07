@@ -29,16 +29,15 @@ class WishlistV2ViewModel @Inject constructor(
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private val recommendationUseCase: GetRecommendationUseCase,
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val getSingleRecommendationUseCase: GetSingleRecommendationUseCase,
 ) : BaseViewModel(dispatcher.main) {
 
     private val _wishlistV2Result = MutableLiveData<Result<List<WishlistV2Data>>>()
     val wishlistV2Result: LiveData<Result<List<WishlistV2Data>>>
         get() = _wishlistV2Result
 
-    private val _recommendationResult = MutableLiveData<Result<List<RecommendationWidget>>>()
-    val recommendationResult: LiveData<Result<List<RecommendationWidget>>>
-        get() = _recommendationResult
+//    private val _recommendationResult = MutableLiveData<Result<List<RecommendationWidget>>>()
+//    val recommendationResult: LiveData<Result<List<RecommendationWidget>>>
+//        get() = _recommendationResult
 
     private val _deleteWishlistV2Result =
         MutableLiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
@@ -56,40 +55,39 @@ class WishlistV2ViewModel @Inject constructor(
                 val wishlistData = wishlistV2UseCase.executeSuspend(params).wishlistV2
 
                 if (wishlistData.items.isEmpty()) {
-                    // TODO get recommendation on empty
+                    if (params.page == 1) {
+                        val recommendationList = getRecomList(pageNumber = 0, false)
+                        _wishlistV2Result.value = Success(
+                            listOf(
+                                recommendationList
+                            )
+                        )
+                    }
                 } else {
                     _wishlistCount.postValue(wishlistData.totalData)
                     when {
                         wishlistData.items.size < recommendationPositionInPage -> {
-                            val recommendationList = getRecomList(pageNumber = params.page, true)
-                            _wishlistV2Result.value = Success(
-                                listOf(
-                                    wishlistData,
-                                    recommendationList
+                            if (!wishlistData.hasNextPage) {
+                                val recommendationList = getRecomList(pageNumber = params.page, true)
+                                _wishlistV2Result.value = Success(
+                                    listOf(
+                                        wishlistData,
+                                        recommendationList
+                                    )
                                 )
-                            )
+                            } else {
+                                _wishlistV2Result.value = Success(
+                                    listOf(
+                                        wishlistData
+                                    )
+                                )
+                            }
                         }
 
                         // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
                         wishlistData.items.size == recommendationPositionInPage -> {
-                            val recommendationList = getRecomList(pageNumber = params.page, true)
                             val topAdsBanner = getTopAds(checkPageTokenForTopAds(listOf(wishlistData), params.page))
-                            _wishlistV2Result.value = Success(
-                                listOf(
-                                    wishlistData,
-                                    topAdsBanner,
-                                    recommendationList
-                                )
-                            )
-                        }
-
-                        // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
-                        wishlistData.items.size > recommendationPositionInPage -> {
-                            val topAdsBanner = getTopAds(checkPageTokenForTopAds(listOf(wishlistData), params.page))
-                            if (wishlistData.totalData > newMinItemRegularRule) {
-                                _wishlistV2Result.value =
-                                    Success(listOf(wishlistData, topAdsBanner))
-                            } else {
+                            if (wishlistData.totalData == recommendationPositionInPage || !wishlistData.hasNextPage || (wishlistData.offset.plus(wishlistData.items.size) % 24 == 0)) {
                                 val recommendationList = getRecomList(pageNumber = params.page, true)
                                 _wishlistV2Result.value = Success(
                                     listOf(
@@ -98,8 +96,33 @@ class WishlistV2ViewModel @Inject constructor(
                                         recommendationList
                                     )
                                 )
+                            } else {
+                                _wishlistV2Result.value = Success(
+                                    listOf(
+                                        wishlistData,
+                                        topAdsBanner
+                                    )
+                                )
                             }
                         }
+
+                        // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
+//                        wishlistData.items.size > recommendationPositionInPage -> {
+//                            val topAdsBanner = getTopAds(checkPageTokenForTopAds(listOf(wishlistData), params.page))
+//                            if (wishlistData.totalData > newMinItemRegularRule) {
+//                                _wishlistV2Result.value =
+//                                    Success(listOf(wishlistData, topAdsBanner))
+//                            } else {
+//                                val recommendationList = getRecomList(pageNumber = params.page, true)
+//                                _wishlistV2Result.value = Success(
+//                                    listOf(
+//                                        wishlistData,
+//                                        topAdsBanner,
+//                                        recommendationList
+//                                    )
+//                                )
+//                            }
+//                        }
                     }
                 }
             } catch (e: Exception) {
@@ -124,9 +147,9 @@ class WishlistV2ViewModel @Inject constructor(
                         pageName = WishlistV2Consts.PAGE_NAME
                     )
                 )
-                _recommendationResult.value = Success(data)
+                _wishlistV2Result.value = Success(listOf(WishlistV2RecommendationWrapper(data, false)))
             } catch (e: Exception) {
-                _recommendationResult.value = Fail(e.fillInStackTrace())
+                _wishlistV2Result.value = Fail(e.fillInStackTrace())
             }
         }
     }
