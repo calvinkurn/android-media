@@ -115,11 +115,6 @@ class OSTopAdsVerificationTest {
         }
         Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
 
-//        val lastPosition = (recyclerView.layoutManager as? GridLayoutManager)!!.findLastVisibleItemPosition()
-//        if (recyclerView.findViewHolderForAdapterPosition(lastPosition) is OfficialProductRecommendationViewHolder) {
-//            Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
-//        }
-
         waitForData()
 
         val itemList = itemAdapter.currentList
