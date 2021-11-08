@@ -83,6 +83,7 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query paylater_getSimulationV2(${'$'}r
         total_with_provision_ceil
         is_recommended
         is_recommended_string
+        installment_description
         tenure
         activation_status
         disable {
@@ -97,6 +98,13 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query paylater_getSimulationV2(${'$'}r
           cta_type
           is_redirect_url
           button_color
+           bottom_sheet {
+            show
+            image
+            title
+            description
+            button_text
+          }
         }
         gateway_detail {
           gateway_id
