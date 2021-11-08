@@ -6,7 +6,7 @@ import com.tokopedia.user.session.UserSession
 import dagger.Component
 
 @PromoCheckoutDetailScope
-@Component(modules = arrayOf(PromoCheckoutDetailModule::class, PromoCheckoutDetailViewModelModule::class), dependencies = arrayOf(BaseAppComponent::class))
+@Component(modules = arrayOf(PromoCheckoutDetailModule::class), dependencies = arrayOf(BaseAppComponent::class))
 interface PromoCheckoutDetailComponent{
     fun inject(promoCheckoutDetailMarketplaceFragment: PromoCheckoutDetailMarketplaceFragment)
     fun inject(promoCheckoutDetailDigitalFragment: PromoCheckoutDetailDigitalFragment)

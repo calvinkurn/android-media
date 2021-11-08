@@ -4,30 +4,24 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDealsActivity
-import com.tokopedia.promocheckout.detail.view.viewmodel.PromoCheckoutDetailDealsViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDealsPresenter
 import com.tokopedia.user.session.UserSession
 import timber.log.Timber
 import javax.inject.Inject
 
 class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
-
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val promoCheckoutDetailDealsViewModel: PromoCheckoutDetailDealsViewModel by lazy { viewModelProvider.get(
-        PromoCheckoutDetailDealsViewModel::class.java) }
+    lateinit var promoCheckoutDetailDealsPresenter: PromoCheckoutDetailDealsPresenter
 
     lateinit var promoCheckoutDetailComponent: PromoCheckoutDetailComponent
     var checkoutData: String = ""
@@ -43,51 +37,10 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
         checkoutData = arguments?.getString(EXTRA_CHECKOUT_DATA) ?: ""
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        promoCheckoutDetailDealsViewModel.showLoadingPromoDeals.observe(viewLifecycleOwner, {
-            if (it) {
-                showLoading()
-            } else {
-                hideLoading()
-            }
-        })
-
-        promoCheckoutDetailDealsViewModel.showProgressLoadingPromoDeals.observe(viewLifecycleOwner, {
-            if (it) {
-                showProgressLoading()
-            } else {
-                hideProgressLoading()
-            }
-        })
-
-        promoCheckoutDetailDealsViewModel.dealsCheckVoucherResult.observe(viewLifecycleOwner, {
-            when(it){
-                is Success ->{
-                    onSuccessCheckPromo(it.data)
-                }
-                is Fail ->{
-                    onErrorCheckPromo(it.throwable)
-                }
-            }
-        })
-
-        promoCheckoutDetailDealsViewModel.promoCheckoutDetail.observe(viewLifecycleOwner, {
-            when(it){
-                is Success ->{
-                    onSuccessGetDetailPromo(it.data)
-                }
-                is Fail ->{
-                    onErroGetDetail(it.throwable)
-                }
-            }
-        })
-    }
-
     fun initView() {
         promoCheckoutDetailComponent = (activity as PromoCheckoutDetailDealsActivity).getComponent()
         promoCheckoutDetailComponent.inject(this)
+        promoCheckoutDetailDealsPresenter.attachView(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,15 +51,15 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailDealsViewModel.getDetailPromo(codeCoupon)
+        promoCheckoutDetailDealsPresenter.getDetailPromo(codeCoupon)
     }
 
     override fun onClickUse() {
         var requestBody: JsonObject? = null
         val jsonElement: JsonElement = JsonParser().parse(checkoutData).asJsonObject
         requestBody = jsonElement.asJsonObject
-        requestBody.addProperty(PROMO_CODE, codeCoupon)
-        promoCheckoutDetailDealsViewModel.checkPromoCode( false, requestBody)
+        requestBody.addProperty("promocode", codeCoupon)
+        promoCheckoutDetailDealsPresenter.processCheckDealPromoCode(codeCoupon, false, requestBody)
     }
 
     override fun onClickCancel() {
@@ -142,14 +95,18 @@ class PromoCheckoutDetailDealsFragment : BasePromoCheckoutDetailFragment() {
         }
     }
 
+    override fun onDestroy() {
+        promoCheckoutDetailDealsPresenter.detachView()
+        super.onDestroy()
+    }
+
     companion object {
-        const val EXTRA_IS_USE = "EXTRA_IS_USE"
-        const val EXTRA_CHECKOUT_DATA = "checkoutdata"
-        const val COUPON_MESSAGE = "coupon_message"
-        const val COUPON_AMOUNT = "coupon_amount"
-        const val COUPON_CODE = "coupon_code"
-        const val PROMO_CODE = "promocode"
-        const val IS_CANCEL = "IS_CANCEL"
+        val EXTRA_IS_USE = "EXTRA_IS_USE"
+        val EXTRA_CHECKOUT_DATA = "checkoutdata"
+        val COUPON_MESSAGE = "coupon_message"
+        val COUPON_AMOUNT = "coupon_amount"
+        val COUPON_CODE = "coupon_code"
+        val IS_CANCEL = "IS_CANCEL"
 
         fun createInstance(codeCoupon: String, isUse: Boolean, checkoutData: String?): PromoCheckoutDetailDealsFragment {
             val promoCheckoutDetailDealsFragment = PromoCheckoutDetailDealsFragment()

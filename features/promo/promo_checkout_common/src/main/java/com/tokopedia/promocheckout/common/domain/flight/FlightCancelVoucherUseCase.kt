@@ -8,7 +8,6 @@ import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
-@Deprecated("Not needed anymore.")
 class FlightCancelVoucherUseCase(private val graphqlUseCase: GraphqlUseCase) {
 
     fun execute(subscriber: Subscriber<GraphqlResponse>?) {

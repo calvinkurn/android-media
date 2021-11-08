@@ -6,14 +6,15 @@ import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailHotelActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
-import com.tokopedia.promocheckout.list.view.viewmodel.PromoCheckoutListHotelViewModel
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListHotelPresenter
 import com.tokopedia.promocheckout.util.ColorUtil
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
-class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment() {
+class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment(), PromoCheckoutListContract.View {
 
-    private val hotelPromoViewModel: PromoCheckoutListHotelViewModel by lazy { viewModelProvider.get(PromoCheckoutListHotelViewModel::class.java) }
+    @Inject
+    lateinit var promoCheckoutListHotelPresenter: PromoCheckoutListHotelPresenter
 
     var cartID: String = ""
 
@@ -21,29 +22,7 @@ class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment() {
         super.onCreate(savedInstanceState)
         categoryId = HOTEL_CATEGORY_ID
         cartID = arguments?.getString(EXTRA_CART_ID) ?: ""
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        hotelPromoViewModel.showLoadingPromoHotel.observe(viewLifecycleOwner,{
-            if(it){
-                showProgressLoading()
-            }else{
-                hideProgressLoading()
-            }
-        })
-
-        hotelPromoViewModel.hotelCheckVoucherResult.observe(viewLifecycleOwner,{
-            when(it){
-                is Success ->{
-                    onSuccessCheckPromo(it.data)
-                }
-                is Fail->{
-                    onErrorCheckPromo(it.throwable)
-                }
-            }
-        })
+        promoCheckoutListHotelPresenter.attachView(this)
     }
 
     override fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
@@ -54,7 +33,7 @@ class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment() {
     override fun onPromoCodeUse(promoCode: String) {
         context?.run {
             if (promoCode.isNotEmpty()) {
-                hotelPromoViewModel.checkPromoCode(cartID, promoCode, ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_G200))
+                promoCheckoutListHotelPresenter.checkPromoCode(cartID, promoCode, ColorUtil.getColorFromResToString(this, com.tokopedia.unifyprinciples.R.color.Unify_G200))
                 hotelPromoCheckoutAnalytics.hotelApplyPromo(this, promoCode, HotelPromoCheckoutAnalytics.HOTEL_BOOKING_SCREEN_NAME)
             }
         }
@@ -63,6 +42,12 @@ class PromoCheckoutListHotelFragment : PromoCheckoutListDigitalFragment() {
     override fun initInjector() {
         getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
+
+    override fun onDestroyView() {
+        promoCheckoutListHotelPresenter.detachView()
+        super.onDestroyView()
+    }
+
     companion object {
 
         val HOTEL_CATEGORY_ID = 51

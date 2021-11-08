@@ -24,7 +24,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
@@ -47,7 +46,6 @@ import javax.inject.Named
 
 @Module(includes = [
     PeopleAddressNetworkModule::class,
-    PromoCheckoutModule::class,
     PurchasePlatformNetworkModule::class,
     PurchasePlatformBaseModule::class
 ])

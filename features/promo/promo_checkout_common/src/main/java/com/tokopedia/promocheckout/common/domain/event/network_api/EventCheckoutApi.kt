@@ -10,15 +10,14 @@ import retrofit2.http.POST
 import retrofit2.http.QueryMap
 import rx.Observable
 
-@Deprecated("Not needed anymore.")
 interface EventCheckoutApi {
 
-    @POST(EVENT_POST_VERIFY_PATH)
+    @POST("v1/api/expresscart/verify")
     fun postVerify(@QueryMap book: Map<String, Boolean>, @Body eventVerifyBody: EventVerifyBody): Observable<EventVerifyResponse>
 
     companion object{
-        /** move to util promo_checkout*/
-        const val EVENT_POST_VERIFY_PATH = "v1/api/expresscart/verify"
-        val BASE_URL_EVENT = TokopediaUrl.getInstance().OMSCART
+
+        val BASE_URL_EVENT = if(TokopediaUrl.getInstance().TYPE == Env.LIVE) "https://omscart.tokopedia.com/"
+                                    else "https://omscart-staging.tokopedia.com/"
     }
 }

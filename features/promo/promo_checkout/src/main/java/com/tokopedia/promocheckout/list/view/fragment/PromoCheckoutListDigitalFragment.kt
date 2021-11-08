@@ -15,16 +15,16 @@ import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigit
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
-import com.tokopedia.promocheckout.list.view.viewmodel.PromoCheckoutListDigitalViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import javax.inject.Inject
 
-open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(){
+open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoCheckoutListContract.View {
 
-    private val promoCheckoutListDigitalListViewModel: PromoCheckoutListDigitalViewModel by lazy { viewModelProvider.get(PromoCheckoutListDigitalViewModel::class.java) }
+    @Inject
+    lateinit var promoCheckoutListDigitalPresenter: PromoCheckoutListDigitalPresenter
 
     @Inject
     lateinit var userSession: UserSession
@@ -45,29 +45,7 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(){
         categoryName = promoDigitalModel.categoryName
         operatorName = promoDigitalModel.operatorName
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        promoCheckoutListDigitalListViewModel.showLoadingPromoDigital.observe(viewLifecycleOwner,{
-            if(it){
-                showProgressLoading()
-            }else{
-                hideProgressLoading()
-            }
-        })
-
-        promoCheckoutListDigitalListViewModel.digitalCheckVoucherResult.observe(viewLifecycleOwner, {
-            when(it){
-                is Success->{
-                    onSuccessCheckPromo(it.data)
-                }
-                is Fail->{
-                    onErrorCheckPromo(it.throwable)
-                }
-            }
-        })
+        promoCheckoutListDigitalPresenter.attachView(this)
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
@@ -83,10 +61,11 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(){
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        if (promoCode.isNotEmpty()) promoCheckoutListDigitalListViewModel.checkPromoCode(promoCode, promoDigitalModel)
+        if (promoCheckoutListDigitalPresenter.isViewNotAttached) promoCheckoutListDigitalPresenter.attachView(this)
+        if (promoCode.isNotEmpty()) promoCheckoutListDigitalPresenter.checkPromoCode(promoCode, promoDigitalModel)
     }
 
-    fun onSuccessCheckPromo(data: DataUiModel) {
+    override fun onSuccessCheckPromo(data: DataUiModel) {
         trackSuccessCheckPromoCode(data)
         val intent = Intent()
         val promoData = PromoData(data.isCoupon, data.codes[0],
@@ -103,13 +82,18 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(){
 
     override fun loadData(page: Int) {
         if (isCouponActive) {
-            promoCheckoutListViewModel.getPromoList(serviceId, categoryId, page)
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }
-        promoCheckoutListViewModel.getPromoLastSeen(listOf(categoryId))
+        promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
     }
 
     override fun initInjector() {
         getComponent(PromoCheckoutListComponent::class.java).inject(this)
+    }
+
+    override fun onDestroyView() {
+        promoCheckoutListDigitalPresenter.detachView()
+        super.onDestroyView()
     }
 
     companion object {
@@ -128,4 +112,5 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(){
             return promoCheckoutListMarketplaceFragment
         }
     }
+
 }

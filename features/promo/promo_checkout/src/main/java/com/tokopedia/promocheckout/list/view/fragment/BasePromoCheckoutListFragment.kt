@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -33,21 +32,19 @@ import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFac
 import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListViewHolder
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenAdapter
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenViewHolder
-import com.tokopedia.promocheckout.list.view.viewmodel.PromoCheckoutListViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject
 
 abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, PromoCheckoutListAdapterFactory>(),
+        PromoCheckoutListContract.View,
         PromoLastSeenViewHolder.ListenerLastSeen,
         PromoCheckoutListViewHolder.ListenerTrackingCoupon {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    val promoCheckoutListViewModel: PromoCheckoutListViewModel by lazy { viewModelProvider.get(PromoCheckoutListViewModel::class.java) }
+    lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
     private val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(arrayListOf(),this) }
 
     @Inject
@@ -64,6 +61,11 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         return PromoCheckoutListAdapterFactory(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        promoCheckoutListPresenter.attachView(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_promo_checkout_list, container, false)
     }
@@ -77,49 +79,13 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         initView(view)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        promoCheckoutListViewModel.showLoading.observe(viewLifecycleOwner,{
-            if (it){
-                showProgressLoading()
-            }else{
-                hideProgressLoading()
-            }
-        })
-
-        promoCheckoutListViewModel.dataPromoCheckoutList.observe(viewLifecycleOwner, {
-            when(it){
-                is Success ->{
-                    //should change data to default value rather than null
-                    renderList(it.data.tokopointsCouponList?.tokopointsCouponData ?: ArrayList(),
-                        it.data.tokopointsCouponList?.tokopointsPaging?.isHasNext ?: false)
-                }
-                is Fail ->{
-                    showGetListError(it.throwable)
-                }
-            }
-        })
-
-        promoCheckoutListViewModel.dataPromoLastSeen.observe(viewLifecycleOwner,{
-            when(it){
-                is Success ->{
-                    renderListLastSeen(it.data, false)
-                }
-                is Fail ->{
-                    showGetListLastSeenError(it.throwable)
-                }
-            }
-        })
-    }
-
-    open fun showProgressLoading() {
+    override fun showProgressLoading() {
         activity?.let {
             if (!it.isFinishing) progressDialog.show()
         }
     }
 
-    open fun hideProgressLoading() {
+    override fun hideProgressLoading() {
         activity?.let {
             if (!it.isFinishing) progressDialog.hide()
         }
@@ -133,9 +99,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
     }
 
-     fun changeTitle(title: String) {
+    override fun changeTitle(title: String) {
         if (!title.isNullOrBlank()) {
-            promo_checkout_list_last_seen_label.text = title
+            promo_checkout_list_last_seen_label.setText(title)
         }
     }
 
@@ -148,8 +114,8 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     fun initView(view: View) {
-        val dividerItemDecoration = DividerItemDecoration(requireContext(), DividerItemDecoration.HORIZONTAL)
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(requireContext(), com.tokopedia.design.R.drawable.divider_horizontal_custom_quick_filter)!!)
+        val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, com.tokopedia.design.R.drawable.divider_horizontal_custom_quick_filter)!!)
         with(view.recyclerViewLastSeenPromo) {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
             adapter = promoLastSeenAdapter
@@ -158,8 +124,8 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
             addItemDecoration(dividerItemDecoration)
         }
 
-        val linearDividerItemDecoration = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
-        linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider_vertical_list_promo)!!)
+        val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
         getRecyclerView(view)?.run {
             while (itemDecorationCount > 0) removeItemDecorationAt(0)
             addItemDecoration(linearDividerItemDecoration)
@@ -186,12 +152,12 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     }
 
-    fun showGetListLastSeenError(e: Throwable) {
+    override fun showGetListLastSeenError(e: Throwable) {
         populateLastSeen()
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
 
-    fun onErrorCheckPromo(e: Throwable) {
+    override fun onErrorCheckPromo(e: Throwable) {
         if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCodeFailed(e)
         } else {
@@ -206,7 +172,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
     }
 
-    fun onErrorEmptyPromo() {
+    override fun onErrorEmptyPromo() {
         textInputCoupon.setError(true)
         textInputCoupon.setMessage(getString(R.string.promostacking_checkout_label_error_empty_voucher_code))
     }
@@ -222,7 +188,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>, isDeals: Boolean) {
+    override fun renderListLastSeen(data: List<PromoCheckoutLastSeenModel>, isDeals: Boolean) {
         if (!data.isNullOrEmpty()) {
             promoLastSeenAdapter.listData.clear()
             promoLastSeenAdapter.listData.addAll(data)
@@ -268,6 +234,10 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
                 .inject(this)
     }
 
+    override fun onDestroyView() {
+        promoCheckoutListPresenter.detachView()
+        super.onDestroyView()
+    }
 
     companion object {
         val EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
