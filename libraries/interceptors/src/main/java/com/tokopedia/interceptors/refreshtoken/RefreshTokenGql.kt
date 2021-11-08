@@ -86,7 +86,18 @@ class RefreshTokenGql {
         responseCall.request().headers("")
         return try {
             val result = responseCall.execute()
-            mapRefreshTokenResponse(result.body())
+            val resultToken = mapRefreshTokenResponse(result.body())
+            resultToken?.run {
+                if(accessToken.isNotEmpty()) {
+                    userSession.setToken(accessToken, tokenType)
+                }
+                if(refreshToken.isNotEmpty()) {
+                    userSession.setRefreshToken(
+                        EncoderDecoder.Encrypt(refreshToken, userSession.refreshTokenIV)
+                    )
+                }
+            }
+            resultToken
         } catch (e: Exception) {
             e.printStackTrace()
             null

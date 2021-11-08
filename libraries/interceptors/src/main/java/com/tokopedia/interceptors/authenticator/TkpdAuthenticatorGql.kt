@@ -5,6 +5,8 @@ import android.util.Log
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.network.refreshtoken.AccessTokenRefresh
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.user.session.UserSession
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -51,8 +53,11 @@ class TkpdAuthenticatorGql(
         return result
     }
 
-    private fun createRefreshTokenUseCase() {
-//        val graphqlapi = GraphqlApiSuspend.getResponseSuspend()
+    private fun retryWithOldRefreshToken(response: Response): String {
+        val path: String = getRefreshQueryPath(response.request(), response)
+        val accessTokenRefresh = AccessTokenRefresh()
+        val newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path)
+        return newAccessToken ?: ""
     }
 
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -61,13 +66,21 @@ class TkpdAuthenticatorGql(
             return if(responseCount(response) == 0)
                 try {
                     val originalRequest = response.request()
-                    val newAccessToken = refreshTokenUseCaseGql.refreshToken(context, userSession, networkRouter)?.accessToken ?: ""
-                    if(newAccessToken.isNotEmpty()) {
-                        null
-                    } else {
-                        networkRouter.doRelogin(newAccessToken)
-                        updateRequestWithNewToken(originalRequest)
+                    val tokenResponse = refreshTokenUseCaseGql.refreshToken(context, userSession, networkRouter)
+                    if(tokenResponse != null) {
+                        return if(tokenResponse.accessToken.isEmpty()) {
+                            val newToken = retryWithOldRefreshToken(response)
+                            return if(newToken.isNotEmpty()) {
+                                updateRequestWithNewToken(originalRequest)
+                            } else {
+                                null
+                            }
+                        } else {
+                            onRefreshTokenSuccess(accessToken = tokenResponse.accessToken, refreshToken = tokenResponse.refreshToken, tokenType = tokenResponse.tokenType)
+                            updateRequestWithNewToken(originalRequest)
+                        }
                     }
+                    return null
                 } catch (ex: Exception) {
                     networkRouter.logRefreshTokenException(formatThrowable(ex), "failed_authenticate", path, trimToken(userSession.accessToken))
                     null
@@ -84,6 +97,25 @@ class TkpdAuthenticatorGql(
             }
         }
         return response.request()
+    }
+
+    private fun onRefreshTokenSuccess(accessToken: String, refreshToken: String, tokenType: String) {
+        saveNewToken(accessToken = accessToken, refreshToken = refreshToken, tokenType = tokenType)
+        networkRouter.doRelogin(accessToken)
+    }
+
+    private fun saveNewToken(accessToken: String, refreshToken: String, tokenType: String) {
+        if (accessToken.isNotEmpty()) {
+            userSession.setToken(accessToken, tokenType)
+        }
+        if (refreshToken.isNotEmpty()) {
+            userSession.setRefreshToken(
+                EncoderDecoder.Encrypt(
+                    refreshToken,
+                    userSession.refreshTokenIV
+                )
+            )
+        }
     }
 
     private fun trimToken(accessToken: String): String {
