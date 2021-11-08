@@ -68,7 +68,7 @@ class LoggerRepository(
             logDao.getServerChannel(LoggerReporting.P2, queryLimits[1])
         )
         sendLogToServer(
-            Constants.SEVERITY_SR,
+            Constants.SEVERITY_SF,
             logDao.getServerChannel(LoggerReporting.SF, queryLimits[0])
         )
     }
@@ -151,7 +151,7 @@ class LoggerRepository(
             val priorityName = when (priorityValue) {
                 Constants.SEVERITY_HIGH -> LoggerReporting.P1
                 Constants.SEVERITY_MEDIUM -> LoggerReporting.P2
-                Constants.SEVERITY_SR -> LoggerReporting.SF
+                Constants.SEVERITY_SF -> LoggerReporting.SF
                 else -> ""
             }
             val tagMapsValue =
@@ -172,7 +172,7 @@ class LoggerRepository(
                     messageNewRelicList.add(
                         addEventNewRelic(
                             message,
-                            Constants.EVENT_TYPE_NEW_RELIC
+                            Constants.EVENT_ANDROID_NEW_RELIC
                         )
                     )
                 }

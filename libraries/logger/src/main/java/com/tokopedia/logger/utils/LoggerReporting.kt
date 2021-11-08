@@ -69,7 +69,7 @@ class LoggerReporting {
         val p = when (priority) {
             P1 -> Constants.SEVERITY_HIGH
             P2 -> Constants.SEVERITY_MEDIUM
-            SF -> Constants.SEVERITY_SR
+            SF -> Constants.SEVERITY_SF
             else -> -1
         }
 
