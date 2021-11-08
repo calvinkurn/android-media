@@ -2,41 +2,36 @@ package com.tokopedia.attachproduct
 
 import android.content.Context
 import android.content.Intent
-import android.view.KeyEvent
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.action.ViewActions.pressKey
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.BoundedMatcher
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.attachproduct.data.model.AceSearchProductResponse
 import com.tokopedia.attachproduct.fake.di.*
-import com.tokopedia.attachproduct.fake.usecase.FakeAttachProductUseCase
 import com.tokopedia.attachproduct.fake.view.AttachProductTestActivity
 import com.tokopedia.attachproduct.test.R
 import com.tokopedia.attachproduct.utils.FileUtils
-import com.tokopedia.attachproduct.utils.atPosition
 import com.tokopedia.attachproduct.view.viewholder.AttachProductListItemViewHolder
 import com.tokopedia.test.application.espresso_component.CommonAssertion
-import com.tokopedia.test.application.matcher.hasTotalItemOf
 import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
+
 
 class AttachProductTest {
 
@@ -117,13 +112,18 @@ class AttachProductTest {
         activityTestRule.launchActivity(Intent())
 
         //GIVEN
-
         val text = "pr0duct t3st variant 2 100 v4r"
         onView(withId(R.id.search_input_view)).check(matches(isDisplayed()))
 
         onView(withId(R.id.search_input_view)).perform(ViewActions.click())
 
-        onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(text), pressImeActionButton())
+        onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(text))
+
+        val responseFilter = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product_filter, AceSearchProductResponse::class.java)
+        dep.repositoryStub.setResultData(AceSearchProductResponse::class.java, responseFilter)
+
+        Thread.sleep(1000)
+        onView(withId(R.id.searchbar_textfield)).perform(pressImeActionButton())
 
         //THEN
         Thread.sleep(2000)
@@ -137,14 +137,8 @@ class AttachProductTest {
         dep.repositoryStub.setResultData(AceSearchProductResponse::class.java, response)
         activityTestRule.launchActivity(Intent())
 
-        onView(withId(R.id.swipe_refresh_layout)).check(matches(object: BoundedMatcher<View, SwipeRefreshLayout>(SwipeRefreshLayout::class.java) {
-            override fun describeTo(description: Description?) {
-            }
-
-            override fun matchesSafely(item: SwipeRefreshLayout?): Boolean {
-                return item?.isRefreshing!!
-            }
-        }))
+        onView(withId(R.id.swipe_refresh_layout)).perform(withCustomConstraints(
+            swipeDown(), isDisplayingAtLeast(90)))
     }
 
     private fun performClickOnProductCard(@IdRes recyclerViewId: Int) {
@@ -156,6 +150,21 @@ class AttachProductTest {
             .perform(viewAction)
     }
 
+    fun withCustomConstraints(action: ViewAction, constraints: Matcher<View>): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return constraints
+            }
+
+            override fun getDescription(): String {
+                return action.description
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                action.perform(uiController, view)
+            }
+        }
+    }
 
     companion object {
         var fakeComponent: FakeAttachProductComponent? = null

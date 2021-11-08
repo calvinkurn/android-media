@@ -20,6 +20,8 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
         return GraphqlResponse(resultData, errorData, false)
     }
 
+    var filter = false
+
     fun setResultData(type: Type, response: Any) {
         resultData[type] = response
     }
