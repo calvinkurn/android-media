@@ -289,7 +289,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         private const val KEY_CACHE_MANAGER_ID = "extra_cache_manager_id"
 
         private const val EXTENSION_ACTION = 1
-        private const val CANCEL_ACTION = 0
+        private const val CANCEL_ACTION = 2
 
         fun newInstance(
             cacheManagerId: String,
