@@ -14,7 +14,7 @@ class AffiliateAdapterFactory(
         private var shareButtonInterface: ShareButtonInterface? = null,
         var productClickInterface : ProductClickInterface? = null,
         private var promotionClickInterface : PromotionClickInterface? = null,
-        private var onFoucusChangeInterface: PortfolioUrlTextUpdateInterface?=null)
+        private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface?=null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -24,7 +24,7 @@ class AffiliateAdapterFactory(
             AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
             AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
-            AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent,onFoucusChangeInterface)
+            AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent,onFocusChangeInterface)
             AffiliateHeaderItemVH.LAYOUT -> AffiliateHeaderItemVH(parent)
             AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent)
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)

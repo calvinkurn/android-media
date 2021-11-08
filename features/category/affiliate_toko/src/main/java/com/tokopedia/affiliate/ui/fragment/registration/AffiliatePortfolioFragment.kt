@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewModel>(),PortfolioUrlTextUpdateInterface{
     private lateinit var affiliatePortfolioViewModel: AffiliatePortfolioViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(onFoucusChangeInterface=this))
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(onFocusChangeInterface=this))
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
     override fun getViewModelType(): Class<AffiliatePortfolioViewModel> {
