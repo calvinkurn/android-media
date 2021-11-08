@@ -53,8 +53,8 @@ object DigitalHomepageGqlQuery {
     """.trimIndent()
 
     val searchAutoComplete = """
-            query DigitalSearchSuggestionQuery(${'$'}param: String) {
-        digiPersoDigitalSearchSuggestion(param: ${'$'}param) {
+            query DigitalSearchSuggestionQuery(${'$'}param: String!){
+        digiPersoSearchSuggestion(param: ${'$'}param) {
             data {
                 id
                 name
@@ -65,15 +65,18 @@ object DigitalHomepageGqlQuery {
                 items {
                     template
                     type
-                    applink
+                    appLink
                     url
                     title
                     subtitle
-                    iconTitle: icon_title
-                    iconSubtitle: icon_subtitle
-                    shortcutImage: shortcut_image
-                    imageUrl: image_url
-                    urlTracker: url_tracker
+                    iconTitle
+                    iconSubtitle
+                    shortcutImage
+                    imageURL
+                    urlTracker
+                    discountPercentage
+                    discountedPrice
+                    originalPrice
                     tracking {
                         itemType
                         categoryID
@@ -81,16 +84,13 @@ object DigitalHomepageGqlQuery {
                         operatorID
                         operatorName
                     }
-                    child_items {
+                    childItems {
                         template
                         type
-                        applink
+                        appLink
                         url
                         title
                     }
-                    discountPercentage: discount_percentage
-                    discountedPrice: discounted_price
-                    originalPrice: original_price
                 }
             }
         }
