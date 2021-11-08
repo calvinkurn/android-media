@@ -387,7 +387,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                 .build()
         )
 
-        binding?.rootView?.let {
+        binding?.root?.let {
             binding?.imgProof?.let { imgProof ->
                 Glide.with(it.context)
                     .load(newUrl)
