@@ -1133,7 +1133,13 @@ class PlayViewModel @Inject constructor(
 
                 try {
                     val report = deferredReportSummaries.await().data.first().channel.metrics
-                    _channelReport.value = PlayChannelReportUiModel(report.totalViewFmt, report.totalLike.toLongOrZero(), report.totalLikeFmt)
+                    _channelReport.setValue {
+                        copy(
+                            totalViewFmt = report.totalViewFmt,
+                            totalLike = report.totalLike.toLongOrZero(),
+                            totalLikeFmt = report.totalLikeFmt
+                        )
+                    }
                 } catch (e: Throwable) {
 
                 }
