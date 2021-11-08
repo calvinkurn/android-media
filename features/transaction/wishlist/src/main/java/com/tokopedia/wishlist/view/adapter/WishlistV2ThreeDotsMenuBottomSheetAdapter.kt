@@ -13,7 +13,7 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomShee
  */
 class WishlistV2ThreeDotsMenuBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener? = null
-    var listThreeDotsMenuItem = listOf<WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem>()
+    var wishlistItem = WishlistV2Response.Data.WishlistV2.Item()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = BottomsheetWishlistV2ThreeDotsMenuItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
@@ -23,13 +23,13 @@ class WishlistV2ThreeDotsMenuBottomSheetAdapter : RecyclerView.Adapter<RecyclerV
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is WishlistV2ThreeDotsMenuItemViewHolder -> {
-                holder.bind(listThreeDotsMenuItem[holder.adapterPosition])
+                holder.bind(wishlistItem, wishlistItem.buttons.additionalButtons[holder.adapterPosition])
             }
         }
     }
 
     override fun getItemCount(): Int {
-        return listThreeDotsMenuItem.size
+        return wishlistItem.buttons.additionalButtons.size
     }
 
     fun setActionListener(listener: WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener) {

@@ -40,6 +40,9 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -534,17 +537,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         if (bottomSheetThreeDotsMenu.isAdded || childFragmentManager.isStateSaved) return
 
         val threeDotsMenuBottomSheetAdapter = WishlistV2ThreeDotsMenuBottomSheetAdapter()
-        threeDotsMenuBottomSheetAdapter.listThreeDotsMenuItem = itemWishlist.buttons.additionalButtons
+        threeDotsMenuBottomSheetAdapter.wishlistItem = itemWishlist
 
         bottomSheetThreeDotsMenu.setAdapter(threeDotsMenuBottomSheetAdapter)
         bottomSheetThreeDotsMenu.setListener(object : WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener{
-            override fun onThreeDotsMenuItemSelected(additionalItem: WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem) {
+            override fun onThreeDotsMenuItemSelected(wishlistItem: WishlistV2Response.Data.WishlistV2.Item,
+                                                     additionalItem: WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem) {
                 bottomSheetThreeDotsMenu.dismiss()
                 if (additionalItem.url.isNotEmpty()) {
                     RouteManager.route(context, additionalItem.url)
                 } else {
                     if (additionalItem.action == SHARE_LINK_PRODUCT) {
-                        println("++ share link product")
+                        showShareBottomSheet(wishlistItem)
                     } else if (additionalItem.action == DELETE_WISHLIST) {
                         wishlistViewModel.deleteWishlistV2(itemWishlist.id, userSession.userId)
                     }
@@ -552,6 +556,28 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             }
         })
         bottomSheetThreeDotsMenu.show(childFragmentManager)
+    }
+
+    private fun showShareBottomSheet(wishlistItem: WishlistV2Response.Data.WishlistV2.Item) {
+        val shareListener = object : ShareBottomsheetListener {
+
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                // usually shareModel will be used for tracking
+            }
+
+            override fun onCloseOptionClicked() {
+                //no op
+            }
+        }
+
+        val universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(shareListener)
+            setMetaData(
+                    wishlistItem.name,
+                    wishlistItem.imageUrl
+            )
+        }
+        universalShareBottomSheet.show(childFragmentManager, this)
     }
 
     private fun renderWishlist(items: List<WishlistV2Response.Data.WishlistV2.Item>) {
