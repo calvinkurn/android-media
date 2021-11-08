@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant
 
 class DigitalHomepageSearchNewFragment: DigitalHomePageSearchFragment() {
 
@@ -17,7 +16,9 @@ class DigitalHomepageSearchNewFragment: DigitalHomePageSearchFragment() {
     }
 
     override fun searchCategory(searchQuery: String) {
-        viewModel.searchAutoComplete(viewModel.mapAutoCompleteParams(searchBarRedirection, searchQuery), searchQuery)
+        if (!searchQuery.isNullOrEmpty()) {
+            viewModel.searchAutoComplete(viewModel.mapAutoCompleteParams(searchBarRedirection, searchQuery), searchQuery)
+        }
     }
 
     companion object {

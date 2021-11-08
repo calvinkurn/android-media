@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeSearchCategoryItemBinding
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.media.loader.loadImage
 
 class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCategoryClickListener: OnSearchCategoryClickListener) :
@@ -20,12 +21,7 @@ class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCateg
             digitalHomepageSearchCategoryImage.loadImage(element.icon)
 
             // Add search query shading to category name
-            val spannableString = SpannableStringBuilder(element.label)
-            val searchQueryIndex = element.label.indexOf(element.searchQuery, ignoreCase = true)
-            if (searchQueryIndex > -1) {
-                spannableString.setSpan(StyleSpan(Typeface.BOLD), searchQueryIndex, searchQueryIndex + element.searchQuery.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-            digitalHomepageSearchCategoryName.text = spannableString
+            digitalHomepageSearchCategoryName.text = RechargeHomepageSectionMapper.boldReverseSearchAutoComplete(element.label, element.searchQuery)
 
             root.setOnClickListener { onSearchCategoryClickListener.onSearchCategoryClicked(element, adapterPosition) }
         }
