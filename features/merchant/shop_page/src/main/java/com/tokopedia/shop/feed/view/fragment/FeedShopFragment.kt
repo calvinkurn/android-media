@@ -591,19 +591,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onMenuClick(
-        positionInFeed: Int,
-        postId: Int,
-        reportable: Boolean,
-        deletable: Boolean,
-        editable: Boolean,
-        isFollowed: Boolean,
-        id: String,
-        authorType: String,
-        postType: String,
-        isVideo: Boolean,
-        caption: String
-    ) {
+    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean, isFollowed: Boolean, id: String, authorType: String, postType: String, isVideo: Boolean, caption: String, playChannelId: String) {
         context?.let {
             val menus =
                 createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {

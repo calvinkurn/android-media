@@ -457,7 +457,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onMenuClicked(String id, boolean canDeleteComment, int adapterPosition,@NotNull String playChannelId) {
+    public void onMenuClicked(String id, boolean canDeleteComment, int adapterPosition) {
 
     }
 
@@ -635,7 +635,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable, boolean isFollowed, @NotNull String authorId, @NotNull String authorType, @NotNull String postType, boolean isVideo, String caption) {
+    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable, boolean isFollowed, @NonNull String authorId, @NonNull String authorType, @NonNull String postType, boolean isVideo, @NonNull String caption, @NonNull String playChannelId) {
         if (getContext() != null) {
             Menus menus = createBottomMenu(getContext(), deletable,
                     reportable, false, new PostMenuListener() {
