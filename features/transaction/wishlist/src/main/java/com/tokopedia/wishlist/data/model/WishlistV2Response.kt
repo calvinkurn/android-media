@@ -44,7 +44,7 @@ data class WishlistV2Response(
 
 				@SerializedName("empty_state")
 				val emptyState: EmptyState = EmptyState()
-		) : WishlistV2Data {
+		) {
 			data class Item(
 
 					@SerializedName("original_price")

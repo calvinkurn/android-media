@@ -139,12 +139,20 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         prepareLayout()
         observingWishlistV2()
         observingDeleteWishlistV2()
-        observingWishlistV2Counter()
+        observingWishlistData()
     }
 
-    private fun observingWishlistV2Counter() {
-        wishlistViewModel.wishlistCount.observe(viewLifecycleOwner, Observer {
-            updateTotalLabel(it)
+    private fun observingWishlistData() {
+        wishlistViewModel.wishlistData.observe(viewLifecycleOwner, Observer {
+            if (it.sortFilters.isNotEmpty() && currPage == 1) {
+                renderChipsFilter(it.sortFilters)
+            }
+            if (it.hasNextPage) {
+                currPage +=1
+            }
+            if (currPage == 1 && it.totalData != 0) {
+                updateTotalLabel(it.totalData)
+            }
         })
     }
 
@@ -271,6 +279,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private fun triggerSearch() {
         paramWishlistV2.query = searchQuery
         refreshHandler?.startRefresh()
+        currRecommendationListPage = 0
         // scrollRecommendationListener.resetState()
     }
 
@@ -306,34 +315,55 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     } else {
                         if (currRecommendationListPage == 0) {
                             isFetchRecommendation = true
-                            adapterData.add(WishlistV2TypeLayoutData(getString(R.string.recommendation_title), TYPE_RECOMMENDATION_TITLE))
                             if (searchQuery.isNotEmpty()) {
                                 adapterData.add(WishlistV2TypeLayoutData(searchQuery, TYPE_EMPTY_NOT_FOUND))
                             } else {
                                 adapterData.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
                             }
+                            adapterData.add(WishlistV2TypeLayoutData(getString(R.string.recommendation_title), TYPE_RECOMMENDATION_TITLE))
                         }
                         currRecommendationListPage += 1
-                        recommendationList.firstOrNull()?.recommendationItemList?.forEach { recommendationItem ->
+                        it.recommendationData.firstOrNull()?.recommendationItemList?.forEach { recommendationItem ->
                             adapterData.add(WishlistV2TypeLayoutData(recommendationItem, TYPE_RECOMMENDATION_LIST))
                         }
                     }
                 }
-                is WishlistV2Response.Data.WishlistV2 -> {
-                    if (currPage == 1 && it.sortFilters.isNotEmpty()) {
-                        renderChipsFilter(it.sortFilters)
-                    }
-                    if (it.items.isNotEmpty()) {
-                        if (it.hasNextPage) {
-                            currPage += 1
-                        }
-                        renderWishlist(it.items)
+                is WishlistV2DataModel -> {
+//                    if (currPage == 1 && it.sortFilters.isNotEmpty()) {
+//                        renderChipsFilter(it.sortFilters)
+//                    }
+//                    if (it.items.isNotEmpty()) {
+//                        if (it.hasNextPage) {
+//                            currPage += 1
+//                        }
+//                        renderWishlist(it.items)
+//                    }
+                    it.item.run {
+                        val productModel = ProductCardModel(
+                            productImageUrl = imageUrl,
+                        isWishlistVisible = true,
+                        productName = name,
+                        shopName = shop.name,
+                        formattedPrice = priceFmt,
+                        shopLocation = shop.location,
+                        isShopRatingYellow = true,
+                        hasSecondaryButton = true,
+                        hasTambahKeranjangButton = true)
+                        adapterData.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout()))
                     }
 //                    else {
 //                        if (currPage == 1) {
 //                            loadRecommendationList()
 //                        }
 //                    }
+                }
+                is WishlistV2EmptyWrapper -> {
+                    if (it.query.isEmpty()) {
+                        adapterData.add(WishlistV2TypeLayoutData(it.query, TYPE_EMPTY_NOT_FOUND))
+                    } else {
+                        adapterData.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
+                    }
+
                 }
             }
         }
@@ -506,30 +536,30 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         bottomSheetThreeDotsMenu.show(childFragmentManager)
     }
 
-    private fun renderWishlist(items: List<WishlistV2Response.Data.WishlistV2.Item>) {
-        val listItem = arrayListOf<WishlistV2TypeLayoutData>()
-        items.forEach { item ->
-            val productModel = ProductCardModel(
-                    productImageUrl = item.imageUrl,
-                    isWishlistVisible = true,
-                    productName = item.name,
-                    shopName = item.shop.name,
-                    formattedPrice = item.priceFmt,
-                    shopLocation = item.shop.location,
-                    isShopRatingYellow = true,
-                    hasSecondaryButton = true,
-                    hasTambahKeranjangButton = true)
-            listItem.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item))
-        }
-
-        if (!onLoadMore) {
-            wishlistV2Adapter.addList(listItem)
-            scrollRecommendationListener.resetState()
-        } else {
-            wishlistV2Adapter.appendList(listItem)
-            scrollRecommendationListener.updateStateAfterGetData()
-        }
-    }
+//    private fun renderWishlist(item: WishlistV2Response.Data.WishlistV2.Item) {
+//        val listItem = arrayListOf<WishlistV2TypeLayoutData>()
+//        items.forEach { item ->
+//            val productModel = ProductCardModel(
+//                    productImageUrl = item.imageUrl,
+//                    isWishlistVisible = true,
+//                    productName = item.name,
+//                    shopName = item.shop.name,
+//                    formattedPrice = item.priceFmt,
+//                    shopLocation = item.shop.location,
+//                    isShopRatingYellow = true,
+//                    hasSecondaryButton = true,
+//                    hasTambahKeranjangButton = true)
+//            listItem.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item))
+//        }
+//
+//        if (!onLoadMore) {
+//            wishlistV2Adapter.addList(listItem)
+//            scrollRecommendationListener.resetState()
+//        } else {
+//            wishlistV2Adapter.appendList(listItem)
+//            scrollRecommendationListener.updateStateAfterGetData()
+//        }
+//    }
 
     private fun showToaster(message: String, actionText: String, type: Int) {
         val toasterSuccess = Toaster
