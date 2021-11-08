@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -27,8 +30,9 @@ import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.DateUtil
+import com.tokopedia.logisticorder.utils.TrackingPageUtil
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
-import com.tokopedia.logisticorder.view.imagepreview.ImagePreviewLogisticActivity
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -49,7 +53,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
-    lateinit var dateUtil:     DateUtil
+    lateinit var dateUtil: DateUtil
     @Inject
     lateinit var mAnalytics: OrderAnalyticsOrderTracking
 
@@ -396,10 +400,30 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     override fun onImageItemClicked(imageId: String, orderId: Long) {
         val url = getDeliveryImage(imageId, orderId, "large",
                 userSession.userId, 1, userSession.deviceId)
+        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
+        val newUrl = GlideUrl(
+            url, LazyHeaders.Builder()
+                .addHeader(HEADER_KEY_AUTH, authKey)
+                .build()
+        )
 
-        startActivity(activity?.let {
-            url?.let { url -> ImagePreviewLogisticActivity.createIntent(it, arrayListOf(url)) }
-        })
+        binding?.root?.let {
+            binding?.imgProof?.let { imgProof ->
+                Glide.with(it.context)
+                    .load(newUrl)
+                    .centerCrop()
+                    .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
+                    .error(it.context.getDrawable(R.drawable.ic_image_error))
+                    .dontAnimate()
+                    .into(imgProof)
+            }
+        }
+
+        binding?.imagePreviewLarge?.visibility = View.VISIBLE
+        binding?.iconClose?.setOnClickListener {
+            binding?.imagePreviewLarge?.visibility = View.GONE
+        }
+
     }
 
 }
