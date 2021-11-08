@@ -185,6 +185,7 @@
 
     <!-- Digital-Deals-->
     <string name="digital_deals">digital_deals</string>
+    <string name="deals_checkout_title">Ringkasan Pemesanan</string>
 
     <!-- Digital Emoney -->
     <string name="title_digital_emoney">Electronic Money</string>
