@@ -64,7 +64,7 @@
     <string name="menu_account_desc_icon">Atur alamat pengiriman belanjaan</string>
     <string name="menu_account_desc_address">Atur alamat pengiriman belanjaan</string>
     <string name="menu_account_desc_bank">Tarik Saldo Tokopedia ke rekening tujuan</string>
-    <string name="menu_account_desc_instant_payment">OVO, kartu kredit, &amp; debit instan terdaftar</string>
+    <string name="menu_account_desc_instant_payment">E-wallet, kartu kredit, &amp; debit instan terdaftar</string>
     <string name="menu_account_desc_security">Kata sandi, PIN, &amp; verifikasi data diri</string>
     <string name="menu_account_desc_notification">Atur segala jenis pesan notifikasi</string>
     <string name="menu_account_desc_account_link">Atur akun yang tersambung ke Tokopedia</string>

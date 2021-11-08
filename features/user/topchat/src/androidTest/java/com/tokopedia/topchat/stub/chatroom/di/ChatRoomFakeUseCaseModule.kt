@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
+import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
@@ -8,7 +9,9 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
@@ -23,6 +26,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
@@ -277,6 +281,22 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetShopFollowingUseCaseStub {
         return GetShopFollowingUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideToggleFavouriteShopUseCase(
+        stub: ToggleFavouriteShopUseCaseStub
+    ): ToggleFavouriteShopUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideToggleFavouriteShopUseCaseStub(
+        @ApplicationContext context: Context
+    ): ToggleFavouriteShopUseCaseStub {
+        return ToggleFavouriteShopUseCaseStub(GraphqlUseCase(), context.resources)
     }
 
     // -- separator -- //
