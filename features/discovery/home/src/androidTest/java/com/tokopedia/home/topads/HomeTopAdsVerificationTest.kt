@@ -50,7 +50,7 @@ import org.junit.*
  */
 class HomeTopAdsVerificationTest {
     companion object {
-        val LIMIT_COUNT_TO_IDLE = 10
+        private const val LIMIT_COUNT_TO_IDLE = 10
     }
 
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
