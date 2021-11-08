@@ -55,15 +55,14 @@ class GetMessageIdViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_throwable_when_failed_get_message_id() {
         //Given
-        val expectedResult = Throwable("Oops!")
         coEvery {
             getExistingMessageIdUseCase.invoke(any())
-        } throws expectedResult
+        } throws expectedThrowable
 
         //When
         viewModel.getMessageId(testShopId, testUserId, source)
 
         //Then
-        Assert.assertEquals(viewModel.messageId.value, Fail(expectedResult))
+        Assert.assertEquals(viewModel.messageId.value, Fail(expectedThrowable))
     }
 }

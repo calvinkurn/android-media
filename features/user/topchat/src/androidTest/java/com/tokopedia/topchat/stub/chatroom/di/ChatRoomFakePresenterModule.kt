@@ -10,7 +10,6 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
@@ -44,7 +43,6 @@ class ChatRoomFakePresenterModule {
             topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
             getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
             replyChatUseCase: ReplyChatUseCase,
-            toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
             addToCartUseCase: AddToCartUseCase,
             compressImageUseCase: CompressImageUseCase,
             seamlessLoginUsecase: SeamlessLoginUsecase,
@@ -73,7 +71,6 @@ class ChatRoomFakePresenterModule {
                         topChatRoomWebSocketMessageMapper,
                         getTemplateChatRoomUseCase,
                         replyChatUseCase,
-                        toggleFavouriteShopUseCase,
                         addToCartUseCase,
                         compressImageUseCase,
                         seamlessLoginUsecase,

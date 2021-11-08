@@ -644,8 +644,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                             cartItemHolderData.parentId == cartItemHolderDataTmp.parentId &&
                             cartItemHolderData.productPrice == cartItemHolderDataTmp.productPrice) {
                         val tmpQty =
-                                if (cartItemHolderData.isBundlingItem) cartItemHolderData.bundleQuantity * cartItemHolderData.quantity
-                                else cartItemHolderData.quantity
+                                if (cartItemHolderDataTmp.isBundlingItem) cartItemHolderDataTmp.bundleQuantity * cartItemHolderDataTmp.quantity
+                                else cartItemHolderDataTmp.quantity
                         itemQty += tmpQty
                     }
                 }
