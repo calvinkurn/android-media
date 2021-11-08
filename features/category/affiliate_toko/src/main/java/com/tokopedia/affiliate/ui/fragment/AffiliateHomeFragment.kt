@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,14 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
-import com.tokopedia.affiliate.ANNOUNCEMENT__TYPE_SUCCESS
-import com.tokopedia.affiliate.ANNOUNCEMENT__TYPE_CCA
-import com.tokopedia.affiliate.ANNOUNCEMENT__TYPE_SERVICE_STATUS
-import com.tokopedia.affiliate.ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT
-import com.tokopedia.affiliate.ANNOUNCEMENT__TYPE_USER_BLACKLIST
-import com.tokopedia.affiliate.AffiliateAnalytics
-import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -47,10 +39,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.webview.BaseSimpleWebViewActivity
-import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -122,6 +111,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.label_affiliate)
+            setOnBackButtonClickListener {
+                (activity as? AffiliateActivity)?.handleBackButton()
+            }
         }
         ImageHandler.loadImageCircle2(context, user_image, affiliateHomeViewModel.getUserProfilePicture())
         sendScreenEvent()

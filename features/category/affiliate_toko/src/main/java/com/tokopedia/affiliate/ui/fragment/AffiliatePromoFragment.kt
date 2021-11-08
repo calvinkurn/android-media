@@ -23,6 +23,7 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.AffiliateSearchData
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextFieldInterface
@@ -100,16 +101,16 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.affiliate_promo)
-        }
-        promo_navToolbar.setOnBackButtonClickListener {
-            handleBack()
+            setOnBackButtonClickListener {
+                handleBack()
+            }
         }
         setupViewPager()
         showDefaultState()
     }
 
     fun handleBack() {
-        if (recommended_layout.isVisible) activity?.finish()
+        if (recommended_layout.isVisible) (activity as? AffiliateActivity)?.handleBackButton()
         else showDefaultState()
     }
 

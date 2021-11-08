@@ -125,16 +125,26 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun onBackPressed() {
+        val currentFragment=supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+        if(currentFragment != null && currentFragment.isVisible){
+            (currentFragment as? AffiliatePromoFragment)?.handleBack()
+        }
+        else {
+           handleBackButton()
+        }
+    }
+
+    fun handleBackButton(){
         if(!fragmentStack.empty()) {
             fragmentStack.pop()
             if (!fragmentStack.empty()) {
                 handleBackStack()
             } else{
-                finish()
+                super.onBackPressed()
             }
         }
         else{
-            finish()
+            super.onBackPressed()
         }
     }
 
@@ -162,4 +172,14 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             )
         }
     }
+
+    /*
+    override fun onBackPressed() {
+        val currentFragment=supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+        if(currentFragment!=null && currentFragment.isVisible){
+            (currentFragment as? AffiliatePromoFragment)?.handleBack()
+        }
+        else super.onBackPressed()
+    }
+     */
 }
