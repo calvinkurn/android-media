@@ -169,119 +169,12 @@ class SomListViewModel @Inject constructor(
         }
 
     init {
-        bulkAcceptOrderStatusResult.apply {
-            addSource(_bulkAcceptOrderStatusResult) {
-                onReceiveBulkAcceptOrderStatusResult(it)
-            }
+        bulkAcceptOrderStatusResult.addSource(_bulkAcceptOrderStatusResult) {
+            onReceiveBulkAcceptOrderStatusResult(it)
         }
 
         bulkRequestPickupFinalResultMediator.addSource(bulkRequestPickupStatusResult) {
-            when (it) {
-                is Success -> {
-                    val orderIdListFail = getFailingOrderIdsFromBulkRequestPickupStatus(it.data)
-                    val totalNotEligible = getTotalNotEligibleOrderFromBulkRequestPickupResult()
-                    val totalEligible = getTotalEligibleOrderFromBulkRequestPickupResult()
-                    val totalOrderIds = totalEligible + totalNotEligible
-
-                    // case 3 When All Orders Success
-                    if (it.data.success == it.data.total_order && totalOrderIds == it.data.total_order && it.data.success > Int.ZERO) {
-                        bulkRequestPickupFinalResultMediator.postValue(AllSuccess(it.data.success))
-                    }
-                    //case 4 when total order != it.data.processed and retry < 10
-                    else if (it.data.total_order != it.data.processed && retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
-                        retryRequestPickup++
-                        getMultiShippingStatus(
-                            getBulkRequestPickupJobID(),
-                            DELAY_GET_MULTI_SHIPPING_STATUS
-                        )
-                    } else {
-                        // case 5 when partial success but there's not eligible and failed
-                        if (it.data.success > Int.ZERO && it.data.fail > Int.ZERO && totalNotEligible > Int.ZERO &&
-                            retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER) {
-                            retryRequestPickupUser++
-                            bulkRequestPickupFinalResultMediator.postValue(
-                                PartialSuccessNotEligibleFail(
-                                    it.data.success,
-                                    totalNotEligible,
-                                    orderIdListFail
-                                )
-                            )
-                        }
-                        // case 6 when All Fail but there's not eligible
-                        else if (it.data.fail == totalEligible && it.data.fail > Int.ZERO
-                            && totalNotEligible > Int.ZERO &&
-                            retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
-                        ) {
-                            retryRequestPickupUser++
-                            bulkRequestPickupFinalResultMediator.postValue(
-                                NotEligibleAndFail(
-                                    totalNotEligible,
-                                    orderIdListFail
-                                )
-                            )
-                        }
-                        // case 7 When partial success but there's failed
-                        else if (it.data.success > Int.ZERO && it.data.fail > Int.ZERO &&
-                            totalNotEligible == Int.ZERO &&
-                            retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
-                        ) {
-                            retryRequestPickupUser++
-                            bulkRequestPickupFinalResultMediator.postValue(
-                                PartialSuccess(
-                                    it.data.success,
-                                    orderIdListFail
-                                )
-                            )
-                        }
-                        // case 8 When Partial success but there's not eligible
-                        else if (it.data.success > Int.ZERO && it.data.fail == Int.ZERO &&
-                            totalNotEligible > Int.ZERO
-                        ) {
-                            bulkRequestPickupFinalResultMediator.postValue(
-                                PartialSuccessNotEligible(
-                                    it.data.success,
-                                    totalNotEligible
-                                )
-                            )
-                        }
-                        //case 9 will happen fail bulk process due to all validation failed
-                        else if (getBulkRequestPickupStatus() == BulkRequestPickupStatus.SUCCESS_NOT_PROCESSED) {
-                            bulkRequestPickupFinalResultMediator.postValue(AllValidationFail)
-                        }
-                        //case 10 when All Fail Eligible and should be retry the first time
-                        else if (it.data.fail == it.data.total_order && it.data.fail > Int.ZERO &&
-                            totalNotEligible == Int.ZERO && it.data.success == Int.ZERO &&
-                            retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
-                        ) {
-                            retryRequestPickupUser++
-                            bulkRequestPickupFinalResultMediator.postValue(
-                                AllFailEligible(
-                                    orderIdListFail
-                                )
-                            )
-                        } else {
-                            if (retryRequestPickupUser >= MAX_RETRY_REQUEST_PICKUP_USER) {
-                                retryRequestPickupUser = Int.ZERO
-                            }
-                            //Case 11 will happen when after 10x retry is still fail
-                            bulkRequestPickupFinalResultMediator.postValue(FailRetry)
-                        }
-                    }
-                }
-                is Fail -> {
-                    val requestPickupUiModel = (_bulkRequestPickupResult.value as? Success)?.data
-                    if (retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
-                        retryRequestPickup++
-                        getMultiShippingStatus(
-                            requestPickupUiModel?.data?.jobId.orEmpty(),
-                            DELAY_GET_MULTI_SHIPPING_STATUS
-                        )
-                    } else {
-                        //Case 12 will happen when there's a server error/down from BE
-                        bulkRequestPickupFinalResultMediator.postValue(ServerFail(it.throwable))
-                    }
-                }
-            }
+            onReceiveBulkRequestPickupStatusResult(it)
         }
     }
 
@@ -343,8 +236,8 @@ class SomListViewModel @Inject constructor(
         })
     }
 
-    private fun onReceiveBulkAcceptOrderStatusResult(result: Pair<Int, Result<SomListBulkAcceptOrderStatusUiModel>>) {
-        when (val resultData = result.second) {
+    private fun onReceiveBulkAcceptOrderStatusResult(result: Pair<Int, Result<SomListBulkAcceptOrderStatusUiModel>>?) {
+        when (val resultData = result?.second) {
             is Success -> {
                 lastBulkAcceptOrderStatusSuccessResult = resultData.apply {
                     data.data.shouldRecheck = false
@@ -371,6 +264,116 @@ class SomListViewModel @Inject constructor(
                         lastBulkAcceptOrderStatusSuccessResult = resultData
                     }
                     bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
+                }
+            }
+        }
+    }
+
+    private fun onReceiveBulkRequestPickupStatusResult(result: Result<MultiShippingStatusUiModel>?) {
+        when (result) {
+            is Success -> {
+                val orderIdListFail = getFailingOrderIdsFromBulkRequestPickupStatus(result.data)
+                val totalNotEligible = getTotalNotEligibleOrderFromBulkRequestPickupResult()
+                val totalEligible = getTotalEligibleOrderFromBulkRequestPickupResult()
+                val totalOrderIds = totalEligible + totalNotEligible
+                val totalSuccess = result.data.success
+                val totalFail = result.data.fail
+                val totalOrders = result.data.total_order
+
+                // case 3 When All Orders Success
+                if (totalSuccess == totalOrders && totalOrderIds == totalOrders && totalSuccess > Int.ZERO) {
+                    bulkRequestPickupFinalResultMediator.postValue(AllSuccess(totalSuccess))
+                }
+                //case 4 when total order != it.data.processed and retry < 10
+                else if (totalOrders != result.data.processed && retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
+                    retryRequestPickup++
+                    getMultiShippingStatus(
+                        getBulkRequestPickupJobID(),
+                        DELAY_GET_MULTI_SHIPPING_STATUS
+                    )
+                } else {
+                    // case 5 when partial success but there's not eligible and failed
+                    if (totalSuccess > Int.ZERO && totalFail > Int.ZERO && totalNotEligible > Int.ZERO &&
+                        retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER) {
+                        retryRequestPickupUser++
+                        bulkRequestPickupFinalResultMediator.postValue(
+                            PartialSuccessNotEligibleFail(
+                                totalSuccess,
+                                totalNotEligible,
+                                orderIdListFail
+                            )
+                        )
+                    }
+                    // case 6 when All Fail but there's not eligible
+                    else if (totalFail == totalEligible && totalFail > Int.ZERO
+                        && totalNotEligible > Int.ZERO &&
+                        retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
+                    ) {
+                        retryRequestPickupUser++
+                        bulkRequestPickupFinalResultMediator.postValue(
+                            NotEligibleAndFail(
+                                totalNotEligible,
+                                orderIdListFail
+                            )
+                        )
+                    }
+                    // case 7 When partial success but there's failed
+                    else if (totalSuccess > Int.ZERO && totalFail > Int.ZERO &&
+                        totalNotEligible == Int.ZERO &&
+                        retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
+                    ) {
+                        retryRequestPickupUser++
+                        bulkRequestPickupFinalResultMediator.postValue(
+                            PartialSuccess(
+                                totalSuccess,
+                                orderIdListFail
+                            )
+                        )
+                    }
+                    // case 8 When Partial success but there's not eligible
+                    else if (totalSuccess > Int.ZERO && totalFail == Int.ZERO &&
+                        totalNotEligible > Int.ZERO
+                    ) {
+                        bulkRequestPickupFinalResultMediator.postValue(
+                            PartialSuccessNotEligible(
+                                totalSuccess,
+                                totalNotEligible
+                            )
+                        )
+                    }
+                    //case 9 will happen fail bulk process due to all validation failed
+                    else if (getBulkRequestPickupStatus() == BulkRequestPickupStatus.SUCCESS_NOT_PROCESSED) {
+                        bulkRequestPickupFinalResultMediator.postValue(AllValidationFail)
+                    }
+                    //case 10 when All Fail Eligible and should be retry the first time
+                    else if (totalFail == totalOrders && totalFail > Int.ZERO &&
+                        retryRequestPickupUser < MAX_RETRY_REQUEST_PICKUP_USER
+                    ) {
+                        retryRequestPickupUser++
+                        bulkRequestPickupFinalResultMediator.postValue(
+                            AllFailEligible(
+                                orderIdListFail
+                            )
+                        )
+                    } else {
+                        if (retryRequestPickupUser >= MAX_RETRY_REQUEST_PICKUP_USER) {
+                            retryRequestPickupUser = Int.ZERO
+                        }
+                        //Case 11 will happen when after 10x retry is still fail
+                        bulkRequestPickupFinalResultMediator.postValue(FailRetry)
+                    }
+                }
+            }
+            is Fail -> {
+                if (retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
+                    retryRequestPickup++
+                    getMultiShippingStatus(
+                        getBulkRequestPickupJobID(),
+                        DELAY_GET_MULTI_SHIPPING_STATUS
+                    )
+                } else {
+                    //Case 12 will happen when there's a server error/down from BE
+                    bulkRequestPickupFinalResultMediator.postValue(ServerFail(result.throwable))
                 }
             }
         }
@@ -442,7 +445,9 @@ class SomListViewModel @Inject constructor(
     }
 
     private suspend fun waitForGetFiltersCompleted() {
-        getFiltersJob?.join()
+        getFiltersJob?.let {
+            it.join()
+        }
     }
 
     fun bulkRequestPickup(orderIds: List<String>) {
