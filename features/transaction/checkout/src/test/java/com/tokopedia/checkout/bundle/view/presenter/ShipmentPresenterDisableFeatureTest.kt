@@ -10,7 +10,6 @@ import com.tokopedia.checkout.bundle.domain.usecase.*
 import com.tokopedia.checkout.bundle.view.ShipmentContract
 import com.tokopedia.checkout.bundle.view.ShipmentPresenter
 import com.tokopedia.checkout.bundle.view.converter.ShipmentDataConverter
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -19,7 +18,6 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,9 +51,6 @@ class ShipmentPresenterDisableFeatureTest {
     @MockK
     private lateinit var checkoutUseCase: CheckoutGqlUseCase
 
-    @MockK(relaxUnitFun = true)
-    private lateinit var graphqlUseCase: GraphqlUseCase
-
     @MockK
     private lateinit var editAddressUseCase: EditAddressUseCase
 
@@ -73,9 +68,6 @@ class ShipmentPresenterDisableFeatureTest {
 
     @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
-
-    @MockK
-    private lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
 
     @MockK
     private lateinit var ratesStatesConverter: RatesResponseStateConverter
@@ -122,7 +114,7 @@ class ShipmentPresenterDisableFeatureTest {
                 compositeSubscription, checkoutUseCase, getShipmentAddressFormV3UseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)

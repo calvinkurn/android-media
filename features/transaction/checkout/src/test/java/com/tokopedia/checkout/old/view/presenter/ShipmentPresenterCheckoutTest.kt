@@ -29,7 +29,6 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -74,9 +73,6 @@ class ShipmentPresenterCheckoutTest {
     private lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
 
     @MockK
-    private lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
-
-    @MockK
     private lateinit var ratesStatesConverter: RatesResponseStateConverter
 
     @MockK
@@ -116,7 +112,7 @@ class ShipmentPresenterCheckoutTest {
                 compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)
@@ -222,34 +218,6 @@ class ShipmentPresenterCheckoutTest {
             view.setHasRunningApiCall(false)
             view.hideLoading()
             view.renderCheckoutPriceUpdated(priceValidationData)
-        }
-    }
-
-    @Test
-    fun checkoutFailedErrorReporter_ShouldRenderErrorReporter() {
-        // Given
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-        })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
-
-        val errorReporter = ErrorReporter().apply {
-            eligible = true
-        }
-        val checkoutData = CheckoutData().apply {
-            this.isError = true
-            this.errorReporter = errorReporter
-        }
-        every { checkoutUseCase.createObservable(any()) } returns Observable.just(checkoutData)
-
-        // When
-        presenter.processCheckout(false, false, false, "", "", "")
-
-        // Then
-        verifyOrder {
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.renderCheckoutCartErrorReporter(checkoutData)
         }
     }
 

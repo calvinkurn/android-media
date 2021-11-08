@@ -30,7 +30,6 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
@@ -91,7 +90,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  ratesApiUseCase: GetRatesApiUseCase,
                                  stateConverter: RatesResponseStateConverter,
                                  clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
-                                 submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                  shippingCourierConverter: ShippingCourierConverter,
                                  userSessionInterface: UserSessionInterface,
                                  analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
@@ -106,7 +104,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 editAddressUseCase, changeShippingAddressGqlUseCase,
                 saveShipmentStateGqlUseCase,
                 ratesUseCase, ratesApiUseCase,
-                clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
+                clearCacheAutoApplyStackUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, checkoutAnalytics,
                 shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson,

@@ -1308,41 +1308,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     /**
-     * HitSubmitTicket
-     */
-    @Test
-    fun onSuccessHitSubmitTicket() {
-        val data = SubmitTicketResult()
-        val request = AddToCartDataModel()
-        val requestParams = RequestParams()
-        val onError = mockk<((Throwable?) -> Unit)>()
-
-        every {
-            submitHelpTicketUseCase.createObservable(requestParams)
-        } returns Observable.just(data)
-
-        viewModel.hitSubmitTicket(request, onError, {
-            Assert.assertEquals(it, data)
-        })
-    }
-
-    @Test
-    fun onErrorHitSubmitTicket() {
-        val data = SubmitTicketResult()
-        val request = AddToCartDataModel(errorReporter = ErrorReporterModel(texts = ErrorReporterTextModel(submitDescription = "error")), errorMessage = arrayListOf("error ganteng"))
-        val requestParams = RequestParams()
-        val onSuccess = mockk<((SubmitTicketResult) -> Unit)>()
-
-        every {
-            submitHelpTicketUseCase.createObservable(requestParams)
-        } returns Observable.just(data)
-
-        viewModel.hitSubmitTicket(request, {
-            Assert.assertTrue(it is Throwable)
-        }, onSuccess)
-    }
-
-    /**
      * ToggleFavorite
      */
     @Test

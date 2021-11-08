@@ -89,9 +89,6 @@ import com.tokopedia.checkout.old.data.model.request.checkout.PromoRequest;
 import com.tokopedia.checkout.old.data.model.request.common.RatesFeature;
 import com.tokopedia.checkout.old.data.model.request.checkout.ShopProductCheckoutRequest;
 import com.tokopedia.checkout.old.data.model.request.checkout.TokopediaCornerData;
-import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest;
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase;
@@ -145,7 +142,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetRatesApiUseCase ratesApiUseCase;
     private final ShippingCourierConverter shippingCourierConverter;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
-    private final SubmitHelpTicketUseCase submitHelpTicketUseCase;
     private final UserSessionInterface userSessionInterface;
     private final ShipmentDataConverter shipmentDataConverter;
     private final ReleaseBookingUseCase releaseBookingUseCase;
@@ -191,7 +187,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetRatesUseCase ratesUseCase,
                              GetRatesApiUseCase ratesApiUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
-                             SubmitHelpTicketUseCase submitHelpTicketUseCase,
                              RatesResponseStateConverter stateConverter,
                              ShippingCourierConverter shippingCourierConverter,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
@@ -215,7 +210,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.stateConverter = stateConverter;
         this.shippingCourierConverter = shippingCourierConverter;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
-        this.submitHelpTicketUseCase = submitHelpTicketUseCase;
         this.mTrackerPurchaseProtection = analyticsPurchaseProtection;
         this.userSessionInterface = userSessionInterface;
         this.mTrackerShipment = checkoutAnalytics;
@@ -951,9 +945,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         mTrackerPurchaseProtection.eventClickOnBuy(userSessionInterface.getUserId(), checkoutRequest.getProtectionAnalyticsData());
                     }
                     getView().renderCheckoutCartSuccess(checkoutData);
-                } else if (checkoutData.getErrorReporter().getEligible()) {
-                    getView().hideLoading();
-                    getView().renderCheckoutCartErrorReporter(checkoutData);
                 } else if (checkoutData.getPriceValidationData().isUpdated()) {
                     getView().hideLoading();
                     getView().renderCheckoutPriceUpdated(checkoutData.getPriceValidationData());
@@ -2016,46 +2007,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ValidateUsePromoRequest getLastValidateUseRequest() {
         return lastValidateUsePromoRequest;
-    }
-
-    @Override
-    public void processSubmitHelpTicket(CheckoutData checkoutData) {
-        getView().showLoading();
-        getView().setHasRunningApiCall(true);
-        RequestParams requestParams = RequestParams.create();
-        SubmitHelpTicketRequest submitHelpTicketRequest = new SubmitHelpTicketRequest();
-        submitHelpTicketRequest.setApiJsonResponse(checkoutData.getJsonResponse());
-        submitHelpTicketRequest.setErrorMessage(checkoutData.getErrorReporter().getTexts().getSubmitDescription());
-        submitHelpTicketRequest.setHeaderMessage(checkoutData.getErrorMessage());
-        submitHelpTicketRequest.setPage(SubmitHelpTicketUseCase.PAGE_CHECKOUT);
-        submitHelpTicketRequest.setRequestUrl(CommonPurchaseApiUrl.PATH_CHECKOUT);
-        requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest);
-        compositeSubscription.add(
-                submitHelpTicketUseCase.createObservable(requestParams).subscribe(new Subscriber<SubmitTicketResult>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d(e);
-                        getView().hideLoading();
-                        getView().setHasRunningApiCall(false);
-                        getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
-                    }
-
-                    @Override
-                    public void onNext(SubmitTicketResult submitTicketResult) {
-                        getView().hideLoading();
-                        getView().setHasRunningApiCall(false);
-                        if (submitTicketResult.getStatus()) {
-                            getView().renderSubmitHelpTicketSuccess(submitTicketResult);
-                        } else {
-                            getView().showToastError(submitTicketResult.getMessage());
-                        }
-                    }
-                }));
     }
 
     private boolean isLastAppliedPromo(String promoCode) {

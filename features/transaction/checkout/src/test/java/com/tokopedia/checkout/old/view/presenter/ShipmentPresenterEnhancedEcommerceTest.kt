@@ -22,11 +22,9 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout.KEY_PRODUCT
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.DEFAULT_VALUE_NONE_OTHER
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR_EXTRA
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
@@ -69,9 +67,6 @@ class ShipmentPresenterEnhancedEcommerceTest {
     private lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
 
     @MockK
-    private lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
-
-    @MockK
     private lateinit var ratesStatesConverter: RatesResponseStateConverter
 
     @MockK
@@ -111,7 +106,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
                 compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
-                submitHelpTicketUseCase, ratesStatesConverter, shippingCourierConverter,
+                ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
                 checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers)
@@ -203,7 +198,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
 
         // Then
         val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
-        val products = checkoutData[KEY_PRODUCT] as List<*>
+        val products = checkoutData[EnhancedECommerceCheckout.KEY_PRODUCT] as List<*>
         val product = products.firstOrNull() as MutableMap<*, *>
         assertEquals(DEFAULT_VALUE_NONE_OTHER, product["dimension83"])
     }
@@ -231,7 +226,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
 
         // Then
         val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
-        val products = checkoutData[KEY_PRODUCT] as List<*>
+        val products = checkoutData[EnhancedECommerceCheckout.KEY_PRODUCT] as List<*>
         val product = products.firstOrNull() as MutableMap<*, *>
         assertEquals(VALUE_BEBAS_ONGKIR, product["dimension83"])
     }
@@ -259,7 +254,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
 
         // Then
         val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
-        val products = checkoutData[KEY_PRODUCT] as List<*>
+        val products = checkoutData[EnhancedECommerceCheckout.KEY_PRODUCT] as List<*>
         val product = products.firstOrNull() as MutableMap<*, *>
         assertEquals(VALUE_BEBAS_ONGKIR_EXTRA, product["dimension83"])
     }
