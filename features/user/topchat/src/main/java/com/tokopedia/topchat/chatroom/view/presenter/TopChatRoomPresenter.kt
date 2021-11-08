@@ -39,7 +39,6 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
@@ -104,8 +103,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
-    private var getShopFollowingUseCase: GetShopFollowingUseCase,
-    private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     private var addToCartUseCase: AddToCartUseCase,
     private var compressImageUseCase: CompressImageUseCase,
     private var seamlessLoginUsecase: SeamlessLoginUsecase,
@@ -752,20 +749,11 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun getShopFollowingStatus(
-        shopId: Long,
-        onError: (Throwable) -> Unit,
-        onSuccessGetShopFollowingStatus: (Boolean) -> Unit
-    ) {
-        getShopFollowingUseCase.getStatus(shopId, onError, onSuccessGetShopFollowingStatus)
-    }
-
     override fun detachView() {
         destroyWebSocket()
         getChatUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
-        getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()
         groupStickerUseCase.safeCancel()
@@ -779,32 +767,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun stopTyping() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(thisMessageId))
-    }
-
-    override fun followUnfollowShop(
-        shopId: String,
-        onError: (Throwable) -> Unit,
-        onSuccess: (isSuccess: Boolean) -> Unit,
-        action: ToggleFavouriteShopUseCase.Action?
-    ) {
-        val param = if (action != null) {
-            ToggleFavouriteShopUseCase.createRequestParam(shopId, action)
-        } else {
-            ToggleFavouriteShopUseCase.createRequestParam(shopId)
-        }
-        toggleFavouriteShopUseCase.execute(
-            param,
-            object : Subscriber<Boolean>() {
-                override fun onCompleted() {}
-
-                override fun onError(e: Throwable) {
-                    onError(e)
-                }
-
-                override fun onNext(success: Boolean) {
-                    onSuccess(success)
-                }
-            })
     }
 
     override fun addAttachmentPreview(sendablePreview: SendablePreview) {

@@ -74,6 +74,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRepurchaseBinding
@@ -141,6 +142,7 @@ class TokoNowRepurchaseFragment:
         RepurchaseAdapter(
             RepurchaseAdapterTypeFactory(
                 productCardListener = createProductCardListener(),
+                tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
                 tokoNowCategoryGridListener = this,
@@ -893,5 +895,17 @@ class TokoNowRepurchaseFragment:
             analytics,
             this::startActivityForResult
         )
+    }
+
+    private fun createTokoNowEmptyStateOocListener(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+        return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+            override fun onRefreshLayoutPage() {
+                onRefreshLayoutPage()
+            }
+
+            override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
+
+            override fun onGetEventCategory(): String = ""
+        }
     }
 }

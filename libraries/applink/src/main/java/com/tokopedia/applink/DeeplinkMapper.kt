@@ -106,7 +106,9 @@ object DeeplinkMapper {
         val mappedDeepLink: String = when (uri.scheme) {
             DeeplinkConstant.SCHEME_HTTP,
             DeeplinkConstant.SCHEME_HTTPS -> {
-                getRegisteredNavigationFromHttp(context, uri, deeplink)
+                val query = uri.query
+                val tempDeeplink = getRegisteredNavigationFromHttp(context, uri, deeplink)
+                UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
                 val query = uri.query
