@@ -284,7 +284,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.adId,
             feedXCard.shopId,
             feedXCard.cpmData,
-            feedXCard.playChannelID.toInt()
+            feedXCard.playChannelID.toIntOrZero()
         )
     }
 
