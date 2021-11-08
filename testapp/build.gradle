@@ -124,7 +124,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.features.topchat)
-	implementation project(rootProject.ext.features.productDetail)
-	implementation project(rootProject.ext.features.attachproduct)
 }
