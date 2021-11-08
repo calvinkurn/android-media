@@ -37,7 +37,7 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
 
         private val iconOperator: ImageView = itemView.findViewById(R.id.telco_recent_icon_operator)
         private val textClientNumber: TextView = itemView.findViewById(R.id.telco_recent_client_number)
-        private val textProductNominal: TextView = itemView.findViewById(R.id.telco_recent_product_nominal)
+        private val textProductName: TextView = itemView.findViewById(R.id.telco_recent_product_name)
 
         private lateinit var topupBillsRecommendation: TopupBillsRecommendation
 
@@ -58,7 +58,7 @@ class TelcoRecentNumbersAdapter(private val digitalRecentNumbers: List<TopupBill
                 textClientNumber.text = topupBillsRecommendation.description
             }
 
-            textProductNominal.text = topupBillsRecommendation.title
+            textProductName.text = topupBillsRecommendation.title
         }
 
     }
