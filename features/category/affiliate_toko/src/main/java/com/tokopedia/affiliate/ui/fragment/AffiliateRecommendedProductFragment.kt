@@ -173,7 +173,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         })
 
         affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(this, { itemCount ->
-            Toast.makeText(context,"${itemCount}",Toast.LENGTH_LONG).show()
+            totalDataItemsCount = itemCount
         })
 
         affiliateRecommendedProductViewModel.getErrorMessage().observe(this, { errorMessage ->
@@ -206,11 +206,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     }
 
     private fun sendScreenEvent() {
-//        AffiliateAnalytics.sendEvent(
-//                AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
-//                AffiliateAnalytics.ActionKeys.IMPRESSION_HOME_PORTAL,
-//                AffiliateAnalytics.CategoryKeys.HOME_PORTAL,
-//                "",userSessionInterface.userId)
+
     }
 
     override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String) {
