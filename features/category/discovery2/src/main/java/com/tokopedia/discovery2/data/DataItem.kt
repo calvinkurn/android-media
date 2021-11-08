@@ -50,7 +50,7 @@ data class DataItem(
         @SerializedName("end_date")
         val endDate: String? = "",
 
-        @SerializedName("button_applink", alternate = ["cta_applink", "cta_url"])
+        @SerializedName("button_applink", alternate = ["cta_applink"])
         val buttonApplink: String? = "",
 
         @SerializedName("code")

@@ -85,23 +85,43 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 layoutParams.width = (width / 2.5).roundToInt()
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
+                imageLayoutParams.width =
+                    layoutParams.width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
+                imageLayoutParams.height = (layoutParams.height / 2.2).roundToInt()
+                calendarImage.layoutParams = imageLayoutParams
+                itemView.findViewById<Typography>(R.id.calendar_title).setType(Typography.HEADING_6)
+                itemView.findViewById<Typography>(R.id.calendar_date).setType(Typography.BODY_3)
             }
             Calendar.DOUBLE, Calendar.GRID -> {
-                layoutParams.width = (width / 2)
+                if(calendarLayout == Calendar.GRID){
+                    layoutParams.width =
+                        ((width)/ 2)
+                } else {
+                    layoutParams.width =
+                        ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)) / 2)
+                }
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_280)
+                imageLayoutParams.width =
+                    layoutParams.width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
+                imageLayoutParams.height = (layoutParams.height / 2.2).roundToInt()
+                calendarImage.layoutParams = imageLayoutParams
+                itemView.findViewById<Typography>(R.id.calendar_title).setType(Typography.HEADING_4)
+                itemView.findViewById<Typography>(R.id.calendar_date).setType(Typography.BODY_2)
             }
             Calendar.TRIPLE -> {
-                layoutParams.width = (width / 3)
+                layoutParams.width = ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16))/ 3)
                 layoutParams.height =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_220)
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
+                imageLayoutParams.width =
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_96)
+                imageLayoutParams.height = imageLayoutParams.width
+                calendarImage.layoutParams = imageLayoutParams
+                itemView.findViewById<Typography>(R.id.calendar_title).setType(Typography.HEADING_6)
+                itemView.findViewById<Typography>(R.id.calendar_date).setType(Typography.BODY_3)
             }
         }
-        imageLayoutParams.width =
-            layoutParams.width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
-        imageLayoutParams.height = (layoutParams.height / 2.2).roundToInt()
         calendarCardUnify.layoutParams = layoutParams
-        calendarImage.layoutParams = imageLayoutParams
     }
 
     private fun setUpCalendar(dataItem: DataItem) {
@@ -163,19 +183,32 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 }
             }
             calendarDate.text = textDate
-            calendarDesc.text = description
+            calendarDesc.text = if(description.isNullOrEmpty()) itemView.context.getString(R.string.discovery_calendar_line) else description
         }
     }
 
     private fun setColouredBackground(boxColor: String) {
-        itemView.findViewById<View>(R.id.calendar_date_alpha).show()
-        itemView.findViewById<ConstraintLayout>(R.id.calendar_parent).setBackgroundColor(Color.parseColor(boxColor))
-        itemView.findViewById<Typography>(R.id.calendar_title).setTextColor(MethodChecker.getColor(
-            itemView.context,
-            R.color.Unify_N0))
-        itemView.findViewById<Typography>(R.id.calendar_desc).setTextColor(MethodChecker.getColor(
-            itemView.context,
-            R.color.Unify_N0))
+        calendarWidgetItemViewModel.components.properties?.calendarType?.let {
+            if(it == Calendar.DYNAMIC) {
+                itemView.findViewById<View>(R.id.calendar_date_alpha).show()
+                itemView.findViewById<ConstraintLayout>(R.id.calendar_parent)
+                    .setBackgroundColor(Color.parseColor(boxColor))
+                itemView.findViewById<Typography>(R.id.calendar_title)
+                    .setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
+                itemView.findViewById<Typography>(R.id.calendar_desc)
+                    .setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
+            } else {
+                itemView.findViewById<View>(R.id.calendar_date_alpha).hide()
+                itemView.findViewById<ConstraintLayout>(R.id.calendar_parent)
+                    .setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
+                itemView.findViewById<Typography>(R.id.calendar_title)
+                    .setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N700))
+                itemView.findViewById<Typography>(R.id.calendar_desc)
+                    .setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N700))
+                itemView.findViewById<Typography>(R.id.calendar_date)
+                    .setBackgroundColor(Color.parseColor(boxColor))
+            }
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
