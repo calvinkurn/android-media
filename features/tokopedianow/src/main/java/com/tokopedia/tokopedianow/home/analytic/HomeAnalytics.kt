@@ -201,7 +201,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun onImpressBannerPromo(userId: String, channelModel: ChannelModel) {
+    fun onImpressBannerPromo(userId: String, channelModel: ChannelModel, warehouseId: String) {
         val promotions = arrayListOf<Bundle>()
         channelModel.channelGrids.forEachIndexed { position, channelGrid ->
             promotions.add(
@@ -220,8 +220,8 @@ class HomeAnalytics {
                 affinityLabel = channelModel.trackingAttributionModel.persona,
                 userId = userId,
                 promotions = promotions
-
         )
+        dataLayer.putString(KEY_WAREHOUSE_ID, warehouseId)
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
 
