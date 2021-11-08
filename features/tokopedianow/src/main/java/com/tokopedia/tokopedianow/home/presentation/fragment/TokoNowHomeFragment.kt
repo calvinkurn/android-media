@@ -485,7 +485,7 @@ class TokoNowHomeFragment: Fragment(),
         isFirstImpressionOnBanner = if (!isFirstImpressionOnBanner) {
             true
         } else {
-            analytics.onImpressBannerPromo(userSession.userId, channelModel)
+            analytics.onImpressBannerPromo(userSession.userId, channelModel, localCacheModel?.warehouse_id.toLongOrZero().toString())
             false
         }
     }
