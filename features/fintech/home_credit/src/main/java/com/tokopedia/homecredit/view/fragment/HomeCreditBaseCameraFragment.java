@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.homecredit.R;
+import com.tokopedia.homecredit.di.component.HomeCreditComponent;
 import com.tokopedia.iconunify.IconUnify;
 
 import java.io.ByteArrayOutputStream;
@@ -74,7 +75,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-
+        getComponent(HomeCreditComponent.class).inject(this);
     }
 
     @Override
