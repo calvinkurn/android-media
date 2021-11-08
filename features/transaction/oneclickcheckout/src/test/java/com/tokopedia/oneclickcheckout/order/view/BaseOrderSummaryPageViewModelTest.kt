@@ -14,7 +14,7 @@ import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.processor.*
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.NewValidateUsePromoRevampUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -63,7 +63,7 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>
 
     @MockK(relaxed = true)
-    lateinit var validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>
+    lateinit var validateUsePromoRevampUseCase: Lazy<NewValidateUsePromoRevampUseCase>
 
     @MockK(relaxed = true)
     lateinit var userSessionInterface: UserSessionInterface
