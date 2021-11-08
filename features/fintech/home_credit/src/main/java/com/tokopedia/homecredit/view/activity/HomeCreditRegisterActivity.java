@@ -11,14 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.homecredit.di.component.DaggerHomeCreditComponent;
+import com.tokopedia.homecredit.di.component.HomeCreditComponent;
 import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment;
 import com.tokopedia.homecredit.view.fragment.HomeCreditSelfieFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeCreditRegisterActivity extends BaseSimpleActivity {
+public class HomeCreditRegisterActivity extends BaseSimpleActivity implements HasComponent<HomeCreditComponent> {
 
     private final static String SHOW_KTP = "show_ktp";
     public static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
@@ -26,6 +30,9 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
     private boolean isPermissionGotDenied;
     private boolean showKtp = false;
     protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
+
+    private HomeCreditComponent homeCreditComponent = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +87,7 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
         Intent intent = getIntent();
-        if (intent!= null) {
+        if (intent != null) {
             Uri uri = intent.getData();
             showKtp = "true".equals(uri.getQueryParameter(SHOW_KTP));
         }
@@ -89,5 +96,18 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
         } else {
             return HomeCreditSelfieFragment.createInstance();
         }
+    }
+
+    @Override
+    public HomeCreditComponent getComponent() {
+        if (homeCreditComponent == null)
+            initInjector();
+        return homeCreditComponent;
+
+    }
+
+    private void initInjector() {
+        homeCreditComponent = DaggerHomeCreditComponent.builder().baseAppComponent(
+                ((BaseMainApplication) getApplicationContext()).getBaseAppComponent()).build();
     }
 }
