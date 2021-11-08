@@ -130,7 +130,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
     private val toolbarView by viewComponent { ToolbarRoomViewComponent(it, R.id.view_toolbar_room, this) }
-    private val partnerInfoView by viewComponent { PartnerInfoViewComponent(it, this) }
+    private val partnerInfoView by viewComponentOrNull { PartnerInfoViewComponent(it, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
@@ -1509,7 +1509,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderPartnerInfoView(prevState: PlayPartnerUiState?, state: PlayPartnerUiState) {
         if (prevState == state) return
-        partnerInfoView.setInfo(state)
+        partnerInfoView?.setInfo(state)
     }
 
     private fun renderLikeView(
