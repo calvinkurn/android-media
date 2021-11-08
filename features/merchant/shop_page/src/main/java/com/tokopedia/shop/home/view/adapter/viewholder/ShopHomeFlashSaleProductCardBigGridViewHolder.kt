@@ -18,6 +18,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
     companion object {
         // 12 + 12 + 4 + 8 + 4 + 12 + 12
         private const val PADDING_AND_MARGIN = 64
+        private const val HALF = 1/2
     }
 
     private var uiModel: ShopHomeProductUiModel? = null
@@ -47,7 +48,7 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     @Suppress("SameParameterValue")
     private fun adjustProductCardWidth(isTablet: Boolean) {
-        val productCardWidth = (getScreenWidth() - PADDING_AND_MARGIN) / 2
+        val productCardWidth = (getScreenWidth() - PADDING_AND_MARGIN) * HALF
         if (!isTablet) { productCardBigGrid?.layoutParams = ViewGroup.LayoutParams(productCardWidth, ViewGroup.LayoutParams.WRAP_CONTENT) }
     }
 }
