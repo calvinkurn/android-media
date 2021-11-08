@@ -171,7 +171,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setRatingInitialState()
         setOnTouchListenerToHideKeyboard()
         setOnTouchOutsideListener()
-        setUpBadRatingCategoriesRecyclerView()
+        if (shouldShowBadRatingReasons()) setUpBadRatingCategoriesRecyclerView()
         observeLiveDatas()
     }
 
@@ -333,7 +333,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 textArea?.setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
             }
             if (shouldRequestFocus) {
-                textArea?.requestFocus()
+                textArea?.requestFocusForEditText()
             } else {
                 textArea?.clearFocus()
             }
@@ -392,10 +392,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     if (!isUserEligible()) {
                         showTemplates()
                     }
-                    badRatingCategoryRecyclerView?.hide()
+                    if (shouldShowBadRatingReasons()) badRatingCategoryRecyclerView?.hide()
                 } else {
                     hideTemplates()
-                    badRatingCategoryRecyclerView?.show()
+                    if (shouldShowBadRatingReasons()) badRatingCategoryRecyclerView?.show()
                 }
                 clearFocusAndHideSoftInput(view)
             }
@@ -480,7 +480,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun observeProgressBarState() {
         createReviewViewModel.progressBarState.observe(this, {
-            if (shouldShowBadRatingFlow()) {
+            if (shouldShowBadRatingReasons()) {
                 progressBar?.setProgressBarValue(it)
                 return@observe
             }
@@ -1135,14 +1135,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         observeTemplates()
         observeButtonState()
         observeProgressBarState()
-        observeBadRatingCategories()
+        if (shouldShowBadRatingReasons()) observeBadRatingCategories()
     }
 
     private fun getData() {
         getForm()
         getIncentiveOvoData(productId, reputationId)
         getTemplates()
-        getBadRatingCategories()
+        if (shouldShowBadRatingReasons()) getBadRatingCategories()
     }
 
     private fun setOnTouchListenerToHideKeyboard() {
@@ -1269,7 +1269,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         }
     }
 
-    private fun shouldShowBadRatingFlow(): Boolean {
+    private fun shouldShowBadRatingReasons(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 BAD_RATING_FLOW_EXPERIMENT_KEY,

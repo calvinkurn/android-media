@@ -362,16 +362,16 @@ class CreateReviewViewModel @Inject constructor(
         }
     }
 
-    fun isOtherCategorySelected(): Boolean {
-        return selectedBadRatingCategories.contains(CreateReviewBottomSheet.BAD_RATING_OTHER_ID.toString())
-    }
-
     fun isOtherCategoryOnly(): Boolean {
         return selectedBadRatingCategories.size == 1 && selectedBadRatingCategories.first() == CreateReviewBottomSheet.BAD_RATING_OTHER_ID.toString()
     }
 
+    private fun isOtherCategorySelected(): Boolean {
+        return selectedBadRatingCategories.contains(CreateReviewBottomSheet.BAD_RATING_OTHER_ID.toString())
+    }
+
     private fun updateProgressBarFromBadRatingCategory() {
-        _progressBarState.value = _progressBarState.value?.copy(isBadRatingReasonSelected = isBadRatingReasonSelected(progressBarState.value?.isTextAreaFilled ?: false))
+        _progressBarState.value = _progressBarState.value?.copy(isBadRatingReasonSelected = selectedBadRatingCategories.isNotEmpty())
     }
 
     private fun sendReviewWithoutImage(
@@ -382,8 +382,7 @@ class CreateReviewViewModel @Inject constructor(
             val response = withContext(coroutineDispatcherProvider.io) {
                 submitReviewUseCase.setParams(
                     reputationId = reputationId,
-                    productId =
-                    productId,
+                    productId = productId,
                     shopId = shopId,
                     reputationScore = reputationScore,
                     rating = rating,

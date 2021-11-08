@@ -55,11 +55,21 @@ class CreateReviewProgressBar : BaseCustomView {
                 setBadRatingCompleteText()
             }
             progress.isNeedPhotoOnly() -> {
+                if (progress.isGoodRating) {
+                    setGoodRatingNeedPhotoText()
+                    setPartiallyCompleteProgress()
+                    return
+                }
                 setBadRatingFlowNeedPhotoText()
                 setThreeQuartersProgress()
                 return
             }
             progress.isNeedReviewOnly() -> {
+                if (progress.isGoodRating) {
+                    setGoodRatingNeedReviewText()
+                    setPartiallyCompleteProgress()
+                    return
+                }
                 setNeedReviewOnlyText()
                 setThreeQuartersProgress()
                 return
@@ -79,7 +89,7 @@ class CreateReviewProgressBar : BaseCustomView {
             }
             else -> {
                 if (progress.isGoodRating) {
-                    setPartiallyCompleteProgress()
+                    setEmptyProgress()
                     setGoodRatingEmptyText()
                     return
                 }

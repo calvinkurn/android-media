@@ -414,7 +414,6 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         if (isEditable) {
             binding?.reviewDetailTicker?.apply {
                 tickerType = Ticker.TYPE_ANNOUNCEMENT
-                tickerTitle = getString(R.string.review_history_details_ticker_editable_title)
                 setTextDescription(getString(R.string.review_history_details_ticker_editable_subtitle))
             }
             return
