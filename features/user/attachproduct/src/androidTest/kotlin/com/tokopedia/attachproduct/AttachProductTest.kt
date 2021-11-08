@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.annotation.IdRes
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -14,7 +13,6 @@ import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.attachproduct.data.model.AceSearchProductResponse
@@ -24,7 +22,6 @@ import com.tokopedia.attachproduct.test.R
 import com.tokopedia.attachproduct.utils.FileUtils
 import com.tokopedia.attachproduct.view.viewholder.AttachProductListItemViewHolder
 import com.tokopedia.test.application.espresso_component.CommonAssertion
-import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.core.AllOf
 import org.junit.After
@@ -133,12 +130,19 @@ class AttachProductTest {
 
     @Test
     fun swipe_up_should_refresh() {
+
+        //WHEN
         val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product, AceSearchProductResponse::class.java)
         dep.repositoryStub.setResultData(AceSearchProductResponse::class.java, response)
         activityTestRule.launchActivity(Intent())
 
+        //GIVEN
         onView(withId(R.id.swipe_refresh_layout)).perform(withCustomConstraints(
             swipeDown(), isDisplayingAtLeast(90)))
+
+        //THEN
+        onView(withId(R.id.recycler_view)).check(CommonAssertion.RecyclerViewItemCountAssertion(10))
+
     }
 
     private fun performClickOnProductCard(@IdRes recyclerViewId: Int) {
