@@ -1702,18 +1702,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(
-        positionInFeed: Int,
-        id: Int,
-        isLiked: Boolean,
-        postType: String,
-        isFollowed: Boolean,
-        type: Boolean,
-        shopId: String,
-        isVideo: Boolean
-    ) {
+    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, isVideo: Boolean, playChannelId: String) {
         feedAnalytics.eventClickLikeButton(
-            id.toString(),
+            if(postType == TYPE_FEED_X_CARD_PLAY) playChannelId else id.toString(),
             type,
             isLiked,
             postType,
@@ -1735,9 +1726,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         isVideo: Boolean,
-        shopId: String
+        shopId: String,
+        playChannelId: String
     ) {
-        feedAnalytics.eventClickOpenComment(id.toString(), type, isFollowed, authorType, isVideo)
+        feedAnalytics.eventClickOpenComment(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else id.toString(), type, isFollowed, authorType, isVideo)
         gotToKolComment(positionInFeed, id, authorType, isVideo, isFollowed, type)
     }
 
@@ -1851,7 +1843,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onFullScreenCLick(positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean) {
+    override fun onFullScreenCLick(feedXCard: FeedXCard, positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreenButton: Boolean) {
+        if (isFullScreenButton)
+        feedAnalytics.eventClickFullScreenIconVOD(feedXCard.playChannelID, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id)
+        else
+        feedAnalytics.eventClicklanjutMenontonVOD(feedXCard.playChannelID, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id)
         val finalApplink = Uri.parse(redirectUrl)
                 .buildUpon()
                 .appendQueryParameter(START_TIME, currentTime.toString())
@@ -1860,7 +1856,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(finalApplink)
     }
 
-    override fun addVODView(playChannelId: String, rowNumber: Int) {
+    override fun addVODView(feedXCard: FeedXCard, playChannelId: String, rowNumber: Int, time: Long, hitTrackerApi: Boolean) {
+        feedAnalytics.eventAddView(playChannelId,feedXCard.typename,feedXCard.followers.isFollowed,feedXCard.author.id,time)
+        if (hitTrackerApi)
         feedViewModel.trackVisitChannel(playChannelId, rowNumber)
     }
 

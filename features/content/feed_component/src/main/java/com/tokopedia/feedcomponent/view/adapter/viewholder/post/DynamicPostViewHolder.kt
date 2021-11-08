@@ -641,7 +641,8 @@ open class DynamicPostViewHolder(v: View,
             isFollowed: Boolean = false,
             type: Boolean = false,
             shopId: String = "",
-            isVideo: Boolean = false
+            isVideo: Boolean = false,
+            playChannelId: String = ""
         )
 
         fun onCommentClick(
@@ -651,7 +652,8 @@ open class DynamicPostViewHolder(v: View,
             type: String,
             isFollowed: Boolean = false,
             isVideo: Boolean,
-            shopId: String = ""
+            shopId: String = "",
+            playChannelId: String = ""
         )
 
         fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
@@ -682,14 +684,19 @@ open class DynamicPostViewHolder(v: View,
             itemPosition: Int
         )
         fun onFullScreenCLick(
+                feedXCard: FeedXCard,
                 positionInFeed: Int,
                 redirectUrl: String,
                 currentTime: Long,
-                shouldTrack: Boolean
+                shouldTrack: Boolean,
+                isFullScreenButton: Boolean
         )
         fun addVODView(
+                feedXCard: FeedXCard,
                 playChannelId: String,
-                rowNumber: Int
+                rowNumber: Int,
+                time:Long,
+                hitTrackerApi:Boolean
         )
         fun onPostTagBubbleClick(
                 positionInFeed: Int,

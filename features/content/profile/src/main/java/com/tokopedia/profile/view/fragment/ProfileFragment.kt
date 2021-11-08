@@ -884,7 +884,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         isFollowed: Boolean,
         type: Boolean,
         shopId: String,
-        isVideo: Boolean
+        isVideo: Boolean,
+        playChannelId: String
     ) {
         profileAnalytics.eventClickLike(isOwner, userId.toString())
         if (isLiked) {
@@ -894,15 +895,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onCommentClick(
-        positionInFeed: Int,
-        id: Int,
-        authorType: String,
-        type: String,
-        isFollowed: Boolean,
-        isVideo: Boolean,
-        shopId: String
-    ) {
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, isVideo: Boolean, shopId: String, playChannelId: String) {
         profileAnalytics.eventClickComment(isOwner, userId.toString())
         onGoToKolComment(positionInFeed, id, false, "")
     }
@@ -978,10 +971,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
     }
 
-    override fun onFullScreenCLick(positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean) {
+    override fun onFullScreenCLick(feedXCard:FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
 
     }
-    override fun addVODView(playChannelId: String, rowNumber: Int) {
+    override fun addVODView(feedXCard: FeedXCard,playChannelId: String, rowNumber: Int, time:Long, hitTrackerApi: Boolean) {
 
     }
 

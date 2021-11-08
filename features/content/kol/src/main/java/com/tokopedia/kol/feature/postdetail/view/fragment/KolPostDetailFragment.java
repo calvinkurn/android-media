@@ -689,7 +689,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed, boolean isVideo, @NotNull String shopId) {
+    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed, boolean isVideo, @NotNull String shopId,@NotNull String playChannelId) {
         onGoToKolComment(positionInFeed, id);
     }
 
@@ -1043,7 +1043,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type, @NotNull String shopId, boolean isVideo) {
+    public void onLikeClick(int positionInFeed, int id, boolean isLiked, @NotNull String postType, boolean isFollowed, boolean type, @NotNull String shopId, boolean isVideo, @NotNull String playChannelId) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id);
         } else {
@@ -1087,11 +1087,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onFullScreenCLick(int positionInFeed, @NonNull String redirectUrl, long currentTime, boolean shouldTrack) {
+    public void onFullScreenCLick(@NotNull FeedXCard feedXCard,int positionInFeed, @NonNull String redirectUrl, long currentTime, boolean shouldTrack, boolean isFullScreen) {
 
     }
     @Override
-    public void addVODView(@NonNull String playChannelId, int rowNumber) {
+    public void addVODView(@NotNull FeedXCard feedXCard,@NonNull String playChannelId, int rowNumber, long time, boolean hitTrackerApi) {
 
     }
 

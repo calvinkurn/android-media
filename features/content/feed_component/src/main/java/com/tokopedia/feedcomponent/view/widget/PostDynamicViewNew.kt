@@ -222,7 +222,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.author.id,
             feedXCard.typename,
             feedXCard.followers.isFollowed,
-            feedXCard.media.firstOrNull()?.type ?: ""
+            feedXCard.media.firstOrNull()?.type ?: "",
+            feedXCard.playChannelID
         )
         bindTracking(feedXCard)
         shareButton.setOnClickListener {
@@ -282,7 +283,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.isTopAds,
             feedXCard.adId,
             feedXCard.shopId,
-            feedXCard.cpmData
+            feedXCard.cpmData,
+            feedXCard.playChannelID.toInt()
         )
     }
 
@@ -298,7 +300,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         isTopads:Boolean,
         adId:String,
         shopId: String,
-        cpmData: CpmData
+        cpmData: CpmData,
+        channelId:Int
     ) {
         val isFollowed = followers.isFollowed
         val count = followers.count
@@ -355,7 +358,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 listener?.onAvatarClick(
                     positionInFeed,
                     author.appLink,
-                    activityId,
+                    if (type == TYPE_FEED_X_CARD_VOD) channelId else activityId,
                     activityName,
                     followCta,
                     type,
@@ -424,7 +427,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             listener?.onAvatarClick(
                 positionInFeed,
                 author.appLink,
-                activityId,
+                if (type == TYPE_FEED_X_CARD_VOD) channelId else activityId,
                 activityName,
                 followCta,
                 type,
@@ -484,7 +487,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     feedXCard.typename,
                     feedXCard.followers.isFollowed,
                     shopId = feedXCard.author.id,
-                    isVideo = true
+                    isVideo = true,
+                    playChannelId = feedXCard.playChannelID
+
             )
         }
 
@@ -583,7 +588,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 listener?.onAvatarClick(
                     positionInFeed,
                     caption.author.appLink,
-                    caption.id.toIntOrZero(),
+                    if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID.toIntOrZero() else caption.id.toIntOrZero(),
                     "",
                     followCta,
                     caption.typename,
@@ -632,7 +637,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 captionText.setOnClickListener {
                     if (captionText.text.contains(context.getString(R.string.feed_component_read_more_button))) {
                         listener?.onReadMoreClicked(
-                            caption.id,
+                            if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID else caption.id,
                             caption.author.id,
                             caption.typename,
                             caption.followers.isFollowed,
@@ -719,7 +724,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         authorId: String,
         type: String,
         isFollowed: Boolean,
-        mediaType: String
+        mediaType: String,
+        playChannelId: String
     ) {
 
         setCommentCount(comments)
@@ -753,13 +759,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
             authId = authorId
         val isVideo = mediaType != TYPE_IMAGE
         commentButton.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId)
         }
         seeAllCommentText.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId)
         }
         addCommentHint.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId)
         }
     }
 
@@ -1118,10 +1124,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         tagProducts))
                             tagProducts.add(globalCardProductList[it.tagIndex])
                     }
+                    if (media.isNotEmpty()) {
+                        imagePostListener.userCarouselImpression(
+                                feedXCard.playChannelID,
+                                media[0],
+                                0,
+                                feedXCard.typename,
+                                feedXCard.followers.isFollowed,
+                                feedXCard.author.id,
+                                positionInFeed,
+                                feedXCard.cpmData,
+                                feedXCard.listProduct
+                        )
+                    }
                     feedMedia.isImageImpressedFirst = true
                         setVODView(
+                                feedXCard,
                                 feedMedia,
-                                feedXCard.id,
                                 tagProducts,
                                 feedXCard.author.id,
                                 feedXCard.typename,
@@ -1261,13 +1280,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun setVODView(
+            feedXCard: FeedXCard,
             feedMedia: FeedXMedia,
-            postId: String,
             products: List<FeedXProduct>,
             id: String,
             type: String,
             isFollowed: Boolean
     ): View? {
+        val postId = feedXCard.id
         val vodItem = getVODItem()
         feedMedia.canPlay = false
         feedMedia.videoView = vodItem
@@ -1276,7 +1296,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             vod_lihat_product?.setOnClickListener {
                 listener?.let { listener ->
                     listener.onTagClicked(
-                            postId.toIntOrZero(),
+                            feedXCard?.playChannelID.toInt(),
                             products,
                             listener,
                             id,
@@ -1286,6 +1306,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             positionInFeed
                     )
                 }
+            }
+            ic_vod_play?.setOnClickListener {
+                playVOD(feedXCard =  feedXCard)
+            }
+            vod_full_screen_icon?.setOnClickListener {
+                 listener?.onFullScreenCLick(feedXCard,positionInFeed, feedXCard.appLink, 0L, shouldTrack = true, true)
             }
 
             vod_volumeIcon?.setOnClickListener {
@@ -1381,10 +1407,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
                 vod_full_screen_icon?.setOnClickListener {
                     videoPlayer?.getExoPlayer()?.currentPosition?.let {
-                        it1 -> listener?.onFullScreenCLick(positionInFeed, feedXCard.appLink, it1,shouldTrack) }
+                        it1 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink, it1,shouldTrack, true) }
                 }
                 vod_lanjut_menonton_btn?.setOnClickListener {
-                    videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(positionInFeed, feedXCard.appLink,it2,false)}
+                    videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink,it2,false, false)}
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, isMute)
@@ -1392,41 +1418,42 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 vod_volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
-                        showVideoLoading()
+                        showVODLoading()
                     }
 
                     override fun onVideoReadyToPlay() {
-                        hideVideoLoading()
+                        hideVODLoading()
                         vod_timer_view.visible()
-                        var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
-                        if (secondCountDownTimer != null) {
-                            secondCountDownTimer?.cancel()
-                            secondCountDownTimer?.start()
-                        } else {
-                            secondCountDownTimer = object : CountDownTimer(TIME_THIRTY_SEC, TIME_SECOND) {
-                                override fun onTick(millisUntilFinished: Long) {
+                        if(!isPaused) {
+                            if (secondCountDownTimer != null) {
+                                secondCountDownTimer?.cancel()
+                                secondCountDownTimer?.start()
+                            } else {
+                                secondCountDownTimer = object : CountDownTimer(TIME_THIRTY_SEC, TIME_SECOND) {
+                                    override fun onTick(millisUntilFinished: Long) {
+                                        Log.v("Hit View", "hit view ${count1++}")
 
+                                    }
 
-                                }
+                                    override fun onFinish() {
+                                        videoPlayer?.pause()
+                                        isPaused = true
+                                        vod_lanjut_menonton_btn?.visible()
+                                        vod_frozen_view?.visible()
+                                        vod_full_screen_icon?.gone()
+                                        vod_lihat_product?.gone()
+                                        isVODViewFrozen = true
 
-                                override fun onFinish() {
-                                    videoPlayer?.pause()
-                                    isPaused = true
-                                    vod_lanjut_menonton_btn?.visible()
-                                    vod_frozen_view?.visible()
-                                    vod_full_screen_icon?.gone()
-                                    vod_lihat_product?.gone()
-                                    isVODViewFrozen = true
-
-                                }
-                            }.start()
+                                    }
+                                }.start()
+                            }
                         }
 
                         addViewTimer?.schedule(object : TimerTask() {
                             override fun run() {
                                 if (!isPaused) {
                                     Log.v("Hit View", "hit view ${feedXCard.views.count} c= ${feedXCard.playChannelID}")
-                                    listener?.addVODView(feedXCard.playChannelID, positionInFeed)
+                                    listener?.addVODView(feedXCard, feedXCard.playChannelID, positionInFeed, TIME_FIVE_SEC,true)
                                     shouldTrack = false
                                     isPaused = true
                                 }
@@ -1436,6 +1463,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
 
                        if(!isPaused) {
+                           vod_timer_view.visible()
+                           var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
                            object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
                                override fun onTick(millisUntilFinished: Long) {
                                    time -= 1
@@ -1443,8 +1472,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                            String.format(
                                                    "%02d:%02d",
                                                    (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
-                                                   time % MINUTE_IN_HOUR
-                                           )
+                                                   time % MINUTE_IN_HOUR)
                                }
 
                                override fun onFinish() {
@@ -1457,10 +1485,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
                         feedMedia.canPlay = false
-                        videoListener?.onVideoStopTrack(
-                            feedXCard,
-                            (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND
-                        )
                     }
                 })
             }
@@ -1479,6 +1503,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
         loader?.animate()
         loader?.visible()
         ic_play?.visible()
+    }
+    private fun hideVODLoading() {
+        vod_loader?.gone()
+        ic_vod_play?.gone()
+        vod_timer_view?.visible()
+        vod_videoPreviewImage?.gone()
+    }
+
+    private fun showVODLoading() {
+        vod_loader?.animate()
+        vod_loader?.visible()
+        ic_vod_play?.visible()
     }
 
     private fun toggleVolume(isMute: Boolean) {

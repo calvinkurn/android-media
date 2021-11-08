@@ -528,7 +528,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean, playChannelId: String) {
     }
 
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
@@ -648,15 +648,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onCommentClick(
-        positionInFeed: Int,
-        id: Int,
-        authorType: String,
-        type: String,
-        isFollowed: Boolean,
-        isVideo: Boolean,
-        shopId: String
-    ) {
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, isVideo: Boolean, shopId: String, playChannelId: String) {
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
@@ -702,10 +694,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
     }
 
-    override fun onFullScreenCLick(positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean) {
+    override fun onFullScreenCLick(feedXCard: FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
 
     }
-    override fun addVODView(playChannelId: String, rowNumber: Int) {
+    override fun addVODView(feedXCard: FeedXCard,playChannelId: String, rowNumber: Int, time:Long, hitTrackerApi: Boolean) {
 
     }
 
