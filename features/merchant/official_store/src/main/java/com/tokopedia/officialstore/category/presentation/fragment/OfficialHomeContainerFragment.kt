@@ -259,8 +259,10 @@ class OfficialHomeContainerFragment
         viewModel.officialStoreCategoriesResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    removeLoading()
-                    populateCategoriesData(it.data)
+                    if (it.data.categories.isNotEmpty()) {
+                        removeLoading()
+                        populateCategoriesData(it.data)
+                    }
                 }
                 is Fail -> {
                     val throwable = it.throwable
