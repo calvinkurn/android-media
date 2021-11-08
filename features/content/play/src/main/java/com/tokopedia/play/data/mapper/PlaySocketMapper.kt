@@ -18,15 +18,14 @@ import java.lang.reflect.Type
  */
 
 class PlaySocketMapper(
-        private val webSocketResponse: WebSocketResponse
+        private val webSocketResponse: WebSocketResponse,
+        private val gson: Gson,
 ) {
 
     private companion object {
         const val TAG = "PlaySocketMapper"
         val voucherListType: Type = object: TypeToken<List<Voucher>>(){}.type
     }
-
-    private val gson = Gson()
 
     fun mapping(): Any? {
         if (webSocketResponse.type.isEmpty() || webSocketResponse.jsonElement == null) return null

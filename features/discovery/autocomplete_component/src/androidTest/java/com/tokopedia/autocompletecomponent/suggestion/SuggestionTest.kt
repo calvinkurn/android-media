@@ -1,9 +1,11 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 import org.junit.Rule
 
+@UiTest
 class SuggestionTest {
 
     @get:Rule

@@ -35,12 +35,9 @@ object RollenceKey {
     const val HOME_BEAUTY_FEST = "home_cantik"
 
     //home component rollence section
-    const val HOME_COMPONENT_LEGO4BANNER_EXP = "lego4_test"
-    const val HOME_COMPONENT_LEGO4BANNER_OLD = "lego_round"
-    const val HOME_COMPONENT_LEGO4BANNER_VARIANT = "lego_bleeding"
-    const val HOME_COMPONENT_LEGO2BANNER_EXP = "lego2_bleeding"
-    const val HOME_COMPONENT_LEGO2BANNER_OLD = "lego2_round"
-    const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
+    const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
+    const val HOME_COMPONENT_LEGO24BANNER_OLD = "lego24_old"
+    const val HOME_COMPONENT_LEGO24BANNER_VARIANT = "lego24_new"
     // end of home component rollence section
 
     const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"

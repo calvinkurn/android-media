@@ -33,18 +33,31 @@ data class SavedOption(
 
     fun isFilter(): Boolean = !isSort()
 
-    fun keyValue() = "$key=$value"
-
     companion object {
         const val SORT_SAVED_OPTION_TITLE = "sort"
 
-        fun create(option: Option, filterList: List<Filter>) =
+        fun create(option: Option, filterList: List<Filter>): SavedOption =
             SavedOption(
                 key = option.key,
                 value = option.value,
                 name = option.name,
-                title = filterList.find { it.options.contains(option) }?.title ?: "",
+                title = findFilterWithOption(filterList, option)?.title ?: "",
             )
+
+        private fun findFilterWithOption(filterList: List<Filter>, optionToFind: Option) =
+            filterList.find { it.allOptions().contains(optionToFind) }
+
+        private fun Filter.allOptions(): List<Option> {
+            val levelTwoCategoryList = options
+                .flatMap(Option::levelTwoCategoryList)
+
+            val levelThreeCategoryList = levelTwoCategoryList
+                .flatMap(LevelTwoCategory::levelThreeCategoryList)
+
+            return options +
+                levelTwoCategoryList.map(LevelTwoCategory::asOption) +
+                levelThreeCategoryList.map(LevelThreeCategory::asOption)
+        }
 
         fun create(sort: Sort): SavedOption {
             return SavedOption(
