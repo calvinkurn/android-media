@@ -1596,10 +1596,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
         authorType: String,
         postType: String,
         isVideo: Boolean,
-        caption: String
+        caption: String,
+        playChannelId: String
     ) {
         if (context != null) {
-            feedAnalytics.evenClickMenu(postId.toString(), postType, isFollowed, authorId, isVideo)
+            val finalId = if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString()
+            feedAnalytics.evenClickMenu(finalId, postType, isFollowed, authorId, isVideo)
             val sheet = MenuOptionsBottomSheet.newInstance(
                 reportable, isFollowed,
                 deletable
@@ -1607,7 +1609,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
                 feedAnalytics.eventClickThreeDotsOption(
-                    postId.toString(),
+                    finalId,
                     "laporkan",
                     postType,
                     isFollowed,
@@ -1643,7 +1645,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
             sheet.onFollow = {
                 feedAnalytics.eventClickThreeDotsOption(
-                    postId.toString(), "unfollow",
+                    finalId, "unfollow",
                     postType,
                     isFollowed, authorId, isVideo
                 )
@@ -1659,7 +1661,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             sheet.onDelete = {
                 createDeleteDialog(positionInFeed, postId, authorId, postType, isFollowed, isVideo)
                 feedAnalytics.clickDeleteThreeDotsPage(
-                    postId.toString(), authorId,
+                    finalId, authorId,
                     postType,
                     isFollowed, isVideo
                 )
@@ -1667,19 +1669,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
             sheet.onDismiss = {
                 feedAnalytics.eventClickGreyAreaThreeDots(
-                    postId.toString(),
+                    finalId,
                     postType,
                     isFollowed, authorId
                 )
             }
             sheet.onEdit = {
                 openEditPostPage(caption, postId.toString())
-
             }
 
             sheet.onClosedClicked = {
                 feedAnalytics.eventCloseThreeDotBS(
-                    postId.toString(),
+                    finalId,
                     postType,
                     isFollowed, authorId
                 )
@@ -1742,7 +1743,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isFollowed: Boolean,
         shopId: String,
         video: Boolean,
-        isTopads: Boolean
+        isTopads: Boolean,
+        playChannelId: String
     ) {
         activity?.let {
             val urlString = when {
@@ -1784,6 +1786,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             )
         }
+        if (type == TYPE_FEED_X_CARD_PLAY)
+        feedAnalytics.eventClickOpenShare(playChannelId, type, isFollowed, shopId, video)
+        else
         feedAnalytics.eventClickOpenShare(id.toString(), type, isFollowed, shopId, video)
     }
 
@@ -1819,7 +1824,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
             val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
             feedAnalytics.eventClickBSitem(
-                item.feedXCard.id,
+                if (item.feedXCard.typename == TYPE_FEED_X_CARD_PLAY) item.feedXCard.playChannelID else item.feedXCard.id,
                 item.feedXCard.tags,
                 itemPosition,
                 item.feedXCard.typename,
@@ -2037,21 +2042,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
     }
 
-    fun onTagSheetItemBuy(
-        activityId: Int,
+    private fun onTagSheetItemBuy(
+        activityId: String ,
         positionInFeed: Int,
         postTagItem: FeedXProduct,
         shopId: String,
         type: String,
         isFollowed: Boolean
     ) {
-        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId.toString(), type, isFollowed, shopId)
+        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
         if (userSession.isLoggedIn) {
             if (::productTagBS.isInitialized) {
                 productTagBS.dismissedByClosing = true
                 productTagBS.dismiss()
             }
-            feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId.toString())
+            feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId)
         } else {
             onGoToLogin()
         }
@@ -2147,10 +2152,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
             type: String,
             isFollowed: Boolean,
             isVideo: Boolean,
-            positionInFeed: Int
+            positionInFeed: Int,
+            playChannelId: String
     ) {
+        val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString()
         productTagBS = ProductItemInfoBottomSheet()
-        feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed, id, isVideo)
+        feedAnalytics.eventTagClicked(finalId, type, isFollowed, id, isVideo)
         productTagBS.show(
             childFragmentManager,
             products,
@@ -2159,26 +2166,29 @@ class FeedPlusFragment : BaseDaggerFragment(),
             id,
             type,
             isFollowed,
-            positionInFeed
+            positionInFeed,
+            playChannelId
         )
         productTagBS.closeClicked = {
-            feedAnalytics.eventClickCloseProductInfoSheet(postId.toString(), type, isFollowed, id)
+            feedAnalytics.eventClickCloseProductInfoSheet(finalId, type, isFollowed, id)
         }
         productTagBS.disMissed = {
-            feedAnalytics.eventClickGreyArea(postId.toString(), type, isFollowed, id)
+            feedAnalytics.eventClickGreyArea(finalId, type, isFollowed, id)
         }
     }
 
     private fun addToWishList(
-        postId: Int,
+        postId: String,
         productId: String,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        playChannelId: String
     ) {
+        val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
 
         feedAnalytics.eventAddToWishlistClicked(
-            postId.toString(),
+            finalId,
             productId,
             type,
             isFollowed,
@@ -2189,7 +2199,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.dismiss()
         }
         feedViewModel.addWishlist(
-            postId.toString(),
+            postId,
             productId,
             shopId,
             0,
@@ -2228,14 +2238,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         description: String,
         url: String,
         imageUrl: String,
-        activityId: Int,
+        activityId: String,
         type: String,
         isFollowed: Boolean,
         shopId: String,
         isTopads:Boolean = false
     ) {
         feedAnalytics.eventonShareProductClicked(
-            activityId.toString(),
+            activityId,
             id.toString(),
             type,
             isFollowed, shopId
@@ -2282,8 +2292,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         context: Context,
         shopId: String
     ) {
+        val finalID = if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
         feedAnalytics.eventClickBottomSheetMenu(
-            item.postId.toString(),
+            finalID,
             item.postType,
             item.isFollowed,
             item.shopId
@@ -2299,7 +2310,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.description,
                 item.weblink,
                 item.imgUrl,
-                item.postId,
+                finalID,
                 item.postType,
                 item.isFollowed,
                 item.shopId,
@@ -2308,7 +2319,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         sheet.addToCartCB = {
             onTagSheetItemBuy(
-                item.postId,
+                finalID,
                 item.positionInFeed,
                 item.product,
                 item.shopId,
@@ -2317,7 +2328,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
         }
         sheet.addToWIshListCB = {
-            addToWishList(item.postId, item.id, item.postType, item.isFollowed, item.shopId)
+            addToWishList(finalID, item.id, item.postType, item.isFollowed, item.shopId, item.playChannelId)
         }
     }
 

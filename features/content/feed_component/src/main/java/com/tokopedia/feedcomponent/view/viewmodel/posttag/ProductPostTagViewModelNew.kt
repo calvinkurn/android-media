@@ -32,7 +32,8 @@ data class ProductPostTagViewModelNew(
     var isFollowed:Boolean = false,
     var description:String = "",
     var isTopads:Boolean = false,
-    var adClickUrl:String = ""
+    var adClickUrl:String = "",
+    var playChannelId:String = ""
 ) : BasePostTagViewModel {
     override fun type(typeFactory: PostTagTypeFactory): Int {
         return typeFactory.type(this)

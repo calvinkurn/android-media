@@ -837,7 +837,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         authorType: String,
         postType: String,
         isVideo: Boolean,
-        caption:String
+        caption:String,
+        playChannelId: String
     ) {
         context?.let {
             val menus =
@@ -912,7 +913,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         isFollowed: Boolean,
         shopId: String,
         video: Boolean,
-        isTopads:Boolean
+        isTopads:Boolean,
+        playChannelId: String
     ) {
         activity?.let {
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
@@ -1271,7 +1273,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             type: String,
             isFollowed: Boolean,
             isVideo: Boolean,
-            positionInFeed: Int
+            positionInFeed: Int,
+            playChannelId: String
     ) {
     }
 

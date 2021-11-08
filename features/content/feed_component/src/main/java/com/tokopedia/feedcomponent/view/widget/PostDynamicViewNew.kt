@@ -240,7 +240,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.followers.isFollowed,
                 feedXCard.author.id,
                 isVideo(feedXCard.media.firstOrNull()),
-                feedXCard.isTopAds
+                feedXCard.isTopAds,
+                feedXCard.playChannelID
             )
         }
     }
@@ -450,7 +451,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 authorType,
                 type,
                 isVideo,
-                caption)
+                caption,
+                channelId.toString())
         }
     }
     private fun bindViews(feedXCard: FeedXCard){
@@ -759,13 +761,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
             authId = authorId
         val isVideo = mediaType != TYPE_IMAGE
         commentButton.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId = playChannelId)
         }
         seeAllCommentText.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId = playChannelId)
         }
         addCommentHint.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId=playChannelId)
         }
     }
 
@@ -1303,7 +1305,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             type,
                             isFollowed,
                             true,
-                            positionInFeed
+                            positionInFeed,
+                            playChannelId =   feedXCard.playChannelID
                     )
                 }
             }

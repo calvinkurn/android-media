@@ -628,7 +628,8 @@ open class DynamicPostViewHolder(v: View,
             authorType: String,
             postType: String = "",
             isVideo: Boolean,
-            caption: String
+            caption: String,
+            playChannelId: String = ""
         )
 
         fun onCaptionClick(positionInFeed: Int, redirectUrl: String)
@@ -670,7 +671,8 @@ open class DynamicPostViewHolder(v: View,
             isFollowed: Boolean = false,
             shopId: String = "",
             video: Boolean,
-            isTopads:Boolean = false
+            isTopads:Boolean = false,
+            playChannelId: String = ""
         )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
@@ -734,7 +736,8 @@ open class DynamicPostViewHolder(v: View,
                 type: String,
                 isFollowed: Boolean,
                 isVideo: Boolean = false,
-                positionInFeed: Int
+                positionInFeed: Int,
+                playChannelId: String = ""
         )
 
         fun onReadMoreClicked(

@@ -900,8 +900,7 @@ class FeedAnalyticTracker
     fun eventClickFullScreenIconVOD(channelId: String, type: String, isFollowed: Boolean, shopId: String) {
         var map = getCommonMap()
         map = map.plus(
-                mapOf(
-                        KEY_EVENT_ACTION to String.format(
+                mapOf(KEY_EVENT_ACTION to String.format(
                                 FORMAT_THREE_PARAM,
                                 CLICK,
                                 CLICK_FULL_SCREEN,
