@@ -1,4 +1,4 @@
-package com.tokopedia.attachproduct.fake.di
+package com.tokopedia.attachproduct.stub.data
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy

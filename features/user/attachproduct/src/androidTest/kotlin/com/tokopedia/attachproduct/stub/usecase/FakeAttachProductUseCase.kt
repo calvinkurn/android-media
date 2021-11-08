@@ -1,13 +1,9 @@
-package com.tokopedia.attachproduct.fake.usecase
+package com.tokopedia.attachproduct.stub.usecase
 
 import com.tokopedia.attachproduct.data.model.AceSearchProductResponse
-import com.tokopedia.attachproduct.di.AttachProductScope
 import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
-import com.tokopedia.attachproduct.utils.FileUtils
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Inject
-import com.tokopedia.attachproduct.test.R
 
 class FakeAttachProductUseCase constructor(
     repository: GraphqlRepository,

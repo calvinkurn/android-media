@@ -1,8 +1,7 @@
-package com.tokopedia.attachproduct.fake.view
+package com.tokopedia.attachproduct.stub.view
 
 import androidx.fragment.app.Fragment
-import com.tokopedia.attachproduct.fake.di.FakeAttachProductComponent
-import com.tokopedia.attachproduct.fake.view.fragment.AttachProductTestFragment
+import com.tokopedia.attachproduct.stub.view.fragment.AttachProductTestFragment
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 
 class AttachProductTestActivity : AttachProductActivity() {

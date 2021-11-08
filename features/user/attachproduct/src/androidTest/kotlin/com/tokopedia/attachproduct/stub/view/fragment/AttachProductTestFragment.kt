@@ -1,14 +1,8 @@
-package com.tokopedia.attachproduct.fake.view.fragment
+package com.tokopedia.attachproduct.stub.view.fragment
 
 import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachproduct.AttachProductTest
-import com.tokopedia.attachproduct.di.DaggerAttachProductComponent
-import com.tokopedia.attachproduct.fake.di.DaggerFakeAttachProductComponent
-import com.tokopedia.attachproduct.fake.di.DaggerFakeBaseAppComponent
-import com.tokopedia.attachproduct.fake.di.FakeAppModule
-import com.tokopedia.attachproduct.fake.di.FakeAttachProductModule
-import com.tokopedia.attachproduct.fake.view.AttachProductTestActivity
 import com.tokopedia.attachproduct.view.fragment.AttachProductFragment
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract
 import java.util.ArrayList
