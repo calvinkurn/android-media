@@ -4,6 +4,7 @@ object ShopPagePerformanceConstant {
     const val SHOP_HEADER_TRACE = "mp_shop_header"
     const val SHOP_PRODUCT_TAB_TRACE = "mp_shop_product"
     const val SHOP_HOME_TAB_TRACE = "mp_shop_home"
+    const val SHOP_HOME_TAB_V2_TRACE = "mp_shop_home_v2"
     const val SHOP_HOME_WEB_VIEW_TRACE = "mp_shop_home_web_view"
     const val SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE = "mp_shop_home_image_slider_banner"
     const val SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE = "mp_shop_home_image_slider_square"
@@ -24,6 +25,10 @@ object ShopPagePerformanceConstant {
         const val SHOP_TRACE_HOME_PREPARE = "mp_shop_home_prepare"
         const val SHOP_TRACE_HOME_MIDDLE = "mp_shop_home_network"
         const val SHOP_TRACE_HOME_RENDER = "mp_shop_home_render"
+
+        const val SHOP_TRACE_HOME_V2_PREPARE = "mp_shop_home_v2_prepare"
+        const val SHOP_TRACE_HOME_V2_MIDDLE = "mp_shop_home_v2_network"
+        const val SHOP_TRACE_HOME_V2_RENDER = "mp_shop_home_v2_render"
 
         const val SHOP_TRACE_PRODUCT_PREPARE = "mp_shop_product_prepare"
         const val SHOP_TRACE_PRODUCT_MIDDLE = "mp_shop_product_network"

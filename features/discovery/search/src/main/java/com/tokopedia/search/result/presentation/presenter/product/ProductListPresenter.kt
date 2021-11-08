@@ -43,11 +43,6 @@ import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -112,7 +107,6 @@ import org.json.JSONArray
 import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
-import rx.observers.Subscribers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -227,22 +221,11 @@ class ProductListPresenter @Inject constructor(
 
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
-            checkNavigationRollenceValue(
-                NAVIGATION_EXP_TOP_NAV,
-                NAVIGATION_VARIANT_REVAMP
-            )
-            || checkNavigationRollenceValue(
-                NAVIGATION_EXP_TOP_NAV2,
-                NAVIGATION_VARIANT_REVAMP2
-            )
+            true
         } catch (e: Exception) {
             e.printStackTrace()
             false
         }
-    }
-
-    private fun checkNavigationRollenceValue(rollenceKey: String, expectedValue: String): Boolean {
-        return view.abTestRemoteConfig?.getString(rollenceKey, NAVIGATION_VARIANT_OLD) == expectedValue
     }
 
     private fun getHasFullThreeDotsOptions(): Boolean {
