@@ -28,7 +28,7 @@ class RechargeOrderDetailViewModel @Inject constructor(
         private val getRecommendationUseCaseCoroutine: GetRecommendationUseCase,
         private val bestSellerMapper: BestSellerMapper,
         private val recommendationUseCase: DigitalRecommendationUseCase,
-        private val dispatcher: CoroutineDispatchers
+        dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
     private val _orderDetailData = MutableLiveData<Result<RechargeOrderDetailModel>>()
