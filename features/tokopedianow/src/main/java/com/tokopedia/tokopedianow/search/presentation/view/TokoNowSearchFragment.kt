@@ -421,6 +421,6 @@ class TokoNowSearchFragment :
     }
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
-        SearchTracking.sendOOCOpenScreenTracking()
+        SearchTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)
     }
 }

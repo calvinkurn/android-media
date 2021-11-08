@@ -633,8 +633,7 @@ class TokoNowRepurchaseFragment:
         viewModel.openScreenTracker.observeOnce(viewLifecycleOwner, { screenName ->
                 TokoNowCommonAnalytics.onOpenScreen(
                     isLoggedInStatus = userSession.isLoggedIn,
-                    screenName = screenName,
-                    userId = userSession.userId
+                    screenName = screenName
                 )
             }
         )
@@ -642,8 +641,7 @@ class TokoNowRepurchaseFragment:
         viewModel.openScreenOocTracker.observeOnce(viewLifecycleOwner, { screenName ->
                 TokoNowCommonAnalytics.onOpenScreen(
                     isLoggedInStatus = userSession.isLoggedIn,
-                    screenName = screenName,
-                    userId = userSession.userId
+                    screenName = screenName
                 )
             }
         )

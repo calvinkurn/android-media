@@ -360,6 +360,6 @@ class TokoNowCategoryFragment:
     }
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
-        CategoryTracking.sendOOCOpenScreenTracking()
+        CategoryTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)
     }
 }

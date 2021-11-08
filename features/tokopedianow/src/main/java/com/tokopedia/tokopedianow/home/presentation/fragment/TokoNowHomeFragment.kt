@@ -909,16 +909,14 @@ class TokoNowHomeFragment: Fragment(),
         viewModelTokoNow.openScreenTracker.observeOnce(viewLifecycleOwner, { screenName ->
             TokoNowCommonAnalytics.onOpenScreen(
                 isLoggedInStatus = userSession.isLoggedIn,
-                screenName = screenName,
-                userId = userSession.userId
+                screenName = screenName
             )
         })
 
         viewModelTokoNow.openScreenOocTracker.observeOnce(viewLifecycleOwner, { screenName ->
             TokoNowCommonAnalytics.onOpenScreen(
                 isLoggedInStatus = userSession.isLoggedIn,
-                screenName = screenName,
-                userId = userSession.userId
+                screenName = screenName
             )
         })
     }
