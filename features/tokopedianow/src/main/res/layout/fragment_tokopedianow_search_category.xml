@@ -19,7 +19,7 @@
     <View
         android:id="@+id/tokonowSearchCategoryStatusBarBackground"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_25"
+        android:layout_height="25dp"
         android:layout_gravity="top"
         android:background="@color/Unify_G500"
         android:visibility="visible" />
@@ -66,7 +66,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    android:paddingBottom="@dimen/dp_64" />
+                    android:paddingBottom="64dp" />
 
             </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
@@ -82,8 +82,8 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/tokonowSearchCategoryLoader"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
