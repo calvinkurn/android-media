@@ -75,7 +75,6 @@ class AttachInvoiceViewModelTest {
     @Test
     fun `fail load invoices` () {
         //GIVEN
-        val expectedValue = exInvoiceResponse.invoices
         coEvery { useCase(any()) } throws exErrorInvoiceResponse
 
         //WHEN
