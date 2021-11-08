@@ -8,7 +8,7 @@
     android:layout_marginEnd="@dimen/spacing_lvl4"
     android:background="@drawable/mvc_recommendation_bg"
     android:orientation="vertical"
-    android:padding="@dimen/dp_12">
+    android:padding="12dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_recommendation_title"

@@ -2145,9 +2145,15 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             tickerPagerAdapter.setPagerDescriptionClickEvent(this)
             this.tickerPagerAdapter = tickerPagerAdapter
         }
-        binding?.tickerSomList?.addPagerView(tickerPagerAdapter, activeTickers)
-        tickerIsReady = activeTickers.isNotEmpty()
-        animateOrderTicker(true)
+        binding?.tickerSomList?.let { tickerView ->
+            val visibility = tickerView.visibility
+            tickerView.addPagerView(tickerPagerAdapter, activeTickers)
+            tickerView.post {
+                tickerView.visibility = visibility
+                tickerIsReady = activeTickers.isNotEmpty()
+                animateOrderTicker(true)
+            }
+        }
     }
 
     protected open fun renderOrderList(data: List<SomListOrderUiModel>) {

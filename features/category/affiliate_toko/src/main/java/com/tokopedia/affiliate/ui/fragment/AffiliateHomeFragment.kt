@@ -47,7 +47,10 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 

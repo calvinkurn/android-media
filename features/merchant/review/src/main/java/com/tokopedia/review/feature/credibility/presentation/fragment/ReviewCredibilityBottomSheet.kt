@@ -187,7 +187,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     }
 
     private fun setFooterText(footer: String) {
-        this.footer?.text = footer
+        this.footer?.text = context?.let { HtmlLinkHelper(it, footer).spannedString } ?: footer
     }
 
     private fun setButton(buttonText: String, applink: String) {
@@ -195,9 +195,9 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
             text = buttonText
             setOnClickListener {
                 if (isUsersOwnCredibility()) {
-                    ReviewCredibilityTracking.trackOnClickCTASelfCredibility(buttonText, userId, source)
+                    ReviewCredibilityTracking.trackOnClickCTASelfCredibility(buttonText, userId, source, viewModel.userId)
                 } else {
-                    ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(buttonText, userId, productId, source)
+                    ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(buttonText, userId, productId, source, viewModel.userId)
                 }
                 handleRouting(applink)
             }
