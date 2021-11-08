@@ -97,9 +97,14 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             UserSessionInterface userSession = new UserSession(holder.context);
             String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small",
                     userSession.getUserId(), 1, userSession.getDeviceId());
+            String authKey = String.format("%s %s", TrackingPageUtil.INSTANCE.getHEADER_VALUE_BEARER(), userSession.getAccessToken());
+
+            GlideUrl newUrl = new GlideUrl(url, new LazyHeaders.Builder()
+                    .addHeader(TrackingPageUtil.INSTANCE.getHEADER_KEY_AUTH(), authKey)
+                    .build());
 
             Glide.with(holder.context)
-                    .load(url)
+                    .load(newUrl)
                     .centerCrop()
                     .placeholder(holder.context.getDrawable(R.drawable.ic_image_error))
                     .error(holder.context.getDrawable(R.drawable.ic_image_error))

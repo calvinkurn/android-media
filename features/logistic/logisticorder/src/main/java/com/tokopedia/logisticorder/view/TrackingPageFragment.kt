@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -16,17 +19,21 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
+import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.DateUtil
+import com.tokopedia.logisticorder.utils.TrackingPageUtil
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
 import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
@@ -51,7 +58,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
-    lateinit var dateUtil:     DateUtil
+    lateinit var dateUtil: DateUtil
     @Inject
     lateinit var mAnalytics: OrderAnalyticsOrderTracking
 
@@ -151,7 +158,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun fetchData() {
         mOrderId?.let { viewModel.getTrackingData(it) }
-        if (mTrackingUrl != null && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
+        if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
             mOrderId?.let { viewModel.retryAvailability(it) }
         }
     }
@@ -167,6 +174,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         binding?.buyerName?.text = model.detail.receiverName
         binding?.buyerLocation?.text = model.detail.receiverCity
         binding?.currentStatus?.text = model.status
+        setEtaDetail(model.detail.eta)
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
@@ -245,6 +253,23 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             } else {
                 binding?.tvRetryStatus?.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setEtaDetail(model: EtaModel) {
+        binding?.eta?.text = model.userInfo
+        if (model.isChanged) {
+            binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.logisticCommon.R.drawable.eta_info, 0)
+            binding?.eta?.setOnClickListener {
+                showEtaBottomSheet(model.userUpdatedInfo)
+            }
+        }
+    }
+
+    private fun showEtaBottomSheet(description: String) {
+        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(description)
+        parentFragmentManager?.run {
+            delayedEtaBottomSheetFragment.show(this, "")
         }
     }
 
@@ -411,10 +436,30 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     override fun onImageItemClicked(imageId: String, orderId: Long) {
         val url = getDeliveryImage(imageId, orderId, "large",
                 userSession.userId, 1, userSession.deviceId)
+        val authKey = String.format("%s %s", TrackingPageUtil.HEADER_VALUE_BEARER, userSession.accessToken)
+        val newUrl = GlideUrl(
+            url, LazyHeaders.Builder()
+                .addHeader(HEADER_KEY_AUTH, authKey)
+                .build()
+        )
 
-        startActivity(activity?.let {
-            url?.let { url -> ImagePreviewLogisticActivity.createIntent(it, arrayListOf(url)) }
-        })
+        binding?.root?.let {
+            binding?.imgProof?.let { imgProof ->
+                Glide.with(it.context)
+                    .load(newUrl)
+                    .centerCrop()
+                    .placeholder(it.context.getDrawable(R.drawable.ic_image_error))
+                    .error(it.context.getDrawable(R.drawable.ic_image_error))
+                    .dontAnimate()
+                    .into(imgProof)
+            }
+        }
+
+        binding?.imagePreviewLarge?.visibility = View.VISIBLE
+        binding?.iconClose?.setOnClickListener {
+            binding?.imagePreviewLarge?.visibility = View.GONE
+        }
+
     }
 
 }

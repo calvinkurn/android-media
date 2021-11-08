@@ -529,6 +529,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if (::navSearchBarController.isInitialized) {
             navSearchBarController.startHintAnimation()
         }
+        viewModel?.getNotification()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -697,13 +698,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun toolbarThemeCondition(lightCondition: () -> Unit = {}, darkCondition: () -> Unit = {}) {
         if (toolbarThemeType == TOOLBAR_LIGHT_TYPE) lightCondition.invoke()
         if (toolbarThemeType == TOOLBAR_DARK_TYPE) darkCondition.invoke()
-    }
-
-    override fun onVisibilityAggregated(isVisible: Boolean) {
-        super.onVisibilityAggregated(isVisible)
-        if (isVisible) {
-            viewModel?.getNotification()
-        }
     }
 
     override fun getUserId(): String = userSessionInterface?.userId?:""
