@@ -1,0 +1,21 @@
+[
+  {
+    "data": {
+      "followStatus": {
+        "status": {
+          "userIsFollowing": false,
+          "userNeverFollow": false,
+          "userFirstFollow": false
+        },
+        "followButton": {
+          "buttonLabel": "Follow",
+          "voucherIconURL": "",
+          "coachmarkText": ""
+        },
+        "error": {
+          "message": ""
+        }
+      }
+    }
+  }
+]

@@ -1003,7 +1003,7 @@ class NewShopPageFragment :
                 shopId.toIntOrZero(),
                 shopDomain.orEmpty(),
                 START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
+                ShopUtil.getProductPerPage(context),
                 initialProductFilterParameter ?: ShopProductFilterParameter(),
                 "",
                 "",
