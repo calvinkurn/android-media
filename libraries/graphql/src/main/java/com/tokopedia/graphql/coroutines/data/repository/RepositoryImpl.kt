@@ -72,34 +72,40 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
     }
 
     fun GraphqlResponseInternal.toGraphqlResponse(
-            results: MutableMap<Type, Any>,
-            refreshRequests: MutableList<GraphqlRequest>,
-            isCachedData: MutableMap<Type, Boolean>,
-            requests: List<GraphqlRequest>): GraphqlResponse {
+        results: MutableMap<Type, Any>,
+        refreshRequests: MutableList<GraphqlRequest>,
+        isCachedData: MutableMap<Type, Boolean>,
+        requests: List<GraphqlRequest>
+    ): GraphqlResponse {
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
 
         originalResponse?.forEachIndexed { index, jsonElement ->
-            val operationName = tempRequest.getOrNull(index)?.operationName.orEmpty()
+            val operationName =
+                CacheHelper.getQueryName(tempRequest.getOrNull(index)?.query.orEmpty())
             try {
                 val typeOfT = tempRequest[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
                 if (data != null && !data.isJsonNull) {
                     //Lookup for data03-19 00:06:47.537 32115-32488/com.tokopedia.tkpd D/OkHttp: x-tkpd-clc: AddToken-291ac79f54b52aa73eb4413dbe00703a,
-
                     results[typeOfT] = CommonUtils.fromJson(data, typeOfT)
                     isCachedData.put(typeOfT, false)
                 }
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
                 if (error != null && !error.isJsonNull) {
-                    errors[typeOfT] = CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
+                    errors[typeOfT] =
+                        CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
                 LoggingUtils.logGqlSuccessRate(operationName, "1")
             } catch (jse: JsonSyntaxException) {
                 LoggingUtils.logGqlSuccessRate(operationName, "0")
-                LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
+                LoggingUtils.logGqlParseError(
+                    "json",
+                    Log.getStackTraceString(jse),
+                    requests.toString()
+                )
                 jse.printStackTrace()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -133,7 +139,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
             copyRequests.addAll(requests);
 
             for (i in 0 until copyRequests.size) {
-                operationName = copyRequests.getOrNull(i)?.operationName.orEmpty()
+                operationName = CacheHelper.getQueryName(copyRequests.getOrNull(i)?.query.orEmpty())
 
                 if (copyRequests[i].isNoCache) {
                     continue

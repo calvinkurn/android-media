@@ -82,7 +82,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
             if (response.getOriginalResponse() != null) {
                 for (int i = 0; i < response.getOriginalResponse().size(); i++) {
-                    String operationName = requests.get(i).getOperationName();
+                    String operationName = CacheHelper.getQueryName(requests.get(i).getQuery());
                     try {
                         JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                         if (data != null && !data.isJsonNull()) {
@@ -134,7 +134,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
             int counter = copyRequests.size();
             for (int i = 0; i < counter; i++) {
-                operationName = requests.get(i).getOperationName();
+                operationName = CacheHelper.getQueryName(requests.get(i).getQuery());
                 if (copyRequests.get(i).isNoCache()) {
                     continue;
                 }

@@ -24,8 +24,7 @@ class GraphqlRepositoryImpl @Inject constructor(
     override suspend fun response(
         requests: List<GraphqlRequest>,
         cacheStrategy: GraphqlCacheStrategy
-    )
-            : GraphqlResponse {
+    ): GraphqlResponse {
         val results = mutableMapOf<Type, Any>()
         val refreshRequests = mutableListOf<GraphqlRequest>()
         val isCachedData = mutableMapOf<Type, Boolean>()
@@ -103,7 +102,7 @@ class GraphqlRepositoryImpl @Inject constructor(
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
         originalResponse?.forEachIndexed { index, jsonElement ->
-            val operationName = tempRequest.getOrNull(index)?.operationName.orEmpty()
+            val operationName = CacheHelper.getQueryName(requests.getOrNull(index)?.query.orEmpty())
             try {
                 val typeOfT = tempRequest[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
@@ -161,8 +160,8 @@ class GraphqlRepositoryImpl @Inject constructor(
             copyRequests.addAll(requests);
 
             for (i in 0 until copyRequests.size) {
-                operationName = copyRequests.getOrNull(i)?.operationName.orEmpty()
-
+                operationName = CacheHelper.getQueryName(requests.getOrNull(i)?.query.orEmpty())
+                
                 if (copyRequests[i].isNoCache) {
                     continue
                 }
