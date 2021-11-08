@@ -53,12 +53,16 @@ class LoggerRepository(
 
     override suspend fun deleteExpiredData() {
         val currentTimestamp = System.currentTimeMillis()
+        logDao.deleteExpiredSFPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
         logDao.deleteExpiredHighPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
         logDao.deleteExpiredLowPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
-        logDao.deleteExpiredSFPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
     }
 
     override suspend fun sendLogToServer(queryLimits: List<Int>) {
+        sendLogToServer(
+            Constants.SEVERITY_SF,
+            logDao.getServerChannel(LoggerReporting.SF, queryLimits[0])
+        )
         sendLogToServer(
             Constants.SEVERITY_HIGH,
             logDao.getServerChannel(LoggerReporting.P1, queryLimits[0])
@@ -66,10 +70,6 @@ class LoggerRepository(
         sendLogToServer(
             Constants.SEVERITY_MEDIUM,
             logDao.getServerChannel(LoggerReporting.P2, queryLimits[1])
-        )
-        sendLogToServer(
-            Constants.SEVERITY_SF,
-            logDao.getServerChannel(LoggerReporting.SF, queryLimits[0])
         )
     }
 
