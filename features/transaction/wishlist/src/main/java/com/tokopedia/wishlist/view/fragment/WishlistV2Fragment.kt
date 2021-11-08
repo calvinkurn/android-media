@@ -282,7 +282,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     refreshHandler?.finishRefresh()
                     val data = result.data
                     hideLoader()
-                    wishlistV2Adapter.appendList(renderWishlistV2Data(data))
+                    renderWishlistV2Data(data)
                     scrollRecommendationListener.updateStateAfterGetData()
                 }
                 is Fail -> {
@@ -293,7 +293,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         })
     }
 
-    private fun renderWishlistV2Data(data: List<WishlistV2Data>) : ArrayList<WishlistV2TypeLayoutData> {
+    private fun renderWishlistV2Data(data: List<WishlistV2Data>) {
         val adapterData = arrayListOf<WishlistV2TypeLayoutData>()
         data.forEach {
             when(it) {
@@ -305,6 +305,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                         adapterData.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_CAROUSEL))
                     } else {
                         if (currRecommendationListPage == 0) {
+                            isFetchRecommendation = true
                             adapterData.add(WishlistV2TypeLayoutData(getString(R.string.recommendation_title), TYPE_RECOMMENDATION_TITLE))
                             if (searchQuery.isNotEmpty()) {
                                 adapterData.add(WishlistV2TypeLayoutData(searchQuery, TYPE_EMPTY_NOT_FOUND))
@@ -327,15 +328,22 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                             currPage += 1
                         }
                         renderWishlist(it.items)
-                    } else {
-                        if (currPage == 1) {
-                            loadRecommendationList()
-                        }
                     }
+//                    else {
+//                        if (currPage == 1) {
+//                            loadRecommendationList()
+//                        }
+//                    }
                 }
             }
         }
-        return adapterData
+        if (isFetchRecommendation && currRecommendationListPage == 1) {
+            wishlistV2Adapter.addList(adapterData)
+            scrollRecommendationListener.resetState()
+        } else {
+            wishlistV2Adapter.appendList(adapterData)
+            scrollRecommendationListener.updateStateAfterGetData()
+        }
     }
 
     private fun observingDeleteWishlistV2() {

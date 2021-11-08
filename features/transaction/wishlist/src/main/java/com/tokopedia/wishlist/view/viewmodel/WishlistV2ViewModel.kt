@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -51,7 +52,58 @@ class WishlistV2ViewModel @Inject constructor(
 
     fun loadWishlistV2(params: WishlistV2Params) {
         launch (dispatcher.main) {
-            try {
+//
+//            if (shouldShowInitialPage) loadInitialPage()
+//
+//            keywordSearch = keyword
+//            currentPage = 1
+//            this.additionalParams = additionalParams
+//
+//            launchCatchError(wishlistCoroutineDispatcherProvider.main, block = {
+//                val data = getWishlistUseCase.getData(
+//                    GetWishlistParameter(keyword, currentPage, additionalParams))
+//                if (!data.isSuccess) {
+//                    isWishlistErrorInFirstPage.value = true
+//
+//                    wishlistData.value = listOf(ErrorWishlistDataModel(data.errorMessage))
+//                    currentPage--
+//                    return@launchCatchError
+//                }
+//
+//                if(data.items.isEmpty()){
+//                    wishlistState.value = Status.EMPTY
+//
+//                    wishlistData.value = listOf(
+//                        if(keyword.isEmpty()) EmptyWishlistDataModel() else EmptySearchWishlistDataModel(keyword)
+//                    )
+//                    getRecommendationOnEmptyWishlist(0)
+//                } else {
+//                    wishlistCountData.value = data.totalData.toInt()
+//                    wishlistState.value = Status.SUCCESS
+//
+//                    val visitableWishlist = data.items.mappingWishlistToVisitable(isInBulkMode.value ?: false)
+//
+//                    when {
+//                        data.items.size < recommendationPositionInPage -> {
+//                            wishlistData.value = getRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
+//                        }
+//
+//                        // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
+//                        data.items.size == recommendationPositionInPage -> {
+//                            wishlistData.value = getTopadsAndRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
+//                        }
+//
+//                        // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
+//                        data.items.size > recommendationPositionInPage -> {
+//                            if (data.totalData > newMinItemRegularRule) {
+//                                wishlistData.value = getTopAdsBannerData(visitableWishlist, currentPage, data.items.map { it.id }, recommendationPositionInPage)
+//                            } else {
+//                                wishlistData.value = getTopadsAndRecommendationWishlist(visitableWishlist, currentPage, data.items.map { it.id }, data.items.size)
+//                            }
+//                        }
+//                    } }
+
+                    try {
                 val wishlistData = wishlistV2UseCase.executeSuspend(params).wishlistV2
 
                 if (wishlistData.items.isEmpty()) {
@@ -64,7 +116,7 @@ class WishlistV2ViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    _wishlistCount.postValue(wishlistData.totalData)
+                    _wishlistCount.value = wishlistData.totalData
                     when {
                         wishlistData.items.size < recommendationPositionInPage -> {
                             if (!wishlistData.hasNextPage) {
