@@ -174,15 +174,6 @@ class PlayAnalytic(
         )
     }
 
-    fun clickCartIcon() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "$KEY_TRACK_CLICK cart icon",
-                "$mChannelId - ${mChannelType.value}"
-        )
-    }
-
     fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>) {
         if (products.isEmpty()) return
 
