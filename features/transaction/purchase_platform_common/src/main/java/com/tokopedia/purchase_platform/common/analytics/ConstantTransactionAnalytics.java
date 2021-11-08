@@ -51,6 +51,7 @@ public interface ConstantTransactionAnalytics {
         String PURCHASE_PROTECTION_IMPRESSION = "viewFintechMicrositeIris";
         String VIEW_CART = "viewCart";
         String VIEW_CART_IRIS = "viewCartIris";
+        String CLICK_CART = "clickCart";
         String CLICK_REGISTER = "clickRegister";
         String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
@@ -407,93 +408,51 @@ public interface ConstantTransactionAnalytics {
         String SHOW_LAST_SEEN_POP_UP = "show Last Seen pop-up";
 
         //OCC
-        String ADD_PREFERENCE_OCC = "click tambah preferensi from tambah pilihan";
-        String CLICK_TRASH_ICON_OCC = "click trash bin on edit preference";
-        String CLICK_HAPUS_ON_TRASH_ICON_OCC = "click hapus preferensi from trash bin";
-        String CLICK_PILIH_DURASI_PENGIRIMAN_IN_ANA_OCC = "click pilih durasi pengiriman in add new address step";
-        String CLICK_DURASI_OPTION_IN_DURASI_PAGE = "click duration option in duration step";
-        String CLICK_PILIH_METODE_PEMBAYARAN_IN_DURATION_PAGE = "click pilih metode pembayaran in duration step";
-        String CLICK_PAYMENT_METHOD_OPTION_IN_PAYMENT_METHOD_PAGE = "click payment method option in payment method step";
-        String CLICK_UBAH_ADDRESS_IN_PREFERENCE_SETTING_PAGE = "click ubah in address section on edit preference";
-        String CLICK_UBAH_SHIPPING_IN_PREFERENCE_SETTING_PAGE = "click ubah in duration section on edit preference";
-        String CLICK_UBAH_PAYMENT_IN_PREFERENCE_SETTING_PAGE = "click ubah in payment section on edit preference";
-        String CLICK_ADDRESS_OPTION_IN_PILIH_ALAMAT_PAGE = "click available address option";
-        String CLICK_SIMPAN_ALAMAT_IN_PILIH_ALAMAT_PAGE = "click simpan alamat on pilih alamat pengiriman";
-        String CLICK_GEAR_LOGO_IN_PREFERENCE_LIST_PAGE = "click gear logo from tambah pilihan";
-        String CLICK_JADIKAN_PILIHAN_UTAMA = "click button jadikan pilihan utama from tambah pilihan";
-        String CLICK_BACK_ARROW_IN_EDIT_PREFERENCE = "click back in edit preference";
-        String CLICK_BACK_ARROW_IN_PILIH_ALAMAT = "click back in pilih alamat";
-        String CLICK_BACK_ARROW_IN_PILIH_DURASI = "click back in pilih durasi";
         String CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT = "click back in pilih metode bayar";
-        String CLICK_SIMPAN_ON_SUMMARY_PURCHASE_SETTING = "click simpan on summary purchase setting";
 
-        String EDIT_QUANTITY_INCRESE = "product - click button plus";
+        String EDIT_QUANTITY_INCREASE = "product - click button plus";
         String EDIT_QUANTITY_DECREASE = "product - click button minus";
         String EDIT_SELLER_NOTES = "product - click tulis catatan";
-        String FIND_SIMILAR_PRODUCT = "product - click cari barang serupa";
         String USER_CHANGE_COURIER_OSP = "courier - click arrow to change courier option";
         String CLICK_UBAH_WHEN_DURATION_ERROR = "click ubah when duration error";
-        String CLICK_SELECTED_DURATION_OPTION = "click selected duration option";
         String CLICK_ON_INSURANCE = "courier - click on asuransi pengiriman";
         String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
         String CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS = "click pilih pembayaran - not success";
         String CLICK_PILIH_PEMBAYARAN = "click pilih pembayaran";
         String VIEW_ERROR_ON_OSP = "view error message";
-        String CLICK_ADD_PREFERENSI_FROM_OSP = "preference - click tambah pilihan from ganti pilihan";
-        String USER_CHANGES_PROFILE = "preference - click ganti pilihan on order summary";
-        String USER_SETS_FIRST_PREFERENCE = "preference - click atur preferensi for new buyer";
         String CHOOSE_BBO_AS_DURATION = "courier - click pilih on tersedia bebas ongkir";
         String CHOOSE_COURIER_FROM_COURIER_SELECTION_OSP = "courier - click selected courier option";
         String CLICK_RINGKASAN_BELANJA_OSP = "click arrow on ringkasan belanja";
-        String CLICK_GEAR_LOGO_IN_PREFERENCE_FROM_GANTI_PILIHAN_OSP = "preference - click gear logo from ganti pilihan";
-        String GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP = "preference -  click gunakan pilihan ini from ganti pilihan";
         String CLICK_BACK_FROM_OSP = "click back in order summary page";
-        String CLICK_BUTTON_INFO_ON_OSP = "click button info on order summary page";
-        String CLICK_YUK_COBA_LAGI_IN_ONBOARDING_TICKER = "click yuk coba lagi in onboarding ticker";
-        String VIEW_ONBOARDING_TICKER = "view onboarding ticker";
         String CLICK_PROMO_SECTION_APPLIED_OSP = "click promo section with promo applied";
         String CLICK_PROMO_SECTION_NOT_APPLIED_OSP = "click promo section with promo not applied";
         String CLICK_LANJUT_BAYAR_PROMO_ERROR_OSP = "promo - click lanjut bayar on bottom sheet promo error";
         String CLICK_PILIH_PROMO_LAIN_PROMO_ERROR_OSP = "promo - click pilih promo lain on bottom sheet promo error";
 
         String VIEW_ORDER_SUMMARY_PAGE = "view order summary page";
-        String VIEW_ONBOARDING_INFO = "view onboarding info";
         String VIEW_BOTTOMSHEET_PROMO_ERROR = "view bottom sheet promo error";
         String VIEW_PROMO_ALREADY_APPLIED = "view promo already applied in order summary list";
         String VIEW_PROMO_RELEASED = "view promo released after adjust item";
         String VIEW_PROMO_DECREASED = "view promo decreased after adjust item";
+        String VIEW_OVERWEIGHT_TICKER = "view overweight ticker";
+        String VIEW_MESSAGE_IN_COURIER_2_JAM_SAMPAI = "view message in courier 2 jam sampai";
 
-        // OCC Revamp
-        String CLICK_TAMBAH_TEMPLATE = "preference - click tambah template";
-        String CLICK_PILIH_TEMPLATE_LAIN = "preference - click pilih template lain";
-        String VIEW_PROFILE_LIST = "view profile list";
         String CLICK_ARROW_TO_CHANGE_ADDRESS_OPTION = "address - click arrow to change address option";
         String CLICK_SELECTED_ADDRESS_OPTION = "address - click selected address option";
+        String CLICK_REFRESH_ON_COURIER_SECTION = "click refresh on courier section";
         String CLICK_ARROW_TO_CHANGE_DURATION_OPTION = "duration - click arrow to change duration option";
         String CLICK_SELECTED_DURATION_OPTION_NEW = "duration - click selected duration option";
         String CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION = "payment - click arrow to change payment option";
         String CLICK_SELECTED_PAYMENT_OPTION = "payment - click selected payment option";
-        String CLICK_PROFILE_OPTION_ON_PROFILE_LIST = "preference - click profile option on profile list";
-        String CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_ORDER_SUMMARY = "preference - click tambah template beli langsung on order summary";
-        String CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_PROFILE_LIST = "preference - click tambah template beli langsung on profile list";
-        String CLICK_EDIT_PROFILE_ON_PROFILE_LIST = "preference - click edit profile on profile list";
-
-        String VIEW_COACHMARK_1_FOR_EXISTING_USER_ONE_PROFILE = "view coachmark 1 for existing user one profile";
-        String VIEW_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE = "view coachmark 2 for existing user one profile";
-        String CLICK_DONE_ON_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE = "click done on coachmark 2 for existing user one profile";
-
-        String VIEW_COACHMARK_1_FOR_EXISTING_USER_MULTI_PROFILE = "view coachmark 1 for existing user multi profile";
-        String VIEW_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE = "view coachmark 2 for existing user multi profile";
-        String CLICK_DONE_ON_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE = "click done on coachmark 2 for existing user multi profile";
-
-        String VIEW_COACHMARK_1_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "view coachmark 1 for new buyer before create profile";
-        String VIEW_COACHMARK_2_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "view coachmark 2 for new buyer before create profile";
-        String CLICK_LANJUT_ON_COACHMARK_2_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "click lanjut on coachmark 2 for new buyer before create profile";
 
         String VIEW_COACHMARK_1_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 1 for new buyer after create profile";
         String VIEW_COACHMARK_2_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 2 for new buyer after create profile";
         String VIEW_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 3 for new buyer after create profile";
         String CLICK_DONE_ON_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "click done on coachmark 3 for new buyer after create profile";
+
+        String VIEW_ERROR_PRODUCT_LEVEL_TICKER = "view error product level tickers";
+        String VIEW_ERROR_ORDER_LEVEL_TICKER = "view error order level tickers";
+        String VIEW_ERROR_TOASTER_MESSAGE = "view error toaster message";
 
         // OCC PP
         String PP_IMPRESSION_ON_INSURANCE_SECTION = "pp - ins section impression";
@@ -534,6 +493,13 @@ public interface ConstantTransactionAnalytics {
         // Cart TokoNow
         String VIEW_TOASTER_ERROR_IN_CART_PAGE = "view toaster error in cart page";
         String LOAD_CART_WITH_UNAVAILABLE_PRODUCT = "load cart with unavailable product";
+        String CLICK_ON_PRODUCT_IMAGE_ON_COLLAPSE_VIEW = "click on product image on collapse view";
+        String CLICK_LIHAT_SELENGKAPNYA_FOR_NOW_PRODUCT = "click lihat selengkapnya for now product";
+        String CLICK_LIHAT_ON_PLUS_LAINNYA_ON_NOW_PRODUCT = "click lihat on + lainnya on now product";
+
+        // Cart Bundling
+        String CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE = "click lihat barang serupa for Unavailable Bundle Package";
+        String CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD = "click ubah in product bundling package product card";
     }
 
     interface EventLabel {

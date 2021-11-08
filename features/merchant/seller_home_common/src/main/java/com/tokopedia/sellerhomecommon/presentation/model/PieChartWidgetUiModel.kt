@@ -13,6 +13,7 @@ data class PieChartWidgetUiModel(
         override val title: String,
         override val subtitle: String,
         override val tooltip: TooltipUiModel?,
+        override val tag: String,
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
@@ -31,7 +32,7 @@ data class PieChartWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<PieChartDataUiModel> {
-        return PieChartWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+        return PieChartWidgetUiModel(id, widgetType, title, subtitle, tooltip, tag, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<PieChartDataUiModel>): Boolean {

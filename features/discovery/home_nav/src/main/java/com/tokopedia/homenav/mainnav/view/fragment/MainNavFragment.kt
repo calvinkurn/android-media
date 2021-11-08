@@ -10,26 +10,22 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
-import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
@@ -42,6 +38,8 @@ import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.CONTROL
 import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.EXP_NAME
 import com.tokopedia.homenav.mainnav.MainNavConst.RecentViewAb.VARIANT
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
+import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.getProfileCacheData
+import com.tokopedia.homenav.mainnav.domain.MainNavSharedPref.setProfileCacheFromAccountModel
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingBuSection
@@ -49,11 +47,12 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
-import com.tokopedia.homenav.mainnav.view.datamodel.AccountHeaderDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.homenav.view.router.NavigationRouter
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -70,6 +69,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val BUNDLE_MENU_ITEM = "menu_item_bundle"
         private const val REQUEST_LOGIN = 1234
         private const val REQUEST_REGISTER = 2345
+        private const val OFFSET_TO_SHADOW = 100
+        private const val COACHMARK_SAFE_DELAY = 200L
     }
 
     private var mainNavDataFetched: Boolean = false
@@ -116,6 +117,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
+        context?.let {
+            viewModel.setProfileCache(getProfileCacheData(it))
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -132,13 +136,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
         if (recyclerView.itemDecorationCount == 0)
-            recyclerView.addItemDecoration(MainNavSpacingDecoration(
-                    resources.getDimensionPixelOffset(R.dimen.dp_12)))
+            recyclerView.addItemDecoration(MainNavSpacingDecoration(12f.toDp().toInt()))
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val offset = recyclerView.computeVerticalScrollOffset()
-                if (offset > 100) {
+                if (offset > OFFSET_TO_SHADOW) {
                     navToolbar?.showShadow(lineShadow = true)
                 } else {
                     navToolbar?.hideShadow(lineShadow = true)
@@ -175,6 +178,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 getNavPerformanceCallback()?.startNetworkRequestPerformanceMonitoring()
             } else {
                 getNavPerformanceCallback()?.stopNetworkRequestPerformanceMonitoring()
+            }
+        })
+
+        viewModel.profileDataLiveData.observe(viewLifecycleOwner, Observer { accountHeaderModel ->
+            context?.let { ctx ->
+                setProfileCacheFromAccountModel(ctx, accountHeaderModel)
             }
         })
     }
@@ -238,9 +247,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuDataModel: HomeNavMenuDataModel) {
         view?.let {
-            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
+            if (homeNavMenuDataModel.sectionId == MainNavConst.Section.ORDER || homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if(homeNavMenuDataModel.applink.isNotEmpty()){
-                    RouteManager.route(context, homeNavMenuDataModel.applink)
+                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
+                        RouteManager.route(context, homeNavMenuDataModel.applink)
+                    }
                 } else {
                     NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
                             bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
@@ -252,6 +263,24 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             }
         }
     }
+
+    private fun handleClickFromPageSource(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
+        if (validateTargetMenu(homeNavMenuDataModel)) {
+            activity?.onBackPressed()
+            return true
+        }
+        return false
+    }
+
+    private fun validateTargetMenu(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
+        return validateHomeUohPage(homeNavMenuDataModel) || validateHomeWishlistPage(homeNavMenuDataModel)
+    }
+
+    private fun validateHomeUohPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
+        homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+
+    private fun validateHomeWishlistPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
+        homeNavMenuDataModel.id == ID_WISHLIST_MENU && pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
 
     private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
         when(homeNavMenuDataModel.id) {
@@ -297,21 +326,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
         adapter = MainNavListAdapter(mainNavFactory)
 
-        var windowHeight = 0
         activity?.let {
             val displayMetrics = DisplayMetrics()
             activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-            windowHeight = displayMetrics.heightPixels
         }
 
         layoutManager = NpaLayoutManager(requireContext())
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
-    }
-
-    private fun populateAccountHeader(data: AccountHeaderDataModel) {
-        val dataList: List<Visitable<*>> = mutableListOf(data)
-        adapter.submitList(dataList)
     }
 
     private fun populateAdapterData(data: MainNavigationDataModel) {
@@ -516,7 +538,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                                 coachMark.showCoachMark(coachMarkItems, null, currentIndex)
                             }
                         }
-                    },200)
+                    }, COACHMARK_SAFE_DELAY)
                 }
             })
         }
@@ -581,7 +603,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         )
         this.add(
                 CoachmarkItemReyclerViewConfig(
-                        (viewModel.mainNavLiveData.value?.dataList?.size?:0)-1, viewModel.findAllTransactionModelPosition())
+                        0, viewModel.findAllTransactionModelPosition())
         )
         this.add(
                 CoachmarkItemReyclerViewConfig(

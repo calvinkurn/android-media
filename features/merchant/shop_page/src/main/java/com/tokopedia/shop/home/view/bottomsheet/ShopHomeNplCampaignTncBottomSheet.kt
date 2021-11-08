@@ -9,20 +9,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.common.util.loadLeftDrawable
-import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
@@ -33,12 +29,15 @@ import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowButt
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_FOLLOW
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
+import com.tokopedia.shop.common.util.loadLeftDrawable
+import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_shop_campaign_tnc_bottom_sheet.*
 import javax.inject.Inject
 
 class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
@@ -92,17 +91,31 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
     private var isFollowShop: Boolean = false
+    private var tfFollow: Typography? = null
+    private var btnFollow: UnifyButton? = null
+    private var layoutButtonFollowContainer: View? = null
+    private var recyclerView: RecyclerView? = null
+    private var loaderUnify: LoaderUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         clearContentPadding = true
         initInjector()
         val view = LayoutInflater.from(context).inflate(R.layout.fragment_shop_campaign_tnc_bottom_sheet, null)
+        initView(view)
         setChild(view)
         getArgumentsData()
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeNplCampaignTncBottomSheetViewModel::class.java)
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
 
+    }
+
+    private fun initView(view: View) {
+        tfFollow = view.findViewById(R.id.tf_follow)
+        btnFollow = view.findViewById(R.id.btn_follow)
+        layoutButtonFollowContainer = view.findViewById(R.id.layout_button_follow_container)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        loaderUnify = view.findViewById(R.id.loader_unify)
     }
 
     private fun initInjector() {
@@ -204,46 +217,46 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
 
     private fun refreshButtonData(label: String?) {
         if(!label.isNullOrBlank()) {
-            tf_follow.text = label
+            tfFollow?.text = label
         }
-        btn_follow?.apply {
+        btnFollow?.apply {
             if (isFollowShop) {
                 buttonVariant = UnifyButton.Variant.GHOST
-                tf_follow.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                tfFollow?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             } else {
                 buttonVariant = UnifyButton.Variant.FILLED
-                tf_follow.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+                tfFollow?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             }
         }
     }
 
     private fun showFollowText() {
-        btn_follow?.isLoading = false
-        tf_follow.bringToFront()
-        tf_follow.show()
+        btnFollow?.isLoading = false
+        tfFollow?.bringToFront()
+        tfFollow?.show()
     }
 
     private fun showLoadingFollowButton() {
-        tf_follow.hide()
-        btn_follow?.isLoading = true
+        tfFollow?.hide()
+        btnFollow?.isLoading = true
     }
 
     private fun showFollowButton(followButton: FollowButton?) {
-        layout_button_follow_container?.show()
+        layoutButtonFollowContainer?.show()
 
         showFollowText()
         val voucherUrl = followButton?.voucherIconURL
         followButton?.run { refreshButtonData(this.buttonLabel) }
 
         if (!voucherUrl.isNullOrBlank()) {
-            tf_follow.loadLeftDrawable(
+            tfFollow?.loadLeftDrawable(
                     context = requireContext(),
                     url = voucherUrl,
                     convertIntoSize = 50
             )
         }
 
-        btn_follow?.apply {
+        btnFollow?.apply {
             setOnClickListener {
                 showLoadingFollowButton()
                 val action = if (isFollowShop) {
@@ -252,13 +265,13 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
                     ACTION_FOLLOW
                 }
                 viewModel?.updateFollowStatus(shopId, action)
-                voucherUrl?.run { tf_follow.removeDrawable() }
+                voucherUrl?.run { tfFollow?.removeDrawable() }
             }
         }
     }
 
     private fun hideFollowButton() {
-        layout_button_follow_container?.hide()
+        layoutButtonFollowContainer?.hide()
     }
 
     private fun onErrorGetNplTncData(error: Throwable) {
@@ -275,11 +288,11 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     private fun onSuccessGetNplTncData(data: ShopHomeCampaignNplTncUiModel) {
         setBottomSheetTitle(data.title)
         shopHomeCampaignNplTncAdapter?.setListMessageDat(data.listMessage)
-        recycler_view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
-        val measuredHeight = recycler_view.measuredHeight
+        recyclerView?.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        val measuredHeight = recyclerView?.measuredHeight.orZero()
         val bottomSheetHeaderHeight = bottomSheetHeader.height
         if ((measuredHeight + bottomSheetHeaderHeight) > getHalfDeviceScreen()) {
-            recycler_view.layoutParams.height = getHalfDeviceScreen() - bottomSheetHeaderHeight
+            recyclerView?.layoutParams?.height = getHalfDeviceScreen() - bottomSheetHeaderHeight
         }
     }
 
@@ -293,9 +306,9 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     }
 
     private fun initRecyclerView() {
-        recycler_view?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         shopHomeCampaignNplTncAdapter = ShopHomeCampaignNplTncAdapter()
-        recycler_view?.adapter = shopHomeCampaignNplTncAdapter
+        recyclerView?.adapter = shopHomeCampaignNplTncAdapter
     }
 
     private fun getArgumentsData() {
@@ -310,11 +323,11 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     }
 
     private fun showLoading() {
-        loader_unify?.show()
+        loaderUnify?.show()
     }
 
     private fun hideLoading() {
-        loader_unify?.hide()
+        loaderUnify?.hide()
     }
 
     private fun isRuleId33(ruleId: String): Boolean {

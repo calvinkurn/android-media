@@ -12,7 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
-import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 
@@ -51,8 +51,8 @@ object DeeplinkMapperMarketplace {
     fun getShopPageInternalAppLink(ctx: Context, uri: Uri, deeplink: String, internalAppLink: String, shopId: String):String {
         return if (isSpecialShop(shopId) && uri.pathSegments.size == 1) {
             DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink, ctx)
-        } else if(isTokopediaNowShopId(shopId)){
-            DeeplinkMapperTokopediaNow.getRegisteredNavigationTokopediaNowHome(ctx, deeplink)
+        } else if(isTokopediaNowShopId(shopId) && !GlobalConfig.isSellerApp()){
+            ApplinkConstInternalTokopediaNow.HOME
         } else {
             internalAppLink
         }

@@ -12,9 +12,9 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.constant.AdminFeature
+import com.tokopedia.seller.menu.common.databinding.ItemSellerMenuFeatureSectionBinding
 import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
-import kotlinx.android.synthetic.main.item_seller_menu_feature_section.view.*
 
 class SellerFeatureViewHolder(
         itemView: View,
@@ -28,8 +28,10 @@ class SellerFeatureViewHolder(
         private const val SCREEN_NAME = "MA - Akun Toko"
     }
 
+    private val binding = ItemSellerMenuFeatureSectionBinding.bind(itemView)
+
     override fun bind(feature: SellerFeatureUiModel) {
-        itemView.cardStatistics.setOnClickListener {
+        binding.cardStatistics.setOnClickListener {
             if (feature.userSession.isShopOwner) {
                 val appLinks = ArrayList<String>().apply {
                     add(ApplinkConstInternalSellerapp.SELLER_HOME)
@@ -42,7 +44,7 @@ class SellerFeatureViewHolder(
             sellerMenuTracker?.sendEventClickShopStatistic()
         }
 
-        itemView.cardPromo.setOnClickListener {
+        binding.cardPromo.setOnClickListener {
             if (feature.userSession.isShopOwner) {
                 val appLinks = ArrayList<String>().apply {
                     add(ApplinkConstInternalSellerapp.SELLER_HOME)
@@ -55,7 +57,7 @@ class SellerFeatureViewHolder(
             sellerMenuTracker?.sendEventClickCentralizePromo()
         }
 
-        itemView.cardFeedAndPlay.setOnClickListener {
+        binding.cardFeedAndPlay.setOnClickListener {
             val appLinks = ArrayList<String>().apply {
                 add(ApplinkConstInternalSellerapp.SELLER_HOME)
                 add(UriUtil.buildUri(ApplinkConst.SHOP, feature.userSession.shopId))
@@ -65,7 +67,7 @@ class SellerFeatureViewHolder(
             sellerMenuTracker?.sendEventClickFeedAndPlay()
         }
 
-        itemView.cardFintech.setOnClickListener {
+        binding.cardFintech.setOnClickListener {
             val appLinks = ArrayList<String>().apply {
                 add(ApplinkConstInternalSellerapp.SELLER_HOME)
                 add("${ApplinkConst.LAYANAN_FINANSIAL}/")

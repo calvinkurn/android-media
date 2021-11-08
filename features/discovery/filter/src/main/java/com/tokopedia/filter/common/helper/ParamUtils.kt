@@ -23,19 +23,22 @@ private const val NON_FILTER_SRP_PREFIX = "srp_"
 private const val NON_FILTER_USER_PREFIX = "user_"
 private const val NON_FILTER_EXCLUDE_PREFIX = OptionHelper.EXCLUDE_PREFIX
 val nonFilterParameterKeyList = setOf(
-        SearchApiConst.Q,
-        SearchApiConst.RF,
-        SearchApiConst.ACTIVE_TAB,
-        SearchApiConst.SOURCE,
-        SearchApiConst.LANDING_PAGE,
-        SearchApiConst.PREVIOUS_KEYWORD,
-        SearchApiConst.ORIGIN_FILTER,
-        SearchApiConst.SKIP_REWRITE,
-        SearchApiConst.NAVSOURCE,
-        SearchApiConst.SKIP_BROADMATCH,
-        SearchApiConst.HINT,
-        SearchApiConst.FIRST_INSTALL,
-        SearchApiConst.SEARCH_REF
+    SearchApiConst.Q,
+    SearchApiConst.RF,
+    SearchApiConst.ACTIVE_TAB,
+    SearchApiConst.SOURCE,
+    SearchApiConst.LANDING_PAGE,
+    SearchApiConst.PREVIOUS_KEYWORD,
+    SearchApiConst.ORIGIN_FILTER,
+    SearchApiConst.SKIP_REWRITE,
+    SearchApiConst.NAVSOURCE,
+    SearchApiConst.SKIP_BROADMATCH,
+    SearchApiConst.HINT,
+    SearchApiConst.FIRST_INSTALL,
+    SearchApiConst.SEARCH_REF,
+    SearchApiConst.UNIQUE_ID,
+    SearchApiConst.START,
+    SearchApiConst.USER_ID,
 )
 
 fun getSortFilterCount(mapParameter: Map<String, Any>): Int {
@@ -124,9 +127,8 @@ private fun <T> Map<String?, T?>.removeWithNonFilterPrefix(): Map<String?, T?> =
         filter { !it.key.matchesWithNonFilterPrefix() }
 
 @Suppress("UNCHECKED_CAST")
-fun getFilterParams(mapParameter: Map<String?, String?>): Map<String, String> {
+fun getFilterParams(mapParameter: Map<String?, String?>): Map<String?, String?> {
     return mapParameter
             .removeWithNonFilterPrefix()
             .minus(nonFilterParameterKeyList + listOf(SearchApiConst.OB))
-            as Map<String, String>
 }

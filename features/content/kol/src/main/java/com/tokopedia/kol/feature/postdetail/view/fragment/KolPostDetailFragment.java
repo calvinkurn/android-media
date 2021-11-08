@@ -34,6 +34,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard;
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia;
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct;
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Caption;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
@@ -82,6 +83,8 @@ import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kolcommon.util.PostMenuListener;
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -632,7 +635,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable, boolean isFollowed, @NotNull String authorId, @NotNull String authorType, @NotNull String postType, boolean isVideo) {
+    public void onMenuClick(int positionInFeed, int postId, boolean reportable, boolean deletable, boolean editable, boolean isFollowed, @NotNull String authorId, @NotNull String authorType, @NotNull String postType, boolean isVideo, String caption) {
         if (getContext() != null) {
             Menus menus = createBottomMenu(getContext(), deletable,
                     reportable, false, new PostMenuListener() {
@@ -701,10 +704,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId, boolean video) {
+    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId, boolean video , boolean isTopads) {
         if (getActivity() != null) {
             ShareBottomSheets.Companion.newInstance(packageName -> {
-
             }, "", imageUrl, url, description, title, "").show(getActivity().getSupportFragmentManager());
         }
     }
@@ -855,7 +857,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int activityId, int productId, @NotNull String redirectLink, @NotNull String type, boolean isFollowed, @NotNull String shopId, @NotNull FeedXProduct products) {
+    public void onGridItemClick(int positionInFeed, int activityId, String productId, @NotNull String redirectLink, @NotNull String type, boolean isFollowed, @NotNull String shopId, @NotNull FeedXProduct products) {
 
         onGoToLink(redirectLink);
     }
@@ -1010,11 +1012,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void userCarouselImpression(@NotNull String activityId, @NotNull FeedXMedia media, int positionInFeed, String type, boolean isFollowed, @NotNull String shopId, int postPosition) {
-
-    }
-
-    @Override
     public void onBottomSheetMenuClicked(@NotNull ProductPostTagViewModelNew item, @NotNull Context context, @NotNull String shopId) {
 
     }
@@ -1066,6 +1063,26 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onVideoStopTrack(@NotNull FeedXCard feedXCard, long duration) {
+
+    }
+
+    @Override
+    public void onPostTagBubbleClick(int positionInFeed, @NotNull String redirectUrl, @NotNull FeedXProduct postTagItem, @NotNull String adClickUrl) {
+
+    }
+
+    @Override
+    public void onClickSekSekarang(@NotNull String postId, @NotNull String shopId, @NotNull String type, boolean isFollowed, int positionInFeed) {
+
+    }
+
+    @Override
+    public void onFollowClickAds(int positionInFeed, @NonNull String shopId, @NonNull String adId) {
+
+    }
+
+    @Override
+    public void userCarouselImpression(@NonNull String activityId, @NonNull FeedXMedia media, int positionInFeed, @NonNull String postType, boolean isFollowed, @NonNull String shopId, int postPosition, @NonNull CpmData cpmData, @NonNull List<? extends Product> products) {
 
     }
 }

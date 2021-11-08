@@ -187,7 +187,6 @@ internal class PriceFilterTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `Then assert map parameter is as expected`(expectedMapParameter)
         `Then assert button reset visibility`(true)
-        `Then assert button apply is shown with loading`()
         `Then assert min and max value in filter view is updated`(priceFilterViewModel, minPriceFilter.toString(), "")
     }
 
@@ -207,7 +206,6 @@ internal class PriceFilterTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `Then assert map parameter is as expected`(mapOf(SearchApiConst.ORIGIN_FILTER to SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE))
         `Then assert button reset visibility`(false)
-        `Then assert button apply is shown with loading`()
         `Then assert min and max value in filter view is updated`(priceFilterViewModel, minPriceFilter.toString(), "")
     }
 
@@ -234,7 +232,6 @@ internal class PriceFilterTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `Then assert map parameter is as expected`(expectedMapParameter)
         `Then assert button reset visibility`(true)
-        `Then assert button apply is shown with loading`()
         `Then assert only one price range option is selected`(expectedSelectedPriceRangeOption)
         `Then assert min and max value in filter view is updated`(
                 priceFilterViewModel, priceRangeFilter.valMin, priceRangeFilter.valMax
@@ -257,7 +254,6 @@ internal class PriceFilterTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `Then assert map parameter is as expected`(expectedMapParameter)
         `Then assert button reset visibility`(true)
-        `Then assert button apply is shown with loading`()
         `Then assert min and max value in filter view is updated`(priceFilterViewModel, "", maxPriceFilter.toString())
     }
 
@@ -277,7 +273,6 @@ internal class PriceFilterTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `Then assert map parameter is as expected`(mapOf(SearchApiConst.ORIGIN_FILTER to SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE))
         `Then assert button reset visibility`(false)
-        `Then assert button apply is shown with loading`()
         `Then assert min and max value in filter view is updated`(priceFilterViewModel, "", maxPriceFilter.toString())
     }
 
@@ -304,10 +299,29 @@ internal class PriceFilterTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         `Then assert map parameter is as expected`(expectedMapParameter)
         `Then assert button reset visibility`(true)
-        `Then assert button apply is shown with loading`()
         `Then assert only one price range option is selected`(expectedSelectedPriceRangeOption)
         `Then assert min and max value in filter view is updated`(
                 priceFilterViewModel, priceRangeFilter.valMin, priceRangeFilter.valMax
         )
+    }
+
+    @Test
+    fun `on min or max price edited and out of focus should show loading`() {
+        val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        `Given SortFilterBottomSheet view is already created`(mapOf(), dynamicFilterModel)
+
+        val priceFilterViewModel = this.sortFilterList!!.findAndReturn<PriceFilterViewModel>()!!
+        val minPriceFilter = 1000
+        `When price filter edited and out of focus`(priceFilterViewModel, minPriceFilter)
+
+        `Then assert button apply is shown with loading`()
+    }
+
+    private fun `When price filter edited and out of focus`(
+        priceFilterViewModel: PriceFilterViewModel,
+        minValue: Int,
+    ) {
+        sortFilterBottomSheetViewModel.onMinPriceFilterEdited(priceFilterViewModel, minValue)
+        sortFilterBottomSheetViewModel.onPriceTextOutOfFocus()
     }
 }

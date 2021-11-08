@@ -48,7 +48,7 @@ private const val EVENT_CLICK_ON_SEARCH = "kata kunci yang ditambahkan manual"
 private const val CLICK_ON_SEARCH = "click - tambah kata kunci manual"
 private const val EVENT_CLICK_LAJUKTAN = "kata kunci pilihan dari rekomendasi"
 private const val CLICK_PILIH_KEYWORD = "click - lanjutkan pilih kata kunci rekomendasi"
-
+private const val CLICK_SEARCH_FIELD = "click - search box kata kunci"
 
 class KeywordAdsListFragment : BaseDaggerFragment() {
 
@@ -330,13 +330,23 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_ON_SEARCH, eventLabel, userID)
             }
         }
-        Utils.setSearchListener(searchBar, context, view, ::fetchData)
+        setSearchAction()
         selectedKeyList?.adapter = keywordSelectedAdapter
         selectedKeyList?.isNestedScrollingEnabled = false
         keyword_list?.adapter = keywordListAdapter
         keyword_list?.layoutManager = LinearLayoutManager(context)
         selectedKeyList?.layoutManager = LinearLayoutManager(context)
 
+    }
+
+    private fun setSearchAction() {
+        view?.let {
+            val searchBar = it.findViewById<SearchBarUnify>(R.id.searchBar)
+            searchBar?.searchBarTextField?.setOnClickListener {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_SEARCH_FIELD, "")
+            }
+            Utils.setSearchListener(searchBar, context, it, ::fetchData)
+        }
     }
 
     private fun startLoading(isLoading: Boolean) {

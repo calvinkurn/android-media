@@ -21,6 +21,7 @@ import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.FeaturedShopAdapter
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.home_featured_shop.view.*
@@ -37,19 +38,28 @@ class FeaturedShopViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_featured_shop
+        const val SIZE_2 = 2
     }
 
     private lateinit var adapter: FeaturedShopAdapter
 
     override fun bind(element: FeaturedShopDataModel) {
-        if(element.channelModel.channelGrids.size < 2){
+        invokeState(element.state,{
+            itemView.loading_view?.show()
+        },{
+            if(element.channelModel.channelGrids.size < SIZE_2){
+                itemView.content_container?.hide()
+            } else {
+                itemView.content_container?.show()
+                itemView.loading_view?.hide()
+                setHeaderComponent(element)
+                setChannelDivider(element)
+                initView(element)
+            }
+        },{
             itemView.content_container?.hide()
-        } else {
-            itemView.content_container?.show()
-            setHeaderComponent(element)
-            setChannelDivider(element)
-            initView(element)
-        }
+        })
+
     }
 
     override fun bind(element: FeaturedShopDataModel, payloads: MutableList<Any>) {
@@ -95,17 +105,25 @@ class FeaturedShopViewHolder(
 
     private fun setHeaderComponent(element: FeaturedShopDataModel) {
         var textColor = ContextCompat.getColor(itemView.context, R.color.Unify_N50)
-        if(element.channelModel.channelBanner.textColor.isNotEmpty()){
+        if (element.channelModel.channelBanner.textColor.isNotEmpty()) {
             try {
                 textColor = Color.parseColor(element.channelModel.channelBanner.textColor)
-            } catch (e: IllegalArgumentException) { }
+            } catch (e: IllegalArgumentException) {
+            }
         }
         itemView.featured_shop_background.setGradientBackground(element.channelModel.channelBanner.gradientColor)
-        itemView.featured_shop_background.setOnClickListener{
+        itemView.featured_shop_background.setOnClickListener {
             listener.onFeaturedShopBannerBackgroundClicked(element.channelModel)
         }
         itemView.banner_title?.text = element.channelModel.channelBanner.title
-        itemView.banner_description?.text = element.channelModel.channelBanner.description
+        itemView.banner_description?.let {
+            if (element.channelModel.channelBanner.description.isNotEmpty()) {
+                it.show()
+                it.text = element.channelModel.channelBanner.description
+            } else {
+                it.gone()
+            }
+        }
         itemView.banner_title?.setTextColor(textColor)
         itemView.banner_description?.setTextColor(textColor)
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
@@ -130,6 +148,14 @@ class FeaturedShopViewHolder(
             ))
         }
         return list
+    }
+
+    private fun invokeState(state: Int, stateLoading: () -> Unit, stateReady: () -> Unit, stateFailed: () -> Unit) {
+        when (state) {
+            FeaturedShopDataModel.STATE_LOADING -> {stateLoading.invoke()}
+            FeaturedShopDataModel.STATE_READY -> {stateReady.invoke()}
+            FeaturedShopDataModel.STATE_FAILED -> {stateFailed.invoke()}
+        }
     }
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {

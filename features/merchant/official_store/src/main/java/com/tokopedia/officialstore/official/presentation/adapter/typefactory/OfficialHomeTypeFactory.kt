@@ -4,8 +4,9 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.officialstore.base.diffutil.OfficialTypeFactory
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
 
-interface OfficialHomeTypeFactory : OfficialTypeFactory, HomeComponentTypeFactory {
+interface OfficialHomeTypeFactory : OfficialTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory {
 
     fun type(officialLoadingDataModel: OfficialLoadingDataModel): Int
 
@@ -22,4 +23,5 @@ interface OfficialHomeTypeFactory : OfficialTypeFactory, HomeComponentTypeFactor
     fun type(productRecommendationTitleDataModel: ProductRecommendationTitleDataModel): Int
 
     fun type(productRecommendationDataModel: ProductRecommendationDataModel): Int
+
 }

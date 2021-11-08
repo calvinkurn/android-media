@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
-import kotlinx.android.synthetic.main.empty_feed_shop.view.*
 
 /**
  * @author by yfsx on 17/05/19.
@@ -20,7 +19,9 @@ class EmptyFeedShopViewHolder(v: View,
         val LAYOUT = R.layout.empty_feed_shop
     }
 
+    private val btnPost: View? = v.findViewById(R.id.btn_post)
+
     override fun bind(element: EmptyFeedShopUiModel?) {
-        itemView.btn_post?.setOnClickListener { mainView.onEmptyFeedButtonClicked() }
+        btnPost?.setOnClickListener { mainView.onEmptyFeedButtonClicked() }
     }
 }

@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 
 class FakeGraphqlRepository : GraphqlRepository {
-    override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponse {
+    override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponse {
         requests.firstOrNull()?.query?.let {
             when {
                 it.contains("keroAddrSetStateChosenAddress") ->

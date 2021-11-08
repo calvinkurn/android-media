@@ -686,6 +686,44 @@ class FlightHomepageViewModelTest {
     }
 
     @Test
+    fun onReverseAirportChanged_changeDashboardData() {
+        // given
+        val departureAirport = FlightAirportModel()
+        departureAirport.cityName = "Jakarta"
+        departureAirport.airportCode = "CGK"
+        departureAirport.airportName = "Bandara International Soekarno Hatta"
+        departureAirport.cityCode = ""
+        departureAirport.cityId = ""
+        departureAirport.cityAirports = arrayListOf()
+
+        val arrivalAirport = FlightAirportModel()
+        arrivalAirport.cityName = "Banda Aceh"
+        arrivalAirport.airportCode = "BTJ"
+        arrivalAirport.airportName = "Bandara International Sultan Iskandar Muda"
+        arrivalAirport.cityCode = ""
+        arrivalAirport.cityId = ""
+        arrivalAirport.cityAirports = arrayListOf()
+
+        // when
+        flightHomepageViewModel.onReverseAirportChanged(departureAirport, arrivalAirport)
+
+        // then
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityName shouldBe departureAirport.cityName
+        flightHomepageViewModel.homepageData.value?.departureAirport?.airportCode shouldBe departureAirport.airportCode
+        flightHomepageViewModel.homepageData.value?.departureAirport?.airportName shouldBe departureAirport.airportName
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityCode shouldBe departureAirport.cityCode
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityId shouldBe departureAirport.cityId
+        flightHomepageViewModel.homepageData.value?.departureAirport?.cityAirports shouldBe departureAirport.cityAirports
+
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityName shouldBe arrivalAirport.cityName
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.airportCode shouldBe arrivalAirport.airportCode
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.airportName shouldBe arrivalAirport.airportName
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityCode shouldBe arrivalAirport.cityCode
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityId shouldBe arrivalAirport.cityId
+        flightHomepageViewModel.homepageData.value?.arrivalAirport?.cityAirports shouldBe arrivalAirport.cityAirports
+    }
+
+    @Test
     fun onClassChanged_withNullDashboardData_shouldDoNothing() {
         // given
         val flightClassModel = FlightClassModel(1, "Ekonomi")

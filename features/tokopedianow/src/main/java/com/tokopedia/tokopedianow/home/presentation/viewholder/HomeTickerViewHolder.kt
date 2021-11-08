@@ -2,17 +2,15 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatImageButton
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeTickerBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeTickerViewHolder(
         itemView: View,
@@ -25,19 +23,16 @@ class HomeTickerViewHolder(
         const val PREFIX_LINK = "tokopedia"
     }
 
+    private var binding: ItemTokopedianowHomeTickerBinding? by viewBinding()
+
     override fun bind(data: HomeTickerUiModel) {
-        if(data.tickers.isNotEmpty()) {
-            val closeBtn = itemView.findViewById<AppCompatImageButton>(com.tokopedia.unifycomponents.R.id.ticker_close_icon)
-            val ticker = itemView.findViewById<Ticker>(R.id.ticker_announcement)
-            closeBtn.setOnClickListener {
-                listener?.onTickerDismissed(data.id)
-            }
+        binding?.tickerAnnouncement?.post {
             val adapter = TickerPagerAdapter(itemView.context, data.tickers)
             adapter.setPagerDescriptionClickEvent(this)
-            ticker.addPagerView(adapter, data.tickers)
-            itemView.show()
-        } else {
-            itemView.hide()
+            adapter.onDismissListener = {
+                listener?.onTickerDismissed(data.id)
+            }
+            binding?.tickerAnnouncement?.addPagerView(adapter, data.tickers)
         }
     }
 

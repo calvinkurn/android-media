@@ -366,10 +366,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_mainapp_enable_slice_recharge</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>android_exec_seq1_async</key>
         <value>true</value>
     </entry>
@@ -583,7 +579,15 @@
     </entry>
     <entry>
         <key>android_enable_screenshot_sharing</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>android_enable_pdp_custom_sharing</key>
         <value>true</value>
+    </entry>
+    <entry>
+        <key>android_ss_permission_attempt_counter</key>
+        <value>10</value>
     </entry>
     <entry>
         <key>android_branch_callback_timeout_key</key>
@@ -595,6 +599,22 @@
     </entry>
     <entry>
         <key>android_main_app_enable_tokopedia_now</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_customer_sticky_login_tokonow</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_customer_sticky_login_reminder_tokonow</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enable_deals_revamp_phase_2</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enable_add_bills_sbm</key>
         <value>true</value>
     </entry>
 </defaultsMap>

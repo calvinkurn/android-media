@@ -676,7 +676,7 @@ public class FeedAnalytics {
                         KEY_USER_ID, userId,
                         EVENT_ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
-                                "impressions", getProductList(products, position))
+                                "impressions", getProductList(products, position+1))
                 )
         );
     }

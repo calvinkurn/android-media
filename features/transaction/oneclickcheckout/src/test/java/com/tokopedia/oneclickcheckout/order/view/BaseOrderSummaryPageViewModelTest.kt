@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExternalUseCase
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.domain.CheckoutOccUseCase
+import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.processor.*
@@ -30,7 +31,7 @@ open class BaseOrderSummaryPageViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @MockK
-    lateinit var addToCartOccExternalUseCase: Lazy<AddToCartOccExternalUseCase>
+    lateinit var addToCartOccMultiExternalUseCase: Lazy<AddToCartOccMultiExternalUseCase>
 
     @MockK
     lateinit var getOccCartUseCase: GetOccCartUseCase
@@ -56,6 +57,9 @@ open class BaseOrderSummaryPageViewModelTest {
     lateinit var checkoutOccUseCase: CheckoutOccUseCase
 
     @MockK(relaxed = true)
+    lateinit var creditCardTenorListUseCase: CreditCardTenorListUseCase
+
+    @MockK(relaxed = true)
     lateinit var clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>
 
     @MockK(relaxed = true)
@@ -78,10 +82,11 @@ open class BaseOrderSummaryPageViewModelTest {
         MockKAnnotations.init(this)
         helper = OrderSummaryPageViewModelTestHelper()
         orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers,
-                OrderSummaryPageCartProcessor(addToCartOccExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
+                OrderSummaryPageCartProcessor(addToCartOccMultiExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
                 OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, chooseAddressRepository, chooseAddressMapper, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
+                { OrderSummaryPagePaymentProcessor(creditCardTenorListUseCase, testDispatchers) },
                 OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
                 userSessionInterface, orderSummaryAnalytics)
     }

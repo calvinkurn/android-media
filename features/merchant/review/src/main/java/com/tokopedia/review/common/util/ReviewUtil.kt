@@ -24,6 +24,8 @@ import kotlin.math.round
 
 object ReviewUtil {
 
+    const val ROUND_DECIMAL = 10
+
     fun setFilterJoinValueFormat(old: String, newValue: String = ""): String {
         return if (newValue.isNotEmpty()) {
             String.format("$old;$newValue")
@@ -33,14 +35,6 @@ object ReviewUtil {
 
     fun getDateChipFilterPosition(data: Array<String>, dateKeyword: String): Int {
         return data.indexOf(dateKeyword)
-    }
-
-    fun convertMapObjectToString(map: HashMap<String, Any>): HashMap<String, String>? {
-        val newMap = HashMap<String, String>()
-        for ((key, value) in map) {
-            newMap[key] = value.toString()
-        }
-        return newMap
     }
 
     fun DptoPx(context: Context, dp: Int): Float {
@@ -65,31 +59,7 @@ object ReviewUtil {
     }
 
     fun formatReviewCollapse(context: Context, review: String): CharSequence? {
-        val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
-        return HtmlLinkHelper(context, formattedText.replace("(\r\n|\n)".toRegex(), "<br />") + "<br />" + context.getString(R.string.review_reading_collapse)).spannedString
-    }
-}
-
-fun getReviewStar(ratingCount: Int): Int {
-    return when (ratingCount) {
-        ReviewConstants.RATING_ONE -> {
-            R.drawable.review_ic_rating_star_one
-        }
-        ReviewConstants.RATING_TWO -> {
-            R.drawable.review_ic_rating_star_two
-        }
-        ReviewConstants.RATING_THREE -> {
-            R.drawable.review_ic_rating_star_three
-        }
-        ReviewConstants.RATING_FOUR -> {
-            R.drawable.review_ic_rating_star_four
-        }
-        ReviewConstants.RATING_FIVE -> {
-            R.drawable.review_ic_rating_star_five
-        }
-        else -> {
-            R.drawable.review_ic_rating_star_zero
-        }
+        return HtmlLinkHelper(context, review.replace("(\r\n|\n)".toRegex(), "<br />") + "<br />" + context.getString(R.string.review_reading_collapse)).spannedString
     }
 }
 
@@ -165,7 +135,7 @@ val String.isUnAnswered: Boolean
     }
 
 fun Float?.roundDecimal(): String {
-    val rounded = this?.times(10)?.let { round(it) }?.div(10).toString()
+    val rounded = this?.times(ReviewUtil.ROUND_DECIMAL)?.let { round(it) }?.div(ReviewUtil.ROUND_DECIMAL).toString()
     return rounded.isDecimalLengthOne()
 }
 

@@ -7,6 +7,8 @@ import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterItemDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
@@ -15,7 +17,6 @@ import com.tokopedia.filter.common.data.*
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackAppUtils
 import kotlin.math.max
 
@@ -74,6 +75,7 @@ internal class SortFilterBottomSheetViewModel {
     private val sortApplyFilterMap = mutableMapOf<String, String>()
     private val originalFilterViewState = mutableSetOf<String>()
     private var originalSortValue = ""
+    private var originalKeyword = ""
 
     fun init(mapParameter: Map<String, String>, dynamicFilterModel: DynamicFilterModel?) {
         this.mutableMapParameter = mapParameter.toMutableMap()
@@ -89,6 +91,7 @@ internal class SortFilterBottomSheetViewModel {
         filterController.initFilterController(mutableMapParameter, dynamicFilterModel?.data?.filter)
         originalFilterViewState.addAll(filterController.filterViewStateSet)
         originalSortValue = getSelectedSortValue()
+        originalKeyword = getKeyword()
     }
 
     private fun determineShouldShowKnob(dynamicFilterModel: DynamicFilterModel?): Boolean {
@@ -105,6 +108,8 @@ internal class SortFilterBottomSheetViewModel {
             mapParameter[it.getSortKey()] ?: it.defaultSortValue
         } ?: ""
     }
+
+    private fun getKeyword() = mutableMapParameter[SearchApiConst.Q] ?: ""
 
     fun getSelectedFilterMap(): Map<String, String> {
         return filterController.getActiveFilterMap()
@@ -176,10 +181,11 @@ internal class SortFilterBottomSheetViewModel {
         val filterList = dynamicFilterModelData.filter
 
         filterList.forEach { filter ->
-            if (filter.isPriceFilter)
-                sortFilterList.add(createPriceFilterViewModel(filter))
-            else
-                sortFilterList.add(createFilterViewModel(filter))
+            when {
+                filter.isPriceFilter -> sortFilterList.add(createPriceFilterViewModel(filter))
+                filter.isKeywordFilter -> sortFilterList.add(createKeywordFilterDataView(filter))
+                else -> sortFilterList.add(createFilterViewModel(filter))
+            }
         }
     }
 
@@ -219,6 +225,9 @@ internal class SortFilterBottomSheetViewModel {
             it.isSelected = option.valMin == getMinPriceFilterValue() && option.valMax == getMaxPriceFilterValue()
         }
     }
+
+    private fun createKeywordFilterDataView(filter: Filter) =
+        KeywordFilterDataView(filter = filter)
 
     private fun createFilterViewModel(filter: Filter): FilterViewModel {
         val optionViewModelMutableList = mutableListOf<OptionViewModel>()
@@ -346,7 +355,9 @@ internal class SortFilterBottomSheetViewModel {
         isViewExpandedMutableLiveData.value = true
     }
 
-    private fun getIsLoading() = isFilterChanged() || isSortChanged()
+    private fun getIsLoading() = isFilterChanged() || isSortChanged() || isKeywordChanged()
+
+    private fun isKeywordChanged() = originalKeyword != getKeyword()
 
     private fun isFilterChanged() = originalFilterViewState != filterController.filterViewStateSet
 
@@ -413,41 +424,44 @@ internal class SortFilterBottomSheetViewModel {
     }
 
     fun onMinPriceFilterEdited(priceFilterViewModel: PriceFilterViewModel, minPriceValue: Int) {
-        val minMaxPriceRangeOption = priceFilterViewModel.getMinMaxPriceRangeOption()
-        val minimumPossibleValue = minMaxPriceRangeOption?.valMin ?: 0.toString()
+        onPriceFilterEdited(priceFilterViewModel, Option.KEY_PRICE_MIN, minPriceValue) {
+            priceFilterViewModel.minPriceFilterValue = it
+        }
+    }
 
-        val normalizedMinPriceValue =
-                if (minPriceValue <= minimumPossibleValue.toIntOrZero()) "" else minPriceValue.toString()
+    private fun onPriceFilterEdited(
+        priceFilterViewModel: PriceFilterViewModel,
+        priceFilterKey: String,
+        priceValue: Int,
+        updatePriceFilterViewModel: (String) -> Unit,
+    ) {
+        val minMaxPriceRange = priceFilterViewModel.getMinMaxPriceRange()
+        val normalizedMinPriceValue = priceValue.coerceToString(minMaxPriceRange)
 
-        applyPriceFilter(priceFilterViewModel, Option.KEY_PRICE_MIN, normalizedMinPriceValue)
+        applyPriceFilter(priceFilterViewModel, priceFilterKey, normalizedMinPriceValue)
         refreshMapParameter()
 
-        priceFilterViewModel.minPriceFilterValue = minPriceValue.toString()
+        updatePriceFilterViewModel(priceValue.toString())
         priceFilterViewModel.updateSelectedPriceRangeOptionViewModel()
 
-        isLoadingMutableLiveData.value = true
         isButtonResetVisibleMutableLiveData.value = isButtonResetVisible()
     }
 
-    private fun PriceFilterViewModel.getMinMaxPriceRangeOption(): Option? {
-        return priceFilter.options.find { it.isMinMaxRangePriceOption }
+    private fun PriceFilterViewModel.getMinMaxPriceRange(): IntRange {
+        val minMaxOption = priceFilter.options.find { it.isMinMaxRangePriceOption }
+        val valMin = minMaxOption?.valMin?.toIntOrNull() ?: 0
+        val valMax = minMaxOption?.valMax?.toIntOrNull() ?: Int.MAX_VALUE
+
+        return valMin..valMax
     }
+
+    private fun Int.coerceToString(range: IntRange) =
+        if (this !in range) "" else this.toString()
 
     fun onMaxPriceFilterEdited(priceFilterViewModel: PriceFilterViewModel, maxPriceValue: Int) {
-        val minMaxPriceRangeOption = priceFilterViewModel.getMinMaxPriceRangeOption()
-        val maximumPossibleValue = minMaxPriceRangeOption?.valMax ?: Integer.MAX_VALUE.toString()
-
-        val normalizedMaxPriceValue =
-                if (maxPriceValue >= maximumPossibleValue.toIntOrZero()) "" else maxPriceValue.toString()
-
-        applyPriceFilter(priceFilterViewModel, Option.KEY_PRICE_MAX, normalizedMaxPriceValue)
-        refreshMapParameter()
-
-        priceFilterViewModel.maxPriceFilterValue = maxPriceValue.toString()
-        priceFilterViewModel.updateSelectedPriceRangeOptionViewModel()
-
-        isLoadingMutableLiveData.value = true
-        isButtonResetVisibleMutableLiveData.value = isButtonResetVisible()
+        onPriceFilterEdited(priceFilterViewModel, Option.KEY_PRICE_MAX, maxPriceValue) {
+            priceFilterViewModel.maxPriceFilterValue = it
+        }
     }
 
     fun onSortItemClick(sortItemViewModel: SortItemViewModel) {
@@ -671,5 +685,16 @@ internal class SortFilterBottomSheetViewModel {
         refreshMapParameter()
 
         categoryFilterViewModel.refreshOptionList()
+    }
+
+    fun onPriceTextOutOfFocus() {
+        isLoadingMutableLiveData.value = true
+    }
+
+    fun onChangeKeywordFilter(keywordFilterDataView: KeywordFilterDataView) {
+        mutableMapParameter[SearchApiConst.Q] = keywordFilterDataView.generateKeyword()
+        filterController.refreshMapParameter(mapParameter)
+
+        isLoadingMutableLiveData.value = getIsLoading()
     }
 }

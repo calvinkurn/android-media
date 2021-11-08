@@ -48,6 +48,7 @@ private const val SELCTED = "select"
 private const val UNSELECT = "unselect"
 private const val EVENT_CLICK_LAJUKTAN = "kata kunci pilihan dari rekomendasi"
 private const val CLICK_ON_SEARCH = "click - tambah kata kunci manual"
+private const val CLICK_ON_SEARCH_CREATE = "click - search box kata kunci"
 private const val EVENT_CLICK_ON_SEARCH = "kata kunci yang ditambahkan manual"
 
 
@@ -217,6 +218,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
                 if (hasFocus) {
                     val eventLabel = "$shopID - $EVENT_CLICK_ON_SEARCH"
                     TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_ON_SEARCH, eventLabel, userID)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_ON_SEARCH_CREATE, "")
                 }
             }
             Utils.setSearchListener(searchBar, context, it, ::fetchData)

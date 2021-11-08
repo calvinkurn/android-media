@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.response.DefaultChosenAddressData
+import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
@@ -34,7 +35,7 @@ class ThanksPageDataViewModel @Inject constructor(
     val thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
     val gyroRecommendationLiveData = MutableLiveData<GyroRecommendation>()
     val topTickerLiveData = MutableLiveData<Result<List<TickerData>>>()
-    val defaultAddressLiveData = MutableLiveData<Result<DefaultChosenAddressData>>()
+    val defaultAddressLiveData = MutableLiveData<Result<GetDefaultChosenAddressResponse>>()
 
     val topAdsDataLiveData = MutableLiveData<TopAdsRequestParams>()
 

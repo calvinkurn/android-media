@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
@@ -20,7 +21,10 @@ import com.tokopedia.feedplus.view.viewmodel.RetryModel
  * @author by nisie on 5/15/17.
  */
 
-class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadListener: OnLoadListener) : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
+class FeedPlusAdapter(
+    private val typeFactory: FeedPlusTypeFactory,
+    val loadListener: OnLoadListener
+) : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
 
     private var list: MutableList<Visitable<*>> = mutableListOf()
     private val emptyModel: EmptyModel = EmptyModel()
@@ -48,9 +52,24 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
-        if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size) {
-            (holder as DynamicPostNewViewHolder).onItemDetach()
+        if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as DynamicPostNewViewHolder).onItemAttach(holder.itemView.context)
+        }
+    }
 
+    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewDetachedFromWindow(holder)
+
+        if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as DynamicPostNewViewHolder).onItemDetach(
+                holder.itemView.context, list[holder.adapterPosition]
+            )
+        }
+
+        else if (holder is TopAdsHeadlineV2ViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as TopAdsHeadlineV2ViewHolder).onItemDetach(
+                    holder.itemView.context, list[holder.adapterPosition]
+            )
         }
     }
 
@@ -74,12 +93,15 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
 
         return data.type(typeFactory)
     }
-    override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>> , position: Int) {
+
+    override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
         holder.bind(list[position])
     }
 
-    override fun onBindViewHolder(holder:  AbstractViewHolder<Visitable<*>> , position: Int,
-                                  payloads: List<Any>) {
+    override fun onBindViewHolder(
+        holder: AbstractViewHolder<Visitable<*>>, position: Int,
+        payloads: List<Any>
+    ) {
         if (!payloads.isEmpty()) {
             holder.bind(list[position], payloads)
         } else {
@@ -92,13 +114,19 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
     }
 
     private fun add(visitable: Visitable<*>) {
-       addList(mutableListOf(visitable))
+        addList(mutableListOf(visitable))
     }
 
     fun addList(newLists: List<Visitable<*>>) {
         val newList: MutableList<Visitable<*>> = mutableListOf()
         newList.addAll(list)
         newList.addAll(newLists)
+        updateList(newList)
+    }
+    fun addListItemAtTop(visitable: Visitable<*>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        newList.add(1, visitable)
         updateList(newList)
     }
 
@@ -158,7 +186,7 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
         setEndlessScrollListener()
     }
 
-    override fun onViewRecycled(holder:  AbstractViewHolder<Visitable<*>> ) {
+    override fun onViewRecycled(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewRecycled(holder)
         holder.onViewRecycled()
     }

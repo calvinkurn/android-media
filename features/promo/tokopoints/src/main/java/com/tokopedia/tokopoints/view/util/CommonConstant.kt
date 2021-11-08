@@ -39,6 +39,7 @@ interface CommonConstant {
             const val SAVING_MONTH = "month"
             const val SAVING_TYPE = "type"
             const val PAGESIZE = "pageSize"
+            const val SOURCE = "source"
         }
     }
 
@@ -128,6 +129,16 @@ interface CommonConstant {
         }
     }
 
+    interface TimerConstant {
+        companion object {
+            const val TIMER_DESC = "%s lagi"
+            const val DAY_TEXT = "hari"
+            const val HOUR_TEXT = "jam"
+            const val MINUTE_TEXT = "menit"
+            const val SECOND_TEXT = "detik"
+        }
+    }
+
     companion object {
         const val UTF_ENCODING = "UTF-8"
         const val COUPON_MIME_TYPE = "text/html"
@@ -171,6 +182,7 @@ interface CommonConstant {
         const val ARGS_POINTS_AVAILABILITY = "points_availability"
         const val BUNDLE_ARGS_USER_IS_LOGGED_IN = "USER_IS_LOGGEDIN"
         const val APIVERSION = "2.0.0"
+        const val REWARDS_SOURCE = "rewards"
         const val IMPRESSION_LIST = "/tokopoints - p{x} - promo list"
         const val TIMER_RED_BACKGROUND_HEX = "EF144A"
         const val HASH = "#"

@@ -20,41 +20,33 @@ class PlayConnectionMonitor(context: Context) {
 
     private val _observablePlayConnectionState = MutableLiveData<PlayConnectionState>()
 
-    private var networkCallback: ConnectivityManager.NetworkCallback?= null
-
-    init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            try {
-                networkCallback = object : ConnectivityManager.NetworkCallback() {
-                    override fun onLost(network: Network?) {
-                        _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
-                    }
-                    override fun onUnavailable() {
-                        _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
-                    }
-                    override fun onLosing(network: Network?, maxMsToLive: Int) {
-                        _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
-                    }
-                    override fun onAvailable(network: Network?) {
-                        _observablePlayConnectionState.postValue(PlayConnectionState.Available)
-                    }
-                }
-                val networkRequest =
-                        NetworkRequest.Builder()
-                                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                                .build()
-                connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-            } catch (ignored: Throwable) {}
+    private val networkCallback: ConnectivityManager.NetworkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onLost(network: Network) {
+                _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
+            }
+            override fun onUnavailable() {
+                _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
+            }
+            override fun onLosing(network: Network, maxMsToLive: Int) {
+                _observablePlayConnectionState.postValue(PlayConnectionState.UnAvailable)
+            }
+            override fun onAvailable(network: Network) {
+                _observablePlayConnectionState.postValue(PlayConnectionState.Available)
+            }
         }
-    }
 
-    fun getObservablePlayConnectionState(): LiveData<PlayConnectionState> = _observablePlayConnectionState
+        init {
+            val networkRequest = NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build()
+            connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+        }
 
-    fun end() {
-        if (networkCallback != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        fun getObservablePlayConnectionState(): LiveData<PlayConnectionState> = _observablePlayConnectionState
+
+        fun end() {
             try {
                 connectivityManager.unregisterNetworkCallback(networkCallback)
             } catch (e: Exception) { }
         }
-    }
 }

@@ -93,6 +93,7 @@ import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.PA
 public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
 
     private static final String SCREEN_NAME = "/digital/deals/product";
+    private final String zeroPercent = "0%";
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView tvExpandableDesc;
     private TextView tvExpandableTC;
@@ -288,7 +289,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         } else {
             tvMrp.setVisibility(View.GONE);
         }
-        if (TextUtils.isEmpty(detailsViewModel.getSavingPercentage())) {
+        if (TextUtils.isEmpty(detailsViewModel.getSavingPercentage()) || detailsViewModel.getSavingPercentage().startsWith(zeroPercent)) {
             tvOff.setVisibility(View.GONE);
         } else {
             tvOff.setVisibility(View.VISIBLE);
@@ -744,6 +745,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void onDestroyView() {
         mPresenter.onDestroy();
         mPresenter2.onDestroy();
+        mPresenter.detachView();
+        mPresenter2.detachView();
         super.onDestroyView();
     }
 

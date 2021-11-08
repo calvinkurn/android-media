@@ -44,7 +44,7 @@ class WishlistRepository @Inject constructor(
                     params
             )
 
-            graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
+            graphqlRepository.response(listOf(gqlRecommendationRequest), cacheStrategy)
         }
         data.getError(WishlistResponse::class.java)?.let {
             if (it.isNotEmpty()) {

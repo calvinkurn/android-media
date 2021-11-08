@@ -1,19 +1,14 @@
 package com.tokopedia.home_wishlist.view.fragment
 
-import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -21,19 +16,22 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.analytics.WishlistTracking
 import com.tokopedia.home_wishlist.common.EndlessRecyclerViewScrollListener
 import com.tokopedia.home_wishlist.common.ToolbarElevationOffsetListener
-import com.tokopedia.home_wishlist.component.HasComponent
-import com.tokopedia.home_wishlist.di.WishlistComponent
+import com.tokopedia.home_wishlist.di.DaggerWishlistComponent
 import com.tokopedia.home_wishlist.model.action.*
 import com.tokopedia.home_wishlist.model.datamodel.*
 import com.tokopedia.home_wishlist.util.GravitySnapHelper
@@ -53,9 +51,19 @@ import com.tokopedia.home_wishlist.view.fragment.WishlistFragment.Companion.WIHS
 import com.tokopedia.home_wishlist.view.listener.TopAdsListener
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.home_wishlist.viewmodel.WishlistViewModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -64,6 +72,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.wishlist.common.request.WishlistAdditionalParamRequest
 import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import kotlinx.android.synthetic.main.fragment_new_home_wishlist.*
+import java.lang.IndexOutOfBoundsException
 import javax.inject.Inject
 
 
@@ -87,7 +96,8 @@ import javax.inject.Inject
  * @constructor Creates an empty recommendation.
  */
 @SuppressLint("SyntheticAccessor")
-open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
+open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsListener {
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -97,6 +107,9 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
 
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     private lateinit var trackingQueue: TrackingQueue
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
+
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     internal val viewModel by lazy { viewModelProvider.get(WishlistViewModel::class.java) }
     private val adapterFactory by lazy { WishlistTypeFactoryImpl(appExecutors) }
@@ -105,17 +118,20 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     private val swipeToRefresh by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
     private val containerDelete by lazy { view?.findViewById<FrameLayout>(R.id.container_delete) }
     private val deleteButton by lazy { view?.findViewById<UnifyButton>(R.id.delete_button) }
-    private val searchView by lazy { view?.findViewById<CustomSearchView>(R.id.wishlist_search_view) }
-    private val toolbar by lazy { view?.findViewById<Toolbar>(R.id.toolbar) }
+    private val navToolbar by lazy { view?.findViewById<NavToolbar>(R.id.navToolbar) }
     private val appBarLayout by lazy { view?.findViewById<AppBarLayout>(R.id.app_bar_layout) }
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
-    private val coachMark by lazy { CoachMarkBuilder().allowPreviousButton(false).build() }
+    private var coachMark: CoachMark2? = null
     private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) }
     private val itemDecorationBottom by lazy { SpaceBottomItemDecoration() }
     private lateinit var toolbarElevation: ToolbarElevationOffsetListener
     private val dialogUnify by lazy { DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+    private val searchView by lazy { view?.findViewById<CustomSearchView>(R.id.wishlist_search_view) }
 
     private var additionalParamRequest: WishlistAdditionalParamRequest? = null
+    private var useNewInbox = false
+    private var launchSourceWishlist: String = ""
+    private var scrollAfterSubmit = false
 
     companion object {
         private const val SPAN_COUNT = 2
@@ -130,16 +146,59 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         private const val CACHE_CART = "CART"
         private const val CACHE_KEY_IS_HAS_CART = "IS_HAS_CART"
         private const val CACHE_KEY_TOTAL_CART = "CACHE_TOTAL_CART"
-        fun newInstance() = WishlistFragment()
+        private const val DELAY_TEXT_CHANGED = 250L
+        private const val DELAY_MILIS_100 = 100L
+        private const val COACHMARK_SAFE_DELAY = 100L
+        const val PARAM_LAUNCH_WISHLIST = "launch_source_wishlist"
+        const val PARAM_HOME = "home"
+        @JvmStatic
+        fun newInstance(bundle: Bundle = Bundle()): WishlistFragment {
+            return WishlistFragment().apply {
+                arguments = bundle
+            }
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initInboxAbTest()
         return inflater.inflate(R.layout.fragment_new_home_wishlist, container, false)
+    }
+
+    private fun initInboxAbTest() {
+        useNewInbox = getAbTestPlatform().getString(
+            RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
+        if (!::firebaseRemoteConfig.isInitialized) {
+            context?.let {
+                firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+                return firebaseRemoteConfig
+            }
+            return null
+        } else {
+            return firebaseRemoteConfig
+        }
+    }
+
+    private fun isAutoRefreshEnabled(): Boolean {
+        return try {
+            return getFirebaseRemoteConfig()?.getBoolean(RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH)?:false
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initInjector()
         activity?.let {
             trackingQueue = TrackingQueue(it)
         }
@@ -154,11 +213,11 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP) {
             data?.let {
-                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
+                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 viewModel.onPDPActivityResultForWishlist(
-                        id.toInt(),
+                        id.toLongOrZero(),
                         wishlistStatusFromPdp
                 )
             }
@@ -167,6 +226,8 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        launchSourceWishlist = arguments?.getString(PARAM_LAUNCH_WISHLIST, "") ?: ""
+
         initView()
         initCartLocalCacheHandler()
         hideSearchView()
@@ -176,10 +237,31 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         showOnBoarding()
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        launchAutoRefresh(isVisibleToUser)
+    }
+
+    private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
+        if (isVisibleToUser && isAutoRefreshEnabled()) {
+            viewModel.getWishlistData(
+                navToolbar?.getCurrentSearchbarText() ?: "",
+                generateWishlistAdditionalParamRequest()
+            )
+            scrollAfterSubmit = true
+        } else if (coachmarkIsAvailable()) {
+            coachMark?.dismissCoachMark()
+        }
+    }
+
     private fun initCartLocalCacheHandler() {
         activity?.let {
             cartLocalCacheHandler = LocalCacheHandler(it, CACHE_CART)
         }
+    }
+
+    private fun coachmarkIsAvailable(): Boolean {
+        return coachMark != null
     }
 
     override fun onPause() {
@@ -187,13 +269,16 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         if (this::trackingQueue.isInitialized) trackingQueue.sendAll()
     }
 
-
-    private fun initInjector() {
-        getComponent(WishlistComponent::class.java)?.inject(this)
+    override fun getScreenName(): String {
+        return this::class.java.simpleName
     }
 
-    private fun <C> getComponent(componentType: Class<C>): C? {
-        return componentType.cast((activity as HasComponent<C>?)?.getComponent())
+    override fun initInjector() {
+        DaggerWishlistComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -210,7 +295,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     private fun showCartBadge(menu: Menu?) {
         context?.let {
             if (::cartLocalCacheHandler.isInitialized) {
-                val drawable = ContextCompat.getDrawable(it, R.drawable.ic_cart_menu)
+                val drawable = ContextCompat.getDrawable(it, R.drawable.ic_wishlist_cart_menu)
                 if (drawable is LayerDrawable) {
                     val cartCount = cartLocalCacheHandler.getInt(CACHE_KEY_TOTAL_CART, 0)
                     val countDrawable = CountDrawable(it)
@@ -244,22 +329,52 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     }
 
     private fun initView() {
-        initToolbar()
         initSwipeRefresh()
         initSearchView()
         initDeleteBulkButton()
         initRecyclerView()
-    }
 
-    private fun initToolbar() {
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        //add divider if necessary
+//        appBarLayout?.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            appBarLayout?.stateListAnimator = AnimatorInflater.loadStateListAnimator(context, R.animator.appbar_elevation)
+        activity?.let {
+            navToolbar?.setupToolbarWithStatusBar(it)
+            appBarLayout?.setMargin(0, NavToolbarExt.getFullToolbarHeight(it), 0 , 0)
         }
-        toolbar?.let {
-            toolbarElevation = ToolbarElevationOffsetListener(activity as AppCompatActivity, it)
+        navToolbar?.let {
+            viewLifecycleOwner.lifecycle.addObserver(it)
+            it.setupSearchbar(
+                searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE,
+                hints = listOf(HintData(getString(R.string.hint_wishlist))),
+                editorActionCallback = { query ->
+                    when {
+                        query.isBlank() -> {
+                            viewModel.getWishlistData(query ?: "", generateWishlistAdditionalParamRequest())
+                        }
+                        else -> {
+                            viewModel.getWishlistData(query ?: "", generateWishlistAdditionalParamRequest())
+                        }
+                    }
+                    view?.let { context?.let { it1 -> navToolbar?.hideKeyboard() } }
+                }
+            )
+            var pageSource = ""
+            if(launchSourceWishlist != PARAM_HOME)
+            {
+                it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+            } else {
+                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
+            }
+            val icons = IconBuilder(
+                IconBuilderFlag(pageSource = pageSource)
+            )
+            icons.apply {
+                addIcon(IconList.ID_MESSAGE) {}
+                addIcon(IconList.ID_NOTIFICATION) {}
+                addIcon(IconList.ID_CART) {}
+                addIcon(IconList.ID_NAV_GLOBAL) {}
+            }
+            it.setIcon(icons)
         }
     }
 
@@ -267,22 +382,12 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
         swipeToRefresh?.setOnRefreshListener {
             updateBottomMargin()
             endlessRecyclerViewScrollListener?.resetState()
-            viewModel.getWishlistData(searchView?.getSearchText() ?: "", generateWishlistAdditionalParamRequest())
+            viewModel.getWishlistData(navToolbar?.getCurrentSearchbarText() ?: "", generateWishlistAdditionalParamRequest())
         }
     }
 
     private fun initSearchView() {
-        searchView?.setDelayTextChanged(250)
         searchView?.setListener(object : CustomSearchView.Listener {
-            override fun onSearchSubmitted(text: String?) {
-                searchView?.hideKeyboard()
-            }
-
-            override fun onSearchTextChanged(text: String?) {
-                updateScrollFlagForSearchView(text?.isNotEmpty() ?: false)
-                viewModel.getWishlistData(text ?: "", generateWishlistAdditionalParamRequest())
-            }
-
             override fun onManageDeleteWishlistClicked() {
                 manageDeleteWishlist()
             }
@@ -314,13 +419,26 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     }
 
     private fun initRecyclerView() {
-        recyclerView?.layoutManager = staggeredGridLayoutManager
+        recyclerView?.layoutManager = object: StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
+            override fun supportsPredictiveItemAnimations() = false
+
+            override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+                try {
+                    super.onLayoutChildren(recycler, state)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
         recyclerView?.adapter = adapter
         GravitySnapHelper(Gravity.TOP, true).attachToRecyclerView(recyclerView)
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                searchView?.hideKeyboard()
+                navToolbar?.hideKeyboard()
+                if (coachmarkIsAvailable()) {
+                    coachMark?.dismissCoachMark()
+                }
             }
         })
     }
@@ -368,6 +486,9 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
                 renderList(response)
             swipeToRefresh?.isRefreshing = false
         })
+        viewModel.wishlistCountLiveData.observe(viewLifecycleOwner, {
+            searchView?.setWishlistCount(it)
+        })
         viewModel.loadMoreWishlistAction.observe(viewLifecycleOwner, Observer { loadMoreWishlistActionData ->
             updateScrollListenerState(
                     loadMoreWishlistActionData.getContentIfNotHandled()?.hasNextPage ?: false)
@@ -388,7 +509,7 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
                 swipeToRefresh?.isEnabled = false
             } else {
                 containerDelete?.hide()
-
+                searchView?.resetLabelState()
                 showSearchView()
                 val layoutParams = app_bar_layout.layoutParams as CoordinatorLayout.LayoutParams
                 (layoutParams.behavior as CustomAppBarLayoutBehavior).setScrollBehavior(true)
@@ -421,6 +542,12 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
     private fun renderList(list: List<WishlistDataModel>) {
         val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
         adapter.submitList(list)
+        if (scrollAfterSubmit) {
+            recyclerView?.addOneTimeGlobalLayoutListener {
+                recyclerView?.scrollToPosition(0)
+            }
+            scrollAfterSubmit = false
+        }
         recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
     }
 
@@ -654,22 +781,23 @@ open class WishlistFragment : Fragment(), WishlistListener, TopAdsListener {
 
     private fun showOnBoarding() {
         context?.let { context ->
-            if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
+            if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG)) {
                 Handler().postDelayed({
                     val manageMenu = view?.rootView?.findViewById<View>(R.id.text_manage)
-
+                    this.coachMark = CoachMark2(context)
                     manageMenu?.post {
-                        val coachMarkItems: ArrayList<CoachMarkItem> = ArrayList()
+                        val coachMarkItems: ArrayList<CoachMark2Item> = ArrayList()
                         coachMarkItems.add(
-                                CoachMarkItem(
+                                CoachMark2Item(
                                         manageMenu,
                                         context.getString(R.string.wishlist_coach_mark_title),
                                         context.getString(R.string.wishlist_coach_mark_description)
                                 )
                         )
-                        coachMark.show(activity, "wishlist", coachMarkItems)
+                        coachMark?.showCoachMark(step = coachMarkItems)
+                        CoachMarkPreference.setShown(context, COACH_MARK_TAG, true)
                     }
-                }, 100)
+                }, COACHMARK_SAFE_DELAY)
         }
         }
     }

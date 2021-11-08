@@ -23,6 +23,7 @@ import java.text.NumberFormat
 object ShopPageProductListMapper {
 
     private const val POSTFIX_VIEW_COUNT="%1s orang"
+    private const val PRODUCT_RATING_DIVIDER = 20
 
     fun mapToShopProductEtalaseListDataModel(
             listShopEtalaseModel: List<ShopEtalaseModel>
@@ -55,7 +56,7 @@ object ShopPageProductListMapper {
                     it.imageUrl = primaryImage.original
                     it.imageUrl300 = primaryImage.resize300
                     it.totalReview = stats.reviewCount.toString()
-                    it.rating = stats.rating.toDouble() / 20
+                    it.rating = stats.rating.toDouble() / PRODUCT_RATING_DIVIDER
                     if (cashback.cashbackPercent > 0) {
                         it.cashback = cashback.cashbackPercent.toDouble()
                     }
@@ -197,7 +198,6 @@ object ShopPageProductListMapper {
 
     fun mapRestrictionEngineResponseToModel(restrictionEngineResponse: RestrictionEngineDataResponse?): RestrictionEngineModel {
         return RestrictionEngineModel().apply {
-            productId = restrictionEngineResponse?.productId.toIntOrZero()
             status = restrictionEngineResponse?.status ?: ""
             val list : MutableList<Actions> = mutableListOf()
             restrictionEngineResponse?.actions?.map {

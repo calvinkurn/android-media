@@ -4,6 +4,7 @@ import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -19,6 +20,7 @@ class PlayChannelInteractiveMapper @Inject constructor() {
                     status = input.status,
                     countdownStartInSec = input.countdownStart,
                     countdownEndInSec = input.countdownEnd,
-            )
+            ),
+            endGameDelayInMs = TimeUnit.SECONDS.toMillis(input.waitingDuration.toLong())
     )
 }

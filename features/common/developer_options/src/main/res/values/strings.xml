@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Developer Options</string>
     <string name="remote_config_title">Remote Config Editor</string>
+    <string name="shared_pref_title">Shared Pref Editor</string>
     <string name="ab_test_rollence_title">Ab Test Rollence Editor</string>
+    <string name="pdp_dev_option_title">Product Dev Option</string>
 
     <string name="screen_name">Developer page</string>
 
@@ -15,11 +17,17 @@
     <string name="remote_config_edit_btn_save">Save</string>
     <string name="remote_config_delete_btn_key">Delete Key</string>
 
+    <string name="pdp_layout_id">Change Layout ID PDP</string>
+    <string name="pdp_route">Route to PDP</string>
+    <string name="pdp_layout_id_edittext_placeholder">Layout ID PDP</string>
+    <string name="pdp_product_id_edittext_placeholder">Product Id</string>
+
     <string name="ab_test_rollence_start_button">List AB Test Rollence Keys</string>
     <string name="ab_test_rollence_edit_text_search_hint">Search key</string>
     <string name="ab_test_rollence_revision_version_prefix">Revision version: %d</string>
 
     <string name="access_token">Access Token</string>
+    <string name="pdp_dev">Product Detail Dev</string>
     <string name="app_auth_secret">App Auth Secret (IT Risk)</string>
     <string name="reset_onboarding">Reset OnBoarding</string>
     <string name="test_onboarding">Test OnBoarding</string>
@@ -46,6 +54,7 @@
     <string name="enable_leak_canary">Enable Leak Canary</string>
     <string name="str_to_be_put">String to be put in RouteManager.route(…)</string>
     <string name="try_routemanager">Try RouteManager.route</string>
+    <string name="shared_pref_editor">SharedPreferences Editor</string>
     <string name="logging_to_server">Logging To Server</string>
     <string name="required_server_logging">Pno##TAG##message (message: abc=123##edf=4) (required Server Logging ON)</string>
     <string name="send_log_to_server">Send Log to Server</string>
@@ -63,7 +72,7 @@
     <string name="input_rollence_variant">input rollence variant</string>
     <string name="apply">APPLY</string>
     <string name="home_nav_revamp_switcher">Home and Navigation Revamp Switcher :</string>
-    <string name="always_old_nav">Old Navigation</string>
+    <string name="always_os_experiment">Always OS Experiment</string>
     <string name="always_new_nav">New Navigation</string>
     <string name="always_old_home">Old Home</string>
     <string name="always_new_home">New Home</string>
@@ -73,5 +82,6 @@
     <string name="always_new_inbox">New Inbox</string>
     <string name="always_old_notif">Old Notifcenter</string>
     <string name="always_new_notif">New Notifcenter</string>
+    <string name="search_remote_config_here">search remote config here</string>
 
 </resources>

@@ -2,6 +2,8 @@ package com.tokopedia.logout.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.NotificationManager
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -29,14 +31,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.core.gcm.FCMCacheManager
 import com.tokopedia.core.gcm.NotificationModHandler
-import com.tokopedia.core.util.AppWidgetUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logout.R
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
-import com.tokopedia.logout.di.module.LogoutModule
 import com.tokopedia.logout.viewmodel.LogoutViewModel
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -80,7 +79,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     override fun getComponent(): LogoutComponent {
         return DaggerLogoutComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .logoutModule(LogoutModule(this))
                 .build()
     }
 
@@ -180,14 +178,16 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         logoutGoogleAccountIfExist()
         TrackApp.getInstance().moEngage.logoutEvent()
         PersistentCacheManager.instance.delete()
-        AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
+        sendBroadcastToAppWidget()
+
+        // need to implement delete use case
         NotificationModHandler.clearCacheAllNotification(applicationContext)
-        NotificationModHandler(applicationContext).dismissAllActivedNotifications()
+
+        dismissAllActivedNotifications()
         clearWebView()
         clearLocalChooseAddress()
-        clearOccData()
 
-        instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)
+        instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
         tetraDebugger?.setUserId("")
         userSession.clearToken()
@@ -210,6 +210,21 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         } else {
             setResult(Activity.RESULT_OK)
             finish()
+        }
+    }
+
+
+    fun dismissAllActivedNotifications() {
+        val notificationManager =
+            applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
+    }
+
+    private fun sendBroadcastToAppWidget() {
+        if (GlobalConfig.isSellerApp()) {
+            val i = Intent()
+            i.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            applicationContext.sendBroadcast(i)
         }
     }
 
@@ -264,18 +279,12 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         } catch (ignored: Exception) {}
     }
 
-    private fun clearOccData() {
-        val occDataPref = applicationContext.getSharedPreferences(OCC_DATA_PREF, Context.MODE_PRIVATE)
-        occDataPref.edit().clear().apply()
-    }
-
     companion object {
         private const val STICKY_LOGIN_PREF = "sticky_login_widget.pref"
         private const val STICKY_LOGIN_REMINDER_PREF = "sticky_login_reminder.pref"
         private const val KEY_USER_NAME = "user_name"
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
-        private const val OCC_DATA_PREF = "occ_remove_profile_ticker"
         private const val INVALID_TOKEN = "Token tidak valid."
     }
 }

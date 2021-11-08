@@ -52,7 +52,6 @@ class ShopSearchProductViewModelTest {
         verify {
             GetSearchShopProductUseCase.createRequestParam(anyInt(),anyString())
         }
-        assertTrue(getSearchShopProductUseCase.requestParams.isNotEmpty())
         coVerify {
             getSearchShopProductUseCase.executeOnBackground()
         }
@@ -69,7 +68,6 @@ class ShopSearchProductViewModelTest {
         verify {
             GetSearchShopProductUseCase.createRequestParam(anyInt(),anyString())
         }
-        assertTrue(getSearchShopProductUseCase.requestParams.isNotEmpty())
         coVerify {
             getSearchShopProductUseCase.executeOnBackground()
         }

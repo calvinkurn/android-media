@@ -12,14 +12,6 @@ public class ActionButton implements Serializable {
     @Expose
     private Body Body;
 
-    @SerializedName("value")
-    @Expose
-    private String Value;
-
-    @SerializedName("weight")
-    @Expose
-    private int weight;
-
     @SerializedName("label")
     @Expose
     private String label;
@@ -44,21 +36,9 @@ public class ActionButton implements Serializable {
     @Expose
     private String Header;
 
-    @SerializedName("method")
-    @Expose
-    private String method;
-
-    @SerializedName("key")
-    @Expose
-    private String key;
-
     @SerializedName("color")
     @Expose
     private ActionColor actionColor;
-
-    @SerializedName("popup")
-    @Expose
-    private ActionButtonPopUp actionButtonPopUp = new ActionButtonPopUp();
 
     public Body getBody() {
         return Body;
@@ -66,22 +46,6 @@ public class ActionButton implements Serializable {
 
     public void setBody(Body Body) {
         this.Body = Body;
-    }
-
-    public String getValue() {
-        return Value;
-    }
-
-    public void setValue(String Value) {
-        this.Value = Value;
-    }
-
-    public int getWeight() {
-        return weight;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
     }
 
     public Header getHeaderObject() {
@@ -125,53 +89,17 @@ public class ActionButton implements Serializable {
         return buttonType;
     }
 
-    public void setButtonType(String buttonType) {
-        this.buttonType = buttonType;
-    }
-
     public String getHeader() {
         return Header;
-    }
-
-    public void setHeader(String Header) {
-        this.Header = Header;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public ActionColor getActionColor() {
         return actionColor;
     }
 
-    public void setActionColor(ActionColor actionColor) {
-        this.actionColor = actionColor;
-    }
-
-    public ActionButtonPopUp getActionButtonPopUp() {
-        return actionButtonPopUp;
-    }
-
-    public void setActionButtonPopUp(ActionButtonPopUp actionButtonPopUp) {
-        this.actionButtonPopUp = actionButtonPopUp;
-    }
-
     @Override
     public String toString() {
-        return "ActionButton [Body = " + Body + ", Value = " + Value + ", weight = " + weight + ", label = " + label + ", uri = " + uri + ", Control = " + Control + ", Name = " + Name + ", buttonType = " + buttonType + ", Header = " + Header + ", method = " + method + ", key = " + key + "]";
+        return "ActionButton [Body = " + Body + ", label = " + label + ", uri = " + uri + ", Control = " + Control + ", Name = " + Name + ", buttonType = " + buttonType + ", Header = " + Header + "]";
     }
 
     public static final String PRIMARY_BUTTON = "primaryButton";

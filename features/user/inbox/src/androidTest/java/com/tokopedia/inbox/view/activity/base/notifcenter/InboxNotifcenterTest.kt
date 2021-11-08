@@ -6,19 +6,23 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.viewaction.smoothScrollTo
 import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
-import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
+
 
 abstract class InboxNotifcenterTest : InboxTest() {
 
@@ -63,9 +67,22 @@ abstract class InboxNotifcenterTest : InboxTest() {
  * All user action goes here
  */
 object NotifcenterAction {
+
     fun scrollNotificationToPosition(position: Int) {
         onView(withId(R.id.recycler_view)).perform(
-            scrollToPosition<RecyclerView.ViewHolder>(position)
+            actionOnItemAtPosition<RecyclerView.ViewHolder>(position, scrollTo())
+        )
+    }
+
+    fun smoothScrollNotificationTo(position: Int) {
+        onView(withId(R.id.recycler_view)).perform(
+            smoothScrollTo(position)
+        )
+    }
+
+    fun smoothScrollOrderWidgetTo(position: Int) {
+        onView(withId(R.id.rv_order_list)).perform(
+            smoothScrollTo(position)
         )
     }
 
@@ -150,22 +167,22 @@ object NotifcenterAssertion {
         ).check(matches(withText(msgRes)))
     }
 
-    fun assertNotifOrderFirstCardText(msg: String) {
+    fun assertNotifOrderCardTextAtPosition(
+        position: Int, msg: String
+    ) {
         onView(
-            allOf(
-                withId(R.id.tp_order_title),
-                isDescendantOfA(withId(R.id.ll_first_card))
-            )
+            withRecyclerView(R.id.rv_order_list)
+                .atPositionOnView(position, R.id.tp_order_title)
         ).check(matches(withText(msg)))
     }
 
-    fun assertNotifOrderSecondCardText(msg: String) {
+    fun assertOrderWidgetCardAt(
+        position: Int, matcher: Matcher<in View>
+    ) {
         onView(
-            allOf(
-                withId(R.id.tp_order_title),
-                isDescendantOfA(withId(R.id.ll_second_card))
-            )
-        ).check(matches(withText(msg)))
+            withRecyclerView(R.id.rv_order_list)
+                .atPositionOnView(position, R.id.ll_card_uoh)
+        ).check(matches(matcher))
     }
 
     fun assertRecyclerviewItem(matcher: Matcher<in View>) {

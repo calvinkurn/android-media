@@ -207,7 +207,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         //When
         val count = activityTestRule.activity
-                .findViewById<RecyclerView>(R.id.recycler_view)
+                .findViewById<RecyclerView>(R.id.recycler_view_chatroom)
                 .adapter?.itemCount ?: 0
 
         onView(withId(R.id.new_comment)).perform(typeText("Test"))
@@ -215,11 +215,11 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         //Then
         onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                         0, R.id.tvMessage
                 ))
                 .check(matches(withText("Test")))
-        onView(withId(R.id.recycler_view)).check(matches(withTotalItem(count + 1)))
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(withTotalItem(count + 1)))
         onView(withId(R.id.new_comment)).check(matches(withText("")))
     }
 
@@ -251,5 +251,4 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         //Then
         assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
     }
-
 }

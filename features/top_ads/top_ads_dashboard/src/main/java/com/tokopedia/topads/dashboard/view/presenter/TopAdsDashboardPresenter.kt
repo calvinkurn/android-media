@@ -18,10 +18,7 @@ import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.model.DashGroupListResponse
-import com.tokopedia.topads.common.data.model.DataSuggestions
-import com.tokopedia.topads.common.data.model.GroupListDataItem
-import com.tokopedia.topads.common.data.model.ResponseCreateGroup
+import com.tokopedia.topads.common.data.model.*
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
@@ -83,6 +80,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse>,
             private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse>,
             private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse>,
+            private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>() {
 
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
@@ -257,8 +255,8 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
 
 
     fun getGroupProductData(page: Int, groupId: Int?, search: String,
-                            sort: String, status: Int?, startDate: String, endDate: String, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
-        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
+                            sort: String, status: Int?, startDate: String, endDate: String, goalId: Int, onSuccess: (NonGroupResponse.TopadsDashboardGroupProducts) -> Unit, onEmpty: () -> Unit) {
+        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate, goalId = goalId)
         topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {}
 
@@ -469,10 +467,10 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
-    fun getGroupInfo(resources: Resources, groupId: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
+    fun getGroupInfo(resources: Resources, groupId: String, source: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit) {
         groupInfoUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
                 com.tokopedia.topads.common.R.raw.query_get_group_info))
-        groupInfoUseCase.setParams(groupId)
+        groupInfoUseCase.setParams(groupId, source)
         groupInfoUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.topAdsGetPromoGroup?.data!!)
@@ -480,6 +478,19 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                 { throwable ->
                     throwable.printStackTrace()
                 })
+    }
+
+    fun getWhiteListedUser(onSuccess: (WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit) {
+        whiteListedUserUseCase.setParams()
+        whiteListedUserUseCase.executeQuerySafeMode(
+            {
+                onSuccess(it)
+            },
+            {
+                throwable ->
+                    throwable.printStackTrace()
+            }
+        )
     }
 
     override fun detachView() {
@@ -501,5 +512,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         bidInfoUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
         groupInfoUseCase.cancelJobs()
+        whiteListedUserUseCase.cancelJobs()
     }
 }

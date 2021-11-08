@@ -8,10 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
@@ -194,7 +191,17 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
+        // handle issue: The specified child already has a parent. You must call removeView() on the child's parent first.
+        if (view != null) {
+            val parent = view?.parent as ViewGroup
+            parent.removeView(view)
+        }
+
+        return try {
+            inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
+        } catch (e: InflateException) {
+            null
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -473,7 +480,7 @@ class AddEditProductDescriptionFragment:
 
     private fun observeIsHampersProduct() {
         descriptionViewModel.isHampersProduct.observe(viewLifecycleOwner) { isHampers ->
-            if (isHampers && RollenceUtil.getHampersRollence() && GlobalConfig.isSellerApp()) {
+            if (isHampers && GlobalConfig.isSellerApp()) {
                 layoutDescriptionTips.tvTipsText?.text = getString(R.string.label_gifting_description_tips)
                 layoutDescriptionTips.setOnClickListener {
                     showGiftingDescription()

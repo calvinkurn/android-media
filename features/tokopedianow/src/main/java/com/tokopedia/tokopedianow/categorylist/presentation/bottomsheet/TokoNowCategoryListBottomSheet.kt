@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.accordion.AccordionDataUnify
@@ -32,10 +33,12 @@ import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCat
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_PAGE_FULL
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_PAGE_NOT_FOUND
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_SERVER
+import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowCategoryListBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -60,6 +63,8 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var analytics: CategoryListAnalytics
 
+    private var binding by autoClearedNullable<BottomsheetTokopedianowCategoryListBinding>()
+
     private var accordionCategoryList: AccordionUnify? = null
     private var loader: View? = null
     private var menuTitle: String = ""
@@ -67,7 +72,7 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
     private var contentContainer: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initView(inflater, container)
+        initView()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -99,17 +104,17 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
             .inject(this)
     }
 
-    private fun initView(inflater: LayoutInflater, container: ViewGroup?) {
-        val itemView = inflater.inflate(R.layout.bottomsheet_tokopedianow_category_list, container)
-        menuTitle = itemView.context.getString(R.string.tokopedianow_category_list_bottom_sheet_title)
-        accordionCategoryList = itemView.findViewById(R.id.accordion_category_list)
-        loader = itemView.findViewById(R.id.loader)
-        globalError = itemView.findViewById(R.id.layout_global_error_category_list)
-        contentContainer = itemView.findViewById(R.id.content_container)
+    private fun initView() {
+        binding = BottomsheetTokopedianowCategoryListBinding.inflate(LayoutInflater.from(context))
+        menuTitle = getString(R.string.tokopedianow_category_list_bottom_sheet_title)
+        accordionCategoryList = binding?.accordionCategoryList
+        loader = binding?.loaderPartial?.loaderLayout
+        globalError = binding?.layoutGlobalErrorCategoryList
+        contentContainer = binding?.contentContainer
         clearContentPadding = true
         isFullpage = true
         setTitle(menuTitle)
-        setChild(itemView)
+        setChild(binding?.root)
     }
 
     private fun observeLiveData() {
@@ -140,6 +145,9 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
                 iconUrl = category.imageUrl,
                 expandableView = createCategoryList(category)
             )
+            context?.let {
+                accordionDataUnify.expandableView.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            }
             addCategoryGroup(accordionDataUnify, categoryList)
         }
         hideLoader()
@@ -158,6 +166,9 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
             } else {
                 analytics.onCollapseLevelOneCategory(categoryList[position].id)
             }
+        }
+        context?.let {
+            accordionCategoryList?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
     }
 

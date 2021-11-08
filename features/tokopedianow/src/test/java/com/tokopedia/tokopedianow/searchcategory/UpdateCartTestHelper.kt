@@ -6,6 +6,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokopedianow.searchcategory.utils.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartItems
@@ -88,7 +89,9 @@ class UpdateCartTestHelper(
             miniCartItems: List<MiniCartItem>,
             productItems: List<ProductItemDataView>,
     ) {
-        val miniCartItemsNonVariant = miniCartItems.filter { it.productParentId == "0" }
+        val miniCartItemsNonVariant = miniCartItems.filter {
+            it.productParentId == NO_VARIANT_PARENT_PRODUCT_ID
+        }
 
         miniCartItemsNonVariant.forEach { miniCartItem ->
             val productItemIndexed = productItems.withIndex().find {
@@ -107,7 +110,9 @@ class UpdateCartTestHelper(
             miniCartItems: List<MiniCartItem>,
             productItems: List<ProductItemDataView>,
     ) {
-        val miniCartItemsVariant = miniCartItems.filter { it.productParentId != "0" }
+        val miniCartItemsVariant = miniCartItems.filter {
+            it.productParentId != NO_VARIANT_PARENT_PRODUCT_ID
+        }
         val miniCartItemsVariantGroup = miniCartItemsVariant.groupBy { it.productParentId }
 
         miniCartItemsVariantGroup.forEach { miniCartItemGroup ->
@@ -203,16 +208,15 @@ class UpdateCartTestHelper(
     fun `onViewUpdateCartItems should update quantity in product list`() {
         val miniCartSimplifiedData = SearchCategoryDummyUtils.miniCartSimplifiedData
         callback.`Given first page API will be successful`()
-        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
         `Given view already created`()
 
-        `When view update cart items`()
+        `When view update cart items`(miniCartSimplifiedData)
 
         `Then assert product quantity is updated`()
         `Then assert mini cart widget visibility`(miniCartSimplifiedData.isShowMiniCartWidget)
     }
 
-    private fun `When view update cart items`() {
+    private fun `When view update cart items`(miniCartSimplifiedData: MiniCartSimplifiedData) {
         baseViewModel.onViewUpdateCartItems(miniCartSimplifiedData)
     }
 

@@ -17,10 +17,12 @@ import com.tokopedia.abstraction.common.utils.view.EventsWatcher
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.widget.AttachmentMenuRecyclerView
@@ -167,19 +169,24 @@ abstract class BaseChatViewStateImpl(
     }
 
     override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String, startTime: String) {
-        getAdapter().addElement(
-                MessageViewModel(
-                        messageId,
-                        userId,
-                        name,
-                        startTime,
-                        sendMessage
-                )
-        )
+        val localId = IdentifierUtil.generateLocalId()
+        val message = MessageUiModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(userId)
+            .withFrom(name)
+            .withReplyTime(BaseChatUiModel.SENDING_TEXT)
+            .withStartTime(startTime)
+            .withMsg(sendMessage)
+            .withLocalId(localId)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .build()
+        getAdapter().addElement(message)
     }
 
     override fun removeDummyIfExist(successVisitable: Visitable<*>) {
-        if (successVisitable is SendableViewModel) {
+        if (successVisitable is SendableUiModel) {
             getAdapter().removeDummy(successVisitable)
         }
     }

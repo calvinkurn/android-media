@@ -3,13 +3,8 @@ package com.tokopedia.topupbills.telco.prepaid.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -100,6 +95,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _selectedFilter.postValue(filter)
     }
 
+    fun clearCatalogProductList() {
+        _productList.value = Success(emptyList())
+    }
+
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
                               filterData: ArrayList<HashMap<String, Any>>?, autoSelectProductId: Int = 0, clientNumber: String) {
         launchCatchError(block = {
@@ -114,7 +113,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogProductInputMultiTab>()
 
             _loadingProductList.postValue(false)

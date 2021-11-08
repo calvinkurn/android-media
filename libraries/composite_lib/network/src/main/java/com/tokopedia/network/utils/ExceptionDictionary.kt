@@ -3,6 +3,7 @@ package com.tokopedia.network.utils
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import java.io.FileNotFoundException
 import java.io.IOException
+import javax.net.ssl.SSLHandshakeException
 
 class ExceptionDictionary {
     companion object {
@@ -32,6 +33,7 @@ class ExceptionDictionary {
                 is NumberFormatException -> { "NU" }
                 is RuntimeException -> { "RU" }
                 is SecurityException -> { "SE" }
+                is SSLHandshakeException -> { "SL" }
                 is StringIndexOutOfBoundsException -> { "SI" }
                 is UnsupportedOperationException -> { "UO" }
                 else -> "OO"

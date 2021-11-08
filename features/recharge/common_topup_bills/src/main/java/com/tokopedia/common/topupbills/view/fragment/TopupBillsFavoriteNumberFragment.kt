@@ -23,7 +23,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -42,16 +41,12 @@ import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
-import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet.FavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet.FavoriteNumberModifyListener
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberErrorDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
+import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
+import com.tokopedia.common.topupbills.view.model.*
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberErrorViewHolder.FavoriteNumberErrorStateListener
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder.OnFavoriteNumberClickListener
@@ -66,12 +61,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -245,7 +241,7 @@ class TopupBillsFavoriteNumberFragment :
             CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers))
         val throwable = MessageErrorException(getString(R.string.common_topup_fav_number_failed_undo_delete))
         showErrorToaster(throwable, Toaster.LENGTH_SHORT,
-            getString(R.string.common_topup_fav_number_refresh)) { getSeamlessFavoriteNumber() }
+            getString(R.string.common_topup_fav_number_retry)) { getSeamlessFavoriteNumber() }
     }
 
     private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
@@ -293,6 +289,7 @@ class TopupBillsFavoriteNumberFragment :
                     getString(R.string.common_topup_fav_number_retry)) { undoDelete() } }
             else -> {
                 numberListAdapter.setErrorState(listOf(TopupBillsFavNumberErrorDataView()))
+                binding?.commonTopupbillsFavoriteNumberClue?.hide()
             }
         }
     }
@@ -352,9 +349,9 @@ class TopupBillsFavoriteNumberFragment :
     private fun setClientNumberInputType() {
         binding?.commonTopupbillsSearchNumberInputView
                 ?.searchBarTextField?.inputType = when (clientNumberType.toLowerCase()) {
-            ClientNumberType.TYPE_INPUT_TEL -> InputType.TYPE_CLASS_PHONE
-            ClientNumberType.TYPE_INPUT_NUMERIC -> InputType.TYPE_CLASS_NUMBER
-            ClientNumberType.TYPE_INPUT_ALPHANUMERIC -> InputType.TYPE_CLASS_TEXT
+            ClientNumberType.TYPE_INPUT_TEL.value -> InputType.TYPE_CLASS_PHONE
+            ClientNumberType.TYPE_INPUT_NUMERIC.value -> InputType.TYPE_CLASS_NUMBER
+            ClientNumberType.TYPE_INPUT_ALPHANUMERIC.value -> InputType.TYPE_CLASS_TEXT
             else -> InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
         }
     }

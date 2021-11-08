@@ -13,10 +13,12 @@ import javax.inject.Inject
 
 class KeroRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository) {
 
-    suspend fun getAutoComplete(keyword: String): AutoCompleteResponse {
-        val param = mapOf("param" to keyword)
-        val request = GraphqlRequest(KeroLogisticQuery.autoComplete,
-                AutoCompleteResponse::class.java, param)
+    suspend fun getAutoComplete(keyword: String, latlng: String): AutoCompleteResponse {
+        val param = mapOf("param" to keyword, "latlng" to latlng)
+        val request = GraphqlRequest(
+            KeroLogisticQuery.autoComplete,
+            AutoCompleteResponse::class.java, param
+        )
         return gql.getResponse(request)
     }
 
@@ -34,7 +36,7 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
-    suspend fun getDistrictBoundaries(districtId: Int): GetDistrictBoundaryResponse {
+    suspend fun getDistrictBoundaries(districtId: Long): GetDistrictBoundaryResponse {
         val param = mapOf("districtId" to districtId)
         val request = GraphqlRequest(KeroLogisticQuery.kero_district_boundary,
                 GetDistrictBoundaryResponse::class.java, param)

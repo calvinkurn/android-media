@@ -7,4 +7,6 @@ internal interface PriceFilterViewListener {
     fun onMaxPriceEditedFromTextInput(priceFilterViewModel: PriceFilterViewModel, maxValue: Int)
 
     fun onPriceRangeClicked(priceFilterViewModel: PriceFilterViewModel, priceRangeOption: PriceOptionViewModel)
+
+    fun onPriceTextOutOfFocus()
 }

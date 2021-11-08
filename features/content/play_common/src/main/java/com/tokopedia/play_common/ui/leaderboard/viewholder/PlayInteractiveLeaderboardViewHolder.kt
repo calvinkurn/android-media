@@ -9,6 +9,7 @@ import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveWinnerAdapter
+import com.tokopedia.play_common.ui.leaderboard.itemdecoration.PlayLeaderboardWinnerItemDecoration
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -30,6 +31,9 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
 
     init {
         rvWinner.adapter = winnerAdapter
+        rvWinner.addItemDecoration(
+                PlayLeaderboardWinnerItemDecoration(itemView.context)
+        )
     }
 
     fun bind(leaderboard: PlayLeaderboardUiModel) {
@@ -42,6 +46,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
         tvOtherParticipant.text = leaderboard.otherParticipantText
 
         winnerAdapter.setItems(leaderboard.winners)
+        winnerAdapter.notifyDataSetChanged()
 
         if (leaderboard.otherParticipant > 0) tvOtherParticipant.show() else tvOtherParticipant.hide()
         rvWinner.show()

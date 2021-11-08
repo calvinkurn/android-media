@@ -43,7 +43,7 @@ class RechargeBUWidgetCallback (val context: Context?,
         }
 
         context?.let {
-            RouteManager.route(it, data.data.bannerApplink)
+            RouteManager.route(it, data.data.applink)
         }
     }
 
@@ -62,6 +62,14 @@ class RechargeBUWidgetCallback (val context: Context?,
 
     override fun getRechargeBUWidget(source: WidgetSource) {
         homeCategoryListener.getRechargeBUWidget(source)
+    }
+
+    override fun onRechargeBUWidgetProductCardImpression(data: RechargeBUWidgetDataModel, position: Int) {
+        if (position < data.data.items.size) {
+            homeCategoryListener.getTrackingQueueObj()?.let { trackingQueue ->
+                RechargeBUWidgetTracking.homeRechargeBUWidgetCardImpressionTracker(trackingQueue, data, position, homeCategoryListener.userId)
+            }
+        }
     }
 
     companion object {

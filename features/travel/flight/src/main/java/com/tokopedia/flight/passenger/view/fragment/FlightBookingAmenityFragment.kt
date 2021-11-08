@@ -8,11 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.flight.R
+import com.tokopedia.flight.databinding.FragmentBookingLuggageBinding
 import com.tokopedia.flight.passenger.view.adapter.FlightAmenityAdapterTypeFactory
 import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightBookingAmenityViewHolder
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 
 /**
@@ -23,6 +24,7 @@ class FlightBookingAmenityFragment : BaseListFragment<FlightBookingAmenityModel,
 
     private var flightBookingAmenityViewModels: ArrayList<FlightBookingAmenityModel>? = null
     private var selectedAmenity: FlightBookingAmenityMetaModel? = null
+    private var binding by autoClearedNullable<FragmentBookingLuggageBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         arguments?.let {
@@ -47,9 +49,8 @@ class FlightBookingAmenityFragment : BaseListFragment<FlightBookingAmenityModel,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_booking_luggage, container, false)
-        val button = view.findViewById<View>(R.id.button_save) as UnifyButton
-        button.setOnClickListener {
+        binding = FragmentBookingLuggageBinding.inflate(inflater, container, false)
+        binding?.buttonSave?.setOnClickListener {
             activity?.let {
                 val intent = Intent()
                 intent.putExtra(EXTRA_SELECTED_AMENITIES, selectedAmenity)
@@ -57,7 +58,7 @@ class FlightBookingAmenityFragment : BaseListFragment<FlightBookingAmenityModel,
                 it.finish()
             }
         }
-        return view
+        return binding?.root
     }
 
     override fun loadData(page: Int) {

@@ -353,11 +353,11 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               }
             }
             merchantVoucherSummary{
-                title{
-                    text
+                animatedInfo{
+                    title
+                    subTitle
+                    iconURL
                 }
-                subtitle
-                imageURL
                 isShown
             }
             reviewImage{
@@ -425,7 +425,57 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
               }
             }
-        }
+            rating {
+                ratingScore
+                totalRating
+                totalReviewTextAndImage
+            }
+            bundleInfo {
+              productID
+              bundleID
+              groupID
+              name
+              type
+              status
+              titleComponent
+              finalPriceBundling
+              originalPriceBundling
+              savingPriceBundling
+              preorderString
+              bundleItems {
+                productID
+                name
+                picURL
+                status
+                quantity
+                originalPrice
+                bundlePrice
+                discountPercentage
+                stock
+              }
+  	        }
+            ticker {
+              tickerInfo {
+                productIDs
+                tickerData {
+                  title
+                  message
+                  color
+                  link
+                  action
+                  actionLink
+                  tickerType
+                  actionBottomSheet {
+                    title
+                    message
+                    reason
+                    buttonText
+                    buttonLink
+                  }
+                }
+              }
+            }
+          }
     }""".trimIndent()
     }
 
@@ -451,7 +501,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
         val cacheStrategy = CacheStrategyUtil.getCacheStrategy(forceRefresh)
 
         try {
-            val gqlResponse = graphqlRepository.getReseponse(listOf(p2DataRequest), cacheStrategy)
+            val gqlResponse = graphqlRepository.response(listOf(p2DataRequest), cacheStrategy)
             val successData = gqlResponse.getData<ProductInfoP2Data.Response>(ProductInfoP2Data.Response::class.java)
             val errorData: List<GraphqlError>? = gqlResponse.getError(ProductInfoP2Data.Response::class.java)
 
@@ -494,6 +544,9 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
+            p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
+            p2UiData.rating = rating
+            p2UiData.ticker = ticker
         }
         return p2UiData
     }

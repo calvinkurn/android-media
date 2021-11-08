@@ -9,9 +9,9 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.*
 
 class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener,
-                                             private val variantListener: AtcVariantListener)
+                                             private val variantListener: AtcVariantListener,
+                                             private val userId: String)
     : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
-
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
     }
@@ -116,6 +116,14 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductCategoryCarouselViewHolder.LAYOUT
     }
 
+    override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
+        return TopAdsHeadlineViewHolder.LAYOUT;
+    }
+
+    override fun type(data: ProductBundlingDataModel): Int {
+        return ProductBundlingViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
@@ -138,12 +146,14 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductDetailInfoViewHolder.LAYOUT -> ProductDetailInfoViewHolder(view, listener)
             ProductReportViewHolder.LAYOUT -> ProductReportViewHolder(view, listener)
             ProductShipmentViewHolder.LAYOUT -> ProductShipmentViewHolder(view, listener)
-            ProductMerchantVoucherSummaryViewHolder.LAYOUT -> ProductMerchantVoucherSummaryViewHolder(view)
+            ProductMerchantVoucherSummaryViewHolder.LAYOUT -> ProductMerchantVoucherSummaryViewHolder(view, listener)
             PdpComparisonWidgetViewHolder.LAYOUT -> PdpComparisonWidgetViewHolder(view, listener)
             ProductSingleVariantViewHolder.LAYOUT -> ProductSingleVariantViewHolder(view, variantListener, listener)
             OneLinersViewHolder.LAYOUT -> OneLinersViewHolder(view, listener)
             ProductRecomWidgetViewHolder.LAYOUT -> ProductRecomWidgetViewHolder(view, listener)
             ProductCategoryCarouselViewHolder.LAYOUT -> ProductCategoryCarouselViewHolder(view, listener)
+            TopAdsHeadlineViewHolder.LAYOUT -> TopAdsHeadlineViewHolder(view, userId)
+            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

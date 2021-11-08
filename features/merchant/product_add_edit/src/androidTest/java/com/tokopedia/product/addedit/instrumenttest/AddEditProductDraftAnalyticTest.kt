@@ -17,8 +17,8 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.draft.presentation.activity.AddEditProductDraftActivity
 import com.tokopedia.product.addedit.mock.AddEditProductAddingMockResponseConfig
+import com.tokopedia.product.addedit.stub.AddEditProductDraftActivityStub
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performClick
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
@@ -39,7 +39,8 @@ class AddEditProductDraftAnalyticTest {
     }
 
     @get:Rule
-    var activityRule: IntentsTestRule<AddEditProductDraftActivity> = IntentsTestRule(AddEditProductDraftActivity::class.java, false, false)
+    var activityRule: IntentsTestRule<AddEditProductDraftActivityStub> = IntentsTestRule(
+        AddEditProductDraftActivityStub::class.java, false, false)
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
 

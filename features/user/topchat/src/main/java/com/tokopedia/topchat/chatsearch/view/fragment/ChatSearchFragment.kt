@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatsearch.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,10 +18,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsearch.analytic.ChatSearchAnalytic
 import com.tokopedia.topchat.chatsearch.data.RecentSearch
 import com.tokopedia.topchat.chatsearch.di.ChatSearchComponent
+import com.tokopedia.topchat.chatsearch.util.Utils
 import com.tokopedia.topchat.chatsearch.view.activity.ChatSearchActivity
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchAdapter
 import com.tokopedia.topchat.chatsearch.view.adapter.ChatSearchTypeFactory
@@ -30,6 +33,8 @@ import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.EmptySearchChatV
 import com.tokopedia.topchat.chatsearch.view.adapter.viewholder.ItemSearchChatReplyViewHolder
 import com.tokopedia.topchat.chatsearch.view.uimodel.ChatReplyUiModel
 import com.tokopedia.topchat.chatsearch.viewmodel.ChatSearchViewModel
+import com.tokopedia.topchat.common.Constant
+import com.tokopedia.wishlist.common.toEmptyStringIfZero
 import javax.inject.Inject
 
 /**
@@ -79,6 +84,7 @@ open class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFac
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun updateTouchListener(view: View) {
         view.setOnTouchListener { _, event ->
             when (event?.action) {
@@ -195,6 +201,7 @@ open class ChatSearchFragment : BaseListFragment<Visitable<*>, ChatSearchTypeFac
         chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE_PAGE, ApplinkConst.Chat.SOURCE_CHAT_SEARCH)
         chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_CREATE_TIME, element.modifiedTimeStamp)
         chatRoomIntent.putExtra(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, getSearchKeyWord())
+        Utils.putExtraForFoldable(chatRoomIntent, element.msgId, element.contact.role)
         startActivity(chatRoomIntent)
     }
 

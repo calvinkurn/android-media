@@ -11,14 +11,39 @@
       android:descendantFocusability="blocksDescendants"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:animateLayoutChanges="true"
       android:background="@color/Unify_N0">
+
+    <FrameLayout
+        android:id="@+id/loader_header_home"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="@dimen/dp_130">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/dp_1"
+            app:loader_type="rect"
+            />
+
+      <ImageView
+          android:contentDescription="@string/content_desc_home_background"
+          android:id="@+id/view_background_header_loading_replacer"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:src="@drawable/ic_header_home_invert"
+          android:tint="@color/Unify_N0"
+          android:scaleType="fitXY"/>
+
+    </FrameLayout>
 
     <ImageView
         android:contentDescription="@string/content_desc_home_background"
         android:id="@+id/view_background_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_130"
+        android:src="@drawable/ic_header_home"
+        android:visibility="gone"
         android:scaleType="fitXY"/>
 
     <com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
@@ -35,23 +60,6 @@
         android:layout_gravity="bottom"
         android:gravity="bottom"
         android:orientation="vertical">
-
-      <FrameLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:animateLayoutChanges="true">
-
-        <com.tokopedia.home.widget.FloatingTextButton
-            android:id="@+id/recom_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/margin_card_home"
-            android:visibility="gone"
-            app:floating_left_icon="@drawable/ic_drop_down_arrow"
-            app:floating_title="@string/cek_recomendasi"
-            app:floating_title_allcaps="false" />
-      </FrameLayout>
 
       <com.tokopedia.stickylogin.view.StickyLoginView
           android:id="@+id/sticky_login_text"
@@ -81,17 +89,6 @@
         app:toolbarInvertSearchBarColor="true"
         app:toolbarInitialTheme="light"
         />
-
-    <com.tokopedia.searchbar.HomeMainToolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:gravity="top"
-        android:minHeight="?actionBarSize"
-        app:toolbarInitialTheme="dark"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"/>
 
     <View
         android:id="@+id/status_bar_bg"

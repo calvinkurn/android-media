@@ -6,14 +6,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.user.session.UserSessionInterface
 
 class SellerHomeNavigator(
@@ -22,6 +26,11 @@ class SellerHomeNavigator(
     private val sellerHomeRouter: SellerHomeRouter?,
     private val userSession: UserSessionInterface
 ) {
+
+    companion object {
+        private const val OTHER_MENU_REVAMP_EXPERIMENT = "sa_lainnyarevamp"
+        private const val OTHER_MENU_REVAMP_VALUE = "sa_lainnyarevamp"
+    }
 
     private var homeFragment: Fragment? = null
     private var productManageFragment: Fragment? = null
@@ -32,6 +41,9 @@ class SellerHomeNavigator(
     @FragmentType
     private var currentSelectedPage: Int? = null
     private val pages: MutableMap<Fragment?, String?> = mutableMapOf()
+    private val sellerFeedbackUtil by lazy {
+        SellerFeedbackUtil(context.applicationContext)
+    }
 
     init {
         initFragments()
@@ -150,8 +162,19 @@ class SellerHomeNavigator(
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "", "")
-        otherSettingsFragment = OtherMenuFragment.createInstance()
+        somListFragment = sellerHomeRouter?.getSomListFragment(
+            context,
+            SomTabConst.STATUS_ALL_ORDER,
+            SomTabConst.DEFAULT_ORDER_TYPE_FILTER,
+            "",
+            ""
+        )
+        otherSettingsFragment =
+            if (useRevampedOtherMenu()) {
+                OtherMenuFragment.createInstance()
+            } else {
+                com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment.createInstance()
+            }
 
         addPage(homeFragment, context.getString(R.string.sah_home))
         addPage(productManageFragment, context.getString(R.string.sah_product_list))
@@ -225,7 +248,13 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch, page.orderId)
+        somListFragment = sellerHomeRouter?.getSomListFragment(
+            context,
+            page.tabPage,
+            page.orderType,
+            page.keywordSearch,
+            page.orderId
+        )
         return somListFragment
     }
 
@@ -236,7 +265,14 @@ class SellerHomeNavigator(
     private fun showOnlySelectedFragment(transaction: FragmentTransaction, fragment: Fragment? = null) {
         hideAllPages(transaction)
         fragment?.let {
+            scrollFragmentToTop(it)
             transaction.show(it)
+        }
+    }
+
+    private fun scrollFragmentToTop(fragment: Fragment) {
+        if (fragment.isVisible) {
+            (fragment as? SellerHomeFragmentListener)?.onScrollToTop()
         }
     }
 
@@ -246,6 +282,18 @@ class SellerHomeNavigator(
 
     private fun setSelectedPage(@FragmentType page: Int) {
         currentSelectedPage = page
+        setSelectedPageSellerFeedback()
+    }
+
+    fun setSelectedPageSellerFeedback() {
+        val selectedPage = when (currentSelectedPage) {
+            FragmentType.HOME -> SellerFeedbackUtil.SELLER_HOME_PAGE
+            FragmentType.PRODUCT -> SellerFeedbackUtil.PRODUCT_MANAGE_PAGE
+            FragmentType.ORDER -> SellerFeedbackUtil.SOM_PAGE
+            FragmentType.CHAT -> SellerFeedbackUtil.CHAT_PAGE
+            else -> SellerHomeConst.EMPTY_STRING
+        }
+        sellerFeedbackUtil.setSelectedPage(selectedPage)
     }
 
     private fun isActivityResumed(): Boolean {
@@ -261,4 +309,15 @@ class SellerHomeNavigator(
             shopName
         }
     }
+
+    private fun useRevampedOtherMenu(): Boolean {
+        return try {
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                OTHER_MENU_REVAMP_EXPERIMENT, "")
+            remoteConfigRollenceValue.equals(OTHER_MENU_REVAMP_VALUE, ignoreCase = true)
+        } catch (ex: Exception) {
+            false
+        }
+    }
+
 }

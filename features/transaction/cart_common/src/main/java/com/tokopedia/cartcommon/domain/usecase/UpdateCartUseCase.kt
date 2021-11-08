@@ -17,6 +17,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<UpdateCartV2Data>() {
 
     private var params: Map<String, Any?>? = null
+    private var consumeErrorResponse: Boolean = false
 
     fun setParams(updateCartRequestList: List<UpdateCartRequest>, source: String = "") {
         params = mapOf(
@@ -25,6 +26,8 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
                 PARAM_SOURCE to source,
                 KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
+
+        consumeErrorResponse = source.isBlank()
     }
 
     override suspend fun executeOnBackground(): UpdateCartV2Data {
@@ -33,10 +36,18 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
 
         val request = GraphqlRequest(QUERY, UpdateCartGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
 
-        return if (response.updateCartData.status == "OK" && response.updateCartData.data.status) {
-            response.updateCartData
+        return if (response.updateCartData.status == "OK") {
+            if (consumeErrorResponse) {
+                response.updateCartData
+            } else {
+                if (response.updateCartData.data.status) {
+                    response.updateCartData
+                } else {
+                    throw ResponseErrorException(response.updateCartData.error.joinToString(", "))
+                }
+            }
         } else {
             throw ResponseErrorException(response.updateCartData.error.joinToString(", "))
         }

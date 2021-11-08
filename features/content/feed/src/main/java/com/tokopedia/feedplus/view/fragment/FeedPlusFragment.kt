@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,8 +34,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
@@ -44,8 +48,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
-import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
+import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
@@ -62,7 +65,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
@@ -77,6 +81,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendat
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -132,9 +137,11 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -146,7 +153,9 @@ import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 5/15/17.
@@ -158,6 +167,7 @@ const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
 const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
 const val CLICK_SHOP_TOPADS = "click - shop - topads"
 const val CLICK_PRODUCT_TOPADS = "click - product - topads"
+const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
 
 class FeedPlusFragment : BaseDaggerFragment(),
     SwipeRefreshLayout.OnRefreshListener,
@@ -180,7 +190,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     RetryViewHolder.RetryViewHolderListener,
     EmptyFeedViewHolder.EmptyFeedListener,
     FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
-    PlayWidgetListener, TopAdsHeadlineViewHolder.TopAdsHeadlineListener,
+    PlayWidgetListener, TopAdsHeadlineListener,
     ShareCallback {
 
     private lateinit var recyclerView: RecyclerView
@@ -188,7 +198,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private lateinit var mainContent: View
     private lateinit var newFeed: View
     private lateinit var newFeedReceiver: BroadcastReceiver
-
+    private lateinit var postUpdateSwipe: PostProgressUpdateView.PostUpdateSwipe
     private lateinit var adapter: FeedPlusAdapter
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var infoBottomSheet: TopAdsInfoBottomSheet
@@ -201,11 +211,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var afterPost: Boolean = false
     private var afterRefresh: Boolean = false
 
-    private var isUserEventTrackerDoneTrack = false
     private var isUserEventTrackerDoneOnResume = false
+    private var isFeedPageShown = false
+    private var isRefreshForPostCOntentCreation = false
 
     private lateinit var shareData: LinkerData
-    private  lateinit var reportBottomSheet: ReportBottomSheet
+    private lateinit var reportBottomSheet: ReportBottomSheet
+    private var shareBottomSheetProduct = false
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -257,6 +272,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val TRUE = "true"
         private const val FEED_DETAIL = "feedcommunicationdetail"
         private const val BROADCAST_FEED = "BROADCAST_FEED"
+        private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
         private const val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
         private const val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
         private const val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
@@ -641,11 +657,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         newFeedReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent?) {
-                if (intent != null && intent.action != null && intent.action == BROADCAST_FEED) {
-                    val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
-                    if (isHaveNewFeed) {
-                        newFeed.visible()
-                        triggerNewFeedNotification()
+                if (intent != null && intent.action != null) {
+                    if (intent.action == BROADCAST_FEED) {
+                        val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
+                        if (intent.extras == null || intent.extras?.isEmpty == true)
+                            isFeedPageShown = true
+                        if (isHaveNewFeed) {
+                            newFeed.visible()
+                            triggerNewFeedNotification()
+                        }
+                    } else if (intent.action == BROADCAST_VISIBLITY) {
+                        resetImagePostWhenFragmentNotVisible()
+                        isFeedPageShown = false
                     }
                 }
             }
@@ -696,6 +719,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             LinearLayoutManager.VERTICAL,
             false
         )
+
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         swipeToRefresh.setOnRefreshListener(this)
@@ -713,22 +737,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     if (hasFeed()) {
                         when (newState) {
                             RecyclerView.SCROLL_STATE_IDLE -> {
-                                var position = 0
-                                when {
-                                    itemIsFullScreen() -> {
-                                        position = layoutManager?.findLastVisibleItemPosition() ?: 0
-                                    }
-                                    layoutManager?.findFirstCompletelyVisibleItemPosition() != -1 -> {
-                                        position =
-                                            layoutManager?.findFirstCompletelyVisibleItemPosition()
-                                                ?: 0
-                                    }
-                                    layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
-                                        position =
-                                            layoutManager?.findLastCompletelyVisibleItemPosition()
-                                                ?: 0
-                                    }
-                                }
+                                var position = getCurrentPosition()
                                 FeedScrollListenerNew.onFeedScrolled(
                                     recyclerView,
                                     adapter.getList()
@@ -757,6 +766,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         TopAdsHeadlineActivityCounter.page = 1
     }
 
+    fun onRefreshForNewPostUpdated() {
+        feedViewModel.getFeedFirstPage()
+        isRefreshForPostCOntentCreation = true
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         if (::playWidgetCoordinator.isInitialized) {
@@ -764,6 +778,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         if (layoutManager != null) {
             layoutManager = null
+        }
+        if (::productTagBS.isInitialized) {
+            productTagBS.onDestroy()
         }
         TopAdsHeadlineActivityCounter.page = 1
     }
@@ -788,14 +805,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         when (requestCode) {
             OPEN_DETAIL -> if (resultCode == Activity.RESULT_OK)
-                showSnackbar(data.getStringExtra("message"))
+                showSnackbar(data.getStringExtra("message")?: "")
             OPEN_KOL_COMMENT -> if (resultCode == Activity.RESULT_OK) {
                 val serverErrorMsg = data.getStringExtra(COMMENT_ARGS_SERVER_ERROR_MSG)
                 if (!TextUtils.isEmpty(serverErrorMsg)) {
                     view?.let {
                         Toaster.build(
                             it,
-                            serverErrorMsg,
+                            serverErrorMsg?: "",
                             Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR,
                             getString(R.string.cta_refresh_feed),
@@ -815,7 +832,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     onSuccessReportContent()
                 } else {
                     onErrorReportContent(
-                        data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG)
+                        data.getStringExtra(CONTENT_REPORT_RESULT_ERROR_MSG) ?: ""
                     )
                 }
             }
@@ -825,7 +842,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 adapter.getlist().firstOrNull { it is OnboardingViewModel }?.let {
                     (it as? OnboardingViewModel)?.dataList?.forEach { interestPickDataViewModel ->
                         interestPickDataViewModel.isSelected =
-                            selectedIdList.contains(interestPickDataViewModel.id)
+                            selectedIdList?.contains(interestPickDataViewModel.id) == true
                     }
                 }
                 adapter.notifyItemChanged(0, OnboardingViewHolder.PAYLOAD_UPDATE_ADAPTER)
@@ -959,7 +976,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
-        if(isUserEventTrackerDoneOnResume) {
+        if (isUserEventTrackerDoneOnResume) {
             isUserEventTrackerDoneOnResume = false
             feedAnalytics.userVisitsFeed(userSession.isLoggedIn)
         }
@@ -972,7 +989,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onPause() {
-        isUserEventTrackerDoneOnResume = true
+        if (isFeedPageShown)
+            isUserEventTrackerDoneOnResume = true
         playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
         unRegisterNewFeedReceiver()
@@ -980,10 +998,72 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.sendPendingAnalytics()
     }
 
+    private fun resetImagePostWhenFragmentNotVisible(){
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+        val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
+        for (i in firstPosition..lastPosition) {
+            val item = getCardViewModel(adapter.getList(), i)
+            val topadsItem = getTopadsCardViewModel(adapter.getList(),i)
+            if (isImageCard(adapter.getList(), i)) {
+                if (item != null) {
+                    Objects.requireNonNull(adapter)
+                        .notifyItemChanged(i, DynamicPostNewViewHolder.PAYLOAD_POST_VISIBLE)
+                }
+            }
+            else if (isTopadsImageCard(adapter.getList(), i)) {
+                if (topadsItem != null) {
+                    Objects.requireNonNull(adapter)
+                            .notifyItemChanged(i, TopAdsHeadlineV2ViewHolder.PAYLOAD_POST_VISIBLE)
+                }
+            }
+        }
+    }
+    private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
+        try {
+            return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
+        } catch (e: Exception) {
+            Timber.d(e.localizedMessage)
+        }
+        return null
+    }
+
+    private fun isImageCard(list: List<Visitable<*>>, position: Int): Boolean {
+
+        if (position >= 0 && list.size > position && list[position] is DynamicPostUiModel) {
+            val item = (list[position] as DynamicPostUiModel).feedXCard
+            return (item.typename == TYPE_FEED_X_CARD_POST
+                    && (item.media.isNotEmpty()
+                    && (item.media.find { it.type == TYPE_IMAGE } != null)))
+        }
+        return false
+    }
+
+    private fun getTopadsCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
+        try {
+            return (list[position] as TopadsHeadLineV2Model).feedXCard.media.firstOrNull()
+        } catch (e: Exception) {
+            Timber.d(e.localizedMessage)
+        }
+        return null
+    }
+
+    private fun isTopadsImageCard(list: List<Visitable<*>>, position: Int): Boolean {
+
+        if (position >= 0 && list.size > position && list[position] is TopadsHeadLineV2Model) {
+            val item = (list[position] as TopadsHeadLineV2Model).feedXCard
+            return (item.typename == TYPE_TOPADS_HEADLINE_NEW
+                    && (item.media.isNotEmpty()
+                    && (item.media.find { it.type == TYPE_IMAGE } != null)))
+        }
+        return false
+    }
+
     private fun registerNewFeedReceiver() {
         if (activity != null && requireActivity().applicationContext != null) {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_FEED)
+            intentFilter.addAction(BROADCAST_VISIBLITY)
 
             LocalBroadcastManager
                 .getInstance(requireActivity().applicationContext)
@@ -1020,6 +1100,29 @@ class FeedPlusFragment : BaseDaggerFragment(),
         playWidgetOnVisibilityChanged(
             isUserVisibleHint = isVisibleToUser
         )
+    }
+
+    private fun getCurrentPosition(): Int {
+        val position: Int
+        when {
+            itemIsFullScreen() -> {
+                position = layoutManager?.findLastVisibleItemPosition() ?: 0
+            }
+            layoutManager?.findFirstCompletelyVisibleItemPosition() != -1 -> {
+                position =
+                    layoutManager?.findFirstCompletelyVisibleItemPosition()
+                        ?: 0
+            }
+            layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
+                position =
+                    layoutManager?.findLastCompletelyVisibleItemPosition()
+                        ?: 0
+            }
+            else -> {
+                position = layoutManager?.findLastVisibleItemPosition() ?: 0
+            }
+        }
+        return position
     }
 
     override fun onSearchShopButtonClicked() {
@@ -1479,7 +1582,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         authorId: String,
         authorType: String,
         postType: String,
-        isVideo: Boolean
+        isVideo: Boolean,
+        caption: String
     ) {
         if (context != null) {
             feedAnalytics.evenClickMenu(postId.toString(), postType, isFollowed, authorId, isVideo)
@@ -1515,7 +1619,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                     )
                                 }
                             })
-                        reportBottomSheet.show((context as FragmentActivity).supportFragmentManager, "")
+                        reportBottomSheet.show(
+                            (context as FragmentActivity).supportFragmentManager,
+                            ""
+                        )
                     }
                 } else {
                     onGoToLogin()
@@ -1552,6 +1659,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     isFollowed, authorId
                 )
             }
+            sheet.onEdit = {
+                openEditPostPage(caption, postId.toString())
+
+            }
 
             sheet.onClosedClicked = {
                 feedAnalytics.eventCloseThreeDotBS(
@@ -1562,6 +1673,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             }
         }
+    }
+    private fun openEditPostPage(caption: String, postId: String) {
+        var createPostViewModel = CreatePostViewModel()
+        createPostViewModel.caption = caption
+        createPostViewModel.postId = postId
+
+        val intent = RouteManager.getIntent(context,INTERNAL_AFFILIATE_CREATE_POST_V2)
+        intent.putExtra("author_type",TYPE_CONTENT_PREVIEW_PAGE)
+        intent.putExtra(CreatePostViewModel.TAG,createPostViewModel)
+        startActivity(intent)
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
@@ -1615,24 +1736,40 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        video: Boolean
+        video: Boolean,
+        isTopads: Boolean
     ) {
         activity?.let {
-            val urlString = if (typeASGC) {
-                String.format(getString(R.string.feed_share_asgc_weblink), id.toString())
-            } else {
-                String.format(getString(R.string.feed_share_weblink), id.toString())
-
+            val urlString = when {
+                typeASGC -> {
+                    String.format(getString(R.string.feed_share_asgc_weblink), id.toString())
+                }else -> {
+                    String.format(getString(R.string.feed_share_weblink), id.toString())
+                }
             }
-            shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
-                .setName(title)
-                .setDescription(description)
-                .setImgUri(imageUrl)
-                .setUri(urlString)
-                .setDeepLink(url)
-                .setType(LinkerData.FEED_TYPE)
-                .setDesktopUrl(urlString)
-                .build()
+
+            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+                    .setName(title)
+                    .setDescription(description)
+                    .setDesktopUrl(urlString)
+                    .setType(LinkerData.FEED_TYPE)
+                    .setImgUri(imageUrl)
+                    .setDeepLink(url)
+
+            if (isTopads) {
+                shareBottomSheetProduct = true
+                shareDataBuilder.apply {
+                    setOgImageUrl(imageUrl)
+                    setUri(url)
+                }
+            } else {
+                shareBottomSheetProduct = false
+                shareDataBuilder.apply {
+                    setUri(urlString)
+                }
+            }
+            shareData = shareDataBuilder.build()
+
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
             LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(
@@ -1684,11 +1821,59 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.feedXCard.followers.isFollowed,
                 item.feedXCard.author.id
             )
+        }
 
+        if (adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
+            val item = (adapter.getlist()[positionInFeed] as TopadsHeadLineV2Model)
+            feedAnalytics.eventClickBSitem(
+                    item.feedXCard.id,
+                    item.feedXCard.tags,
+                    itemPosition,
+                    item.feedXCard.typename,
+                    item.feedXCard.followers.isFollowed,
+                    item.feedXCard.author.id
+            )
+           sendTopadsUrlClick(getAdClickUrl(positionInFeed))
         }
         onGoToLink(redirectUrl)
     }
 
+    override fun onPostTagBubbleClick(
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+            adClickUrl: String
+    ) {
+        if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
+            val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
+            feedAnalytics.eventClickPostTagitem(
+                item.feedXCard.id,
+                postTagItem,
+                0,
+                item.feedXCard.typename,
+                item.feedXCard.followers.isFollowed,
+                item.feedXCard.author.id
+            )
+        }
+
+        if (adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
+            val item = (adapter.getlist()[positionInFeed] as TopadsHeadLineV2Model)
+            val isFollowed = item.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed
+            val id  = item.cpmModel?.data?.get(0)?.id?:""
+            if (isFollowed != null) {
+                feedAnalytics.eventClickPostTagitem(
+                        id,
+                        postTagItem,
+                        0,
+                        TYPE_TOPADS_HEADLINE_NEW,
+                        isFollowed,
+                        id
+                )
+            }
+            sendTopadsUrlClick(adClickUrl)
+        }
+        onGoToLink(redirectUrl)
+    }
     override fun onPostTagItemBSImpression(
         activityId: String,
         products: List<FeedXProduct>,
@@ -1721,14 +1906,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun userCarouselImpression(
-        activityId: String,
-        media: FeedXMedia,
-        positionInFeed: Int,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        postPosition: Int
+            activityId: String,
+            media: FeedXMedia,
+            positionInFeed: Int,
+            type: String,
+            isFollowed: Boolean,
+            shopId: String,
+            postPosition: Int,
+            cpmData: CpmData,
+            products: List<Product>
     ) {
+        if (type == TYPE_TOPADS_HEADLINE_NEW) {
+            onTopAdsProductItemListsner(positionInFeed, products[positionInFeed], cpmData)
+            TopAdsGtmTracker.eventTopAdsHeadlineShopView(postPosition, cpmData, "", userSession.userId)
+        }
         feedAnalytics.eventImpression(
             activityId,
             media,
@@ -1756,7 +1947,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         productList: List<FeedXProduct>
     ) {
-        feedAnalytics.eventImpressionProductASGC(
+        feedAnalytics.eventImpressionProduct(
             activityId,
             productId,
             productList,
@@ -1832,8 +2023,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         feedAnalytics.eventOnTagSheetItemBuyClicked(activityId.toString(), type, isFollowed, shopId)
         if (userSession.isLoggedIn) {
-            if (::productTagBS.isInitialized)
+            if (::productTagBS.isInitialized) {
+                productTagBS.dismissedByClosing = true
                 productTagBS.dismiss()
+            }
             feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId.toString())
         } else {
             onGoToLogin()
@@ -1923,14 +2116,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onTagClicked(
-        postId: Int,
-        products: List<FeedXProduct>,
-        listener: DynamicPostViewHolder.DynamicPostListener,
-        id: String,
-        type: String,
-        isFollowed: Boolean,
-        isVideo: Boolean,
-        positionInFeed: Int
+            postId: Int,
+            products: List<FeedXProduct>,
+            listener: DynamicPostViewHolder.DynamicPostListener,
+            id: String,
+            type: String,
+            isFollowed: Boolean,
+            isVideo: Boolean,
+            positionInFeed: Int
     ) {
         productTagBS = ProductItemInfoBottomSheet()
         feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed, id, isVideo)
@@ -1967,8 +2160,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             isFollowed,
             shopId
         )
-        if (::productTagBS.isInitialized)
+        if (::productTagBS.isInitialized) {
+            productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
+        }
         feedViewModel.addWishlist(
             postId.toString(),
             productId,
@@ -2012,7 +2207,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         activityId: Int,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        isTopads:Boolean = false
     ) {
         feedAnalytics.eventonShareProductClicked(
             activityId.toString(),
@@ -2020,17 +2216,31 @@ class FeedPlusFragment : BaseDaggerFragment(),
             type,
             isFollowed, shopId
         )
-        if (::productTagBS.isInitialized)
+        if (::productTagBS.isInitialized) {
+            productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
+        }
+        val urlString: String = if (isTopads) {
+            shareBottomSheetProduct = true
+            String.format(getString(R.string.feed_share_pdp), id.toString())
+        } else{
+            shareBottomSheetProduct = false
+            url
+        }
         activity?.let {
-            shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                 .setName(title)
                 .setDescription(description)
                 .setImgUri(imageUrl)
                 .setUri(url)
                 .setDeepLink(url)
                 .setType(LinkerData.FEED_TYPE)
-                .build()
+                .setDesktopUrl(urlString)
+
+            if (isTopads) {
+                linkerBuilder.setOgImageUrl(imageUrl)
+            }
+            shareData = linkerBuilder.build()
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
             LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(
@@ -2062,13 +2272,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
             onShareProduct(
                 item.id.toIntOrZero(),
                 item.text,
-                "",
+                item.description,
                 item.weblink,
                 item.imgUrl,
                 item.postId,
                 item.postType,
                 item.isFollowed,
-                item.shopId
+                item.shopId,
+                item.isTopads
             )
         }
         sheet.addToCartCB = {
@@ -2117,7 +2328,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onGridItemClick(
         positionInFeed: Int,
         activityId: Int,
-        productId: Int,
+        productId: String,
         redirectLink: String,
         type: String,
         isFollowed: Boolean,
@@ -2135,7 +2346,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
                 feedAnalytics.eventGridProductItemClicked(
                     activityId.toString(),
-                    productId.toString(),
+                    productId,
                     type,
                     isFollowed,
                     shopId,
@@ -2229,7 +2440,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             data.dataList = feedOnBoardingData
             adapter.addItem(data)
             parentFragment?.let {
-                (it as FeedPlusContainerFragment).hideAllFab(true)
+                (it as FeedPlusContainerFragment).hideAllFab()
             }
             swipe_refresh_layout.isRefreshing = false
             swipe_refresh_layout.isEnabled = false
@@ -2271,6 +2482,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
             adapter.updateList(firstPageDomainModel.dynamicFeedDomainModel.postList)
             return
         }
+        if (isRefreshForPostCOntentCreation) {
+            isRefreshForPostCOntentCreation = false
+            adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
+            return
+        }
 
         clearData()
         val model = firstPageDomainModel.dynamicFeedDomainModel
@@ -2299,7 +2515,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
 
         sendMoEngageOpenFeedEvent()
-        sendFeedPlusScreenTracking()
         stopTracePerformanceMon()
     }
 
@@ -2427,16 +2642,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onSuccessDeletePost(rowNumber: Int) {
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             adapter.getlist().removeAt(rowNumber)
-            adapter.notifyDataSetChanged()
+            adapter.notifyItemRemoved(rowNumber)
             Toaster.build(
                 requireView(),
                 getString(R.string.feed_post_deleted),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok),
-                View.OnClickListener {
-                    Toaster.snackBar.dismiss()
-                }).show()
+                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)
+            ).show()
         }
         if (adapter.getlist().isEmpty()) {
             showRefresh()
@@ -2513,6 +2726,28 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
                 adapter.notifyItemChanged(rowNumber)
             }
+
+            if (adapter.getlist()[rowNumber] is TopadsHeadLineV2Model) {
+
+                val item = (adapter.getlist()[rowNumber] as TopadsHeadLineV2Model)
+                item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
+
+                feedAnalytics.eventClickFollowitem(
+                        item.feedXCard.id,
+                        adapterPosition,
+                        item.feedXCard.typename,
+                        !item.feedXCard.followers.isFollowed,
+                        item.feedXCard.author.id
+                )
+
+                if (item.feedXCard.followers.isFollowed)
+                    item.feedXCard.followers.transitionFollow = true
+
+                adapter.notifyItemChanged(
+                        rowNumber,
+                        TopAdsHeadlineV2ViewHolder.PAYLOAD_ANIMATE_FOLLOW
+                )
+            }
         }
     }
 
@@ -2550,6 +2785,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
 
     }
+
     private fun onGoToLinkASGCProductDetail(link: String, shopId: String, activityId: String) {
         context?.let {
             if (!TextUtils.isEmpty(link)) {
@@ -2597,19 +2833,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val cache = LocalCacheHandler(it, KEY_FEED)
             cache.putString(KEY_FEED_FIRST_PAGE_CURSOR, firstPageCursor)
             cache.applyEditor()
-        }
-    }
-
-    private fun sendFeedPlusScreenTracking() {
-        if (!isUserEventTrackerDoneTrack) {
-            val isEmptyFeed = !hasFeed()
-
-            feedAnalytics.eventOpenFeedPlusFragment(
-                userSession.isLoggedIn,
-                isEmptyFeed
-            )
-
-            isUserEventTrackerDoneTrack = true
         }
     }
 
@@ -2883,16 +3106,33 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
         val eventLabel = "$adId - $shopId"
-
         val eventAction = CLICK_FOLLOW_TOPADS
         analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
     }
 
-    override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel) {
+    override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String) {
+        onFollowClick(positionInFeed, shopId, adId)
+        sendTopadsUrlClick(getAdClickUrl(positionInFeed))
+    }
+
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int) {
+        sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
+        feedAnalytics?.clickSekSekarang(postId,shopId,type,isFollowed)
+    }
+
+    override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel, isNewVariant:Boolean) {
         val eventLabel = "${cpmModel.data[0].id} - ${cpmModel.data[0].cpm.cpmShop.id}"
         val eventAction = IMPRESSION_CARD_TOPADS
 
+        if (isNewVariant){
+            sendTopadsImpression(
+                    cpmModel.data[0].cpm.cpmImage.fullUrl,
+                    cpmModel.data[0].cpm.cpmShop.id,
+                    cpmModel.data[0].cpm.uri,
+                    cpmModel.data[0].cpm?.cpmImage?.fullEcs
+            )
+        }
         analytics.sendFeedTopAdsHeadlineAdsImpression(
             eventAction,
             eventLabel,
@@ -2918,9 +3158,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData) {
-        RouteManager.route(context, applink)
-
+    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, isNewVariant:Boolean) {
+        if (!isNewVariant) {
+            RouteManager.route(context, applink)
+        } else{
+            sendTopadsUrlClick(getAdClickUrl(position))
+        }
         var eventAction = ""
         val eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
 
@@ -2953,18 +3196,27 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun urlCreated(linkerShareData: LinkerShareResult?) {
-        val intent = getIntent()
+        val intent: Intent = if (shareBottomSheetProduct) {
+            getIntent(linkerShareData?.url ?: "")
+        } else {
+            getIntent()
+        }
         activity?.startActivity(Intent.createChooser(intent, shareData.name))
     }
 
-    private fun getIntent(): Intent {
+    private fun getIntent(shareUrl:String=""): Intent {
+        val shareUri: String = if (shareUrl.isNotEmpty()) {
+            shareUrl
+        } else {
+            shareData.uri
+        }
         return Intent().apply {
             action = Intent.ACTION_SEND
             type = TYPE
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_TITLE, shareData.name)
             putExtra(Intent.EXTRA_SUBJECT, shareData.name)
-            putExtra(Intent.EXTRA_TEXT, shareData.description + "\n" + shareData.uri)
+            putExtra(Intent.EXTRA_TEXT, shareData.description + "\n" + shareUri)
         }
     }
 
@@ -2985,4 +3237,52 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-}
+    override fun hideTopadsView(position: Int) {
+        if (recyclerView.isComputingLayout ) {
+
+            if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadLineV2Model) {
+                adapter.getlist().removeAt(position)
+                recyclerView.post {
+                    adapter.notifyItemRemoved(position)
+                }
+            }
+
+            if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadlineUiModel) {
+                adapter.getlist().removeAt(position)
+                recyclerView.post {
+                    adapter.notifyItemRemoved(position)
+                }
+            }
+        }
+    }
+
+    private fun sendTopadsUrlClick(adClickUrl: String,id:String="",uri: String="",fullEcs: String?="") {
+        topAdsUrlHitter.hitClickUrl(
+                this::class.java.simpleName,
+                adClickUrl,
+                id,
+                uri,
+                fullEcs,
+                ""
+        )
+    }
+
+    private fun sendTopadsImpression(adViewUrl: String, id: String, uri: String, fullEcs: String?){
+        topAdsUrlHitter.hitImpressionUrl(
+                this::class.java.simpleName,
+                adViewUrl,
+                id,
+                uri,
+                fullEcs
+        )
+    }
+
+    private fun getAdClickUrl(positionInFeed: Int): String{
+        var adClickUrl=""
+        if (adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
+            val item = (adapter.getlist()[positionInFeed] as TopadsHeadLineV2Model)
+            adClickUrl = item.cpmModel?.data?.firstOrNull()?.adClickUrl?:""
+        }
+        return adClickUrl
+    }
+    }

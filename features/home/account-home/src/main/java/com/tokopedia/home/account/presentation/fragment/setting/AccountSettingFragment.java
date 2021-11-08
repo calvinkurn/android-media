@@ -1,5 +1,10 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT_BANK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DATA;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,7 +40,6 @@ import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
-import com.tokopedia.sessioncommon.constants.SessionConstants;
 import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
@@ -44,11 +48,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-
-import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT_BANK;
-import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DATA;
 
 public class AccountSettingFragment extends BaseDaggerFragment implements AccountSetting.View {
 
@@ -59,6 +58,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private static final int REQUEST_CHANGE_PASSWORD = 123;
     private static int REQUEST_ADD_PASSWORD = 1234;
+
+    private static final int OS_11 = 30;
+
     private UserSessionInterface userSession;
     private AccountAnalytics accountAnalytics;
     private Integer PROJECT_ID = 7;
@@ -207,7 +209,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void checkFingerprintStatus() {
-        if(showFingerprintMenu() && rolloutFingerprint()) {
+        if(showFingerprintMenu()) {
             biometricMenu.setVisibility(View.VISIBLE);
         } else {
             biometricMenu.setVisibility(View.GONE);
@@ -355,10 +357,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private boolean showFingerprintMenu() {
         return firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SETTING_BIOMETRIC, true);
-    }
-
-    private boolean rolloutFingerprint() {
-        return !getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_SETTING_FINGERPRINT).isEmpty();
     }
 
     @Override

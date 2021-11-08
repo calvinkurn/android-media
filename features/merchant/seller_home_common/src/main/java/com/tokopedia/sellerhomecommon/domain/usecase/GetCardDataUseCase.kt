@@ -19,11 +19,12 @@ import com.tokopedia.usecase.RequestParams
  */
 
 class GetCardDataUseCase(
-        gqlRepository: GraphqlRepository,
-        cardMapper: CardMapper,
-        dispatchers: CoroutineDispatchers
+    gqlRepository: GraphqlRepository,
+    cardMapper: CardMapper,
+    dispatchers: CoroutineDispatchers
 ) : CloudAndCacheGraphqlUseCase<GetCardDataResponse, List<CardDataUiModel>>(
-        gqlRepository, cardMapper, dispatchers, GetCardDataResponse::class.java, QUERY, false) {
+    gqlRepository, cardMapper, dispatchers, GetCardDataResponse::class.java, QUERY, false
+) {
 
     override suspend fun executeOnBackground(requestParams: RequestParams, includeCache: Boolean) {
         super.executeOnBackground(requestParams, includeCache).also { isFirstLoad = false }
@@ -31,14 +32,15 @@ class GetCardDataUseCase(
 
     override suspend fun executeOnBackground(): List<CardDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetCardDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse =
+            graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetCardDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetCardDataResponse>()
             return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
-            throw MessageErrorException(errors.joinToString(", ") { it.message })
+            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
     }
 
@@ -46,14 +48,14 @@ class GetCardDataUseCase(
         private const val DATA_KEYS = "dataKeys"
 
         fun getRequestParams(
-                dataKey: List<String>,
-                dynamicParameter: DynamicParameterModel
+            dataKey: List<String>,
+            dynamicParameter: DynamicParameterModel
         ): RequestParams = RequestParams.create().apply {
             val jsonParams = dynamicParameter.toJsonString()
             val dataKeys = dataKey.map {
                 DataKeyModel(
-                        key = it,
-                        jsonParams = jsonParams
+                    key = it,
+                    jsonParams = jsonParams
                 )
             }
             putObject(DATA_KEYS, dataKeys)

@@ -44,6 +44,8 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
 import com.tokopedia.manageaddress.util.ManageAddressConstant.LABEL_LAINNYA
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.REQUEST_CODE_PARAM_EDIT
+import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CART_EXISTING_USER
+import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_USER_NEW
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -177,7 +179,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         maxItemPosition = 0
         val addrId = saveAddressDataModel?.id ?: getChosenAddrId()
         context?.let {
-            viewModel.searchAddress(query, prevState, addrId, ChooseAddressUtils.isRollOutUser(it))
+            viewModel.searchAddress(query, prevState, addrId, true)
         }
     }
 
@@ -219,11 +221,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     globalErrorLayout?.gone()
                     if (viewModel.isClearData) clearData()
                     if (it.data.listAddress.isNotEmpty()) {
-                        if (context?.let { context -> ChooseAddressUtils.isRollOutUser(context) } == true) {
-                            updateTicker(it.data.pageInfo?.ticker)
-                            updateButton(it.data.pageInfo?.buttonLabel)
-                            updateStateForCheckoutSnippet(it.data.listAddress)
-                        }
+                        updateTicker(it.data.pageInfo?.ticker)
+                        updateButton(it.data.pageInfo?.buttonLabel)
+                        updateStateForCheckoutSnippet(it.data.listAddress)
                     }
                     updateData(it.data.listAddress)
                     setEmptyState()
@@ -296,7 +296,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
                         if (isFromDeleteAddress == true) {
                             context?.let {
-                                viewModel.searchAddress("", prevState, data.addressId, ChooseAddressUtils.isRollOutUser(it))
+                                viewModel.searchAddress("", prevState, data.addressId, true)
                             }
                         }
                     }
@@ -359,7 +359,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
                 if ((maxItemPosition + 1) == totalItemCount && viewModel.canLoadMore && !isLoading) {
                     context?.let {
-                        viewModel.loadMore(prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                        viewModel.loadMore(prevState, getChosenAddrId(), true)
                     }
                 }
             }
@@ -469,15 +469,23 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun openFormAddressView(data: RecipientAddressModel?) {
         val token = viewModel.token
         if (data == null) {
+            val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
+                SCREEN_NAME_CART_EXISTING_USER
+            } else if (isFromCheckoutChangeAddress == false && isLocalization == true) {
+                SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
+            } else {
+                SCREEN_NAME_USER_NEW
+            }
+
             if (LogisticCommonUtil.isRollOutUserANARevamp()) {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
                 intent.putExtra(KERO_TOKEN, token)
-                intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
+                intent.putExtra(EXTRA_REF, screenName)
                 startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
             } else {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
                 intent.putExtra(KERO_TOKEN, token)
-                intent.putExtra(EXTRA_REF, SCREEN_NAME_USER_NEW)
+                intent.putExtra(EXTRA_REF, screenName)
                 startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
             }
         } else {
@@ -515,18 +523,18 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     _selectedAddressItem = data
                 }
                 isStayOnPageState = true
-                viewModel.setDefaultPeopleAddress(data.id, false, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(context))
+                viewModel.setDefaultPeopleAddress(data.id, false, prevState, data.id.toLong(), true)
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
-                viewModel.deletePeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
+                viewModel.deletePeopleAddress(data.id, prevState, getChosenAddrId(), true)
                 bottomSheetLainnya?.dismiss()
                 isFromDeleteAddress = true
             }
             btn_alamat_utama_choose?.setOnClickListener {
                 isStayOnPageState = false
                 context?.let {
-                    viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(it))
+                    viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toLong(), true)
                 }
                 _selectedAddressItem = data
             }
@@ -579,7 +587,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
             context?.let {
-                viewModel.searchAddress("", prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                viewModel.searchAddress("", prevState, getChosenAddrId(), true)
             }
         }
         searchAddress?.gone()
@@ -652,11 +660,11 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    private fun getChosenAddrId(): Int {
-        var chosenAddrId = 0
+    private fun getChosenAddrId(): Long {
+        var chosenAddrId: Long = 0
         localChosenAddr?.address_id?.let { localAddrId ->
             if (localAddrId.isNotEmpty()) {
-                localChosenAddr?.address_id?.toInt()?.let { id ->
+                localChosenAddr?.address_id?.toLong()?.let { id ->
                     chosenAddrId = id
                 }
             }

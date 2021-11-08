@@ -12,6 +12,7 @@ object GetTicker {
                   title
                   message
                   color
+                  layout
                 }
             }
         }

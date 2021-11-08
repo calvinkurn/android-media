@@ -2,33 +2,53 @@ package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.gm.common.constant.GMCommonUrl
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_GREEN_TIMER
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_ORANGE_TIMER
+import com.tokopedia.shop.score.databinding.TimerNewSellerBeforeTransitionBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemTimerNewSellerListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
-import kotlinx.android.synthetic.main.timer_new_seller_before_transition.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
-
-class ItemTimerNewSellerViewHolder(view: View,
-                                   private val itemTimerNewSellerListener: ItemTimerNewSellerListener) : AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
+class ItemTimerNewSellerViewHolder(
+    view: View,
+    private val itemTimerNewSellerListener: ItemTimerNewSellerListener
+) : AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.timer_new_seller_before_transition
     }
 
-    override fun bind(element: ItemTimerNewSellerUiModel?) {
-        with(itemView) {
-            containerTimerNewSeller?.loadImage(if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
-            timerNewSeller?.targetDate = element?.effectiveDate
+    private val binding: TimerNewSellerBeforeTransitionBinding? by viewBinding()
 
-            tv_shop_performance_new_seller?.text = getString(R.string.title_shop_performance_become_existing_seller,
-                    element?.effectiveDateText.orEmpty())
+    override fun bind(element: ItemTimerNewSellerUiModel?) {
+        binding?.run {
+            containerTimerNewSeller.loadImage(
+                if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
+            timerNewSeller.targetDate = element?.effectiveDate
+
+            tvShopPerformanceNewSeller.text = if (element?.shopScore.isLessThanZero()) {
+                getString(
+                    R.string.title_shop_performance_become_existing_seller,
+                    element?.effectiveDateText.orEmpty()
+                )
+            } else {
+                if (element?.isTenureDate == true) {
+                    getString(
+                        R.string.desc_shop_performance_timer_after_first_monday_tenure,
+                        element.effectiveDateText
+                    )
+                } else {
+                    getString(
+                        R.string.desc_shop_performance_timer_after_first_monday,
+                        element?.effectiveDateText.orEmpty()
+                    )
+                }
+            }
         }
 
         setIconVideoClickListener()
@@ -36,14 +56,16 @@ class ItemTimerNewSellerViewHolder(view: View,
     }
 
     private fun setBtnPerformanceClickListener(element: ItemTimerNewSellerUiModel?) {
-        with(itemView) {
-            btn_shop_performance_learn?.let { btn ->
+        binding?.run {
+            btnShopPerformanceLearn.let { btn ->
                 itemTimerNewSellerListener.onImpressBtnLearnPerformance()
                 btn.setOnClickListener {
-                    if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
-                        itemTimerNewSellerListener.onBtnShopPerformanceToFaqClicked()
+                    if (element?.shopScore.isLessThanZero()) {
+                        itemTimerNewSellerListener.onBtnLearnNowToFaqClicked()
                     } else {
-                        itemTimerNewSellerListener.onBtnShopPerformanceToInterruptClicked(GMCommonUrl.SHOP_INTERRUPT_PAGE)
+                        itemTimerNewSellerListener.onBtnLearnNowToSellerEduClicked(
+                            ShopScoreConstant.SHOP_INFO_URL
+                        )
                     }
                 }
             }
@@ -51,16 +73,16 @@ class ItemTimerNewSellerViewHolder(view: View,
     }
 
     private fun setIconVideoClickListener() {
-        with(itemView) {
-            tv_watch_video?.setOnClickListener {
+        binding?.run {
+            tvWatchVideo.setOnClickListener {
                 itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
 
-            ic_video_shop_performance_learn?.setOnClickListener {
+            icVideoShopPerformanceLearn.setOnClickListener {
                 itemTimerNewSellerListener.onWatchVideoClicked(ShopScoreConstant.VIDEO_YOUTUBE_ID)
             }
 
-            if (tv_watch_video?.isVisible == true || ic_video_shop_performance_learn?.isVisible == true) {
+            if (tvWatchVideo.isVisible || icVideoShopPerformanceLearn.isVisible) {
                 itemTimerNewSellerListener.onImpressWatchVideo()
             }
         }

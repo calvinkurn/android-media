@@ -4,6 +4,7 @@ query CouponListingStack($categoryID: Int, $page: Int, $limit: Int, $serviceID: 
       id
       promoID
       code
+      title
       imageURL
       imageURLMobile
       redirectURL

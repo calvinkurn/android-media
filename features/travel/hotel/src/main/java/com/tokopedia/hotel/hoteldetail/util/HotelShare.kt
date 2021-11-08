@@ -12,16 +12,18 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import java.lang.ref.WeakReference
 
 /**
  * @author by jessica on 20/10/20
  */
 
-class HotelShare(val activity: Activity) {
+class HotelShare(val activity: WeakReference<Activity>) {
 
-    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity.get()) }
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
 
     fun shareEvent(data: PropertyDetailData, isPromo: Boolean, loadShare: () -> Unit, doneLoadShare: () -> Unit, context: Context) {
@@ -35,7 +37,7 @@ class HotelShare(val activity: Activity) {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_TEXT, context.getString(R.string.hotel_detail_share_cta_link, data.property.name, data.city.name, url))
         }
-        activity.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.hotel_detail_share_bottomsheet_title)))
+        activity.get()?.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.hotel_detail_share_bottomsheet_title)))
     }
 
     private fun generateBranchLink(data: PropertyDetailData, isPromo: Boolean, loadShare: () -> Unit, doneLoadShare: () -> Unit, context: Context) {
@@ -55,7 +57,7 @@ class HotelShare(val activity: Activity) {
                     }))
         } else {
             val seoUrl = "${data.property.name.replace(" ", "-").trimEnd()}-${data.property.id}"
-            openIntentShare(data, context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl) , context)
+            openIntentShare(data, TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl) , context)
             doneLoadShare()
         }
     }
@@ -74,8 +76,8 @@ class HotelShare(val activity: Activity) {
                 imgUri = data.property.images.firstOrNull()?.urlMax300 ?: ""
                 custmMsg = if (isPromo) "promo" else ""
                 deepLink = context.resources.getString(R.string.hotel_detail_share_applink, data.property.id.toString())
-                uri = context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
-                desktopUrl = context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
+                uri = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
+                desktopUrl = TkpdBaseURL.WEB_DOMAIN +context.resources.getString(R.string.hotel_detail_share_weblink, data.city.countryName, seoUrl)
             }
         }
     }

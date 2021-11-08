@@ -38,34 +38,48 @@ class ItemVariantImageViewHolder(val view: View,
     }
 
     private fun setState(element: VariantOptionWithAttribute) = with(view) {
+        setViewListener(element, VariantConstant.IGNORE_STATE)
         if (element.flashSale) {
             promoVariantImage.show()
         } else {
             promoVariantImage.hide()
         }
 
+        view.setOnClickListener {
+            listener.onVariantClicked(element)
+        }
+
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
-                overlayVariantImgContainer.show()
-                imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_img_unselected)
-                view.setOnClickListener {
-                    listener.onVariantEmptyAndSelectedClicked()
+                overlayVariantImgContainer?.apply {
+                    background = MethodChecker.getDrawable(context, R.drawable.bg_round_corner_atc_variant_overlay)
+                    show()
                 }
+                imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_img_unselected)
             }
             VariantConstant.STATE_SELECTED -> {
                 overlayVariantImgContainer.hide()
                 imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_img_selected)
-                view.setOnClickListener {
-                    listener.onVariantEmptyAndSelectedClicked()
+                setViewListener(element, element.currentState)
+            }
+            VariantConstant.STATE_SELECTED_EMPTY -> {
+                overlayVariantImgContainer?.apply {
+                    background = MethodChecker.getDrawable(context, R.drawable.bg_round_corner_atc_variant_empty_overlay)
+                    show()
                 }
+                imgContainerVariant.background = null
+                setViewListener(element, element.currentState)
             }
             VariantConstant.STATE_UNSELECTED -> {
                 overlayVariantImgContainer.hide()
                 imgContainerVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_atc_variant_img_unselected)
-                view.setOnClickListener {
-                    listener.onVariantClicked(element)
-                }
             }
+        }
+    }
+
+    private fun setViewListener(element: VariantOptionWithAttribute, state: Int) {
+        view.setOnClickListener {
+            listener.onVariantClicked(element, state)
         }
     }
 }

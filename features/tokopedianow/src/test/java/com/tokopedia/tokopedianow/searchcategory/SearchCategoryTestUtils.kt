@@ -2,8 +2,16 @@ package com.tokopedia.tokopedianow.searchcategory
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
@@ -15,8 +23,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupVa
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
@@ -35,7 +41,10 @@ inline fun <reified T> String.jsonToObject(): T {
 }
 
 fun Visitable<*>.assertOutOfCoverageDataView() {
-    assertThat(this, instanceOf(OutOfCoverageDataView::class.java))
+    assertThat(this, instanceOf(TokoNowEmptyStateOocUiModel::class.java))
+
+    val tokoNowEmptyStateOocUiModel = this as TokoNowEmptyStateOocUiModel
+    assertThat(tokoNowEmptyStateOocUiModel.hostSource, shouldBe(SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH))
 }
 
 fun Visitable<*>.assertChooseAddressDataView() {
@@ -44,14 +53,6 @@ fun Visitable<*>.assertChooseAddressDataView() {
 
 fun Visitable<*>.assertBannerDataView() {
     assertThat(this, instanceOf(BannerDataView::class.java))
-}
-
-fun Visitable<*>.assertTitleDataView(title: String, hasSeeAllCategoryButton: Boolean) {
-    assertThat(this, instanceOf(TitleDataView::class.java))
-
-    val titleDataView = this as TitleDataView
-    assertThat(titleDataView.title, shouldBe(title))
-    assertThat(titleDataView.hasSeeAllCategoryButton, shouldBe(hasSeeAllCategoryButton))
 }
 
 fun Visitable<*>.assertCategoryFilterDataView(categoryFilterDataValue: DataValue) {
@@ -190,6 +191,27 @@ private fun assertATCConfiguration(
 
     if (expectedHasNonVariantATC) {
         assertThat(actualProductDataView.nonVariantATC?.minQuantity, shouldBe(expectedProduct.minOrder))
-        assertThat(actualProductDataView.nonVariantATC?.maxQuantity, shouldBe(expectedProduct.stock))
+        assertThat(actualProductDataView.nonVariantATC?.maxQuantity, shouldBe(expectedProduct.maxOrder))
     }
+}
+
+fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState(
+        expectedPageName: String,
+) {
+    assertThat(this, instanceOf(TokoNowRecommendationCarouselUiModel::class.java))
+
+    val recomWidget = this as TokoNowRecommendationCarouselUiModel
+    assertThat(recomWidget.pageName, shouldBe(expectedPageName))
+    assertThat(recomWidget.carouselData.state, shouldBe(RecommendationCarouselData.STATE_LOADING))
+}
+
+fun assertTokonowRecommendationCarouselRequestParams(
+    getRecommendationRequestParam: GetRecommendationRequestParam,
+    recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel,
+) {
+    assertThat(getRecommendationRequestParam.xSource, shouldBe(RECOM_WIDGET))
+    assertThat(getRecommendationRequestParam.pageName, shouldBe(recommendationCarouselDataView.pageName))
+    assertThat(getRecommendationRequestParam.isTokonow, shouldBe(true))
+    assertThat(getRecommendationRequestParam.pageNumber, shouldBe(PAGE_NUMBER_RECOM_WIDGET))
+    assertThat(getRecommendationRequestParam.xDevice, shouldBe(DEFAULT_VALUE_OF_PARAMETER_DEVICE))
 }

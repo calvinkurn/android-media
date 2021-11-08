@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.AppCompatImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:scaleType="centerInside"
+    android:background="@drawable/imagepicker_insta_round_corners_bg"
+    android:src="@drawable/imagepicker_insta_ic_camera"
+    android:id="@+id/item_view_image_camera"
+    android:layout_height="match_parent">
+
+</androidx.appcompat.widget.AppCompatImageView>

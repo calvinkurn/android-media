@@ -1,11 +1,11 @@
 package com.tokopedia.statistic.common
 
 import android.content.Context
-import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.StatisticDateUtil
+import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
 import com.tokopedia.statistic.view.model.ActionMenuUiModel
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
@@ -19,91 +19,101 @@ import java.util.concurrent.TimeUnit
 
 object StatisticPageHelper {
 
-    fun getShopStatistic(context: Context, userSession: UserSessionInterface): StatisticPageUiModel {
+    fun getShopStatistic(
+        context: Context,
+        remoteConfig: StatisticRemoteConfig
+    ): StatisticPageUiModel {
         val title = context.getString(R.string.stc_shop)
         return StatisticPageUiModel(
-                pageTitle = title,
-                pageSource = Const.PageSource.SHOP_INSIGHT,
-                tickerPageName = Const.TickerPageName.SHOP_INSIGHT,
-                actionMenu = listOf(
-                        ActionMenuUiModel(
-                                title = context.getString(R.string.stc_give_suggestions),
-                                appLink = Const.Url.SHOP_GIVE_SUGGESTIONS,
-                                iconUnify = IconUnify.CHAT_REPORT
-                        ),
-                        ActionMenuUiModel(
-                                title = context.getString(R.string.stc_learn_more),
-                                appLink = Const.Url.SHOP_LEARN_MORE,
-                                iconUnify = IconUnify.HELP
-                        )
+            pageTitle = title,
+            pageSource = Const.PageSource.SHOP_INSIGHT,
+            tickerPageName = Const.TickerPageName.SHOP_INSIGHT,
+            actionMenu = listOf(
+                ActionMenuUiModel(
+                    title = context.getString(R.string.stc_give_suggestions),
+                    appLink = Const.Url.SHOP_GIVE_SUGGESTIONS,
+                    iconUnify = IconUnify.CHAT_REPORT
                 ),
-                dateFilters = getShopDateFilters(context, userSession)
+                ActionMenuUiModel(
+                    title = context.getString(R.string.stc_learn_more),
+                    appLink = Const.Url.SHOP_LEARN_MORE,
+                    iconUnify = IconUnify.HELP
+                )
+            ),
+            dateFilters = getShopDateFilters(context, remoteConfig),
+            exclusiveIdentifierDateFilterDesc = context.getString(R.string.stc_shop_exclusive_identifier_desc)
         )
     }
 
-    fun getProductStatistic(context: Context, userSession: UserSessionInterface): StatisticPageUiModel {
+    fun getProductStatistic(
+        context: Context,
+        remoteConfig: StatisticRemoteConfig
+    ): StatisticPageUiModel {
         val title = context.getString(R.string.stc_product)
         return StatisticPageUiModel(
-                pageTitle = title,
-                pageSource = Const.PageSource.PRODUCT_INSIGHT,
-                tickerPageName = Const.TickerPageName.PRODUCT_INSIGHT,
-                actionMenu = listOf(
-                        ActionMenuUiModel(
-                                title = context.getString(R.string.stc_give_suggestions),
-                                appLink = Const.Url.PRODUCT_GIVE_SUGGESTIONS,
-                                iconUnify = IconUnify.CHAT_REPORT
-                        ),
-                        ActionMenuUiModel(
-                                title = context.getString(R.string.stc_learn_more),
-                                appLink = Const.Url.PRODUCT_LEARN_MORE,
-                                iconUnify = IconUnify.HELP
-                        )
+            pageTitle = title,
+            pageSource = Const.PageSource.PRODUCT_INSIGHT,
+            tickerPageName = Const.TickerPageName.PRODUCT_INSIGHT,
+            actionMenu = listOf(
+                ActionMenuUiModel(
+                    title = context.getString(R.string.stc_give_suggestions),
+                    appLink = Const.Url.PRODUCT_GIVE_SUGGESTIONS,
+                    iconUnify = IconUnify.CHAT_REPORT
                 ),
-                dateFilters = getProductDateFilters(context, userSession)
+                ActionMenuUiModel(
+                    title = context.getString(R.string.stc_learn_more),
+                    appLink = Const.Url.PRODUCT_LEARN_MORE,
+                    iconUnify = IconUnify.HELP
+                )
+            ),
+            dateFilters = getProductDateFilters(context, remoteConfig),
+            exclusiveIdentifierDateFilterDesc = context.getString(R.string.stc_product_exclusive_identifier_desc)
         )
     }
 
-    fun getBuyerStatistic(context: Context, userSession: UserSessionInterface): StatisticPageUiModel {
+    fun getBuyerStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_buyer)
         return StatisticPageUiModel(
-                pageTitle = title,
-                pageSource = Const.PageSource.BUYER_INSIGHT,
-                tickerPageName = Const.TickerPageName.BUYER_INSIGHT,
-                actionMenu = listOf(
-                        ActionMenuUiModel(
-                                title = context.getString(R.string.stc_give_suggestions),
-                                appLink = Const.Url.BUYER_GIVE_SUGGESTIONS,
-                                iconUnify = IconUnify.CHAT_REPORT
-                        ),
-                        ActionMenuUiModel(
-                                title = context.getString(R.string.stc_learn_more),
-                                appLink = Const.Url.BUYER_LEARN_MORE,
-                                iconUnify = IconUnify.HELP
-                        )
+            pageTitle = title,
+            pageSource = Const.PageSource.BUYER_INSIGHT,
+            tickerPageName = Const.TickerPageName.BUYER_INSIGHT,
+            actionMenu = listOf(
+                ActionMenuUiModel(
+                    title = context.getString(R.string.stc_give_suggestions),
+                    appLink = Const.Url.BUYER_GIVE_SUGGESTIONS,
+                    iconUnify = IconUnify.CHAT_REPORT
                 ),
-                dateFilters = getBuyerDateFilters(context, userSession)
+                ActionMenuUiModel(
+                    title = context.getString(R.string.stc_learn_more),
+                    appLink = Const.Url.BUYER_LEARN_MORE,
+                    iconUnify = IconUnify.HELP
+                )
+            ),
+            dateFilters = getBuyerDateFilters(context),
+            exclusiveIdentifierDateFilterDesc = context.getString(R.string.stc_buyer_and_operational_exclusive_identifier_desc)
         )
     }
 
-    fun getOperationalStatistic(context: Context, userSession: UserSessionInterface): StatisticPageUiModel {
+    fun getOperationalStatistic(context: Context): StatisticPageUiModel {
         val title = context.getString(R.string.stc_operational)
         return StatisticPageUiModel(
-                pageTitle = title,
-                pageSource = Const.PageSource.OPERATIONAL_INSIGHT,
-                tickerPageName = Const.TickerPageName.OPERATIONAL_INSIGHT,
-                actionMenu = listOf(
-                        ActionMenuUiModel(
-                                title = context.getString(R.string.stc_give_suggestions),
-                                appLink = Const.Url.OPERATIONAL_GIVE_SUGGESTIONS,
-                                iconUnify = IconUnify.CHAT_REPORT
-                        ),
-                        ActionMenuUiModel(
-                                title = context.getString(R.string.stc_learn_more),
-                                appLink = Const.Url.OPERATIONAL_LEARN_MORE,
-                                iconUnify = IconUnify.HELP
-                        )
+            pageTitle = title,
+            pageSource = Const.PageSource.OPERATIONAL_INSIGHT,
+            tickerPageName = Const.TickerPageName.OPERATIONAL_INSIGHT,
+            actionMenu = listOf(
+                ActionMenuUiModel(
+                    title = context.getString(R.string.stc_give_suggestions),
+                    appLink = Const.Url.OPERATIONAL_GIVE_SUGGESTIONS,
+                    iconUnify = IconUnify.CHAT_REPORT
                 ),
-                dateFilters = getOperationalDateFilters(context, userSession)
+                ActionMenuUiModel(
+                    title = context.getString(R.string.stc_learn_more),
+                    appLink = Const.Url.OPERATIONAL_LEARN_MORE,
+                    iconUnify = IconUnify.HELP
+                )
+            ),
+            dateFilters = getOperationalDateFilters(context),
+            exclusiveIdentifierDateFilterDesc = context.getString(R.string.stc_buyer_and_operational_exclusive_identifier_desc)
         )
     }
 
@@ -113,68 +123,138 @@ object StatisticPageHelper {
         return !isPowerMerchant && !isOfficialStore
     }
 
-    private fun getShopDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
-        return if (getRegularMerchantStatus(userSession)) {
-            listOf(getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true))
-        } else {
-            listOf(
-                    getDateRangeItemToday(context, true),
-                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, false),
-                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
-                    DateFilterItem.Divider,
-                    getDateFilterPerDay(context, Const.DAYS_365),
-                    getDateFilterPerWeek(context, false, Const.DAYS_365),
-                    getFilterPerMonth(context, true, Const.DAYS_365),
-                    DateFilterItem.ApplyButton
+    private fun getShopDateFilters(
+        context: Context,
+        remoteConfig: StatisticRemoteConfig
+    ): List<DateFilterItem> {
+        val filters = mutableListOf(
+            getDateRangeItemToday(context, true),
+            getDateFilterItemClick(
+                context,
+                Const.DAYS_7,
+                Const.DAYS_7,
+                Const.DAY_1,
+                DateFilterItem.TYPE_LAST_7_DAYS,
+                false
+            ),
+            getDateFilterItemClick(
+                context,
+                Const.DAYS_30,
+                Const.DAYS_30,
+                Const.DAY_1,
+                DateFilterItem.TYPE_LAST_30_DAYS,
+                showBottomBorder = false
+            ),
+            DateFilterItem.Divider,
+            getDateFilterPerDay(context, Const.DAYS_365),
+            getDateFilterPerWeek(context, false, Const.DAYS_365),
+            getFilterPerMonth(context, true, Const.DAYS_365),
+        )
+
+        if (remoteConfig.isCustomDateFilterEnabled()) {
+            filters.add(
+                getDateFilterCustom(
+                    context,
+                    Const.DAYS_365,
+                    DateFilterItem.TYPE_CUSTOM
+                )
             )
         }
+
+        filters.add(DateFilterItem.ApplyButton)
+        return filters
     }
 
-    private fun getProductDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
-        return if (getRegularMerchantStatus(userSession)) {
-            listOf(getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true))
-        } else {
-            listOf(
-                    getDateRangeItemToday(context, false),
-                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
-                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
-                    DateFilterItem.Divider,
-                    getDateFilterPerDay(context, Const.DAYS_365),
-                    getDateFilterPerWeek(context, false, Const.DAYS_365),
-                    getFilterPerMonth(context, true, Const.DAYS_365),
-                    DateFilterItem.ApplyButton
+    private fun getProductDateFilters(
+        context: Context,
+        remoteConfig: StatisticRemoteConfig
+    ): List<DateFilterItem> {
+        val filters = mutableListOf(
+            getDateRangeItemToday(context, false),
+            getDateFilterItemClick(
+                context,
+                Const.DAYS_7,
+                Const.DAYS_7,
+                Const.DAY_1,
+                DateFilterItem.TYPE_LAST_7_DAYS,
+                true
+            ),
+            getDateFilterItemClick(
+                context,
+                Const.DAYS_30,
+                Const.DAYS_30,
+                Const.DAY_1,
+                DateFilterItem.TYPE_LAST_30_DAYS,
+                showBottomBorder = false
+            ),
+            DateFilterItem.Divider,
+            getDateFilterPerDay(context, Const.DAYS_365),
+            getDateFilterPerWeek(context, false, Const.DAYS_365),
+            getFilterPerMonth(context, true, Const.DAYS_365)
+        )
+
+        if (remoteConfig.isCustomDateFilterEnabled()) {
+            filters.add(
+                getDateFilterCustom(
+                    context,
+                    Const.DAYS_365,
+                    DateFilterItem.TYPE_CUSTOM_SAME_MONTH
+                )
             )
         }
+
+        filters.add(DateFilterItem.ApplyButton)
+        return filters
     }
 
-    private fun getBuyerDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
-        return if (getRegularMerchantStatus(userSession)) {
-            listOf(getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true))
-        } else {
-            listOf(
-                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
-                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
-                    DateFilterItem.Divider,
-                    getDateFilterPerWeek(context, true, Const.DAYS_91),
-                    getFilterPerMonth(context, false, Const.DAYS_91),
-                    DateFilterItem.ApplyButton
-            )
-        }
+    private fun getBuyerDateFilters(context: Context): List<DateFilterItem> {
+        return listOf(
+            getDateFilterItemClick(
+                context,
+                Const.DAYS_7,
+                Const.DAYS_7,
+                Const.DAY_1,
+                DateFilterItem.TYPE_LAST_7_DAYS,
+                true
+            ),
+            getDateFilterItemClick(
+                context,
+                Const.DAYS_30,
+                Const.DAYS_30,
+                Const.DAY_1,
+                DateFilterItem.TYPE_LAST_30_DAYS,
+                showBottomBorder = false
+            ),
+            DateFilterItem.Divider,
+            getDateFilterPerWeek(context, true, Const.DAYS_91),
+            getFilterPerMonth(context, false, Const.DAYS_91),
+            DateFilterItem.ApplyButton
+        )
     }
 
-    private fun getOperationalDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
-        return if (getRegularMerchantStatus(userSession)) {
-            listOf(getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true))
-        } else {
-            listOf(
-                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
-                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
-                    DateFilterItem.Divider,
-                    getDateFilterPerWeek(context, true, Const.DAYS_91),
-                    getFilterPerMonth(context, false, Const.DAYS_91),
-                    DateFilterItem.ApplyButton
-            )
-        }
+    private fun getOperationalDateFilters(context: Context): List<DateFilterItem> {
+        return listOf(
+            getDateFilterItemClick(
+                context,
+                Const.DAYS_7,
+                Const.DAYS_7,
+                Const.DAY_1,
+                DateFilterItem.TYPE_LAST_7_DAYS,
+                true
+            ),
+            getDateFilterItemClick(
+                context,
+                Const.DAYS_30,
+                Const.DAYS_30,
+                Const.DAY_1,
+                DateFilterItem.TYPE_LAST_30_DAYS,
+                showBottomBorder = false
+            ),
+            DateFilterItem.Divider,
+            getDateFilterPerWeek(context, true, Const.DAYS_91),
+            getFilterPerMonth(context, false, Const.DAYS_91),
+            DateFilterItem.ApplyButton
+        )
     }
 
     private fun getDateRangeItemToday(context: Context, isSelected: Boolean): DateFilterItem {
@@ -183,7 +263,15 @@ object StatisticPageHelper {
         return DateFilterItem.Click(label, today, today, isSelected, DateFilterItem.TYPE_TODAY)
     }
 
-    private fun getDateFilterItemClick(context: Context, lastNDaysLabel: Int, startPastDays: Int, endPastDays: Int, type: Int, isSelected: Boolean = false, showBottomBorder: Boolean = true): DateFilterItem.Click {
+    private fun getDateFilterItemClick(
+        context: Context,
+        lastNDaysLabel: Int,
+        startPastDays: Int,
+        endPastDays: Int,
+        type: Int,
+        isSelected: Boolean = false,
+        showBottomBorder: Boolean = true
+    ): DateFilterItem.Click {
         val label: String = context.getString(R.string.stc_last_n_days, lastNDaysLabel)
         val startDate = Date(DateTimeUtil.getNPastDaysTimestamp(startPastDays.toLong()))
         val endDate = Date(DateTimeUtil.getNPastDaysTimestamp(endPastDays.toLong()))
@@ -194,25 +282,54 @@ object StatisticPageHelper {
         val label = context.getString(R.string.stc_per_day)
         val today = Date()
         val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(minDaysCount.toLong()))
-        return DateFilterItem.Pick(label, today, today, type = DateFilterItem.TYPE_PER_DAY, calendarPickerMinDate = minDate, calendarPickerMaxDate = today)
+        return DateFilterItem.Pick(
+            label,
+            today,
+            today,
+            type = DateFilterItem.TYPE_PER_DAY,
+            calendarPickerMinDate = minDate,
+            calendarPickerMaxDate = today
+        )
     }
 
-    private fun getDateFilterPerWeek(context: Context, isOnlyCompletedWeek: Boolean, minDaysCount: Int): DateFilterItem.Pick {
+    private fun getDateFilterCustom(
+        context: Context,
+        minDaysCount: Int,
+        type: Int
+    ): DateFilterItem.Pick {
+        val label = context.getString(R.string.stc_custom_lbl)
+        val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(minDaysCount.toLong()))
+        val maxDate = Date(DateTimeUtil.getNPastDaysTimestamp(Const.DAY_1.toLong()))
+        return DateFilterItem.Pick(
+            label,
+            null,
+            null,
+            type = type,
+            calendarPickerMinDate = minDate,
+            calendarPickerMaxDate = maxDate
+        )
+    }
+
+    private fun getDateFilterPerWeek(
+        context: Context,
+        isOnlyCompletedWeek: Boolean,
+        minDaysCount: Int
+    ): DateFilterItem.Pick {
         val calendar: Calendar = Calendar.getInstance()
         with(calendar) {
             firstDayOfWeek = Calendar.MONDAY
             set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
+            set(Calendar.HOUR_OF_DAY, Const.EMPTY)
+            set(Calendar.MINUTE, Const.EMPTY)
+            set(Calendar.SECOND, Const.EMPTY)
+            set(Calendar.MILLISECOND, Const.EMPTY)
         }
         var firstDateOfWeek = calendar.time
         var lastDateOfWeek = Date()
 
         if (isOnlyCompletedWeek) {
-            val sevenDaysMillis = TimeUnit.DAYS.toMillis(7)
-            val sixDaysMillis = TimeUnit.DAYS.toMillis(6)
+            val sevenDaysMillis = TimeUnit.DAYS.toMillis(Const.DAYS_7.toLong())
+            val sixDaysMillis = TimeUnit.DAYS.toMillis(Const.DAYS_6.toLong())
             val firstDateOfWeekTimeStamp = calendar.time.time.minus(sevenDaysMillis)
             firstDateOfWeek = Date(firstDateOfWeekTimeStamp)
             lastDateOfWeek = Date(firstDateOfWeekTimeStamp.plus(sixDaysMillis))
@@ -221,22 +338,34 @@ object StatisticPageHelper {
         val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(minDaysCount.toLong()))
 
         val label = context.getString(R.string.stc_per_week)
-        return DateFilterItem.Pick(label, firstDateOfWeek, lastDateOfWeek, type = DateFilterItem.TYPE_PER_WEEK,
-                calendarPickerMinDate = minDate, calendarPickerMaxDate = lastDateOfWeek)
+        return DateFilterItem.Pick(
+            label, firstDateOfWeek, lastDateOfWeek, type = DateFilterItem.TYPE_PER_WEEK,
+            calendarPickerMinDate = minDate, calendarPickerMaxDate = lastDateOfWeek
+        )
     }
 
-    private fun getFilterPerMonth(context: Context, canSelectOnGoingMonth: Boolean, minDaysCount: Int): DateFilterItem.MonthPickerItem {
+    private fun getFilterPerMonth(
+        context: Context,
+        canSelectOnGoingMonth: Boolean,
+        minDaysCount: Int
+    ): DateFilterItem.MonthPickerItem {
         val perMonthLabel = context.getString(R.string.stc_per_month)
         val minDate = Date(DateTimeUtil.getNPastDaysTimestamp(minDaysCount.toLong()))
         val defaultDate: Date = if (canSelectOnGoingMonth) {
             Date()
         } else {
             Date().apply {
-                val millisOf31Days = TimeUnit.DAYS.toMillis(31)
+                val millisOf31Days = TimeUnit.DAYS.toMillis(Const.DAYS_31.toLong())
                 time = time.minus(millisOf31Days)
             }
         }
         val (startDate, endDate) = StatisticDateUtil.getStartAndEndDateInAMonth(defaultDate)
-        return DateFilterItem.MonthPickerItem(perMonthLabel, startDate = startDate, endDate = endDate, monthPickerMinDate = minDate, monthPickerMaxDate = defaultDate)
+        return DateFilterItem.MonthPickerItem(
+            perMonthLabel,
+            startDate = startDate,
+            endDate = endDate,
+            monthPickerMinDate = minDate,
+            monthPickerMaxDate = defaultDate
+        )
     }
 }

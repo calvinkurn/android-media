@@ -18,6 +18,8 @@
     <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
 
     <string name="product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_campaign_status_success_toast">Status \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_campaign_stock_status_success_toast">Status dan stok \"%1$s\" berhasil diubah.</string>
     <string name="product_manage_campaign_stock_error_toast">Oops, permintaan kamu tidak dapat diproses,\nSilakan coba lagi, ya!</string>
 
     <string name="content_desc_quickEditStockActivateSwitch">button switch status produk</string>
@@ -30,6 +32,8 @@
     <string name="product_manage_closable_stock_ticker_title">Hanya menampilkan stok lokasi utama</string>
     <string name="product_manage_single_location_stock_no_access_description">Kamu tidak punya akses untuk atur stok produk.</string>
 
-    <string name="product_manage_campaign_stock_open_campaign">Buka halaman Campaign lewat laptop atau komputer untuk ubah detail stok campaign.</string>
+    <string name="product_manage_campaign_stock_open_campaign">Untuk mengubah stok campaign, pergi ke seller.tokopedia.com melalui laptop, ya.</string>
     <string name="product_manage_campaign_label">Campaign</string>
+    <string name="product_manage_campaign_count">%d Promosi</string>
+
 </resources>

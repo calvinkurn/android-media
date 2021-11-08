@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.reading.presentation.factory
 
-import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.data.ProductTopic
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.toPx
@@ -26,7 +25,7 @@ class ReadReviewSortFilterFactory {
         ratings.mapTo(arrayList) {
             ListItemUnify(it, "").apply {
                 setVariant(rightComponent = ListItemUnify.CHECKBOX)
-                listDrawableReference = R.drawable.ic_rating_star_item
+                listDrawableReference = com.tokopedia.review.inbox.R.drawable.ic_rating_star_item
                 listIconWidth = ICON_SIZE.toPx()
                 listIconHeight = ICON_SIZE.toPx()
             }

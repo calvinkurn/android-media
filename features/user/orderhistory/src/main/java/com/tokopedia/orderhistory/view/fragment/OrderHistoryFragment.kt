@@ -15,12 +15,14 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.analytic.OrderHistoryAnalytic
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.data.Product
+import com.tokopedia.orderhistory.databinding.FragmentOrderhistoryOrderHistoryBinding
 import com.tokopedia.orderhistory.di.OrderHistoryComponent
 import com.tokopedia.orderhistory.view.adapter.OrderHistoryAdapter
 import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactory
@@ -34,6 +36,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
@@ -49,9 +52,10 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     @Inject
     lateinit var session: UserSessionInterface
 
+    private val binding: FragmentOrderhistoryOrderHistoryBinding? by viewBinding()
+
     var remoteConfig: RemoteConfig? = null
 
-    private var recycler: VerticalRecyclerView? = null
     private val viewModelFragmentProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
@@ -65,24 +69,23 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_orderhistory_order_history, container, false).also {
-            bindView(it)
-            setupRecyclerview()
             initializeArguments()
             initRemoteConfig()
-            setupProductListObserver()
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerview()
+        setupProductListObserver()
     }
 
     private fun initRemoteConfig() {
         remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
-    private fun bindView(view: View?) {
-        recycler = view?.findViewById(recyclerViewResourceId)
-    }
-
     private fun setupRecyclerview() {
-        recycler?.clearItemDecoration()
+        binding?.recyclerView?.clearItemDecoration()
     }
 
     private fun initializeArguments() {
@@ -137,7 +140,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
                 productId = product.productId.toLong(),
                 shopId = product.shopId.toInt(),
                 quantity = product.minOrder,
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_TOPCHAT
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT
         )
         return RequestParams.create().apply {
             putObject(

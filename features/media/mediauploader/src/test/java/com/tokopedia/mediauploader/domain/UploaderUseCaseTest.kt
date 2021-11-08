@@ -1,166 +1,138 @@
 package com.tokopedia.mediauploader.domain
 
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.data.entity.*
-import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.mediauploader.common.state.UploadResult
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import org.junit.Test
 import java.io.File
+import kotlin.test.assertTrue
 
-class UploaderUseCaseTest: Spek({
+class UploaderUseCaseTest {
 
-    val dataPolicyUseCase = mockk<DataPolicyUseCase>(relaxed = true)
-    val mediaUploaderUseCase = mockk<MediaUploaderUseCase>()
-    val useCase = UploaderUseCase(dataPolicyUseCase, mediaUploaderUseCase)
+    private val dataPolicyUseCase = mockk<DataPolicyUseCase>(relaxed = true)
+    private val mediaUploaderUseCase = mockk<MediaUploaderUseCase>()
+    private val useCase = UploaderUseCase(dataPolicyUseCase, mediaUploaderUseCase)
 
-    val file = mockk<File>()
+    private val file = mockk<File>()
+    private val sourceId = "WXjxja"
+    private val filePath = "image.jpg"
+    private val filePathInvalidExtension = "image.jpt"
+    private val uploadId = "abc-123-xyz-456"
 
-    val sourceId = "WXjxja"
-    val filePath = "image.jpg"
-    val filePathInvalidExtension = "image.jpt"
-    val uploadId = "abc-123-xyz-456"
+    @Test fun `It should be able upload image successfully`() {
+        // Given
+        every { file.exists() } answers { true }
+        every { file.path } answers { filePath }
 
-    Feature("uploader use case") {
-        Scenario("request data policy with source id") {
-            var requestParams = RequestParams()
+        val requestParams = useCase.createParams(sourceId, file)
 
-            Given("request param") {
-                every { file.exists() } answers { true }
-                every { file.path } answers { filePath }
-
-                requestParams = useCase.createParams(sourceId, file)
-            }
-            Given("data policy use case") {
-                coEvery {
-                    dataPolicyUseCase(any())
-                } answers {
-                    DataUploaderPolicy()
-                }
-            }
-            Given("media uploader use case") {
-                every {
-                    mediaUploaderUseCase.progressCallback = any()
-                } answers {}
-
-                coEvery {
-                    mediaUploaderUseCase(any())
-                } answers {
-                    MediaUploader(data = UploadData(uploadId))
-                }
-            }
-            Then("it should return success") {
-                runBlocking {
-                    when(val execute = useCase(requestParams)) {
-                        is UploadResult.Success -> {
-                            assert(execute.uploadId == uploadId)
-                        }
-                    }
-                }
-            }
+        coEvery {
+            dataPolicyUseCase(any())
+        } answers {
+            DataUploaderPolicy()
         }
 
-        Scenario("upload data with invalid file") {
-            var requestParams = RequestParams()
-
-            Given("request param") {
-                requestParams = useCase.createParams(sourceId, File(""))
-            }
-            Given("data policy with file not found") {
-                coEvery {
-                    dataPolicyUseCase(RequestParams.EMPTY)
-                } answers {
-                    DataUploaderPolicy()
-                }
-            }
-            Then("it should return file not found") {
-                runBlocking {
-                    when(val execute = useCase(requestParams)) {
-                        is UploadResult.Error -> {
-                            assert(execute.message.isNotEmpty())
-                        }
-                    }
-                }
-            }
+        coEvery {
+            mediaUploaderUseCase(any())
+        } answers {
+            MediaUploader(data = UploadData(uploadId))
         }
 
-        Scenario("upload data with invalid extension") {
-            var requestParams = RequestParams()
-
-            Given("request param") {
-                every { file.exists() } answers { true }
-                every { file.path } answers { filePathInvalidExtension }
-
-                requestParams = useCase.createParams(sourceId, file)
-            }
-            Given("data policy use case") {
-                coEvery {
-                    dataPolicyUseCase(any())
-                } answers {
-                    DataUploaderPolicy()
-                }
-            }
-            Given("media uploader use case") {
-                coEvery {
-                    mediaUploaderUseCase(any())
-                } answers {
-                    MediaUploader(data = UploadData(uploadId))
-                }
-            }
-            Then("it should return invalid extension") {
-                runBlocking {
-                    when(val execute = useCase(requestParams)) {
-                        is UploadResult.Error -> {
-                            assert(execute.message.isNotEmpty())
-                        }
-                    }
-                }
-            }
-        }
-
-        Scenario("upload data with large file") {
-            var requestParams = RequestParams()
-
-            Given("request param") {
-                every { file.exists() } answers { true }
-                every { file.path } answers { filePath }
-                every { file.length() } answers { 500 }
-
-                requestParams = useCase.createParams(sourceId, file)
-            }
-            Given("data policy use case") {
-                coEvery {
-                    dataPolicyUseCase(any())
-                } answers {
-                    val policy = Policy(
-                            maxFileSize = 1000,
-                            extension = ".jpg,.jpeg"
-                    )
-                    val sourcePolicy = SourcePolicy(imagePolicy = policy)
-                    val uploaderPolicy = UploaderPolicy(sourcePolicy)
-                    DataUploaderPolicy(uploaderPolicy)
-                }
-            }
-            Given("media uploader use case") {
-                coEvery {
-                    mediaUploaderUseCase(any())
-                } answers {
-                    MediaUploader(data = UploadData(uploadId))
-                }
-            }
-            Then("it should return large file exception") {
-                runBlocking {
-                    when(val execute = useCase(requestParams)) {
-                        is UploadResult.Error -> {
-                            assert(execute.message.isNotEmpty())
-                        }
-                    }
+        // Then
+        runBlocking {
+            when(val execute = useCase(requestParams)) {
+                is UploadResult.Success -> {
+                    assert(execute.uploadId == uploadId)
                 }
             }
         }
     }
 
-})
+    @Test fun `It should not be able to upload image because of invalid file`() {
+        // Given
+        val requestParams = useCase.createParams(sourceId, File(""))
+
+        coEvery {
+            dataPolicyUseCase(any())
+        } answers {
+            DataUploaderPolicy()
+        }
+
+        // Then
+        runBlocking {
+            when(val execute = useCase(requestParams)) {
+                is UploadResult.Error -> {
+                    assert(execute.message.isNotEmpty())
+                }
+            }
+        }
+    }
+
+    @Test fun `It should not be able to upload image because of invalid extension`() {
+        // Given
+        every { file.exists() } answers { true }
+        every { file.path } answers { filePathInvalidExtension }
+
+        val requestParams = useCase.createParams(sourceId, file)
+
+        coEvery {
+            dataPolicyUseCase(any())
+        } answers {
+            DataUploaderPolicy()
+        }
+
+        coEvery {
+            mediaUploaderUseCase(any())
+        } answers {
+            MediaUploader(data = UploadData(uploadId))
+        }
+
+        // Then
+        runBlocking {
+            when(val execute = useCase(requestParams)) {
+                is UploadResult.Error -> {
+                    assert(execute.message.isNotEmpty())
+                }
+            }
+        }
+    }
+
+    @Test fun `It should not be able to upload image because of large of file`() {
+        // Given
+        every { file.exists() } answers { true }
+        every { file.path } answers { filePath }
+        every { file.length() } answers { 500 }
+
+        val requestParams = useCase.createParams(sourceId, file)
+
+        coEvery {
+            dataPolicyUseCase(any())
+        } answers {
+            val policy = Policy(
+                maxFileSize = 1000,
+                extension = ".jpg,.jpeg"
+            )
+            val sourcePolicy = SourcePolicy(imagePolicy = policy)
+            val uploaderPolicy = UploaderPolicy(sourcePolicy)
+            DataUploaderPolicy(uploaderPolicy)
+        }
+
+        coEvery {
+            mediaUploaderUseCase(any())
+        } answers {
+            MediaUploader(data = UploadData(uploadId))
+        }
+
+        // Then
+        runBlocking {
+            val execute = useCase(requestParams)
+
+            assertTrue { execute is UploadResult.Error }
+        }
+    }
+
+}

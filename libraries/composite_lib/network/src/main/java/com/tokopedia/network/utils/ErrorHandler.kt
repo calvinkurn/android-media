@@ -20,6 +20,7 @@ open class ErrorHandler {
 
     companion object {
         const val ERROR_HANDLER = "ERROR_HANDLER"
+        const val DEFAULT_ERROR_CODE = ""
 
         @JvmStatic
         fun getErrorMessage(context: Context?, e: Throwable?): String {
@@ -40,9 +41,12 @@ open class ErrorHandler {
             val errorIdentifier = getRandomString(4)
 
             if (builder.sendToScalyr) {
-                sendToScalyr(errorIdentifier, builder.className, builder.errorCode, Log.getStackTraceString(e))
+                sendToScalyr(errorIdentifier, builder.className, errorCode, Log.getStackTraceString(e))
             }
 
+            if(errorCode == DEFAULT_ERROR_CODE){
+                return Pair(errorMessageString, "$errorIdentifier")
+            }
             return Pair(errorMessageString, "$errorCode-$errorIdentifier")
         }
 
@@ -59,12 +63,17 @@ open class ErrorHandler {
             val errorIdentifier = getRandomString(4)
 
             if (builder.sendToScalyr) {
-                sendToScalyr(errorIdentifier, builder.className, builder.errorCode, Log.getStackTraceString(e))
+                sendToScalyr(errorIdentifier, builder.className, errorCode, Log.getStackTraceString(e))
             }
             if (!builder.errorCode) {
                 return "$errorMessageString";
             }
-            return "$errorMessageString. Kode Error :($errorCode-$errorIdentifier)"
+
+            if(errorCode == DEFAULT_ERROR_CODE){
+                return "$errorMessageString. Kode Error: ($errorIdentifier)"
+            }
+
+            return "$errorMessageString. Kode Error: ($errorCode-$errorIdentifier)"
         }
 
         private fun getErrorMessageString(context: Context?, e: Throwable?): String? {
@@ -115,18 +124,18 @@ open class ErrorHandler {
         }
 
         private fun getErrorMessageHTTP(e: Throwable): String {
-            return if (e is MessageErrorException && !TextUtils.isEmpty(e.errorCode)) {
+            return if (e is MessageErrorException && !e.errorCode.isNullOrEmpty() && e.errorCode != "200") {
                 e.errorCode
             } else {
-                "000"
+                DEFAULT_ERROR_CODE
             }
         }
 
-        private fun sendToScalyr(errorIdentifier: String, className: String, errorCode: Boolean, stackTraceString: String?) {
+        private fun sendToScalyr(errorIdentifier: String, className: String, errorCode: String, stackTraceString: String?) {
             val mapParam = mapOf(
                     "identifier" to errorIdentifier,
                     "class" to className,
-                    "error_code" to if(errorCode) errorCode else "",
+                    "error_code" to errorCode,
                     "stack_trace" to stackTraceString.orEmpty()
             )
             ServerLogger.log(Priority.P1, ERROR_HANDLER, mapParam as Map<String, String>)
@@ -134,7 +143,7 @@ open class ErrorHandler {
     }
 
     class Builder {
-        var sendToScalyr = false
+        var sendToScalyr = true
         var errorCode = true
         var className = ""
 

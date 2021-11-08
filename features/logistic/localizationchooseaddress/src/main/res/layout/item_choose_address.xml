@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/dp_200"
-    android:layout_height="@dimen/dp_150"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:cardCornerRadius="@dimen/dp_4"
-    android:layout_marginStart="@dimen/dp_10">
+    app:cardCornerRadius="4dp"
+    android:layout_marginStart="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,8 +26,8 @@
             android:id="@+id/address_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
             android:ellipsize="end"
             android:singleLine="true"
             android:text="@string/address_title"
@@ -41,12 +41,11 @@
             app:layout_constraintWidth_default="wrap"
             app:typographyType="heading_6" />
 
-
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/lbl_main_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="@dimen/dp_44"
             android:text="@string/main_address_label"
             android:visibility="visible"
@@ -62,7 +61,7 @@
             android:id="@+id/receiver_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="@dimen/dp_44"
             android:text="@string/receiver_name"
             android:ellipsize="end"
@@ -78,7 +77,7 @@
             android:id="@+id/address_phone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="@dimen/dp_44"
             android:ellipsize="end"
             android:singleLine="true"
@@ -92,7 +91,7 @@
             android:id="@+id/address_detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="@dimen/dp_44"
             android:text="@string/addr_detail"
             android:ellipsize="end"
@@ -107,9 +106,9 @@
             android:id="@+id/address_district"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="@dimen/dp_44"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/unify_space_12"
             android:text="@string/addr_detail"
             android:ellipsize="end"
             android:singleLine="true"
@@ -117,8 +116,37 @@
             app:layout_constraintStart_toStartOf="@id/address_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/address_detail"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/img_icon_tokonow"
             app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_icon_tokonow"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            app:srcCompat="@drawable/ic_badge_tokomart"
+            android:layout_marginBottom="@dimen/unify_space_16"
+            app:layout_constraintTop_toBottomOf="@id/address_district"
+            app:layout_constraintStart_toStartOf="@id/address_district"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="null"
+            android:visibility="gone"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tokonow_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Tersedia Tokopedia NOW!"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/Unify_N700_96"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/unify_space_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/img_icon_tokonow"
+            app:layout_constraintTop_toTopOf="@id/img_icon_tokonow"
+            app:layout_constraintBottom_toBottomOf="@+id/img_icon_tokonow"
+            app:typographyType="body_3"
+            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -46,6 +46,7 @@ class SwipeContainerViewComponent(
                     isLoading = true
                     listener.onShouldLoadNextPage()
                 }
+                listener.onPageSelected(position)
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -110,6 +111,7 @@ class SwipeContainerViewComponent(
 
     interface Listener {
 
+        fun onPageSelected(position: Int)
         fun onShouldLoadNextPage()
         fun onSwipeNextPage()
     }

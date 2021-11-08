@@ -2,13 +2,28 @@ package com.tokopedia.topchat.stub.chatroom.view.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.test.espresso.idling.CountingIdlingResource
 import com.tokopedia.chat_common.BaseChatToolbarActivity
+import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.stub.chatroom.view.customview.FakeTopChatViewStateImpl
 
-class TopChatRoomFragmentStub : TopChatRoomFragment() {
+open class TopChatRoomFragmentStub : TopChatRoomFragment() {
+
+    /**
+     * show bottomsheet immediately
+     */
+    override fun onRetrySendImage(element: ImageUploadUiModel) {
+        super.onRetrySendImage(element)
+        childFragmentManager.executePendingTransactions()
+    }
+
+    override fun showChangeAddressBottomSheet() {
+        if (SUCCESS_CHANGE_ADDRESS) {
+            getChangeAddressListener().onAddressDataChanged()
+        }
+    }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
         return FakeTopChatViewStateImpl(
@@ -20,7 +35,18 @@ class TopChatRoomFragmentStub : TopChatRoomFragment() {
         }
     }
 
+    override fun showMsgMenu(msg: BaseChatUiModel, text: CharSequence) {
+        super.showMsgMenu(msg, text)
+        childFragmentManager.executePendingTransactions()
+    }
+
+    override fun onDetach() {
+        SUCCESS_CHANGE_ADDRESS = false
+        super.onDetach()
+    }
+
     companion object {
+        var SUCCESS_CHANGE_ADDRESS = true
         fun createInstance(
                 bundle: Bundle
         ): TopChatRoomFragmentStub {

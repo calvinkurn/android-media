@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
                 android:text="@string/ent_default_totalPrice"
-                android:textColor="@color/Unify_Y500"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/total_Harga"
                 app:typographyType="body_1"

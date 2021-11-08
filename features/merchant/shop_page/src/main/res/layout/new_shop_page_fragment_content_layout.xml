@@ -35,8 +35,17 @@
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
                 app:layout_scrollFlags="scroll"
-                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_marginBottom="12dp"
                 tools:visibility="gone" />
+
+            <View
+                android:id="@+id/view_one_tab_separator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="4dp"
+                app:layout_scrollFlags="scroll"
+                android:background="@color/Unify_N75"
+                />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"

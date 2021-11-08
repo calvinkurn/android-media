@@ -23,9 +23,7 @@
         android:id="@+id/rv_leaderboard"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -40,6 +38,17 @@
         layout="@layout/view_play_interactive_leaderboard_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_header"
+        />
+
+    <include
+        layout="@layout/layout_interactive_leaderboard_placeholder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

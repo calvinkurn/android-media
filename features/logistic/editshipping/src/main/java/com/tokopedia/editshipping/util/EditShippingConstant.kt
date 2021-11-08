@@ -15,7 +15,6 @@ object EditShippingConstant {
     const val EXTRA_LONG = "EXTRA_LONG"
     const val EXTRA_WAREHOUSE_DATA = "EXTRA_WAREHOUSE_DATA"
     const val EXTRA_IS_EDIT_WAREHOUSE = "EXTRA_IS_EDIT_WAREHOUSE"
-    const val EXTRA_IS_POLYGON = "EXTRA_IS_POLYGON"
     const val DEFAULT_LAT: Double = -6.175794
     const val DEFAULT_LONG: Double = 106.826457
 

@@ -4,7 +4,7 @@
         <shape
             android:shape="rectangle">
             <size android:height="1dp" />
-            <solid android:color="#E5E7E9" />
+            <solid android:color="@color/tokopedianow_divider_category_chooser_dms_color" />
         </shape>
     </item>
 </layer-list>

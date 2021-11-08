@@ -27,7 +27,7 @@ class HotelReviewViewModel @Inject constructor(private val dispatcher: Coroutine
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(query, HotelReview.Response::class.java, dataParams, false)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelReview.Response>()
             reviewResult.postValue(Success(data = data.propertyReview))
         }) {

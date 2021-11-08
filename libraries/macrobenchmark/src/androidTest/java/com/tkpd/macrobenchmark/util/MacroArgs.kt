@@ -45,4 +45,6 @@ object MacroArgs {
     fun getRecyclerViewScrollIterations(args: Bundle?): Int {
         return args?.getString(rvIteration)?.toInt() ?: 1
     }
+
+
 }

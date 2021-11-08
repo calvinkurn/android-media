@@ -56,12 +56,11 @@ internal open class ProductWidget(
 
     override fun setCollapseViewData(view: RemoteViews) {
         // set notification icon
-        if (model.icon.isNullOrEmpty()) {
+        productImage?.let{
+            view.setImageViewBitmap(R.id.iv_icon_collapsed, it)
+        } ?: run {
             view.setImageViewBitmap(R.id.iv_icon_collapsed, base.defaultIcon())
-        } else {
-            view.setImageViewBitmap(R.id.iv_icon_collapsed, base.getBitmap(model.icon))
         }
-
         // set title and message of collapsed
         view.setTextViewText(R.id.tv_collapse_title, spanStr(model.title))
         view.setTextViewText(R.id.tv_collapsed_message, spanStr(model.message))
@@ -99,17 +98,7 @@ internal open class ProductWidget(
         // carousel visibility of arrow button
         carouselButtonVisibility(view)
 
-        // handling legacy of product card
-        when (model.notificationProductType) {
-            CMConstant.NotificationProductType.V2 -> productV2Card(view)
-            else -> productV1Card(view)
-        }
-    }
-
-    private fun productV1Card(view: RemoteViews) {
-        view.setOnClickPendingIntent(R.id.ll_expandedProductView, contract.productDetailIntent(product))
-        view.setTextViewText(R.id.btn_text, spanStr(product.productButtonMessage))
-        view.setViewVisibility(R.id.btn_icon, View.GONE)
+        productV2Card(view)
     }
 
     private fun productV2Card(view: RemoteViews) {
@@ -119,15 +108,30 @@ internal open class ProductWidget(
         view.setOnClickPendingIntent(R.id.status_bar_latest_event_content, contract.productDetailIntent(product))
 
         // action button
-        if (product.actionButton.onlyOne()) {
-            val actionButton = product.actionButton.first()
-            view.setViewVisibility(R.id.btn_icon, View.GONE)
-            setButtonField(R.id.btn_text, view, actionButton)
-        } else if (product.actionButton.size > 1) {
-            product.actionButton.forEach {
-                when (it.type) {
-                    TYPE_ATC -> setButtonField(R.id.btn_icon, view, it)
-                    TYPE_OCC -> setButtonField(R.id.btn_text, view, it)
+        when {
+            product.productButtons.isNullOrEmpty() -> {
+                view.setViewVisibility(R.id.btn_icon, View.GONE)
+                view.setViewVisibility(R.id.btn_text, View.GONE)
+            }
+            product.productButtons.onlyOne() -> {
+                view.setViewVisibility(R.id.btn_icon, View.GONE)
+                val actionButton = product.productButtons.first()
+                setButtonField(R.id.btn_text, view, actionButton)
+            }
+            else -> {
+                view.setViewVisibility(R.id.btn_icon, View.GONE)
+                var availableButtonSlot = 2
+                product.productButtons.forEach { button->
+                    if(availableButtonSlot > 0) {
+                        if (button.type == TYPE_ATC){
+                            view.setViewVisibility(R.id.btn_icon, View.VISIBLE)
+                            setButtonField(R.id.btn_icon, view, button)
+                        }else {
+                            view.setViewVisibility(R.id.btn_text, View.VISIBLE)
+                            setButtonField(R.id.btn_text, view, button)
+                        }
+                        availableButtonSlot--
+                    }
                 }
             }
         }
@@ -158,7 +162,7 @@ internal open class ProductWidget(
     }
 
     private fun starReview(view: RemoteViews) {
-        if (product.reviewScore == null) return
+        if (product.reviewScore == 0.0) return
 
         view.setViewVisibility(R.id.widget_review, View.VISIBLE)
         view.setTextViewText(R.id.txt_review, product.reviewScore.toString())

@@ -25,7 +25,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_margin="@dimen/play_widget_dp_3"
-        app:cornerRadius="@dimen/play_widget_small_radius"
+        app:rcl_cornerRadius="@dimen/play_widget_small_radius"
         app:layout_constraintBottom_toBottomOf="@id/fl_border"
         app:layout_constraintEnd_toEndOf="@id/fl_border"
         app:layout_constraintStart_toStartOf="@id/fl_border"
@@ -64,7 +64,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:background="@drawable/bg_play_widget_small_text_overlay"
-        app:cornerRadius="@dimen/play_widget_small_radius"
+        app:rImg_cornerRadius="@dimen/play_widget_small_radius"
         app:layout_constraintBottom_toBottomOf="@id/cl_media"
         app:layout_constraintEnd_toEndOf="@id/cl_media"
         app:layout_constraintStart_toStartOf="@id/cl_media"
@@ -142,20 +142,23 @@
             tools:text="10,0 rb"
             />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/iv_giveaway"
-            android:layout_width="@dimen/play_giveaway_icon_size"
-            android:layout_height="@dimen/play_giveaway_icon_size"
-            android:background="@drawable/bg_play_widget_giveaway_badge"
-            android:padding="@dimen/spacing_lvl1"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_name="GIFT"
-            tools:ignore="RtlSymmetry"
-            tools:visibility="visible"
-            />
-
     </LinearLayout>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_giveaway"
+        android:layout_width="@dimen/play_giveaway_icon_size"
+        android:layout_height="@dimen/play_giveaway_icon_size"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:background="@drawable/bg_play_widget_giveaway_badge"
+        android:padding="@dimen/spacing_lvl1"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="GIFT"
+        app:layout_constraintBottom_toTopOf="@id/tv_title"
+        app:layout_constraintStart_toStartOf="@id/tv_title"
+        tools:ignore="RtlSymmetry"
+        tools:visibility="visible"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"

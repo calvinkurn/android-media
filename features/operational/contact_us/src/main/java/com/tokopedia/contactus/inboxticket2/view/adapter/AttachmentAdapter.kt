@@ -20,11 +20,13 @@ private const val HEADER_CASE_ID_KEY = "X-TKPD-CaseId"
 private const val HEADER_REFERER_KEY = "Referer"
 private const val HEADER_REFERER_VALUE = "tokopedia.com/help/inbox"
 private const val CONTACT_US = "contact-us"
+private const val HTTP_LENGTH = 4
 class AttachmentAdapter constructor(data: List<AttachmentItem>,
                                     presenter: InboxDetailContract.Presenter,
                                     private val userId: String,
                                     private val caseId: String) : RecyclerView.Adapter<AttachmentViewHolder>() {
     private val attachmentList: MutableList<AttachmentItem>
+    private val caseIdList: MutableList<String> by lazy { ArrayList<String>() }
     private val mPresenter: InboxDetailContract.Presenter
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachmentViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.layout_attachment_item, parent, false)
@@ -41,8 +43,8 @@ class AttachmentAdapter constructor(data: List<AttachmentItem>,
     }
 
     private fun isUrl(src: String): Boolean {
-        return if (src.length >= 4) {
-            src.substring(0, 4) == "http"
+        return if (src.length >= HTTP_LENGTH) {
+            src.substring(0, HTTP_LENGTH) == "http"
         } else false
     }
 

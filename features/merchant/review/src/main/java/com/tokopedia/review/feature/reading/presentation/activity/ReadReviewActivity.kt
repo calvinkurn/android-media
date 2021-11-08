@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
@@ -18,8 +19,13 @@ class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringList
         startPerformanceMonitoring()
     }
 
-    override fun getNewFragment(): Fragment? {
-        return ReadReviewFragment.createNewInstance(getDataFromApplink())
+    override fun getNewFragment(): Fragment {
+        val uriPath = intent.data?.path.orEmpty()
+        return if (isProductReviewAppLink(uriPath)) {
+            ReadReviewFragment.createNewInstance(productId = getDataFromApplink(), isProductReview = true)
+        } else {
+            ReadReviewFragment.createNewInstance(shopId = getDataFromApplink(), isProductReview = false)
+        }
     }
 
     override fun startPerformanceMonitoring() {
@@ -86,6 +92,10 @@ class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringList
             val segments = uri.pathSegments
             segments.getOrNull(segments.size - 2) ?: "0"
         } else ""
+    }
+
+    private fun isProductReviewAppLink(appLink: String): Boolean{
+        return !appLink.contains("shop")
     }
 
 }

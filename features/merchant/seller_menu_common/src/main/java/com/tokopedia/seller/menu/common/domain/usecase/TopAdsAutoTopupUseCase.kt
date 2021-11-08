@@ -42,7 +42,7 @@ class TopAdsAutoTopupUseCase @Inject constructor(private val graphqlRepository: 
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(QUERY, TopAdsAutoTopupDataModel::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val gqlError = gqlResponse.getError(TopAdsAutoTopupDataModel::class.java)
         if (gqlError.isNullOrEmpty()) {

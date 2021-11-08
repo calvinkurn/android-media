@@ -899,6 +899,7 @@ public interface AppEventTracking {
         String UTM_GCLID = "gclid";
         String X_CLID = "xClientId";
         String X_ATTR = "xAttribution";
+        String SCREEN_NAME = "screenName";
 
         String UTM_SOURCE_APPEND = "&" + UTM_SOURCE + "=";
         String UTM_MEDIUM_APPEND = "&" + UTM_MEDIUM + "=";

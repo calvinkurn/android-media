@@ -2,12 +2,13 @@ package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.power_merchant.subscribe.R
-import kotlinx.android.synthetic.main.view_pm_registration_footer.view.*
+import com.tokopedia.power_merchant.subscribe.databinding.ViewPmRegistrationFooterBinding
 
 /**
  * Created By @ilhamsuaib on 02/03/21
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.view_pm_registration_footer.view.*
 
 class RegistrationFooterView : ConstraintLayout {
 
+    private var binding: ViewPmRegistrationFooterBinding? = null
     private var tncClickListener: (() -> Unit)? = null
     private var checkedListener: ((Boolean) -> Unit)? = null
 
@@ -25,13 +27,14 @@ class RegistrationFooterView : ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        View.inflate(context, R.layout.view_pm_registration_footer, this)
-
-        tvPmRegistrationTnC.setOnClickListener {
-            tncClickListener?.invoke()
-        }
-        cbPmRegistrationTnC.setOnCheckedChangeListener { _, isChecked ->
-            checkedListener?.invoke(isChecked)
+        binding = ViewPmRegistrationFooterBinding.inflate(LayoutInflater.from(context), this, true)
+        binding?.run {
+            tvPmRegistrationTnC.setOnClickListener {
+                tncClickListener?.invoke()
+            }
+            cbPmRegistrationTnC.setOnCheckedChangeListener { _, isChecked ->
+                checkedListener?.invoke(isChecked)
+            }
         }
     }
 
@@ -40,16 +43,26 @@ class RegistrationFooterView : ConstraintLayout {
     }
 
     fun setOnCtaClickListener(action: (isAgreed: Boolean) -> Unit) {
-        btnPmRegister.setOnClickListener {
-            action(cbPmRegistrationTnC.isChecked)
+        binding?.run {
+            btnPmRegister.setOnClickListener {
+                action(cbPmRegistrationTnC.isChecked)
+            }
         }
     }
 
-    fun setCtaText(ctaText: String) {
+    fun hideCtaButton() {
+        binding?.btnPmRegister?.hide()
+    }
+
+    fun showCtaButton() {
+        binding?.btnPmRegister?.show()
+    }
+
+    fun setCtaText(ctaText: String) = binding?.run {
         btnPmRegister.text = ctaText
     }
 
-    fun setTnCVisibility(isVisible: Boolean) {
+    fun setTnCVisibility(isVisible: Boolean) = binding?.run {
         if (isVisible) {
             tvPmRegistrationTnC.visible()
             cbPmRegistrationTnC.visible()
@@ -63,11 +76,11 @@ class RegistrationFooterView : ConstraintLayout {
         this.checkedListener = callback
     }
 
-    fun showLoadingState() {
+    fun showLoadingState() = binding?.run {
         btnPmRegister.isLoading = true
     }
 
-    fun hideLoadingState() {
+    fun hideLoadingState() = binding?.run {
         btnPmRegister.isLoading = false
     }
 }

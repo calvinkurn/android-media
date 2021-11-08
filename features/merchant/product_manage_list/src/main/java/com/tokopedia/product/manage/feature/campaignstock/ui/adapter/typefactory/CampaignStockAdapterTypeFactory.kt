@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.viewholder.*
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.*
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) -> Unit = {},
@@ -13,6 +14,7 @@ class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) 
                                       private val onActiveStockChanged: (Boolean) -> Unit = {},
                                       private val onVariantStockChanged: (productId: String, stock: Int) -> Unit = { _,_ -> },
                                       private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit = { _,_ -> },
+                                      private val onOngoingPromotionClicked: (campaignTypeList: List<ProductCampaignType>) -> Unit = {},
                                       private val source: String = "",
                                       private val shopId: String = ""
 ): BaseAdapterTypeFactory(), CampaignStockTypeFactory {
@@ -32,9 +34,9 @@ class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ActiveProductSwitchViewHolder.LAYOUT_RES -> ActiveProductSwitchViewHolder(parent, onActiveStockChanged)
-            TotalStockEditorViewHolder.LAYOUT_RES -> TotalStockEditorViewHolder(parent, onTotalStockChanged)
+            TotalStockEditorViewHolder.LAYOUT_RES -> TotalStockEditorViewHolder(parent, onTotalStockChanged, onOngoingPromotionClicked)
             SellableStockProductViewHolder.LAYOUT_RES -> SellableStockProductViewHolder(
-                    parent, onVariantStockChanged, onVariantStatusChanged, source, shopId
+                    parent, onVariantStockChanged, onVariantStatusChanged, onOngoingPromotionClicked, source, shopId
             )
             ReservedEventInfoViewHolder.LAYOUT_RES -> ReservedEventInfoViewHolder(parent, onAccordionStateChange)
             ReservedStockRedirectionViewHolder.LAYOUT_RES -> ReservedStockRedirectionViewHolder(parent)

@@ -5,18 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_atc_variant_bottomsheet"
+    <ScrollView
+        android:id="@+id/container_variant_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/base_atc_btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/rv_atc_var_bs_barrier">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_atc_variant_bottomsheet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toTopOf="@+id/txt_variant_empty_stock" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/txt_variant_empty_stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp"
+                android:layout_marginBottom="11dp"
+                android:visibility="gone"
+                tools:text="Stok habis. Klik Ingatkan Saya untuk aktifkan pengingat ketika barang kembali tersedia."
+                app:typographyType="body_3"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/rv_atc_var_bs_barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="shop_followers_container, base_atc_btn" />
 
     <include
         android:id="@+id/base_atc_btn"
@@ -28,6 +63,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <ViewStub
+        android:id="@+id/base_atc_variant_re_button"
+        android:inflatedId="@+id/shop_followers_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout="@layout/layout_button_npl_follow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

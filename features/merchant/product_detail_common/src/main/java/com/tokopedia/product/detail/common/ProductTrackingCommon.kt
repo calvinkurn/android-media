@@ -5,6 +5,7 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.CURR
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CURRENT_SITE
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PRODUCT_ID
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -12,6 +13,39 @@ import com.tokopedia.track.TrackAppUtils
  * Created by Yehezkiel on 17/05/21
  */
 object ProductTrackingCommon {
+
+    fun onFollowNplClickedVariantBottomSheet(productId: String, pageSource: String, shopId: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
+                ProductTrackingConstant.Action.CLICK_FOLLOW,
+                String.format(ProductTrackingConstant.Tracking.BUILDER_SHOP_ID, shopId))
+        addAdditionalParams(productId, mapEvent, pageSource)
+    }
+
+    fun onTokoCabangClicked(productId: String, pageSource: String) {
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
+                ProductTrackingConstant.Action.ACTION_CLICK_TOKOCABANG,
+                "")
+        addAdditionalParams(productId, mapEvent, pageSource)
+    }
+
+    fun eventClickPilihVariant(productId: String, pageSource: String, cartType: String, parentId: String, productIdFromPreviousPage: String) {
+        val source = when (cartType) {
+            ProductDetailCommonConstant.KEY_SAVE_BUNDLING_BUTTON -> ProductDetailCommonConstant.VALUE_PRODUCT_BUNDLING
+            ProductDetailCommonConstant.KEY_SAVE_TRADEIN_BUTTON -> ProductDetailCommonConstant.VALUE_TRADE_IN
+            else -> ""
+        }
+
+        val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
+                ProductTrackingConstant.Action.ACTION_CLICK_VARIANT,
+                String.format(ProductTrackingConstant.Label.EVENT_LABEL_FLOW_CHOOSE_VARIANT, source, parentId, productId))
+        addAdditionalParams(productIdFromPreviousPage, mapEvent, pageSource)
+    }
 
     fun eventActivationOvo(productId: String, userId: String) {
         val mapEvent = TrackAppUtils.gtmData(
@@ -50,7 +84,7 @@ object ProductTrackingCommon {
     fun onRemindMeClicked(productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - global variant bottomsheet",
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
                 ProductTrackingConstant.Action.CLICK_NOTIFY_ME_VARIANT_BOTTOMSHEET,
                 "")
 
@@ -61,7 +95,7 @@ object ProductTrackingCommon {
         val label = "quantity button:${if (newQuantity > oldQuantity) "plus" else "minus"}"
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - global variant bottomsheet",
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
                 ProductTrackingConstant.Action.CLICK_VARIANT_QUANTITY_EDITOR,
                 label)
 
@@ -71,7 +105,7 @@ object ProductTrackingCommon {
     fun onWishlistCheckClicked(productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - global variant bottomsheet",
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
                 ProductTrackingConstant.Action.CLICK_CHECK_WISHLIST,
                 "")
 
@@ -81,7 +115,7 @@ object ProductTrackingCommon {
     fun onSeeCartVariantBottomSheetClicked(message: String, productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - global variant bottomsheet",
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
                 ProductTrackingConstant.Action.CLICK_TOASTER_LIHAT_SUCCESS_ATC,
                 "toaster message:$message")
 
@@ -91,7 +125,7 @@ object ProductTrackingCommon {
     fun onVariantImageBottomSheetClicked(productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - global variant bottomsheet",
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
                 ProductTrackingConstant.Action.CLICK_PRODUCT_IMAGE,
                 "")
 
@@ -101,7 +135,7 @@ object ProductTrackingCommon {
     fun onVariantGuidelineClicked(productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - global variant bottomsheet",
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
                 ProductTrackingConstant.Action.CLICK_VARIANT_BOTTOMSHEET_GUIDELINE,
                 "")
 
@@ -111,7 +145,7 @@ object ProductTrackingCommon {
     fun onVariantPartiallySelected(errorMessage: String, productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_VIEW_PDP_IRIS,
-                "$pageSource - global variant bottomsheet",
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
                 ProductTrackingConstant.Action.VIEW_CHOOSE_VARIANT_ERROR,
                 "not success - $errorMessage")
 
@@ -128,7 +162,7 @@ object ProductTrackingCommon {
 
     fun eventEcommerceAtcError(errorMessage: String, productId: String, userId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(ProductTrackingConstant.PDP.EVENT_VIEW_PDP_IRIS,
-                "$pageSource - global variant bottomsheet",
+                String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
                 ProductTrackingConstant.Action.ACTION_VIEW_ERROR_WHEN_ADD_TO_CART,
                 "not success - $errorMessage")
         mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
@@ -145,8 +179,9 @@ object ProductTrackingCommon {
             productName: String, productPrice: Double, quantity: Int,
             variantName: String, isMultiOrigin: Boolean,
             shopType: String = "", shopName: String = "",
-            categoryName: String = "", categoryId: String = "", isFreeOngkir: Boolean = false, pageSource: String = "",
-            cdListName: String = ""
+            categoryName: String = "", categoryId: String = "", bebasOngkirType: String = "", pageSource: String = "",
+            cdListName: String = "", isCod: Boolean, ratesEstimateData: P2RatesEstimateData?,
+            buyerDistrictId: String, sellerDistrictId: String
     ) {
         val generateButtonActionString = when (buttonAction) {
             ProductDetailCommonConstant.OCS_BUTTON -> "$buttonText ocs"
@@ -159,13 +194,18 @@ object ProductTrackingCommon {
             else -> "regular"
         }
 
+        val cheapestShippingPrice = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
+        val shippingCourier = ratesEstimateData?.title ?: ""
+        val shippingEta = ratesEstimateData?.etaText ?: ""
+        val buyerSellerDistrictId = "$buyerDistrictId - $sellerDistrictId"
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
-                ProductTrackingConstant.Tracking.KEY_CATEGORY, "$pageSource - global variant bottomsheet",
+                ProductTrackingConstant.Tracking.KEY_CATEGORY, String.format(ProductTrackingConstant.Category.GLOBAL_VARIANT_BOTTOM_SHEET, pageSource),
                 ProductTrackingConstant.Tracking.KEY_ACTION, "click - tambah ke keranjang on global variant bottomsheet",
                 ProductTrackingConstant.Tracking.KEY_LABEL, if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
                 KEY_PRODUCT_ID, productId,
-                ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
+                ProductTrackingConstant.Tracking.KEY_HIT_USER_ID, userId,
                 ProductTrackingConstant.Tracking.KEY_ISLOGGIN, (userId.isNotEmpty()).toString(),
                 KEY_BUSINESS_UNIT, generateBusinessUnit(pageSource),
                 KEY_CURRENT_SITE, CURRENT_SITE,
@@ -182,6 +222,15 @@ object ProductTrackingCommon {
                         ProductTrackingConstant.Tracking.CATEGORY, categoryName,
                         ProductTrackingConstant.Tracking.VARIANT, variantName,
                         ProductTrackingConstant.Tracking.QUANTITY, quantity,
+                        ProductTrackingConstant.Tracking.KEY_PRODUCT_CATEGORY_ID, categoryId,
+                        ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_ID, shopId,
+                        ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_NAME, shopName,
+                        ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_TYPE, shopType,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_10, isCod.toString(),
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_12, cheapestShippingPrice,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_14, shippingCourier,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_16, shippingEta,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_120, buyerSellerDistrictId,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_79, shopId,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_80, shopName,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_81, shopType,
@@ -189,7 +238,7 @@ object ProductTrackingCommon {
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_82, categoryId,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_40, cdListName, //cd listname --> /tokonow - searchproduct - {organic/organic ads/topads productlist}
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_54, multiOrigin,
-                        ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (isFreeOngkir) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_83, bebasOngkirType,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_38, pageSource
                 ))))))
     }

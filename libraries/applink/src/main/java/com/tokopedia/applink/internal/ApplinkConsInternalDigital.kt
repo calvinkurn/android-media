@@ -16,8 +16,6 @@ object ApplinkConsInternalDigital {
 
     //new cart checkout applink
     const val CHECKOUT_DIGITAL = "$INTERNAL_DIGITAL/checkout"
-    //old cart checkout applink
-    const val CART_DIGITAL = "$INTERNAL_DIGITAL/cart"
 
     const val TELCO_PREPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopre"
     const val TELCO_POSTPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopost"
@@ -26,12 +24,14 @@ object ApplinkConsInternalDigital {
     const val CAMERA_OCR = "$INTERNAL_RECHARGE/ocr"
     const val CREDIT_CARD_TEMPLATE = "$INTERNAL_RECHARGE/cc"
     const val SMART_BILLS = "$INTERNAL_RECHARGE/bayarsekaligus"
+    const val ADD_TELCO = "$INTERNAL_RECHARGE/add_telco?template={template}"
     const val SUBHOMEPAGE = "$INTERNAL_RECHARGE/home"
     const val DYNAMIC_SUBHOMEPAGE = "$INTERNAL_RECHARGE/home/dynamic"
+    const val DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE = "$INTERNAL_RECHARGE/home/dynamic?platform_id={platform_id}"
     const val DYNAMIC_SUBHOMEPAGE_WITH_PARAM = "$INTERNAL_RECHARGE/home/dynamic?platform_id={platform_id}&personalize={bool_personalize}"
     const val ELECTRONIC_MONEY_PDP = "$INTERNAL_DIGITAL/electronicmoney"
 
-    const val SMARTCARD = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/smartcard?$PARAM_SMARTCARD={type}&$PARAM_BRIZZI={status}"
+    const val SMARTCARD = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_DIGITAL/smartcard?$PARAM_SMARTCARD={type}"
     const val INTERNAL_SMARTCARD_EMONEY = "$INTERNAL_DIGITAL/smartcard/emoney?$PARAM_SMARTCARD={type}"
     const val INTERNAL_SMARTCARD_BRIZZI = "$INTERNAL_DIGITAL/smartcard/brizzi?$PARAM_SMARTCARD={type}"
 

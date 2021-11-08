@@ -28,7 +28,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
-    var enableBackBtn = true
+    private var enableBackBtn = true
 
     override fun getComponent(): ProfileCompletionSettingComponent {
         return DaggerProfileCompletionSettingComponent.builder()
@@ -69,12 +69,21 @@ open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             if (enableBackBtn) {
-                setHomeAsUpIndicator(R.drawable.ic_back_toolbar_profile_completion)
+                val backBtn = MethodChecker.getDrawable(
+                    this@AddPinActivity,
+                    R.drawable.ic_back_toolbar_profile_completion
+                )
+                setHomeAsUpIndicator(backBtn)
             }
             setDisplayHomeAsUpEnabled(enableBackBtn)
             setDisplayShowTitleEnabled(false)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(MethodChecker.getColor(this@AddPinActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)))
+            setBackgroundDrawable(
+                ColorDrawable(MethodChecker.getColor(
+                    this@AddPinActivity,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                )
+            )
         }
     }
 
@@ -88,7 +97,10 @@ open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            window.statusBarColor = ContextCompat.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0
+            )
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

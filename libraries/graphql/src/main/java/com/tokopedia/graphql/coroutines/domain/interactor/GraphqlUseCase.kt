@@ -2,6 +2,7 @@ package com.tokopedia.graphql.coroutines.domain.interactor
 
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
@@ -14,7 +15,7 @@ import rx.Observable
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
-open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlRepository: GraphqlRepository): UseCase<T>() {
+open class GraphqlUseCase<T: Any> constructor(private val graphqlRepository: GraphqlRepository): UseCase<T>() {
 
     private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
     private var graphqlQuery: String? = null
@@ -24,6 +25,8 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
 
     private var mCacheManager: GraphqlCacheManager? = null
     private var mFingerprintManager: FingerprintManager? = null
+
+    @Inject constructor() : this(GraphqlInteractor.getInstance().graphqlRepository) {}
 
     fun setCacheStrategy(cacheStrategy: GraphqlCacheStrategy){
         this.cacheStrategy = cacheStrategy
@@ -84,7 +87,7 @@ open class GraphqlUseCase<T: Any> @Inject constructor(private val graphqlReposit
         val type = tClass ?: throw RuntimeException("Please set valid class type before call execute()")
         val request = GraphqlRequest(doQueryHash, graphqlQuery, type, requestParams)
         val listOfRequest = listOf(request)
-        val response = graphqlRepository.getReseponse(listOfRequest, cacheStrategy)
+        val response = graphqlRepository.response(listOfRequest, cacheStrategy)
 
         val error = response.getError(tClass)
 

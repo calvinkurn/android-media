@@ -16,12 +16,14 @@ import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
+import com.tokopedia.seller.menu.databinding.FragmentAdminRoleAuthorizeBinding
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.viewmodel.AdminRoleAuthorizeViewModel
 import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
@@ -51,12 +53,15 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         arguments?.getString(com.tokopedia.seller.menu.presentation.activity.AdminRoleAuthorizeActivity.KEY_ADMIN_FEATURE).orEmpty()
     }
 
+    private var binding by autoClearedNullable<FragmentAdminRoleAuthorizeBinding>()
+
     private var adminErrorView: GlobalError? = null
     private var adminLoadingView: LoaderUnify? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         observeLiveData()
-        return inflater.inflate(R.layout.fragment_admin_role_authorize, container, false)
+        binding = FragmentAdminRoleAuthorizeBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,8 +79,8 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
     }
 
     private fun View.setupAdminView() {
-        adminErrorView = findViewById(R.id.error_admin_role)
-        adminLoadingView = findViewById(R.id.loader_admin_role)
+        adminErrorView = binding?.errorAdminRole
+        adminLoadingView = binding?.loaderAdminRole
 
         setupGlobalError()
         setToolbarTitle(adminPermissionMapper.mapFeatureToToolbarTitle(context, adminFeature))

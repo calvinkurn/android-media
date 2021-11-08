@@ -6,6 +6,7 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_KEY_CURRENT_SITE = "currentSite"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCTS_ITEMS = "items"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY_ID = "category_id"
+    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_40 = "dimension40"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_45 = "dimension45"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_BRAND = "item_brand"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY = "item_category"
@@ -42,15 +43,20 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_CHAT_ICON = "click chat button top right nav"
     const val EVENT_ACTION_CLICK_SEE_COMPLAINT = "click on lihat complain"
     const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT = "click on product serupa"
-    const val EVENT_ACTION_CLICK_BUY_AGAIN = "click on beli lagi"
+    const val EVENT_ACTION_CLICK_BUY_AGAIN = "attempt click beli lagi"
+    const val EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS = "click beli lagi success"
 
     // event labels
+    const val EVENT_LABEL_ATTEMPT_BUY_AGAIN = "attempt - order_id: "
+    const val EVENT_LABEL_BUY_AGAIN_SUCCESS = "success - order_id: "
 
     // business unit
     const val BUSINESS_UNIT_MARKETPLACE = "Seller Order Management"
+    const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
 
     // current site
-    const val CURRENT_SITE_MARKETPLACE = "tokopediamarketplace"
+    const val CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+    const val CURRENT_SITE_MARKETPLACE = "Marketplace"
 
     // separator
     const val SEPARATOR_STRIP = " - "
@@ -68,4 +74,7 @@ object BuyerOrderDetailTrackerConstant {
     const val BUTTON_NAME_FINISH_ORDER_CONFIRMATION_CONFIRM_FINISH_ORDER = "selesai"
     const val BUTTON_NAME_FINISH_ORDER_CONFIRMATION_REQUEST_COMPLAINT = "ajukan komplain"
     const val BUTTON_NAME_REVIEW_ORDER = "beri ulasan"
+
+    // others
+    const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"
 }

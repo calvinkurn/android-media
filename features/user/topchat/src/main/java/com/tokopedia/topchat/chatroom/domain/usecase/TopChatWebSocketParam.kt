@@ -1,19 +1,24 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent
-import com.tokopedia.chat_common.data.preview.ProductPreview
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.attachcommon.preview.ProductPreview
+import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.data.parentreply.ParentReplyWsRequest
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
+import com.tokopedia.topchat.common.util.AddressUtil
 
 /**
  * @author : Steven 01/01/19
@@ -21,19 +26,25 @@ import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
 
 object TopChatWebSocketParam {
 
+    private val gson = GsonBuilder().create()
+
     fun generateParamSendMessage(
-        thisMessageId: String,
+        roomeMetaData: RoomMetaData,
         messageText: String,
         startTime: String,
         attachments: List<SendablePreview>,
+        localId: String,
         intention: String? = null,
-        userLocationInfo: LocalCacheModel? = null
+        userLocationInfo: LocalCacheModel? = null,
+        referredMsg: ParentReply? = null
     ): String {
+        val referredMsgRequest = generateParentReplyRequestPayload(referredMsg)
         val json = JsonObject().apply {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         }
         val data = JsonObject().apply {
-            addProperty("message_id", thisMessageId.toLong())
+            addProperty("local_id", localId)
+            addProperty("message_id", roomeMetaData.msgId.toLongOrZero())
             addProperty("message", messageText)
             addProperty("source", "inbox")
             addProperty("start_time", startTime)
@@ -43,9 +54,30 @@ object TopChatWebSocketParam {
                 )
                 add("extras", extras)
             }
+            if (referredMsg != null) {
+                add("parent_reply", referredMsgRequest)
+            }
         }
         json.add("data", data)
         return json.toString()
+    }
+
+    fun generateParentReplyRequestPayload(
+        parentReply: ParentReply?
+    ): JsonElement? {
+        if (parentReply == null) return null
+        val requestContract = ParentReplyWsRequest(
+            attachment_id = parentReply.attachmentId.toLongOrZero(),
+            attachment_type = parentReply.attachmentType.toLongOrZero(),
+            sender_id = parentReply.senderId.toLongOrZero() ,
+            reply_time = parentReply.replyTime.toLongOrZero(),
+            main_text = parentReply.mainText,
+            sub_text = parentReply.subText,
+            image_url = parentReply.imageUrl,
+            local_id = parentReply.localId,
+            source = "inbox"
+        )
+        return gson.toJsonTree(requestContract)
     }
 
     fun generateParamSendProductAttachment(
@@ -55,12 +87,14 @@ object TopChatWebSocketParam {
         toUid: String,
         productPreview: ProductPreview,
         message: String,
-        userLocationInfo: LocalCacheModel
+        userLocationInfo: LocalCacheModel,
+        localId: String
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
         data.addProperty("message_id", messageId.toLong())
+        data.addProperty("local_id", localId)
         data.addProperty("message", product.productUrl)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
@@ -153,23 +187,38 @@ object TopChatWebSocketParam {
         userLocationInfo: LocalCacheModel
     ): JsonObject {
         return JsonObject().apply {
-            val latlon = "${userLocationInfo.lat},${userLocationInfo.long}"
+            val lat = userLocationInfo.lat
+            val long = userLocationInfo.long
+            val latlon = if (lat.isNotEmpty() && long.isNotEmpty()) {
+                "$lat,$long"
+            } else ""
             addProperty("address_id", userLocationInfo.address_id.toLongOrZero())
             addProperty("district_id", userLocationInfo.district_id.toLongOrZero())
             addProperty("postal_code", userLocationInfo.postal_code)
+            addProperty(
+                "address_name", AddressUtil.getAddressMasking(userLocationInfo.label)
+            )
             addProperty("latlon", latlon)
         }
     }
 
-    fun generateParamSendImage(thisMessageId: String, path: String, startTime: String): String {
+    fun generateParamSendImage(
+        thisMessageId: String,
+        path: String,
+        image: ImageUploadUiModel
+    ): String {
+        val referredMsgRequest = generateParentReplyRequestPayload(image.parentReply)
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
         data.addProperty("message_id", thisMessageId.toLongOrZero())
         data.addProperty("message", UPLOADING)
-        data.addProperty("start_time", startTime)
+        data.addProperty("start_time", image.startTime)
         data.addProperty("file_path", path)
         data.addProperty("attachment_type", Integer.parseInt(TYPE_IMAGE_UPLOAD))
+        if (referredMsgRequest != null) {
+            data.add("parent_reply", referredMsgRequest)
+        }
         json.add("data", data)
         return json.toString()
     }

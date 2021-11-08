@@ -13,12 +13,15 @@ import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
 const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
+const val SHIMMER_ITEMS_LIST_SIZE = 10
 var discoComponentQuery: MutableMap<String, String?>? = null
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
@@ -103,6 +106,11 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             ComponentNames.Tabs.componentName -> listComponents.addAll(parseTab(component, position))
             ComponentNames.ProductCardRevamp.componentName,
             ComponentNames.ProductCardSprintSale.componentName -> listComponents.addAll(parseProductVerticalList(component))
+            ComponentNames.ProductCardSprintSaleCarousel.componentName,
+            ComponentNames.ProductCardCarousel.componentName -> {
+                updateCarouselWithCart(component)
+                listComponents.add(component)
+            }
             ComponentNames.QuickCoupon.componentName -> {
                 if (component.isApplicable) {
                     listComponents.add(component)
@@ -125,9 +133,35 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                     listComponents.add(component)
                 }
             }
+            ComponentNames.Video.componentName -> {
+                addAutoPlayController(component)
+                listComponents.add(component)
+            }
             else -> listComponents.add(component)
         }
         return listComponents
+    }
+
+    private fun addAutoPlayController(component: ComponentsItem) {
+        if (component.autoPlayController == null) {
+            val autoplayComponent: ComponentsItem = getAutoPlayComponent(component)
+            autoplayComponent.autoPlayController?.videoIdSet?.add(component.id)
+            component.autoPlayController = autoplayComponent.autoPlayController
+        } else if (getComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint) == null) {
+            setComponent(
+                AutoPlayController.AUTOPLAY_ID,
+                component.pageEndPoint,
+                ComponentsItem().apply { autoPlayController = component.autoPlayController })
+        }
+    }
+
+    private fun getAutoPlayComponent(component: ComponentsItem): ComponentsItem {
+        return getComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint) ?: run {
+            ComponentsItem().apply {
+                autoPlayController = AutoPlayController(component.id)
+                setComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint, this)
+            }
+        }
     }
 
     private fun addBannerTimerComp(component: ComponentsItem): Boolean {
@@ -267,7 +301,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 })
                 component.needPagination = true
                 component.userAddressData = localCacheModel
-                listComponents.addAll(List(10) {
+                listComponents.addAll(List(SHIMMER_ITEMS_LIST_SIZE) {
                     ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
                         properties = component.properties
                     }
@@ -275,9 +309,13 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
             } else {
                 listComponents.add(component)
                 component.getComponentsItem()?.let {
-                    listComponents.addAll(getDiscoveryComponentList(it))
+                    listComponents.addAll(getDiscoveryComponentList(it).apply {
+                        if(component.properties?.tokonowATCActive == true) {
+                            updateWithCart(it, getCartData(component.pageEndPoint))
+                        }
+                    })
                 }
-                if (component.getComponentsItem()?.size.isMoreThanZero() && component.getComponentsItem()?.size?.rem(component.componentsPerPage) == 0 && component.showVerticalLoader) {
+                if (Utils.nextPageAvailable(component,component.componentsPerPage) && component.showVerticalLoader) {
                     listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
                 } else if (component.getComponentsItem()?.size == 0) {
                     listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
@@ -299,6 +337,49 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         })
         return productState
     }
+
+    private fun updateCarouselWithCart(component: ComponentsItem){
+        if(component.properties?.tokonowATCActive == true) {
+            component.getComponentsItem()?.let {
+                if(updateWithCart(it,getCartData(component.pageEndPoint))){
+                    component.shouldRefreshComponent = true
+                }
+            }
+        }
+    }
+
+    private fun updateWithCart(list: List<ComponentsItem>, map: Map<String, MiniCartItem>?) : Boolean {
+        var shouldRefresh = false
+        if (map == null) return shouldRefresh
+        list.forEach { item ->
+            item.data?.firstOrNull()?.let { dataItem ->
+                if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
+                    map[dataItem.parentProductId]?.quantity?.let { quantity ->
+                        if(updateQuantity(quantity, item))
+                            shouldRefresh = true
+                    }
+                } else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
+                    map[dataItem.productId]?.quantity?.let { quantity ->
+                        if(updateQuantity(quantity, item))
+                            shouldRefresh = true
+                    }
+                } else {
+                    if(updateQuantity(0, item))
+                        shouldRefresh = true
+                }
+            }
+        }
+        return shouldRefresh
+    }
+
+    private fun updateQuantity(quantity:Int,item:ComponentsItem):Boolean{
+        if (quantity != item.data?.firstOrNull()?.quantity) {
+            item.data?.firstOrNull()?.quantity = quantity
+            item.shouldRefreshComponent = true
+            return true
+        }
+        return false
+    }
 }
 
 fun getComponent(componentId: String, pageName: String): ComponentsItem? {
@@ -311,6 +392,18 @@ fun getComponent(componentId: String, pageName: String): ComponentsItem? {
 fun setComponent(componentId: String, pageName: String, componentsItem: ComponentsItem) {
     discoveryPageData[pageName]?.let {
         it.componentMap[componentId] = componentsItem
+    }
+}
+
+fun getCartData(pageName: String):MutableMap<String,MiniCartItem>?{
+    discoveryPageData[pageName]?.let {
+        return it.cartMap
+    }
+    return null
+}
+fun setCartData(cartMap:MutableMap<String,MiniCartItem>,pageName: String){
+    discoveryPageData[pageName]?.let {
+        it.cartMap = cartMap
     }
 }
 

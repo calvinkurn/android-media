@@ -18,7 +18,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
-import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
+import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.feature.reviewdetail.di.component.DaggerReviewProductDetailComponent
 import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetailComponent
 import com.tokopedia.review.feature.reviewdetail.di.module.ReviewProductDetailModule

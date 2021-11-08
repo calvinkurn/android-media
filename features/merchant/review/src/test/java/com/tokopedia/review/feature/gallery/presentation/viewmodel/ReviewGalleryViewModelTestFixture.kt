@@ -1,7 +1,8 @@
 package com.tokopedia.review.feature.gallery.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
+import com.tokopedia.review.feature.gallery.domain.usecase.GetProductRatingUseCase
+import com.tokopedia.review.feature.gallery.domain.usecase.GetReviewImagesUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -11,7 +12,10 @@ import org.junit.Rule
 abstract class ReviewGalleryViewModelTestFixture {
 
     @RelaxedMockK
-    lateinit var toggleLikeReviewUseCase: ToggleLikeReviewUseCase
+    lateinit var getProductRatingUseCase: GetProductRatingUseCase
+
+    @RelaxedMockK
+    lateinit var getReviewImagesUseCase: GetReviewImagesUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -21,6 +25,12 @@ abstract class ReviewGalleryViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ReviewGalleryViewModel(toggleLikeReviewUseCase, CoroutineTestDispatchersProvider)
+        viewModel = ReviewGalleryViewModel(
+            getProductRatingUseCase,
+            getReviewImagesUseCase,
+            CoroutineTestDispatchersProvider
+        )
+        viewModel.reviewImages.observeForever { }
+        viewModel.rating.observeForever { }
     }
 }

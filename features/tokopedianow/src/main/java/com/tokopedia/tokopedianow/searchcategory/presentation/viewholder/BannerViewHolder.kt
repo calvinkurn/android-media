@@ -18,8 +18,10 @@ import com.tokopedia.home_component.viewholders.adapter.BannerItemModel
 import com.tokopedia.home_component.viewholders.layoutmanager.PeekingLinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryBannerBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -34,7 +36,8 @@ class BannerViewHolder(
         private val bannerListener: BannerComponentListener
 ): AbstractViewHolder<BannerDataView>(itemView), CoroutineScope, BannerItemListener {
 
-    private val rvBanner: RecyclerView = itemView.findViewById(R.id.tokonowSearchCategoryRecyclerViewBanner)
+    private var binding: ItemTokopedianowSearchCategoryBannerBinding? by viewBinding()
+
     private var layoutManager = LinearLayoutManager(itemView.context)
 
     private val masterJob = Job()
@@ -102,7 +105,7 @@ class BannerViewHolder(
     }
 
     private fun scrollTo(position: Int) {
-        rvBanner.smoothScrollToPosition(position)
+        binding?.tokonowSearchCategoryRecyclerViewBanner?.smoothScrollToPosition(position)
     }
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
@@ -142,26 +145,28 @@ class BannerViewHolder(
     }
 
     private fun initBanner(list: List<BannerItemModel>){
-        rvBanner.clearOnScrollListeners()
+        binding?.tokonowSearchCategoryRecyclerViewBanner?.let { rvBanner ->
+            rvBanner.clearOnScrollListeners()
 
-        val snapHelper: SnapHelper = PagerSnapHelper()
-        rvBanner.onFlingListener = null
-        snapHelper.attachToRecyclerView(rvBanner)
-        rvBanner.layoutManager = getLayoutManager(list)
-        rvBanner.removeAllItemDecoration()
-        if (rvBanner.itemDecorationCount == 0) {
-            if (list.size == 1) {
-                rvBanner.addItemDecoration(BannerChannelSingleItemDecoration())
-            } else rvBanner.addItemDecoration(BannerChannelDecoration())
+            val snapHelper: SnapHelper = PagerSnapHelper()
+            rvBanner.onFlingListener = null
+            snapHelper.attachToRecyclerView(rvBanner)
+            rvBanner.layoutManager = getLayoutManager(list)
+            rvBanner.removeAllItemDecoration()
+            if (rvBanner.itemDecorationCount == 0) {
+                if (list.size == 1) {
+                    rvBanner.addItemDecoration(BannerChannelSingleItemDecoration())
+                } else rvBanner.addItemDecoration(BannerChannelDecoration())
+            }
+            val adapter = BannerChannelAdapter(list, this)
+            rvBanner.adapter = adapter
+            adapter.setItemList(list)
+            adapter.setImageRatio(imageRatio)
         }
-        val adapter = BannerChannelAdapter(list, this)
-        rvBanner.adapter = adapter
-        adapter.setItemList(list)
-//        adapter.setImageRatio(imageRatio)
     }
 
     private fun setScrollListener() {
-        rvBanner.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding?.tokonowSearchCategoryRecyclerViewBanner?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 when (newState) {
                     RecyclerView.SCROLL_STATE_IDLE -> {

@@ -21,7 +21,7 @@ data class TopAdsmageViewResponse(
         @SerializedName("banner")
         val banner: Banner?,
         @SerializedName("id")
-        val id: Int?,
+        val id: String?,
         @SerializedName("redirect")
         val redirect: String?
     ) {
@@ -53,7 +53,7 @@ data class TopAdsmageViewResponse(
 
             data class Shop(
                 @SerializedName("id")
-                val id: Int?,
+                val id: String?,
                 @SerializedName("image_shop")
                 val imageShop: ImageShop?,
                 @SerializedName("name")
@@ -101,6 +101,8 @@ data class TopAdsmageViewResponse(
         )
 
         data class Pagination(
+            @SerializedName("current_page")
+            val currentPage: String?,
             @SerializedName("kind")
             val kind: String?,
             @SerializedName("next_page_token")

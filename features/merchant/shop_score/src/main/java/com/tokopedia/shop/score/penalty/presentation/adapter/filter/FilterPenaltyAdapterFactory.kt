@@ -9,7 +9,8 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPena
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyFilterBottomSheetViewHolder
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 
-class FilterPenaltyAdapterFactory(private val itemBottomSheetListener: FilterPenaltyBottomSheetListener): BaseAdapterTypeFactory(), FilterPenaltyTypeFactory {
+class FilterPenaltyAdapterFactory(private val itemBottomSheetListener: FilterPenaltyBottomSheetListener) :
+    BaseAdapterTypeFactory(), FilterPenaltyTypeFactory {
 
     override fun type(penaltyFilterUiModel: PenaltyFilterUiModel): Int {
         return ItemPenaltyFilterBottomSheetViewHolder.LAYOUT
@@ -21,7 +22,10 @@ class FilterPenaltyAdapterFactory(private val itemBottomSheetListener: FilterPen
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ItemPenaltyFilterBottomSheetViewHolder.LAYOUT -> ItemPenaltyFilterBottomSheetViewHolder(parent, itemBottomSheetListener)
+            ItemPenaltyFilterBottomSheetViewHolder.LAYOUT -> ItemPenaltyFilterBottomSheetViewHolder(
+                parent,
+                itemBottomSheetListener
+            )
             ItemPenaltyEmptyViewHolder.LAYOUT -> ItemPenaltyEmptyViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

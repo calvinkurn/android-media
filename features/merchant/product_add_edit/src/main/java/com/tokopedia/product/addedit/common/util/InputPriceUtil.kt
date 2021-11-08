@@ -4,6 +4,7 @@ import android.text.TextWatcher
 import android.widget.EditText
 import java.text.NumberFormat
 import java.util.*
+import java.lang.Exception
 
 object InputPriceUtil {
 
@@ -15,13 +16,19 @@ object InputPriceUtil {
             charAddedLength: Int,
             textWatcher: TextWatcher
     ) {
-        textField.removeTextChangedListener(textWatcher)
-        val formattedText = formatProductPriceInput(price)
-        val lengthDiff = formattedText.length - stringLength
-        val cursorPosition = cursorStart + charAddedLength + lengthDiff
-        textField.setText(formattedText)
-        textField.setSelection(cursorPosition.coerceIn(0, formattedText.length))
-        textField.addTextChangedListener(textWatcher)
+        try {
+            textField.removeTextChangedListener(textWatcher)
+            val formattedText = formatProductPriceInput(price)
+            val lengthDiff = formattedText.length - stringLength
+            val cursorPosition = cursorStart + charAddedLength + lengthDiff
+            textField.setText(formattedText)
+            textField.setSelection(cursorPosition.coerceIn(0, formattedText.length))
+            textField.addTextChangedListener(textWatcher)
+        } catch (e: Exception) {
+            AddEditProductErrorHandler.logMessage("applyPriceFormatToInputField: $price")
+            AddEditProductErrorHandler.logExceptionToCrashlytics(e)
+        }
+
     }
 
     fun formatProductPriceInput(productPriceInput: String): String {

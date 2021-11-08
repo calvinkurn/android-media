@@ -39,7 +39,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_header_is_show_shadow="true" />
+            app:unify_header_is_show_shadow="false" />
+
+        <View
+            android:id="@+id/somToolbarShadow"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="1dp"
+            android:background="@color/Unify_N75"
+            app:layout_constraintBottom_toBottomOf="@+id/som_list_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!--  start success views  -->
 

@@ -1,5 +1,7 @@
 package com.tokopedia.atc_common.domain.usecase.coroutine
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
@@ -15,7 +17,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class AddToCartUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class AddToCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                            private val addToCartDataMapper: AddToCartDataMapper,
                                            private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartDataModel>() {
 
@@ -50,7 +52,7 @@ class AddToCartUseCase @Inject constructor(private val graphqlRepository: Graphq
         }
 
         val request = GraphqlRequest(QUERY_ADD_TO_CART, AddToCartGqlResponse::class.java, getParams())
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<AddToCartGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<AddToCartGqlResponse>()
 
         val result = addToCartDataMapper.mapAddToCartResponse(response)
         if (!result.isStatusError()) {
@@ -88,7 +90,7 @@ class AddToCartUseCase @Inject constructor(private val graphqlRepository: Graphq
 
         @JvmStatic
         @JvmOverloads
-        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AddToCartRequestParams.ATC_FROM_OTHERS,
+        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS,
                 /*tracking data*/ productName: String = "", category: String = "", price: String = "", userId: String = ""): AddToCartRequestParams {
             return AddToCartRequestParams(
                     productId = productId.toLong(),

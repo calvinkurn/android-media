@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
@@ -145,10 +146,11 @@ class CategoryChooserFilterTestHelper(
             chosenCategoryFilter: Option,
             requestParams: RequestParams,
     ) {
+        val chosenCategoryFilterKey = OptionHelper.getKeyRemoveExclude(chosenCategoryFilter)
         val expectedGetProductCountParams =
-                mandatoryParams +
-                        mapOf(chosenCategoryFilter.key to chosenCategoryFilter.value) +
-                        mapOf(SearchApiConst.ROWS to 0)
+            mandatoryParams +
+                mapOf(chosenCategoryFilterKey to chosenCategoryFilter.value) +
+                mapOf(SearchApiConst.ROWS to 0)
 
         val getProductCountParams = requestParams.parameters
 
@@ -225,6 +227,38 @@ class CategoryChooserFilterTestHelper(
 
     private fun `When view dismiss L3 filter page`() {
         baseViewModel.onViewDismissL3FilterPage()
+    }
+
+    fun `test get filter count with exclude filter from category chooser`(
+        mandatoryParams: Map<String, String>
+    ) {
+        val requestParamsSlot = slot<RequestParams>()
+        val requestParams by lazy { requestParamsSlot.captured }
+        val successResponse = "10rb+"
+
+        `Given get product count API will be successful`(requestParamsSlot, successResponse)
+        callback.`Given first page use case will be successful`()
+        `Given view already created`()
+
+        val categoryL3QuickFilterDataView =
+            baseViewModel.visitableListLiveData.value.getCategoryL3FilterFromQuickFilter()
+
+        `Given view already open category chooser`(categoryL3QuickFilterDataView)
+        `Given view choose exclude category filter`(categoryL3QuickFilterDataView)
+
+        `When view get product count`()
+
+        `Then assert get product count query params`(mandatoryParams, chosenCategoryFilter, requestParams)
+        `Then assert product count live data`(successResponse)
+    }
+
+    private fun `Given view choose exclude category filter`(
+        categoryL3QuickFilterDataView: SortFilterItemDataView
+    ) {
+        chosenCategoryFilter = categoryL3QuickFilterDataView
+            .filter
+            .options
+            .find { it.key.contains(OptionHelper.EXCLUDE_PREFIX) }!!
     }
 
     interface Callback {

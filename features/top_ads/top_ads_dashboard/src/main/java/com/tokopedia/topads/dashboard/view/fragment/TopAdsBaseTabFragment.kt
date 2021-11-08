@@ -77,6 +77,8 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
 
     abstract fun renderGraph()
 
+    abstract fun getCustomDateText(customDateText: String)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(getLayoutId(), container, false)
         currentDate = view.findViewById(R.id.current_date)
@@ -96,6 +98,7 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
         selectDate.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         selectDate.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         selectDate.setOnClickListener {
+            getCustomDateText(currentDate.text.toString())
             showBottomSheet()
         }
     }

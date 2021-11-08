@@ -7,10 +7,12 @@ import com.tokopedia.tokopedianow.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.assertProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.assertQuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.assertTitleDataView
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.verifyProductItemDataViewList
+import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -50,10 +52,21 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
-        visitableList[2].assertTitleDataView(title = categoryTitle, hasSeeAllCategoryButton = true)
+        visitableList[2].assertTitleDataView(categoryTitle)
         visitableList[3].assertCategoryFilterDataView(categoryModel.categoryFilter)
         visitableList[4].assertQuickFilterDataView(categoryModel.quickFilter, mapParameter)
         visitableList[5].assertProductCountDataView(categoryModel.searchProduct.header.totalDataText)
+    }
+
+    private fun Visitable<*>.assertTitleDataView(title: String) {
+        assertThat(this, instanceOf(TitleDataView::class.java))
+
+        val titleDataView = this as TitleDataView
+        assertThat(titleDataView.hasSeeAllCategoryButton, shouldBe(true))
+        assertThat(titleDataView.titleType, instanceOf(CategoryTitle::class.java))
+
+        val categoryTitle = titleDataView.titleType as CategoryTitle
+        assertThat(categoryTitle.categoryName, shouldBe(title))
     }
 
     private fun `Then assert visitable list contents`(

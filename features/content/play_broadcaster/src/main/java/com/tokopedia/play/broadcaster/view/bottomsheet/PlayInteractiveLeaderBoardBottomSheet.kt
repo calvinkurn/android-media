@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -24,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -47,7 +47,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
             analytic.onClickChatWinnerIcon(
                 parentViewModel.channelId,
                 parentViewModel.interactiveId,
-                parentViewModel.interactiveTitle
+                parentViewModel.activeInteractiveTitle
             )
             RouteManager.route(
                 requireContext(),
@@ -140,7 +140,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     }
 
     private fun observeLeaderboardInfo() {
-        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLeaderboardInfo.observe(viewLifecycleOwner) {
            when (it) {
                NetworkResult.Loading -> {
                    showError(false)
@@ -153,10 +153,21 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                is NetworkResult.Success -> {
                    showError(false)
                    btnRefresh.isLoading = false
-                   leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
+                   if(needRebindLeaderboard()) {
+                       leaderboardAdapter.setItems(it.data.leaderboardWinners)
+                       leaderboardAdapter.notifyDataSetChanged()
+                   }
+                   else {
+                       leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
+                   }
                }
            }
-        })
+        }
+    }
+
+    private fun needRebindLeaderboard(): Boolean {
+        val liveState = parentViewModel.observableLiveViewState.value
+        return liveState != null && (liveState is PlayLiveViewState.Stopped || liveState is PlayLiveViewState.Error)
     }
 
     private fun setupDialog(dialog: Dialog) {

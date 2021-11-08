@@ -1,6 +1,8 @@
 package com.tokopedia.play.di
 
 import android.content.Context
+import com.google.android.exoplayer2.ext.cast.CastPlayer
+import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -12,10 +14,12 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.data.websocket.PlaySocket.Companion.KEY_GROUPCHAT_PREFERENCES
-import com.tokopedia.play.data.websocket.revamp.PlayWebSocket
-import com.tokopedia.play.data.websocket.revamp.PlayWebSocketImpl
+import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.sse.PlayChannelSSEImpl
+import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
@@ -25,6 +29,7 @@ import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
+import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.product.detail.common.VariantConstant.QUERY_VARIANT
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -69,7 +74,7 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
-        return LocalCacheHandler(context, KEY_GROUPCHAT_PREFERENCES)
+        return LocalCacheHandler(context, KEY_GROUP_CHAT_PREFERENCES)
     }
 
     @PlayScope
@@ -144,4 +149,18 @@ class PlayModule(val mContext: Context) {
                 dispatchers
         )
     }
+
+    @Provides
+    fun providePlayChannelSSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
+        PlayChannelSSEImpl(userSession, dispatchers)
+
+    @Provides
+    fun provideCastContext(@ApplicationContext context: Context): CastContext = CastContext.getSharedInstance(context)
+
+    @Provides
+    fun provideCastPlayer(castContext: CastContext) = CastPlayer(castContext)
+
+    @PlayScope
+    @Provides
+    fun provideCastAnalyticHelper(playAnalytic: PlayAnalytic): CastAnalyticHelper = CastAnalyticHelper(playAnalytic)
 }

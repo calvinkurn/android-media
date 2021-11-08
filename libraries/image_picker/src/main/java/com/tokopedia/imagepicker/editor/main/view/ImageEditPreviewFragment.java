@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
+import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
+import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.image.ImageProcessingUtil;
@@ -29,6 +31,7 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
+import java.lang.reflect.Array;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -101,7 +104,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         ImageRatioType getCurrentRatio();
 
-        void itemSelectionWidgetPreview(Bitmap bitmap);
+        void itemSelectionWidgetPreview(Bitmap[] bitmap);
     }
 
     public static ImageEditPreviewFragment newInstance(
@@ -393,9 +396,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     @Override
-    public void onSuccessGetWatermarkImage(Bitmap bitmap) {
-        gestureCropImageView.setImageBitmap(bitmap);
+    public void onSuccessGetWatermarkImage(Bitmap[] bitmap) {
+        gestureCropImageView.setImageBitmap(bitmap[0]);
         onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(bitmap);
+    }
+
+    void setPreviewImageWatermark(Bitmap bitmap) {
+        gestureCropImageView.setImageBitmap(bitmap);
     }
 
     private void initProgressBar(View view) {
@@ -459,13 +466,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         overlayView.setShowCropFrame(OverlayView.DEFAULT_SHOW_CROP_FRAME);
         overlayView.setCropFrameColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
-        overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
+        overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_1));
 
         overlayView.setShowCropGrid(OverlayView.DEFAULT_SHOW_CROP_GRID);
         overlayView.setCropGridRowCount(OverlayView.DEFAULT_CROP_GRID_ROW_COUNT);
         overlayView.setCropGridColumnCount(OverlayView.DEFAULT_CROP_GRID_COLUMN_COUNT);
         overlayView.setCropGridColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0_68));
-        overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
+        overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_1));
 
         setToInitialRatio();
 

@@ -11,30 +11,33 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.SslErrorHandler
-import android.webkit.WebResourceResponse
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
+import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
+import com.tokopedia.oneclickcheckout.databinding.FragmentPaymentMethodBinding
 import com.tokopedia.oneclickcheckout.payment.di.PaymentComponent
 import com.tokopedia.oneclickcheckout.payment.list.data.PaymentListingParamRequest
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -56,6 +59,9 @@ class PaymentListingFragment : BaseDaggerFragment() {
         private const val ARG_ADDRESS_ID = "address_id"
         private const val ARG_PROFILE_CODE = "profile_code"
         private const val ARG_PAYMENT_BID = "bid"
+
+        private const val REQUEST_CODE_LINK_ACCOUNT = 101
+        private const val REQUEST_CODE = 191
 
         fun newInstance(paymentAmount: Double, addressId: String, profileCode: String, bid: String): PaymentListingFragment {
             val fragment = PaymentListingFragment()
@@ -88,27 +94,42 @@ class PaymentListingFragment : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory)[PaymentListingViewModel::class.java]
     }
 
-    private var webView: WebView? = null
-    private var progressBar: LoaderUnify? = null
-    private var globalError: GlobalError? = null
+    private var binding by autoClearedNullable<FragmentPaymentMethodBinding>()
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_LINK_ACCOUNT && view != null) {
+            if (resultCode == Activity.RESULT_OK) {
+                val status = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_STATUS) ?: ""
+                if (status.isNotEmpty()) {
+                    handleStatusMatching(status)
+                }
+            }
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
+        } else if (requestCode == REQUEST_CODE && view != null) {
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
+        }
+    }
+
+    private fun handleStatusMatching(status: String) {
+        val message = LinkStatusMatcher.getStatus(status)
+        val v = view
+        if (message.isNotEmpty() && v != null) {
+            Toaster.build(v, message, Toaster.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_payment_method, container, false)
+        binding = FragmentPaymentMethodBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view)
         initHeader()
         initWebView()
         loadPaymentParams()
-    }
-
-    private fun initViews(view: View) {
-        webView = view.findViewById(R.id.web_view)
-        progressBar = view.findViewById(R.id.progress_bar)
-        globalError = view.findViewById(R.id.global_error)
     }
 
     private fun initHeader() {
@@ -122,17 +143,19 @@ class PaymentListingFragment : BaseDaggerFragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
-        webView?.clearCache(true)
-        val webSettings = webView?.settings
-        webSettings?.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            builtInZoomControls = false
-            displayZoomControls = true
-            setAppCacheEnabled(true)
+        binding?.apply {
+            webView.clearCache(true)
+            val webSettings = webView.settings
+            webSettings?.apply {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                builtInZoomControls = false
+                displayZoomControls = true
+                setAppCacheEnabled(true)
+            }
+            webView.webViewClient = PaymentMethodWebViewClient()
+            webSettings?.mediaPlaybackRequiresUserGesture = false
         }
-        webView?.webViewClient = PaymentMethodWebViewClient()
-        webSettings?.mediaPlaybackRequiresUserGesture = false
     }
 
     private fun loadPaymentParams() {
@@ -147,9 +170,11 @@ class PaymentListingFragment : BaseDaggerFragment() {
                     }
                 }
                 is OccState.Loading -> {
-                    progressBar?.visible()
-                    globalError?.gone()
-                    webView?.gone()
+                    binding?.apply {
+                        progressBar.visible()
+                        globalError.gone()
+                        webView.gone()
+                    }
                 }
             }
         }
@@ -158,9 +183,11 @@ class PaymentListingFragment : BaseDaggerFragment() {
     }
 
     private fun loadWebView(param: String) {
-        webView?.postUrl(paymentListingUrl, param.toByteArray())
-        webView?.visible()
-        globalError?.gone()
+        binding?.apply {
+            webView.postUrl(paymentListingUrl, param.toByteArray())
+            webView.visible()
+            globalError.gone()
+        }
     }
 
     private fun generatePaymentListingRequest(): PaymentListingParamRequest {
@@ -201,13 +228,15 @@ class PaymentListingFragment : BaseDaggerFragment() {
     }
 
     private fun showGlobalError(type: Int) {
-        globalError?.setType(type)
-        globalError?.setActionClickListener {
-            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
+        binding?.apply {
+            globalError.setType(type)
+            globalError.setActionClickListener {
+                viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
+            }
+            globalError.visible()
+            webView.gone()
+            progressBar.gone()
         }
-        globalError?.visible()
-        webView?.gone()
-        progressBar?.gone()
     }
 
     override fun getScreenName(): String {
@@ -227,11 +256,12 @@ class PaymentListingFragment : BaseDaggerFragment() {
         parent.finish()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        webView = null
-        progressBar = null
-        globalError = null
+    private fun goToLinkAccount(context: Context) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+            putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
+        }
+        startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
     }
 
     inner class PaymentMethodWebViewClient : WebViewClient() {
@@ -239,17 +269,36 @@ class PaymentListingFragment : BaseDaggerFragment() {
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
             super.onReceivedSslError(view, handler, error)
             handler?.cancel()
-            progressBar?.gone()
+            binding?.progressBar?.gone()
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            progressBar?.visible()
+            binding?.progressBar?.visible()
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            progressBar?.gone()
+            binding?.progressBar?.gone()
+        }
+
+        override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+            // applink
+            val url = request?.url?.toString() ?: ""
+            context?.let {
+                if (url.isNotEmpty() && url.startsWith(ApplinkConst.LINK_ACCOUNT)) {
+                    goToLinkAccount(it)
+                    return true
+                }
+                if (!URLUtil.isNetworkUrl(url) && RouteManager.isSupportApplink(it, url)) {
+                    val intent = RouteManager.getIntent(it, url).apply {
+                        data = Uri.parse(url)
+                    }
+                    startActivityForResult(intent, REQUEST_CODE)
+                    return true
+                }
+            }
+            return super.shouldOverrideUrlLoading(view, request)
         }
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {

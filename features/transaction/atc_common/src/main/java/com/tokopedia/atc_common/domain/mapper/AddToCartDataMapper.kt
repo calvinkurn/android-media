@@ -2,12 +2,15 @@ package com.tokopedia.atc_common.domain.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
-import com.tokopedia.atc_common.data.model.response.AddToCartOccExternalGqlResponse
-import com.tokopedia.atc_common.data.model.response.AddToCartOccGqlResponse
 import com.tokopedia.atc_common.data.model.response.DataResponse
+import com.tokopedia.atc_common.data.model.response.occ.AddToCartOccMultiGqlResponse
+import com.tokopedia.atc_common.data.model.response.occ.DataOccMultiResponse
+import com.tokopedia.atc_common.data.model.response.occ.DetailOccMultiResponse
 import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.data.model.response.ocs.OcsDataResponse
 import com.tokopedia.atc_common.domain.model.response.*
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import javax.inject.Inject
 
 /**
@@ -41,47 +44,32 @@ class AddToCartDataMapper @Inject constructor() {
         }
     }
 
-    fun mapAddToCartOccResponse(addToCartOccGqlResponse: AddToCartOccGqlResponse): AddToCartDataModel {
-        return addToCartOccGqlResponse.addToCartOccResponse.let {
-            val addToCartDataModel = AddToCartDataModel()
-            addToCartDataModel.status = it.status
-            addToCartDataModel.errorMessage = it.errorMessage
-            addToCartDataModel.data = DataModel().apply {
-                success = it.data.success
-                message = it.data.message
-                cartId = it.data.detail.cartId.toString()
-                productId = it.data.detail.productId
-                quantity = it.data.detail.quantity
-                notes = it.data.detail.notes
-                shopId = it.data.detail.shopId
-                customerId = it.data.detail.customerId
-                warehouseId = it.data.detail.warehouseId
-                isTradeIn = it.data.detail.isTradeIn
-            }
-
-            addToCartDataModel
-        }
+    fun mapAddToCartOccMultiResponse(response: AddToCartOccMultiGqlResponse): AddToCartOccMultiDataModel {
+        return AddToCartOccMultiDataModel(
+                errorMessage = response.response.errorMessage,
+                status = response.response.status,
+                data = mapAddToCartOccMultiData(response.response.data)
+        )
     }
 
-    fun mapAddToCartOccResponse(addToCartOccGqlResponse: AddToCartOccExternalGqlResponse): AddToCartDataModel {
-        return addToCartOccGqlResponse.addToCartOccResponse.let {
-            val addToCartDataModel = AddToCartDataModel()
-            addToCartDataModel.status = it.status
-            addToCartDataModel.errorMessage = it.errorMessage
-            addToCartDataModel.data = DataModel().apply {
-                success = it.data.success
-                message = it.data.message
-                cartId = it.data.detail.cartId.toString()
-                productId = it.data.detail.productId
-                quantity = it.data.detail.quantity
-                notes = it.data.detail.notes
-                shopId = it.data.detail.shopId
-                customerId = it.data.detail.customerId
-                warehouseId = it.data.detail.warehouseId
-                isTradeIn = it.data.detail.isTradeIn
-            }
+    private fun mapAddToCartOccMultiData(dataResponse: DataOccMultiResponse): AddToCartOccMultiData {
+        return AddToCartOccMultiData(
+                success = dataResponse.success,
+                message = dataResponse.message,
+                cart = mapAddToCartOccMultiCartData(dataResponse.detail),
+                outOfService = dataResponse.outOfService,
+                toasterAction = dataResponse.toasterAction
+        )
+    }
 
-            addToCartDataModel
+    private fun mapAddToCartOccMultiCartData(data: List<DetailOccMultiResponse>): List<AddToCartOccMultiCartData> {
+        return data.map {
+            AddToCartOccMultiCartData(
+                    cartId = it.cartId,
+                    productId = it.productId,
+                    quantity = it.quantity.toIntOrZero(),
+                    shopId = it.shopId
+            )
         }
     }
 
@@ -163,6 +151,29 @@ class AddToCartDataMapper @Inject constructor() {
         dataModel.isTradeIn = it.isTradeIn
         dataModel.message = it.message
         return dataModel
+    }
+
+    fun mapAddToCartOccMultiDataModel(addToCartOccMultiDataModel: AddToCartOccMultiDataModel): AddToCartDataModel {
+        return AddToCartDataModel(
+                errorMessage = ArrayList(addToCartOccMultiDataModel.errorMessage),
+                status = addToCartOccMultiDataModel.status,
+                data = mapDataModel(addToCartOccMultiDataModel.data)
+        )
+    }
+
+    private fun mapDataModel(data: AddToCartOccMultiData): DataModel {
+        val cart = data.cart.firstOrNull() ?: AddToCartOccMultiCartData()
+        return DataModel(
+                success = data.success,
+                message = ArrayList(data.message),
+                cartId = cart.cartId,
+                productId = cart.productId.toLongOrZero(),
+                quantity = cart.quantity,
+                notes = cart.notes,
+                shopId = cart.shopId.toLongOrZero(),
+                customerId = cart.customerId.toLongOrZero(),
+                warehouseId = cart.warehouseId.toLongOrZero()
+        )
     }
 
 }

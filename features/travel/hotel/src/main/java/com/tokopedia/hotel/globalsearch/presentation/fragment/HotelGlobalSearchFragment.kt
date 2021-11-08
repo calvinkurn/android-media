@@ -149,7 +149,7 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
-        val minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY
+        val minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
 
         val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(checkIn, checkOut, SelectionRangeCalendarWidget.DEFAULT_RANGE_CALENDAR_YEAR,
                 SelectionRangeCalendarWidget.DEFAULT_RANGE_DATE_SELECTED_ONE_MONTH.toLong(),

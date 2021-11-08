@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightCancellationViewHolder
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
+import com.tokopedia.flight.databinding.ItemFlightCancellationBinding
 
 /**
  * @author by furqan on 14/07/2020
@@ -17,7 +18,10 @@ class FlightCancellationAdapterTypeFactory(private val flightCancellationListene
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when (type) {
-                FlightCancellationViewHolder.LAYOUT -> FlightCancellationViewHolder(parent, flightCancellationListener)
+                FlightCancellationViewHolder.LAYOUT -> {
+                    val binding = ItemFlightCancellationBinding.bind(parent)
+                    FlightCancellationViewHolder(binding, flightCancellationListener)
+                }
                 else -> super.createViewHolder(parent, type)
             }
 

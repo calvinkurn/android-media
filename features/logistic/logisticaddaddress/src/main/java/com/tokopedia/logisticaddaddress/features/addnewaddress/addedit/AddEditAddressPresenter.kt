@@ -2,7 +2,6 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
@@ -10,6 +9,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.response.AddAddressResponse
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject

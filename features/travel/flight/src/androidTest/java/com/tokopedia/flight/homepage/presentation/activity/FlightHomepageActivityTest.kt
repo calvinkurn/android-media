@@ -16,7 +16,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.banner.BannerViewPagerAdapter
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
@@ -25,13 +25,14 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import kotlinx.android.synthetic.main.fragment_flight_homepage.*
+import com.tokopedia.utils.date.DateUtil
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.text.SimpleDateFormat
 
 /**
  * @author by furqan on 04/08/2020
@@ -113,15 +114,14 @@ class FlightHomepageActivityTest {
     private fun validateFlightHomepageBannerDisplayedAndScrollable() {
         Thread.sleep(2000)
         if (getBannerItemCount() > 0) {
-            onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
+            onView(withId(R.id.flightHomepageBanner)).check(matches(isDisplayed()))
             Thread.sleep(1000)
             if (getBannerItemCount() > 1)
-                onView(withId(R.id.banner_recyclerview))
-                        .perform(RecyclerViewActions.scrollToPosition<BannerViewPagerAdapter.BannerViewHolder>(
-                                getBannerItemCount() - 1))
+                onView(withId(R.id.flightHomepageBanner)).perform(swipeLeft())
+                onView(withId(R.id.flightHomepageBanner)).perform(click())
         } else {
             Thread.sleep(1000)
-            onView(withId(R.id.banner_recyclerview)).check(matches(Matchers.not(isDisplayed())))
+            onView(withId(R.id.flightHomepageBanner)).check(matches(Matchers.not(isDisplayed())))
         }
     }
 
@@ -129,14 +129,14 @@ class FlightHomepageActivityTest {
         Thread.sleep(2000)
 
         if (getBannerItemCount() > 0) {
-            onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
-                    .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
+            onView(withId(R.id.flightHomepageBanner)).perform(swipeRight())
+            onView(withId(R.id.flightHomepageBanner)).perform(click())
         }
     }
 
     private fun getBannerItemCount(): Int {
-        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.banner_recyclerview) as RecyclerView
-        return recyclerView.adapter?.itemCount ?: 0
+        val carousel = activityRule.activity.findViewById(R.id.flightHomepageBanner) as CarouselUnify
+        return carousel.indicatorCount.toInt()
     }
 
     @Test
@@ -144,9 +144,11 @@ class FlightHomepageActivityTest {
         validateTravelVideoTracking()
 
         onView(withId(R.id.nsvFlightHomepage)).perform(swipeDown())
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeDown())
 
         departureAirport()
         arrivalAirport()
+        selectTodayDate()
         switchTrip()
         setPassengersCount()
         setPassengersClass()
@@ -176,6 +178,21 @@ class FlightHomepageActivityTest {
         // click on Palembang, to set Palembang as Arrival Airport
         onView(withText("Palembang, Indonesia")).perform(click())
         Thread.sleep(1000)
+    }
+
+    private fun selectTodayDate() {
+        Thread.sleep(1000)
+
+        // click departure date
+        onView(withId(R.id.tvFlightDepartureDate)).perform(click())
+        Thread.sleep(500)
+
+        // select today
+        val sdf = SimpleDateFormat("d")
+        val dateToday = sdf.format(DateUtil.getCurrentDate())
+        onView(getElementFromMatchAtPosition(withText(dateToday), 1)).perform(click())
+
+        Thread.sleep(3000)
     }
 
     private fun switchTrip() {
@@ -218,13 +235,20 @@ class FlightHomepageActivityTest {
         Thread.sleep(1000)
     }
 
-    fun validateTravelVideoTracking(){
+    fun validateTravelVideoTracking() {
+        Thread.sleep(1000)
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
+        onView(withId(R.id.nsvFlightHomepage)).perform(swipeUp())
+
         Thread.sleep(3000)
         onView(withId(R.id.flightHomepageVideoBanner)).check(matches(isDisplayed()))
 
         Thread.sleep(3000)
         onView(withId(R.id.flightHomepageVideoBanner)).perform(click())
+
+        Thread.sleep(1000)
     }
+
     companion object {
         private const val ANALYTIC_VALIDATOR_QUERY_P1 = "tracker/travel/flight/flight_homepage_p1.json"
         private const val ANALYTIC_VALIDATOR_QUERY_ALL = "tracker/travel/flight/flight_homepage_all.json"

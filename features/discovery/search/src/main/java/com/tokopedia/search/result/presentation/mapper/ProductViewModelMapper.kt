@@ -43,6 +43,8 @@ class ProductViewModelMapper {
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
         productDataView.defaultView = searchProductHeader.defaultView
         productDataView.bannerDataView = convertToBannerDataView(searchProductData.banner)
+        productDataView.lastFilterDataView = convertToLastFilterDataView(searchProductModel)
+        productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
 
         return productDataView
     }
@@ -203,6 +205,7 @@ class ProductViewModelMapper {
         productItem.topadsImpressionUrl = productModel.ads.productViewUrl
         productItem.topadsClickUrl = productModel.ads.productClickUrl
         productItem.topadsWishlistUrl = productModel.ads.productWishlistUrl
+        productItem.topadsTag = productModel.ads.tag
         productItem.minOrder = productModel.minOrder
         productItem.productUrl = productModel.url
         productItem.pageTitle = pageTitle
@@ -354,6 +357,15 @@ class ProductViewModelMapper {
                 bannerModel.text,
                 bannerModel.applink,
                 bannerModel.imageUrl
+        )
+    }
+
+    private fun convertToLastFilterDataView(searchProductModel: SearchProductModel): LastFilterDataView {
+        val lastFilterData = searchProductModel.lastFilter.data
+
+        return LastFilterDataView(
+            filterList = lastFilterData.filters,
+            title = lastFilterData.title,
         )
     }
 }

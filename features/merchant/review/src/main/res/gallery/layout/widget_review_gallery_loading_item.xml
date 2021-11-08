@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_12">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:id="@+id/review_gallery_image_shimmering"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            app:custom_color="@color/Unify_N50"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/review_gallery_image_load_error"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:src="@drawable/imagestate_error"
+            android:background="@color/Unify_N50"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/review_loading_item_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="review_gallery_image_load_error, review_gallery_image_shimmering"
+            app:barrierDirection="bottom" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/review_gallery_rating_shimmering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/review_loading_item_barrier"
+            app:srcCompat="@drawable/review_ic_rating_star_zero" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/review_gallery_product_variant_name"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl6"
+            android:textColor="@color/Unify_N700_68"
+            app:custom_color="@color/Unify_N50"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/review_gallery_rating_shimmering"
+            app:layout_constraintTop_toBottomOf="@id/review_gallery_rating_shimmering"
+            app:typographyType="body_3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

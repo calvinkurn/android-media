@@ -16,7 +16,8 @@ data class CheckoutOccResult(
 data class CheckoutOccPaymentParameter(
         val callbackUrl: String = "",
         val payload: String = "",
-        val redirectParam: CheckoutOccRedirectParam = CheckoutOccRedirectParam()
+        val redirectParam: CheckoutOccRedirectParam = CheckoutOccRedirectParam(),
+        var transactionId: String = ""
 )
 
 data class CheckoutOccRedirectParam(

@@ -29,8 +29,15 @@ data class ParamCart(
         @SerializedName("data")
         val data: List<ParamData> = emptyList(),
         @SerializedName("mode")
-        val mode: Int = 0 // 0 = instant payment, 1 = scrooge payment page
-)
+        val mode: Int = 0, // 0 = instant payment, 1 = scrooge payment page
+        @SerializedName("feature_type")
+        val featureType: Int = FEATURE_TYPE_OCC_MULTI_NON_TOKONOW
+) {
+        companion object {
+                const val FEATURE_TYPE_OCC_MULTI_NON_TOKONOW = 1
+                const val FEATURE_TYPE_TOKONOW = 11
+        }
+}
 
 data class ParamData(
         @SuppressLint("Invalid Data Type")
@@ -60,9 +67,8 @@ data class ShopProduct(
 )
 
 data class ProductData(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
-        val productId: Long = 0,
+        val productId: String = "",
         @SerializedName("product_quantity")
         val productQuantity: Int = 0,
         @SerializedName("product_notes")

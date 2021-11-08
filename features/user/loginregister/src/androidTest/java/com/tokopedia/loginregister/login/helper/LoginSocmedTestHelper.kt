@@ -10,7 +10,6 @@ import com.tokopedia.loginregister.R
 
 class LoginSocmedTestHelper {
     companion object {
-        const val LOGIN_SOCMED_TRACKER = "tracker/user/loginregister/social_media/login_social_media_p1.json"
         fun clickSocmedButton() {
             Espresso.onView(ViewMatchers.withId(R.id.socmed_btn))
                     .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
@@ -24,13 +23,5 @@ class LoginSocmedTestHelper {
                     .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                     .perform(ViewActions.click())
         }
-
-        fun clickFacebookLogin(){
-            Espresso.onView(ViewMatchers.withText("Facebook"))
-                    .inRoot(RootMatchers.isDialog())
-                    .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-                    .perform(ViewActions.click())
-        }
-
     }
 }

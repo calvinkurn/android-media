@@ -122,20 +122,8 @@ open class VerificationViewModel @Inject constructor(
             TkpdIdlingResource.increment()
             val params = sendOtpUseCase2FA.getParams(otpType, mode, msisdn, email, otpDigit, userIdEnc = userIdEnc, validateToken = validateToken)
             val data = sendOtpUseCase2FA.getData(params).data
-            when {
-                data.success -> {
-                    _sendOtpResult.value = Success(data)
-                    TkpdIdlingResource.decrement()
-                }
-                data.errorMessage.isNotEmpty() -> {
-                    _sendOtpResult.postValue(Fail(MessageErrorException(data.errorMessage)))
-                    TkpdIdlingResource.decrement()
-                }
-                else -> {
-                    _sendOtpResult.postValue(Fail(Throwable()))
-                    TkpdIdlingResource.decrement()
-                }
-            }
+            _sendOtpResult.value = Success(data)
+            TkpdIdlingResource.decrement()
         }, {
             _sendOtpResult.postValue(Fail(it))
             TkpdIdlingResource.decrement()
@@ -153,20 +141,8 @@ open class VerificationViewModel @Inject constructor(
             TkpdIdlingResource.increment()
             val params = sendOtpUseCase.getParams(otpType, mode, msisdn, email, otpDigit)
             val data = sendOtpUseCase.getData(params).data
-            when {
-                data.success -> {
-                    _sendOtpResult.value = Success(data)
-                    TkpdIdlingResource.decrement()
-                }
-                data.errorMessage.isNotEmpty() -> {
-                    _sendOtpResult.postValue(Fail(MessageErrorException(data.errorMessage)))
-                    TkpdIdlingResource.decrement()
-                }
-                else -> {
-                    _sendOtpResult.postValue(Fail(Throwable()))
-                    TkpdIdlingResource.decrement()
-                }
-            }
+            _sendOtpResult.value = Success(data)
+            TkpdIdlingResource.decrement()
         }, {
             _sendOtpResult.postValue(Fail(it))
             TkpdIdlingResource.decrement()

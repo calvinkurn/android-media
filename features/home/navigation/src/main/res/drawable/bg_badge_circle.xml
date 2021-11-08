@@ -10,5 +10,5 @@
         android:color="@color/Unify_G600"/>
     <stroke
         android:width="2dp"
-        android:color="@color/Unify_N0" />
+        android:color="@color/Unify_Static_White" />
 </shape>

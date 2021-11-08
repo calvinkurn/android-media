@@ -76,6 +76,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
             totalProductCount = totalProductAvailable
             totalProductPrice = miniCartData.data.totalProductPrice
             totalProductError = totalProductUnavailable
+            isOCCFlow = miniCartData.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC
+            buttonBuyWording = miniCartData.data.beliButtonConfig.buttonWording
         }
     }
 
@@ -115,7 +117,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
         // Add unavailable separator
         if (totalProductUnavailable > 0 && totalProductAvailable > 0) {
-            val miniCartSeparatorUiModel = mapSeparatorUiModel(4)
+            val miniCartSeparatorUiModel = mapSeparatorUiModel(MiniCartSeparatorUiModel.DEFAULT_SEPARATOR_HEIGHT)
             miniCartUnavailableSectionUiModels.add(miniCartSeparatorUiModel)
         }
 
@@ -150,7 +152,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         // Add unavailable accordion
         if (totalProductUnavailable > 1) {
             // Add unavailable accordion separator
-            val miniCartSeparatorUiModel = mapSeparatorUiModel(4)
+            val miniCartSeparatorUiModel = mapSeparatorUiModel(MiniCartSeparatorUiModel.DEFAULT_SEPARATOR_HEIGHT)
             miniCartUnavailableSectionUiModels.add(miniCartSeparatorUiModel)
 
             val showLessUnavailableDataWording = miniCartData.data.unavailableSectionAction.find {
@@ -221,7 +223,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productPrice = cartDetail.product.productPrice
             productInformation = cartDetail.product.productInformation
             productNotes = cartDetail.product.productNotes
-            productQty = cartDetail.product.productQuantity
+            productQty = if (cartDetail.product.productSwitchInvenage == 0) {
+                cartDetail.product.productQuantity
+            } else {
+                min(cartDetail.product.productQuantity, cartDetail.product.productInvenageValue)
+            }
             productWeight = cartDetail.product.productWeight
             productMinOrder = cartDetail.product.productMinOrder
             productMaxOrder = if (cartDetail.product.productSwitchInvenage == 0) {

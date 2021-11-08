@@ -3,7 +3,6 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.common.AddressConstants.CIRCUIT_BREAKER_ON_CODE
-import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
@@ -22,7 +21,6 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-08.
  */
-@AddNewAddressScope
 class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: GetDistrictUseCase,
                                                private val revGeocodeUseCase: RevGeocodeUseCase,
                                                private val districtBoundaryUseCase: DistrictBoundaryUseCase,
@@ -106,7 +104,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         return this.saveAddressDataModel.copy(formattedAddress = fmt, selectedDistrict = fmt)
     }
 
-    fun getDistrictBoundary(districtId: Int, keroToken: String?, keroUt: Int) {
+    fun getDistrictBoundary(districtId: Long, keroToken: String?, keroUt: Int) {
         districtBoundaryUseCase.setParams(districtId, keroToken, keroUt)
         districtBoundaryUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse) {

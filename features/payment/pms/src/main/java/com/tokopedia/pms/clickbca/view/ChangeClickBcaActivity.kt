@@ -19,20 +19,6 @@ class ChangeClickBcaActivity : BaseSimpleActivity(), HasComponent<PmsComponent> 
 
     private lateinit var component: PmsComponent
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
-    }
-
-    private fun setSecureWindowFlag() {
-        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
-            runOnUiThread {
-                val window = window
-                window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-            }
-        }
-    }
-
     override fun getNewFragment(): Fragment {
         val transactionId = intent.getStringExtra(TRANSACTION_ID)
         val merchantCode = intent.getStringExtra(MERCHANT_CODE)

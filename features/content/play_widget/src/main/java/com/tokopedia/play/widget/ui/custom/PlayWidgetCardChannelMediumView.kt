@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.TouchDelegate
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -46,9 +47,9 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     private val ivAction: AppCompatImageView
     private val liveBadge: View
     private val totalViewBadge: View
-    private val promoBadge: View
-    private val promoAdditionalContextView: View
+    private val tvOnlyLive: TextView
     private val tvPromoDetail: TextView
+    private val llPromoDetail: ViewGroup
     private val tvStartTime: TextView
     private val tvTitle: TextView
     private val tvAuthor: TextView
@@ -73,9 +74,9 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         ivAction = view.findViewById(R.id.play_widget_iv_action)
         liveBadge = view.findViewById(R.id.play_widget_badge_live)
         totalViewBadge = view.findViewById(R.id.play_widget_badge_total_view)
-        promoBadge = view.findViewById(R.id.play_widget_badge_promo)
-        promoAdditionalContextView = view.findViewById(R.id.iv_promo_additional_context)
+        tvOnlyLive = view.findViewById(R.id.tv_only_live)
         tvPromoDetail = view.findViewById(R.id.tv_promo_detail)
+        llPromoDetail = view.findViewById(R.id.ll_promo_detail)
         tvStartTime = view.findViewById(R.id.play_widget_channel_date)
         tvTitle = view.findViewById(R.id.play_widget_channel_title)
         tvAuthor = view.findViewById(R.id.play_widget_channel_name)
@@ -172,23 +173,20 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     private fun setPromoType(promoType: PlayWidgetPromoType) {
         when (promoType) {
             PlayWidgetPromoType.NoPromo, PlayWidgetPromoType.Unknown -> {
-                promoBadge.visibility = View.GONE
+                llPromoDetail.visibility = View.GONE
+                tvOnlyLive.visibility = View.GONE
             }
             is PlayWidgetPromoType.Default -> {
-                promoAdditionalContextView.visibility = View.GONE
+                tvOnlyLive.visibility = View.GONE
 
                 tvPromoDetail.text = promoType.promoText
-                tvPromoDetail.visibility = View.VISIBLE
-
-                promoBadge.visibility = View.VISIBLE
+                llPromoDetail.visibility = View.VISIBLE
             }
             is PlayWidgetPromoType.LiveOnly -> {
-                promoAdditionalContextView.visibility = View.VISIBLE
+                tvOnlyLive.visibility = View.VISIBLE
 
                 tvPromoDetail.text = promoType.promoText
-                tvPromoDetail.visibility = View.VISIBLE
-
-                promoBadge.visibility = View.VISIBLE
+                llPromoDetail.visibility = View.VISIBLE
             }
         }.exhaustive
     }
@@ -202,6 +200,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
+                player.shouldCache = !mModel.video.isLive
                 player.start()
             }
             player.listener = playerListener

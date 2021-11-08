@@ -62,7 +62,7 @@ fun MockKVerificationScope.verifyShowLoadMoreError(productListView: ProductListS
 
 fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: ProductListSectionContract.View) {
     productListView.queryKey
-    productListView.sendTrackingEventAppsFlyerViewListingSearch(any(), any(), any())
+    productListView.sendTrackingEventAppsFlyerViewListingSearch(any(), any(), any(), any())
     productListView.sendTrackingEventMoEngageSearchAttempt(any(), any(), any())
     productListView.previousKeyword
     productListView.sendTrackingGTMEventSearchAttempt(any())

@@ -34,7 +34,7 @@ class GetNearestWarehouseUseCase @Inject constructor(private val rawQueries: Map
         val warehouseRequest = GraphqlRequest(rawQueries[VariantConstant.QUERY_MULTI_ORIGIN],
                 VariantMultiOriginResponse::class.java, requestParams.parameters)
 
-        val gqlResponse = graphqlRepository.getReseponse(listOf(warehouseRequest), VariantUtil.getCacheStrategy(forceRefresh))
+        val gqlResponse = graphqlRepository.response(listOf(warehouseRequest), VariantUtil.getCacheStrategy(forceRefresh))
         val data = gqlResponse.getData<VariantMultiOriginResponse>(VariantMultiOriginResponse::class.java)
         val error = gqlResponse.getError(VariantMultiOriginResponse::class.java) ?: listOf()
 

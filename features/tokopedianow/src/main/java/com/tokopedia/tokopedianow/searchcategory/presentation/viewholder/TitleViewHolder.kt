@@ -5,9 +5,13 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryTitleBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.AllProductTitle
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.SearchTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TitleViewHolder(
         itemView: View,
@@ -19,26 +23,25 @@ class TitleViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_search_category_title
     }
 
-    private var titleText: Typography? = null
-    private var seeAllCategory: Typography? = null
-
-    init {
-        titleText = itemView.findViewById<Typography?>(R.id.tokoNowSearchCategoryTitle)
-        seeAllCategory = itemView.findViewById<Typography?>(R.id.tokoNowSearchCategorySeeAllCategory)
-    }
+    private var binding: ItemTokopedianowSearchCategoryTitleBinding? by viewBinding()
 
     override fun bind(element: TitleDataView?) {
         element ?: return
 
-        titleText?.text = getTitle(element)
-        seeAllCategory?.shouldShowWithAction(element.title.isNotEmpty()) {
-            seeAllCategory?.setOnClickListener {
-                titleListener.onSeeAllCategoryClicked()
+        binding?.apply {
+            tokoNowSearchCategoryTitle.text = getTitle(element)
+            tokoNowSearchCategorySeeAllCategory.shouldShowWithAction(element.hasSeeAllCategoryButton) {
+                tokoNowSearchCategorySeeAllCategory.setOnClickListener {
+                    titleListener.onSeeAllCategoryClicked()
+                }
             }
         }
     }
 
     private fun getTitle(element: TitleDataView) =
-            if (element.title.isNotEmpty()) element.title
-            else getString(R.string.tokopedianow_search_title)
+            when(val titleType = element.titleType) {
+                is CategoryTitle -> titleType.categoryName
+                is SearchTitle -> getString(R.string.tokopedianow_search_title)
+                is AllProductTitle -> getString(R.string.tokopedianow_all_products)
+            }
 }

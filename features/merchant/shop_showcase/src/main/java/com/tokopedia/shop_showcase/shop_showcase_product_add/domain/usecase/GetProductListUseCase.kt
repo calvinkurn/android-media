@@ -22,7 +22,7 @@ class GetProductListUseCase(
 
     override suspend fun executeOnBackground(): List<ShowcaseProduct> {
         val request = GraphqlRequest(QUERY, GetProductListData::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
         val responseData = response.getData<GetProductListData>(GetProductListData::class.java)
         return productMapper.mapToUIModel(responseData.getProductList.data)
     }

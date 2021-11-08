@@ -4,52 +4,51 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.BottomSheetProductManageAddEditMenuBinding
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_product_manage_add_edit_menu.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ProductManageAddEditMenuBottomSheet(
-        container: View? = null,
-        sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener,
+        private val sellerFeatureCarouselListener: SellerFeatureCarousel.SellerFeatureClickListener,
         private val listener: AddEditMenuClickListener,
         private val fm: FragmentManager? = null
 ) : BottomSheetUnify() {
 
     companion object {
-        @LayoutRes
-        private val LAYOUT = R.layout.bottom_sheet_product_manage_add_edit_menu
         private val TAG: String = ProductManageAddEditMenuBottomSheet::class.java.simpleName
     }
 
     private var sellerFeatureCarousel: SellerFeatureCarousel? = null
 
+    private var binding by autoClearedNullable<BottomSheetProductManageAddEditMenuBinding>()
+
     init {
-        if (container != null && fm != null) {
-            val itemView = LayoutInflater.from(container.context)
-                    .inflate(LAYOUT, (container as ViewGroup), false)
+        clearContentPadding = true
+    }
 
-            setChild(itemView)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetProductManageAddEditMenuBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+        setChild(binding?.root)
 
-            sellerFeatureCarousel = itemView.sellerFeatureCarousel
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-            sellerFeatureCarousel?.run {
-                if (!GlobalConfig.isSellerApp()) {
-                    show()
-                    setListener(sellerFeatureCarouselListener)
-                    this.addItemDecoration()
-                }
-            }
-
-            itemView.containerAddProductWithNoVariant.setOnClickListener { listener.onAddProductWithNoVariantClicked() }
-
-            clearContentPadding = true
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupView()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -67,6 +66,20 @@ class ProductManageAddEditMenuBottomSheet(
         }
 
         fm?.let { show(it, TAG) }
+    }
+
+    private fun setupView() {
+        binding?.sellerFeatureCarousel?.run {
+            if (!GlobalConfig.isSellerApp()) {
+                show()
+                setListener(sellerFeatureCarouselListener)
+                this.addItemDecoration()
+            }
+        }
+
+        binding?.containerAddProductWithNoVariant?.setOnClickListener {
+            listener.onAddProductWithNoVariantClicked()
+        }
     }
 
     interface AddEditMenuClickListener {

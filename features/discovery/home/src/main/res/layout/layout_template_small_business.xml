@@ -4,90 +4,93 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="120dp"
-        android:layout_height="108dp"
-        android:layout_marginTop="@dimen/dp_20"
-        android:background="@drawable/bg_card_home_widget"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/productName"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
-            android:gravity="right"
-            android:textSize="@dimen/dp_10"
-            android:textColor="@color/Unify_N700_68"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:letterSpacing="0.02"
-            android:layout_gravity="end"
-            android:visibility="gone"
-            tools:text="PAKET DATA"
-            tools:visibility="visible"
-            />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8">
-
-            <include layout="@layout/layout_template_footer_business"
-                android:id="@+id/footer"
-                android:layout_alignParentBottom="true"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:textSize="@dimen/dp_12"
-                android:textColor="@color/Unify_N700_96"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:text="BRONET 4G OWS"
-                tools:visibility="visible"
-                />
-
-            <TextView
-                android:id="@+id/subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/title"
-                android:layout_above="@id/footer"
-                android:layout_marginTop="@dimen/dp_2"
-                android:layout_marginBottom="@dimen/dp_2"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:textSize="@dimen/dp_10"
-                android:textColor="@color/Unify_N700_96"
-                android:lineSpacingExtra="@dimen/sp_6"
-                android:visibility="gone"
-                tools:text="081234567890"
-                tools:visibility="visible"
-                />
-
-        </RelativeLayout>
-
-    </LinearLayout>
-
-    <include layout="@layout/layout_template_icon_business_widget"
+    <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        />
+        android:layout_marginTop="20dp">
+
+        <LinearLayout
+            android:layout_width="@dimen/bu_item_small_width"
+            android:layout_height="@dimen/bu_item_small_height"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productName"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:layout_marginRight="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:gravity="right"
+                android:textSize="10dp"
+                android:textColor="@color/Unify_N700_68"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:letterSpacing="0.02"
+                android:layout_gravity="end"
+                android:visibility="gone"
+                tools:text="PAKET DATA"
+                tools:visibility="visible" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="@dimen/unify_space_8"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginLeft="@dimen/unify_space_8"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:layout_marginRight="@dimen/unify_space_8">
+
+                <include
+                    layout="@layout/layout_template_footer_business"
+                    android:id="@+id/footer"
+                    android:layout_alignParentBottom="true"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textSize="12dp"
+                    android:textColor="@color/Unify_N700_96"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:text="BRONET 4G OWS"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/title"
+                    android:layout_above="@id/footer"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textSize="10dp"
+                    android:textColor="@color/Unify_N700_96"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:visibility="gone"
+                    tools:text="081234567890"
+                    tools:visibility="visible" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+
+    <include
+        layout="@layout/layout_template_icon_business_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginLeft="@dimen/unify_space_8" />
 
 </FrameLayout>

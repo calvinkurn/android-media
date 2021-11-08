@@ -22,6 +22,7 @@ import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.productcard.ProductCardModel
 
 private const val CHIPS = "Chips"
@@ -172,7 +173,7 @@ class DiscoveryDataMapper {
             if (it.options.isNullOrEmpty())
                 filter.remove(it)
         }
-        return DynamicFilterModel(data = DataValue(filter = filter as List<Filter>, sort = dataItem.sort as List<Sort>))
+        return DynamicFilterModel(data = DataValue(filter = filter as List<Filter>, sort = dataItem.sort as List<Sort>),defaultSortValue = "")
     }
 
     fun mapDataItemToProductCardModel(dataItem: DataItem, componentName: String?): ProductCardModel {
@@ -187,14 +188,14 @@ class DiscoveryDataMapper {
                 || componentName == ComponentNames.ProductCardSprintSaleCarousel.componentName
                 || componentName == ComponentNames.ProductCardSprintSale.componentName) {
             productName = dataItem.title ?: ""
-            slashedPrice = setSlashPrice(dataItem)
-            formattedPrice = setFormattedPrice(dataItem)
+            slashedPrice = setSlashPrice(dataItem.discountedPrice, dataItem.price)
+            formattedPrice = setFormattedPrice(dataItem.discountedPrice, dataItem.price)
             isOutOfStock = outOfStockLabelStatus(dataItem.stockSoldPercentage, SALE_PRODUCT_STOCK)
             if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         } else {
             productName = dataItem.name ?: ""
-            slashedPrice = dataItem.discountedPrice ?: ""
-            formattedPrice = dataItem.price ?: ""
+            slashedPrice = setSlashPrice(dataItem.price, dataItem.discountedPrice)
+            formattedPrice = setFormattedPrice(dataItem.price, dataItem.discountedPrice)
             isOutOfStock = outOfStockLabelStatus(dataItem.stock, PRODUCT_STOCK)
             if(isOutOfStock) labelGroupList.add(ProductCardModel.LabelGroup(LABEL_PRODUCT_STATUS, TERJUAL_HABIS, TRANSPARENT_BLACK))
         }
@@ -228,24 +229,52 @@ class DiscoveryDataMapper {
                 stockBarLabelColor = dataItem.stockWording?.color ?: "",
                 isOutOfStock = isOutOfStock,
                 hasNotifyMeButton = if(dataItem.stockWording?.title?.isNotEmpty() == true)false else dataItem.hasNotifyMe,
-                hasThreeDots = dataItem.hasThreeDots
+                hasThreeDots = dataItem.hasThreeDots,
+                variant = variantProductCard(dataItem),
+                nonVariant = nonVariantProductCard(dataItem)
         )
     }
 
-    private fun setSlashPrice(dataItem: DataItem): String {
-        if(dataItem.discountedPrice.isNullOrEmpty()){
-            return ""
-        }else if(dataItem.discountedPrice == dataItem.price){
-            return ""
+    private fun nonVariantProductCard(dataItem: DataItem): ProductCardModel.NonVariant? {
+        return if (!dataItem.hasATC || checkForVariantProductCard(dataItem.parentProductId)) {
+            null
+        } else {
+            ProductCardModel.NonVariant(
+                dataItem.quantity,
+                dataItem.minQuantity,
+                dataItem.maxQuantity
+            )
         }
-        return dataItem.price ?: ""
     }
 
-    private fun setFormattedPrice(dataItem: DataItem): String {
-        if (dataItem.discountedPrice.isNullOrEmpty()) {
-            return dataItem.price ?: ""
+    private fun variantProductCard(dataItem: DataItem): ProductCardModel.Variant? {
+        return if (dataItem.hasATC && checkForVariantProductCard(dataItem.parentProductId)) {
+            ProductCardModel.Variant(
+                dataItem.quantity,
+            )
+        } else {
+            null
         }
-        return dataItem.discountedPrice ?: ""
+    }
+
+    private fun checkForVariantProductCard(parentProductId: String?): Boolean {
+        return parentProductId != null && parentProductId.toLongOrZero()>0
+    }
+
+    private fun setSlashPrice(discountedPrice: String?, price: String?): String {
+        if(discountedPrice.isNullOrEmpty()){
+            return ""
+        }else if(discountedPrice == price){
+            return ""
+        }
+        return price ?: ""
+    }
+
+    private fun setFormattedPrice(discountedPrice: String?, price: String?): String {
+        if (discountedPrice.isNullOrEmpty()) {
+            return price ?: ""
+        }
+        return discountedPrice ?: ""
     }
 
     private fun getPDPViewCount(pdpView: String): String {

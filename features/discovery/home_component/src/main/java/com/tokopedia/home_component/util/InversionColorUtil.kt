@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 
 /**
  * Created by Lukas on 28/09/20.
@@ -17,4 +18,22 @@ private fun getContrastColor(@ColorInt color: Int): Int {
     // Counting the perceptive luminance - human eye favors green color...
     val a = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255.0
     return if (a < 0.5) color else Color.WHITE
+}
+
+/**
+ *
+ * @param context
+ * @param idColor example R.color.your_color
+ * @return with example #FFFFFF hex color uppercase
+ *
+ */
+fun getHexColorFromIdColor(context: Context, idColor: Int) : String {
+    return try {
+        val formatHexColor = "#%06x"
+        val colorWhite = 0xffffff
+        String.format(formatHexColor, ContextCompat.getColor(context, idColor) and colorWhite).uppercase()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
 }

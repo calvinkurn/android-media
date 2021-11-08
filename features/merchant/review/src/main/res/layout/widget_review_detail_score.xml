@@ -131,7 +131,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/reviewScoreLoadingText"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/dp_56"
         android:visibility="gone"

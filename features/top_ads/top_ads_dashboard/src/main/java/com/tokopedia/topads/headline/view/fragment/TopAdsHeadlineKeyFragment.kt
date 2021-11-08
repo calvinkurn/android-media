@@ -52,6 +52,7 @@ private const val CLICK_AKTIFKAN_LONG_PRESS = "click - aktifkan iklan on long pr
 private const val CLICK_NONAKTIFKAN_LONG_PRESS = "click - nonaktifkan iklan on long press keyword"
 private const val CLICK_HAPUS_LONG_PRESS = "click - hapus iklan on long press keyword"
 private const val CLICK_YA_HAPUS_LONG_PRESS = "click - ya hapus iklan on long press keyword"
+private const val CLICK_TERAPKAN = "click - terapkan"
 class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
 
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
@@ -135,7 +136,12 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         Utils.setSearchListener(context, view, ::fetchData)
         btnFilter?.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.onSubmitClick = { fetchData() }
+            groupFilterSheet.showAdplacementFilter(false)
+            groupFilterSheet.onSubmitClick = {
+                var eventLabel = "{${userSession.shopId}}" + "-" + "{${groupFilterSheet?.getSelectedText(context)}}" + "-" + "{${groupFilterSheet?.getSelectedSortId()}}"
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
+                fetchData()
+            }
         }
         btnAddItem?.setOnClickListener{
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(click_tambah_iklan, "{${userSession.shopId}} - {$arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString()}", userSession.userId)

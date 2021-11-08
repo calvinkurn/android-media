@@ -9,19 +9,22 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
-import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket.Companion.KEY_GROUP_CHAT_PREFERENCES
-import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocketImpl
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusher
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediator
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
+import com.tokopedia.play_common.websocket.PlayWebSocket
+import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
 
 /**
  * Created by jegul on 20/05/20
@@ -46,14 +49,22 @@ class PlayBroadcastModule(private val mContext: Context) {
 
     @PlayBroadcastScope
     @Provides
-    fun provideApsaraLivePusherWrapperBuilder(@ApplicationContext context: Context, dispatcher: CoroutineDispatchers) : ApsaraLivePusherWrapper.Builder {
-        return ApsaraLivePusherWrapper.Builder(context, dispatcher)
+    fun providePlayLivePusher(): PlayLivePusher = PlayLivePusherImpl()
+
+    @PlayBroadcastScope
+    @Provides
+    fun providePlayLivePusherMediator(livePusher: PlayLivePusher, localCacheHandler: LocalCacheHandler): PlayLivePusherMediator {
+        return PlayLivePusherMediator(livePusher, localCacheHandler)
     }
 
     @PlayBroadcastScope
     @Provides
-    fun providePlaySocket(userSession: UserSessionInterface, cacheHandler: LocalCacheHandler): PlayBroadcastSocket {
-        return PlayBroadcastSocketImpl(userSession, cacheHandler)
+    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayWebSocket {
+        return PlayWebSocketImpl(
+            OkHttpClient.Builder(),
+            userSession,
+            dispatchers
+        )
     }
 
     @Provides

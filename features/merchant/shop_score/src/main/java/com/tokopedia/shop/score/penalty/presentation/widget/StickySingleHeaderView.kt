@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
-import kotlinx.android.synthetic.main.item_sort_filter_penalty.view.*
 
 class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
 
@@ -29,7 +28,11 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     interface OnStickySingleHeaderAdapter {
         val stickyHeaderPosition: Int
@@ -47,43 +50,48 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         clipToPadding = false
         clipChildren = false
         val view = getChildAt(0) as? RecyclerView
-                ?: throw RuntimeException("RecyclerView should be the first child view.")
+            ?: throw RuntimeException("RecyclerView should be the first child view.")
         mRecyclerView = view
         recyclerViewPaddingTop = mRecyclerView?.paddingTop.orZero()
         mHeaderContainer = FrameLayout(context)
         mHeaderContainer?.clipToPadding = false
         mHeaderContainer?.clipChildren = false
         mHeaderContainer?.isClickable = true
-        mHeaderContainer?.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mHeaderContainer?.layoutParams =
+            LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         mHeaderContainer?.visibility = View.GONE
-        mHeaderContainer?.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom_penalty)
+        mHeaderContainer?.background =
+            MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom_penalty)
         addView(mHeaderContainer)
-        val onScrollListener: RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (mHeaderHeight == -1 || adapter == null || linearLayoutManager == null) {
-                    mHeaderHeight = mHeaderContainer?.height.orZero()
-                    val adapter = mRecyclerView?.adapter
-                    if (adapter !is OnStickySingleHeaderAdapter) throw RuntimeException("Your RecyclerView.Adapter should be the type of StickyHeaderViewAdapter.")
-                    this@StickySingleHeaderView.adapter = adapter
-                    this@StickySingleHeaderView.adapter?.setListener(this@StickySingleHeaderView)
-                    stickyPosition = this@StickySingleHeaderView.adapter?.stickyHeaderPosition ?: 0
-                    linearLayoutManager = mRecyclerView?.layoutManager as LinearLayoutManager?
+        val onScrollListener: RecyclerView.OnScrollListener =
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if (mHeaderHeight == -1 || adapter == null || linearLayoutManager == null) {
+                        mHeaderHeight = mHeaderContainer?.height.orZero()
+                        val adapter = mRecyclerView?.adapter
+                        if (adapter !is OnStickySingleHeaderAdapter) throw RuntimeException("Your RecyclerView.Adapter should be the type of StickyHeaderViewAdapter.")
+                        this@StickySingleHeaderView.adapter = adapter
+                        this@StickySingleHeaderView.adapter?.setListener(this@StickySingleHeaderView)
+                        stickyPosition =
+                            this@StickySingleHeaderView.adapter?.stickyHeaderPosition ?: 0
+                        linearLayoutManager = mRecyclerView?.layoutManager as LinearLayoutManager?
+                    }
+                }
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    currentScroll = recyclerView.computeVerticalScrollOffset()
+                    this@StickySingleHeaderView.onScrolled(recyclerView, dx, dy)
                 }
             }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                currentScroll = recyclerView.computeVerticalScrollOffset()
-                this@StickySingleHeaderView.onScrolled(recyclerView, dx, dy)
-            }
-        }
         mRecyclerView?.addOnScrollListener(onScrollListener)
     }
 
     private fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
         if (mHeaderHeight == -1 || adapter == null || linearLayoutManager == null) return
-        val firstCompletelyVisiblePosition = linearLayoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
+        val firstCompletelyVisiblePosition =
+            linearLayoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
         val firstVisiblePosition = linearLayoutManager?.findFirstVisibleItemPosition().orZero()
         if (firstCompletelyVisiblePosition > -1 && stickyPosition != -1) {
             if (firstCompletelyVisiblePosition > stickyPosition && currentScroll >= recyclerViewPaddingTop) {

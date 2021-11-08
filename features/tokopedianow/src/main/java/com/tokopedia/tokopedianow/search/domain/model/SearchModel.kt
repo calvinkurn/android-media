@@ -27,4 +27,10 @@ data class SearchModel(
         @SerializedName("searchJumper")
         @Expose
         val searchCategoryJumper: SearchCategoryJumperData = SearchCategoryJumperData(),
-)
+) {
+        fun getResponseCode() = searchProduct.header.responseCode
+
+        fun getSuggestion() = searchProduct.data.suggestion
+
+        fun getRelated() = searchProduct.data.related
+}

@@ -115,7 +115,7 @@
           "minOrder": 1,
           "childs": [],
           "parentId": 0,
-          "stock": 7,
+          "maxOrder": 7,
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",
@@ -195,7 +195,7 @@
           "minOrder": 1,
           "childs": [],
           "parentId": 0,
-          "stock": 4,
+          "maxOrder": 4,
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",
@@ -266,7 +266,7 @@
             1682734978
           ],
           "parentId": 1682734974,
-          "stock": 13
+          "maxOrder": 13
         },
         {
           "id": 574211652,
@@ -329,7 +329,7 @@
             1682734978
           ],
           "parentId": 1682234974,
-          "stock": 13
+          "maxOrder": 13
         },
         {
           "id": 574262652,
@@ -392,7 +392,7 @@
             1682734978
           ],
           "parentId": 1282233974,
-          "stock": 12
+          "maxOrder": 12
         },
         {
           "id": 574262352,
@@ -446,7 +446,7 @@
           "minOrder": 1,
           "childs": [],
           "parentId": 0,
-          "stock": 13
+          "maxOrder": 13
         },
         {
           "id": 574262659,
@@ -509,7 +509,7 @@
             1682734978
           ],
           "parentId": 2682234972,
-          "stock": 13
+          "maxOrder": 13
         },
         {
           "id": 674262652,
@@ -563,7 +563,7 @@
           "minOrder": 1,
           "childs": [],
           "parentId": 0,
-          "stock": 13
+          "maxOrder": 13
         }
       ]
     }

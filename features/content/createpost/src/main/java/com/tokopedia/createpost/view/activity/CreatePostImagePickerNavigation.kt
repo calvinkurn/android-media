@@ -5,10 +5,12 @@ import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.viewmodel.MediaModel
-import com.tokopedia.createpost.view.viewmodel.MediaType
+import com.tokopedia.createpost.common.view.viewmodel.MediaModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
 
 
 /**
@@ -34,6 +36,7 @@ object CreatePostImagePickerNavigation {
                 }
         return RouteManager.getIntent(context, ApplinkConstInternalGlobal.IMAGE_PICKER).apply {
             putImagePickerBuilder(builder)
+            putParamPageSource(ImagePickerPageSource.CREATE_POST_PAGE)
         }
     }
 }

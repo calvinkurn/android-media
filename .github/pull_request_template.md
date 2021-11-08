@@ -46,7 +46,12 @@ https://phab.tokopedia.com/XXXXX
 - **/check performance** - run performance check
 - **/check katalon** - include this PR in katalon auto smoke test next batch (midnight same day)
 - **/check vector** - run vector drawable optimizer
-- **/create jira** - auto generate jira for this PR
+- **/check darkmode** - run dark mode checker
+- **/check rollence** - run expired rollence keys checker
+- **/create jira** - auto generate or update jira for this PR with fix versions of both MA and SA
+- **/create jira-ma** - auto generate or update jira for this PR with fix version of MA
+- **/create jira-sa** - auto generate or update jira for this PR with fix version of SA
+- **/stop all** - stop all running pr checker for this PR
 
 ## Gatekeeper Spells
 - **approved for customer app-size** - send along with the approval to cast the magic
@@ -66,4 +71,5 @@ https://phab.tokopedia.com/XXXXX
 
 - **approved for dark mode** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-dark-mode)*
+
 

@@ -94,6 +94,8 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.chips
+    implementation project(rootProject.ext.features.homeWishlist)
+
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation "org.robolectric:multidex:3.4.2"
 

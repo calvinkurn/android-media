@@ -217,4 +217,9 @@
     <!-- Order Management History   -->
     <string name="transaction_title_activity_order_history">Detail Status</string>
     <string name="title_seller_info">Info Penjual</string>
+
+    <!-- Review   -->
+    <string name="review_reading_title">Ulasan Pembeli</string>
+    <string name="review_reminder_title">Pengingat Ulasan</string>
+    <string name="review_gallery_title">Foto Pembeli</string>
 </resources>

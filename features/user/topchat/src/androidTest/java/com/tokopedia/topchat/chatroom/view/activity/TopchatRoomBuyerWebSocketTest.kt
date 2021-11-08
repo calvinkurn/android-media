@@ -34,7 +34,7 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         websocket.simulateResponse(wsMineResponseText)
 
         // Then
-        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+        onView(withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 0, R.id.tvMessage
         )).check(matches(withText(myMsg)))
     }
@@ -55,7 +55,7 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         // Then
         val label = wsSellerResponseText.jsonObject
                 ?.get("label")?.asString
-        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+        onView(withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 0, R.id.txt_info
         )).check(matches(withText(label)))
     }
@@ -74,7 +74,7 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         websocket.simulateResponse(wsSellerResponseText.setLabel(""))
 
         // Then
-        onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
+        onView(withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 0, R.id.txt_info
         )).check(matches(not(isDisplayed())))
     }

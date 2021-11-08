@@ -5,11 +5,14 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.emptyAddress
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
 import com.tokopedia.tokopedianow.searchcategory.assertOutOfCoverageDataView
+import com.tokopedia.tokopedianow.searchcategory.assertRecommendationCarouselDataViewLoadingState
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import io.mockk.every
 import io.mockk.verify
+import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.core.Is.`is` as shouldBe
@@ -110,14 +113,14 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
 
         `When view created`()
 
-        `Then verify search API first page is not called`()
-        `Then assert scrollable false`()
-        `Then assert mini cart is not visible`()
-        `Then assert out of coverage visitable list`()
+        `Then assert page showing out of coverage`()
     }
 
-    private fun `Then assert scrollable false`() {
-        assertThat(tokoNowSearchViewModel.isRecyclerViewScrollEnabledLiveData.value, shouldBe(false))
+    private fun `Then assert page showing out of coverage`() {
+        `Then verify search API first page is not called`()
+        `Then assert mini cart is not visible`()
+        `Then assert out of coverage visitable list`()
+        `Then assert event tracking open screen out of coverage`()
     }
 
     private fun `Then assert mini cart is not visible`() {
@@ -128,7 +131,15 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
 
         visitableList.first().assertChooseAddressDataView()
-        visitableList.last().assertOutOfCoverageDataView()
+        visitableList[1].assertOutOfCoverageDataView()
+        visitableList[2].assertRecommendationCarouselDataViewLoadingState(OOC_TOKONOW)
+    }
+
+    private fun `Then assert event tracking open screen out of coverage`() {
+        assertThat(
+            tokoNowSearchViewModel.oocOpenScreenTrackingEvent.value,
+            shouldBe(notNullValue())
+        )
     }
 
     @Test
@@ -145,9 +156,6 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
 
         `When view created`()
 
-        `Then verify search API first page is not called`()
-        `Then assert scrollable false`()
-        `Then assert mini cart is not visible`()
-        `Then assert out of coverage visitable list`()
+        `Then assert page showing out of coverage`()
     }
 }

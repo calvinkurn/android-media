@@ -32,13 +32,13 @@ class SuggestionSearchViewModel @Inject constructor(
 
     fun getSellerSearch(keyword: String, section: String = "", shopId: String) {
         launchCatchError(block = {
-            val responseGetSellerSearch  = withContext(dispatcherProvider.io) {
+            val responseGetSellerSearch = withContext(dispatcherProvider.io) {
                 getSellerSearchUseCase.params = GetSellerSearchUseCase.createParams(keyword, shopId, section)
                 GlobalSearchSellerMapper.mapToSellerSearchVisitable(getSellerSearchUseCase.executeOnBackground(), keyword)
             }
-            _getSearchSeller.postValue(Success(responseGetSellerSearch))
+            _getSearchSeller.value = Success(responseGetSellerSearch)
         }, onError = {
-            _getSearchSeller.postValue(Fail(it))
+            _getSearchSeller.value = Fail(it)
         })
     }
 
@@ -49,9 +49,9 @@ class SuggestionSearchViewModel @Inject constructor(
                         keyword, id, title, index)
                 GlobalSearchSellerMapper.mapToRegisterSearchUiModel(insertSellerSearchUseCase.executeOnBackground())
             }
-            _insertSuccessSearch.postValue(Success(responseInsertSearch))
+            _insertSuccessSearch.value = Success(responseInsertSearch)
         }, onError = {
-            _insertSuccessSearch.postValue(Fail(it))
+            _insertSuccessSearch.value = Fail(it)
         })
     }
 }

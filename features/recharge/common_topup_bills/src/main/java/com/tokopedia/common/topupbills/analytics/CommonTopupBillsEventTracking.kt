@@ -77,6 +77,9 @@ interface CommonTopupBillsEventTracking {
             const val DIMENSION_82 = "dimension82"
 
             const val EMPTY = "none/other"
+
+            const val REGULAR_PRODUCT = "regular product"
+            const val SPECIAL_PROMO = "special product promo"
         }
     }
 

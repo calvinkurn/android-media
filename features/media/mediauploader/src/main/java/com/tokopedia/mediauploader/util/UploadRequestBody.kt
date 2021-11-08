@@ -5,15 +5,15 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.BufferedSink
 import android.os.Looper
-import com.tokopedia.mediauploader.data.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import java.io.File
 import java.io.FileInputStream
 
 
 class UploadRequestBody(
-        private val file: File,
-        private val contentType: MediaType?,
-        private val callback: ProgressCallback?
+    private val file: File,
+    private val contentType: MediaType?,
+    private val callback: ProgressCallback?
 ): RequestBody() {
 
     override fun contentType(): MediaType? = contentType
@@ -44,8 +44,12 @@ class UploadRequestBody(
             private val callback: ProgressCallback?
     ): Runnable {
         override fun run() {
-            callback?.onProgress((100 * uploaded / total).toInt())
+            callback?.onProgress((MAX_PROGRESS_UPDATER * uploaded / total).toInt())
         }
+    }
+
+    companion object {
+        private const val MAX_PROGRESS_UPDATER = 100
     }
 
 }

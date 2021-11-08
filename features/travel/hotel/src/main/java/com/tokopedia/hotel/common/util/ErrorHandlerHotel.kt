@@ -22,6 +22,7 @@ class ErrorHandlerHotel {
         private const val ERROR_EMAIL_NOT_VERIFIED = 34
         private const val ERROR_ORDER_NOT_FOUND = 77
         private const val ERROR_ORDER_HAS_BEEN_CANCELLED = 143
+        private const val ERROR_INVALID_PROPERTY_ID = "InvalidPropertyID"
 
         fun isOrderNotFound(t: Throwable): Boolean = if (t is HotelErrorException) t.errorCode == ERROR_ORDER_NOT_FOUND else false
 
@@ -68,20 +69,36 @@ class ErrorHandlerHotel {
             else return R.drawable.hotel_ic_server_error
         }
 
-        fun getErrorUnify(context: Context?, error: Throwable?, action: () -> Unit, view: GlobalError){
+        fun getErrorUnify(context: Context?, error: Throwable?, action: () -> Unit, view: GlobalError, onBackPress: () -> Unit = { }){
+            //set error type
             when(error){
-                is UnknownHostException -> view.setType(GlobalError.NO_CONNECTION)
+                is UnknownHostException -> {
+                    view.setType(GlobalError.NO_CONNECTION)
+                    view.setActionClickListener {
+                        action()
+                    }
+                }
                 is MessageErrorException -> {
-                    view.setType(GlobalError.SERVER_ERROR)
+                    if(error.message == ERROR_INVALID_PROPERTY_ID){
+                        view.setType(GlobalError.PAGE_NOT_FOUND)
+                        view.setActionClickListener {
+                            onBackPress()
+                        }
+                    }else{
+                        view.setType(GlobalError.SERVER_ERROR)
+                        view.setActionClickListener {
+                            action()
+                        }
+                    }
                     view.errorTitle.text = if(error.message.isNullOrEmpty()) ErrorHandler.getErrorMessage(context, error) else error.message
                 }
                 else -> {
                     view.setType(GlobalError.SERVER_ERROR)
                     view.errorTitle.text = ErrorHandler.getErrorMessage(context, error)
+                    view.setActionClickListener {
+                        action()
+                    }
                 }
-            }
-            view.setActionClickListener {
-                action()
             }
         }
     }

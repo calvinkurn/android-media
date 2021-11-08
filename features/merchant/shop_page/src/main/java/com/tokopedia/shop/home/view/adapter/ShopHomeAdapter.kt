@@ -1,7 +1,8 @@
 package com.tokopedia.shop.home.view.adapter
 
-import android.os.Handler
+import android.os.Parcelable
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -11,7 +12,9 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
@@ -86,79 +89,95 @@ class ShopHomeAdapter(
         refreshSticky()
     }
 
-    fun setProductListData(productList: List<ShopHomeProductUiModel>, initialData: Boolean) {
-        val lastIndex = visitables.size
+    fun setProductListData(productList: List<ShopHomeProductUiModel>) {
+        val newList = getNewVisitableItems()
         productListViewModel.addAll(productList)
-        visitables.addAll(productList)
-        if (initialData)
-            notifyChangedDataSet()
-        else
-            notifyInsertedItemRange(lastIndex, productList.size)
+        newList.addAll(productList)
+        submitList(newList)
     }
 
     fun setEtalaseTitleData() {
-        if(visitables.filterIsInstance(ShopHomeProductEtalaseTitleUiModel::class.java).isEmpty()) {
+        val newList = getNewVisitableItems()
+        if(newList.filterIsInstance(ShopHomeProductEtalaseTitleUiModel::class.java).isEmpty()) {
             val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
-            visitables.add(etalaseTitleUiModel)
+            newList.add(etalaseTitleUiModel)
+            submitList(newList)
         }
     }
 
     fun setSortFilterData(shopProductSortFilterUiModel: ShopProductSortFilterUiModel) {
-        if(visitables.filterIsInstance(ShopProductSortFilterUiModel::class.java).isEmpty()) {
-            visitables.add(shopProductSortFilterUiModel)
+        val newList = getNewVisitableItems()
+        if(newList.filterIsInstance(ShopProductSortFilterUiModel::class.java).isEmpty()) {
+            newList.add(shopProductSortFilterUiModel)
+            submitList(newList)
         }
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
-        visitables.clear()
-        visitables.addAll(data)
-        notifyChangedDataSet()
+        val newList = getNewVisitableItems()
+        newList.clear()
+        newList.addAll(data.onEach {
+            it.widgetState = WidgetState.PLACEHOLDER
+        })
+        newList.add(ProductGridListPlaceholderUiModel(WidgetState.PLACEHOLDER))
+        submitList(newList)
+    }
+
+    fun addProductGridListPlaceHolder() {
+        val newList = getNewVisitableItems()
+        newList.add(ProductGridListPlaceholderUiModel(WidgetState.PLACEHOLDER))
+        submitList(newList)
     }
 
     fun setHomeYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
-        visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>()
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<ShopHomeDisplayWidgetUiModel>()
                 .find {
                     it.widgetId == widgetId
                 }?.let {
                     it.data?.firstOrNull()?.youTubeVideoDetail = data
-                    notifyChangedItem(visitables.indexOf(it))
+                    it.isNewData = true
                 }
+        submitList(newList)
     }
 
     fun setHomeMerchantVoucherData(shopHomeVoucherUiModel: ShopHomeVoucherUiModel) {
-        visitables.indexOfFirst { it is ShopHomeVoucherUiModel }.let { index ->
+        val newList = getNewVisitableItems()
+        newList.indexOfFirst { it is ShopHomeVoucherUiModel }.let { index ->
             if (index >= 0) {
                 if((shopHomeVoucherUiModel.data == null && !shopHomeVoucherUiModel.isError) || shopHomeVoucherUiModel.data?.isShown == false){
-                    visitables.removeAt(index)
-                    notifyItemRemoved(index)
+                    newList.removeAt(index)
                 } else {
-                    visitables[index] = shopHomeVoucherUiModel
-                    notifyItemChanged(index)
+                    shopHomeVoucherUiModel.widgetState = WidgetState.FINISH
+                    shopHomeVoucherUiModel.isNewData = true
+                    newList.setElement(index, shopHomeVoucherUiModel)
                 }
             }
         }
+        submitList(newList)
     }
 
     override fun hideLoading() {
-        if (visitables.contains(loadingModel)) {
-            val itemPosition = visitables.indexOf(loadingModel)
-            visitables.remove(loadingModel)
-            notifyRemovedItem(itemPosition)
-        } else if (visitables.contains(loadingMoreModel)) {
-            val itemPosition = visitables.indexOf(loadingMoreModel)
-            visitables.remove(loadingMoreModel)
-            notifyRemovedItem(itemPosition)
+        val newList = getNewVisitableItems()
+        if (newList.contains(loadingModel)) {
+            newList.remove(loadingModel)
+            submitList(newList)
+        } else if (newList.contains(loadingMoreModel)) {
+            newList.remove(loadingMoreModel)
+            submitList(newList)
         }
     }
 
     override fun showLoading() {
         if (!isLoading) {
+            val newList = getNewVisitableItems()
             if (isShowLoadingMore) {
-                visitables.add(loadingMoreModel)
+                newList.add(loadingMoreModel)
             } else {
-                visitables.add(loadingModel)
+                newList.clear()
+                newList.add(loadingModel)
             }
-            notifyInsertedItem(visitables.size - 1)
+            submitList(newList)
         }
     }
 
@@ -173,30 +192,35 @@ class ShopHomeAdapter(
     }
 
     fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
-        val position = visitables.indexOf(shopHomeCarousellProductUiModel)
-        notifyChangedItem(position)
+        val newList = getNewVisitableItems()
+        val position = newList.indexOf(shopHomeCarousellProductUiModel)
+        shopHomeCarousellProductUiModel.isNewData = true
+        newList.setElement(position, shopHomeCarousellProductUiModel)
+        submitList(newList)
     }
 
     fun updateWishlistProduct(productId: String, isWishlist: Boolean) {
-        visitables.filterIsInstance<ShopHomeProductUiModel>().onEach {
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<ShopHomeProductUiModel>().onEach {
             if (it.id == productId) {
                 it.isWishList = isWishlist
-                notifyChangedItem(visitables.indexOf(it))
             }
         }
-        visitables.filterIsInstance<ShopHomeCarousellProductUiModel>().onEach { shopHomeCarousellProductUiModel ->
-            val totalFoundProductId = shopHomeCarousellProductUiModel.productList.filter {
+        newList.filterIsInstance<ShopHomeCarousellProductUiModel>().onEach { shopHomeCarousellProductUiModel ->
+            shopHomeCarousellProductUiModel.productList.filter {
                 it.id == productId
             }.onEach {
                 it.isWishList = isWishlist
-            }.size
-            if (totalFoundProductId != 0)
-                notifyChangedItem(visitables.indexOf(shopHomeCarousellProductUiModel))
+            }.also {
+                shopHomeCarousellProductUiModel.isNewData = true
+            }
         }
+        submitList(newList)
     }
 
     override fun onStickyHide() {
-        notifyChangedItem(shopProductEtalaseListPosition)
+        val newList = getNewVisitableItems()
+        submitList(newList)
     }
 
     override fun createStickyViewHolder(parent: ViewGroup?): RecyclerView.ViewHolder {
@@ -256,107 +280,50 @@ class ShopHomeAdapter(
     }
 
     fun changeSelectedSortFilter(sortId: String, sortName: String) {
-        val shopProductSortFilterUiViewModel = visitables
+        val newList = getNewVisitableItems()
+        val shopProductSortFilterUiViewModel = newList
                 .filterIsInstance<ShopProductSortFilterUiModel>().firstOrNull()
         shopProductSortFilterUiViewModel?.apply {
             selectedSortId = sortId
             selectedSortName = sortName
         }
-        notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
+        submitList(newList)
     }
 
 
     fun changeSortFilterIndicatorCounter(filterIndicatorCounter: Int) {
-        val shopProductSortFilterUiViewModel = visitables
+        val newList = getNewVisitableItems()
+        val shopProductSortFilterUiViewModel = newList
                 .filterIsInstance<ShopProductSortFilterUiModel>().firstOrNull()
         shopProductSortFilterUiViewModel?.apply {
             this.filterIndicatorCounter = filterIndicatorCounter
         }
-        notifyChangedItem(visitables.indexOf(shopProductSortFilterUiViewModel))
+        submitList(newList)
     }
 
     fun removeProductList() {
-        val firstProductViewModelIndex = visitables.indexOfFirst {
+        val newList = getNewVisitableItems()
+        val firstProductViewModelIndex = newList.indexOfFirst {
             it::class.java == ShopHomeProductUiModel::class.java
         }
-        val totalProductViewModelData = visitables.filterIsInstance<ShopHomeProductUiModel>().size
-        if (firstProductViewModelIndex >= 0 && totalProductViewModelData <= visitables.size) {
-            visitables.removeAll(visitables.filterIsInstance<ShopHomeProductUiModel>())
+        val totalProductViewModelData = newList.filterIsInstance<ShopHomeProductUiModel>().size
+        if (firstProductViewModelIndex >= 0 && totalProductViewModelData <= newList.size) {
+            newList.removeAll(newList.filterIsInstance<ShopHomeProductUiModel>())
             productListViewModel.clear()
-            notifyRemovedItemRange(firstProductViewModelIndex, totalProductViewModelData)
+            submitList(newList)
         }
-    }
-
-    private fun notifyChangedItem(position: Int) {
-        recyclerView?.isComputingLayout?.let {
-            if (isAllowedNotify(it, position)) {
-                notifyItemChanged(position)
-            } else {
-                notifyChangedDataSet()
-            }
-        }
-    }
-
-    private fun notifyRemovedItem(position: Int) {
-        recyclerView?.isComputingLayout?.let {
-            if (isAllowedNotify(it, position)) {
-                notifyItemRemoved(position)
-            } else {
-                notifyChangedDataSet()
-            }
-        }
-    }
-
-    private fun notifyRemovedItemRange(startPosition: Int, totalItem: Int) {
-        recyclerView?.isComputingLayout?.let {
-            if (isAllowedNotify(it, startPosition)) {
-                notifyItemRangeRemoved(startPosition, totalItem)
-            } else {
-                notifyChangedDataSet()
-            }
-        }
-    }
-
-    private fun notifyInsertedItemRange(startPosition: Int, totalItem: Int) {
-        recyclerView?.isComputingLayout?.let {
-            if (isAllowedNotify(it, startPosition)) {
-                notifyItemRangeInserted(startPosition, totalItem)
-            } else {
-                notifyChangedDataSet()
-            }
-        }
-    }
-
-    private fun notifyInsertedItem(position: Int) {
-        recyclerView?.isComputingLayout?.let {
-            if (isAllowedNotify(it, position)) {
-                notifyItemInserted(position)
-            } else {
-                notifyChangedDataSet()
-            }
-        }
-    }
-
-    private fun notifyChangedDataSet(){
-        Handler().post {
-            notifyDataSetChanged()
-        }
-    }
-
-    private fun isAllowedNotify(isComputingLayout: Boolean, position: Int): Boolean {
-        return !isComputingLayout && position >= 0
     }
 
     private fun setLayoutManagerSpanCount() {
         (recyclerView?.layoutManager as? StaggeredGridLayoutManager)?.spanCount = when (shopHomeAdapterTypeFactory.productCardType) {
             ShopProductViewGridType.BIG_GRID -> {
-                1
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_big_grid) ?: 1
             }
             ShopProductViewGridType.SMALL_GRID -> {
-                2
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_small_grid) ?: 2
             }
             ShopProductViewGridType.LIST -> {
-                1
+                recyclerView?.context?.resources?.getInteger(R.integer.span_count_list) ?: 1
             }
         }
     }
@@ -366,7 +333,8 @@ class ShopHomeAdapter(
             isRemindMe: Boolean? = null,
             isClickRemindMe: Boolean = false
     ) {
-        visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
             nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
                 isRemindMe?.let{ isRemindMe ->
                     it.isRemindMe = isRemindMe
@@ -378,26 +346,30 @@ class ShopHomeAdapter(
                     }
                 }
                 it.showRemindMeLoading = false
-                notifyChangedItem(visitables.indexOf(nplCampaignUiModel))
+                nplCampaignUiModel.isNewData = true
             }
         }
+        submitList(newList)
     }
 
     fun removeShopHomeCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel){
-        val modelIndex = visitables.indexOf(model)
+        val newList = getNewVisitableItems()
+        val modelIndex = newList.indexOf(model)
         if(modelIndex != -1){
-            visitables.remove(model)
-            notifyRemovedItem(modelIndex)
+            newList.remove(model)
+            submitList(newList)
         }
     }
 
     fun showNplRemindMeLoading(campaignId: String) {
-        visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().onEach{nplCampaignUiModel ->
             nplCampaignUiModel.data?.firstOrNull { it.campaignId == campaignId }?.let {
                 it.showRemindMeLoading = true
-                notifyChangedItem(visitables.indexOf(nplCampaignUiModel))
+                nplCampaignUiModel.isNewData = true
             }
         }
+        submitList(newList)
     }
 
     fun getNplCampaignUiModel(campaignId: String): ShopHomeNewProductLaunchCampaignUiModel? {
@@ -413,51 +385,161 @@ class ShopHomeAdapter(
     }
 
     fun updateShopPageProductChangeGridSectionIcon(totalProductData: Int, gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID) {
-        val gridSectionModel = visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()
+        val newList = getNewVisitableItems()
+        val gridSectionModel = newList.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()
         if (gridSectionModel == null) {
             if(totalProductData != 0) {
-                visitables.add(ShopHomeProductChangeGridSectionUiModel(totalProductData, gridType))
-                notifyChangedDataSet()
+                newList.add(ShopHomeProductChangeGridSectionUiModel(totalProductData, gridType))
             }
         } else {
             gridSectionModel.apply {
-                val index = visitables.indexOf(this)
                 if(totalProductData == 0){
-                    visitables.remove(this)
-                    notifyRemovedItem(index)
+                    newList.remove(this)
                 }else{
                     this.totalProduct = totalProductData
-                    notifyChangedItem(index)
                 }
             }
         }
+        submitList(newList)
     }
 
     fun updateShopPageProductChangeGridSectionIcon(gridType: ShopProductViewGridType) {
-        visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()?.apply {
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()?.apply {
             this.gridType = gridType
-            notifyChangedItem(visitables.indexOf(this))
         }
+        submitList(newList)
     }
 
     /**
      * Play Widget
      */
     fun updatePlayWidget(widgetUiModel: PlayWidgetUiModel?) {
-        visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
+        val newList = getNewVisitableItems()
+        newList.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
             if (position == -1) return@let
             if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder || isPlayWidgetEmpty(widgetUiModel)) {
-                visitables.removeAt(position)
-                notifyItemRemoved(position)
+                newList.removeAt(position)
             } else {
-                visitables[position] = (visitables[position] as CarouselPlayWidgetUiModel).copy(widgetUiModel = widgetUiModel)
-                notifyChangedItem(position)
+                (newList.getOrNull(position) as? CarouselPlayWidgetUiModel)?.copy(widgetUiModel = widgetUiModel)?.apply {
+                    widgetState = WidgetState.FINISH
+                    isNewData = true
+                }?.also {
+                    newList.setElement(position, it)
+                }
             }
         }
+        submitList(newList)
     }
 
     private fun isPlayWidgetEmpty(widget: PlayWidgetUiModel): Boolean {
         return (widget as? PlayWidgetUiModel.Small)?.items?.isEmpty() == true
                 || (widget as? PlayWidgetUiModel.Medium)?.items?.isEmpty() == true
     }
+
+    fun updateShopHomeWidgetContentData(listWidgetContentData: Map<Pair<String, String>, BaseShopHomeWidgetUiModel?>) {
+        val newList = getNewVisitableItems()
+        listWidgetContentData.onEach { widgetContentData ->
+            newList.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
+                widgetContentData.key.first == it.widgetId
+            }.let{ position ->
+                if (position >= 0 && position < newList.size) {
+                    if(widgetContentData.value != null){
+                        widgetContentData.value?.widgetState = WidgetState.FINISH
+                        widgetContentData.value?.isNewData = true
+                        newList.setElement(position, widgetContentData.value)
+                    } else {
+                        newList.removeAt(position)
+                    }
+                }
+            }
+        }
+        submitList(newList)
+    }
+
+    fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
+        listWidgetLayout.onEach { widgetLayout ->
+            visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().firstOrNull {
+                widgetLayout.widgetId == it.widgetId
+            }?.let{
+                it.widgetState = WidgetState.LOADING
+            }
+        }
+    }
+
+    fun isLoadNextHomeWidgetData(position: Int): Boolean {
+        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER
+    }
+
+    fun isLoadProductGridListData(position: Int): Boolean {
+        return (visitables.getOrNull(position) as? ProductGridListPlaceholderUiModel)?.widgetState == WidgetState.PLACEHOLDER
+    }
+
+    fun updateProductGridListPlaceholderStateToLoadingState() {
+        visitables.filterIsInstance<ProductGridListPlaceholderUiModel>().firstOrNull()?.let {
+            it.widgetState = WidgetState.LOADING
+        }
+    }
+
+    fun removeProductGridListPlaceholder() {
+        val newList = getNewVisitableItems()
+        newList.indexOfFirst { it is ProductGridListPlaceholderUiModel }.let { position ->
+            if (position >= 0 && position < newList.size) {
+                newList.removeAt(position)
+            }
+        }
+        submitList(newList)
+    }
+
+    fun isLoadFirstWidgetContentData(): Boolean {
+        return visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().none {
+            it.widgetState == WidgetState.LOADING || it.widgetState == WidgetState.FINISH
+        }
+    }
+
+    fun getPlayWidgetUiModel(): CarouselPlayWidgetUiModel? {
+        return visitables.filterIsInstance<CarouselPlayWidgetUiModel>().firstOrNull()
+    }
+
+    fun getMvcWidgetUiModel(): ShopHomeVoucherUiModel? {
+        return visitables.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
+    }
+
+    fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
+        val newList = getNewVisitableItems()
+        listShopWidgetLayout.onEach { shopWidgetLayout ->
+            newList.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
+                shopWidgetLayout.widgetId == it.widgetId
+            }.let { position ->
+                newList.removeAt(position)
+            }
+        }
+        submitList(newList)
+    }
+
+    private fun getNewVisitableItems() = visitables.toMutableList()
+
+    private fun submitList(newList: List<Visitable<*>>) {
+        val currentRecyclerViewState: Parcelable? = recyclerView?.layoutManager?.onSaveInstanceState()
+        val diffCallback = ShopPageHomeDiffUtilCallback(visitables, newList)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        visitables.clear()
+        newList.filterIsInstance<BaseShopHomeWidgetUiModel>().onEach { it.isNewData = false }
+        visitables.addAll(newList)
+        diffResult.dispatchUpdatesTo(this)
+        currentRecyclerViewState?.let{
+            recyclerView?.layoutManager?.onRestoreInstanceState(it)
+        }
+    }
+
+    fun isCampaignFollower(campaignId: String): Boolean {
+        return visitables.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().any {
+            val campaignItem = it.data?.firstOrNull()
+            val nplItemCampaignId = campaignItem?.campaignId.orEmpty()
+            val dynamicRule = campaignItem?.dynamicRule
+            val dynamicRuleDescription = dynamicRule?.descriptionHeader.orEmpty()
+            nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
+        }
+    }
+
 }
