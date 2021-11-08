@@ -22,7 +22,7 @@ import com.otaliastudios.cameraview.controls.Facing;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.homecredit.R;
 import com.tokopedia.homecredit.applink.Constants;
-import com.tokopedia.homecredit.view.Utils;
+import com.tokopedia.homecredit.utils.Utils;
 
 public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
     @SuppressLint("MissingPermission")
@@ -92,4 +92,5 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
             }
         });
     }
+
 }

@@ -1,8 +1,8 @@
-package com.tokopedia.homecredit.view;
-
-import android.hardware.Camera;
+package com.tokopedia.homecredit.utils;
 
 import static android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
+
+import android.hardware.Camera;
 
 public class Utils {
     public static boolean isFrontCameraAvailable(){
