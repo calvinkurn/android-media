@@ -2,7 +2,6 @@ package com.tokopedia.shop.common.util
 
 import android.content.Context
 import android.text.TextUtils
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
@@ -72,10 +71,6 @@ object ShopUtil {
             IGNORED_FILTER_KONDISI -> false
             else -> true
         }
-    }
-
-    fun isUsingNewNavigation(): Boolean {
-        return !GlobalConfig.isSellerApp()
     }
 
     fun getShopPageWidgetUserAddressLocalData(context: Context?): LocalCacheModel? {
