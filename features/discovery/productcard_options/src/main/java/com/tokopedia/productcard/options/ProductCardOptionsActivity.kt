@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Toast
 import androidx.annotation.AnimRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -113,11 +114,11 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
 
                 bottomSheetProductCardOptions.bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onSlide(p0: View, p1: Float) {
-                        println("hahaha x $p1")
                     }
 
                     override fun onStateChanged(p0: View, p1: Int) {
-                        println("hahaha $p1")
+                        Toast.makeText(this@ProductCardOptionsActivity, "$p1" , Toast.LENGTH_SHORT).show();
+
                     }
                 })
             }

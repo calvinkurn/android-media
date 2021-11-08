@@ -12,7 +12,6 @@
         android:id="@+id/productCardOptionsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +22,7 @@
         android:layout_height="@dimen/dp_50"
         android:layout_gravity="center"
         android:visibility="gone"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         app:loader_type="circular"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
