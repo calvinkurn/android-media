@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -21,20 +20,7 @@ import kotlinx.android.synthetic.main.paylater_card_faq_bottomsheet_widget.*
 
 class PayLaterFaqBottomSheet : BottomSheetUnify() {
 
-    init {
-        setShowListener {
-            bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(view: View, slideOffset: Float) {
-                }
 
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        dismiss()
-                    }
-                }
-            })
-        }
-    }
 
     private val childLayoutRes = R.layout.paylater_card_faq_bottomsheet_widget
     private var faqData: ArrayList<Faq>? = null
