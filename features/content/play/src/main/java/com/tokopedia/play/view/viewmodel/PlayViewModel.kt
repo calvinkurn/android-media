@@ -797,10 +797,11 @@ class PlayViewModel @Inject constructor(
             addCastStateListener()
 
             setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext.castState))
+
+            trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack, channelData.channelReportInfo.sourceType)
         }
 
         updateChannelInfo(channelData)
-        trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -1239,10 +1240,10 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun trackVisitChannel(channelId: String, shouldTrack: Boolean) {
+    private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
         if(shouldTrack) {
             viewModelScope.launchCatchError(dispatchers.io, block = {
-                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
+                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId, sourceType))
                 trackVisitChannelBroadcasterUseCase.executeOnBackground()
             }) { }
         }
