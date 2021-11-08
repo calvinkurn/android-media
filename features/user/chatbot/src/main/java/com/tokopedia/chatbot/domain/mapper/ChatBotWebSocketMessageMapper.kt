@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.domain.mapper
 
 import android.text.TextUtils
+import androidx.annotation.NonNull
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -9,12 +10,15 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_RATING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
+import com.tokopedia.chatbot.data.imageupload.ChatbotImageUploadAttributes
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -54,8 +58,21 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_HELPFULL_QUESTION -> convertToHelpQuestionViewModel(pojo)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
             TYPE_STICKED_BUTTON_ACTIONS -> convertToStickedButtonActionsViewModel(pojo)
+            TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(pojo, jsonAttributes)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
+    }
+
+    private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
+            ImageUploadUiModel {
+        val pojoAttribute = GsonBuilder().create().fromJson<ChatbotImageUploadAttributes>(jsonAttribute,
+                ChatbotImageUploadAttributes::class.java)
+
+        return ImageUploadUiModel.Builder()
+                .withResponseFromWs(pojo)
+                .withImageUrl(pojoAttribute.imageUrlSecure)
+                .withImageUrlThumbnail(pojoAttribute.thumbnail)
+                .build()
     }
 
     private fun convertToStickedButtonActionsViewModel(pojo: ChatSocketPojo): Visitable<*> {

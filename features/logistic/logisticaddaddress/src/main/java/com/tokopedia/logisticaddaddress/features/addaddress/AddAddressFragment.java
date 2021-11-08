@@ -5,10 +5,17 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,7 +39,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
@@ -116,6 +126,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private Spinner spinnerSubDistrict;
     private Typography subDistrictError;
     private ProgressBar mProgressBar;
+    private Typography tvUserConsent;
 
     private List<String> zipCodes = new ArrayList<>();
     private Token token;
@@ -701,6 +712,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         regencyError = view.findViewById(R.id.regency_error);
         spinnerSubDistrict = view.findViewById(R.id.sub_district);
         subDistrictError = view.findViewById(R.id.sub_district_error);
+        tvUserConsent = view.findViewById(R.id.tv_user_consent);
 
         if (!isEdit() && isFromMarketPlaceCartEmptyAddressFirst()) {
             addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
@@ -710,6 +722,40 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressBar = view.findViewById(R.id.logistic_spinner);
+        setUserConsent();
+
+    }
+
+    private void setUserConsent() {
+        ClickableSpan onTermsAndConditionClicked = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                RouteManager.route(getContext(), ApplinkConst.WEBVIEW+"?url=https://www.tokopedia.com/privacy#data-pengguna");
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(MethodChecker.getColor(
+                        getContext(),
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                ));
+            }
+        };
+        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+
+        String tncDescription = getContext().getString(R.string.tnc_description, getContext().getString(R.string.title_save));
+        int firstIndex = tncDescription.indexOf("Syarat");
+        int lastIndex = firstIndex + "Syarat & Ketentuan".length();
+
+        SpannableString consentText = new SpannableString(tncDescription);
+        consentText.setSpan(onTermsAndConditionClicked, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        consentText.setSpan(boldSpan, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvUserConsent.setMovementMethod(LinkMovementMethod.getInstance());
+        tvUserConsent.setClickable(true);
+        tvUserConsent.setText(consentText, TextView.BufferType.SPANNABLE);
     }
 
     protected void initialVar() {

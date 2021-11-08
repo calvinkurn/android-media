@@ -696,9 +696,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun setupPostFirstPage() {
-        presenter.getShopFollowingStatus(
-            shopId, ::onErrorGetShopFollowingStatus, ::onSuccessGetShopFollowingStatus
-        )
+        viewModel.getShopFollowingStatus(shopId)
     }
 
     private fun setupDummyData() {
@@ -771,7 +769,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun onErrorGetShopFollowingStatus(throwable: Throwable) {
+    private fun onErrorGetShopFollowingStatus() {
         topchatViewState?.isShopFollowed = false
     }
 
@@ -919,9 +917,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
             it.startActivity(
                 ImagePreviewActivity.getCallingIntent(
-                    it,
-                    strings,
-                    null, 0
+                    context = it,
+                    imageUris = strings,
+                    imageDesc = null,
+                    position = 0,
+                    disableDownloadButton = false
                 )
             )
         }
@@ -1383,6 +1383,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 if (it == null || it == false) {
                     onSendAndReceiveMessage()
                     presenter.startUploadImages(model)
+                    topchatViewState?.scrollToBottom()
                 } else {
                     presenter.startCompressImages(model)
                 }
@@ -1576,11 +1577,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun followUnfollowShop(actionFollow: Boolean) {
         analytics.eventFollowUnfollowShop(actionFollow, shopId.toString())
-        presenter.followUnfollowShop(
-            shopId.toString(),
-            ::onErrorFollowUnfollowShop,
-            onSuccessFollowUnfollowShop()
-        )
+        viewModel.followUnfollowShop(shopId.toString())
     }
 
     private fun onErrorFollowUnfollowShop(throwable: Throwable) {
@@ -1589,19 +1586,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun onSuccessFollowUnfollowShop(): (Boolean) -> Unit {
-        return {
-            if (it) {
-                val isFollow = topchatViewState?.isShopFollowed == false
-                if (isFollow) {
-                    onSuccessFollowShopFromBcHandler()
-                    adapter.removeBroadcastHandler()
-                } else {
-                    onSuccessUnFollowShopFromBcHandler()
-                    addBroadCastSpamHandler(isFollow)
-                }
-                isFavoriteShop = isFollow
+    private fun onSuccessFollowUnfollowShop(result: Boolean) {
+        if (result) {
+            val isFollow = topchatViewState?.isShopFollowed == false
+            if (isFollow) {
+                onSuccessFollowShopFromBcHandler()
+                adapter.removeBroadcastHandler()
+            } else {
+                onSuccessUnFollowShopFromBcHandler()
+                addBroadCastSpamHandler(isFollow)
             }
+            isFavoriteShop = isFollow
         }
     }
 
@@ -1683,6 +1678,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val errorMessage = ErrorHandler.getErrorMessage(context, it)
             showToasterError(errorMessage)
         })
+    }
+
+    override fun onGoToChatSetting() {
+        analytics.eventClickChatSetting(shopId)
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
     }
 
     private fun getChatReportUrl(): String {
@@ -1985,21 +1985,24 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun requestFollowShop(element: BroadcastSpamHandlerUiModel) {
-        presenter.followUnfollowShop(
+        viewModel.followUnfollowShop(
             action = ToggleFavouriteShopUseCase.Action.FOLLOW,
             shopId = shopId.toString(),
-            onSuccess = {
-                element.stopFollowShop()
-                onSuccessFollowShopFromBcHandler()
-                adapter.removeBroadcastHandler(element)
-                isFavoriteShop = true
-            },
-            onError = {
-                element.stopFollowShop()
-                onErrorFollowShopFromBcHandler(it)
-                adapter.updateBroadcastHandlerState(element)
-            }
+            element = element
         )
+    }
+
+    private fun onSuccessRequestFollow(element: BroadcastSpamHandlerUiModel) {
+        element.stopFollowShop()
+        onSuccessFollowShopFromBcHandler()
+        adapter.removeBroadcastHandler(element)
+        isFavoriteShop = true
+    }
+
+    private fun onErrorRequestFollow(element: BroadcastSpamHandlerUiModel, throwable: Throwable) {
+        element.stopFollowShop()
+        onErrorFollowShopFromBcHandler(throwable)
+        adapter.updateBroadcastHandlerState(element)
     }
 
     override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?) {
@@ -2384,6 +2387,35 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 is Fail -> onError(it.throwable)
             }
         })
+
+        viewModel.shopFollowing.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> {
+                    if(it.data.shopInfoById.result.isNullOrEmpty()) {
+                        onErrorGetShopFollowingStatus()
+                    } else {
+                        onSuccessGetShopFollowingStatus(it.data.isFollow)
+                    }
+                }
+                is Fail -> onErrorGetShopFollowingStatus()
+            }
+        })
+
+        viewModel.followUnfollowShop.observe(viewLifecycleOwner, {
+            val element = it.first
+            val result = it.second
+            if (element != null) {
+                when(result) {
+                    is Success -> onSuccessRequestFollow(element)
+                    is Fail -> onErrorRequestFollow(element, result.throwable)
+                }
+            } else {
+                when(result) {
+                    is Success -> onSuccessFollowUnfollowShop(result.data)
+                    is Fail -> onErrorFollowUnfollowShop(result.throwable)
+                }
+            }
+        })
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
@@ -2436,7 +2468,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             context, msg
         ) { id, msg ->
             when (id) {
-                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, true)
+                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
                 MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
             }
         }

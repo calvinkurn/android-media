@@ -21,6 +21,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseS
 
 class RepurchaseAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,
+    private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener? = null,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
     private val productCardListener: RepurchaseProductCardListener,
@@ -28,7 +29,8 @@ class RepurchaseAdapterTypeFactory(
     private val tokoNowRecommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener? = null,
     private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val sortFilterListener: RepurchaseSortFilterViewHolder.SortFilterListener,
-    private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener
+    private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener,
+    private val tokonowRecomBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener? = null
 ) : BaseAdapterTypeFactory(), RepurchaseTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
@@ -53,9 +55,19 @@ class RepurchaseAdapterTypeFactory(
             // region Common TokoNow Component
             TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowListener, tokoNowChooseAddressWidgetListener)
-            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowListener)
-            TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(view, tokoNowRecommendationCarouselListener)
-            TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(view, tokoNowEmptyStateNoResultListener)
+            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(
+                view,
+                tokoNowEmptyStateOocListener
+            )
+            TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(
+                view,
+                tokoNowRecommendationCarouselListener,
+                tokonowRecomBindPageNameListener
+            )
+            TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(
+                view,
+                tokoNowEmptyStateNoResultListener
+            )
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
             // endregion
 

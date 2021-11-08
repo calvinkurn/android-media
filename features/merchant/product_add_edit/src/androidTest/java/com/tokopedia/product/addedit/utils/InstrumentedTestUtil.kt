@@ -35,7 +35,7 @@ object InstrumentedTestUtil {
     fun performScrollAndClick(id: Int) {
         Espresso.onView(CommonMatcher
                 .firstView(ViewMatchers.withId(id)))
-                .perform(ViewActions.scrollTo())
+                .perform(ModifiedScrollToAction())
 
         Espresso.onView(CommonMatcher
                 .firstView(ViewMatchers.withId(id)))

@@ -5,11 +5,11 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.pdplayout.Component
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
@@ -27,8 +27,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
 
     companion object {
         val QUERY = """
-            query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation) {
-              pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation) {
+            query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation, ${'$'}extParam: String) {
+              pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation, extParam:${'$'}extParam) {
                 name
                 pdpSession
                 basicInfo {
@@ -316,13 +316,14 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             }
         """.trimIndent()
 
-        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String, userLocationRequest: UserLocationRequest): RequestParams =
+        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String, userLocationRequest: UserLocationRequest, extParam: String): RequestParams =
             RequestParams.create().apply {
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                 putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
                 putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
                 putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
+                putString(ProductDetailCommonConstant.PARAM_EXT_PARAM, extParam.encodeToUtf8())
                 putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
             }
     }
