@@ -11,11 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.tkpd.helper.logout
-import com.tokopedia.tkpd.network.DataSource
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -119,22 +115,16 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-//                ApplinkConstInternalGlobal.IMAGE_PICKER
-//        startActivity(RouteManager.getIntent(applicationContext, MERCHANT_OPEN_PRODUCT_PREVIEW))
-//        RouteManager.rou  te(this, ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING)
-//        RouteManager.route(this, ApplinkConstInternalGlobal.VIDEO_EDITOR)
-//        RouteManager.route(this, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
-//        startActivity(Intent(this, TestVideoEditorActivity::class.java))
-        val applink = ApplinkConstInternalMarketplace.INBOX
-//        GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
-//        val applink = ApplinkConstInternalMarketplace.INBOX + "?page=" +
-//                ApplinkConst.Inbox.VALUE_PAGE_CHAT +
-//                "&show_bottom_nav=false&role=seller"
-//        val applinkOnboarding = ApplinkConstInternalMarketplace.ORDER_HISTORY
-        RouteManager.route(this, applink)
-//
-//        RouteManager.route(this, applink)
-//        RouteManager.route(this, ApplinkConst.SELLER_INFO)
-//        startActivity(RouteManager.getIntent(this, ApplinkConstInternalMarketplace.ATTACH_INVOICE))
+        val appLink = etAppLink.text.toString()
+        if(appLink.isNotBlank())
+            RouteManager.route(this, appLink)
+        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun getDefaultAppLink(): String {
+        /*
+         * Put your default applink here
+         */
+        return ""
     }
 }
