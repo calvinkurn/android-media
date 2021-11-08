@@ -17,7 +17,6 @@ class ProductSeeMoreViewComponent(
 ) : ViewComponent(container, idRes) {
 
     private val tvProductCount = findViewById<Typography>(R.id.tv_play_product_count)
-    private val icProductSeeMore = findViewById<AppCompatImageView>(R.id.ic_play_product_see_more)
 
     init {
         rootView.setOnClickListener { listener.onProductSeeMoreClick(this) }
