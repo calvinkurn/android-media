@@ -58,6 +58,7 @@ import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
@@ -231,11 +232,6 @@ class TokoNowHomeFragment: Fragment(),
             isShowFirstInstallSearch = it.getBoolean(REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
             durationAutoTransition = it.getLong(REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
         }
-        TokoNowCommonAnalytics.onOpenScreen(
-            isLoggedInStatus = userSession.isLoggedIn,
-            screenName = HOMEPAGE_TOKONOW,
-            userId = userSession.userId
-        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -546,9 +542,11 @@ class TokoNowHomeFragment: Fragment(),
                 }
                 warehouseId == 0L -> {
                     showEmptyStateNoAddress()
+                    viewModelTokoNow.trackOpeningScreenOoc(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
                 }
                 else -> {
                     showLayout()
+                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
                 }
             }
         }
@@ -833,10 +831,12 @@ class TokoNowHomeFragment: Fragment(),
             when(it) {
                 is Success -> {
                     setupChooseAddress(it.data)
+                    viewModelTokoNow.trackOpeningScreenOoc(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
                 }
                 is Fail -> {
                     showEmptyStateNoAddress()
                     logChooseAddressError(it.throwable)
+                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
                 }
             }
         }
@@ -905,6 +905,22 @@ class TokoNowHomeFragment: Fragment(),
                 )
             }
         }
+
+        viewModelTokoNow.openScreenTracker.observeOnce(viewLifecycleOwner, { screenName ->
+            TokoNowCommonAnalytics.onOpenScreen(
+                isLoggedInStatus = userSession.isLoggedIn,
+                screenName = screenName,
+                userId = userSession.userId
+            )
+        })
+
+        viewModelTokoNow.openScreenOocTracker.observeOnce(viewLifecycleOwner, { screenName ->
+            TokoNowCommonAnalytics.onOpenScreen(
+                isLoggedInStatus = userSession.isLoggedIn,
+                screenName = screenName,
+                userId = userSession.userId
+            )
+        })
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {

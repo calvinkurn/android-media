@@ -106,6 +106,10 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         get() = _chooseAddress
     val repurchaseAddToCartTracker: LiveData<RepurchaseAddToCartTracker>
         get() = _repurchaseAddToCartTracker
+    val openScreenTracker: LiveData<String>
+        get() = _openScreenTracker
+    val openScreenOocTracker: LiveData<String>
+        get() = _openScreenOocTracker
 
     private val _getLayout = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _loadMore = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
@@ -116,6 +120,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private val _atcQuantity = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
     private val _repurchaseAddToCartTracker = MutableLiveData<RepurchaseAddToCartTracker>()
+    private val _openScreenTracker = MutableLiveData<String>()
+    private val _openScreenOocTracker = MutableLiveData<String>()
 
     private var localCacheModel: LocalCacheModel? = null
     private var productListMeta: RepurchaseProductListMeta? = null
@@ -124,6 +130,14 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private var selectedDateFilter: SelectedDateFilter = SelectedDateFilter()
     private var selectedSortFilter: Int = FREQUENTLY_BOUGHT
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
+
+    fun trackOpeningScreen(screenName: String) {
+        _openScreenTracker.value = screenName
+    }
+
+    fun trackOpeningScreenOoc(screenName: String) {
+        _openScreenOocTracker.value = screenName
+    }
 
     fun showLoading() {
         layoutList.clear()
