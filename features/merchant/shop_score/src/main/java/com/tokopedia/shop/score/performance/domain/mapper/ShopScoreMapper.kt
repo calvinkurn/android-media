@@ -144,8 +144,8 @@ class ShopScoreMapper @Inject constructor(
         val sellerType = getSellerType(shopScoreResult?.shopScoreDetail)
 
         shopScoreVisitableList.apply {
-            when (sellerType) {
-                SellerTypeConstants.NEW_SELLER -> {
+            when {
+                isNewSeller || shopAge < NEW_SELLER_DAYS -> {
                     val mapTimerNewSeller =
                         mapToTimerNewSellerUiModel(
                             shopAge,
@@ -158,10 +158,10 @@ class ShopScoreMapper @Inject constructor(
                         }
                     }
                 }
-                SellerTypeConstants.REACTIVATED_SELLER -> {
+                sellerType == SellerTypeConstants.REACTIVATED_SELLER -> {
                     if (isReactivatedSellerBeforeFirstMonday(
                             shopScore,
-                            shopScoreResult?.shopScoreDetail
+                            shopAge
                         )
                     ) {
                         if (shopScorePrefManager.getIsNeedShowTickerReactivated()) {
@@ -185,7 +185,8 @@ class ShopScoreMapper @Inject constructor(
             if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
                 addAll(
                     mapToItemDetailPerformanceUiModel(
-                        shopScoreResult.shopScoreDetail, shopAge,
+                        shopScoreResult.shopScoreDetail,
+                        shopAge,
                         shopScore,
                         shopInfoPeriodUiModel.dateShopCreated
                     )
@@ -221,7 +222,7 @@ class ShopScoreMapper @Inject constructor(
                                 isOfficialStore,
                                 powerMerchantResponse,
                                 shopScore,
-                                shopScoreResult?.shopScoreDetail
+                                shopAge
                             )
                         )
                     )
@@ -304,43 +305,39 @@ class ShopScoreMapper @Inject constructor(
         val shopLevel = shopScoreLevelResponse?.shopLevel ?: SHOP_SCORE_NULL
         val sellerType = getSellerType(shopScoreLevelResponse?.shopScoreDetail)
         with(headerShopPerformanceUiModel) {
-            when (sellerType) {
-                SellerTypeConstants.NEW_SELLER -> {
+            when {
+                shopScore < SHOP_SCORE_ZERO -> {
+                    titleHeaderShopService =
+                        context?.getString(R.string.title_new_seller_level_0)
+                            ?: ""
+                    this.showCard = true
+                    descHeaderShopService =
+                        context?.getString(R.string.desc_new_seller_level_0)
+                            ?: ""
+                }
+                shopScore > SHOP_SCORE_NULL && shopAge in THREE_NUMBER..SHOP_SCORE_EIGHTY_NINE -> {
                     when {
-                        shopScore < SHOP_SCORE_ZERO || shopAge in ONE_NUMBER..TWO_NUMBER -> {
+                        shopScore < SHOP_SCORE_SIXTY -> {
                             titleHeaderShopService =
-                                context?.getString(R.string.title_new_seller_level_0)
-                                    ?: ""
-                            this.showCard = true
-                            descHeaderShopService =
-                                context?.getString(R.string.desc_new_seller_level_0)
+                                context?.getString(R.string.title_tenure_new_seller_score_under_60)
                                     ?: ""
                         }
-                        shopAge in THREE_NUMBER..SHOP_SCORE_EIGHTY_NINE -> {
-                            when {
-                                shopScore < SHOP_SCORE_SIXTY -> {
-                                    titleHeaderShopService =
-                                        context?.getString(R.string.title_tenure_new_seller_score_under_60)
-                                            ?: ""
-                                }
-                                shopScore in SHOP_SCORE_SIXTY..SHOP_SCORE_SEVENTY_NINE -> {
-                                    titleHeaderShopService =
-                                        context?.getString(R.string.title_tenure_new_seller_score_between_60_to_79)
-                                            ?: ""
-                                }
-                                shopScore >= SHOP_SCORE_EIGHTY -> {
-                                    titleHeaderShopService =
-                                        context?.getString(R.string.title_tenure_new_seller_score_more_80)
-                                            ?: ""
-                                }
-                            }
-                            descHeaderShopService =
-                                context?.getString(R.string.desc_tenure_new_seller)
+                        shopScore in SHOP_SCORE_SIXTY..SHOP_SCORE_SEVENTY_NINE -> {
+                            titleHeaderShopService =
+                                context?.getString(R.string.title_tenure_new_seller_score_between_60_to_79)
+                                    ?: ""
+                        }
+                        shopScore >= SHOP_SCORE_EIGHTY -> {
+                            titleHeaderShopService =
+                                context?.getString(R.string.title_tenure_new_seller_score_more_80)
                                     ?: ""
                         }
                     }
+                    descHeaderShopService =
+                        context?.getString(R.string.desc_tenure_new_seller)
+                            ?: ""
                 }
-                SellerTypeConstants.REACTIVATED_SELLER -> {
+                sellerType == SellerTypeConstants.REACTIVATED_SELLER -> {
                     when {
                         shopScore < SHOP_SCORE_ZERO -> {
                             titleHeaderShopService =
@@ -873,10 +870,10 @@ class ShopScoreMapper @Inject constructor(
         isOfficialStore: Boolean,
         pmData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data.PowerMerchant?,
         shopScore: Long,
-        shopScoreDetail: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?
+        shopAge: Long
     ): List<ItemFaqUiModel> {
         val isReactivatedBeforeMonday =
-            isReactivatedSellerBeforeFirstMonday(shopScore, shopScoreDetail)
+            isReactivatedSellerBeforeFirstMonday(shopScore, shopAge)
         return mutableListOf<ItemFaqUiModel>().apply {
             add(
                 ItemFaqUiModel(
@@ -1108,10 +1105,9 @@ class ShopScoreMapper @Inject constructor(
 
     private fun isReactivatedSellerBeforeFirstMonday(
         shopScore: Long,
-        shopScoreDetail: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?
+        shopAge: Long
     ): Boolean {
-        return getSellerType(shopScoreDetail) == SellerTypeConstants.REACTIVATED_SELLER
-                && shopScore < SHOP_SCORE_ZERO
+        return shopAge > SHOP_AGE_FIFTY_NINE && shopScore < SHOP_SCORE_ZERO
     }
 
     private fun isShowProtectedParameterNewSeller(shopAge: Int, dateShopCreated: String): Boolean {
