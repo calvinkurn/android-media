@@ -70,6 +70,8 @@ class OfficialHomeContainerFragment
         const val PARAM_ACTIVITY_OFFICIAL_STORE = "param_activity_official_store"
         const val PARAM_HOME = "home"
     }
+
+    private var currentOfficialStoreCategories: OfficialStoreCategories? = null
     private val queryHashingKey = "android_do_query_hashing"
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
         OfficialHomeContainerAdapter(context, childFragmentManager)
@@ -259,7 +261,8 @@ class OfficialHomeContainerFragment
         viewModel.officialStoreCategoriesResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.categories.isNotEmpty()) {
+                    if (it.data.categories.isNotEmpty() && (currentOfficialStoreCategories?.categories != it.data.categories || currentOfficialStoreCategories == null)) {
+                        this.currentOfficialStoreCategories = it.data
                         removeLoading()
                         populateCategoriesData(it.data)
                     }
