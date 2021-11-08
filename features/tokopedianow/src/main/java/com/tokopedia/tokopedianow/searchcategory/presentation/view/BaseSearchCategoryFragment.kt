@@ -110,6 +110,7 @@ abstract class BaseSearchCategoryFragment:
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
         protected const val REQUEST_CODE_LOGIN = 69
+        private const val DEFAULT_POSITION = 0
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -337,7 +338,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun resetMovingPosition() {
-        movingPosition = 0
+        movingPosition = DEFAULT_POSITION
     }
 
     private fun configureStatusBar() {
@@ -403,13 +404,13 @@ abstract class BaseSearchCategoryFragment:
 
     private fun evaluateNavToolbarShadow(recyclerView: RecyclerView, dy: Int) {
         movingPosition += dy
-        headerBackground?.y = if(movingPosition >= 0) {
+        headerBackground?.y = if(movingPosition >= DEFAULT_POSITION) {
             -(movingPosition.toFloat())
         } else {
             resetMovingPosition()
             movingPosition.toFloat()
         }
-        if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
+        if (recyclerView.canScrollVertically(1) || movingPosition != DEFAULT_POSITION) {
             navToolbar?.showShadow(lineShadow = false)
         } else {
             navToolbar?.hideShadow(lineShadow = false)
