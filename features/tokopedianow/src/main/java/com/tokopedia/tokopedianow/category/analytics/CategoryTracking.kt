@@ -626,13 +626,10 @@ object CategoryTracking {
         )
     }
 
-    fun sendOpenScreenTracking(slug: String) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(
-            String.format(TOKONOW_CATEGORY_SCREEN, slug),
-            mapOf<String, String>(
-                KEY_BUSINESS_UNIT to BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
-                KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
-            )
+    fun sendOpenScreenTracking(slug: String, isLoggedInStatus: Boolean) {
+        TokoNowCommonAnalytics.onOpenScreen(
+            isLoggedInStatus = isLoggedInStatus,
+            screenName =  String.format(TOKONOW_CATEGORY_SCREEN, slug)
         )
     }
 
