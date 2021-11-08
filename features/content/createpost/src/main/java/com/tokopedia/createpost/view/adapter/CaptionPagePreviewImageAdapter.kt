@@ -4,7 +4,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -15,10 +14,11 @@ import kotlinx.android.synthetic.main.content_preview_post_view_item.view.*
  */
 
 class CaptionPagePreviewImageAdapter(
-    private val itemList: MutableList<MediaModel> = mutableListOf(),
-    private val listener: CreateContentPostCommonListener?
-) :
-    RecyclerView.Adapter<CaptionPagePreviewImageAdapter.ContentCaptionPostViewHolder>() {
+    private val onItemClick: ((Int) -> Unit)? = null,
+) : RecyclerView.Adapter<CaptionPagePreviewImageAdapter.ContentCaptionPostViewHolder>() {
+    
+    private val itemList: MutableList<MediaModel> = mutableListOf()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContentCaptionPostViewHolder {
         return ContentCaptionPostViewHolder(parent.inflateLayout(R.layout.content_preview_post_view_item))
 
@@ -35,7 +35,7 @@ class CaptionPagePreviewImageAdapter(
 
         fun bind(imageItemData: MediaModel) {
             itemView.setOnClickListener{
-                listener?.openProductTaggingPageOnPreviewMediaClick(adapterPosition)
+                onItemClick?.invoke(adapterPosition)
             }
             with(itemView){
                 content_preview_page_image.setImageUrl(imageItemData.path)
