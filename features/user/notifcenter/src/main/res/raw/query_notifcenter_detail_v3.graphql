@@ -124,6 +124,7 @@ query notifcenter_detail_v3(
 					location
 					is_gold
 					is_official
+					is_tokonow
 					badges {
 						title
 						image_url

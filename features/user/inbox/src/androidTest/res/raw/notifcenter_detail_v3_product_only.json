@@ -102,6 +102,7 @@
               "location": "Jakarta Pusat",
               "is_gold": true,
               "is_official": false,
+              "is_tokonow": false,
               "badges": [
                 {
                   "title": "Official Store",
@@ -158,6 +159,7 @@
               "location": "Jakarta Pusat",
               "is_gold": true,
               "is_official": false,
+              "is_tokonow": false,
               "badges": [
                 {
                   "title": "Official Store",
@@ -214,6 +216,7 @@
               "location": "Jakarta Pusat",
               "is_gold": true,
               "is_official": false,
+              "is_tokonow": false,
               "badges": [
                 {
                   "title": "Official Store",

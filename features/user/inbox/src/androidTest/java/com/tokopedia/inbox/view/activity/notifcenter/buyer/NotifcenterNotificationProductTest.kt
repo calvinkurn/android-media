@@ -177,6 +177,32 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
             .check(matches(not(isDisplayed())))
     }
 
+    @Test
+    fun should_open_VBS_with_tokonow_if_product_is_variants_and_tokonow() {
+        //Given
+        inboxNotifcenterDep.apply {
+            val dataResponse = notifcenterDetailUseCase.productOnly.apply {
+                this.notifcenterDetail.newList[0].productData[1].shop.isTokonow = true
+            }
+            notifcenterDetailUseCase.response = dataResponse
+        }
+        startInboxActivity()
+        intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        //When
+        onView(
+            RecyclerViewMatcher(R.id.rv_carousel_product)
+                .atPositionOnView(0, R.id.btn_atc)
+        ).perform(ViewActions.click())
+
+        //Then
+        val intent = RouteManager.getIntent(context,
+            ApplinkConstInternalMarketplace.ATC_VARIANT,
+            "1988298491", "10973651", "notifcenter", "true", "") //Product from JSON
+        intended(IntentMatchers.hasData(intent.data))
+    }
+
     private fun scrollToProductPosition(position: Int) {
         onView(withId(R.id.rv_carousel_product)).perform(
             scrollToPosition<RecyclerView.ViewHolder>(position)

@@ -14,6 +14,8 @@ data class Shop(
     val isGold: Boolean = false,
     @SerializedName("is_official")
     val isOfficial: Boolean = false,
+    @SerializedName("is_tokonow")
+    var isTokonow: Boolean = false,
     @SerializedName("location")
     val location: String = "",
     @SerializedName("name")

@@ -38,8 +38,8 @@ import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.analytics.NotificationTopAdsAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
-import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
+import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.model.ScrollToBottomState
 import com.tokopedia.notifcenter.data.state.Resource
@@ -76,9 +76,9 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
 open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
-        InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
-        NotificationEndlessRecyclerViewScrollListener.Listener,
-        NotificationAdapter.Listener, NotificationLongerContentBottomSheet.Listener {
+    InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
+    NotificationEndlessRecyclerViewScrollListener.Listener,
+    NotificationAdapter.Listener, NotificationLongerContentBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -537,7 +537,11 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     override fun buyProduct(notification: NotificationUiModel, product: ProductData) {
         if (product.hasVariant()) {
-            showAtcVariantHelper(product.productId, product.shop.id.toString())
+            showAtcVariantHelper(
+                product.productId,
+                product.shop.id.toString(),
+                product.shop.isTokonow
+            )
         } else {
             doBuyAndAtc(notification, product) {
                 analytic.trackSuccessDoBuyAndAtc(
@@ -550,7 +554,11 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     override fun addProductToCart(notification: NotificationUiModel, product: ProductData) {
         if (product.hasVariant()) {
-            showAtcVariantHelper(product.productId, product.shop.id.toString())
+            showAtcVariantHelper(
+                product.productId,
+                product.shop.id.toString(),
+                product.shop.isTokonow
+            )
         } else {
             doBuyAndAtc(notification, product) {
                 analytic.trackSuccessDoBuyAndAtc(
@@ -603,14 +611,15 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     private fun showAtcVariantHelper(
         productId: String,
-        shopId: String
+        shopId: String,
+        isTokonow: Boolean
     ) {
         context?.let { ctx ->
             AtcVariantHelper.goToAtcVariant(
                 context = ctx,
                 productId = productId,
                 pageSource = AtcVariantHelper.NOTIFCENTER_PAGESOURCE,
-                isTokoNow = false,
+                isTokoNow = isTokonow,
                 shopId = shopId,
                 startActivitResult = { intent, requestCode ->
                     startActivityForResult(intent, requestCode)
@@ -645,11 +654,13 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         viewModel.addWishListNormal(product.productId,
             object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    showErrorMessage(errorMessage?: "")
+                    showErrorMessage(errorMessage ?: "")
                 }
+
                 override fun onSuccessAddWishlist(productId: String?) {
                     showMessage(R.string.title_success_add_to_wishlist)
                 }
+
                 override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
                 override fun onSuccessRemoveWishlist(productId: String?) {}
             })
