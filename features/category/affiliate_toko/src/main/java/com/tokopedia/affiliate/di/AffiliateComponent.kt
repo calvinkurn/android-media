@@ -11,6 +11,8 @@ import com.tokopedia.affiliate.ui.fragment.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
+import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
 import dagger.Component
 
 @AffiliateScope
@@ -35,5 +37,7 @@ interface AffiliateComponent {
     fun injectPortfolioFragment(affiliatePortfolioFragment: AffiliatePortfolioFragment)
 
     fun injectTermAndConditionFragment(affiliateTermsAndConditionFragment: AffiliateTermsAndConditionFragment)
+
+    fun injectRecommendedProductFragment(viewModel: AffiliateRecommendedProductFragment)
 
 }

@@ -31,12 +31,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.webview.BaseSessionWebViewFragment
+import java.util.Stack
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
-class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomClickListener,
-        AffiliateBottomNavBarInterface , AffiliateActivityInterface{
+class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomClickListener,
+    AffiliateBottomNavBarInterface , AffiliateActivityInterface{
 
     @Inject
     lateinit var userSessionInterface : UserSessionInterface
@@ -45,7 +47,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
     private lateinit var affiliateVM: AffiliateViewModel
-
+    private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,8 +64,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
-            if(it.contains(PAGE_SEGMENT_HELP)){
-                selectItem(HELP_MENU,R.id.menu_promo_affiliate)
+            if (it.contains(PAGE_SEGMENT_HELP)) {
+                selectItem(HELP_MENU, R.id.menu_help_affiliate)
             }
         }
     }
@@ -109,12 +111,14 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
     }
 
     private fun initBottomNavigationView() {
-        affiliateBottomNavigation = AffiliateBottomNavbar(findViewById(R.id.bottom_navbar),
-                this,this)
+        affiliateBottomNavigation = AffiliateBottomNavbar(
+            findViewById(R.id.bottom_navbar),
+            this, this
+        )
     }
 
     override fun menuClicked(position: Int, id: Int): Boolean {
-        when(position) {
+        when (position) {
             HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this))
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
             HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance(AFFILIATE_HELP_URL))
@@ -136,24 +140,30 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
         })
     }
 
-    private fun openFragment(fragment : Fragment){
+    private fun openFragment(fragment: Fragment) {
         val backStackName = fragment.javaClass.simpleName
         val ft = supportFragmentManager.beginTransaction()
-        val currentFrag : Fragment? = supportFragmentManager.findFragmentByTag(backStackName)
+        val currentFrag: Fragment? = supportFragmentManager.findFragmentByTag(backStackName)
         if (currentFrag != null && supportFragmentManager.fragments.size > 0) {
-            showSelectedFragment(fragment, supportFragmentManager, ft)
+            showSelectedFragment(fragment.javaClass.name, supportFragmentManager, ft)
+            fragmentStack.add(fragment.javaClass.name)
         } else {
-            ft.add(R.id.parent_view ,fragment, backStackName)
-            showSelectedFragment(fragment, supportFragmentManager, ft)
+            fragmentStack.add(fragment.javaClass.name)
+            ft.add(R.id.parent_view, fragment, backStackName)
+            showSelectedFragment(fragment.javaClass.name, supportFragmentManager, ft)
             onFragmentSelected(fragment)
         }
         ft.commitNowAllowingStateLoss()
     }
 
-    private fun showSelectedFragment(fragment: Fragment, manager: FragmentManager, ft: FragmentTransaction) {
+    private fun showSelectedFragment(
+        fragmentName: String,
+        manager: FragmentManager,
+        ft: FragmentTransaction
+    ) {
         for (i in manager.fragments.indices) {
             val frag = manager.fragments[i]
-            if (frag.javaClass.name.equals(fragment.javaClass.name, ignoreCase = true)) {
+            if (frag.javaClass.name.equals(fragmentName, ignoreCase = true)) {
                 ft.show(frag)
                 onFragmentSelected(frag)
             } else {
@@ -171,6 +181,55 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
 
     override fun selectItem(position: Int, id: Int) {
         affiliateBottomNavigation?.setSelected(position)
+    }
+
+    override fun onBackPressed() {
+        val currentFragment=supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+        if(currentFragment != null && currentFragment.isVisible){
+            (currentFragment as? AffiliatePromoFragment)?.handleBack()
+        }
+        else {
+           handleBackButton()
+        }
+    }
+
+    fun handleBackButton(){
+        if(!fragmentStack.empty()) {
+            fragmentStack.pop()
+            if (!fragmentStack.empty()) {
+                handleBackStack()
+            } else{
+                super.onBackPressed()
+            }
+        }
+        else{
+            super.onBackPressed()
+        }
+    }
+
+    private fun handleBackStack() {
+        val ft = supportFragmentManager.beginTransaction()
+        showSelectedFragment(
+            fragmentStack.peek(),
+            supportFragmentManager,
+            ft
+        )
+        setBottomState(fragmentStack.peek())
+        ft.commitNowAllowingStateLoss()
+    }
+
+    private fun setBottomState(peek: String?) {
+        when (peek) {
+            AffiliateHomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                HOME_MENU
+            )
+            AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                PROMO_MENU
+            )
+            BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                HELP_MENU
+            )
+        }
     }
 
     override fun navigateToTermsFragment() {

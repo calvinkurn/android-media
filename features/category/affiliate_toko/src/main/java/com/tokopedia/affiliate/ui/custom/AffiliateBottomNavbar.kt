@@ -36,6 +36,10 @@ class AffiliateBottomNavbar(private val bottomNavigation: LottieBottomNavbar?,
     fun hideBottomNav(){
         bottomNavigation?.hide()
     }
+
+    fun selectBottomTab(position : Int){
+        bottomNavigation?.selectBottomTab(position)
+    }
 }
 
 interface AffiliateBottomNavBarInterface{
