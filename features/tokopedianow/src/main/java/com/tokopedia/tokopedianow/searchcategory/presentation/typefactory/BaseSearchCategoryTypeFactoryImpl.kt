@@ -14,28 +14,22 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAdd
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BannerViewHolder
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.CategoryFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.*
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.LoadingMoreViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductCountViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.QuickFilterViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TitleViewHolder
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.OutOfCoverageViewHolder
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProgressBarViewHolder
 
 abstract class BaseSearchCategoryTypeFactoryImpl(
+    protected val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener,
     protected val chooseAddressListener: ChooseAddressListener,
     protected val titleListener: TitleListener,
     protected val bannerListener: BannerComponentListener,
@@ -43,7 +37,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val categoryFilterListener: CategoryFilterListener,
     protected val productItemListener: ProductItemListener,
     protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-    protected val outOfCoverageListener: OutOfCoverageListener,
     private val recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
     private val recommendationCarouselBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?
 ): BaseAdapterTypeFactory(), BaseSearchCategoryTypeFactory, TokoNowTypeFactory {
@@ -64,8 +57,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(viewModel: LoadingMoreModel) = LoadingMoreViewHolder.LAYOUT
 
-    override fun type(outOfCoverageDataView: OutOfCoverageDataView) = OutOfCoverageViewHolder.LAYOUT
-
     override fun type(uiModel: TokoNowEmptyStateNoResultUiModel) = TokoNowEmptyStateNoResultViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int = TokoNowRecommendationCarouselViewHolder.LAYOUT
@@ -80,25 +71,50 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
 
+    override fun type(progressBarDataView: ProgressBarDataView): Int = ProgressBarViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(view, productItemListener)
-            BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
-            TitleViewHolder.LAYOUT -> TitleViewHolder(view, titleListener)
-            CategoryFilterViewHolder.LAYOUT -> CategoryFilterViewHolder(view, categoryFilterListener)
-            QuickFilterViewHolder.LAYOUT -> QuickFilterViewHolder(view, quickFilterListener)
-            ProductCountViewHolder.LAYOUT -> ProductCountViewHolder(view)
-            LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(view)
-            OutOfCoverageViewHolder.LAYOUT -> OutOfCoverageViewHolder(view, outOfCoverageListener)
+            ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(
+                itemView = view,
+                productItemListener = productItemListener
+            )
+            BannerViewHolder.LAYOUT -> BannerViewHolder(
+                itemView = view,
+                bannerListener = bannerListener
+            )
+            TitleViewHolder.LAYOUT -> TitleViewHolder(
+                itemView = view,
+                titleListener = titleListener
+            )
+            CategoryFilterViewHolder.LAYOUT -> CategoryFilterViewHolder(
+                itemView = view,
+                categoryFilterListener = categoryFilterListener
+            )
+            QuickFilterViewHolder.LAYOUT -> QuickFilterViewHolder(
+                itemView = view,
+                quickFilterListener = quickFilterListener
+            )
+            ProductCountViewHolder.LAYOUT -> ProductCountViewHolder(
+                itemView = view
+            )
+            LoadingMoreViewHolder.LAYOUT -> LoadingMoreViewHolder(
+                itemView = view
+            )
             TokoNowEmptyStateNoResultViewHolder.LAYOUT -> TokoNowEmptyStateNoResultViewHolder(
-                view,
-                tokoNowEmptyStateNoResultListener
+                itemView = view,
+                tokoNowEmptyStateNoResultListener = tokoNowEmptyStateNoResultListener
+            )
+            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(
+                itemView = view,
+                listener = tokoNowEmptyStateOocListener
             )
             TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(
-                view,
-                recommendationCarouselListener,
-                recommendationCarouselBindPageNameListener
+                itemView = view,
+                recommendationCarouselListener = recommendationCarouselListener,
+                recommendationCarouselWidgetBindPageNameListener = recommendationCarouselBindPageNameListener
             )
+            ProgressBarViewHolder.LAYOUT -> ProgressBarViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

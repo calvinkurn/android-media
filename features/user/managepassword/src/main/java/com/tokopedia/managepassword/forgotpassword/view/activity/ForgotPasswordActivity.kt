@@ -42,7 +42,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var uri: Uri
+    private var uri: Uri? = null
 
     override fun getScreenName(): String {
         return SCREEN_FORGOT_PASSWORD
@@ -81,10 +81,12 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                         uri = Uri.parse(url).buildUpon().build()
 
                         if (isContainsLoginApplink) {
-                            if (userSession.isLoggedIn && isForceLogout(uri)) {
-                                gotoLogout()
-                            } else {
-                                gotoLogin(uri)
+                            uri?.let {
+                                if (userSession.isLoggedIn && isForceLogout(it)) {
+                                    gotoLogout()
+                                } else {
+                                    gotoLogin(it)
+                                }
                             }
                         }
                     }

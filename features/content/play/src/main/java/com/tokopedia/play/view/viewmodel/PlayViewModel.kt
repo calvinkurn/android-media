@@ -798,7 +798,7 @@ class PlayViewModel @Inject constructor(
 
             setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext.castState))
 
-            trackVisitChannel(channelData.id)
+            trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack)
         }
 
         updateChannelInfo(channelData)
@@ -1240,12 +1240,14 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun trackVisitChannel(channelId: String) {
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
-            trackVisitChannelBroadcasterUseCase.executeOnBackground()
-        }) {
+    private fun trackVisitChannel(channelId: String, shouldTrack: Boolean) {
+        if(shouldTrack) {
+            viewModelScope.launchCatchError(dispatchers.io, block = {
+                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
+                trackVisitChannelBroadcasterUseCase.executeOnBackground()
+            }) { }
         }
+        _channelReport.setValue { copy(shouldTrack = true) }
     }
 
     private fun checkLeaderboard(channelId: String) {

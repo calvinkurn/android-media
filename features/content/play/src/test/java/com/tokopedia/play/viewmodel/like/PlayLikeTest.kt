@@ -56,15 +56,17 @@ class PlayLikeTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
-            setLoggedIn(true)
-            createPage(mockVODChannelData)
-            focusPage(mockVODChannelData)
+        robot.use {
+            val state = robot.recordState {
+                setLoggedIn(true)
+                createPage(mockVODChannelData)
+                focusPage(mockVODChannelData)
 
-            submitAction(ClickLikeAction)
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertTrue()
         }
-
-        state.like.isLiked.assertTrue()
     }
 
     @Test
@@ -77,21 +79,23 @@ class PlayLikeTest {
             dispatchers = testDispatcher
         )
 
-        val (state, event) = robot.recordStateAndEvent {
-            setLoggedIn(true)
-            createPage(mockLiveChannelData)
-            focusPage(mockLiveChannelData)
+        robot.use {
+            val (state, event) = robot.recordStateAndEvent {
+                setLoggedIn(true)
+                createPage(mockLiveChannelData)
+                focusPage(mockLiveChannelData)
 
-            submitAction(ClickLikeAction)
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertTrue()
+
+            event.last()
+                .isEqualToIgnoringFields(
+                    ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
+                    ShowLikeBubbleEvent.Single::config
+                )
         }
-
-        state.like.isLiked.assertTrue()
-
-        event.last()
-            .isEqualToIgnoringFields(
-                ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
-                ShowLikeBubbleEvent.Single::config
-            )
     }
 
     @Test
@@ -104,15 +108,17 @@ class PlayLikeTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
-            setLoggedIn(true)
-            createPage(mockVODChannelData)
-            focusPage(mockVODChannelData)
+        robot.use {
+            val state = robot.recordState {
+                setLoggedIn(true)
+                createPage(mockVODChannelData)
+                focusPage(mockVODChannelData)
 
-            submitAction(ClickLikeAction)
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertFalse()
         }
-
-        state.like.isLiked.assertFalse()
     }
 
     @Test
@@ -125,21 +131,23 @@ class PlayLikeTest {
             dispatchers = testDispatcher
         )
 
-        val (state, event) = robot.recordStateAndEvent {
-            setLoggedIn(true)
-            createPage(mockLiveChannelData)
-            focusPage(mockLiveChannelData)
+        robot.use {
+            val (state, event) = robot.recordStateAndEvent {
+                setLoggedIn(true)
+                createPage(mockLiveChannelData)
+                focusPage(mockLiveChannelData)
 
-            submitAction(ClickLikeAction)
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertTrue()
+
+            event.last()
+                .isEqualToIgnoringFields(
+                    ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
+                    ShowLikeBubbleEvent.Single::config
+                )
         }
-
-        state.like.isLiked.assertTrue()
-
-        event.last()
-            .isEqualToIgnoringFields(
-                ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
-                ShowLikeBubbleEvent.Single::config
-            )
     }
 
     @Test
@@ -152,20 +160,22 @@ class PlayLikeTest {
             dispatchers = testDispatcher
         )
 
-        val (state, event) = robot.recordStateAndEvent {
-            setLoggedIn(false)
-            createPage(mockVODChannelData)
-            focusPage(mockVODChannelData)
+        robot.use {
+            val (state, event) = robot.recordStateAndEvent {
+                setLoggedIn(false)
+                createPage(mockVODChannelData)
+                focusPage(mockVODChannelData)
 
-            submitAction(ClickLikeAction)
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertFalse()
+            event.last()
+                .isEqualToIgnoringFields(
+                    OpenPageEvent(ApplinkConst.LOGIN),
+                    OpenPageEvent::requestCode
+                )
         }
-
-        state.like.isLiked.assertFalse()
-        event.last()
-            .isEqualToIgnoringFields(
-                OpenPageEvent(ApplinkConst.LOGIN),
-                OpenPageEvent::requestCode
-            )
     }
 
 }
