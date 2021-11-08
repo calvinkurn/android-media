@@ -20,13 +20,15 @@ import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.webview.BaseSessionWebViewFragment
+import java.util.*
 
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomClickListener,
         AffiliateBottomNavBarInterface {
 
     private lateinit var affiliateVM: AffiliateViewModel
-
+    private var fragmentStack= Stack<Fragment>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +85,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
         val currentFrag : Fragment? = supportFragmentManager.findFragmentByTag(backStackName)
         if (currentFrag != null && supportFragmentManager.fragments.size > 0) {
             showSelectedFragment(fragment, supportFragmentManager, ft)
+            fragmentStack.add(fragment)
         } else {
+            fragmentStack.add(fragment)
             ft.add(R.id.parent_view ,fragment, backStackName)
             showSelectedFragment(fragment, supportFragmentManager, ft)
             onFragmentSelected(fragment)
@@ -112,5 +116,32 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
 
     override fun selectItem(position: Int, id: Int) {
         affiliateBottomNavigation?.setSelected(position)
+    }
+
+    override fun onBackPressed() {
+        fragmentStack.pop()
+        if(!fragmentStack.empty()) {
+            val ft = supportFragmentManager.beginTransaction()
+            showSelectedFragment(
+                fragmentStack.peek(),
+                supportFragmentManager,
+                ft
+            )
+            setBottomState(fragmentStack.peek())
+            ft.commitNowAllowingStateLoss()
+
+        }
+        else
+            finish()
+
+    }
+
+    private fun setBottomState(peek: Fragment?) {
+        when(peek)
+        {
+            is AffiliateHomeFragment -> affiliateBottomNavigation?.selectBottomTab(HOME_MENU)
+            is AffiliatePromoFragment -> affiliateBottomNavigation?.selectBottomTab(PROMO_MENU)
+            is BaseSessionWebViewFragment -> affiliateBottomNavigation?.selectBottomTab(HELP_MENU)
+        }
     }
 }
