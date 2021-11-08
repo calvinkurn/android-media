@@ -41,7 +41,6 @@
 
     <string name="notif_settings_title">Pengaturan Notifikasi</string>
     <string name="payment_settings_title">Pengaturan Pembayaran</string>
-    <string name="payment_instant_debit_bca_title">Instant Debit BCA</string>
     <string name="title_wishlist">Wishlist</string>
     <string name="recom_home_recommendation">Pilihan Tokopedia</string>
     <string name="title_recent_view">Terakhir Dilihat</string>

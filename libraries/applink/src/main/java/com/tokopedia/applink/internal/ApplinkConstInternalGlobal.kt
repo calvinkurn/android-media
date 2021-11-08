@@ -357,14 +357,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/ovoqrthanks/{transfer_id}
     const val OQR_PIN_URL_ENTRY_PATTERN = "$INTERNAL_GLOBAL/ovoqrthanks/{transfer_id}/"
 
-    // InstantDebitBcaActivity
-    // tokopedia-android-internal://global/instantdebitbca?callbackUrl={callbackUrl}
-    const val INSTANT_DEBIT_BCA_ENTRY_PATTERN = "$INTERNAL_GLOBAL/instantdebitbca"
-
-    // BcaEditLimitActivity
-    // tokopedia-android-internal://global/editbcaoneklik?callbackUrl={callbackUrl}&xcoid={xcoid}
-    const val EDIT_BCA_ONE_KLICK_ENTRY_PATTERN = "$INTERNAL_GLOBAL/editbcaoneklik"
-
     const val DISCOVERY = "$INTERNAL_GLOBAL/discovery"
 
 

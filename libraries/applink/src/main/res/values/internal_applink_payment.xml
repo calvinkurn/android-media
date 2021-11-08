@@ -9,9 +9,6 @@
     <string name="path_payment_checkout" translatable="false">/checkout</string>
     <string name="path_setting" translatable="false">/setting</string>
     <string name="path_add_credit_card" translatable="false">/add-credit-card</string>
-
-    <string name="path_instant_debit_bca" translatable="false">/instantdebitbca</string>
-    <string name="path_edit_bca_one_click" translatable="false">/editbcaoneklik</string>
     <string name="path_thank_you_page" translatable="false">/thankyou</string>
 
 <!--    // for pms-->

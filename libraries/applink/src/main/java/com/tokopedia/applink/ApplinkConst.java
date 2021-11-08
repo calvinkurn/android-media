@@ -617,11 +617,6 @@ public interface ApplinkConst {
         String PARAM_USER_ID = "{user_id}";
     }
 
-    interface DigitalInstantDebit {
-        String INSTANT_DEBIT_BCA_APPLINK = "tokopedia://instantdebitbca";
-        String INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK = "tokopedia://editbcaoneklik";
-    }
-
     interface Transaction {
         String ORDER_HISTORY = "tokopedia://orderlist/digital";
         String ORDER_DETAIL = "tokopedia://digital/order/{order_id}";

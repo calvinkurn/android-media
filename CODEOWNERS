@@ -251,7 +251,6 @@
 /features/im/moengage_wrapper                   		@tokopedia/android-minionyoda-dev
 /features/ovop2p                                        @tokopedia/android-minionyoda-dev
 /features/payment/common_payment                        @tokopedia/android-minionyoda-dev
-/features/digital/instant_debit_bca                     @tokopedia/android-minionyoda-dev
 /features/fintech/wallet                				@tokopedia/android-minionyoda-dev
 /features/payment/thankyou_native                		@tokopedia/android-minionyoda-dev
 /features/payment/withdraw/             				@tokopedia/android-minionyoda-dev
