@@ -751,7 +751,7 @@ open class DynamicPostViewHolder(v: View,
             shopId: String = ""
         )
 
-        fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean)
+        fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean)
 
         fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int)
 

@@ -1547,6 +1547,26 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
 
     }
+    fun clickSoundVOD(channelId: String, isMute: Boolean, id: String, isFollowed: Boolean) {
+        var map = getCommonMap()
+        map = map.plus(
+                mutableMapOf(
+                        KEY_EVENT_ACTION to String.format(
+                                FORMAT_THREE_PARAM,
+                                CLICK,
+                                "sound",
+                                getPostType("", isFollowed , isVideo = true)
+                        ),
+                        KEY_EVENT_LABEL to String.format(
+                                FORMAT_TWO_PARAM,
+                                channelId,
+                                id
+                        )
+                )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+
+    }
 
     fun clickOnVideo(activityId: String, authorId: String, isFollowed: Boolean) {
         var map = getCommonMap()

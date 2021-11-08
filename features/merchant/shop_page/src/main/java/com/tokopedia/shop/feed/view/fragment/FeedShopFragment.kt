@@ -528,7 +528,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean, playChannelId: String) {
+    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
     }
 
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
@@ -639,7 +639,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isFollowed: Boolean,
         type: Boolean,
         shopId: String,
-        isVideo: Boolean
+        isVideo: Boolean,
+        playChannelId: String
     ) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
@@ -970,7 +971,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean) {
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean,  isVOD: Boolean) {
     }
 
     override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {

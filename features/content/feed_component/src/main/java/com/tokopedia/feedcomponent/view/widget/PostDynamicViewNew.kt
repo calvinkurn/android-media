@@ -1187,7 +1187,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             volumeIcon.setOnClickListener {
                 isMute = !isMute
                 if (isMute)
-                    listener?.muteUnmuteVideo(postId, isMute, id, isFollowed)
+                    listener?.muteUnmuteVideo(postId, isMute, id, isFollowed,false)
                 volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
                 toggleVolume(videoPlayer?.isMute() != true)
             }
@@ -1235,7 +1235,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     videoPlayer = FeedExoPlayer(context)
                 layout_video?.player = videoPlayer?.getExoPlayer()
                 layout_video?.videoSurfaceView?.setOnClickListener {
-                    setMuteUnmuteVOD(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true)
+                    setMuteUnmuteVOD(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true, false)
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, isMute)
@@ -1315,13 +1315,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
             vod_volumeIcon?.setOnClickListener {
-                setMuteUnmuteVOD(vod_volumeIcon, postId, isFollowed, id,false)
+                setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true)
             }
         }
         return vodItem
     }
 
-    private fun setMuteUnmuteVOD(volumeIcon: ImageView?, postId: String, isFollowed: Boolean, activityId: String, isVideoTap: Boolean) {
+    private fun setMuteUnmuteVOD(volumeIcon: ImageView?, postId: String, isFollowed: Boolean, activityId: String, isVideoTap: Boolean, isVOD: Boolean) {
         var countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
             override fun onTick(millisUntilFinished: Long) {
 
@@ -1333,7 +1333,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         isMute = !isMute
         if (isMute)
-            listener?.muteUnmuteVideo(postId, isMute, activityId, isFollowed)
+            listener?.muteUnmuteVideo(postId, isMute, activityId, isFollowed, isVOD)
         if (!volumeIcon?.isVisible!!)
             volumeIcon.visible()
         volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
@@ -1402,7 +1402,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 vod_layout_video?.player = videoPlayer?.getExoPlayer()
                 vod_layout_video?.videoSurfaceView?.setOnClickListener {
                     if (feedMedia.mediaUrl.isNotEmpty() && !isVODViewFrozen) {
-                        setMuteUnmuteVOD(vod_volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true)
+                        setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true)
                     }
                 }
                 vod_full_screen_icon?.setOnClickListener {

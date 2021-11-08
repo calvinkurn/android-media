@@ -2321,8 +2321,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean) {
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean) {
+        if (isVOD)
+        feedAnalytics.clickSoundVOD(postId, mute, id, isFollowed)
+        else
         feedAnalytics.clickMuteButton(postId, mute, id, isFollowed)
+
     }
 
     override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {

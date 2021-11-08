@@ -1028,7 +1028,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void muteUnmuteVideo(@NotNull String postId, boolean mute, @NotNull String id, boolean isFollowed) {
+    public void muteUnmuteVideo(@NotNull String postId, boolean mute, @NotNull String id, boolean isFollowed, boolean isVOD) {
 
     }
 

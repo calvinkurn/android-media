@@ -1283,7 +1283,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean) {
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean) {
     }
 
     override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {
