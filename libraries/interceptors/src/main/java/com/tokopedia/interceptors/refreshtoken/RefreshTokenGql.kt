@@ -65,7 +65,16 @@ class RefreshTokenGql {
         )
     }
 
+    fun createBasicTokenGQL(): String {
+        val clientID = "7ea919182ff"
+        val asB64 = Base64.encodeToString(clientID.toByteArray(), Base64.NO_WRAP)
+        val secretId = randomChar()
+        return "$asB64$secretId"
+    }
+
     fun refreshToken(context: Context, userSession: UserSessionInterface, networkRouter: NetworkRouter): RefreshTokenData? {
+        userSession.setToken(createBasicTokenGQL(), "")
+
         val currentRefreshToken = EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV)
         val params = createParams(currentRefreshToken, userSession.accessToken)
         val requestBody = GraphqlRequest(graphqlQuery(), RefreshTokenResponse::class.java, params)
@@ -74,6 +83,7 @@ class RefreshTokenGql {
             RefreshTokenApi::class.java
         ).getResponse(listOf(requestBody))
 
+        responseCall.request().headers("")
         return try {
             val result = responseCall.execute()
             mapRefreshTokenResponse(result.body())
