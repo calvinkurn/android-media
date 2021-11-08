@@ -15,12 +15,14 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
+import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
@@ -162,6 +164,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         binding?.buyerName?.text = model.detail.receiverName
         binding?.buyerLocation?.text = model.detail.receiverCity
         binding?.currentStatus?.text = model.status
+        setEtaDetail(model.detail.eta)
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
@@ -210,6 +213,23 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             } else {
                 binding?.tvRetryStatus?.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setEtaDetail(model: EtaModel) {
+        binding?.eta?.text = model.userInfo
+        if (model.isChanged) {
+            binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.logisticCommon.R.drawable.eta_info, 0)
+            binding?.eta?.setOnClickListener {
+                showEtaBottomSheet(model.userUpdatedInfo)
+            }
+        }
+    }
+
+    private fun showEtaBottomSheet(description: String) {
+        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(description)
+        parentFragmentManager?.run {
+            delayedEtaBottomSheetFragment.show(this, "")
         }
     }
 
