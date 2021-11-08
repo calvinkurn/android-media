@@ -1335,8 +1335,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
         isMute = !isMute
-        if (isMute)
-            listener?.muteUnmuteVideo(postId, isMute, activityId, isFollowed, isVOD)
+        listener?.muteUnmuteVideo(postId, isMute, activityId, isFollowed, isVOD)
         if (!volumeIcon?.isVisible!!)
             volumeIcon.visible()
         volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
