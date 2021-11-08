@@ -515,4 +515,7 @@ object ApplinkConstInternalGlobal {
 
     //TkpdYoutubeVideoActivity
     const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"
+
+    //DbInspectorActivity
+    const val DB_INSPECTOR = "$INTERNAL_GLOBAL/db-inspector"
 }
