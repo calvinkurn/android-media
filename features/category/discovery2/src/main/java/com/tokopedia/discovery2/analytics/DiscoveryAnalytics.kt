@@ -54,7 +54,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             banners.forEachIndexed { index, banner ->
                 val componentName = banner.parentComponentName ?: EMPTY_STRING
                 val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
-                        eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}")
+                        eventAction = IMPRESSION_DYNAMIC_BANNER)
                 map[PAGE_TYPE] = pageType
                 map[PAGE_PATH] = removedDashPageIdentifier
                 val list = ArrayList<Map<String, Any>>()
@@ -595,7 +595,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 CURRENCY_CODE to IDR,
                 KEY_IMPRESSIONS to list)
         val map = createGeneralEvent(eventName = EVENT_PRODUCT_VIEW,
-                eventAction = PRODUCT_LIST_IMPRESSION, eventLabel = productCardImpressionLabel)
+                eventAction = PRODUCT_LIST_IMPRESSION)
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
         map[KEY_E_COMMERCE] = eCommerce
@@ -1005,7 +1005,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         if (banners.isNotEmpty()) {
             val componentName = banners[0].parentComponentName ?: EMPTY_STRING
             val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
-                    eventAction = IMPRESSION_DYNAMIC_BANNER, eventLabel = componentName)
+                    eventAction = IMPRESSION_DYNAMIC_BANNER)
             val list = ArrayList<Map<String, Any>>()
             for ((index, banner) in banners.withIndex()) {
                 val hashMap = HashMap<String, Any>()
