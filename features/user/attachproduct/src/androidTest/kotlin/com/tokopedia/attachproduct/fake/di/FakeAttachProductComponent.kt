@@ -1,6 +1,7 @@
 package com.tokopedia.attachproduct.fake.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.attachproduct.AttachProductDepedency
 import com.tokopedia.attachproduct.AttachProductTest
 import com.tokopedia.attachproduct.di.AttachProductComponent
 import com.tokopedia.attachproduct.di.AttachProductScope
@@ -13,5 +14,5 @@ import dagger.Component
     dependencies = [FakeBaseAppComponent::class])
 interface FakeAttachProductComponent : AttachProductComponent {
 
-    fun inject(attachProductTest: AttachProductTest)
+    fun inject(attachProductTest: AttachProductDepedency)
 }

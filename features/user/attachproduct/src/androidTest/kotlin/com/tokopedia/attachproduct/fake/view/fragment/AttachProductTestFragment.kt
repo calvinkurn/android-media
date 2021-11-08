@@ -30,7 +30,7 @@ class AttachProductTestFragment : AttachProductFragment() {
             checkedUIView: AttachProductContract.Activity?,
             isSeller: Boolean, source: String?, maxChecked: Int,
             hiddenProducts: ArrayList<String>?, warehouseId: String?, shopId: String
-        ): AttachProductFragment {
+        ): AttachProductTestFragment {
             val args = Bundle()
             args.putString(SHOP_ID, shopId)
             args.putBoolean(IS_SELLER, isSeller)
@@ -41,7 +41,7 @@ class AttachProductTestFragment : AttachProductFragment() {
             )
             args.putInt(MAX_CHECKED, maxChecked)
             args.putStringArrayList(HIDDEN_PRODUCTS, hiddenProducts)
-            val fragment = AttachProductFragment()
+            val fragment = AttachProductTestFragment()
             fragment.setActivityContract(checkedUIView)
             fragment.arguments = args
             return fragment

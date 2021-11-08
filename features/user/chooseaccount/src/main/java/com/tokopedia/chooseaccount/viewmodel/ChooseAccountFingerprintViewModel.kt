@@ -15,7 +15,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ChooseAccountFingerprintViewModel @Inject constructor(
+class  ChooseAccountFingerprintViewModel @Inject constructor(
         private val getAccountListUseCase: GetFingerprintAccountListUseCase,
         private val fingerprintPreference: FingerprintPreference,
         dispatcher: CoroutineDispatchers

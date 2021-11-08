@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import com.tokopedia.attachproduct.test.R
 
-class FakeAttachProductUseCase @Inject constructor(
+class FakeAttachProductUseCase constructor(
     repository: GraphqlRepository,
     dispatcher: CoroutineDispatcher
 ) : AttachProductUseCase(repository, "", dispatcher) {

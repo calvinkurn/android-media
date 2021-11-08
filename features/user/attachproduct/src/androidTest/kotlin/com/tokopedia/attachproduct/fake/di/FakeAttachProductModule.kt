@@ -21,24 +21,14 @@ import javax.inject.Named
  * Created by Hendri on 19/02/18.
  */
 @Module
-class FakeAttachProductModule(private val context: Context) {
+class FakeAttachProductModule(private val repositoryStub: GraphqlRepositoryStub) {
 
     @Provides
-    @AttachProductContext
-    fun provideAttachProductContext(): Context {
-        return context;
-    }
-
-    @Provides
+    @AttachProductScope
     fun provideUserSession(@ApplicationContext context: Context): UserSession {
         return UserSession(context)
     }
 
-    @Provides
-    @AttachProductScope
-    fun provideGraphqlRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
-    }
     @Provides
     @AttachProductScope
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
@@ -46,13 +36,7 @@ class FakeAttachProductModule(private val context: Context) {
 
     @Provides
     @AttachProductScope
-    fun provideQuery(): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_query_attach_product)
-    }
-
-    @Provides
-    @AttachProductScope
-    fun provideUseCase(repository: GraphqlRepository, dispatcher: CoroutineDispatcher): AttachProductUseCase {
-        return FakeAttachProductUseCase(repository, dispatcher)
+    fun provideUseCase(dispatcher: CoroutineDispatcher): AttachProductUseCase {
+        return AttachProductUseCase(repositoryStub, "",  dispatcher)
     }
 }
