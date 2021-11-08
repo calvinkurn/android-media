@@ -37,6 +37,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKON
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_BROAD_MATCH
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_OOC_SCREEN_NAME
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
@@ -632,7 +633,7 @@ object SearchTracking {
     fun sendOOCOpenScreenTracking(isLoggedInStatus: Boolean) {
         TokoNowCommonAnalytics.onOpenScreen(
             isLoggedInStatus = isLoggedInStatus,
-            screenName = SCREEN_NAME_TOKONOW_OOC + CategoryTracking.Misc.TOKONOW_OOC_SCREEN_NAME
+            screenName = SCREEN_NAME_TOKONOW_OOC + TOKONOW_OOC_SCREEN_NAME
         )
     }
 }
