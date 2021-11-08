@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import android.content.Context
 import android.os.Handler
 import androidx.lifecycle.*
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -15,6 +16,7 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
@@ -24,6 +26,8 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
+import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -53,9 +57,7 @@ import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -63,12 +65,11 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 24/05/20.
  */
-class PlayBroadcastViewModel @Inject constructor(
+internal class PlayBroadcastViewModel @Inject constructor(
     private val livePusherMediator: PlayLivePusherMediator,
     private val mDataStore: PlayBroadcastDataStore,
     private val hydraConfigStore: HydraConfigStore,
     private val sharedPref: HydraSharedPreferences,
-    private val getConfigurationUseCase: GetConfigurationUseCase,
     private val getChannelUseCase: GetChannelUseCase,
     private val createChannelUseCase: CreateChannelUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
@@ -84,6 +85,7 @@ class PlayBroadcastViewModel @Inject constructor(
     private val playBroadcastMapper: PlayBroadcastMapper,
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
+    private val channelRepo: PlayBroadcastChannelRepository,
 ) : ViewModel() {
 
     val isFirstStreaming: Boolean
@@ -139,8 +141,10 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableShareInfo.value.orEmpty()
     val interactiveId: String
         get() = getCurrentSetupDataStore().getInteractiveId()
-    val interactiveTitle: String
-        get() = getCurrentSetupDataStore().getInteractiveTitle()
+    val activeInteractiveTitle: String
+        get() = getCurrentSetupDataStore().getActiveInteractiveTitle()
+    val setupInteractiveTitle: String
+        get() = getCurrentSetupDataStore().getSetupInteractiveTitle()
     val selectedInteractiveDuration: Long
         get() = getCurrentSetupDataStore().getSelectedInteractiveDuration()
     val interactiveDurations: List<Long>
@@ -171,6 +175,21 @@ class PlayBroadcastViewModel @Inject constructor(
     private val _observableCreateInteractiveSession = MutableLiveData<NetworkResult<InteractiveSessionUiModel>>()
     private val _observableLivePusherStats = MutableLiveData<PlayLivePusherStatistic>()
     private val _observableLivePusherInfo = MutableLiveData<PlayLiveInfoUiModel>()
+
+    private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
+
+    private val _channelUiState = _configInfo
+        .filterNotNull()
+        .map {
+            PlayChannelUiState(
+                canStream = it.streamAllowed,
+                tnc = it.tnc,
+            )
+        }
+
+    val uiState = _channelUiState.map {
+        PlayBroadcastUiState(channel = it)
+    }
 
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
@@ -220,6 +239,8 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private var socketJob: Job? = null
 
+    private val gson by lazy { Gson() }
+
     init {
         _observableChatList.value = mutableListOf()
         livePusherMediator.addListener(liveViewStateListener)
@@ -246,13 +267,10 @@ class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
-            val config = withContext(dispatcher.io) {
-                getConfigurationUseCase.params = GetConfigurationUseCase.createParams(userSession.shopId)
-                return@withContext getConfigurationUseCase.executeOnBackground()
-            }
-
-            val configUiModel = playBroadcastMapper.mapConfiguration(config)
+            val configUiModel = channelRepo.getChannelConfiguration()
             setChannelId(configUiModel.channelId)
+
+            _configInfo.value = configUiModel
 
             // create channel when there are no channel exist
             if (configUiModel.channelType == ChannelType.Unknown) createChannel()
@@ -452,7 +470,11 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun setInteractiveTitle(title: String) {
-        getCurrentSetupDataStore().setInteractiveTitle(title)
+        getCurrentSetupDataStore().setSetupInteractiveTitle(title)
+    }
+
+    private fun setActiveInteractiveTitle(title: String) {
+        getCurrentSetupDataStore().setActiveInteractiveTitle(title)
     }
 
     fun setSelectedInteractiveDuration(durationInMs: Long) {
@@ -480,6 +502,7 @@ class PlayBroadcastViewModel @Inject constructor(
             )
             val interactiveUiModel = playBroadcastMapper.mapInteractiveSession(response, title, durationInMs)
             setInteractiveId(interactiveUiModel.id)
+            setActiveInteractiveTitle(interactiveUiModel.title)
             handleActiveInteractive()
             resetSetupInteractive()
             _observableCreateInteractiveSession.value = NetworkResult.Success(interactiveUiModel)
@@ -537,6 +560,8 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private suspend fun handleActiveInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
+        setInteractiveId(interactive.id.toString())
+        setActiveInteractiveTitle(interactive.title)
         when (val status = interactive.timeStatus) {
             is PlayInteractiveTimeStatus.Scheduled -> onInteractiveScheduled(
                 timeToStartInMs = status.timeToStartInMs,
@@ -646,7 +671,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private suspend fun handleWebSocketMessage(message: WebSocketResponse) {
         val result = withContext(dispatcher.computation) {
-            val socketMapper = PlayBroadcastWebSocketMapper(message)
+            val socketMapper = PlayBroadcastWebSocketMapper(message, gson)
             socketMapper.map()
         }
         when(result) {

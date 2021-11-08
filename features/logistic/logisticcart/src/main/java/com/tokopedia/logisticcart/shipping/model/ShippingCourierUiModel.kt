@@ -3,7 +3,7 @@ package com.tokopedia.logisticcart.shipping.model
 import android.os.Parcelable
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Irfan Khoirul on 08/08/18.

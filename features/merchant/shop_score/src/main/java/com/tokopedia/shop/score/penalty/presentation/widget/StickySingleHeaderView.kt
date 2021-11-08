@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
-import kotlinx.android.synthetic.main.item_sort_filter_penalty.view.*
 
 class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
 

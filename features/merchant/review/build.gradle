@@ -29,6 +29,7 @@ android {
                     pathSources + 'reviewlist',
                     pathSources + 'reviewreply',
                     pathSources + 'createreputation',
+                    pathSources + 'credibility',
                     pathSources + 'reading',
                     pathSources + 'gallery',
                     pathSources + 'imagepreview',
@@ -42,6 +43,14 @@ android {
     defaultConfig {
         multiDexEnabled true
     }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
 dependencies {
@@ -71,6 +80,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
@@ -131,6 +141,8 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
+    androidTestImplementation rootProject.ext.miscDependencies.exoPlayer
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
 }
 
 project.ext {

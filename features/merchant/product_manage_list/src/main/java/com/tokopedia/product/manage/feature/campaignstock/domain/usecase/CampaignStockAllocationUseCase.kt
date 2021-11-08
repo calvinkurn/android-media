@@ -93,7 +93,7 @@ class CampaignStockAllocationUseCase @Inject constructor(
                 String.format(QUERY, "")
             }
         val gqlRequest = GraphqlRequest(query, GetStockAllocationResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(GetStockAllocationResponse::class.java)
         if (errors.isNullOrEmpty()) {

@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +27,7 @@ import com.tokopedia.logisticorder.uimodel.TrackHistoryModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
 import com.tokopedia.logisticorder.utils.TrackingPageUtil;
 import com.tokopedia.unifycomponents.ImageUnify;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -97,9 +97,14 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             UserSessionInterface userSession = new UserSession(holder.context);
             String url = TrackingPageUtil.INSTANCE.getDeliveryImage(trackingHistoryData.get(position).getProof().getImageId(), orderId, "small",
                     userSession.getUserId(), 1, userSession.getDeviceId());
+            String authKey = String.format("%s %s", TrackingPageUtil.INSTANCE.getHEADER_VALUE_BEARER(), userSession.getAccessToken());
+
+            GlideUrl newUrl = new GlideUrl(url, new LazyHeaders.Builder()
+                    .addHeader(TrackingPageUtil.INSTANCE.getHEADER_KEY_AUTH(), authKey)
+                    .build());
 
             Glide.with(holder.context)
-                    .load(url)
+                    .load(newUrl)
                     .centerCrop()
                     .placeholder(holder.context.getDrawable(R.drawable.ic_image_error))
                     .error(holder.context.getDrawable(R.drawable.ic_image_error))
@@ -130,11 +135,11 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         private Context context;
 
-        private TextView title;
+        private Typography title;
 
-        private TextView time;
+        private Typography time;
 
-        private TextView description;
+        private Typography description;
 
         private ImageView dot;
 

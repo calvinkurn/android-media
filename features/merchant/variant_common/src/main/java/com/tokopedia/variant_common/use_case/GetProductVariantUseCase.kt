@@ -27,7 +27,7 @@ class GetProductVariantUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): GetProductVariantResponse {
         val gqlRequest = GraphqlRequest(rawQuery, GetProductVariantResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val error = gqlResponse.getError(GetProductVariantResponse::class.java)
         if (error == null || error.isEmpty()) {

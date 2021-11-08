@@ -1,7 +1,7 @@
 package com.tokopedia.common_tradein.raw
 
-const val GQL_GET_DEVICE_DIAG: String = """query getTradeInDeviceDiag(${'$'}params:TradeInDeviceDiagInput!){
- getTradeInDeviceDiag(params:${'$'}params)
+const val GQL_GET_DEVICE_DIAG: String = """query getTradeInDeviceDiagV2(${'$'}params:TradeInDeviceDiagInputV2!){
+ getTradeInDeviceDiagV2(params:${'$'}params)
  {
      IsEligible
      OldPrice

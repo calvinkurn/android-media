@@ -1,6 +1,8 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.graphics.drawable.Drawable
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +27,7 @@ class ProductFeaturedViewComponent(
 ) : ViewComponent(container, R.id.view_product_featured) {
 
     private val rvProductFeatured: RecyclerView = findViewById(R.id.rv_product_featured)
-    private val icProductSeeMore: ProductIconView = findViewById(R.id.ic_product_seemore)
+    private val icProductSeeMore: ProductIconView = findViewById(R.id.ic_product_see_more)
     private val featuredProduct = mutableListOf<PlayProductUiModel>()
 
     private val adapter = ProductFeaturedAdapter(
@@ -83,7 +85,7 @@ class ProductFeaturedViewComponent(
     private var isProductsInitialized = false
 
     init {
-        icProductSeeMore.setBackgroundResource(R.drawable.ic_product_see_more)
+        icProductSeeMore.background = getSeeMoreDrawable()
         icProductSeeMore.setOnClickListener { listener.onSeeMoreClicked(this@ProductFeaturedViewComponent) }
 
         rvProductFeatured.itemAnimator = null
@@ -136,6 +138,13 @@ class ProductFeaturedViewComponent(
         if (isProductsInitialized) {
             listener.onProductFeaturedImpressed(this@ProductFeaturedViewComponent, getVisibleProducts())
         } else isProductsInitialized = true
+    }
+
+    private fun getSeeMoreDrawable(): Drawable {
+        val seeMoreDrawable = getDrawable(R.drawable.ic_product_see_more)
+        val wrappedDrawable = DrawableCompat.wrap(seeMoreDrawable)
+        DrawableCompat.setTint(wrappedDrawable, getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        return wrappedDrawable
     }
 
     /**

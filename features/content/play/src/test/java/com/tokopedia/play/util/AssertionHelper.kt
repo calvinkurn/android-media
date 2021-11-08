@@ -97,16 +97,32 @@ inline fun <reified T> Any.assertType(
     whenType(this as T)
 }
 
+@Deprecated(
+    message = "Use assertTrue()",
+    replaceWith = ReplaceWith("assertTrue()"),
+)
 fun Boolean.isTrue() {
-    Assertions
-            .assertThat(this)
-            .isTrue
+    assertTrue()
 }
 
+@Deprecated(
+    message = "Use assertFalse()",
+    replaceWith = ReplaceWith("assertFalse()"),
+)
 fun Boolean.isFalse() {
+    assertFalse()
+}
+
+fun Boolean.assertTrue() {
     Assertions
-            .assertThat(this)
-            .isFalse
+        .assertThat(this)
+        .isTrue
+}
+
+fun Boolean.assertFalse() {
+    Assertions
+        .assertThat(this)
+        .isFalse
 }
 
 fun <T : Any?> Any.isInstanceOf(expected: Class<T>) {

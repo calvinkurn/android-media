@@ -1,24 +1,26 @@
 package com.tokopedia.home_wishlist.topads
 
-import android.util.Log
 import android.app.Activity
 import android.app.Instrumentation
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.test.rule.ActivityTestRule
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.activity.InstrumentationWishlistTestActivity
 import com.tokopedia.home_wishlist.topads.TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog
+import com.tokopedia.home_wishlist.view.fragment.WishlistFragment
+import com.tokopedia.home_wishlist.view.viewholder.BannerTopAdsViewHolder
 import com.tokopedia.home_wishlist.view.viewholder.DynamicCarouselRecommendationViewHolder
 import com.tokopedia.home_wishlist.view.viewholder.RecommendationItemViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
-import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.tokopedia.home_wishlist.view.viewholder.BannerTopAdsViewHolder
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After
 import org.junit.Before
@@ -29,7 +31,12 @@ class WishlistTopAdsVerificationTest {
     private var topAdsAssertion: TopAdsAssertion? = null
 
     @get:Rule
-    var activityRule: IntentsTestRule<InstrumentationWishlistTestActivity> = IntentsTestRule(InstrumentationWishlistTestActivity::class.java)
+    var activityRule: IntentsTestRule<InstrumentationWishlistTestActivity> = object : IntentsTestRule<InstrumentationWishlistTestActivity>(InstrumentationWishlistTestActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            CoachMarkPreference.setShown(InstrumentationRegistry.getInstrumentation().targetContext, WishlistFragment.COACH_MARK_TAG, true)
+            login()
+        }
+    }
 
     @Before
     fun setTopAdsAssertion() {
@@ -40,7 +47,6 @@ class WishlistTopAdsVerificationTest {
                 activityRule.activity.application as TopAdsVerificatorInterface
         )
 
-        login()
         waitForData()
     }
 
@@ -60,6 +66,7 @@ class WishlistTopAdsVerificationTest {
             checkProductOnDynamicChannel(recyclerView, i)
         }
         topAdsAssertion?.assert()
+        waitForData()
     }
 
 
@@ -69,7 +76,7 @@ class WishlistTopAdsVerificationTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(10000)
+        Thread.sleep(8000)
     }
 
     private fun scrollHomeRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {

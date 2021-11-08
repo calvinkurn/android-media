@@ -14,7 +14,7 @@ import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncement
 import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import javax.inject.Inject
 
 /**
@@ -31,13 +31,13 @@ open class GetExistingChatMapper @Inject constructor() {
         val canLoadMore = pojo.chatReplies.hasNext
         val isReplyable: Boolean = pojo.chatReplies.textAreaReply != 0
         val blockedStatus: BlockedStatus = mapBlockedStatus(pojo)
-        val attachmentIds = pojo.chatReplies.attachmentIds
+        val replyIDs = pojo.chatReplies.replyIDs
         listChat.reverse()
         return ChatroomViewModel(
                 listChat, headerModel,
                 canLoadMore, isReplyable,
                 blockedStatus, latestHeaderDate,
-                attachmentIds
+                replyIDs
         )
 
     }
@@ -48,7 +48,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojo.chatReplies.block.blockedUntil)
     }
 
-    open fun mappingHeaderModel(pojo: GetExistingChatPojo): ChatRoomHeaderViewModel {
+    open fun mappingHeaderModel(pojo: GetExistingChatPojo): ChatRoomHeaderUiModel {
         var interlocutor = Contact()
 
         for (contact in pojo.chatReplies.contacts) {
@@ -58,12 +58,12 @@ open class GetExistingChatMapper @Inject constructor() {
             }
         }
 
-        return ChatRoomHeaderViewModel(
+        return ChatRoomHeaderUiModel(
                 interlocutor.name,
                 interlocutor.tag,
                 interlocutor.userId.toString(),
                 interlocutor.role,
-                ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT,
+                ChatRoomHeaderUiModel.Companion.MODE_DEFAULT_GET_CHAT,
                 "",
                 interlocutor.thumbnail,
                 interlocutor.status.timestampStr,
@@ -96,22 +96,9 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     open fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel(
-                chatItemPojoByDateByTime.msgId.toString(),
-                chatItemPojoByDateByTime.senderId.toString(),
-                chatItemPojoByDateByTime.senderName,
-                chatItemPojoByDateByTime.role,
-                chatItemPojoByDateByTime.attachment?.id ?: "",
-                chatItemPojoByDateByTime.attachment?.type.toString(),
-                chatItemPojoByDateByTime.replyTime,
-                "",
-                chatItemPojoByDateByTime.isRead,
-                false,
-                !chatItemPojoByDateByTime.isOpposite,
-                chatItemPojoByDateByTime.msg,
-                chatItemPojoByDateByTime.source,
-                blastId = chatItemPojoByDateByTime.blastId
-        )
+        return MessageUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .build()
     }
 
     open fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
@@ -127,7 +114,7 @@ open class GetExistingChatMapper @Inject constructor() {
     protected open fun convertToImageAnnouncement(item: Reply): Visitable<*> {
         val pojoAttribute = gson.fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
                 ImageAnnouncementPojo::class.java)
-        val imageAnnouncement = ImageAnnouncementViewModel(
+        val imageAnnouncement = ImageAnnouncementUiModel(
                 messageId = item.msgId.toString(),
                 fromUid = item.senderId.toString(),
                 from = item.senderName,
@@ -139,7 +126,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 redirectUrl = pojoAttribute.url,
                 isHideBanner = pojoAttribute.isHideBanner,
                 message = item.msg,
-                blastId = item.blastId,
+                broadcastBlastId = item.blastId,
                 source = item.source
         )
         return imageAnnouncement
@@ -150,151 +137,53 @@ open class GetExistingChatMapper @Inject constructor() {
         chatItemPojoByDateByTime.attachment?.fallback?.let {
             fallbackMessage = it.message
         }
-        return FallbackAttachmentViewModel(
-                msgId = chatItemPojoByDateByTime.msgId.toString(),
-                fromUid = chatItemPojoByDateByTime.senderId.toString(),
-                from = chatItemPojoByDateByTime.senderName,
-                fromRole = chatItemPojoByDateByTime.role,
-                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
-                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
-                replyTime = chatItemPojoByDateByTime.replyTime,
-                message = fallbackMessage,
-                isOpposite = chatItemPojoByDateByTime.isOpposite,
-                source = chatItemPojoByDateByTime.source
-        )
+        return FallbackAttachmentUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withMsg(fallbackMessage)
+            .build()
     }
 
     private fun convertToImageUpload(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        val pojoAttribute = gson.fromJson<ImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
-                ImageUploadAttributes::class.java)
-        return ImageUploadViewModel(
-                messageId = chatItemPojoByDateByTime.msgId.toString(),
-                fromUid = chatItemPojoByDateByTime.senderId.toString(),
-                from = chatItemPojoByDateByTime.senderName,
-                fromRole = chatItemPojoByDateByTime.role,
-                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
-                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
-                replyTime = chatItemPojoByDateByTime.replyTime,
-                isSender = !chatItemPojoByDateByTime.isOpposite,
-                imageUrl = pojoAttribute.imageUrl,
-                imageUrlThumbnail = pojoAttribute.thumbnail,
-                isRead = chatItemPojoByDateByTime.isRead,
-                message = chatItemPojoByDateByTime.msg,
-                source = chatItemPojoByDateByTime.source
+        val pojoAttribute = gson.fromJson(
+            chatItemPojoByDateByTime.attachment?.attributes,
+            ImageUploadAttributes::class.java
         )
+        return ImageUploadUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withImageUrl(pojoAttribute.imageUrl)
+            .withImageUrlThumbnail(pojoAttribute.thumbnail)
+            .build()
     }
 
     open fun convertToProductAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
-
-        val pojoAttribute = gson.fromJson<ProductAttachmentAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
-                ProductAttachmentAttributes::class.java)
-
-        val variant: List<AttachmentVariant> = pojoAttribute.productProfile.variant ?: emptyList()
-
-        if (pojoAttribute.isBannedProduct()) {
-            return BannedProductAttachmentViewModel(
-                    chatItemPojoByDateByTime.msgId.toString(),
-                    chatItemPojoByDateByTime.senderId.toString(),
-                    chatItemPojoByDateByTime.senderName,
-                    chatItemPojoByDateByTime.role,
-                    chatItemPojoByDateByTime.attachment?.id ?: "",
-                    chatItemPojoByDateByTime.attachment?.type.toString(),
-                    chatItemPojoByDateByTime.replyTime,
-                    chatItemPojoByDateByTime.isRead,
-                    pojoAttribute.productId,
-                    pojoAttribute.productProfile.name,
-                    pojoAttribute.productProfile.price,
-                    pojoAttribute.productProfile.url,
-                    pojoAttribute.productProfile.imageUrl,
-                    !chatItemPojoByDateByTime.isOpposite,
-                    chatItemPojoByDateByTime.msg,
-                    canShowFooterProductAttachment(chatItemPojoByDateByTime.isOpposite,
-                            chatItemPojoByDateByTime.role),
-                    chatItemPojoByDateByTime.blastId,
-                    pojoAttribute.productProfile.priceInt,
-                    pojoAttribute.productProfile.category,
-                    variant,
-                    pojoAttribute.productProfile.dropPercentage,
-                    pojoAttribute.productProfile.priceBefore,
-                    pojoAttribute.productProfile.shopId,
-                    pojoAttribute.productProfile.freeShipping,
-                    pojoAttribute.productProfile.categoryId,
-                    pojoAttribute.productProfile.playStoreData,
-                    pojoAttribute.productProfile.minOrder,
-                    pojoAttribute.productProfile.remainingStock,
-                    pojoAttribute.productProfile.status,
-                    pojoAttribute.productProfile.wishList,
-                    pojoAttribute.productProfile.images,
-                    chatItemPojoByDateByTime.source,
-                    pojoAttribute.productProfile.rating,
-                    chatItemPojoByDateByTime.replyId
-            )
-        }
-
-        return ProductAttachmentViewModel(
-                chatItemPojoByDateByTime.msgId.toString(),
-                chatItemPojoByDateByTime.senderId.toString(),
-                chatItemPojoByDateByTime.senderName,
-                chatItemPojoByDateByTime.role,
-                chatItemPojoByDateByTime.attachment?.id ?: "",
-                chatItemPojoByDateByTime.attachment?.type.toString(),
-                chatItemPojoByDateByTime.replyTime,
-                chatItemPojoByDateByTime.isRead,
-                pojoAttribute.productId,
-                pojoAttribute.productProfile.name,
-                pojoAttribute.productProfile.price,
-                pojoAttribute.productProfile.url,
-                pojoAttribute.productProfile.imageUrl,
-                !chatItemPojoByDateByTime.isOpposite,
-                chatItemPojoByDateByTime.msg,
-                canShowFooterProductAttachment(chatItemPojoByDateByTime.isOpposite,
-                        chatItemPojoByDateByTime.role),
-                chatItemPojoByDateByTime.blastId,
-                pojoAttribute.productProfile.priceInt,
-                pojoAttribute.productProfile.category,
-                variant,
-                pojoAttribute.productProfile.dropPercentage,
-                pojoAttribute.productProfile.priceBefore,
-                pojoAttribute.productProfile.shopId,
-                pojoAttribute.productProfile.freeShipping,
-                pojoAttribute.productProfile.categoryId,
-                pojoAttribute.productProfile.playStoreData,
-                pojoAttribute.productProfile.minOrder,
-                pojoAttribute.productProfile.remainingStock,
-                pojoAttribute.productProfile.status,
-                pojoAttribute.productProfile.wishList,
-                pojoAttribute.productProfile.images,
-                chatItemPojoByDateByTime.source,
-                pojoAttribute.productProfile.rating,
-                chatItemPojoByDateByTime.replyId
+        val pojoAttribute = gson.fromJson(
+            chatItemPojoByDateByTime.attachment?.attributes,
+            ProductAttachmentAttributes::class.java
         )
+        val canShowFooter = canShowFooterProductAttachment(
+            chatItemPojoByDateByTime.isOpposite, chatItemPojoByDateByTime.role
+        )
+        if (pojoAttribute.isBannedProduct()) {
+            return BannedProductAttachmentUiModel.Builder()
+                .withResponseFromGQL(chatItemPojoByDateByTime)
+                .withProductAttributesResponse(pojoAttribute)
+                .withCanShowFooter(canShowFooter)
+                .build()
+        }
+        return ProductAttachmentUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withProductAttributesResponse(pojoAttribute)
+            .withCanShowFooter(canShowFooter)
+            .build()
     }
 
-    private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentViewModel {
+    private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentUiModel {
         val invoiceAttributes = pojo.attachment?.attributes
         val invoiceSentPojo = gson.fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel(
-                msgId = pojo.msgId.toString(),
-                fromUid = pojo.senderId.toString(),
-                from = pojo.senderName,
-                fromRole = pojo.role,
-                attachmentId = pojo.attachment?.id ?: "",
-                attachmentType = pojo.attachment?.type.toString(),
-                replyTime = pojo.replyTime,
-                message = invoiceSentPojo.invoiceLink.attributes.title,
-                description = invoiceSentPojo.invoiceLink.attributes.description,
-                imageUrl = invoiceSentPojo.invoiceLink.attributes.imageUrl,
-                totalAmount = invoiceSentPojo.invoiceLink.attributes.totalAmount,
-                isSender = !pojo.isOpposite,
-                isRead = pojo.isRead,
-                statusId = invoiceSentPojo.invoiceLink.attributes.statusId,
-                status = invoiceSentPojo.invoiceLink.attributes.status,
-                invoiceId = invoiceSentPojo.invoiceLink.attributes.code,
-                invoiceUrl = invoiceSentPojo.invoiceLink.attributes.hrefUrl,
-                createTime = invoiceSentPojo.invoiceLink.attributes.createTime,
-                source = pojo.source
-        )
-
+        return AttachInvoiceSentUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
+            .build()
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {

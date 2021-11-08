@@ -74,6 +74,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.io.File
 import javax.inject.Inject
 
 class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
@@ -134,6 +135,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         }
     }
 
+    private val isSharingEnabled by lazy {
+        context?.let {
+            UniversalShareBottomSheet.isCustomSharingEnabled(it)
+        } == true
+    }
+
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
 
@@ -147,6 +154,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private var shopShareInfo: OtherMenuShopShareData? = null
     private var shopSnippetImageUrl: String = ""
+    private var shopShareImagePath: String = ""
     private var canShowShareBottomSheet = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -171,6 +179,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         context?.let {
             viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
         }
+        viewHolder?.setInitialLayouts()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBar()
         }
@@ -180,6 +189,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onResume() {
         super.onResume()
         viewModel.getAllOtherMenuData()
+        if (isSharingEnabled) {
+            viewModel.getShopShareInfoData()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        deletePreviousSavedImage()
     }
 
     override fun onItemClicked(t: SettingUiModel?) {}
@@ -239,8 +256,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onFollowersCountClicked() {
-        NewOtherMenuTracking.sendEventClickTotalFollowers()
-        goToShopFavouriteList()
+//        NewOtherMenuTracking.sendEventClickTotalFollowers()
+//        goToShopFavouriteList()
     }
 
     override fun onSaldoClicked() {
@@ -343,17 +360,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onShareButtonClicked() {
         NewOtherMenuTracking.sendEventClickShareButton(userSession.shopId, userSession.userId)
-        val isSharingEnabled =
-            context?.let {
-                UniversalShareBottomSheet.isCustomSharingEnabled(it)
-            } == true
-        if (isSharingEnabled) {
-            saveImageToStorageBeforeShowBottomsheet()
-        }
+        saveImageToStorageBeforeShowBottomsheet()
     }
-
-    override fun getIsShopShareReady(): Boolean = shopShareInfo != null
-
 
     override fun onScrollToTop() {
         viewHolder?.scrollToTop()
@@ -500,24 +508,28 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun observeSaldoBalance() {
         viewModel.balanceInfoLiveData.observe(viewLifecycleOwner) {
-            viewHolder?.setBalanceSaldoData(it)
-            if (it is SettingResponseState.SettingError) {
-                showErrorToaster(it.throwable) {
-                    onSaldoBalanceRefresh()
+            activity?.runOnUiThread {
+                viewHolder?.setBalanceSaldoData(it)
+                if (it is SettingResponseState.SettingError) {
+                    showErrorToaster(it.throwable) {
+                        onSaldoBalanceRefresh()
+                    }
+                    logHeaderError(it.throwable, OtherMenuFragment.SALDO_BALANCE)
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.SALDO_BALANCE)
             }
         }
     }
 
     private fun observeKreditTopads() {
         viewModel.kreditTopAdsLiveData.observe(viewLifecycleOwner) {
-            viewHolder?.setBalanceTopadsData(it)
-            if (it is SettingResponseState.SettingError) {
-                showErrorToaster(it.throwable) {
-                    onKreditTopAdsRefresh()
+            activity?.runOnUiThread {
+                viewHolder?.setBalanceTopadsData(it)
+                if (it is SettingResponseState.SettingError) {
+                    showErrorToaster(it.throwable) {
+                        onKreditTopAdsRefresh()
+                    }
+                    logHeaderError(it.throwable, OtherMenuFragment.TOPADS_BALANCE)
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.TOPADS_BALANCE)
             }
         }
     }
@@ -562,7 +574,9 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun observeShopShareInfo() {
         viewModel.shopShareInfoLiveData.observe(viewLifecycleOwner) { shareInfo ->
-            animateShareButtonFromShareData(shareInfo)
+            if (isSharingEnabled) {
+                animateShareButtonFromShareData(shareInfo)
+            }
         }
     }
 
@@ -703,9 +717,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun animateShareButtonFromShareData(shareInfo: OtherMenuShopShareData?) {
         if (shareInfo != null) {
-            if (shopShareInfo == null) {
-                viewHolder?.runShareButtonAnimation()
-            }
+            viewHolder?.runShareButtonAnimation()
             shopShareInfo = shareInfo
         }
     }
@@ -716,16 +728,29 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 canShowShareBottomSheet = false
                 shopSnippetImageUrl = snippetUrl
                 context?.let {
-                    SharingUtil.saveImageFromURLToStorage(it, shopSnippetImageUrl) { storageImage ->
+                    SharingUtil.saveImageFromURLToStorage(it, shopSnippetImageUrl) { storageImagePath ->
                         canShowShareBottomSheet = true
-                        showUniversalShareBottomSheet(storageImage)
+                        deletePreviousSavedImage()
+                        shopShareImagePath = storageImagePath
+                        showUniversalShareBottomSheet(storageImagePath)
                     }
                 }
             }
         }
     }
 
+    private fun deletePreviousSavedImage() {
+        if (shopShareImagePath.isNotBlank()) {
+            File(shopShareImagePath).run {
+                if (exists()) {
+                    delete()
+                }
+            }
+        }
+    }
+
     private fun showUniversalShareBottomSheet(storageImageUrl: String) {
+        universalShareBottomSheet = null
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@OtherMenuFragment)
             setUtmCampaignData(
@@ -744,7 +769,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             activity?.supportFragmentManager?.let { fm ->
                 shareBottomSheet.run {
                     imageSaved(storageImageUrl)
-                    show(fm, this)
+                    show(fm, this@OtherMenuFragment)
 
                     NewOtherMenuTracking.sendEventImpressionViewOnSharingChannel(
                         userSession.shopId, userSession.userId

@@ -77,7 +77,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         )
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -95,7 +95,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -112,7 +112,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
@@ -129,7 +129,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
@@ -147,7 +147,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         viewModel.setPromoListValue(provideCurrentSelectedExpandedGlobalPromoData())
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
@@ -165,7 +165,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         viewModel.setPromoListValue(provideCurrentSelectedCollapsedGlobalPromoData())
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
@@ -182,7 +182,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
@@ -199,7 +199,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", ValidateUsePromoRequest(), ArrayList())
@@ -217,7 +217,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -236,7 +236,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         viewModel.setPromoListValue(provideCurrentSelectedExpandedGlobalPromoData())
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -255,7 +255,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         viewModel.setPromoListValue(provideCurrentDisabledExpandedGlobalPromoData())
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -274,7 +274,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         viewModel.setPromoListValue(provideCurrentSelectedCollapsedGlobalPromoData())
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -293,7 +293,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         viewModel.setPromoListValue(provideCurrentDisabledCollapsedGlobalPromoData())
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -311,7 +311,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -330,7 +330,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         viewModel.setPromoListValue(provideCurrentSelectedExpandedMerchantPromoData())
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -349,7 +349,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         viewModel.setPromoListValue(provideCurrentDisabledExpandedMerchantPromoData())
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -368,7 +368,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         viewModel.setPromoListValue(provideCurrentSelectedCollapsedMerchantPromoData())
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())
@@ -387,7 +387,7 @@ class PromoCheckoutViewModelApplyPromoTest {
         viewModel.setPromoListValue(provideCurrentDisabledCollapsedMerchantPromoData())
 
         every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.applyPromo("", request, ArrayList())

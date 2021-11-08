@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -34,6 +35,7 @@ import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
+import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -48,8 +50,10 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
@@ -77,13 +81,15 @@ import com.tokopedia.mvcwidget.IntentManger.Keys.REGISTER_MEMBER_SUCCESS
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.MiniCartWidget
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -111,11 +117,6 @@ const val PAGE_REFRESH_LOGIN = 35771
 private const val OPEN_PLAY_CHANNEL = 35772
 private const val SCROLL_TOP_DIRECTION = -1
 private const val DEFAULT_SCROLL_POSITION = 0
-private const val EXP_NAME = NAVIGATION_EXP_TOP_NAV
-private const val EXP_NAME2 = NAVIGATION_EXP_TOP_NAV2
-private const val VARIANT_OLD = NAVIGATION_VARIANT_OLD
-private const val VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP
-private const val VARIANT_REVAMP2 = NAVIGATION_VARIANT_REVAMP2
 private const val ROTATION = 90f
 const val CUSTOM_SHARE_SHEET = 1
 
@@ -128,7 +129,8 @@ class DiscoveryFragment :
     ChooseAddressWidget.ChooseAddressWidgetListener,
     ShareBottomsheetListener,
     ScreenShotListener,
-    PermissionListener {
+    PermissionListener,
+    MiniCartWidgetListener {
 
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
@@ -147,6 +149,9 @@ class DiscoveryFragment :
     private lateinit var coordinatorLayout:CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
     private var pageInfoHolder:PageInfo? = null
+    private var miniCartWidget: MiniCartWidget? = null
+    private var miniCartData:MiniCartSimplifiedData? = null
+    private var miniCartInitialized:Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -249,13 +254,7 @@ class DiscoveryFragment :
     }
 
     private fun initToolbar(view: View) {
-        showOldToolbar = !(RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            EXP_NAME,
-            VARIANT_OLD
-        ).equals(VARIANT_REVAMP, true) ||
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME2, VARIANT_OLD)
-                    .equals(VARIANT_REVAMP2, true)
-                )
+        showOldToolbar = false
         val oldToolbar: Toolbar = view.findViewById(R.id.oldToolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
@@ -286,6 +285,8 @@ class DiscoveryFragment :
         ivToTop = view.findViewById(R.id.toTopImg)
         coordinatorLayout = view.findViewById(R.id.parent_coordinator)
         parentLayout = view.findViewById(R.id.parent_frame)
+        miniCartWidget = view.findViewById(R.id.miniCartWidget)
+
         mProgressBar.show()
         mSwipeRefreshLayout.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
@@ -441,6 +442,7 @@ class DiscoveryFragment :
                 is Success -> {
                     pageInfoHolder = it.data
                     setToolBarPageInfoOnSuccess(it.data)
+                    addMiniCartToPageFirstTime()
                 }
                 is Fail -> {
                     discoveryAdapter.addDataList(ArrayList())
@@ -491,6 +493,83 @@ class DiscoveryFragment :
                 }
             }
         })
+
+        discoveryViewModel.miniCart.observe(viewLifecycleOwner, {
+            if(it is Success) {
+                setupMiniCart(it.data)
+            }
+        })
+
+        discoveryViewModel.miniCartAdd.observe(viewLifecycleOwner, {
+            if(it is Success) {
+                getMiniCart()
+                showToaster(
+                    message = it.data.errorMessage.joinToString(separator = ", "),
+                    type = Toaster.TYPE_NORMAL
+                )
+            }else if(it is Fail){
+                if(it.throwable is ResponseErrorException)
+                    showToaster(
+                        message = it.throwable.message.orEmpty(),
+                        type = Toaster.TYPE_ERROR
+                    )
+            }
+        })
+
+        discoveryViewModel.miniCartUpdate.observe(viewLifecycleOwner, {
+            if(it is Success) {
+                getMiniCart()
+            }else if(it is Fail){
+                if(it.throwable is ResponseErrorException)
+                showToaster(
+                    message = it.throwable.message.orEmpty(),
+                    type = Toaster.TYPE_ERROR
+                )
+            }
+        })
+
+        discoveryViewModel.miniCartRemove.observe(viewLifecycleOwner, {
+            if(it is Success) {
+                getMiniCart()
+                showToaster(
+                    message = it.data.second,
+                    type = Toaster.TYPE_NORMAL
+                )
+            }else if(it is Fail){
+                if(it.throwable is ResponseErrorException)
+                showToaster(
+                    message = it.throwable.message.orEmpty(),
+                    type = Toaster.TYPE_ERROR
+                )
+            }
+        })
+
+        discoveryViewModel.miniCartOperationFailed.observe(viewLifecycleOwner,{ (parentPosition,position) ->
+            if (parentPosition >= 0) {
+                discoveryAdapter.getViewModelAtPosition(parentPosition)?.let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is ProductCardCarouselViewModel)
+                        discoveryBaseViewModel.handleAtcFailed(position)
+                }
+            } else if (position >= 0) {
+                discoveryAdapter.getViewModelAtPosition(position)?.let { discoveryBaseViewModel ->
+                    if (discoveryBaseViewModel is MasterProductCardItemViewModel)
+                        discoveryBaseViewModel.handleATCFailed()
+                }
+            }
+        })
+    }
+
+    private fun showToaster(message: String,duration: Int= Toaster.LENGTH_SHORT, type: Int) {
+        view?.let { view ->
+            if (message.isNotBlank()) {
+                Toaster.build(
+                    view = view,
+                    text = message,
+                    duration = duration,
+                    type = type
+                ).show()
+            }
+        }
     }
 
     private fun showLocalizingAddressCoachMark() {
@@ -664,6 +743,7 @@ class DiscoveryFragment :
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
+            isThrowOnError = false
             if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                 ogImageUrl = shareModel.ogImgUrl
             }
@@ -859,9 +939,9 @@ class DiscoveryFragment :
     private fun refreshPage() {
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(true)
+        miniCartData = null
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
-        getDiscoveryAnalytics().clearProductViewIds(true)
     }
 
     fun openLoginScreen(componentPosition: Int = -1) {
@@ -939,8 +1019,12 @@ class DiscoveryFragment :
                     return
                 val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
                 val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
-                    (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
+                val isReminder = data.getBooleanExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER, false)
+                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel){
+                    val discoveryPlayWidgetViewModel = (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel)
+                    discoveryPlayWidgetViewModel.updatePlayWidgetTotalView(channelId, totalView)
+                    discoveryPlayWidgetViewModel.updatePlayWidgetReminder(channelId, isReminder)
+                }
             }
             MvcView.REQUEST_CODE ->{
                 if(resultCode == MvcView.RESULT_CODE_OK){
@@ -1038,6 +1122,7 @@ class DiscoveryFragment :
                 checkAddressUpdate()
             }
         }
+        addMiniCartToPage()
     }
 
     private fun sendOpenScreenAnalytics(identifier: String?, additionalInfo: AdditionalInfo? = null) {
@@ -1191,18 +1276,93 @@ class DiscoveryFragment :
         val layoutParams = FrameLayout.LayoutParams(height,width)
         view.layoutParams = layoutParams
 
-        parentLayout.setBackgroundColor(Color.BLACK)
+        context?.let {
+            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+        }
         parentLayout.addView(view)
         parentLayout.requestFocus()
     }
 
     fun hideCustomContent(){
         showSystemUi()
-        parentLayout.setBackgroundColor(Color.WHITE)
+        context?.let {
+            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         coordinatorLayout.show()
         if(parentLayout.childCount>1){
             parentLayout.removeViewAt(1)
         }
+    }
+
+    private fun addMiniCartToPageFirstTime(){
+        if (miniCartData == null)
+            addMiniCartToPage()
+    }
+
+    private fun addMiniCartToPage(){
+        if(pageInfoHolder?.tokonowMiniCartActive == true){
+            getMiniCart()
+        }
+    }
+
+    private fun getMiniCart() {
+        val shopId = listOf(userAddressData?.shop_id.orEmpty())
+        val warehouseId = userAddressData?.warehouse_id
+        discoveryViewModel.getMiniCart(shopId, warehouseId)
+    }
+
+    fun addOrUpdateItemCart(parentPosition: Int, position: Int, productId: String, quantity: Int) {
+        discoveryViewModel.addProductToCart(
+            parentPosition,
+            position,
+            productId,
+            quantity,
+            userAddressData?.shop_id ?: ""
+        )
+    }
+
+    private fun setupMiniCart(data: MiniCartSimplifiedData) {
+        if(data.isShowMiniCartWidget) {
+            val shopIds = listOf(userAddressData?.shop_id.orEmpty())
+            if (!miniCartInitialized) {
+                miniCartWidget?.initialize(
+                    shopIds,
+                    this,
+                    this,
+                    pageName = MiniCartAnalytics.Page.DISCOVERY_PAGE
+                )
+                miniCartWidget?.show()
+            } else {
+                miniCartWidget?.updateData(data)
+            }
+            bottomNav?.hide()
+        } else {
+            miniCartWidget?.hide()
+        }
+        syncWithCart(data)
+    }
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        if (!miniCartSimplifiedData.isShowMiniCartWidget) {
+            miniCartWidget?.hide()
+        }
+        discoveryViewModel.miniCartSimplifiedData = miniCartSimplifiedData
+        syncWithCart(miniCartSimplifiedData)
+    }
+
+    private fun syncWithCart(data:MiniCartSimplifiedData){
+        val map = HashMap<String,MiniCartItem>()
+        data.miniCartItems.associateByTo (map,{ it.productId })
+        val variantMap = data.miniCartItems.groupBy { it.productParentId }
+        for((parentProductId,list) in variantMap){
+            if(parentProductId.isNotEmpty() && parentProductId!="0"){
+                val quantity = list.sumOf { it.quantity }
+                map[parentProductId] = MiniCartItem(productParentId = parentProductId,quantity = quantity)
+            }
+        }
+        setCartData(map,pageEndPoint)
+        miniCartData = data
+        reSync()
     }
 
     private fun hideSystemUi() {
@@ -1231,5 +1391,20 @@ class DiscoveryFragment :
     // ScreenShot Access Dialogue Permission
     override fun permissionAction(action: String, label: String) {
         getDiscoveryAnalytics().trackScreenshotAccess(action, label, getUserID())
+    }
+
+    fun openVariantBottomSheet(productId: String) {
+        context?.let {
+            AtcVariantHelper.goToAtcVariant(
+                it,
+                productId,
+                AtcVariantHelper.DISCOVERY_PAGESOURCE,
+                true,
+                userAddressData?.shop_id?: "",
+                startActivitResult = { intent, reqCode ->
+                    startActivityForResult(intent, reqCode)
+                }
+            )
+        }
     }
 }

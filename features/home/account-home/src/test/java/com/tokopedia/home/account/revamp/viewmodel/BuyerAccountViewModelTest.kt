@@ -18,6 +18,7 @@ import com.tokopedia.sessioncommon.data.admin.AdminDetailInformation
 import com.tokopedia.sessioncommon.data.admin.AdminRoleType
 import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -53,6 +54,7 @@ class BuyerAccountViewModelTest {
     private val addWishListUseCase: AddWishListUseCase = mockk(relaxed = true)
     private val removeWishListUseCase: RemoveWishListUseCase = mockk(relaxed = true)
     private val getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true)
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
     private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase = mockk(relaxed = true)
     private val getShortcutDataUseCase: GetShortcutDataUseCase = mockk(relaxed = true)
     private val accountAdminInfoUseCase: AccountAdminInfoUseCase = mockk(relaxed = true)
@@ -71,6 +73,7 @@ class BuyerAccountViewModelTest {
                 addWishListUseCase,
                 removeWishListUseCase,
                 getRecommendationUseCase,
+                topAdsImageViewUseCase,
                 topAdsWishlishedUseCase,
                 getShortcutDataUseCase,
                 accountAdminInfoUseCase,

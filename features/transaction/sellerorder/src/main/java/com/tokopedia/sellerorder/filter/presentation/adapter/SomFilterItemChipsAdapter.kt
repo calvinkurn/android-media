@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.ItemChipsSomFilterBinding
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.item_chips_som_filter.view.*
-
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener) : RecyclerView.Adapter<SomFilterItemChipsAdapter.ChipsListViewHolder>() {
 
@@ -63,8 +63,11 @@ class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener
     }
 
     inner class ChipsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val binding by viewBinding<ItemChipsSomFilterBinding>()
+
         fun bind(data: SomFilterChipsUiModel) {
-            with(itemView) {
+            binding?.run {
                 chipsItem.apply {
                     centerText = true
                     chipText = data.name

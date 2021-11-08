@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.common.util
 
 import android.content.Context
-import android.content.res.Resources
 import android.content.res.Resources.getSystem
 import android.graphics.Paint
 import android.graphics.Rect
@@ -11,11 +10,9 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.StateListDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.provider.Settings
-import android.util.TypedValue
 import android.util.StateSet
 import android.view.Gravity
 import android.view.View
-import android.view.Window
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.IdRes
@@ -24,7 +21,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.window.WindowLayoutInfo
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.topchat.R
 
 object ViewUtil {
 
@@ -33,19 +29,21 @@ object ViewUtil {
 
     @Suppress("MagicNumber")
     fun generateBackgroundWithShadow(
-            view: View?,
-            @ColorRes backgroundColor: Int,
-            @DimenRes topLeftRadius: Int,
-            @DimenRes topRightRadius: Int,
-            @DimenRes bottomLeftRadius: Int,
-            @DimenRes bottomRightRadius: Int,
-            @ColorRes shadowColor: Int,
-            @DimenRes elevation: Int,
-            @DimenRes shadowRadius: Int,
-            shadowGravity: Int,
-            @ColorRes strokeColor: Int? = null,
-            @DimenRes strokeWidth: Int? = null,
-            useViewPadding: Boolean = false
+        view: View?,
+        @ColorRes backgroundColor: Int,
+        @DimenRes topLeftRadius: Int,
+        @DimenRes topRightRadius: Int,
+        @DimenRes bottomLeftRadius: Int,
+        @DimenRes bottomRightRadius: Int,
+        @ColorRes shadowColor: Int,
+        @DimenRes elevation: Int,
+        @DimenRes shadowRadius: Int,
+        shadowGravity: Int,
+        @ColorRes strokeColor: Int? = null,
+        @DimenRes strokeWidth: Int? = null,
+        strokePaddingBottom: Int? = null,
+        useViewPadding: Boolean = false,
+        pressedDrawable: Drawable? = null
     ): Drawable? {
         if (view == null) return null
         val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
@@ -56,71 +54,89 @@ object ViewUtil {
         val shadowRadiusValue = view.context.resources.getDimension(shadowRadius)
         val shadowColorValue = ContextCompat.getColor(view.context, shadowColor)
         val backgroundColorValue = ContextCompat.getColor(view.context, backgroundColor)
-        val strokeColorValue: Int? = strokeColor?.let { ContextCompat.getColor(view.context, strokeColor) }
-        val strokeWidthValue: Float? = strokeWidth?.let { view.context.resources.getDimension(strokeWidth) }
+        val strokeColorValue: Int? =
+            strokeColor?.let { ContextCompat.getColor(view.context, strokeColor) }
+        val strokeWidthValue: Float? =
+            strokeWidth?.let { view.context.resources.getDimension(strokeWidth) }
+
+        val stateDrawable = StateListDrawable()
+        val shadowDrawable = ShapeDrawable()
+        val strokeDrawable = ShapeDrawable()
+        val drawableLayer = arrayListOf<Drawable>()
 
         val outerRadius = floatArrayOf(
-                topLeftRadiusValue, topLeftRadiusValue, topRightRadiusValue, topRightRadiusValue,
-                bottomLeftRadiusValue, bottomLeftRadiusValue, bottomRightRadiusValue, bottomRightRadiusValue
+            topLeftRadiusValue,
+            topLeftRadiusValue,
+            topRightRadiusValue,
+            topRightRadiusValue,
+            bottomLeftRadiusValue,
+            bottomLeftRadiusValue,
+            bottomRightRadiusValue,
+            bottomRightRadiusValue
         )
 
         val backgroundPaint = Paint()
         backgroundPaint.style = Paint.Style.FILL
         backgroundPaint.setShadowLayer(shadowRadiusValue, 0f, 0f, 0)
 
-        val shapeDrawablePadding = Rect()
-        shapeDrawablePadding.left = elevationValue
-        shapeDrawablePadding.right = elevationValue
+        val shadowDrawableRect = Rect()
+        shadowDrawableRect.left = elevationValue
+        shadowDrawableRect.right = elevationValue
 
         val DY: Float
         when (shadowGravity) {
             Gravity.CENTER -> {
-                shapeDrawablePadding.top = elevationValue
-                shapeDrawablePadding.bottom = elevationValue
+                shadowDrawableRect.top = elevationValue
+                shadowDrawableRect.bottom = elevationValue
                 DY = 0.5f.toPx()
             }
             Gravity.TOP -> {
-                shapeDrawablePadding.top = elevationValue * 2
-                shapeDrawablePadding.bottom = elevationValue
+                shadowDrawableRect.top = elevationValue * 2
+                shadowDrawableRect.bottom = elevationValue
                 DY = -1 * elevationValue / ELEVATION_VALUE_DIVIDER
             }
             Gravity.BOTTOM -> {
-                shapeDrawablePadding.top = elevationValue
-                shapeDrawablePadding.bottom = elevationValue * 2
+                shadowDrawableRect.top = elevationValue
+                shadowDrawableRect.bottom = elevationValue * 2
                 DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
             else -> {
-                shapeDrawablePadding.top = elevationValue
-                shapeDrawablePadding.bottom = elevationValue * 2
+                shadowDrawableRect.top = elevationValue
+                shadowDrawableRect.bottom = elevationValue * 2
                 DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
         }
 
         if (useViewPadding) {
-            if (view.paddingTop > shapeDrawablePadding.top) {
-                shapeDrawablePadding.top += view.paddingTop
+            if (view.paddingTop > shadowDrawableRect.top) {
+                shadowDrawableRect.top += view.paddingTop
             }
-            if (view.paddingBottom > shapeDrawablePadding.bottom) {
-                shapeDrawablePadding.bottom += view.paddingBottom
+            if (view.paddingBottom > shadowDrawableRect.bottom) {
+                shadowDrawableRect.bottom += view.paddingBottom
             }
-            if (view.paddingStart > shapeDrawablePadding.left) {
-                shapeDrawablePadding.left += view.paddingStart
+            if (view.paddingStart > shadowDrawableRect.left) {
+                shadowDrawableRect.left += view.paddingStart
             }
-            if (view.paddingEnd > shapeDrawablePadding.right) {
-                shapeDrawablePadding.right += view.paddingEnd
+            if (view.paddingEnd > shadowDrawableRect.right) {
+                shadowDrawableRect.right += view.paddingEnd
             }
         }
 
-        val shapeDrawable = ShapeDrawable().apply {
-            setPadding(shapeDrawablePadding)
+        shadowDrawable.apply {
+            setPadding(shadowDrawableRect)
             paint.color = backgroundColorValue
             paint.setShadowLayer(shadowRadiusValue, 0f, DY, shadowColorValue)
             shape = RoundRectShape(outerRadius, null, null)
         }
-        val drawableLayer = arrayListOf<Drawable>(shapeDrawable)
+        drawableLayer.add(shadowDrawable)
+
+        if (strokePaddingBottom != null) {
+            shadowDrawableRect.bottom = strokePaddingBottom
+        }
+
         if (strokeColorValue != null && strokeWidthValue != null) {
-            val strokeDrawable = ShapeDrawable().apply {
-                setPadding(shapeDrawablePadding)
+            strokeDrawable.apply {
+                setPadding(shadowDrawableRect)
                 paint.style = Paint.Style.STROKE
                 paint.color = strokeColorValue
                 paint.strokeWidth = strokeWidthValue
@@ -136,7 +152,12 @@ object ViewUtil {
             val strokeMargin = strokeWidthValue.toInt() / 2
             drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
         }
-        val stateDrawable = StateListDrawable()
+
+        if (pressedDrawable != null) {
+            stateDrawable.addState(
+                intArrayOf(android.R.attr.state_pressed), pressedDrawable
+            )
+        }
         stateDrawable.addState(StateSet.WILD_CARD, drawable)
 
         return stateDrawable
@@ -145,25 +166,25 @@ object ViewUtil {
     fun areSystemAnimationsEnabled(context: Context?): Boolean {
         if (context == null) return false
         val duration: Float = Settings.Global.getFloat(
-                context.contentResolver,
-                Settings.Global.ANIMATOR_DURATION_SCALE, 0f)
+            context.contentResolver,
+            Settings.Global.ANIMATOR_DURATION_SCALE, 0f
+        )
         val transition: Float = Settings.Global.getFloat(
-                context.contentResolver,
-                Settings.Global.TRANSITION_ANIMATION_SCALE, 0f)
+            context.contentResolver,
+            Settings.Global.TRANSITION_ANIMATION_SCALE, 0f
+        )
         return duration != 0f && transition != 0f
     }
 
     fun alignViewToDeviceFeatureBoundaries(
-        resources: Resources,
-        theme: Resources.Theme,
-        window: Window,
         newLayoutInfo: WindowLayoutInfo,
         constraintLayoutParent: ConstraintLayout?,
         @IdRes firstContainerId: Int,
         @IdRes secondContainerId: Int,
         @IdRes toolbarId: Int,
         @IdRes deviceFeatureId: Int
-    ) {
+    ): Boolean {
+        var result = false
         val set = ConstraintSet()
         set.clone(constraintLayoutParent)
 
@@ -177,22 +198,12 @@ object ViewUtil {
                 firstContainerId, secondContainerId,
                 toolbarId, deviceFeatureId
             )
-        } else {
-            //Device feature is placed horizontally
-            val statusBarHeight = calculateStatusBarHeight(window)
-            val toolBarHeight = calculateToolbarHeight(resources, theme)
-            set.setMargin(
-                deviceFeatureId, ConstraintSet.TOP,
-                rect.top - statusBarHeight - toolBarHeight
-            )
-            setupHorizontalFlex(set,
-                firstContainerId, secondContainerId,
-                toolbarId, deviceFeatureId
-            )
+            result = true
         }
 
         set.setVisibility(deviceFeatureId, View.VISIBLE)
         set.applyTo(constraintLayoutParent)
+        return result
     }
 
     private fun setupDeviceFeatureLine(
@@ -207,32 +218,6 @@ object ViewUtil {
         set.connect(
             deviceFeatureId, ConstraintSet.TOP,
             toolbarId, ConstraintSet.BOTTOM, 0
-        )
-    }
-
-    private fun setupHorizontalFlex(
-        set: ConstraintSet,
-        @IdRes firstContainerId: Int,
-        @IdRes secondContainerId: Int,
-        @IdRes toolbarId: Int,
-        @IdRes deviceFeatureId: Int
-    ) {
-        set.connect(
-            firstContainerId, ConstraintSet.TOP,
-            deviceFeatureId, ConstraintSet.BOTTOM, 0
-        )
-        set.connect(
-            firstContainerId, ConstraintSet.BOTTOM,
-            ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0
-        )
-
-        set.connect(
-            secondContainerId, ConstraintSet.TOP,
-            toolbarId, ConstraintSet.BOTTOM, 0
-        )
-        set.connect(
-            secondContainerId, ConstraintSet.BOTTOM,
-            deviceFeatureId, ConstraintSet.TOP, 0
         )
     }
 
@@ -276,21 +261,6 @@ object ViewUtil {
             secondContainerId, ConstraintSet.END,
             ConstraintSet.PARENT_ID, ConstraintSet.END, 0
         )
-    }
-
-    private fun calculateToolbarHeight(resources: Resources, theme: Resources.Theme): Int {
-        val typedValue = TypedValue()
-        return if (theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
-            TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
-        } else {
-            0
-        }
-    }
-
-    private fun calculateStatusBarHeight(window: Window): Int {
-        val rect = Rect()
-        window.decorView.getWindowVisibleDisplayFrame(rect)
-        return rect.top
     }
 
     fun convertToPx(dp: Int): Int {

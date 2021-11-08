@@ -30,27 +30,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="16dp" />
+            app:layout_constraintGuide_begin="12dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/glShcCardEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_end="16dp" />
+            app:layout_constraintGuide_end="12dp" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCardTitle"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:minHeight="@dimen/shc_dimen_18dp"
             android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
-            app:layout_constraintEnd_toEndOf="@+id/glShcCardEnd"
+            app:layout_constraintEnd_toStartOf="@+id/glShcCardEnd"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/imgShcCardState"
             app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
@@ -61,10 +66,14 @@
             android:id="@+id/notifTagCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            app:layout_constraintTop_toTopOf="@id/tvCardTitle"
-            app:layout_constraintBottom_toBottomOf="@id/tvCardTitle"
-            app:layout_constraintStart_toEndOf="@id/tvCardTitle"/>
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tvCardTitle"
+            app:layout_constraintEnd_toStartOf="@+id/glShcCardEnd"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/tvCardTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvCardTitle"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCardValue"
@@ -83,7 +92,7 @@
             tools:text="Rp999.999.999" />
 
         <com.tokopedia.sellerhomecommon.presentation.view.customview.CardValueCountdownView
-            android:id="@+id/card_value_countdown_view"
+            android:id="@+id/shcCardValueCountdownView"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:visibility="gone"

@@ -12,8 +12,6 @@ import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 import com.tokopedia.thankyou_native.domain.model.ShopOrder
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.thankyou_native.TkpdIdlingResource
-
 
 
 const val CATEGORY_LEVEL_ONE_EGOLD = "egold"
@@ -26,6 +24,24 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
             val linkerCommerceData = LinkerCommerceData()
             linkerCommerceData.userData = getLinkerUserData()
             linkerCommerceData.paymentData = getBranchPaymentData(shopOrder)
+            sendBranchEvent(linkerCommerceData)
+            sendGoPayBranchEvent(thanksPageData, shopOrder)
+        }
+    }
+
+    private fun sendGoPayBranchEvent(
+        thanksPageData: ThanksPageData,
+        shopOrder: ShopOrder
+    ) {
+        val goPayEventList = thanksPageData.paymentDetails?.filter {
+            it.gatewayCode == GATEWAY_CODE_PEMUDA || it.gatewayCode == GATEWAY_CODE_PEMUDA_PAYLATER
+        }
+        goPayEventList?.forEach { paymentDetail ->
+            val linkerCommerceData = LinkerCommerceData()
+            linkerCommerceData.userData = getLinkerUserData()
+            val branchPaymentData = getBranchPaymentData(shopOrder)
+            branchPaymentData.paymentEventName = paymentDetail.gatewayCode
+            linkerCommerceData.paymentData = branchPaymentData
             sendBranchEvent(linkerCommerceData)
         }
 
@@ -97,5 +113,11 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         LinkerManager.getInstance()
                 .sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
                         linkerCommerceData))
+    }
+
+    companion object {
+        const val GATEWAY_CODE_PEMUDA = "PEMUDA"
+        const val GATEWAY_CODE_PEMUDA_PAYLATER = "PEMUDAPAYLATER"
+
     }
 }

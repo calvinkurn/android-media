@@ -66,7 +66,6 @@ import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseRules
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
@@ -374,7 +373,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             viewModel.getShopProduct(
                     shopInfo.shopCore.shopID,
                     page,
-                    ShopPageConstant.DEFAULT_PER_PAGE,
+                    ShopUtil.getProductPerPage(context),
                     selectedEtalaseId,
                     keyword,
                     selectedEtalaseType,
@@ -631,9 +630,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
             if (productList.isNotEmpty()) {
                 shopProductSortFilterUiModel?.let { shopProductAdapter.setSortFilterData(it) }
-                if(ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-                    changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
-                }
+                changeProductListGridView(ShopProductViewGridType.SMALL_GRID)
                 if (searchSuggestionData.text.isNotEmpty()) {
                     shopProductAdapter.addSuggestionSearchTextSection(
                             searchSuggestionData.text,
@@ -988,7 +985,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 viewModel.getShopProduct(
                         shopId ?: "",
                         defaultInitialPage,
-                        ShopPageConstant.DEFAULT_PER_PAGE,
+                        ShopUtil.getProductPerPage(context),
                         selectedEtalaseId,
                         keyword,
                         selectedEtalaseType,
@@ -1341,7 +1338,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         sortFilterBottomSheet?.setOnDismissListener {
             sortFilterBottomSheet = null
         }
-        viewModel.getBottomSheetFilterData()
+        viewModel.getBottomSheetFilterData(shopId?: "")
     }
 
 
@@ -1370,6 +1367,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel.getFilterResultCount(
                 shopId.orEmpty(),
+                ShopUtil.getProductPerPage(context),
                 keyword,
                 selectedEtalaseId,
                 tempShopProductFilterParameter,

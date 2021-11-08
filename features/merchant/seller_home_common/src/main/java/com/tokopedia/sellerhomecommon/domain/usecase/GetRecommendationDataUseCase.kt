@@ -21,7 +21,7 @@ class GetRecommendationDataUseCase(
 
     override suspend fun executeOnBackground(): List<RecommendationDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetRecommendationDataResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(GetRecommendationDataResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {

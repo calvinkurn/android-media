@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.mainnav.view.datamodel.*
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 
 interface MainNavTypeFactory {
 

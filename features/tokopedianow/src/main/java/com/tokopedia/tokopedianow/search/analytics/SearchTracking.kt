@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ADD_QUANTITY
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_CATEGORY_FILTER
@@ -26,12 +27,15 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_P
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_REMOVE_QUANTITY
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_TAMBAH_KE_KERANJANG
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BROADMATCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_PRODUCT
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_BROAD_MATCH
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_OOC_SCREEN_NAME
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
@@ -94,6 +98,7 @@ object SearchTracking {
         const val IMPRESSION_BROADMATCH = "impression - broad match"
         const val CLICK_BROADMATCH = "click - broad match"
         const val CLICK_BROADMATCH_LIHAT_SEMUA = "click - broad match lihat semua"
+        const val CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION = "click view all on tokonow recommendation"
     }
 
     object Category {
@@ -103,6 +108,7 @@ object SearchTracking {
         const val TOKONOW_EMPTY_RESULT =
             "tokonow empty search result"
         const val TOKOOW_SEARCH_RESULT_PAGE = "tokonow search result page"
+        const val TOKONOW_DASH_SEARCH_PAGE = "tokonow - search page"
     }
 
     object Misc {
@@ -112,6 +118,7 @@ object SearchTracking {
         const val RECOM_LIST_PAGE_EMPTY_SEARCH =
             "/${RECOM_LIST_PAGE} - tokonow - rekomendasi untuk anda - empty_search - %s"
         const val TOKONOW_BROAD_MATCH = "/tokonow - broad match"
+        const val TOKONOW_OOC_SCREEN_NAME = "search result tokonow"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
@@ -607,5 +614,28 @@ object SearchTracking {
                 "category_id", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             ))
         }
+    }
+
+    fun sendRecommendationSeeAllClickEvent(keyword: String) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, EVENT_CLICK_TOKONOW,
+                EVENT_ACTION, CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION,
+                EVENT_CATEGORY, TOKONOW_EMPTY_RESULT,
+                EVENT_LABEL, keyword,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
+    }
+
+    fun sendOOCOpenScreenTracking() {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+            TOKONOW_OOC_SCREEN_NAME,
+            mapOf<String, String>(
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+                KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
     }
 }

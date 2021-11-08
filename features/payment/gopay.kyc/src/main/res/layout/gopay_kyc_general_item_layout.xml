@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/unify_space_16"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/goPayPlusBenefitImage"
+        android:layout_width="@dimen/go_pay_kyc_dp_40"
+        android:layout_height="@dimen/go_pay_kyc_dp_40"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_gopay_atm_benefit"
+        android:scaleType="centerInside"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/goPayItemBenefitTitle"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:layout_marginStart="@dimen/unify_space_12"
+        app:layout_constraintStart_toEndOf="@+id/goPayPlusBenefitImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Isi saldo sampai Rp10 juta" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/goPayItemBenefitDescription"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        android:layout_marginStart="@dimen/unify_space_12"
+        app:layout_constraintStart_toEndOf="@+id/goPayPlusBenefitImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goPayItemBenefitTitle"
+        tools:text="Nggak perlu kartu kredit atau debit. Cukup cari ATM terdekat lalu tarik GoPay-mu." />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

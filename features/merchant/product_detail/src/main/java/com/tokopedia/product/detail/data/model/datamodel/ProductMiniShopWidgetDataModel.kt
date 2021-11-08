@@ -9,7 +9,8 @@ data class ProductMiniShopWidgetDataModel(
         val name: String = "",
         var shopName: String = "",
         var shopLocation: String = "",
-        var shopAva: String = ""
+        var shopAva: String = "",
+        var shopBadge: String = ""
 ) : DynamicPdpDataModel {
 
     override fun type() = type
@@ -22,7 +23,8 @@ data class ProductMiniShopWidgetDataModel(
         return newData is ProductMiniShopWidgetDataModel &&
                 newData.shopName == shopName &&
                 newData.shopLocation == shopLocation &&
-                newData.shopAva == shopAva
+                newData.shopAva == shopAva &&
+                newData.shopBadge == shopBadge
     }
 
     override fun newInstance() = this.copy()

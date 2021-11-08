@@ -2,11 +2,12 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.GoldMerchantUtil.setTypeGlobalError
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.databinding.ItemBenefitPackageErrorBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageErrorListener
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageErrorUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 class BenefitPackageErrorViewHolder(
     view: View,
@@ -17,11 +18,10 @@ class BenefitPackageErrorViewHolder(
         val LAYOUT = R.layout.item_benefit_package_error
     }
 
-    private val globalErrorBenefitError: GlobalError =
-        itemView.findViewById(R.id.globalErrorBenefitError)
+    private val binding: ItemBenefitPackageErrorBinding? by viewBinding()
 
     override fun bind(element: BenefitPackageErrorUiModel?) {
-        with(itemView) {
+        binding?.run {
             globalErrorBenefitError.setTypeGlobalError(element?.throwable)
             globalErrorBenefitError.errorAction.setOnClickListener {
                 benefitPackageErrorListener.onErrorActionClicked()

@@ -107,9 +107,9 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 1,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
-                isTokoCabang = true,
-                expectedEmptyOrInnactiveCopy = ""
+                isTokoCabang = true
         )
+        assertStockCopy("")
         assertButton(expectedCartText = "Simpan Perubahan")
         assertRestrictionData(assertSuccess = false)
     }
@@ -173,11 +173,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 1,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
-                isTokoCabang = true,
-                expectedEmptyOrInnactiveCopy = ""
+                isTokoCabang = true
         )
+        assertStockCopy("")
         assertButton()
-
         assertRestrictionData(assertSuccess = false)
     }
 
@@ -204,9 +203,9 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 1,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
-                isTokoCabang = true,
-                expectedEmptyOrInnactiveCopy = ""
+                isTokoCabang = true
         )
+        assertStockCopy("")
         assertButton(expectedCartText = "Simpan Perubahan")
         assertRestrictionData(assertSuccess = false)
     }
@@ -233,11 +232,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 2,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
-                isTokoCabang = false,
-                expectedEmptyOrInnactiveCopy = ""
+                isTokoCabang = false
         )
+        assertStockCopy("")
         assertButton()
-
         assertRestrictionData(
                 assertSuccess = true,
                 expectedProductId = "2147818593",
@@ -270,10 +268,10 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 3,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
-                isTokoCabang = false,
-                expectedEmptyOrInnactiveCopy = "kosong bro copy"
+                isTokoCabang = false
         )
 
+        assertStockCopy("kosong bro copy")
         assertButton(expectedIsBuyable = false,
                 expectedCartType = "remind_me",
                 expectedCartColor = "secondary_green",
@@ -314,10 +312,9 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 1,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
-                isTokoCabang = false,
-                expectedEmptyOrInnactiveCopy = ""
+                isTokoCabang = false
         )
-
+        assertStockCopy("")
         assertButton(expectedIsBuyable = true,
                 expectedCartText = "+ Keranjang Hijau M")
 
@@ -370,10 +367,9 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedMinOrder = 1,
                 cashBackPercentage = 102,
                 uspImageUrl = "icon usp",
-                isTokoCabang = false,
-                expectedEmptyOrInnactiveCopy = "kosong bro copy"
+                isTokoCabang = false
         )
-
+        assertStockCopy("kosong bro copy")
         assertButton(expectedIsBuyable = false,
                 expectedCartType = "empty",
                 expectedCartColor = "disabled",

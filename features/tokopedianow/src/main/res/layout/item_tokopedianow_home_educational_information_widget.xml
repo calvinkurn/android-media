@@ -4,23 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:visibility="gone"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="16dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/tokopedianow_cardview_background_dms_color">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_two_hours"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginStart="11dp"
             android:layout_marginTop="11dp"
             android:layout_marginBottom="11dp"
-            android:layout_marginStart="11dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tp_two_hours"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -35,6 +36,7 @@
             android:gravity="center_vertical"
             android:text="@string/tokopedianow_home_educational_information_two_hours"
             app:layout_constraintBottom_toBottomOf="@+id/iu_two_hours"
+            app:layout_constraintEnd_toStartOf="@+id/iu_stock_available"
             app:layout_constraintStart_toEndOf="@+id/iu_two_hours"
             app:layout_constraintTop_toTopOf="@+id/iu_two_hours"
             app:typographyType="heading_6" />
@@ -44,6 +46,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             app:layout_constraintBottom_toBottomOf="@+id/tp_two_hours"
+            app:layout_constraintEnd_toStartOf="@+id/tp_stock_available"
             app:layout_constraintStart_toEndOf="@+id/tp_two_hours"
             app:layout_constraintTop_toTopOf="@+id/tp_two_hours" />
 
@@ -55,6 +58,7 @@
             android:gravity="center_vertical"
             android:text="@string/tokopedianow_home_educational_information_stock_available"
             app:layout_constraintBottom_toBottomOf="@+id/iu_stock_available"
+            app:layout_constraintEnd_toStartOf="@+id/iu_guaranteed_quality"
             app:layout_constraintStart_toEndOf="@+id/iu_stock_available"
             app:layout_constraintTop_toTopOf="@+id/iu_stock_available"
             app:typographyType="heading_6" />
@@ -64,6 +68,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             app:layout_constraintBottom_toBottomOf="@+id/tp_stock_available"
+            app:layout_constraintEnd_toStartOf="@+id/tp_guaranteed_quality"
             app:layout_constraintStart_toEndOf="@+id/tp_stock_available"
             app:layout_constraintTop_toTopOf="@+id/tp_stock_available" />
 
@@ -75,6 +80,7 @@
             android:gravity="center_vertical"
             android:text="@string/tokopedianow_home_educational_information_guaranteed_quality"
             app:layout_constraintBottom_toBottomOf="@+id/iu_guaranteed_quality"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toEndOf="@+id/iu_guaranteed_quality"
             app:layout_constraintTop_toTopOf="@+id/iu_guaranteed_quality"
             app:typographyType="heading_6" />
@@ -83,36 +89,38 @@
             android:id="@+id/la_chevron"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:paddingTop="20dp"
             android:scaleX="1.2"
             android:scaleY="1.2"
-            android:paddingTop="20dp"
-            android:layout_marginEnd="11dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlSymmetry" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_chevron"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/siv_chevron_down"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_marginEnd="11dp"
-            android:visibility="gone"
             android:elevation="1dp"
-            app:cardElevation="1dp"
-            app:cardCornerRadius="40dp"
+            android:visibility="gone"
+            android:contentDescription="@string/tokopedianow_educational_information_chevron_entry_point_to_show_bottomsheet"
+            android:background="@color/Unify_Static_White"
+            app:srcCompat="@drawable/iconunify_chevron_down"
+            app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageView
-                android:id="@+id/iv_chevron_down"
-                android:src="@drawable/iconunify_chevron_down"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/tokopedianow_educational_information_chevron_entry_point_to_show_bottomsheet" />
-        </androidx.cardview.widget.CardView>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.87" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.cardview.widget.CardView>

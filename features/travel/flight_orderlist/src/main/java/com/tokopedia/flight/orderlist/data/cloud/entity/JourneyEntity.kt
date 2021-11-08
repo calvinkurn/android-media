@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 class JourneyEntity(
         @SerializedName("id")
         @Expose
-        val id: Long = 0,
+        val id: String = "",
         @SerializedName("status")
         @Expose
         val status: Int = 0,

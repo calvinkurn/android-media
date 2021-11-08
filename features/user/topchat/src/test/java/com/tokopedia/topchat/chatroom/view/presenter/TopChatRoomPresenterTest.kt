@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -25,12 +25,10 @@ import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseRe
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exMessageId
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exOpponentId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exProductId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exResultProduct
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSendMessage
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exShopId
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exStartTime
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSticker
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exUrl
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exUserId
@@ -57,24 +55,19 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     @Test
     fun `on success send sticker through websocket`() {
         // Given
-        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
-        val stickerContract = CommonUtil.toJson(
-            exSticker.generateWebSocketPayload(
-                exMessageId, exOpponentId, exStartTime, emptyList()
-            )
-        )
+        val stickerReq = slot<String>()
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { RxWebSocket.send(capture(stickerReq), listInterceptor) } just Runs
 
         // When
         presenter.connectWebSocket(exMessageId)
         presenter.sendAttachmentsAndSticker(
-            exMessageId, exSticker, exStartTime, exOpponentId, mockOnSendingMessage
+            exSticker, null
         )
 
         // Then
-        verify(exactly = 1) { mockOnSendingMessage.invoke() }
-        verify(exactly = 1) { RxWebSocket.send(stickerContract, listInterceptor) }
+        verify { RxWebSocket.send(stickerReq.captured, listInterceptor) }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
@@ -82,18 +75,14 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     fun `on success send SRW preview through websocket`() {
         // Given
         val srwQuestion = QuestionUiModel()
-        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
-        presenter.sendAttachmentsAndSrw(
-            exMessageId, srwQuestion, exStartTime, exOpponentId, mockOnSendingMessage
-        )
+        presenter.sendAttachmentsAndSrw(srwQuestion, null)
 
         // Then
-        verify(exactly = 1) { mockOnSendingMessage.invoke() }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
@@ -108,33 +97,16 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         every {
             TopChatWebSocketParam.generateParamSendMessage(
-                any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any()
             )
         } returns paramSendMessage
 
         // When
         presenter.connectWebSocket(exMessageId)
-        presenter.sendSrwBubble(
-            exMessageId, srwQuestion, products, exOpponentId, mockOnSendingMessage
-        )
+        presenter.sendSrwBubble(srwQuestion, products)
 
         // Then
         verify(exactly = 1) { RxWebSocket.send(paramSendMessage, listInterceptor) }
-    }
-
-    @Test
-    fun `on get shop following status`() {
-        // Given
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccess: (Boolean) -> Unit = mockk(relaxed = true)
-
-        // When
-        presenter.getShopFollowingStatus(exShopId, onError, onSuccess)
-
-        // Then
-        verifyOrder {
-            getShopFollowingUseCase.getStatus(exShopId, onError, onSuccess)
-        }
     }
 
     @Test
@@ -148,7 +120,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
             getChatUseCase.unsubscribe()
             getTemplateChatRoomUseCase.unsubscribe()
             replyChatUseCase.unsubscribe()
-            getShopFollowingUseCase.safeCancel()
             addToCartUseCase.unsubscribe()
             groupStickerUseCase.safeCancel()
             chatAttachmentUseCase.safeCancel()
@@ -186,50 +157,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `on success request follow and unfollow shop`() {
-        //Given
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccess: (Boolean) -> Unit = mockk(relaxed = true)
-        val slot = slot<Subscriber<Boolean>>()
-        every {
-            toggleFavouriteShopUseCase.execute(any(), capture(slot))
-        } answers {
-            val subs = slot.captured
-            subs.onNext(true)
-        }
-
-        // When
-        presenter.followUnfollowShop(exShopId.toString(), onError, onSuccess)
-
-        // Then
-        verify { onSuccess.invoke(true) }
-    }
-
-    @Test
-    fun `on error request follow and unfollow shop`() {
-        //Given
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccess: (Boolean) -> Unit = mockk(relaxed = true)
-        val throwable = Throwable()
-        val slot = slot<Subscriber<Boolean>>()
-        every {
-            toggleFavouriteShopUseCase.execute(any(), capture(slot))
-        } answers {
-            val subs = slot.captured
-            subs.onError(throwable)
-        }
-
-        // When
-        presenter.followUnfollowShop(
-            exShopId.toString(), onError, onSuccess,
-            ToggleFavouriteShopUseCase.Action.FOLLOW
-        )
-
-        // Then
-        verify { onError.invoke(throwable) }
-    }
-
-    @Test
     fun `check hasEmptyAttachmentPreview`() {
         // When
         presenter.addAttachmentPreview(sendAbleProductPreview)
@@ -244,14 +171,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val msgObj = JsonObject()
         every {
-            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any())
+            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any())
         } returns msgObj
 
         // When
         presenter.addAttachmentPreview(sendAbleProductPreview)
-        presenter.sendAttachmentsAndMessage(
-            exMessageId, exSendMessage, exStartTime, exOpponentId
-        ) {}
+        presenter.sendAttachmentsAndMessage(exSendMessage, null)
 
         // Then
         verify(exactly = 1) { RxWebSocket.send(msgObj, listInterceptor) }
@@ -262,14 +187,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val msgAttachment = CommonUtil.toJson("WebsocketVoucherPayload")
         every {
-            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any())
+            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any())
         } returns msgAttachment
 
         // When
         presenter.addAttachmentPreview(sendAbleProductPreview)
-        presenter.sendAttachmentsAndMessage(
-            exMessageId, exSendMessage, exStartTime, exOpponentId
-        ) {}
+        presenter.sendAttachmentsAndMessage(exSendMessage, null)
 
         // Then
         verify(exactly = 1) { RxWebSocket.send(msgAttachment, listInterceptor) }
@@ -440,13 +363,13 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     @Test
     fun `on success loadAttachmentData`() {
         // Given
-        val roomModel = ChatroomViewModel(attachmentIds = "3213, 3123")
+        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
         val mapSuccessAttachment = ArrayMap<String, Attachment>().apply {
             put("test_attachment", Attachment())
         }
         every {
             chatAttachmentUseCase.getAttachments(
-                exMessageId.toLongOrZero(), roomModel.attachmentIds,
+                exMessageId.toLongOrZero(), roomModel.replyIDs,
                 any(), captureLambda(), any()
             )
         } answers {
@@ -468,14 +391,14 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     @Test
     fun `on error loadAttachmentData`() {
         // Given
-        val roomModel = ChatroomViewModel(attachmentIds = "3213, 3123")
+        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
         val mapErrorAttachment = ArrayMap<String, Attachment>().apply {
             put("test_error_attachment", Attachment())
         }
         val throwable = Throwable()
         every {
             chatAttachmentUseCase.getAttachments(
-                exMessageId.toLongOrZero(), roomModel.attachmentIds, any(),
+                exMessageId.toLongOrZero(), roomModel.replyIDs, any(),
                 any(), captureLambda()
             )
         } answers {
@@ -726,11 +649,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     fun `onGoingStockUpdate added`() {
         // Given
         val productId = "123"
-        val product = ProductAttachmentViewModel(
-            "", productId, "",
-            "", "", "",
-            "", false, 1
-        )
+        val product = ProductAttachmentUiModel.Builder().build()
 
         // When
         presenter.addOngoingUpdateProductStock(productId, product, 0, null)

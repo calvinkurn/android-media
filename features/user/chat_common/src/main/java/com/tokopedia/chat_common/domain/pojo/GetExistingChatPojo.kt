@@ -3,6 +3,7 @@ package com.tokopedia.chat_common.domain.pojo
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 
 /**
  * @author by nisie on 10/12/18.
@@ -33,9 +34,6 @@ data class ChatReplies(
         @SerializedName("hasNextAfter")
         val hasNextAfter: Boolean = false,
         @Expose
-        @SerializedName("attachmentIDs")
-        val attachmentIds: String = "",
-        @Expose
         @SerializedName("textareaReply")
         val textAreaReply: Int = 0,
         @Expose
@@ -43,8 +41,18 @@ data class ChatReplies(
         val showTimeMachine: Int = 0,
         @Expose
         @SerializedName("block")
-        val block: Block = Block()
-)
+        val block: Block = Block(),
+        @SerializedName("replyIDsAttachment")
+        val replyIDs: String = "",
+) {
+        fun getInterlocutorContact(): Contact {
+                return contacts.firstOrNull { contact -> contact.isInterlocutor } ?: Contact()
+        }
+
+        fun getSenderContact(): Contact {
+                return contacts.firstOrNull { contact -> !contact.isInterlocutor } ?: Contact()
+        }
+}
 
 data class Contact(
         @Expose
@@ -163,7 +171,9 @@ data class Reply(
         val source: String = "",
         @Expose
         @SerializedName("label")
-        val label: String = ""
+        val label: String = "",
+        @SerializedName("parentReply")
+        val parentReply: ParentReply? = null
 ) {
 
     val attachmentType: Int get(): Int = attachment?.type ?: 0

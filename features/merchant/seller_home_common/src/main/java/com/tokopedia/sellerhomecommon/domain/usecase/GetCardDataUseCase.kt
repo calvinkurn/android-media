@@ -33,7 +33,7 @@ class GetCardDataUseCase(
     override suspend fun executeOnBackground(): List<CardDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetCardDataResponse::class.java, params.parameters)
         val gqlResponse: GraphqlResponse =
-            graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+            graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetCardDataResponse::class.java)
         if (errors.isNullOrEmpty()) {

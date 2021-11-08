@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.gallery.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
@@ -16,7 +17,7 @@ class ReviewGalleryViewHolder(view: View): AbstractViewHolder<ReviewGalleryUiMod
         val LAYOUT = R.layout.item_review_gallery
     }
 
-    private var image: ImageUnify? = null
+    private var image: AppCompatImageView? = null
     private var rating: ImageUnify? = null
     private var variantName: Typography? = null
 

@@ -8,10 +8,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmExpandableBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.ExpandableAdapterFactory
 import com.tokopedia.power_merchant.subscribe.view.adapter.ExpandableAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetExpandableUiModel
-import kotlinx.android.synthetic.main.widget_pm_expandable.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 04/03/21
@@ -27,8 +28,10 @@ class ExpandableWidget(
         val RES_LAYOUT = R.layout.widget_pm_expandable
     }
 
+    private val binding: WidgetPmExpandableBinding? by viewBinding()
+
     override fun bind(element: WidgetExpandableUiModel) {
-        with(itemView) {
+        binding?.run {
             if (element.isPmPro()) {
                 viewPmProBenefitSection.visible()
             } else {
@@ -42,13 +45,13 @@ class ExpandableWidget(
         }
     }
 
-    private fun setupPmSection() = with(itemView) {
+    private fun setupPmSection() = binding?.run {
         viewPmBenefitSection.setOnClickListener {
             handleExpandableView()
         }
     }
 
-    private fun setupPmProSection(element: WidgetExpandableUiModel) = with(itemView) {
+    private fun setupPmProSection(element: WidgetExpandableUiModel) = binding?.run {
         viewPmProBenefitSection.show(element)
         viewPmProBenefitSection.setOnUpdateInfoCtaClickedListener {
             listener.showUpdateInfoBottomSheet(element.grade?.gradeName.orEmpty())
@@ -56,7 +59,7 @@ class ExpandableWidget(
     }
 
     private fun handleExpandableView() {
-        with(itemView) {
+        binding?.run {
             val shouldExpanded = rvPmExpandableItem.visibility != View.VISIBLE
             viewPmBenefitSection.setOnExpandedChanged(shouldExpanded)
             if (shouldExpanded) {
@@ -73,7 +76,7 @@ class ExpandableWidget(
                 ExpandableAdapterFactoryImpl(powerMerchantTracking)
             )
 
-        with(itemView.rvPmExpandableItem) {
+        binding?.rvPmExpandableItem?.run {
             isVisible = element.items.isNotEmpty()
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false

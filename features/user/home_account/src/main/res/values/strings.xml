@@ -42,6 +42,7 @@
     <string name="menu_account_title_instant_payment">Pembayaran Instan</string>
     <string name="menu_account_title_security">Keamanan Akun</string>
     <string name="menu_account_title_notification">Notifikasi</string>
+    <string name="menu_account_title_account_link">Akun yang Tersambung</string>
     <string name="menu_account_title_shake">Shake Shake</string>
     <string name="menu_account_title_geolocation">Geolokasi</string>
     <string name="menu_account_title_safe_mode">Safe Mode</string>
@@ -63,9 +64,10 @@
     <string name="menu_account_desc_icon">Atur alamat pengiriman belanjaan</string>
     <string name="menu_account_desc_address">Atur alamat pengiriman belanjaan</string>
     <string name="menu_account_desc_bank">Tarik Saldo Tokopedia ke rekening tujuan</string>
-    <string name="menu_account_desc_instant_payment">OVO, kartu kredit, &amp; debit instan terdaftar</string>
+    <string name="menu_account_desc_instant_payment">E-wallet, kartu kredit, &amp; debit instan terdaftar</string>
     <string name="menu_account_desc_security">Kata sandi, PIN, &amp; verifikasi data diri</string>
     <string name="menu_account_desc_notification">Atur segala jenis pesan notifikasi</string>
+    <string name="menu_account_desc_account_link">Atur akun yang tersambung ke Tokopedia</string>
     <string name="menu_account_desc_shake">Goyang HP untuk dapat promo menarik</string>
     <string name="menu_account_desc_geolocation">Atur rekomendasi berdasarkan lokasi</string>
     <string name="menu_account_desc_safe_mode">Hasil pencarian aman untuk segala usia</string>
@@ -101,4 +103,38 @@
 
     <string name="default_member_title">Rewards</string>
     <string name="new_home_account_label_beta">BETA</string>
+    <string name="link_account_main_title"><![CDATA[Link your Tokopedia & Gojek accounts to get better deals!]]></string>
+    <string name="link_account_description"><![CDATA[You can get GoPayPoints cashback, level up your Tokopedia Rewards & GoClub memberships, and use GoPay on Tokopedia.]]></string>
+    <string name="link_account_btn_primary">Let’s Do It!</string>
+    <string name="link_account_label">Sambungin ke Gojek</string>
+
+    <string name="label_link_account">Akun Tersambung</string>
+    <string name="link_account_layout_description">Atur akun yang tersambung ke Tokopedia</string>
+    <string name="label_toolbar_verifikasi_akun">Verifikasi Akun</string>
+    <string name="label_toolbar_aktifasi_gopay">\u0020\u0020\u0020Aktifin GoPay</string>
+
+    <string name="hyperlink">Learn more about Android app development at\n<a href="https://learntodroid.com">LearnToDroid.com</a></string>
+    <string name="label_call_tokopedia">Butuh bantuan?\nHubungi Tim Tokopedia Care</string>
+
+    <string name="label_link_account_menu_skip">Lewati</string>
+
+    <string name="title_skip_gopay_dialog">Aktifin GoPay lain kali?</string>
+    <string name="desc_skip_gopay_dialog">Tenang aja, akun Tokopedia &amp; Gojek kamu tetap kesambung. Kamu bisa aktifin GoPay belakangan.</string>
+    <string name="label_primary_btn_gopay_dialog">Iya, Nanti Aja</string>
+    <string name="label_secondary_btn_gopay_dialog">Kembali</string>
+    <string name="label_tkpd_care_footer">Butuh bantuan?\nHubungi Tim Tokopedia Care</string>
+
+    <!-- Funds And Investment  -->
+    <string name="funds_and_investment_balance_and_points">Saldo &amp; Points</string>
+    <string name="funds_and_investment_try_another">Cobain ini juga, yuk</string>
+    <string name="funds_and_investment_actiivate">Aktifkan</string>
+    <string name="funds_and_investment_failed">Gagal memuat</string>
+
+    <!--  Balance and Point  -->
+    <string name="home_account_balance_and_point_title">Saldo &amp; Points</string>
+    <string name="home_account_balance_and_point_view_more">Lihat Semua</string>
+    <string name="home_account_balance_and_point_retry">Muat Ulang</string>
+    <string name="home_account_balance_and_point_activate">Aktifkan</string>
+    <string name="home_account_balance_and_point_add_point">Tambah Points</string>
+
 </resources>

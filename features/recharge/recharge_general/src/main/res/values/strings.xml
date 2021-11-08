@@ -9,4 +9,7 @@
     <string name="checkout_view_title">Checkout</string>
     <string name="input_error_message">Input tidak sesuai</string>
     <string name="selection_null_product_error">Produk sedang tidak tersedia, silahkan coba beberapa saat lagi.</string>
+    <string name="add_bills_title">Bayar Sekaligus</string>
+    <string name="add_bills_ticker_desc">Tagihan baru akan otomatis terhapus pada 00:00 WIB malam ini kalau belum dibayar.</string>
+
 </resources>

@@ -808,7 +808,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun initializeToolbar(view: View) {
         activity?.let {
-            val appbar = view.findViewById<Toolbar>(R.id.toolbar)
+            val appbar = view.findViewById<Toolbar>(R.id.toolbar_promo_checkout)
             appbar.removeAllViews()
             toolbar = getToolbarPromoCheckout()
             toolbar?.let {

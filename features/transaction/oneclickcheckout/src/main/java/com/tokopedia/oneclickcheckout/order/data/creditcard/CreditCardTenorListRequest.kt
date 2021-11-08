@@ -40,5 +40,5 @@ data class CartDetailsItem(
 	val shopType: Int = 0,
 
 	@field:SerializedName("payment_amount")
-	val paymentAmount: Float = 0F
+	val paymentAmount: Double = 0.0
 )

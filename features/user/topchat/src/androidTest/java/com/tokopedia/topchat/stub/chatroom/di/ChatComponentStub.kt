@@ -14,9 +14,9 @@ import dagger.Component
         modules = [
             ChatModuleStub::class,
             ChatRoomContextModule::class,
-            ChatRoomViewModelModule::class,
             ChatRoomFakeUseCaseModule::class,
-            ChatRoomFakePresenterModule::class
+            ChatRoomFakePresenterModule::class,
+            ChatRoomFakeViewModelModule::class
         ],
         dependencies = [FakeBaseAppComponent::class]
 )

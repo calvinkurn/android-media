@@ -4,9 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmCancelDeactivationSubmissionBinding
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetCancelDeactivationSubmissionUiModel
-import kotlinx.android.synthetic.main.widget_pm_cancel_deactivation_submission.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 04/03/21
@@ -21,8 +21,10 @@ class CancelDeactivationSubmissionWidget(
         val RES_LAYOUT = R.layout.widget_pm_cancel_deactivation_submission
     }
 
+    private val binding: WidgetPmCancelDeactivationSubmissionBinding? by viewBinding()
+
     override fun bind(element: WidgetCancelDeactivationSubmissionUiModel) {
-        with(itemView) {
+        binding?.run {
             tvPmQuitPmMessage.text = getString(R.string.pm_deactivate_power_merchant_message_info, element.expiredTime).parseAsHtml()
 
             btnPmCancelQuitSubmission.isLoading = false

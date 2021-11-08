@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.home_recom.model.datamodel.*
+import com.tokopedia.home_recom.view.viewholder.LoadMoreViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationCPMViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationShimmeringViewHolder
 
@@ -49,6 +50,7 @@ class HomeRecommendationAdapter(
             EmptyViewHolder.LAYOUT -> layout.isFullSpan = true
             RecommendationShimmeringViewHolder.LAYOUT -> layout.isFullSpan = true
             RecommendationErrorDataModel.LAYOUT -> layout.isFullSpan = true
+            LoadMoreViewHolder.LAYOUT -> layout.isFullSpan = true
         }
         holder.bind(visitables[position])
     }

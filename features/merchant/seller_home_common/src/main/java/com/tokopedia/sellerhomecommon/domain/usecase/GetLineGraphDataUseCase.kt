@@ -31,7 +31,7 @@ class GetLineGraphDataUseCase(
 
     override suspend fun executeOnBackground(): List<LineGraphDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetLineGraphDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse: GraphqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLineGraphDataResponse::class.java)
         if (errors.isNullOrEmpty()) {

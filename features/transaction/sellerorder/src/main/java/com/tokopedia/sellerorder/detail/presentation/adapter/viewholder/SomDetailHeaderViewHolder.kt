@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
@@ -27,13 +26,14 @@ import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_DELIVER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_REJECTED
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.toStringFormatted
+import com.tokopedia.sellerorder.databinding.DetailHeaderItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelAdapter
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import kotlinx.android.synthetic.main.detail_header_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by fwidjaja on 2019-10-03.
@@ -41,13 +41,14 @@ import kotlinx.android.synthetic.main.detail_header_item.view.*
 class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
 
     private val adapter: SomDetailLabelAdapter = SomDetailLabelAdapter(emptyList())
+    private val binding by viewBinding<DetailHeaderItemBinding>()
 
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
             setupOrderStatus(item.dataObject.statusText, item.dataObject.statusCode)
-            with(itemView) {
+            binding?.run {
                 if (item.dataObject.isWarehouse) {
-                    warehouseLabel?.apply {
+                    warehouseLabel.apply {
                         show()
                         unlockFeature = true
                         setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
@@ -57,11 +58,11 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
 
                 if (item.dataObject.statusIndicatorColor.isNotBlank()) {
-                    somOrderDetailIndicator.background = Utils.getColoredIndicator(context, item.dataObject.statusIndicatorColor)
+                    somOrderDetailIndicator.background = Utils.getColoredIndicator(root.context, item.dataObject.statusIndicatorColor)
                 }
 
-                header_see_history?.setOnClickListener {
-                    context.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
+                headerSeeHistory.setOnClickListener {
+                    binding?.root?.context?.startActivity(RouteManager.getIntent(it.context, ApplinkConstInternalOrder.TRACK, "")
                             .putExtra(EXTRA_ORDER_ID, item.dataObject.orderId)
                             .putExtra(EXTRA_USER_MODE, 2))
                 }
@@ -79,49 +80,51 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                         item.dataObject.awbUploadUrl
                     }
 
-                    setupTicker(ticker_detail_buyer_request_cancel, item.dataObject.tickerInfo, tickerContent, tickerUrl, isAwb)
-                    ticker_detail_buyer_request_cancel?.show()
+                    setupTicker(tickerDetailBuyerRequestCancel, item.dataObject.tickerInfo, tickerContent, tickerUrl, isAwb)
+                    tickerDetailBuyerRequestCancel.show()
                 } else {
-                    ticker_detail_buyer_request_cancel?.gone()
+                    tickerDetailBuyerRequestCancel.gone()
                 }
 
-                header_buyer_value?.text = item.dataObject.custName.toStringFormatted(MAX_BUYER_NAME)
-                header_date_value?.text = item.dataObject.paymentDate
+                headerBuyerValue.text = item.dataObject.custName.toStringFormatted(MAX_BUYER_NAME)
+                headerDateValue.text = item.dataObject.paymentDate
 
                 if (item.dataObject.deadlineText.isNotEmpty()) {
-                    header_deadline_label?.show()
-                    due_label?.show()
+                    headerDeadlineLabel.show()
+                    dueLabel.show()
                     if (item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED || item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT) {
-                        header_deadline_label?.text = itemView.context.getString(R.string.som_deadline_done)
+                        headerDeadlineLabel.text = root.context.getString(R.string.som_deadline_done)
                     } else {
-                        header_deadline_label?.text = itemView.context.getString(R.string.som_deadline)
+                        headerDeadlineLabel.text = root.context.getString(R.string.som_deadline)
                     }
 
-                    label_due_response_day_count?.text = item.dataObject.deadlineText
-                    ic_time?.loadImageDrawable(R.drawable.ic_label_due_time)
-                    ic_time?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    labelDueResponseDayCount.text = item.dataObject.deadlineText
+                    icTime.loadImageDrawable(R.drawable.ic_label_due_time)
+                    icTime.setColorFilter(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
                     if (item.dataObject.deadlineColor.isNotEmpty() && !item.dataObject.deadlineColor.equals(LABEL_EMPTY, true)) {
-                        due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
+                        dueLabel.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
                     }
                 } else {
-                    header_deadline_label?.hide()
-                    due_label?.hide()
+                    headerDeadlineLabel.hide()
+                    dueLabel.hide()
                 }
 
-                header_invoice?.text = item.dataObject.invoice
+                headerInvoice.text = item.dataObject.invoice
 
-                header_invoice_copy?.setOnClickListener {
-                    actionListener?.onCopiedInvoice(itemView.context.getString(R.string.invoice_label), item.dataObject.invoice)
+                headerInvoiceCopy.setOnClickListener {
+                    binding?.root?.run {
+                        actionListener?.onCopiedInvoice(context.getString(R.string.invoice_label), item.dataObject.invoice)
+                    }
                 }
 
-                header_see_invoice?.setOnClickListener {
+                headerSeeInvoice.setOnClickListener {
                     actionListener?.onSeeInvoice(item.dataObject.invoiceUrl, item.dataObject.invoice)
                 }
 
                 // labels
                 rvSomDetailLabels.isNestedScrollingEnabled = false
-                rvSomDetailLabels.layoutManager = FlexboxLayoutManager(context).apply {
+                rvSomDetailLabels.layoutManager = FlexboxLayoutManager(root.context).apply {
                     alignItems = AlignItems.FLEX_START
                 }
                 rvSomDetailLabels.adapter = adapter
@@ -131,15 +134,17 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     }
 
     private fun setupOrderStatus(statusText: String, statusCode: Int) {
-        itemView.header_title?.text = statusText
-        val statusOrderColor = if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
+        binding?.headerTitle?.run {
+            text = statusText
+            val statusOrderColor = if (statusCode == STATUS_CODE_ORDER_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_AUTO_CANCELLED ||
                 statusCode == STATUS_CODE_ORDER_REJECTED) {
-            com.tokopedia.unifyprinciples.R.color.Unify_R600
-        } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                com.tokopedia.unifyprinciples.R.color.Unify_R600
+            } else {
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            }
+            setTextColor(MethodChecker.getColor(context, statusOrderColor))
         }
-        itemView.header_title?.setTextColor(MethodChecker.getColor(itemView.context, statusOrderColor))
     }
 
     private fun setupTicker(tickerBuyerRequestCancel: Ticker?, tickerInfo: TickerInfo, tickerContent: String, tickerUrl: String, isAwb: Boolean) {
@@ -162,13 +167,15 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
     }
 
     private fun makeTickerDescription(context: Context, tickerInfo: TickerInfo, tickerContent: String, isAwb: Boolean): String {
-        val message = Utils.getL2CancellationReason(tickerInfo.text, context.getString(R.string.som_header_detail_ticker_cancellation))
-        val additionalInvalidResi = itemView.context.getString(R.string.additional_invalid_resi)
-        return if (isAwb) {
-            String.format(itemView.context.getString(R.string.som_detail_ticker_description), tickerContent, additionalInvalidResi)
-        } else {
-            String.format(itemView.context.getString(R.string.som_detail_ticker_description), message, tickerInfo.actionText)
-        }
+        return binding?.root?.run {
+            val message = Utils.getL2CancellationReason(tickerInfo.text, context.getString(R.string.som_header_detail_ticker_cancellation))
+            val additionalInvalidResi = context.getString(R.string.additional_invalid_resi)
+            if (isAwb) {
+                String.format(context.getString(R.string.som_detail_ticker_description), tickerContent, additionalInvalidResi)
+            } else {
+                String.format(context.getString(R.string.som_detail_ticker_description), message, tickerInfo.actionText)
+            }
+        }.orEmpty()
     }
 
     companion object {

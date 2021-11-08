@@ -494,6 +494,12 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check shop internal appLink then should return DF_BASE in customerapp`() {
+        val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/shop-page/12345"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    }
+
+    @Test
     fun `check shop etalase appLink then should return DF_BASE in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shop/12345/etalase/56789"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
@@ -527,6 +533,18 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check shop home appLink then should return DF_BASE in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shop/12345/home"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
+    }
+
+    @Test
+    fun `check shop settings external appLink then should return DF_MERCHANT_SELLER in customerapp`() {
+        val externalAppLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://shop/12345/settings"
+        assertEqualDeepLinkCustomerApp(externalAppLink, DeeplinkDFMapper.DF_MERCHANT_SELLER)
+    }
+
+    @Test
+    fun `check shop settings internal appLink then should return DF_MERCHANT_SELLER in customerapp`() {
+        val internalAppLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/shop-page/12345/settings"
+        assertEqualDeepLinkCustomerApp(internalAppLink, DeeplinkDFMapper.DF_MERCHANT_SELLER)
     }
 
     @Test
@@ -965,5 +983,11 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     fun `check review detail appLink then should return DF_MERCHANT_REVIEW in customerapp`() {
         val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/review/detail/123/"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_MERCHANT_REVIEW)
+    }
+
+    @Test
+    fun `check play broadcaster appLink then should return DF_CONTENT_PLAY_BROADCASTER in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://play-broadcaster"
+        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER)
     }
 }

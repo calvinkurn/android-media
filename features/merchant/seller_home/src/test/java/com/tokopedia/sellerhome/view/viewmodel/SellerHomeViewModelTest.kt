@@ -734,13 +734,16 @@ class SellerHomeViewModelTest {
         coroutineTestRule.runBlockingTest {
             val dataKeys = listOf(anyString())
             val result = listOf(MilestoneDataUiModel())
-            getMilestoneDataUseCase.params = GetMilestoneDataUseCase.createParams(dataKeys)
 
             coEvery {
                 getMilestoneDataUseCase.executeOnBackground()
             } returns result
 
             viewModel.getMilestoneWidgetData(dataKeys)
+
+            verify {
+                getMilestoneDataUseCase.params = any()
+            }
 
             val expected = Success(result)
             viewModel.milestoneWidgetData.verifySuccessEquals(expected)

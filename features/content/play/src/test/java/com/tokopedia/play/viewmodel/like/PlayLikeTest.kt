@@ -1,22 +1,21 @@
 package com.tokopedia.play.viewmodel.like
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
-import com.tokopedia.play.robot.andWhen
-import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.withState
-import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.model.PlayChannelInfoModelBuilder
+import com.tokopedia.play.robot.play.createPlayViewModelRobot
+import com.tokopedia.play.util.*
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.ClickLikeAction
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.play.view.uimodel.event.OpenPageEvent
+import com.tokopedia.play.view.uimodel.event.ShowLikeBubbleEvent
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,60 +28,141 @@ class PlayLikeTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+    private val testDispatcher = coroutineTestRule.dispatchers
 
     private val channelDataBuilder = PlayChannelDataModelBuilder()
-    private val mockChannelData = channelDataBuilder.buildChannelData()
+    private val channelInfoBuilder = PlayChannelInfoModelBuilder()
+    private val mockVODChannelData = channelDataBuilder.buildChannelData(
+        channelDetail = channelInfoBuilder.buildChannelDetail(
+            channelInfo = channelInfoBuilder.buildChannelInfo(
+                channelType = PlayChannelType.VOD
+            )
+        )
+    )
+    private val mockLiveChannelData = channelDataBuilder.buildChannelData(
+        channelDetail = channelInfoBuilder.buildChannelDetail(
+            channelInfo = channelInfoBuilder.buildChannelInfo(
+                channelType = PlayChannelType.Live
+            )
+        )
+    )
+
+    private val mockRemoteConfig = mockk<RemoteConfig>(relaxed = true)
 
     @Before
     fun setUp() {
-        Dispatchers.setMain(testDispatcher.coroutineDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+        every {
+            mockRemoteConfig.getBoolean(any(), any())
+        } returns true
     }
 
     @Test
-    fun `given user is logged in and channel is not liked, when click like, then channel should be liked`() {
+    fun `given user is logged in, channel is VOD, and channel is not liked, when click like, then channel should be liked`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockRepo.getIsLiked(any(), any()) } returns false
 
-        givenPlayViewModelRobot(
-                repo = mockRepo,
-                dispatchers = testDispatcher,
-        ) {
-            setLoggedIn(true)
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        } andWhen {
-            submitAction(ClickLikeAction)
-        } thenVerify {
-            withState {
-                like.isLiked.isTrue()
+        val robot = createPlayViewModelRobot(
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                setLoggedIn(true)
+                createPage(mockVODChannelData)
+                focusPage(mockVODChannelData)
+
+                submitAction(ClickLikeAction)
             }
+
+            state.like.isLiked.assertTrue()
         }
     }
 
     @Test
-    fun `given user is logged in and channel is liked, when click like, then channel should not be liked`() {
+    fun `given user is logged in, channel is Live, and channel is not liked, when click like, then channel should be liked and show bubble`() {
+        val mockRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockRepo.getIsLiked(any(), any()) } returns false
+
+        val robot = createPlayViewModelRobot(
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            val (state, event) = robot.recordStateAndEvent {
+                setLoggedIn(true)
+                createPage(mockLiveChannelData)
+                focusPage(mockLiveChannelData)
+
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertTrue()
+
+            event.last()
+                .isEqualToIgnoringFields(
+                    ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
+                    ShowLikeBubbleEvent.Single::config
+                )
+        }
+    }
+
+    @Test
+    fun `given user is logged in, channel is VOD and channel is liked, when click like, then channel should not be liked`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockRepo.getIsLiked(any(), any()) } returns true
 
-        givenPlayViewModelRobot(
-                repo = mockRepo,
-                dispatchers = testDispatcher,
-        ) {
-            setLoggedIn(true)
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        } andWhen {
-            submitAction(ClickLikeAction)
-        } thenVerify {
-            withState {
-                like.isLiked.isFalse()
+        val robot = createPlayViewModelRobot(
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                setLoggedIn(true)
+                createPage(mockVODChannelData)
+                focusPage(mockVODChannelData)
+
+                submitAction(ClickLikeAction)
             }
+
+            state.like.isLiked.assertFalse()
+        }
+    }
+
+    @Test
+    fun `given user is logged in, channel is Live and channel is liked, when click like, then channel is still liked`() {
+        val mockRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockRepo.getIsLiked(any(), any()) } returns true
+
+        val robot = createPlayViewModelRobot(
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            val (state, event) = robot.recordStateAndEvent {
+                setLoggedIn(true)
+                createPage(mockLiveChannelData)
+                focusPage(mockLiveChannelData)
+
+                submitAction(ClickLikeAction)
+            }
+
+            state.like.isLiked.assertTrue()
+
+            event.last()
+                .isEqualToIgnoringFields(
+                    ShowLikeBubbleEvent.Single(1, reduceOpacity = false, config = mockk(relaxed = true)),
+                    ShowLikeBubbleEvent.Single::config
+                )
         }
     }
 
@@ -91,19 +171,27 @@ class PlayLikeTest {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockRepo.getIsLiked(any(), any()) } returns false
 
-        givenPlayViewModelRobot(
-                repo = mockRepo,
-                dispatchers = testDispatcher,
-        ) {
-            setLoggedIn(false)
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        } andWhen {
-            submitAction(ClickLikeAction)
-        } thenVerify {
-            withState {
-                like.isLiked.isFalse()
+        val robot = createPlayViewModelRobot(
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            val (state, event) = robot.recordStateAndEvent {
+                setLoggedIn(false)
+                createPage(mockVODChannelData)
+                focusPage(mockVODChannelData)
+
+                submitAction(ClickLikeAction)
             }
+
+            state.like.isLiked.assertFalse()
+            event.last()
+                .isEqualToIgnoringFields(
+                    OpenPageEvent(ApplinkConst.LOGIN),
+                    OpenPageEvent::requestCode
+                )
         }
     }
 
