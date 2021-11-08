@@ -1,6 +1,7 @@
 package com.tokopedia.kyc_centralized.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -19,6 +20,8 @@ import dagger.multibindings.StringKey
  */
 @Module
 class UserIdentificationCommonModule {
+
+    private val sharedPreferenceName = "kyc_centralized"
 
     @UserIdentificationCommonScope
     @Provides
@@ -52,4 +55,10 @@ class UserIdentificationCommonModule {
     @StringKey(KYCConstant.QUERY_GET_KYC_PROJECT_INFO)
     fun provideRawQueryGetKycProjectInfo(@UserIdentificationCommonScope context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.user_identification_common.R.raw.query_get_kyc_project_info)
+
+    @UserIdentificationCommonScope
+    @Provides
+    fun provideSharedPreference(
+        @ApplicationContext context: Context
+    ): SharedPreferences = context.getSharedPreferences(sharedPreferenceName, Context.MODE_PRIVATE)
 }

@@ -95,7 +95,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
             override fun onNewGameClicked(view: BroadcastInteractiveViewComponent) {
                 if (allowSetupInteractive()) {
-                    interactiveSetupView.setActiveTitle(parentViewModel.interactiveTitle)
+                    interactiveSetupView.setActiveTitle(parentViewModel.setupInteractiveTitle)
                     interactiveSetupView.setAvailableDurations(parentViewModel.interactiveDurations)
                     interactiveSetupView.setSelectedDuration(parentViewModel.selectedInteractiveDuration)
                     interactiveSetupView.show()
@@ -113,7 +113,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 analytic.onClickWinnerIcon(
                     parentViewModel.channelId,
                     parentViewModel.interactiveId,
-                    parentViewModel.interactiveTitle
+                    parentViewModel.activeInteractiveTitle
                 )
             }
         })
@@ -236,15 +236,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveInfo() {
-        parentViewModel.observableLivePusherInfo.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLivePusherInfo.observe(viewLifecycleOwner) {
             debugView.setLiveInfo(it)
-        })
+        }
     }
 
     private fun observeLiveStats() {
-        parentViewModel.observableLivePusherStatistic.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLivePusherStatistic.observe(viewLifecycleOwner) {
             debugView.updateStats(it)
-        })
+        }
     }
 
     private fun setupObserve() {
@@ -527,7 +527,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableLiveCountDownTimerState.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableLiveCountDownTimerState.observe(viewLifecycleOwner) {
             when(it)  {
                 is PlayLiveCountDownTimerState.Active -> showCounterDuration(it.remainingInMs)
                 is PlayLiveCountDownTimerState.Finish -> {
@@ -535,7 +535,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     showDialogWhenTimeout()
                 }
             }
-        })
+        }
     }
 
     private fun observeChatList() {
@@ -554,7 +554,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeEvent() {
-        parentViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
+        parentViewModel.observableEvent.observe(viewLifecycleOwner) {
             when {
                 it.freeze -> {
                     showForceStopDialog(
@@ -571,7 +571,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     )
                 }
             }
-        })
+        }
     }
 
     private fun observeInteractiveConfig() {
@@ -592,14 +592,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeCreateInteractiveSession() {
-        parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner, Observer { state ->
+        parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
                 is NetworkResult.Success -> {
                     analytic.onStartInteractive(
                         channelId = parentViewModel.channelId,
                         interactiveId = parentViewModel.interactiveId,
-                        interactiveTitle = parentViewModel.interactiveTitle,
+                        interactiveTitle = parentViewModel.activeInteractiveTitle,
                         durationInMs = state.data.durationInMs
                     )
                     interactiveSetupView.setLoading(false)
@@ -614,7 +614,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     )
                 }
             }
-        })
+        }
     }
     //endregion
 
@@ -651,7 +651,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             is BroadcastInteractiveInitState.HasPrevious -> {
-                analytic.onImpressWinnerIcon(parentViewModel.channelId, parentViewModel.interactiveId, parentViewModel.interactiveTitle)
+                analytic.onImpressWinnerIcon(parentViewModel.channelId, parentViewModel.interactiveId, parentViewModel.activeInteractiveTitle)
                 interactiveView.setFinish(state.coachMark)
             }
         }

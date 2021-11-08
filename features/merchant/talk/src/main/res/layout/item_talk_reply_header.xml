@@ -8,8 +8,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/replyUserImage"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
@@ -103,8 +103,8 @@
         android:id="@+id/replyQuestionTicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:visibility="gone"
         app:closeButtonVisibility="gone"
@@ -115,8 +115,8 @@
         android:id="@+id/replyUnmaskCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/replyHeaderMessage"/>
 
