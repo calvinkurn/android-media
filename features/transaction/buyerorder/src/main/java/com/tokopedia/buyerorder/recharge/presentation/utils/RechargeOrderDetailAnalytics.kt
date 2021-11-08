@@ -50,8 +50,10 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickActionButton(categoryName: String, operatorName: String, buttonName: String, eventAction: String) {
-        val map = mapOf(
+    fun eventClickActionButton(categoryName: String, operatorName: String,
+                               buttonName: String, eventAction: String,
+                               isFeatureButton: Boolean = false) {
+        val map = mutableMapOf(
                 Keys.EVENT_NAME to EventName.CLICK_CHECKOUT,
                 Keys.EVENT_ACTION to eventAction,
                 Keys.EVENT_CATEGORY to DefaultValue.EVENT_CATEGORY,
@@ -60,7 +62,11 @@ class RechargeOrderDetailAnalytics @Inject constructor(private val userSession: 
                 Keys.BUSINESS_UNIT to DefaultValue.BUSINESS_UNIT
         )
 
-        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+        if (isFeatureButton) {
+            map[Keys.USER_ID] = userSession.userId
+        }
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
     }
 
     fun eventTopAdsImpression(data: RecommendationItem) {

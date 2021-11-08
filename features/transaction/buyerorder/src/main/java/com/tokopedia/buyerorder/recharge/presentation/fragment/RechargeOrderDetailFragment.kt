@@ -360,7 +360,8 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                     PRIMARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_PRIMARY_BUTTON
                     SECONDARY_ACTION_BUTTON_TYPE -> RechargeOrderDetailAnalytics.EventAction.CLICK_SECONDARY_BUTTON
                     else -> RechargeOrderDetailAnalytics.EventAction.CLICK_FEATURE_BUTTON
-                }
+                },
+                (buttonType != PRIMARY_ACTION_BUTTON_TYPE && buttonType != SECONDARY_ACTION_BUTTON_TYPE)
         )
     }
 
