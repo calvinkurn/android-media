@@ -331,8 +331,8 @@ class TopupBillsFavoriteNumberFragment:
     override fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem, position: Int) {
         val namedFavNumber = clientNumbers.count { it.clientName.isNotEmpty() }
         commonTopupBillsAnalytics.eventClickTotalFavoriteNumber(
-            totalNamedFavNumber = namedFavNumber,
             totalUnnamedFavNumber = clientNumbers.size - namedFavNumber,
+            totalNamedFavNumber = namedFavNumber,
             clickPosition = position,
             userId = userSession.userId
         )

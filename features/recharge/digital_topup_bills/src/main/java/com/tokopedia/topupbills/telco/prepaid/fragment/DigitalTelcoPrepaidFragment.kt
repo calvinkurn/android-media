@@ -526,7 +526,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
 
         override fun onClearAutoComplete() {
-            topupAnalytics.eventClearInputNumber()
             showPromoAndRecommendation()
         }
 

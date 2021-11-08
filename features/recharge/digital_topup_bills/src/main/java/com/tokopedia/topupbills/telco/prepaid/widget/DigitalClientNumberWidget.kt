@@ -289,14 +289,15 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                 override fun getFilterText(): String {
                     return inputNumberField.editText.text.toString()
                 }
-
-                override fun setInputNumberActionTypeAutocomplete() {
-                    listener.onClickClearInput()
-                }
             }
         )
 
-        inputNumberField.editText.setAdapter(autoCompleteAdapter)
+        inputNumberField.editText.run {
+            setAdapter(autoCompleteAdapter)
+            setOnItemClickListener { _, _, _, _ ->
+                listener.onClickAutoComplete()
+            }
+        }
     }
 
     private fun validateContactName(contactName: String): String {
