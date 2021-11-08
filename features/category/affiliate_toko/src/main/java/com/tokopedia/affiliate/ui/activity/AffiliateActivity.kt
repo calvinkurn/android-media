@@ -172,14 +172,4 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             )
         }
     }
-
-    /*
-    override fun onBackPressed() {
-        val currentFragment=supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
-        if(currentFragment!=null && currentFragment.isVisible){
-            (currentFragment as? AffiliatePromoFragment)?.handleBack()
-        }
-        else super.onBackPressed()
-    }
-     */
 }
