@@ -18,7 +18,7 @@ class CarouselBannerItemViewModelTest {
     private val application: Application = mockk()
 
     private val viewModel: CarouselBannerItemViewModel by lazy {
-        spyk(CarouselBannerItemViewModel(application, componentsItem, 0))
+        spyk(CarouselBannerItemViewModel(application, componentsItem, 99))
     }
 
     @Before
@@ -31,4 +31,8 @@ class CarouselBannerItemViewModelTest {
         assert(viewModel.getComponentLiveData().value == componentsItem)
     }
 
+    @Test
+    fun `test for position passed`(){
+        assert(viewModel.position == 99)
+    }
 }

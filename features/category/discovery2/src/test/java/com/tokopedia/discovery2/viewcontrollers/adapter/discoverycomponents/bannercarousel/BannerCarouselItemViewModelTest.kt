@@ -24,7 +24,7 @@ class BannerCarouselItemViewModelTest {
     private val application: Application = mockk()
 
     private val viewModel: BannerCarouselItemViewModel by lazy {
-        spyk(BannerCarouselItemViewModel(application, componentsItem, 0))
+        spyk(BannerCarouselItemViewModel(application, componentsItem, 99))
     }
 
     @Before
@@ -65,6 +65,11 @@ class BannerCarouselItemViewModelTest {
         assert(viewModel.getNavigationUrl() == null)
         dataItem.imageClickUrl = "testUrl"
         assert(viewModel.getNavigationUrl() == "testUrl")
+    }
+
+    @Test
+    fun `test for position passed`(){
+        assert(viewModel.position == 99)
     }
 
 
