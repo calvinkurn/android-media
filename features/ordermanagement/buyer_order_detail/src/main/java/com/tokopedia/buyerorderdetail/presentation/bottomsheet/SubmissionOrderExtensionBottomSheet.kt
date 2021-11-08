@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.bottomsheet
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,9 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderExte
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.databinding.OrderExtensionSubmissionExtendsBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
+import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderExtensionActivity
 import com.tokopedia.buyerorderdetail.presentation.dialog.OrderExtensionDialog
+import com.tokopedia.buyerorderdetail.presentation.dialog.OrderExtensionHasBeenSentDialog
 import com.tokopedia.buyerorderdetail.presentation.model.OrderExtensionRespondInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderExtensionRespondUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.OrderExtensionToaster
@@ -24,6 +27,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -32,8 +36,17 @@ import javax.inject.Inject
 
 class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
+    private val orderExtensionHasBeenSentDialog by lazy {
+        context?.let { OrderExtensionHasBeenSentDialog(it, DialogUnify.SINGLE_ACTION) }
+    }
+
     private val toasterComponent by lazy {
-        OrderExtensionToaster(context, WeakReference(activity))
+        context?.let {
+            OrderExtensionToaster(
+                it,
+                WeakReference(activity)
+            )
+        }
     }
 
     @Inject
@@ -42,6 +55,8 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<OrderExtensionSubmissionExtendsBottomsheetBinding>()
     private var confirmedCancelledOrderDialog: OrderExtensionDialog? = null
     private var respondInfo: OrderExtensionRespondInfoUiModel? = null
+
+    private var isFromDialog = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,19 +98,27 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun getRootView(): View? {
+        return binding?.root?.rootView
+    }
+
     private fun observeRespond() {
         observe(buyerOrderDetailExtensionViewModel.orderExtensionRespond) {
             setButtonLoadingFalse()
-            confirmedCancelledOrderDialog?.dismissDialog()
             when (it) {
                 is Success -> {
+//                    dismissConfirmedCancelledOrderDialog()
                     showRespondOrderExtension(it.data)
                 }
                 is Fail -> {
-                    toasterComponent.setToasterInternalError(it.throwable)
+                    toasterComponent?.setToasterInternalError(getRootView(), it.throwable)
                 }
             }
         }
+    }
+
+    private fun dismissConfirmedCancelledOrderDialog() {
+        confirmedCancelledOrderDialog?.dismissDialog()
     }
 
     private fun setButtonLoadingFalse() {
@@ -122,9 +145,11 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
     private fun setupCta() = binding?.run {
         btnOrderCancelled.setOnClickListener {
+            isFromDialog = true
             showConfirmedCancelledOrderDialog()
         }
         btnSubmissionExtends.setOnClickListener {
+            isFromDialog = true
             btnSubmissionExtends.isLoading = true
             buyerOrderDetailExtensionViewModel.requestRespond(
                 orderId = getOrderId(),
@@ -133,7 +158,12 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun showRespondOrderExtension(orderExtensionRespondUiModel: OrderExtensionRespondUiModel) {
+    private fun showRespondOrderExtension(
+        orderExtensionRespondUiModel: OrderExtensionRespondUiModel
+    ) {
+        val isOrderExtended =
+            orderExtensionRespondUiModel.messageCode ==
+                    BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS
         val isFromUOH = arguments?.getBoolean(
             ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH, false
         ).orFalse()
@@ -145,10 +175,11 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         when (orderExtensionRespondUiModel.messageCode) {
             BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS,
             BuyerOrderExtensionConstant.RespondMessageCode.ERROR -> {
-                toasterComponent.setToasterNormal(
-                    orderExtensionRespondUiModel.messageCode,
-                    orderExtensionRespondUiModel.message
-                ) { isOrderExtended ->
+                toasterComponent?.showToaster(
+                    isOrderExtended,
+                    orderExtensionRespondUiModel.message,
+                    getRootView()
+                ) {
                     if (isOrderExtended) {
                         BuyerOrderExtensionTracker.eventAcceptOrderExtension(
                             getOrderId(),
@@ -163,13 +194,25 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
                 }
             }
             BuyerOrderExtensionConstant.RespondMessageCode.STATUS_CHANGE -> {
-                showConfirmedCancelledOrderDialog()
+                showOrderHasBeenSentDialog()
+            }
+        }
+    }
+
+    private fun showOrderHasBeenSentDialog() {
+        orderExtensionHasBeenSentDialog?.run {
+            showOrderHasBeenSentDialog()
+            getDialog()?.setOnDismissListener {
+                (activity as? BuyerOrderExtensionActivity)?.setResultFinish(
+                    Activity.RESULT_OK,
+                    true
+                )
             }
         }
     }
 
     private fun getOrderId(): String {
-       return respondInfo?.orderId.orEmpty()
+        return respondInfo?.orderId.orEmpty()
     }
 
     private fun getInstanceDialog(): Lazy<OrderExtensionDialog?> {
@@ -202,6 +245,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
             setPrimaryCTAText(getString(R.string.order_extension_order_cancelled))
             setSecondaryCTAText(getString(R.string.order_extension_btn_secondary))
             setPrimaryCTAClickListener {
+                isFromDialog = false
                 dialogPrimaryCTA.isLoading = true
                 buyerOrderDetailExtensionViewModel.requestRespond(
                     getOrderId(),
@@ -209,6 +253,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
                 )
             }
             setSecondaryCTAClickListener {
+                isFromDialog = false
                 dialogSecondaryLongCTA.isLoading = true
                 buyerOrderDetailExtensionViewModel.requestRespond(
                     getOrderId(),
@@ -232,9 +277,9 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         )
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        toasterComponent.activity.clear()
+    override fun onDestroy() {
+        super.onDestroy()
+        toasterComponent?.activity?.clear()
     }
 
     companion object {

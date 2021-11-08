@@ -7,7 +7,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.UnifyButton
 
-class OrderExtensionDialog(
+open class OrderExtensionDialog(
     context: Context,
     actionType: Int
 ) {

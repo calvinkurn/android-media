@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.databinding.FragmentBuyerOrderExtensionBinding
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderExtensionActivity
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SubmissionOrderExtensionBottomSheet
-import com.tokopedia.buyerorderdetail.presentation.dialog.OrderExtensionDialog
+import com.tokopedia.buyerorderdetail.presentation.dialog.OrderExtensionHasBeenSentDialog
 import com.tokopedia.buyerorderdetail.presentation.model.OrderExtensionRespondInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.OrderExtensionToaster
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailExtensionViewModel
@@ -32,7 +30,14 @@ import javax.inject.Inject
 class BuyerOrderExtensionFragment : BaseDaggerFragment() {
 
     private val toasterComponent by lazy {
-        OrderExtensionToaster(context, WeakReference(activity))
+        OrderExtensionToaster(
+            context,
+            WeakReference(activity)
+        )
+    }
+
+    private val orderExtensionHasBeenSentDialog: OrderExtensionHasBeenSentDialog? by lazy {
+        context?.let { OrderExtensionHasBeenSentDialog(it, DialogUnify.SINGLE_ACTION) }
     }
 
     @Inject
@@ -68,8 +73,8 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
         loadRespondInfo()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         toasterComponent.activity.clear()
     }
 
@@ -92,24 +97,26 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
                     showRespondOrderExtension(it.data)
                 }
                 is Fail -> {
-                    toasterComponent.setToasterInternalError(it.throwable)
+                    toasterComponent.setToasterInternalError(binding?.root?.rootView, it.throwable)
                 }
             }
         }
     }
 
     private fun showRespondOrderExtension(
-        orderExtensionRespondInfoUiModel:
+        data:
         OrderExtensionRespondInfoUiModel
     ) {
-        when (orderExtensionRespondInfoUiModel.messageCode) {
+        val isOrderExtended =
+            data.messageCode == BuyerOrderExtensionConstant.RespondInfoMessageCode.SUCCESS
+        when (data.messageCode) {
             BuyerOrderExtensionConstant.RespondInfoMessageCode.SUCCESS -> {
-                showSubmissionOrderExtension(orderExtensionRespondInfoUiModel)
+                showSubmissionOrderExtension(data)
             }
             BuyerOrderExtensionConstant.RespondInfoMessageCode.ERROR -> {
-                toasterComponent.setToasterNormal(
-                    orderExtensionRespondInfoUiModel.messageCode,
-                    orderExtensionRespondInfoUiModel.message
+                toasterComponent.showToaster(
+                    isOrderExtended,
+                    data.message
                 )
             }
             BuyerOrderExtensionConstant.RespondInfoMessageCode.STATUS_CHANGE -> {
@@ -137,25 +144,14 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
     }
 
     private fun showOrderHasBeenSentDialog() {
-        val confirmedCancelledOrderDialog = context?.let {
-            OrderExtensionDialog(
-                it,
-                DialogUnify.SINGLE_ACTION
-            ).apply {
-                setTitle(getString(R.string.order_extension_title_order_has_been_sent))
-                setDescription(getString(R.string.order_extension_desc_order_has_been_sent))
-                setImageUrl(BuyerOrderDetailOrderExtensionConstant.Image.ORDER_HAS_BEEN_SENT_URL)
+        orderExtensionHasBeenSentDialog?.run {
+            showOrderHasBeenSentDialog()
+            getDialog()?.setOnDismissListener {
+                (activity as? BuyerOrderExtensionActivity)?.setResultFinish(
+                    Activity.RESULT_OK,
+                    true
+                )
             }
-        }
-        confirmedCancelledOrderDialog?.getDialog()?.run {
-            setPrimaryCTAText(getString(R.string.label_understand))
-            setPrimaryCTAClickListener {
-                dismiss()
-            }
-            setOnDismissListener {
-                (activity as? BuyerOrderExtensionActivity)?.setResultFinish(Activity.RESULT_OK, true)
-            }
-            show()
         }
     }
 

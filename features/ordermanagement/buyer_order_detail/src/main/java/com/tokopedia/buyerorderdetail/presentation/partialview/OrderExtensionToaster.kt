@@ -3,10 +3,11 @@ package com.tokopedia.buyerorderdetail.presentation.partialview
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderExtensionConstant
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import timber.log.Timber
 import java.lang.ref.WeakReference
 
 class OrderExtensionToaster(
@@ -14,32 +15,32 @@ class OrderExtensionToaster(
     val activity: WeakReference<Activity?>
 ) {
 
-    fun setToasterNormal(
-        messageCode: Int,
+    fun showToaster(
+        isOrderExtended: Boolean,
         message: String,
-        sendTracker: ((Boolean) -> Unit)? = null
+        view: View? = null,
+        sendTracker: (() -> Unit)? = null
     ) {
-        val isOrderExtended = messageCode == BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS
         val toasterType =
-            if (messageCode ==
-                BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS
-            ) {
+            if (isOrderExtended) {
                 Toaster.TYPE_NORMAL
             } else {
                 Toaster.TYPE_ERROR
             }
 
-        sendTracker?.invoke(isOrderExtended)
+        sendTracker?.invoke()
 
         showToasterCommon(
+            view,
             message = message,
             toasterType = toasterType,
             isOrderExtended
         )
     }
 
-    fun setToasterInternalError(throwable: Throwable) {
+    fun setToasterInternalError(view: View?, throwable: Throwable) {
         showToasterCommon(
+            view,
             context?.let { ErrorHandler.getErrorMessage(it, throwable) }.orEmpty(),
             Toaster.TYPE_ERROR,
             null,
@@ -47,27 +48,52 @@ class OrderExtensionToaster(
     }
 
     private fun showToasterCommon(
+        view: View?,
         message: String,
         toasterType: Int,
         isOrderExtended: Boolean?
     ) {
-        val intent = Intent()
-
-        intent.apply {
-            putExtra(
-                ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_MESSAGE,
+        if (isOrderExtended == true) {
+            val intent = Intent()
+            intent.apply {
+                putExtra(
+                    ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_MESSAGE,
+                    message
+                )
+                putExtra(
+                    ApplinkConstInternalOrder.OrderExtensionKey.IS_ORDER_EXTENDED,
+                    isOrderExtended
+                )
+                putExtra(
+                    ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE, toasterType
+                )
+            }
+            activity.get()?.setResult(Activity.RESULT_OK, intent)
+            activity.get()?.finish()
+        } else {
+            showToasterServerError(
+                view,
+                toasterType,
                 message
             )
-            putExtra(
-                ApplinkConstInternalOrder.OrderExtensionKey.IS_ORDER_EXTENDED,
-                isOrderExtended
-            )
-            putExtra(
-                ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE, toasterType
-            )
         }
+    }
 
-        activity.get()?.setResult(Activity.RESULT_OK, intent)
-        activity.get()?.finish()
+    private fun showToasterServerError(view: View?, toasterType: Int, toasterMessage: String) {
+        view?.run {
+            val toaster = Toaster
+            try {
+                toaster.toasterCustomBottomHeight =
+                    resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.layout_lvl6)
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+            toaster.build(
+                this,
+                type = toasterType,
+                text = toasterMessage,
+                duration = Toaster.LENGTH_SHORT
+            ).show()
+        }
     }
 }
