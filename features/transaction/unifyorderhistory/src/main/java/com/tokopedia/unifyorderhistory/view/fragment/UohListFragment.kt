@@ -320,20 +320,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun isNavRevamp(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?: (getAbTestPlatform().getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
-                    (getAbTestPlatform().getString(
-                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
@@ -616,9 +602,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 addIcon(IconList.ID_MESSAGE) {}
                 addIcon(IconList.ID_NOTIFICATION) {}
                 addIcon(IconList.ID_CART) {}
-                if (isNavRevamp()) {
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
-                }
+                addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             uohNavtoolbar.setIcon(icons)
         }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/dimen_stc_date_filter_height"
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl0">
 
@@ -15,10 +15,12 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toTopOf="@+id/tvStcDefaultDateRange"
         app:layout_constraintEnd_toStartOf="@+id/radStcDefaultDateRange"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="7 hari terakhir" />
@@ -32,12 +34,11 @@
         android:maxLines="1"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/fontSize_lvl2"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/verLineStcDefault"
         app:layout_constraintEnd_toStartOf="@+id/radStcDefaultDateRange"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvStcDateRangeLabel"
-        app:layout_constraintVertical_bias="0.0"
         app:typographyType="body_3"
         tools:text="17 - 23 April 2020" />
 

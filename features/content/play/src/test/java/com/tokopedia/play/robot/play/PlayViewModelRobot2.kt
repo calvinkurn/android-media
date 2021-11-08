@@ -36,13 +36,13 @@ import java.io.Closeable
  * Created by jegul on 10/02/21
  */
 class PlayViewModelRobot2(
-    private val playVideoBuilder: PlayVideoWrapper.Builder,
+    playVideoBuilder: PlayVideoWrapper.Builder,
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
     getChannelStatusUseCase: GetChannelStatusUseCase,
     getSocketCredentialUseCase: GetSocketCredentialUseCase,
-    private val getReportSummariesUseCase: GetReportSummariesUseCase,
+    getReportSummariesUseCase: GetReportSummariesUseCase,
     getProductTagItemsUseCase: GetProductTagItemsUseCase,
     trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
@@ -56,42 +56,38 @@ class PlayViewModelRobot2(
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
     playChannelWebSocket: PlayChannelWebSocket,
     playChannelSSE: PlayChannelSSE,
-    private val repo: PlayViewerRepository,
+    repo: PlayViewerRepository,
     playAnalytic: PlayNewAnalytic,
     timerFactory: TimerFactory,
     castPlayerHelper: CastPlayerHelper
 ) : Closeable {
 
-    val viewModel: PlayViewModel
-
-    init {
-        viewModel = PlayViewModel(
-            playVideoBuilder,
-            videoStateProcessorFactory,
-            channelStateProcessorFactory,
-            videoBufferGovernorFactory,
-            getChannelStatusUseCase,
-            getSocketCredentialUseCase,
-            getReportSummariesUseCase,
-            getProductTagItemsUseCase,
-            trackProductTagBroadcasterUseCase,
-            trackVisitChannelBroadcasterUseCase,
-            playChannelReminderUseCase,
-            playSocketToModelMapper,
-            playUiModelMapper,
-            userSession,
-            dispatchers,
-            remoteConfig,
-            playPreference,
-            videoLatencyPerformanceMonitoring,
-            playChannelWebSocket,
-            playChannelSSE,
-            repo,
-            playAnalytic,
-            timerFactory,
-            castPlayerHelper
-        )
-    }
+    val viewModel: PlayViewModel = PlayViewModel(
+        playVideoBuilder,
+        videoStateProcessorFactory,
+        channelStateProcessorFactory,
+        videoBufferGovernorFactory,
+        getChannelStatusUseCase,
+        getSocketCredentialUseCase,
+        getReportSummariesUseCase,
+        getProductTagItemsUseCase,
+        trackProductTagBroadcasterUseCase,
+        trackVisitChannelBroadcasterUseCase,
+        playChannelReminderUseCase,
+        playSocketToModelMapper,
+        playUiModelMapper,
+        userSession,
+        dispatchers,
+        remoteConfig,
+        playPreference,
+        videoLatencyPerformanceMonitoring,
+        playChannelWebSocket,
+        playChannelSSE,
+        repo,
+        playAnalytic,
+        timerFactory,
+        castPlayerHelper
+    )
 
     fun createPage(channelData: PlayChannelData) {
         viewModel.createPage(channelData)

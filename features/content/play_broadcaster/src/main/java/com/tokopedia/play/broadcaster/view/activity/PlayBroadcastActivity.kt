@@ -100,7 +100,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
-    private lateinit var loadingFragment: LoadingDialogFragment
     private lateinit var pauseLiveDialog: DialogUnify
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -277,7 +276,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
      * Observe
      */
     private fun observeConfiguration() {
-        viewModel.observableConfigInfo.observe(this, Observer { result ->
+        viewModel.observableConfigInfo.observe(this) { result ->
             startRenderMonitoring()
             when(result) {
                 is NetworkResult.Loading -> showLoading(true)
@@ -292,11 +291,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
                     showToaster(
                             err = result.error,
                             actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = View.OnClickListener { result.onRetry() }
+                            actionListener = { result.onRetry() }
                     )
                 }
             }
-        })
+        }
     }
     //endregion
 
@@ -491,7 +490,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         }
 
         val (bottomSheet, view) = if (existingFragment is BottomSheetUnify) {
-            existingFragment to existingFragment.requireView().findViewWithTag<PlayTermsAndConditionView>(
+            existingFragment to existingFragment.requireView().findViewWithTag(
                 TERMS_AND_CONDITION_TAG
             )
         } else {
@@ -574,7 +573,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     @TestOnly
-    fun getPltPerformanceResultData(): PltPerformanceData? {
+    fun getPltPerformanceResultData(): PltPerformanceData {
         return pageMonitoring.getPltPerformanceData()
     }
 
