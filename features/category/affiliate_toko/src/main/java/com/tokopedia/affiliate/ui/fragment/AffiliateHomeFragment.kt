@@ -182,6 +182,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
         affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
             affiliate_progress_bar?.gone()
+            product_list_group.show()
             affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
         })
 
@@ -227,7 +228,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         if(announcementData?.getAffiliateAnnouncement?.data?.status== ANNOUNCEMENT__TYPE_SUCCESS) {
             when (announcementData.getAffiliateAnnouncement.data.type) {
                 ANNOUNCEMENT__TYPE_CCA -> {
-                    product_list_group.show()
                     affiliateHomeViewModel.getAffiliateValidateUser()
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data.announcementTitle,
@@ -236,7 +236,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     )
                 }
                 ANNOUNCEMENT__TYPE_USER_BLACKLIST -> {
-                    product_list_group.show()
                     affiliateHomeViewModel.getAffiliateValidateUser()
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data.announcementTitle,
@@ -253,7 +252,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     )
                 }
                 ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT -> {
-                    product_list_group.show()
                     affiliateHomeViewModel.getAffiliateValidateUser()
                     affiliate_announcement_ticker_cv.hide()
                 }
