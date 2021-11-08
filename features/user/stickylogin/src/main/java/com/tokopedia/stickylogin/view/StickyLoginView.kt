@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -161,8 +162,9 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     private fun initInjector() {
         context?.let {
             val component = DaggerStickyLoginComponent.builder()
-                    .stickyLoginModule(StickyLoginModule(it))
-                    .build()
+                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .stickyLoginModule(StickyLoginModule(it))
+                .build()
             component.inject(this)
 
             if (it is AppCompatActivity) {
