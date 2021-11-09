@@ -59,6 +59,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                     title
                     breadcrumbURL
                     isAdult
+                    isKyc
                     lastUpdateCategory
                     detail {
                       id
@@ -316,7 +317,13 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             }
         """.trimIndent()
 
-        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String, userLocationRequest: UserLocationRequest, extParam: String): RequestParams =
+        fun createParams(productId: String,
+                         shopDomain: String,
+                         productKey: String,
+                         whId: String,
+                         layoutId: String,
+                         userLocationRequest: UserLocationRequest,
+                         extParam: String): RequestParams =
             RequestParams.create().apply {
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                 putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
