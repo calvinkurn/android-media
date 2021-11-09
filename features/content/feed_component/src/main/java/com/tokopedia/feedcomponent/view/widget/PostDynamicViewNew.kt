@@ -1351,12 +1351,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             vod_frozen_view?.gone()
             vod_full_screen_icon?.visible()
-            vod_full_screen_icon?.setOnClickListener {
-                listener?.onFullScreenCLick(positionInFeed, feedXCard.appLink)
-            }
-            vod_lanjut_menonton_btn?.setOnClickListener {
-                listener?.onFullScreenCLick(positionInFeed, feedXCard.appLink)
-            }
+
 
             if (handlerAnim == null) {
                 handlerAnim = Handler(Looper.getMainLooper())
@@ -1376,6 +1371,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     if (feedMedia.mediaUrl.isNotEmpty() && !isVODViewFrozen) {
                         setMuteUnmuteVOD(vod_volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true)
                     }
+                }
+                vod_full_screen_icon?.setOnClickListener {
+                    videoPlayer?.getExoPlayer()?.currentPosition?.let { it1 -> listener?.onFullScreenCLick(positionInFeed, feedXCard.appLink, it1,shouldTrack) }
+                }
+                vod_lanjut_menonton_btn?.setOnClickListener {
+                    videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(positionInFeed, feedXCard.appLink,it2,false)}
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, isMute)
