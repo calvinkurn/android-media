@@ -227,8 +227,16 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            LOGIN_REQUEST -> if (resultCode == Activity.RESULT_OK) {
-                arHomeViewModel.fetchUserDOB()
+            LOGIN_REQUEST -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    arHomeViewModel.fetchUserDOB()
+                } else {
+                    selection = notLogin
+                    showDialogFragment(getString(R.string.ar_text_adult_content),
+                        getString(R.string.ar_text_login_first),
+                        getString(com.tokopedia.design.R.string.label_login_button),
+                        getString(R.string.ar_label_back))
+                }
             }
             VERIFICATION_REQUEST -> if (resultCode == RESULT_IS_ADULT) {
                 setResult(RESULT_IS_ADULT, Intent().putExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS, getString(R.string.ar_text_verification_success)))
