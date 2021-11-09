@@ -44,13 +44,22 @@ class RechargeOrderDetail(
         @field:SerializedName("additionalInfo")
         val additionalInfo: List<MetaData> = emptyList(),
         @field:SerializedName("additionalTickerInfo")
-        val additionalTickerInfo: List<AdditionalTickerInfo> = emptyList()
+        val additionalTickerInfo: List<AdditionalTickerInfo> = emptyList(),
+        @field:SerializedName("purchasedItems")
+        val purchasedItems: List<PurchasedItem> = emptyList()
 ) {
     class Response(
             @field:SerializedName("orderDetails")
             val orderDetails: RechargeOrderDetail = RechargeOrderDetail()
     )
 }
+
+class PurchasedItem(
+        @field:SerializedName("name")
+        val name: String = "",
+        @field:SerializedName("price")
+        val price: String = ""
+)
 
 class Status(
         @field:SerializedName("status")

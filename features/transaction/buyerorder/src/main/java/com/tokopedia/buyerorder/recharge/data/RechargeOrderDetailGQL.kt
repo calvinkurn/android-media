@@ -8,6 +8,10 @@ class RechargeOrderDetailGQL {
         val ORDER_DETAIL_QUERY = """
             query OMSDETAILS(${'$'}orderCategoryStr: String, ${'$'}upstream:String, ${'$'}orderId: String, ${'$'}detail: Int, ${'$'}action: Int) {
               orderDetails(orderCategoryStr: ${'$'}orderCategoryStr,upstream:${'$'}upstream,orderId: ${'$'}orderId, details: ${'$'}detail, actions: ${'$'}action) {
+                purchasedItems {
+                  name
+                  price
+                }
                 status {
                   status
                   statusText

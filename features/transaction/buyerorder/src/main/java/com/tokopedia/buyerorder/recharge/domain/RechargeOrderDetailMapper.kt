@@ -10,9 +10,6 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 class RechargeOrderDetailMapper {
     companion object {
         fun transform(orderDetails: RechargeOrderDetail): RechargeOrderDetailModel {
-            val purchaseDateList = orderDetails.title.filter {
-                it.label.contains(DATE_LABEL)
-            }
             val additionalTickerInfo = if (orderDetails.additionalTickerInfo.isNotEmpty()) {
                 RechargeOrderDetailTickerModel(
                         title = orderDetails.additionalTickerInfo[0].title,
@@ -65,10 +62,10 @@ class RechargeOrderDetailMapper {
                                     isDetailBold = false,
                                     alignment = RechargeSimpleAlignment.RIGHT
                             ),
-                            paymentDetails = orderDetails.pricing.map {
+                            paymentDetails = orderDetails.purchasedItems.map {
                                 RechargeOrderDetailSimpleModel(
-                                        label = it.label,
-                                        detail = it.value,
+                                        label = it.name,
+                                        detail = it.price,
                                         isTitleBold = false,
                                         isDetailBold = false,
                                         alignment = RechargeSimpleAlignment.RIGHT
