@@ -4,6 +4,7 @@ import com.tokopedia.mediauploader.common.data.consts.CHUNK_UPLOAD
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.common.util.slice
@@ -44,6 +45,8 @@ class LargeUploaderManager @Inject constructor(
     // set max retry of transcoding checker
     private var maxRetryTranscoding = 0
 
+    private var progressCallback: ProgressCallback? = null
+
     suspend operator fun invoke(file: File, sourceId: String, policy: SourcePolicy, withTranscode: Boolean): UploadResult {
         // getting the upload size of chunk in MB for calculate the chunk size and as size of part numbers
         val sizePerChunk = (policy.videoPolicy?.largeChunkSize?: 10).mbToBytes()
@@ -71,6 +74,8 @@ class LargeUploaderManager @Inject constructor(
 
                 // upload it!
                 val upload = chunkUpload(file.name, byteArrayToSend, policy.timeOut)
+
+                progressCallback?.onProgress(100 * part / partNumber)
 
                 if (!upload) {
                     // return error if failed but it is continuable
@@ -120,6 +125,10 @@ class LargeUploaderManager @Inject constructor(
             resetUpload()
             abort()
         }
+    }
+
+    fun setProgressCallback(progressCallback: ProgressCallback?) {
+        this.progressCallback = progressCallback
     }
 
     private suspend fun initUpload(sourceId: String, fileName: String) {

@@ -70,7 +70,9 @@ class VideoUploaderManager @Inject constructor(
     override fun setProgressUploader(progress: ProgressCallback?) {
         if (isSimpleUpload) {
             // for now, the progress loader only supported for simple uploader
-            simpleUploaderManager.simpleUploaderUseCase.progressCallback = progress
+            simpleUploaderManager.setProgressCallback(progress)
+        } else {
+            largeUploaderManager.setProgressCallback(progress)
         }
     }
 

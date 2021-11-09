@@ -3,6 +3,7 @@ package com.tokopedia.mediauploader.video
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UNKNOWN_ERROR
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.video.data.params.SimpleUploadParam
 import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
@@ -59,6 +60,10 @@ class SimpleUploaderManager @Inject constructor(
         } else {
             UploadResult.Error(error)
         }
+    }
+
+    fun setProgressCallback(progressCallback: ProgressCallback?) {
+        simpleUploaderUseCase.progressCallback = progressCallback
     }
 
     private fun resetUpload() {
