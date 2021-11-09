@@ -209,6 +209,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     override fun onBackPressed() {
         KeyboardHandler.hideSoftKeyboard(this)
+        val model =  (intent.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel?)
+        isEditState = model?.isEditState ?: false
 
         if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE && (intent.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel).isEditState) {
             createPostAnalytics.eventClickBackOnPreviewPage()

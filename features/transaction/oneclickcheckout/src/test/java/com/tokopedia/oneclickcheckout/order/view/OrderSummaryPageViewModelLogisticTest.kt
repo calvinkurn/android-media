@@ -901,6 +901,18 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Choose Duration With No Shipment Data`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+
+        // When
+        orderSummaryPageViewModel.chooseDuration(helper.secondDuration.serviceData.serviceId, helper.firstCourierSecondDuration, true)
+
+        // Then
+        assertEquals(OrderShipment(), orderSummaryPageViewModel.orderShipment.value)
+    }
+
+    @Test
     fun `Choose Logistic Promo Success`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -1200,6 +1212,20 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OrderPromo(state = OccButtonState.NORMAL), orderSummaryPageViewModel.orderPromo.value)
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Logistic Promo With No Shipping Data`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+
+        // When
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+
+        // Then
+        verify(inverse = true) { validateUsePromoRevampUseCase.get().createObservable(any()) }
     }
 
     @Test
