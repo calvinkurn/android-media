@@ -22,7 +22,7 @@ class ReviewReminderActivity : BaseActivity() {
     private var pager: ViewPager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
         setContentView(R.layout.activity_review_reminder)
         setupStatusBar()
         initView()

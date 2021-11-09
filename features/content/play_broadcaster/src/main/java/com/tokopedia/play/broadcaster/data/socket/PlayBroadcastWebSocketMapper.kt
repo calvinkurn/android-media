@@ -4,7 +4,15 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.play.broadcaster.data.type.PlaySocketEnum
-import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.domain.model.Banned
+import com.tokopedia.play.broadcaster.domain.model.Chat
+import com.tokopedia.play.broadcaster.domain.model.Freeze
+import com.tokopedia.play.broadcaster.domain.model.LiveDuration
+import com.tokopedia.play.broadcaster.domain.model.LiveStats
+import com.tokopedia.play.broadcaster.domain.model.NewMetricList
+import com.tokopedia.play.broadcaster.domain.model.ProductTagging
+import com.tokopedia.play.broadcaster.domain.model.TotalLike
+import com.tokopedia.play.broadcaster.domain.model.TotalView
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.websocket.WebSocketResponse
@@ -14,9 +22,10 @@ import java.lang.reflect.Type
 /**
  * Created by mzennis on 19/08/21.
  */
-class PlayBroadcastWebSocketMapper(private val response: WebSocketResponse) {
-
-    private val gson = Gson()
+class PlayBroadcastWebSocketMapper(
+    private val response: WebSocketResponse,
+    private val gson: Gson,
+) {
 
     private val newMetricListType: Type = object: TypeToken<List<NewMetricList.NewMetric>>(){}.type
 

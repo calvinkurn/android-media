@@ -106,7 +106,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
             override fun onNewGameClicked(view: BroadcastInteractiveViewComponent) {
                 if (allowSetupInteractive()) {
-                    interactiveSetupView.setActiveTitle(parentViewModel.interactiveTitle)
+                    interactiveSetupView.setActiveTitle(parentViewModel.setupInteractiveTitle)
                     interactiveSetupView.setAvailableDurations(parentViewModel.interactiveDurations)
                     interactiveSetupView.setSelectedDuration(parentViewModel.selectedInteractiveDuration)
                     interactiveSetupView.show()
@@ -124,7 +124,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 analytic.onClickWinnerIcon(
                     parentViewModel.channelId,
                     parentViewModel.interactiveId,
-                    parentViewModel.interactiveTitle
+                    parentViewModel.activeInteractiveTitle
                 )
             }
         })
@@ -629,7 +629,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     analytic.onStartInteractive(
                         channelId = parentViewModel.channelId,
                         interactiveId = parentViewModel.interactiveId,
-                        interactiveTitle = parentViewModel.interactiveTitle,
+                        interactiveTitle = parentViewModel.activeInteractiveTitle,
                         durationInMs = state.data.durationInMs
                     )
                     interactiveSetupView.setLoading(false)
@@ -788,7 +788,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             is BroadcastInteractiveInitState.HasPrevious -> {
-                analytic.onImpressWinnerIcon(parentViewModel.channelId, parentViewModel.interactiveId, parentViewModel.interactiveTitle)
+                analytic.onImpressWinnerIcon(parentViewModel.channelId, parentViewModel.interactiveId, parentViewModel.activeInteractiveTitle)
                 interactiveView.setFinish(state.coachMark)
             }
         }

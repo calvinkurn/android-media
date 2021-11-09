@@ -74,12 +74,6 @@ abstract class BaseTopChatRoomPresenterTest {
     protected lateinit var replyChatUseCase: ReplyChatUseCase
 
     @RelaxedMockK
-    protected lateinit var getShopFollowingUseCase: GetShopFollowingUseCase
-
-    @RelaxedMockK
-    protected lateinit var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
-
-    @RelaxedMockK
     protected lateinit var addToCartUseCase: AddToCartUseCase
 
     @RelaxedMockK
@@ -273,8 +267,6 @@ abstract class BaseTopChatRoomPresenterTest {
                 topChatRoomWebSocketMessageMapper,
                 getTemplateChatRoomUseCase,
                 replyChatUseCase,
-                getShopFollowingUseCase,
-                toggleFavouriteShopUseCase,
                 addToCartUseCase,
                 compressImageUseCase,
                 seamlessLoginUsecase,
