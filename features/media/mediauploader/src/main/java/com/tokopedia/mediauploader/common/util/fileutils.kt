@@ -13,7 +13,7 @@ fun String.fileExtension(): String {
 }
 
 fun File.isImage(): Boolean {
-    val imageExtension = ".jpg,.jpeg"
+    val imageExtension = ".jpg,.jpeg,.png,.webp"
     return imageExtension
         .split(",")
         .contains(name.fileExtension())
