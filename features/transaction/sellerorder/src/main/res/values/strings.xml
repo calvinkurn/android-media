@@ -297,12 +297,12 @@
     <!--  Bulk Accept Order Success Accept All Orders  -->
     <string name="som_list_bulk_accept_dialog_title_success">Berhasil terima %1$d pesanan baru</string>
     <string name="som_list_bulk_accept_dialog_description_success_accept_all_orders">Hore! semua pesanan kamu siap dikemas dan dikirim.</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_success_accept_all_orders">Mengerti</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_success_accept_all_orders">Mantap</string>
     <!--  Bulk Accept Order Failed Accept All Orders  -->
-    <string name="som_list_bulk_accept_dialog_title_failed">Yaah, Gagal terima %1$d pesanan baru</string>
-    <string name="som_list_bulk_accept_dialog_description_failed">Sedang ada gangguan. Coba lagi atau cek ulang pesananmu, ya.</string>
+    <string name="som_list_bulk_accept_dialog_title_failed">Gagal terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_failed">Hiks, semua pesanan kamu gagal diterima. Coba lagi, yuk!</string>
     <string name="som_list_bulk_accept_dialog_primary_button_failed">Coba Lagi</string>
-    <string name="som_list_bulk_accept_dialog_secondary_button_failed">Kembali</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_failed">Oke Deh</string>
     <!--  Bulk Accept Order Partial Success Accept Orders  -->
     <string name="som_list_bulk_accept_dialog_title_partial_success">Berhasil terima %1$d pesanan baru</string>
     <string name="som_list_bulk_accept_dialog_description_partial_success">Ada %1$d pesanan yang belum terproses, nih.</string>
