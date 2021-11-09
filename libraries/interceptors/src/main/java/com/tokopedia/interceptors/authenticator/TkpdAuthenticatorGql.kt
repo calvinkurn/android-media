@@ -3,16 +3,19 @@ package com.tokopedia.interceptors.authenticator
 import android.content.Context
 import android.util.Log
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
+import com.tokopedia.logger.ServerLogger
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh
 import com.tokopedia.network.refreshtoken.EncoderDecoder
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 import okio.Buffer
+import java.util.*
 import java.util.regex.Pattern
 
 /**
@@ -27,6 +30,11 @@ class TkpdAuthenticatorGql(
 ): Authenticator {
 
     private fun isNeedRefresh() = userSession.isLoggedIn
+
+    private fun isEnableConfig(): Boolean {
+        val config = FirebaseRemoteConfigImpl(context)
+        return config.getBoolean(CONFIG_KEY_REFRESH_TOKE_GQL, false)
+    }
 
     private fun getRefreshQueryPath(finalRequest: Request, response: Response): String {
         var result = ""
@@ -53,7 +61,7 @@ class TkpdAuthenticatorGql(
         return result
     }
 
-    private fun retryWithOldRefreshToken(response: Response): String {
+    private fun getTokenOld(response: Response): String {
         val path: String = getRefreshQueryPath(response.request(), response)
         val accessTokenRefresh = AccessTokenRefresh()
         val newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, path)
@@ -66,33 +74,42 @@ class TkpdAuthenticatorGql(
             return if(responseCount(response) == 0)
                 try {
                     val originalRequest = response.request()
-                    val tokenResponse = refreshTokenUseCaseGql.refreshToken(context, userSession, networkRouter)
-                    if(tokenResponse != null) {
-                        return if(tokenResponse.accessToken.isEmpty()) {
-                            val newToken = retryWithOldRefreshToken(response)
-                            return if(newToken.isNotEmpty()) {
-                                updateRequestWithNewToken(originalRequest)
+                    if(isEnableConfig()) {
+                        val tokenResponse = refreshTokenUseCaseGql.refreshToken(context, userSession, networkRouter)
+                        if(tokenResponse != null) {
+                            return if(tokenResponse.accessToken.isEmpty()) {
+                                val newToken = getTokenOld(response)
+                                return if(newToken.isNotEmpty()) {
+                                    networkRouter.doRelogin(newToken)
+                                    updateRequestWithNewToken(originalRequest)
+                                } else {
+                                    null
+                                }
                             } else {
-                                null
+                                onRefreshTokenSuccess(accessToken = tokenResponse.accessToken, refreshToken = tokenResponse.refreshToken, tokenType = tokenResponse.tokenType)
+                                updateRequestWithNewToken(originalRequest)
                             }
-                        } else {
-                            onRefreshTokenSuccess(accessToken = tokenResponse.accessToken, refreshToken = tokenResponse.refreshToken, tokenType = tokenResponse.tokenType)
-                            updateRequestWithNewToken(originalRequest)
                         }
+                    } else {
+                        val newToken = getTokenOld(response)
+                        return if(newToken.isNotEmpty()) {
+                            networkRouter.doRelogin(newToken)
+                            updateRequestWithNewToken(originalRequest)
+                        } else null
                     }
                     return null
                 } catch (ex: Exception) {
-                    networkRouter.logRefreshTokenException(formatThrowable(ex), "failed_authenticate", path, trimToken(userSession.accessToken))
+                    logRefreshTokenException(formatThrowable(ex), "failed_authenticate", path, trimToken(userSession.accessToken))
                     null
                 }
             else {
                 networkRouter.showForceLogoutTokenDialog("/")
-                networkRouter.logRefreshTokenException("", "response_count", "", "")
+                logRefreshTokenException("", "response_count", "", "")
                 return null
             }
         } else {
             if(responseCount(response)!=0) {
-                networkRouter.logRefreshTokenException("", "response_count_not_logged_in", "", "")
+                logRefreshTokenException("", "response_count_not_logged_in", "", "")
                 return null
             }
         }
@@ -147,12 +164,29 @@ class TkpdAuthenticatorGql(
         return newRequest.build()
     }
 
+    private fun logRefreshTokenException(error: String, type: String, path: String, accessToken: String) {
+        val messageMap: MutableMap<String, String> = HashMap()
+        messageMap["type"] = type
+        messageMap["is_gql"] = isEnableConfig().toString()
+        messageMap["path"] = path
+        messageMap["error"] = error
+        if (accessToken.isNotEmpty()) {
+            messageMap["oldToken"] = accessToken
+        }
+        ServerLogger.log(
+            com.tokopedia.logger.utils.Priority.P2,
+            "USER_AUTHENTICATOR",
+            messageMap
+        )
+    }
+
     companion object {
         private const val HEADER_ACCOUNTS_AUTHORIZATION = "accounts-authorization"
         private const val HEADER_PARAM_BEARER = "Bearer"
         private const val AUTHORIZATION = "authorization"
         private const val BEARER = "Bearer"
         private const val HEADER_PARAM_AUTHORIZATION = "authorization"
+        private const val CONFIG_KEY_REFRESH_TOKE_GQL = "android_user_new_gql"
 
         fun formatThrowable(throwable: Throwable): String {
             return try{
