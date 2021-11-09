@@ -39,6 +39,7 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
+import com.tokopedia.analyticsdebugger.sse.ui.activity.SSELoggingActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -774,9 +775,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
         });
 
-        vGotoSSELogging.setOnClickListener(v -> {
-            Toast.makeText(this, "Goto SSE Logging...", Toast.LENGTH_SHORT).show();
-        });
+        vGotoSSELogging.setOnClickListener(v -> startActivity(SSELoggingActivity.newInstance(this)));
     }
 
     private void showApps(boolean isSystemApps) {

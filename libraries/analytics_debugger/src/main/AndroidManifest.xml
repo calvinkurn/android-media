@@ -66,6 +66,12 @@
         <activity
             android:name=".debugger.ui.activity.AnalyticsDebuggerDetailActivity"
             android:theme="@style/Theme.Green"/>
+
+        <activity android:name=".sse.ui.activity.SSELoggingActivity"
+            android:label="SSE Logging"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.Green"/>
     </application>
 
 </manifest>
