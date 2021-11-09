@@ -907,7 +907,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             coachmarkGopay?.let { gopayCoachmark ->
                 try {
                     if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
-                        gopayCoachmark.setOnDismissListener {
+                        gopayCoachmark.onDismissListener = {
                             showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
                             setNewWalletAppCoachmarkShown(it)
                         }
@@ -937,7 +937,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 coachmarkTokopoint?.let { tokopointCoachmark ->
                     try {
                         if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !tokopointsCoachmarkIsShowing) {
-                            tokopointCoachmark?.setOnDismissListener {
+                            tokopointCoachmark?.onDismissListener = {
                                 setNewTokopointCoachmarkShown(it)
                                 showTokonowCoachmark()
                             }
