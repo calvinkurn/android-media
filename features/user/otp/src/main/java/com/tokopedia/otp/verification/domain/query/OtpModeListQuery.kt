@@ -21,6 +21,7 @@ object OtpModeListQuery {
                 linkType
                 enableTicker
                 tickerTrouble
+                defaultMode
                 modeLists {
                     modeCode
                     modeText

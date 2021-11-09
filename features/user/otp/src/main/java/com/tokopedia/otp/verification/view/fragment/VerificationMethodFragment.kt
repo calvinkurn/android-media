@@ -230,6 +230,12 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     showListView(otpModeListData)
                 }
 
+                if(otpModeListData.defaultMode == DEFAULT_MODE_SILENT_VERIF) {
+                    val silentVerifModeData = otpModeListData.modeList.find { it.modeCode == DEFAULT_MODE_SILENT_VERIF }
+                    if(silentVerifModeData != null) {
+                        gotoSilentVerificationPage(silentVerifModeData)
+                    }
+                }
             } else if (otpModeListData.errorMessage.isEmpty()) {
                 onFailedGetVerificationMethod().invoke(MessageErrorException(otpModeListData.errorMessage))
             } else {
@@ -396,6 +402,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         private const val TYPE_CHANGE_PHONE_UPLOAD_KTP = 1
         private const val TYPE_PROFILE_SETTING = 2
 
+        private const val DEFAULT_MODE_SILENT_VERIF = 16
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = VerificationMethodFragment()
             fragment.arguments = bundle ?: Bundle()
