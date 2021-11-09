@@ -23,16 +23,16 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
                 productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.haveProductBundle, buyerOrderDetail.bundleDetail, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
                 shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship),
-                pgRecommendationWidgetUiFields = mapToRecommendationFields(buyerOrderDetail.adsPageName, buyerOrderDetail.products)
+                pgRecommendationWidgetUiModel = mapToRecommendationFields(buyerOrderDetail.adsPageName, buyerOrderDetail.products)
         )
     }
 
-    private fun mapToRecommendationFields(adsPageName: String, productsList: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>): PgRecommendationWidgetUiFields {
+    private fun mapToRecommendationFields(adsPageName: String, productsList: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>): PGRecommendationWidgetUiModel {
         val productIdList = arrayListOf<String>()
         productsList.forEach { product ->
             productIdList.add(product.productId)
         }
-        return PgRecommendationWidgetUiFields(adsPageName, productIdList)
+        return PGRecommendationWidgetUiModel(adsPageName, productIdList)
     }
 
     private fun mapActionButtons(button: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button, dotMenu: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.DotMenu>): ActionButtonsUiModel {

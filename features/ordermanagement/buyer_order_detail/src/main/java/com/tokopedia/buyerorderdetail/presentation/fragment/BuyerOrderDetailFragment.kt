@@ -105,7 +105,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     private var emptyStateBuyerOrderDetail: EmptyStateUnify? = null
     private var loaderBuyerOrderDetail: LoaderUnify? = null
-    private val physicalRecommendationWidget = PGRecommendationWidgetUiModel()
+//    private val physicalRecommendationWidget = PGRecommendationWidgetUiModel()
+    private var pageName = ""
+    private val arraylist = arrayListOf<String>()
 
     private val viewModel: BuyerOrderDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
@@ -122,7 +124,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         SaveInstanceCacheManager(requireContext(), true)
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData, this)
+        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData, this, pageName, arraylist)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -332,7 +334,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
             setupRecyclerView()
             buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
             when (result) {
-                is Success -> onSuccessGetBuyerOrderDetail(result.data)
+                is Success -> {onSuccessGetBuyerOrderDetail(result.data)
+//                    pageName = result.data.pgRecommendationWidgetUiFields.pageName
+//                    arraylist.addAll(result.data.pgRecommendationWidgetUiFields.productIdList)
+                }
                 is Fail -> onFailedGetBuyerOrderDetail(result.throwable)
             }
             swipeRefreshBuyerOrderDetail?.isRefreshing = false
@@ -376,20 +381,20 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeRecommendationWidgetData() {
-        viewModel.recommendationWidgetResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    onSuccessRecommendationResponse(result.data)
-                }
-                is Fail -> {
-                    adapter.removeElement(physicalRecommendationWidget)
-                }
-            }
-        }
+//        viewModel.recommendationWidgetResult.observe(viewLifecycleOwner) { result ->
+//            when (result) {
+//                is Success -> {
+//                    onSuccessRecommendationResponse(result.data)
+//                }
+//                is Fail -> {
+//                    adapter.removeElement(physicalRecommendationWidget)
+//                }
+//            }
+//        }
     }
 
     private fun onSuccessRecommendationResponse(bestSellerDataModel: BestSellerDataModel) {
-        adapter.updateRecommendationWidget(physicalRecommendationWidget, bestSellerDataModel as RecommendationVisitable)
+//        adapter.updateRecommendationWidget(physicalRecommendationWidget, bestSellerDataModel as RecommendationVisitable)
     }
 
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
@@ -399,7 +404,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
             containerBuyerOrderDetail?.isStickyActionButtonsShowed() ?: false
         )
         setupToolbarMenu(!containsAskSellerButton(data.actionButtonsUiModel) && orderId.isNotBlank() && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID)
-        adapter.updateItems(data, physicalRecommendationWidget)
+        adapter.updateItems(data)
         contentVisibilityAnimator.animateToShowContent(containsActionButtons(data.actionButtonsUiModel))
         stopLoadTimeMonitoring()
     }

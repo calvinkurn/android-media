@@ -14,14 +14,13 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
 
     private fun setupNewItems(
             newData: BuyerOrderDetailUiModel,
-            pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel
     ): List<Visitable<BuyerOrderDetailTypeFactory>> {
         return mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
             setupOrderStatusSection(newData.orderStatusUiModel)
             setupProductListSection(newData.productListUiModel)
             setupShipmentInfoSection(newData.shipmentInfoUiModel)
             setupPaymentInfoSection(newData.paymentInfoUiModel)
-            setUpPhysicalRecommendationSection(pgRecommendationWidgetUiModel)
+            setUpPhysicalRecommendationSection(newData.pgRecommendationWidgetUiModel)
             setupDigitalRecommendationSection()
         }
     }
@@ -202,8 +201,8 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         if (paymentGrandTotal.shouldShow()) add(paymentGrandTotal)
     }
 
-    fun updateItems(newData: BuyerOrderDetailUiModel, pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel) {
-        val newItems = setupNewItems(newData, pgRecommendationWidgetUiModel)
+    fun updateItems(newData: BuyerOrderDetailUiModel) {
+        val newItems = setupNewItems(newData)
         val diffCallback = BuyerOrderDetailDiffUtilCallback(
                 visitables as List<Visitable<BuyerOrderDetailTypeFactory>>,
                 newItems,

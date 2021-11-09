@@ -10,7 +10,6 @@ import com.tokopedia.buyerorderdetail.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
-import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 class BuyerOrderDetailTypeFactory(
@@ -20,7 +19,8 @@ class BuyerOrderDetailTypeFactory(
         private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener,
         private val digitalRecommendationData: DigitalRecommendationData,
         private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
-        private val recommendationWidgetListener: RecommendationWidgetListener
+        private val pageName: String,
+        private val arraylist: ArrayList<String>,
 ) : BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
@@ -91,7 +91,7 @@ class BuyerOrderDetailTypeFactory(
             DigitalRecommendationViewHolder.LAYOUT
 
     fun type(pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel): Int =
-            EmptyViewHolder.LAYOUT
+            PgRecommendationViewHolder.LAYOUT
 
     override fun type(bestSellerDataModel: BestSellerDataModel): Int =
             BestSellerViewHolder.LAYOUT
@@ -116,8 +116,8 @@ class BuyerOrderDetailTypeFactory(
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
             DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
-            BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(parent, recommendationWidgetListener)
-            EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent)
+//            BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(parent, recommendationWidgetListener)
+            PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(parent, pageName, arraylist)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -87,7 +87,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
             val param = GetBuyerOrderDetailParams(cart, orderId, paymentId)
             val buyerDetailData = getBuyerOrderDetailUseCase.get().execute(param)
             _buyerOrderDetailResult.postValue(Success(buyerDetailData))
-            getRecommendationData(buyerDetailData)
+//            getRecommendationData(buyerDetailData)
         }, onError = {
             _buyerOrderDetailResult.postValue(Fail(it))
         })
@@ -97,8 +97,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         try {
             val recommendationData = getRecommendationUse.get().getData(
                     GetRecommendationRequestParam(
-                            pageName = buyerDetailData.pgRecommendationWidgetUiFields.pageName,
-                            productIds = buyerDetailData.pgRecommendationWidgetUiFields.productIdList
+                            pageName = buyerDetailData.pgRecommendationWidgetUiModel.pageName,
+                            productIds = buyerDetailData.pgRecommendationWidgetUiModel.productIdList
                     )
             )
             if (recommendationData.isEmpty()) {
