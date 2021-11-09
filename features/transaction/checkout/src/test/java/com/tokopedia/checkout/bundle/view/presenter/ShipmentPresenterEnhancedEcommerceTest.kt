@@ -24,8 +24,8 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.DEFAULT_VALUE_NONE_OTHER
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR_EXTRA
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -40,7 +40,7 @@ import rx.subscriptions.CompositeSubscription
 class ShipmentPresenterEnhancedEcommerceTest {
 
     @MockK
-    private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
+    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
 
     @MockK(relaxed = true)
     private lateinit var compositeSubscription: CompositeSubscription
@@ -64,7 +64,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
+    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
     private lateinit var ratesStatesConverter: RatesResponseStateConverter

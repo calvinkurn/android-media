@@ -6,7 +6,6 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.old.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.old.data.model.request.checkout.DataCheckoutRequest
 import com.tokopedia.checkout.old.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.old.domain.model.checkout.ErrorReporter
 import com.tokopedia.checkout.old.domain.model.checkout.MessageData
 import com.tokopedia.checkout.old.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.old.domain.usecase.*
@@ -28,8 +27,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,7 +45,7 @@ import java.security.PublicKey
 class ShipmentPresenterCheckoutTest {
 
     @MockK
-    private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
+    private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
 
     @MockK(relaxed = true)
     private lateinit var compositeSubscription: CompositeSubscription
@@ -70,7 +69,7 @@ class ShipmentPresenterCheckoutTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
-    private lateinit var clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase
+    private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
     private lateinit var ratesStatesConverter: RatesResponseStateConverter

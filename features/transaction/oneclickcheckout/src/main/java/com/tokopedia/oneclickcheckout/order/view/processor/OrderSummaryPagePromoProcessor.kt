@@ -19,15 +19,14 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.NewValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
-import com.tokopedia.usecase.RequestParams
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUsePromoRevampUseCase: Lazy<NewValidateUsePromoRevampUseCase>,
+class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUsePromoRevampUseCase: Lazy<ValidateUsePromoRevampUseCase>,
                                                          private val clearCacheAutoApplyStackUseCase: Lazy<ClearCacheAutoApplyStackUseCase>,
                                                          private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                          private val executorDispatchers: CoroutineDispatchers) {
@@ -64,15 +63,14 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
     suspend fun clearOldLogisticPromo(oldPromoCode: String) {
         withContext(executorDispatchers.io) {
             try {
-                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true)
-                clearCacheAutoApplyStackUseCase.get().createObservable(RequestParams.EMPTY).toBlocking().single()
+                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true).executeOnBackground()
             } catch (t: Throwable) {
                 //ignore throwable
             }
         }
     }
 
-    fun clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest: ValidateUsePromoRequest?, oldPromoCode: String) : ValidateUsePromoRequest? {
+    fun clearOldLogisticPromoFromLastRequest(lastValidateUsePromoRequest: ValidateUsePromoRequest?, oldPromoCode: String): ValidateUsePromoRequest? {
         val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
         if (orders.isNotEmpty()) {
             orders[0].codes.remove(oldPromoCode)
@@ -134,8 +132,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList, true)
-                clearCacheAutoApplyStackUseCase.get().createObservable(RequestParams.EMPTY).toBlocking().single()
+                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList, true).executeOnBackground()
                 return@withContext true to OccGlobalEvent.Loading
             } catch (t: Throwable) {
                 return@withContext false to OccGlobalEvent.Error(t.cause ?: t)
@@ -321,18 +318,17 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         return notEligiblePromoHolderdataList
     }
 
-    private fun handlePromoThrowable(throwable: Throwable, validateUsePromoRequest: ValidateUsePromoRequest): Boolean {
+    private suspend fun handlePromoThrowable(throwable: Throwable, validateUsePromoRequest: ValidateUsePromoRequest): Boolean {
         if (throwable is AkamaiErrorException) {
+            val allPromoCodes = arrayListOf<String>()
+            validateUsePromoRequest.orders.first().codes.also {
+                allPromoCodes.addAll(it)
+            }
+            validateUsePromoRequest.codes.forEach {
+                allPromoCodes.add(it)
+            }
             try {
-                val allPromoCodes = arrayListOf<String>()
-                validateUsePromoRequest.orders.first().codes.also {
-                    allPromoCodes.addAll(it)
-                }
-                validateUsePromoRequest.codes.forEach {
-                    allPromoCodes.add(it)
-                }
-                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, allPromoCodes, true)
-                clearCacheAutoApplyStackUseCase.get().createObservable(RequestParams.EMPTY).toBlocking().single()
+                clearCacheAutoApplyStackUseCase.get().setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, allPromoCodes, true).executeOnBackground()
             } catch (t: Throwable) {
                 //ignore throwable
             }

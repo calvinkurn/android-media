@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -50,7 +51,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.Shipping
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
@@ -548,7 +548,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     view?.let { v ->
                         var message = it.errorMessage
                         if (message.isBlank()) {
-                            message = if (it.throwable is AkamaiErrorException) {
+                            message = if (it.throwable is com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException) {
                                 it.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE
                             } else {
                                 ErrorHandler.getErrorMessage(context, it.throwable)

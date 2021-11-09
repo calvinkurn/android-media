@@ -16,11 +16,12 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import rx.Observable
 
 @ExperimentalCoroutinesApi
 class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
@@ -250,8 +251,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(codes = mutableListOf(promoCode))
         val exception = AkamaiErrorException("")
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } throws exception
-        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
         orderSummaryPageViewModel.validateUsePromo()
@@ -489,8 +489,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
         orderSummaryPageViewModel.validateUsePromoRevampUiModel = lastResponse
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
-        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
         orderSummaryPageViewModel.finalUpdate({ }, false)
@@ -507,8 +506,7 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
-        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
 
@@ -528,9 +526,8 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
         val response = Throwable()
-        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.error(response)
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } throws response
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
 

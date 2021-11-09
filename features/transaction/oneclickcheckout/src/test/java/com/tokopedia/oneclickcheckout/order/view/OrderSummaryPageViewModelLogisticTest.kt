@@ -15,7 +15,10 @@ import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -1188,8 +1191,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.getRates()
         val response = AkamaiErrorException("")
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } throws response
-        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1217,8 +1219,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         DetailsItemUiModel(amount = discountAmount, type = SummariesUiModel.TYPE_SHIPPING_DISCOUNT)
                 ))
         ))), status = "OK")
-        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When Choose Logistic Promo
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
@@ -1465,8 +1466,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         val throwable = AkamaiErrorException("")
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } throws throwable
-        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
 
         // When
         orderSummaryPageViewModel.updateProduct(OrderProduct(orderQuantity = 10), 0)
@@ -1614,8 +1614,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        every { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()) } just Runs
-        every { clearCacheAutoApplyStackUseCase.get().createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+        coEvery { clearCacheAutoApplyStackUseCase.get().setParams(any(), any(), any()).executeOnBackground() } returns ClearPromoUiModel()
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
         )), status = "OK")
