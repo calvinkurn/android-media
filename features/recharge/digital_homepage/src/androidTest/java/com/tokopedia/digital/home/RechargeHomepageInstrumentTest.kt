@@ -192,7 +192,7 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_single_banner_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageSingleBannerViewHolder>(12)
+                RecyclerViewActions.scrollToPosition<RechargeHomepageSingleBannerViewHolder>(13)
         )
         Thread.sleep(1000)
         onView(withId(R.id.view_recharge_home_single_banner_container)).check(matches(isDisplayed()))
@@ -202,7 +202,7 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_product_banner_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageProductBannerViewHolder>(13)
+                RecyclerViewActions.scrollToPosition<RechargeHomepageProductBannerViewHolder>(14)
         )
         Thread.sleep(1000)
         onView(withId(R.id.view_recharge_home_product_banner_product_card)).check(matches(isDisplayed()))
@@ -214,7 +214,10 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_swipe_banner_section(){
         Thread.sleep(2000)
-
+        onView(withId(R.id.recycler_view)).perform(
+            RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(12)
+        )
+        Thread.sleep(1000)
         if (getBannerItemCount() > 0) {
             onView(withId(R.id.recharge_home_swipe_banner)).perform(ViewActions.swipeRight())
             onView(withId(R.id.recharge_home_swipe_banner)).perform(click())
