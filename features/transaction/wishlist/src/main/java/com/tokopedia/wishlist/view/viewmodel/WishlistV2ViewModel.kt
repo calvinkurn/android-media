@@ -65,45 +65,52 @@ class WishlistV2ViewModel @Inject constructor(
                     getRecommendationOnEmptyWishlist(0)
                 } else {
 
-                        _wishlistData.value = wishlistData
+                    _wishlistData.value = wishlistData
 
                     val visitableWishlist = wishlistData.items.mappingWishlistToVisitable()
                     when {
                         wishlistData.items.size < recommendationPositionInPage -> {
-                            _wishlistV2Result.value = Success(getRecommendationWishlist(
-                                visitableWishlist,
-                                wishlistData.page,
-                                wishlistData.items.map { it.id },
-                                wishlistData.items.size
-                            ))
+                            _wishlistV2Result.value = Success(
+                                getRecommendationWishlist(
+                                    visitableWishlist,
+                                    wishlistData.page,
+                                    wishlistData.items.map { it.id },
+                                    wishlistData.items.size
+                                )
+                            )
                         }
 
                         // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
                         wishlistData.items.size == recommendationPositionInPage -> {
-                            _wishlistV2Result.value = Success(getTopadsAndRecommendationWishlist(
-                                visitableWishlist,
-                                params.page,
-                                wishlistData.items.map { it.id },
-                                wishlistData.items.size,
-
-                            ))
+                            _wishlistV2Result.value = Success(
+                                getTopadsAndRecommendationWishlist(
+                                    visitableWishlist,
+                                    wishlistData.page,
+                                    wishlistData.items.map { it.id },
+                                    wishlistData.items.size
+                                    )
+                            )
                         }
 
                         // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
                         wishlistData.items.size > recommendationPositionInPage -> {
                             if (wishlistData.totalData > newMinItemRegularRule) {
-                                _wishlistV2Result.value = Success(getTopAdsBannerData(
-                                    visitableWishlist,
-                                    params.page,
-                                    wishlistData.items.map { it.id },
-                                    recommendationPositionInPage)
+                                _wishlistV2Result.value = Success(
+                                    getTopAdsBannerData(
+                                        visitableWishlist,
+                                        wishlistData.page,
+                                        wishlistData.items.map { it.id },
+                                        recommendationPositionInPage
+                                    )
                                 )
                             } else {
-                                _wishlistV2Result.value = Success(getTopadsAndRecommendationWishlist(
-                                    visitableWishlist,
-                                    params.page,
-                                    wishlistData.items.map { it.id },
-                                    wishlistData.items.size)
+                                _wishlistV2Result.value = Success(
+                                    getTopadsAndRecommendationWishlist(
+                                        visitableWishlist,
+                                        wishlistData.page,
+                                        wishlistData.items.map { it.id },
+                                        wishlistData.items.size
+                                    )
                                 )
                             }
                         }
@@ -125,23 +132,6 @@ class WishlistV2ViewModel @Inject constructor(
         }
     }
 
-    fun loadRecommendationList(pageNumber: Int) {
-        launch {
-            try {
-                val data = recommendationUseCase.getData(
-                    GetRecommendationRequestParam(
-                        pageNumber = pageNumber,
-                        pageName = WishlistV2Consts.PAGE_NAME
-                    )
-                )
-                _wishlistV2Result.value =
-                    Success(listOf(WishlistV2RecommendationWrapper(data, false)))
-            } catch (e: Exception) {
-                _wishlistV2Result.value = Fail(e.fillInStackTrace())
-            }
-        }
-    }
-
     fun getRecommendationOnEmptyWishlist(page: Int) {
         launchCatchError(block = {
             val widget = singleRecommendationUseCase.getData(
@@ -153,40 +143,14 @@ class WishlistV2ViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getRecomList(
-        pageNumber: Int,
-        isCarousel: Boolean
-    ): WishlistV2RecommendationWrapper =
+    private suspend fun getRecommendationWishlist(
+        wishlistVisitable: List<WishlistV2Data>,
+        page: Int,
+        productIds: List<String>,
+        recomIndex: Int
+    ): List<WishlistV2Data> =
         withContext(dispatcher.io) {
-            return@withContext WishlistV2RecommendationWrapper(
-                recommendationUseCase.getData(
-                    GetRecommendationRequestParam(
-                        pageNumber = pageNumber,
-                        pageName = WishlistV2Consts.PAGE_NAME
-                    )
-                ), isCarousel = isCarousel
-            )
-        }
-
-    private suspend fun getTopAds(pageToken: String): WishlistV2TopAdsWrapper =
-        withContext(dispatcher.io) {
-            return@withContext WishlistV2TopAdsWrapper(
-                topAdsImageViewUseCase.getImageData(
-                    topAdsImageViewUseCase.getQueryMap(
-                        "",
-                        WISHLIST_TOPADS_SOURCE,
-                        pageToken,
-                        WISHLIST_TOPADS_ADS_COUNT,
-                        WISHLIST_TOPADS_DIMENS,
-                        ""
-                    )
-                ).first()
-            )
-        }
-
-    private suspend fun getRecommendationWishlist(wishlistVisitable: List<WishlistV2Data>, page: Int, productIds: List<String>, recomIndex: Int): List<WishlistV2Data> =
-        withContext(dispatcher.io){
-            try{
+            try {
                 val recommendationData = recommendationUseCase.getData(
                     GetRecommendationRequestParam(
                         pageNumber = page,
@@ -194,7 +158,7 @@ class WishlistV2ViewModel @Inject constructor(
                         pageName = WISHLIST_PAGE_NAME
                     )
                 )
-                if(recommendationData.isNotEmpty()) {
+                if (recommendationData.isNotEmpty()) {
                     return@withContext recommendationData.mappingRecommendationToWishlist(
                         currentPage = page,
                         wishlistVisitable = wishlistVisitable,
@@ -203,19 +167,30 @@ class WishlistV2ViewModel @Inject constructor(
                     )
                 }
                 return@withContext wishlistVisitable
-            } catch (e: Throwable){
+            } catch (e: Throwable) {
                 return@withContext wishlistVisitable
             }
         }
 
-    private suspend fun getTopadsAndRecommendationWishlist(wishlistVisitable: List<WishlistV2Data>, page: Int, productIds: List<String>, recomIndex: Int): List<WishlistV2Data> =
-        withContext(dispatcher.io){
-            try{
+    private suspend fun getTopadsAndRecommendationWishlist(
+        wishlistVisitable: List<WishlistV2Data>,
+        page: Int,
+        productIds: List<String>,
+        recomIndex: Int
+    ): List<WishlistV2Data> =
+        withContext(dispatcher.io) {
+            try {
                 if (wishlistVisitable.isNotEmpty()) {
-                    val recommendationPositionInPreviousPage = ((page - RECOM_INDEX_STARTER_MINUS) * maxItemInPage) + recommendationPositionInPage
+                    val recommendationPositionInPreviousPage =
+                        ((page - RECOM_INDEX_STARTER_MINUS) * maxItemInPage) + recommendationPositionInPage
                     var pageToken = ""
-                    if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(recommendationPositionInPreviousPage) is WishlistV2TopAdsWrapper){
-                        pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as WishlistV2TopAdsWrapper).topAdsData.nextPageToken ?: ""
+                    if (recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(
+                            recommendationPositionInPreviousPage
+                        ) is WishlistV2TopAdsWrapper
+                    ) {
+                        pageToken =
+                            (wishlistVisitable[recommendationPositionInPreviousPage] as WishlistV2TopAdsWrapper).topAdsData.nextPageToken
+                                ?: ""
                     }
                     val topadsResult = topAdsImageViewUseCase.getImageData(
                         topAdsImageViewUseCase.getQueryMap(
@@ -245,7 +220,7 @@ class WishlistV2ViewModel @Inject constructor(
                             currentPage = page,
                             isInBulkMode = false,
                             maxItemInPage = maxItemInPage,
-                            recommendationIndex = recomIndex+1
+                            recommendationIndex = recomIndex + 1
                         )
                     } else if (recommendationResult.isNotEmpty()) {
                         return@withContext recommendationResult.mappingRecommendationToWishlist(
@@ -257,19 +232,30 @@ class WishlistV2ViewModel @Inject constructor(
                     }
                 }
                 return@withContext wishlistVisitable
-            } catch (e: Throwable){
+            } catch (e: Throwable) {
                 return@withContext wishlistVisitable
             }
         }
 
-    private suspend fun getTopAdsBannerData(wishlistVisitable: List<WishlistV2Data>, currentPage: Int, productIds: List<String>, topAdsIndex: Int): List<WishlistV2Data>{
-        return withContext(dispatcher.io){
-            try{
-                if(wishlistVisitable.isNotEmpty()) {
-                    val recommendationPositionInPreviousPage = ((currentPage - RECOM_INDEX_STARTER_MINUS) * maxItemInPage) + recommendationPositionInPage
+    private suspend fun getTopAdsBannerData(
+        wishlistVisitable: List<WishlistV2Data>,
+        currentPage: Int,
+        productIds: List<String>,
+        topAdsIndex: Int
+    ): List<WishlistV2Data> {
+        return withContext(dispatcher.io) {
+            try {
+                if (wishlistVisitable.isNotEmpty()) {
+                    val recommendationPositionInPreviousPage =
+                        ((currentPage - RECOM_INDEX_STARTER_MINUS) * maxItemInPage) + recommendationPositionInPage
                     var pageToken = ""
-                    if(recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(recommendationPositionInPreviousPage) is WishlistV2TopAdsWrapper){
-                        pageToken = (wishlistVisitable[recommendationPositionInPreviousPage] as WishlistV2TopAdsWrapper).topAdsData.nextPageToken ?: ""
+                    if (recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(
+                            recommendationPositionInPreviousPage
+                        ) is WishlistV2TopAdsWrapper
+                    ) {
+                        pageToken =
+                            (wishlistVisitable[recommendationPositionInPreviousPage] as WishlistV2TopAdsWrapper).topAdsData.nextPageToken
+                                ?: ""
                     }
                     val results = topAdsImageViewUseCase.getImageData(
                         topAdsImageViewUseCase.getQueryMap(
@@ -284,7 +270,7 @@ class WishlistV2ViewModel @Inject constructor(
                     if (results.isNotEmpty()) {
                         return@withContext wishlistVisitable.mappingTopadsBannerToWishlist(
                             topadsBanner = results.first(),
-                            recommendationPositionInPage= recommendationPositionInPage,
+                            recommendationPositionInPage = recommendationPositionInPage,
                             currentPage = currentPage,
                             maxItemInPage = maxItemInPage
                         )
@@ -298,8 +284,32 @@ class WishlistV2ViewModel @Inject constructor(
                     }
                 }
                 return@withContext wishlistVisitable
-            } catch (e: Throwable){
+            } catch (e: Throwable) {
                 return@withContext wishlistVisitable
+            }
+        }
+    }
+
+    fun getNextPageWishlistData(param: WishlistV2Params) {
+        launch {
+            try {
+                val previousData = if (_wishlistV2Result.value is Success) {
+                    (_wishlistV2Result.value as Success<List<WishlistV2Data>>).data
+                } else {
+                    listOf()
+                }
+                val data = wishlistV2UseCase.executeSuspend(param).wishlistV2
+
+                val newPageVisitableData = data.items.mappingWishlistToVisitable()
+
+                if (data.items.size >= recommendationPositionInPage && param.page % 2 == 0) {
+                    _wishlistV2Result.value = Success(getRecommendationWishlist(newPageVisitableData, param.page, data.items.map { it.id }, recommendationPositionInPage))
+                } else {
+                    _wishlistV2Result.value = Success(getTopAdsBannerData(newPageVisitableData, param.page, data.items.map { it.id }, recommendationPositionInPage))
+                }
+
+            } catch (e: Exception) {
+                _wishlistV2Result.value = Fail(e.fillInStackTrace())
             }
         }
     }

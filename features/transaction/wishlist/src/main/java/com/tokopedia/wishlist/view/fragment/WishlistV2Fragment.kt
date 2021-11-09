@@ -147,11 +147,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             if (it.sortFilters.isNotEmpty() && currPage == 1) {
                 renderChipsFilter(it.sortFilters)
             }
-            if (it.hasNextPage) {
-                currPage +=1
-            }
             if (currPage == 1 && it.totalData != 0) {
                 updateTotalLabel(it.totalData)
+            }
+            if(it.items.isEmpty()) {
+                isFetchRecommendation = true
             }
         })
     }
@@ -244,7 +244,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     loadRecommendationList()
                 } else {
                     onLoadMore = true
-                    loadWishlistV2()
+                    paramWishlistV2.page = currPage
+                    wishlistViewModel.getNextPageWishlistData(paramWishlistV2)
                 }
             }
         }
@@ -260,7 +261,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
     private fun loadRecommendationList() {
         isFetchRecommendation = true
-        wishlistViewModel.loadRecommendationList(currRecommendationListPage)
+        wishlistViewModel.getRecommendationOnEmptyWishlist(currRecommendationListPage)
     }
 
     private fun checkLogin() {
@@ -329,15 +330,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     }
                 }
                 is WishlistV2DataModel -> {
-//                    if (currPage == 1 && it.sortFilters.isNotEmpty()) {
-//                        renderChipsFilter(it.sortFilters)
-//                    }
-//                    if (it.items.isNotEmpty()) {
-//                        if (it.hasNextPage) {
-//                            currPage += 1
-//                        }
-//                        renderWishlist(it.items)
-//                    }
                     it.item.run {
                         val productModel = ProductCardModel(
                             productImageUrl = imageUrl,
@@ -351,11 +343,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                         hasTambahKeranjangButton = true)
                         adapterData.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout()))
                     }
-//                    else {
-//                        if (currPage == 1) {
-//                            loadRecommendationList()
-//                        }
-//                    }
                 }
                 is WishlistV2EmptyWrapper -> {
                     if (it.query.isEmpty()) {
@@ -367,7 +354,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 }
             }
         }
-        if (isFetchRecommendation && currRecommendationListPage == 1) {
+
+        if (data.any { element -> element is WishlistV2DataModel }) {
+            currPage += 1
+        }
+        // ini msh salah soalnya kalo onloadmore nya true si onrecom nya false jadi ttp masuk sini
+        if ((!onLoadMore && !isFetchRecommendation) || (!onLoadMoreRecommendation && isFetchRecommendation) ) {
             wishlistV2Adapter.addList(adapterData)
             scrollRecommendationListener.resetState()
         } else {
