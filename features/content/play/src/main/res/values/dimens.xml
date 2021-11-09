@@ -121,4 +121,6 @@
     <dimen name="play_offset_30">30dp</dimen>
     <dimen name="play_offset_44">44dp</dimen>
     <dimen name="play_no_offset">0dp</dimen>
+
+    <dimen name="play_count_background_radius">16dp</dimen>
 </resources>

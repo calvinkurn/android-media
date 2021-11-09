@@ -44,7 +44,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
                     channelReportInfo = mapChannelReportInfo(),
-                    cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
@@ -128,10 +127,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     ) : PlayLikeBubbleConfig {
         return multipleLikesMapper.mapMultipleLikeConfig(configs)
     }
-
-    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
-            shouldShow = configResponse.showCart
-    )
 
     private fun mapPinnedInfo(
             pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage,

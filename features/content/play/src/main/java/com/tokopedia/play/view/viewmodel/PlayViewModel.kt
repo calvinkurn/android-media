@@ -157,7 +157,6 @@ class PlayViewModel @Inject constructor(
     private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
-    private val _cartInfo = MutableStateFlow(PlayCartInfoUiModel())
     private val _upcomingInfo = MutableStateFlow<PlayUpcomingUiModel?>(null)
 
     private val _interactiveUiState = combine(
@@ -222,21 +221,6 @@ class PlayViewModel @Inject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _cartUiState = combine(
-        _cartInfo, _bottomInsets, _upcomingInfo
-    ) { cartInfo, bottomInsets, upcomingInfo ->
-        PlayCartUiState(
-            shouldShow = cartInfo.shouldShow &&
-                    !bottomInsets.isAnyShown &&
-                    (upcomingInfo == null || !upcomingInfo.isUpcoming),
-            count = if (cartInfo.itemCount > 0) {
-                val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+"
-                else cartInfo.itemCount.toString()
-                PlayCartCount.Show(countText)
-            } else PlayCartCount.Hide
-        )
-    }.flowOn(dispatchers.computation)
-
     private val _rtnUiState = combine(
         _channelDetail, _bottomInsets, _status
     ) { channelDetail, bottomInsets, status ->
@@ -247,6 +231,18 @@ class PlayViewModel @Inject constructor(
                     !channelDetail.videoInfo.orientation.isHorizontal &&
                     !videoPlayer.isYouTube,
             lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
+        )
+    }.flowOn(dispatchers.computation)
+
+    private val _titleUiState = _channelDetail.map {
+        PlayTitleUiState(
+            title = it.channelInfo.title
+        )
+    }.flowOn(dispatchers.computation)
+
+    private val _viewAllProductUiState = _bottomInsets.map {
+        PlayViewAllProductUiState(
+            shouldShow = !it.isAnyShown
         )
     }.flowOn(dispatchers.computation)
 
@@ -264,9 +260,10 @@ class PlayViewModel @Inject constructor(
         _likeUiState.distinctUntilChanged(),
         _totalViewUiState.distinctUntilChanged(),
         _shareUiState.distinctUntilChanged(),
-        _cartUiState.distinctUntilChanged(),
         _rtnUiState.distinctUntilChanged(),
-    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, cart, rtn ->
+        _titleUiState.distinctUntilChanged(),
+        _viewAllProductUiState.distinctUntilChanged()
+    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct ->
         PlayViewerNewUiState(
             interactiveView = interactive,
             partner = partner,
@@ -275,8 +272,9 @@ class PlayViewModel @Inject constructor(
             like = like,
             totalView = totalView,
             share = share,
-            cart = cart,
             rtn = rtn,
+            title = title,
+            viewAllProduct = viewAllProduct,
         )
     }.flowOn(dispatchers.computation)
 
@@ -358,7 +356,6 @@ class PlayViewModel @Inject constructor(
                     partnerInfo = channelData.partnerInfo,
                     likeInfo = _likeInfo.value,
                     channelReportInfo = _channelReport.value,
-                    cartInfo = _cartInfo.value,
                     pinnedInfo = PlayPinnedInfoUiModel(
                             pinnedMessage = pinnedMessage,
                             pinnedProduct = pinnedProduct,
@@ -731,7 +728,6 @@ class PlayViewModel @Inject constructor(
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
-            ClickCartAction -> handleClickCart(isFromLogin = false)
             RefreshLeaderboard -> handleRefreshLeaderboard()
         }
     }
@@ -772,7 +768,6 @@ class PlayViewModel @Inject constructor(
         handlePartnerInfo(channelData.partnerInfo)
         handleChannelReportInfo(channelData.channelReportInfo)
         handleLikeInfo(channelData.likeInfo)
-        handleCartInfo(channelData.cartInfo)
         handlePinnedInfo(channelData.pinnedInfo)
         handleQuickReplyInfo(channelData.quickReplyInfo)
         handleLeaderboardInfo(channelData.leaderboardInfo)
@@ -896,7 +891,6 @@ class PlayViewModel @Inject constructor(
     private fun updateChannelInfo(channelData: PlayChannelData) {
         updateStatusInfo(channelData.id)
         updatePartnerInfo(channelData.partnerInfo)
-        updateCartInfo(channelData.cartInfo)
         if (!channelData.statusInfo.statusType.isFreeze && upcomingInfo != null && upcomingInfo?.isUpcoming == false) {
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
             updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
@@ -942,11 +936,6 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
         }
         return shownBottomSheets.isNotEmpty()
-    }
-
-    fun updateBadgeCart() {
-        val cartInfo = _cartInfo.value
-        updateCartInfo(cartInfo)
     }
 
     fun getVideoPlayer() = playVideoPlayer
@@ -1061,10 +1050,6 @@ class PlayViewModel @Inject constructor(
         _likeInfo.value = likeInfo
     }
 
-    private fun handleCartInfo(cartInfo: PlayCartInfoUiModel) {
-        _cartInfo.value = cartInfo
-    }
-
     private fun handlePinnedInfo(pinnedInfo: PlayPinnedInfoUiModel) {
         _observablePinnedMessage.value = pinnedInfo.pinnedMessage
         _observablePinnedProduct.value = pinnedInfo.pinnedProduct
@@ -1148,17 +1133,6 @@ class PlayViewModel @Inject constructor(
                 copy(status = PlayLikeStatus.NotLiked, source = LikeSource.Network)
             }
         })
-    }
-
-    private fun updateCartInfo(cartInfo: PlayCartInfoUiModel) {
-        if (cartInfo.shouldShow) {
-            viewModelScope.launchCatchError(block = {
-                val cartItemCount = repo.getItemCountInCart()
-                _cartInfo.setValue { copy(itemCount = cartItemCount) }
-            }, onError = {
-
-            })
-        }
     }
 
     private fun updateProductTagsInfo(productTags: PlayProductTagsUiModel, pinnedInfo: PlayPinnedInfoUiModel, channelId: String) {
@@ -1784,7 +1758,6 @@ class PlayViewModel @Inject constructor(
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
             REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
-            REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart(isFromLogin = true)
             else -> {}
         }
     }
@@ -1915,15 +1888,6 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun handleClickCart(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_CART_PAGE) {
-        viewModelScope.launch {
-            val event = OpenPageEvent(applink = ApplinkConst.CART)
-            _uiEvent.emit(
-                 if (isFromLogin) AllowedWhenInactiveEvent(event) else event
-            )
-        }
-    }
-
     private fun handleRefreshLeaderboard() {
         if(_leaderboardUserBadgeState.value.shouldRefreshData) {
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
@@ -1981,8 +1945,6 @@ class PlayViewModel @Inject constructor(
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
-        private const val MAX_CART_COUNT = 99
-
         private const val LIKE_BURST_THRESHOLD = 30
 
         /**
@@ -1992,6 +1954,5 @@ class PlayViewModel @Inject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
         private const val REQUEST_CODE_LOGIN_REMIND_ME = 574
-        private const val REQUEST_CODE_LOGIN_CART_PAGE = 575
     }
 }

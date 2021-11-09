@@ -104,34 +104,37 @@ class PlayUserInteractionFragment @Inject constructor(
         private val castPlayer: CastPlayer,
         private val castAnalyticHelper: CastAnalyticHelper
 ) :
-    TkpdBaseV4Fragment(),
-    PlayMoreActionBottomSheet.Listener,
-    PlayFragmentContract,
-    ToolbarViewComponent.Listener,
-    PartnerInfoViewComponent.Listener,
-    VideoControlViewComponent.Listener,
-    LikeViewComponent.Listener,
-    SendChatViewComponent.Listener,
-    QuickReplyViewComponent.Listener,
-    PinnedViewComponent.Listener,
-    VideoSettingsViewComponent.Listener,
-    ImmersiveBoxViewComponent.Listener,
-    PlayButtonViewComponent.Listener,
-    PiPViewComponent.Listener,
-    ProductFeaturedViewComponent.Listener,
-    PinnedVoucherViewComponent.Listener,
-    InteractiveViewComponent.Listener,
-    InteractiveWinnerBadgeViewComponent.Listener,
-    RealTimeNotificationViewComponent.Listener,
-    CastViewComponent.Listener
+        TkpdBaseV4Fragment(),
+        PlayMoreActionBottomSheet.Listener,
+        PlayFragmentContract,
+        ToolbarRoomViewComponent.Listener,
+        PartnerInfoViewComponent.Listener,
+        VideoControlViewComponent.Listener,
+        LikeViewComponent.Listener,
+        ShareLinkViewComponent.Listener,
+        SendChatViewComponent.Listener,
+        QuickReplyViewComponent.Listener,
+        PinnedViewComponent.Listener,
+        VideoSettingsViewComponent.Listener,
+        ImmersiveBoxViewComponent.Listener,
+        PlayButtonViewComponent.Listener,
+        PiPViewComponent.Listener,
+        ProductFeaturedViewComponent.Listener,
+        PinnedVoucherViewComponent.Listener,
+        InteractiveViewComponent.Listener,
+        InteractiveWinnerBadgeViewComponent.Listener,
+        RealTimeNotificationViewComponent.Listener,
+        CastViewComponent.Listener,
+        ProductSeeMoreViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
-    private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
-    private val partnerInfoView by viewComponent { PartnerInfoViewComponent(it, this) }
+    private val toolbarView by viewComponent { ToolbarRoomViewComponent(it, R.id.view_toolbar_room, this) }
+    private val partnerInfoView by viewComponentOrNull { PartnerInfoViewComponent(it, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
+    private val shareLinkView by viewComponentOrNull { ShareLinkViewComponent(it, R.id.view_share_link, this) }
     private val sendChatView by viewComponentOrNull { SendChatViewComponent(it, R.id.view_send_chat, this) }
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
@@ -147,6 +150,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(it, R.id.view_like_bubble, multipleLikesIconCacheStorage) }
+    private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
 
     /**
      * Interactive
@@ -257,7 +261,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onNoAction(bottomSheet: PlayMoreActionBottomSheet) {
-        toolbarView.hideActionMore()
+
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -301,28 +305,11 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Toolbar View Component Listener
      */
-    override fun onBackButtonClicked(view: ToolbarViewComponent) {
+    override fun onBackButtonClicked(view: ToolbarRoomViewComponent) {
         doLeaveRoom()
     }
 
-    override fun onMoreButtonClicked(view: ToolbarViewComponent) {
-        showMoreActionBottomSheet()
-    }
-
-    override fun onFollowButtonClicked(view: ToolbarViewComponent) {
-        playViewModel.submitAction(ClickFollowAction)
-    }
-
-    override fun onPartnerNameClicked(view: ToolbarViewComponent) {
-        playViewModel.submitAction(ClickPartnerNameAction)
-    }
-
-    override fun onCartButtonClicked(view: ToolbarViewComponent) {
-        playViewModel.submitAction(ClickCartAction)
-        analytic.clickCartIcon()
-    }
-
-    override fun onCopyButtonClicked(view: ToolbarViewComponent) {
+    override fun onShareIconClick(view: ShareLinkViewComponent) {
         playViewModel.submitAction(ClickShareAction)
 
         analytic.clickCopyLink()
@@ -435,11 +422,6 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickFeaturedProduct(product, position)
     }
 
-    override fun onSeeMoreClicked(view: ProductFeaturedViewComponent) {
-        openProductSheet()
-        analytic.clickFeaturedProductSeeMore()
-    }
-
     /**
      * Pinned Voucher View Component Listener
      */
@@ -507,6 +489,15 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onCastClicked() {
         analytic.clickCast()
     }
+
+    /**
+     * Product See More Listener
+     */
+    override fun onProductSeeMoreClick(view: ProductSeeMoreViewComponent) {
+        openProductSheet()
+        analytic.clickFeaturedProductSeeMore()
+    }
+
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
@@ -813,12 +804,12 @@ class PlayUserInteractionFragment @Inject constructor(
                 pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
-                toolbarView.setIsShareable(false)
+                shareLinkView?.setIsShareable(false)
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
                 sendChatView?.focusChatForm(false)
-                sendChatView?.hide()
+                sendChatView?.invisible()
 
                 videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
                 toolbarViewOnStateChanged(isFreezeOrBanned = true)
@@ -865,12 +856,13 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 renderInteractiveView(prevState?.interactiveView, state.interactiveView, state.partner)
                 renderWinnerBadgeView(state.winnerBadge)
-                renderToolbarView(state.partner, state.share, state.cart)
+                renderToolbarView(state.title, state.share)
                 renderPartnerInfoView(prevState?.partner, state.partner)
                 renderLikeView(prevState?.like, state.like)
                 renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
+                renderViewAllProductView(state.viewAllProduct)
             }
         }
     }
@@ -1095,7 +1087,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
-            InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
             InteractionEvent.SendChat -> shouldComposeChat()
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.position)
         }
@@ -1343,6 +1334,7 @@ class PlayUserInteractionFragment @Inject constructor(
         if (pinnedModel != null && pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
             pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
             productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
+            productSeeMoreView?.setTotalProduct(pinnedModel.productTags.productList.size)
         }
 
         if (!bottomInsets.isAnyShown && pinnedModel?.shouldShow == true) {
@@ -1397,7 +1389,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false) {
             sendChatView?.show()
-        } else sendChatView?.hide()
+        } else sendChatView?.invisible()
 
         sendChatView?.focusChatForm(channelType.isLive && bottomInsets[BottomInsetsType.Keyboard] is BottomInsetsState.Shown)
     }
@@ -1508,22 +1500,16 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderToolbarView(
-        partner: PlayPartnerUiState,
-        share: PlayShareUiState,
-        cart: PlayCartUiState,
+        title: PlayTitleUiState,
+        share: PlayShareUiState
     ) {
-        toolbarView.setFollowStatus(partner.followStatus)
-        toolbarView.setPartnerName(partner.name)
-
-        toolbarView.setIsShareable(share.shouldShow)
-
-        toolbarView.showCart(cart.shouldShow)
-        toolbarView.setCartCount(cart.count)
+        toolbarView.setTitle(title.title)
+        shareLinkView?.setIsShareable(share.shouldShow)
     }
 
     private fun renderPartnerInfoView(prevState: PlayPartnerUiState?, state: PlayPartnerUiState) {
         if (prevState == state) return
-        partnerInfoView.setInfo(state)
+        partnerInfoView?.setInfo(state)
     }
 
     private fun renderLikeView(
@@ -1559,6 +1545,11 @@ class PlayUserInteractionFragment @Inject constructor(
         else rtnView?.invisible()
     }
 
+    private fun renderViewAllProductView(viewAllProduct: PlayViewAllProductUiState) {
+        if(viewAllProduct.shouldShow) productSeeMoreView?.show()
+        else productSeeMoreView?.hide()
+    }
+
     private fun castViewOnStateChanged(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
@@ -1590,7 +1581,7 @@ class PlayUserInteractionFragment @Inject constructor(
         val pinnedMessageId = pinnedView?.id ?: return
         if (videoPlayer.isYouTube && channelType.isVod) {
             view?.changeConstraint {
-                connect(pinnedMessageId, ConstraintSet.BOTTOM, likeView.id, ConstraintSet.BOTTOM, 0)
+                connect(pinnedMessageId, ConstraintSet.BOTTOM, likeView.id, ConstraintSet.TOP, offset8)
             }
         } else if (channelType.isLive || pinnedVoucherView?.isShown() == true || productFeaturedView?.isShown() == true) {
             val pinnedVoucherId = pinnedVoucherView?.id ?: return
@@ -1639,7 +1630,13 @@ class PlayUserInteractionFragment @Inject constructor(
             }
         } else {
             view?.changeConstraint {
-                connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
+                if(quickReplyView?.isShown() == true) {
+                    sendChatView?.let {
+                        connect(quickReplyViewId, ConstraintSet.BOTTOM, it.id, ConstraintSet.TOP, offset8)
+                    }
+                } else {
+                    connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
+                }
             }
         }
     }

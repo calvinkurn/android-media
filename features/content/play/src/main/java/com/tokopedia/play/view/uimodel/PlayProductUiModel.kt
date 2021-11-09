@@ -22,6 +22,4 @@ sealed class PlayProductUiModel {
     ) : PlayProductUiModel()
 
     object Placeholder : PlayProductUiModel()
-
-    data class SeeMore(val total: Int, val scale: Float): PlayProductUiModel()
 }

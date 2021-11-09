@@ -9,7 +9,9 @@ import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.play.data.CartFeedbackResponseModel
 import com.tokopedia.play.domain.PostAddToCartUseCase
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
@@ -33,9 +35,9 @@ import javax.inject.Inject
  */
 class PlayBottomSheetViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val postAddToCartUseCase: PostAddToCartUseCase,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers
+        private val dispatchers: CoroutineDispatchers,
+        private val repo: PlayViewerRepository,
 ) : ViewModel() {
 
     private val _observableAddToCart = MutableLiveData<PlayResult<Event<CartFeedbackUiModel>>>()
@@ -86,20 +88,16 @@ class PlayBottomSheetViewModel @Inject constructor(
         //TODO(If isSuccess = false, treat that as Failure instead of Success(isSuccess=true))
         viewModelScope.launchCatchError(block = {
             val responseCart = withContext(dispatchers.io) {
-                postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(
-                        product.id,
-                        product.shopId,
-                        product.minQty,
-                        notes,
-                        AtcFromExternalSource.ATC_FROM_PLAY,
-                        product.title,
-                        price = when (product.price) {
-                            is OriginalPrice -> product.price.priceNumber.toString()
-                            is DiscountedPrice -> product.price.discountedPriceNumber.toString()
-                        },
-                        userId = userSession.userId
+                repo.addItemToCart(
+                    productId = product.id,
+                    productName = product.title,
+                    productShopId = product.shopId,
+                    price = when (product.price) {
+                        is OriginalPrice -> product.price.priceNumber.toString()
+                        is DiscountedPrice -> product.price.discountedPriceNumber.toString()
+                    },
+                    qty = product.minQty,
                 )
-                postAddToCartUseCase.executeOnBackground()
             }
 
             _observableAddToCart.value = PlayResult.Success(Event(mappingResponseCart(responseCart, product, action, type)))
@@ -121,15 +119,14 @@ class PlayBottomSheetViewModel @Inject constructor(
         viewModelScope.coroutineContext.cancelChildren()
     }
 
-    private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel,
+    private fun mappingResponseCart(response: CartFeedbackResponseModel,
                                     product: PlayProductUiModel.Product,
                                     action: ProductAction,
                                     bottomInsetsType: BottomInsetsType) =
             CartFeedbackUiModel(
-                    isSuccess = addToCartDataModel.data.success == 1,
-                    errorMessage = if (addToCartDataModel.errorMessage.size > 0)
-                        addToCartDataModel.errorMessage.joinToString { "$it " } else "",
-                    cartId = addToCartDataModel.data.cartId,
+                    isSuccess = response.isSuccess,
+                    errorMessage = response.errorMessage,
+                    cartId = response.cartId,
                     product = product,
                     action = action,
                     bottomInsetsType = bottomInsetsType

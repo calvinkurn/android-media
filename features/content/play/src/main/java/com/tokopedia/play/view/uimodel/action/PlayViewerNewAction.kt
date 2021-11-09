@@ -39,11 +39,6 @@ object ClickLikeAction : PlayViewerNewAction()
 object ClickShareAction : PlayViewerNewAction()
 
 /**
- * Cart
- */
-object ClickCartAction : PlayViewerNewAction()
-
-/**
  * Swipe
  */
 object SetChannelActiveAction : PlayViewerNewAction()
