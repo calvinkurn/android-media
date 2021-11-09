@@ -7,12 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.ShopPageHorizontalItemDivider
+import com.tokopedia.shop.databinding.LayoutShopHeaderPerformanceWidgetBinding
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopHeaderPerformanceWidgetAdapterTypeFactory
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPerformanceWidgetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetBadgeTextValueComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageOnlyComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPerformanceWidgetImageTextComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 
 class ShopHeaderPerformanceWidgetViewHolder(
@@ -26,8 +28,9 @@ class ShopHeaderPerformanceWidgetViewHolder(
         val LAYOUT = R.layout.layout_shop_header_performance_widget
     }
 
+    private val viewBinding: LayoutShopHeaderPerformanceWidgetBinding? by viewBinding()
     private var shopPerformanceWidgetAdapter: ShopPerformanceWidgetAdapter? = null
-    private var rvShopPerformanceWidget: RecyclerView? = itemView.findViewById(R.id.rv_shop_performance_widget)
+    private var rvShopPerformanceWidget: RecyclerView? = viewBinding?.rvShopPerformanceWidget
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
         shopPerformanceWidgetAdapter = ShopPerformanceWidgetAdapter(ShopHeaderPerformanceWidgetAdapterTypeFactory(
