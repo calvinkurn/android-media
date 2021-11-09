@@ -45,6 +45,9 @@ class UohListViewModelTest {
     private var listMsg = arrayListOf<String>()
 
     @RelaxedMockK
+    lateinit var getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase
+
+    @RelaxedMockK
     lateinit var uohListUseCase: UohListUseCase
 
     @RelaxedMockK
@@ -77,7 +80,7 @@ class UohListViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        uohListViewModel = UohListViewModel(dispatcher, uohListUseCase,
+        uohListViewModel = UohListViewModel(dispatcher, getUohFilterCategoryUseCase, uohListUseCase,
                 getRecommendationUseCase, uohFinishOrderUseCase, atcMultiProductsUseCase,
                 lsPrintFinishOrderUseCase, flightResendEmailUseCase, trainResendEmailUseCase,
                 rechargeSetFailUseCase, topAdsImageViewUseCase, atcUseCase)
