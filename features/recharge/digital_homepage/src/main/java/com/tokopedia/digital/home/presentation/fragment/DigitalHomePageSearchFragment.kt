@@ -36,11 +36,17 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
         DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener,
-        DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener
+        DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener,
+        CoroutineScope
 {
 
     protected var binding by autoCleared<ViewRechargeHomeSearchBinding>()
@@ -90,6 +96,7 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
         binding.digitalHomepageSearchViewSearchBar.searchBarTextField.requestFocus()
         binding.digitalHomepageSearchViewSearchBar.searchBarTextField.setOnEditorActionListener(getSearchListener)
         binding.digitalHomepageSearchViewSearchBar.searchBarTextField.addTextChangedListener(object : TextWatcher {
+            private var searchFor = ""
             override fun afterTextChanged(p0: Editable?) {
             }
 
@@ -97,7 +104,25 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
             }
 
             override fun onTextChanged(text: CharSequence, p1: Int, p2: Int, p3: Int) {
-                onSearchBarTextChanged(text.toString())
+                val searchText = text.toString().trim()
+                if (searchText == searchFor)
+                    return
+
+                searchFor = searchText
+
+                launch {
+                    delay(DELAY)
+                    if (searchText != searchFor){
+                        return@launch
+                    } else {
+                        if (searchText.isEmpty()) {
+                            clearAllData()
+                            renderList(emptyList())
+                        } else {
+                            onSearchBarTextChanged(text.toString())
+                        }
+                    }
+                }
             }
         })
         context?.run {
@@ -226,8 +251,12 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
         viewModel.searchCategoryList(DigitalHomepageGqlQuery.digitalHomeCategory, searchQuery)
     }
 
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
+
     companion object {
         private const val PARAM_SEARCH_BAR_SCREEN_NAME = "search_bar_screen_name"
+        const val DELAY: Long = 200
 
         fun getInstance() = DigitalHomePageSearchFragment()
     }
