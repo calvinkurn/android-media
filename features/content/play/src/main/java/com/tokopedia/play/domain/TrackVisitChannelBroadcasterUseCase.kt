@@ -48,7 +48,7 @@ class TrackVisitChannelBroadcasterUseCase @Inject constructor(
 
         const val QUERY_NAME = "TrackVisitChannelBroadcasterUseCaseQuery"
         const val QUERY = """
-            mutation trackVisitChannelBroadcaster(${'$'}channelId: String!, ${'$'}entryPoint: String!) {
+            mutation trackVisitChannelBroadcaster(${'$'}channelId: String!, ${'$'}entryPoint: String) {
               broadcasterReportVisitChannel(channelID: ${'$'}channelId, entryPoint: ${'$'}entryPoint) {
                 success
               }
