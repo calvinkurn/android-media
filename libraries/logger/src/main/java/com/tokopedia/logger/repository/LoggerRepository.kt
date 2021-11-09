@@ -161,11 +161,21 @@ class LoggerRepository(
                 scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
             }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
-                messageNewRelicList.add(
-                    addEventNewRelic(
-                        message
+                if (priorityName == LoggerReporting.SF) {
+                    messageNewRelicList.add(
+                        addEventNewRelic(
+                            message,
+                            Constants.EVENT_ANDROID_SF_NEW_RELIC
+                        )
                     )
-                )
+                } else {
+                    messageNewRelicList.add(
+                        addEventNewRelic(
+                            message,
+                            Constants.EVENT_ANDROID_NEW_RELIC
+                        )
+                    )
+                }
             }
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
                 messageEmbraceList.add(EmbraceBody(tagValue, jsonToMapEmbrace(message)))
@@ -196,9 +206,9 @@ class LoggerRepository(
         return loggerCloudEmbraceImpl.sendToLogServer(embraceBodyList)
     }
 
-    private fun addEventNewRelic(message: String): String {
+    private fun addEventNewRelic(message: String, eventType: String): String {
         val gson = Gson().fromJson(message, JsonObject::class.java)
-        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
+        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, eventType)
         return gson.toString()
     }
 

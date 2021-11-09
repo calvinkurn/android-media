@@ -75,6 +75,7 @@ class LoggerReporting {
 
         with(mapMessage) {
             put(Constants.PRIORITY_LOG, p.toString())
+            put(Constants.TAG_LOG, tag)
             if (priority == SF) {
                 for (item in message) {
                     if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
@@ -84,7 +85,6 @@ class LoggerReporting {
                     }
                 }
             } else {
-                put("log_tag", tag)
                 put("log_timestamp", timeStamp.toString())
                 put("log_time", getReadableTimeStamp(timeStamp))
                 put("log_did", partDeviceId)
