@@ -4,7 +4,7 @@ import com.tokopedia.mediauploader.common.data.consts.CHUNK_UPLOAD
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.common.util.slice
@@ -45,7 +45,7 @@ class LargeUploaderManager @Inject constructor(
     // set max retry of transcoding checker
     private var maxRetryTranscoding = 0
 
-    private var progressCallback: ProgressCallback? = null
+    private var progressUploader: ProgressUploader? = null
 
     suspend operator fun invoke(file: File, sourceId: String, policy: SourcePolicy, withTranscode: Boolean): UploadResult {
         // getting the upload size of chunk in MB for calculate the chunk size and as size of part numbers
@@ -75,13 +75,13 @@ class LargeUploaderManager @Inject constructor(
                 // upload it!
                 val upload = chunkUpload(file.name, byteArrayToSend, policy.timeOut)
 
-                progressCallback?.onProgress(100 * part / partNumber)
-
                 if (!upload) {
                     // return error if failed but it is continuable
                     return UploadResult.Error(CHUNK_UPLOAD)
                 }
             }
+
+            updateProgressValue(part - 1)
         }
 
         // 3. set a complete state to check the transcoding
@@ -96,7 +96,9 @@ class LargeUploaderManager @Inject constructor(
                     return UploadResult.Error(TRANSCODING_FAILED)
                 }
 
-                if (transcodingUseCase(currentUploadId).isCompleted()) {
+                val transcoding = transcodingUseCase(currentUploadId)
+
+                if (transcoding.isCompleted()) {
                     break
                 }
 
@@ -107,6 +109,8 @@ class LargeUploaderManager @Inject constructor(
 
         // 5. if the transcoding success, return the video url!
         return if (videoUrl.isNotEmpty()) {
+            updateProgressValue(chunkTotal)
+
             resetUpload()
 
             UploadResult.Success(
@@ -127,8 +131,12 @@ class LargeUploaderManager @Inject constructor(
         }
     }
 
-    fun setProgressCallback(progressCallback: ProgressCallback?) {
-        this.progressCallback = progressCallback
+    fun setProgressCallback(progressUploader: ProgressUploader?) {
+        this.progressUploader = progressUploader
+    }
+
+    private fun updateProgressValue(value: Int) {
+        progressUploader?.onProgress(MAX_PROGRESS_LOADER * value / chunkTotal)
     }
 
     private suspend fun initUpload(sourceId: String, fileName: String) {
@@ -208,6 +216,7 @@ class LargeUploaderManager @Inject constructor(
 
     companion object {
         private const val MAX_RETRY_TRANSCODING = 24
+        private const val MAX_PROGRESS_LOADER = 100
     }
 
 }
