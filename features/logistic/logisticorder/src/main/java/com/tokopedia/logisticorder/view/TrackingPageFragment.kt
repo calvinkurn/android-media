@@ -117,7 +117,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             when (it) {
                 is Success -> {
                     hideLoading()
-                    populateTipping(it.data)
                     populateView(it.data)
                 }
                 is Fail -> {
@@ -175,6 +174,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         binding?.buyerLocation?.text = model.detail.receiverCity
         binding?.currentStatus?.text = model.status
         setEtaDetail(model.detail.eta)
+        populateTipping(trackingDataModel)
         initialHistoryView()
         setHistoryView(model)
         setEmptyHistoryView(model)
@@ -186,7 +186,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun populateTipping(data: TrackingDataModel) {
         val tippingData = data.tipping
-        if (tippingData.status != 100 || tippingData.status != 150 || tippingData.status != 200 || tippingData.status != 300) {
+        if (tippingData.status != 100 || tippingData.status != 150 || tippingData.status != 200 || tippingData.status !=  210 || tippingData.status != 300) {
             binding?.tippingGojekLayout?.root?.visibility = View.GONE
         } else {
             setTippingData(data)
@@ -197,13 +197,26 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     private fun setTippingData(data: TrackingDataModel) {
         val tippingData = data.tipping
         binding?.tippingGojekLayout?.apply {
-            ImageHandler.loadImageFitCenter(context, imgDriver, tippingData.lastDriver.photo)
 
-            driverName.text = tippingData.lastDriver.name
-            driverPhone.text = tippingData.lastDriver.phone + "•" + tippingData.lastDriver.licenseNumber
+            if (tippingData.lastDriver.name.isEmpty()) {
+                driverLayout.visibility = View.GONE
+                imgFindDriver.visibility = View.VISIBLE
+            } else {
+                driverLayout.visibility = View.VISIBLE
+                ImageHandler.loadImageFitCenter(context, imgDriver, tippingData.lastDriver.photo)
 
-            tippingText.text = "Yuk, beri tip ke driver"
-            tippingDescription.text = "Tip 100% diterima driver"
+                driverName.text = tippingData.lastDriver.name
+                driverPhone.text = tippingData.lastDriver.phone + "•" + tippingData.lastDriver.licenseNumber
+            }
+
+            if (tippingData.status == 200 || tippingData.status == 210) {
+                btnTipping.text = "Lihat Bukti"
+            } else {
+                btnTipping.text = "Beri Tip"
+            }
+
+            tippingText.text = tippingData.statusTitle
+            tippingDescription.text = tippingData.statusSubtitle
 
             btnInformation.setOnClickListener {
                 DriverInfoBottomSheet().show(parentFragmentManager)
