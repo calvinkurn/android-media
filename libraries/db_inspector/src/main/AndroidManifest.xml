@@ -7,8 +7,10 @@
             android:name=".presentation.activity.DbInspectorActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
-            android:label="@string/app_name"
-            android:taskAffinity="com.tokopedia.db_inspector.task">
+            android:label="@string/title_app_db_inspector"
+            android:theme="@style/Theme.WhiteUnify"
+            android:taskAffinity="com.tokopedia.db_inspector.task"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
