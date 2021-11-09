@@ -15,7 +15,6 @@ import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.*
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProgressBarViewHolder
 
 class HomeAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -27,7 +26,8 @@ class HomeAdapterTypeFactory(
     private val tokoNowProductCardListener: TokoNowProductCardViewHolder.TokoNowProductCardListener? = null,
     private val homeSharingEducationListener: HomeSharingEducationWidgetViewHolder.HomeSharingEducationListener? = null,
     private val homeEducationalInformationListener: HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener? = null,
-    private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener
+    private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener,
+    private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener? = null,
 ): BaseAdapterTypeFactory(), HomeTypeFactory, HomeComponentTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
@@ -64,7 +64,7 @@ class HomeAdapterTypeFactory(
     override fun type(bannerDataModel: BannerDataModel): Int = BannerComponentViewHolder.LAYOUT
     override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int = DynamicIconViewHolder.LAYOUT
     override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int = FeaturedBrandViewHolder.LAYOUT
-    // endregion
+// endregion
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -72,7 +72,7 @@ class HomeAdapterTypeFactory(
             TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
             TokoNowRepurchaseViewHolder.LAYOUT -> TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener)
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowView, tokoNowChooseAddressWidgetListener)
-            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowView)
+            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
             // endregion
 
