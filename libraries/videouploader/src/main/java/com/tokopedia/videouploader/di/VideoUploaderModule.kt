@@ -75,7 +75,7 @@ class VideoUploaderModule constructor() {
             builder.addNetworkInterceptor { chain ->
                 val originalResponse = chain.proceed(chain.request())
                 originalResponse.newBuilder()
-                        .body(ProgressResponseBody(originalResponse.body(), progressListener))
+                        .body(ProgressResponseBody(originalResponse.body, progressListener))
                         .build()
             }
         }

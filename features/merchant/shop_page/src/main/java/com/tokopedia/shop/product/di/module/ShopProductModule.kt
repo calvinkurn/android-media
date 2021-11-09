@@ -82,9 +82,9 @@ class ShopProductModule {
 
     @ShopProductGMFeaturedQualifier
     @Provides
-    fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor?,
-                              @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                              errorResponseInterceptor: HeaderErrorResponseInterceptor?): OkHttpClient {
+    fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
+                              @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+                              errorResponseInterceptor: HeaderErrorResponseInterceptor): OkHttpClient {
         return Builder()
             .addInterceptor(gmAuthInterceptor)
             .addInterceptor(errorResponseInterceptor)
@@ -198,9 +198,9 @@ class ShopProductModule {
 
     @ShopProductQualifier
     @Provides
-    fun provideOfficialStoreOkHttpClient(shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor?,
-                                         @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                                         errorResponseInterceptor: HeaderErrorResponseInterceptor?): OkHttpClient {
+    fun provideOfficialStoreOkHttpClient(shopOfficialStoreAuthInterceptor: ShopOfficialStoreAuthInterceptor,
+                                         @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+                                         errorResponseInterceptor: HeaderErrorResponseInterceptor): OkHttpClient {
         return Builder()
             .addInterceptor(shopOfficialStoreAuthInterceptor)
             .addInterceptor(errorResponseInterceptor)
@@ -242,9 +242,9 @@ class ShopProductModule {
     @ShopProductSortQualifier
     @ShopProductScope
     @Provides
-    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor?,
-                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor?,
-                            errorResponseInterceptor: HeaderErrorResponseInterceptor?): OkHttpClient? {
+    fun provideOkHttpClient(shopAuthInterceptor: ShopAuthInterceptor,
+                            @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+                            errorResponseInterceptor: HeaderErrorResponseInterceptor): OkHttpClient? {
         return Builder()
                 .addInterceptor(shopAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)

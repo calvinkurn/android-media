@@ -74,6 +74,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
@@ -442,13 +444,18 @@ class ChatbotPresenter @Inject constructor(
             uploadImageUseCase.unsubscribe()
 
             val reqParam = HashMap<String, RequestBody>()
-            val webService = RequestBody.create(MediaType.parse("text/plain"), "1")
+            val webService = "1".toRequestBody("text/plain".toMediaTypeOrNull())
             reqParam.put("web_service", createRequestBody("1"))
-            reqParam.put("id", createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl)))
-            val params = uploadImageUseCase.createRequestParam(it.imageUrl,
-                    "/upload/attachment",
-                    "fileToUpload\"; filename=\"image.jpg",
-                    reqParam)
+            reqParam.put(
+                "id",
+                createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
+            )
+            val params = uploadImageUseCase.createRequestParam(
+                it.imageUrl,
+                "/upload/attachment",
+                "fileToUpload\"; filename=\"image.jpg",
+                reqParam
+            )
 
             uploadImageUseCase.execute(params,
                 object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
@@ -461,21 +468,23 @@ class ChatbotPresenter @Inject constructor(
                                         this.picSrc,
                                         this.picObj,
                                         it.startTime,
-                                        opponentId))
+                                        opponentId
+                                    )
+                            )
                         }
                         isUploading = false
                     }
 
-                        override fun onCompleted() {
+                    override fun onCompleted() {
 
-                        }
+                    }
 
-                        override fun onError(e: Throwable) {
-                            isUploading = false
-                            onError(e, it)
-                        }
+                    override fun onError(e: Throwable) {
+                        isUploading = false
+                        onError(e, it)
+                    }
 
-                    })
+                })
         }
 
     }
@@ -529,7 +538,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun createRequestBody(content: String): RequestBody {
-        return RequestBody.create(MediaType.parse("text/plain"), content)
+        return content.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     private fun validateImageAttachment(uri: String?, maxFileSize:Int): Boolean {

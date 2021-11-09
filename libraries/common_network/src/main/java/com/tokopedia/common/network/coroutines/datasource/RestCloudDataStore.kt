@@ -2,14 +2,23 @@ package com.tokopedia.common.network.coroutines.datasource
 
 import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.common.network.data.model.*
+import com.tokopedia.common.network.data.model.CacheType
+import com.tokopedia.common.network.data.model.RequestType
+import com.tokopedia.common.network.data.model.RestRequest
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common.network.data.source.cloud.api.RestApi
-import com.tokopedia.common.network.util.*
-import kotlinx.coroutines.Deferred
+import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.common.network.util.FingerprintManager
+import com.tokopedia.common.network.util.RestCacheManager
+import com.tokopedia.common.network.util.RestConstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
-import okhttp3.*
+import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import java.io.File
 
@@ -186,11 +195,11 @@ class RestCloudDataStore(
 
     private suspend fun putMultipart(request: RestRequest): Response<String> {
         val file = File(request.body.toString())
-        val reqFile = RequestBody.create(MediaType.parse("image/*"), file)
+        val reqFile = file.asRequestBody("image/*".toMediaTypeOrNull())
         val multipartBody = MultipartBody.Part.createFormData("upload", file.name, reqFile)
 
         return mApi
-                .putMultipartDeferred(request.url, multipartBody, request.queryParams, request.headers)
+            .putMultipartDeferred(request.url, multipartBody, request.queryParams, request.headers)
     }
 
     private suspend fun putRequestBody(request: RestRequest): Response<String> {

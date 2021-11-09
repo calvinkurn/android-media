@@ -52,20 +52,20 @@ class ServerSentEventImpl(
 
             override fun onResponse(call: Call, response: Response) {
                 if(response.isSuccessful) openSse(response)
-                else notifyFailure(IOException(response.message()), response)
+                else notifyFailure(IOException(response.message), response)
             }
         })
     }
 
     private fun openSse(response: Response) {
-        val body = response.body()
+        val body = response.body
         body?.let {
             sseReader = Reader(body.source())
             sseReader?.let {
                 it.setTimeout(readTimeoutMillis, TimeUnit.MILLISECONDS)
                 listener.onOpen(this, response)
 
-                while(call != null && call?.isCanceled == false && it.read()){
+                while (call != null && call?.isCanceled() == false && it.read()) {
                 }
             }
         }
@@ -79,7 +79,7 @@ class ServerSentEventImpl(
     }
 
     private fun retry(throwable: Throwable, response: Response?): Boolean {
-        if(!Thread.currentThread().isInterrupted && call?.isCanceled == false &&
+        if(!Thread.currentThread().isInterrupted && call?.isCanceled() == false &&
                 listener.onRetryError(this, throwable, response)) {
             val request = listener.onPreRetry(this, originalRequest) ?: return false
             prepareCall(request)
@@ -91,7 +91,7 @@ class ServerSentEventImpl(
                 return false
             }
 
-            if(!Thread.currentThread().isInterrupted && call?.isCanceled == false) {
+            if(!Thread.currentThread().isInterrupted && call?.isCanceled() == false) {
                 enqueue()
                 return true
             }
@@ -107,7 +107,7 @@ class ServerSentEventImpl(
     }
 
     override fun close() {
-        if(call != null && call?.isCanceled == false) call?.cancel()
+        if(call != null && call?.isCanceled() == false) call?.cancel()
     }
 
     inner class Reader(

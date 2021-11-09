@@ -1,7 +1,6 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
 import android.content.Context
-import android.util.Log
 import com.akamai.botman.CYFMonitor
 import com.tokopedia.akamai_bot_lib.*
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
@@ -37,7 +36,7 @@ class AkamaiBotInterceptor(val context: Context) : Interceptor {
 
         val response = chain.proceed(newRequest.build())
 
-        if (response.code() == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)?.contains(HEADER_AKAMAI_VALUE, true) == true) {
+        if (response.code == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)?.contains(HEADER_AKAMAI_VALUE, true) == true) {
             logError(response, chain)
             throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
         }
@@ -46,7 +45,7 @@ class AkamaiBotInterceptor(val context: Context) : Interceptor {
 
     private fun logError(response: Response, chain: Interceptor.Chain){
         var messageMap: Map<String, String>? = mapOf(
-            "request_body" to chain.request().body().toString(),
+            "request_body" to chain.request().body.toString(),
             "user-agent" to chain.request().header("User-Agent").toString(),
             "response" to response.peekBody(1024).toString()
         )

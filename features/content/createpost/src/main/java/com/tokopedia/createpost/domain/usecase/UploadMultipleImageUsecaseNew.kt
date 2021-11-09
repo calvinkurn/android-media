@@ -15,8 +15,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videouploader.domain.model.VideoUploadDomainModel
 import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
 import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import rx.Observable
 import rx.functions.Func1
 import java.io.File
@@ -103,20 +104,14 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
     }
 
 
-    private fun createUploadParams(fileToUpload:String): RequestParams {
+    private fun createUploadParams(fileToUpload: String): RequestParams {
         val maps = HashMap<String, RequestBody>()
-        val webService = RequestBody.create(
-            MediaType.parse(TEXT_PLAIN),
-            DEFAULT_WEB_SERVICE
-        )
-        val resolution = RequestBody.create(
-            MediaType.parse(TEXT_PLAIN),
-            RESOLUTION_500
-        )
-        val id = RequestBody.create(
-            MediaType.parse(TEXT_PLAIN),
-            userSession.userId + UUID.randomUUID() + System.currentTimeMillis()
-        )
+        val webService = DEFAULT_WEB_SERVICE
+            .toRequestBody(TEXT_PLAIN.toMediaTypeOrNull())
+        val resolution = RESOLUTION_500
+            .toRequestBody(TEXT_PLAIN.toMediaTypeOrNull())
+        val id = (userSession.userId + UUID.randomUUID() + System.currentTimeMillis()
+                ).toRequestBody(TEXT_PLAIN.toMediaTypeOrNull())
         maps[PARAM_WEB_SERVICE] = webService
         maps[PARAM_ID] = id
         maps[PARAM_RESOLUTION] = resolution

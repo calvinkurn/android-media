@@ -17,15 +17,15 @@ import kotlin.system.measureTimeMillis
 
 class GqlAkamaiBotInterceptor : Interceptor {
     @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response  {
+    override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val newRequest: Request.Builder = request.newBuilder()
 
 
-        val requestBody = request.body()
+        val requestBody = request.body
         val hasRequestBody = requestBody != null
 
-        if (hasRequestBody && !bodyEncoded(request.headers())) {
+        if (hasRequestBody && !bodyEncoded(request.headers)) {
             val UTF8 = Charset.forName("UTF-8")
             val buffer = Buffer()
             requestBody?.writeTo(buffer)
@@ -43,12 +43,12 @@ class GqlAkamaiBotInterceptor : Interceptor {
                                 val query = jsonObject.getString("query")
 
                                 val xTkpdAkamai = getAny(query)
-                                        .asSequence()
-                                        .filter { it ->
-                                    registeredGqlFunctions.containsKey(it)
-                                }.take(1).map { it ->
-                                    registeredGqlFunctions[it]
-                                }.firstOrNull()
+                                    .asSequence()
+                                    .filter { it ->
+                                        registeredGqlFunctions.containsKey(it)
+                                    }.take(1).map { it ->
+                                        registeredGqlFunctions[it]
+                                    }.firstOrNull()
 
                                 if (!xTkpdAkamai.isNullOrEmpty()) {
                                     newRequest.addHeader("X-TKPD-AKAMAI", xTkpdAkamai)
@@ -65,7 +65,9 @@ class GqlAkamaiBotInterceptor : Interceptor {
 
         val response = chain.proceed(newRequest.build())
 
-        if (response.code() == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)?.contains(HEADER_AKAMAI_VALUE, true) == true) {
+        if (response.code == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)
+                ?.contains(HEADER_AKAMAI_VALUE, true) == true
+        ) {
             throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
         }
         return response

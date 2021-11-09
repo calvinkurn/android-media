@@ -175,6 +175,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation platform(rootProject.ext.firebase.bom)
+    implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
     implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
 

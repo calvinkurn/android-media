@@ -270,6 +270,7 @@ dependencies {
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
     implementation platform(rootProject.ext.firebase.bom)
+    implementation platform(rootProject.ext.networkDependencies.okhttpBom)
 
     implementation projectOrAar(rootProject.ext.features.customer_mid_app)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)

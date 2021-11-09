@@ -33,29 +33,42 @@ class DigitalInterceptor(@ApplicationContext context: Context,
 
     @Throws(IOException::class)
     override fun throwChainProcessCauseHttpError(response: Response) {
-        val errorBody = response.body()!!.string()
-        response.body()!!.close()
+        val errorBody = response.body!!.string()
+        response.body!!.close()
         Log.d(TAG, "Error body response : $errorBody")
         if (errorBody.isNotEmpty()) {
-            val digitalErrorResponse: TkpdDigitalResponse.DigitalErrorResponse = TkpdDigitalResponse.DigitalErrorResponse.factory(errorBody, response.code())
+            val digitalErrorResponse: TkpdDigitalResponse.DigitalErrorResponse =
+                TkpdDigitalResponse.DigitalErrorResponse.factory(errorBody, response.code)
             if (digitalErrorResponse.typeOfError == TkpdDigitalResponse.DigitalErrorResponse.ERROR_DIGITAL) {
                 throw ResponseErrorException(digitalErrorResponse.digitalErrorMessageFormatted)
             } else if (digitalErrorResponse.typeOfError == TkpdDigitalResponse.DigitalErrorResponse.ERROR_SERVER) {
-                if (digitalErrorResponse.status.equals(DigitalError.STATUS_UNDER_MAINTENANCE, true)) {
+                if (digitalErrorResponse.status.equals(
+                        DigitalError.STATUS_UNDER_MAINTENANCE,
+                        true
+                    )
+                ) {
                     throw ResponseErrorException(digitalErrorResponse.serverErrorMessageFormatted)
-                } else if (digitalErrorResponse.status.equals(DigitalError.STATUS_REQUEST_DENIED, true)) {
+                } else if (digitalErrorResponse.status.equals(
+                        DigitalError.STATUS_REQUEST_DENIED,
+                        true
+                    )
+                ) {
                     throw ResponseErrorException(digitalErrorResponse.serverErrorMessageFormatted)
-                } else if (digitalErrorResponse.status.equals(DigitalError.STATUS_FORBIDDEN, true) &&
-                        MethodChecker.isTimezoneNotAutomatic(context)) {
+                } else if (digitalErrorResponse.status.equals(
+                        DigitalError.STATUS_FORBIDDEN,
+                        true
+                    ) &&
+                    MethodChecker.isTimezoneNotAutomatic(context)
+                ) {
                     throw ResponseErrorException(digitalErrorResponse.serverErrorMessageFormatted)
                 } else {
-                    throw HttpErrorException(response.code())
+                    throw HttpErrorException(response.code)
                 }
             } else {
-                throw HttpErrorException(response.code())
+                throw HttpErrorException(response.code)
             }
         }
-        throw HttpErrorException(response.code())
+        throw HttpErrorException(response.code)
     }
 
     override fun getHeaderMap(

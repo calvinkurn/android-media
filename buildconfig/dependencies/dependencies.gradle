@@ -24,7 +24,7 @@ ext {
     coroutineVersion = '1.5.1'
     retrofitVersion = '2.6.0'
     gsonDebugVersion = '2.8.6'
-    okHttpVersion = '3.12.5'
+    okHttpVersion = '4.9.0'
     brotliVersion = '0.1.2'
     glideVersion = '4.9.0'
     viewPager2 = '1.0.0'
@@ -131,12 +131,13 @@ ext {
     ]
 
     networkDependencies = [
+            okhttpBom               : "com.squareup.okhttp3:okhttp-bom:${okHttpVersion}",
             retrofit                : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
             converterGson           : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
             adapterRxJava           : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
-            okHttp                  : "com.squareup.okhttp3:okhttp:${okHttpVersion}",
+            okHttp                  : "com.squareup.okhttp3:okhttp",
             brotli                  : "org.brotli:dec:${brotliVersion}",
-            loggingInterceptor      : "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
+            loggingInterceptor      : "com.squareup.okhttp3:logging-interceptor",
             glide                   : "com.github.bumptech.glide:glide:${glideVersion}",
             retrofitKotlinCoroutine : "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2",
             glideProcessor          : "com.github.bumptech.glide:compiler:${glideVersion}",

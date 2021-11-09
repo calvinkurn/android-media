@@ -1,6 +1,5 @@
 package com.tokopedia.websocket
 
-import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.TokopediaUrl
@@ -32,7 +31,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
 
     private fun initWebSocket(subscriber: Subscriber<in WebSocketInfo>, accessToken: String) {
         webSocket = client.newWebSocket(getRequest(url, accessToken), object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response?) {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
                 if (!subscriber.isUnsubscribed) {
                     subscriber.onNext(WebSocketInfo(webSocket, true))
                 }
