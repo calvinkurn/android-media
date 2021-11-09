@@ -52,6 +52,7 @@ data class CartItemHolderData(
         var originalBundleQuantity: Int = 0,
         var editBundleApplink: String = "",
         var bundleIconUrl: String = "",
+        var bundleLabelQuantity: Int = 0,
 
         // Analytics data
         var shopId: String = "",

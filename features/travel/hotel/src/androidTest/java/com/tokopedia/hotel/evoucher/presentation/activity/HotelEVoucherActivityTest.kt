@@ -6,8 +6,10 @@ import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -44,6 +46,7 @@ class HotelEVoucherActivityTest {
     fun testActivity() {
         clickShareButton()
         clickShareAsImagePopupShown()
+        clickPhoneNumber()
     }
 
     private fun clickShareButton() {
@@ -56,5 +59,11 @@ class HotelEVoucherActivityTest {
     private fun clickShareAsImagePopupShown() {
         onView(withText(R.string.hotel_save_as_image)).perform(click())
         onView(withText(R.string.hotel_save_as_image_success)).check(matches(isDisplayed()))
+    }
+
+    private fun clickPhoneNumber(){
+        onView(withId(R.id.btn_nha_phone)).perform(click())
+        Thread.sleep(3000L)
+        intended((hasAction(Intent.ACTION_DIAL)))
     }
 }
