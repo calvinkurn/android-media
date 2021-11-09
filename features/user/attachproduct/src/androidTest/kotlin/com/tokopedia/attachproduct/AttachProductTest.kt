@@ -118,11 +118,9 @@ class AttachProductTest {
         val responseFilter = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product_filter, AceSearchProductResponse::class.java)
         repositoryStub.setResultData(AceSearchProductResponse::class.java, responseFilter)
 
-        Thread.sleep(1000)
         onView(withId(R.id.searchbar_textfield)).perform(pressImeActionButton())
 
         //THEN
-        Thread.sleep(2000)
         onView(withId(R.id.recycler_view)).check(CommonAssertion.RecyclerViewItemCountAssertion(1))
 
     }
