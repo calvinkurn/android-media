@@ -36,6 +36,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SR
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -68,7 +69,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
         init()
 
-        sendTrackingFromAppShortcuts()
+        sendTracking()
     }
 
     private fun init() {
@@ -178,6 +179,16 @@ open class BaseAutoCompleteActivity: BaseActivity(),
                 suggestionFragment,
                 SUGGESTION_FRAGMENT_TAG
             ).commit()
+    }
+
+    private fun sendTracking() {
+        sendTrackingInitiateSearchSession()
+        sendTrackingFromAppShortcuts()
+    }
+
+    private fun sendTrackingInitiateSearchSession() {
+        val dimension90 = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
+        autoCompleteTracking.eventInitiateSearchSession(dimension90)
     }
 
     private fun sendTrackingFromAppShortcuts() {
