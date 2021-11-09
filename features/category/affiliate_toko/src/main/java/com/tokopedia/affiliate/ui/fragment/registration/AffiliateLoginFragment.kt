@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.ui.fragment
+package com.tokopedia.affiliate.ui.fragment.registration
 
 import android.app.Activity
 import android.content.Intent
@@ -73,16 +73,16 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         val tutorialArray = arrayListOf<AffiliateTutorialPagerAdapter.LoginTutorialData>().apply {
             context?.apply {
                 add(AffiliateTutorialPagerAdapter.LoginTutorialData(
-                        getString(R.string.tutorial_title_1),
-                        getString(R.string.tutorial_subtitle_1),
+                        getString(R.string.affiliate_tutorial_title_1),
+                        getString(R.string.affiliate_tutorial_subtitle_1),
                         "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"))
                 add(AffiliateTutorialPagerAdapter.LoginTutorialData(
-                        getString(R.string.tutorial_title_2),
-                        getString(R.string.tutorial_subtitle_2),
+                        getString(R.string.affiliate_tutorial_title_2),
+                        getString(R.string.affiliate_tutorial_subtitle_2),
                         "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_product_not_found.png"))
                 add(AffiliateTutorialPagerAdapter.LoginTutorialData(
-                        getString(R.string.tutorial_title_3),
-                        getString(R.string.tutorial_subtitle_3),
+                        getString(R.string.affiliate_tutorial_title_3),
+                        getString(R.string.affiliate_tutorial_subtitle_3),
                         "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"))
             }
         }
@@ -120,10 +120,10 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     private fun checkLoggedIn() {
         if (!affiliateLoginViewModel.isUserLoggedIn()) {
-            affiliate_login_text.text = "Daftar sekarang dengan akun Tokopedia kamu"
-            affiliate_daftar_text.text = "Belum punya akun Tokopedia? "
-            affiliate_keluar_btn.text = "Daftar"
-            affiliate_sign_up_btn.text = "Masuk"
+            affiliate_login_text.text = getString(com.tokopedia.affiliate_toko.R.string.affiliate_daftar_sekarang_dengan_akun_tokopedia_kamu)
+            affiliate_daftar_text.text = getString(R.string.affiliate_belum_punya_akun_tokopedia)
+            affiliate_keluar_btn.text = getString(R.string.affiliate_daftar)
+            affiliate_sign_up_btn.text = getString(R.string.affiliate_masuk)
             affiliate_sign_up_btn.setOnClickListener {
                 startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN),
                     AFFILIATE_LOGIN_REQUEST_CODE)
@@ -140,10 +140,10 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
             affiliateNavigationInterface.validateUserStatus()
 
-            affiliate_login_text.text = "Daftarkan akun ini:"
-            affiliate_daftar_text.text = "Daftar Affiliate dengan akun lain? "
-            affiliate_keluar_btn.text = "Keluar"
-            affiliate_sign_up_btn.text = "Daftar Sekarang"
+            affiliate_login_text.text = getString(R.string.affiliate_daftarkan_akun_ini)
+            affiliate_daftar_text.text = getString(R.string.affiliate_daftar_affiliate_dengan_akun_lain)
+            affiliate_keluar_btn.text = getString(R.string.affiliate_keluar)
+            affiliate_sign_up_btn.text = getString(R.string.affiliate_daftar_sekarang)
             affiliate_sign_up_btn.setOnClickListener {
                 affiliateNavigationInterface.navigateToPortfolioFragment()
             }

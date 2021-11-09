@@ -2,8 +2,11 @@ package com.tokopedia.affiliate.ui.viewholder.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 
-class AffiliateShareModel(var name: String, var iconId: Int?, var serviceFormat : String?, var id : Int? = 0 , var buttonLoad: Boolean = false ) : Visitable<AffiliateAdapterTypeFactory> {
+class AffiliateShareModel(var name: String, var iconId: Int?, var serviceFormat : String?, var id : Int? = 0 ,
+                          var type: AffiliatePromotionBottomSheet.Companion.SheetType? = AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+                          var buttonLoad: Boolean = false, var isChecked : Boolean = false) : Visitable<AffiliateAdapterTypeFactory> {
 
     override fun type(typeFactory: AffiliateAdapterTypeFactory): Int {
         return typeFactory.type(this)

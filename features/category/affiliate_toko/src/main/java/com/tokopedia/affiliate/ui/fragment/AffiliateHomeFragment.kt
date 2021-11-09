@@ -217,8 +217,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     private fun onGetAnnouncementError() {
         product_list_group.hide()
         setupTickerView(
-            getString(R.string.system_down_title),
-            getString(R.string.system_down_description),
+            getString(R.string.affiliate_system_down_title),
+            getString(R.string.affiliate_system_down_description),
             Ticker.TYPE_ANNOUNCEMENT
         )
     }
@@ -259,8 +259,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         } else{
             product_list_group.hide()
             setupTickerView(
-                getString(R.string.system_down_title),
-                getString(R.string.system_down_description),
+                getString(R.string.affiliate_system_down_title),
+                getString(R.string.affiliate_system_down_description),
                 Ticker.TYPE_ANNOUNCEMENT
             )
         }
@@ -322,7 +322,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     override fun onProductClick(productId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {
         if(status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE){
-            AffiliatePromotionBottomSheet.newInstance(productId , productName , productImage, productUrl,productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_HOME).show(childFragmentManager, "")
+            AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION, null, productId , productName , productImage, productUrl,productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_HOME).show(childFragmentManager, "")
         }else {
             AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE).show(childFragmentManager, "")
         }

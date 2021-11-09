@@ -260,7 +260,8 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
     }
 
     override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String) {
-        AffiliatePromotionBottomSheet.newInstance(productId, productName, productImage, productUrl,
+        AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+                null,productId, productName, productImage, productUrl,
                 productIdentifier, AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")
     }
 
@@ -287,7 +288,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
         if (context != null && tabLayout != null) {
             val tabOne = Typography(context)
             tabOne.apply {
-                text = context.getString(R.string.pernah_dibeli)
+                text = context.getString(R.string.affiliate_pernah_dibeli)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
@@ -295,7 +296,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
             val tabTwo = Typography(context)
             tabTwo.apply {
-                text = context.getString(R.string.terakhir_dilihat)
+                text = context.getString(R.string.affiliate_terakhir_dilihat)
                 setType(Typography.HEADING_5)
                 gravity = Gravity.CENTER
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))

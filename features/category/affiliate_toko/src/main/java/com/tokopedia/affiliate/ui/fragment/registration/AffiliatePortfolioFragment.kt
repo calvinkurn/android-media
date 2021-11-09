@@ -15,9 +15,12 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
-import com.tokopedia.affiliate.interfaces.AdapterActionInterface
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
+import com.tokopedia.affiliate.interfaces.PortfolioClickInterface
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheetInterface
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePortfolioViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -26,9 +29,9 @@ import kotlinx.android.synthetic.main.affiliate_portfolio_fragment_layout.*
 import javax.inject.Inject
 
 class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewModel>(),
-        PortfolioUrlTextUpdateInterface, AdapterActionInterface{
+        PortfolioUrlTextUpdateInterface, AffiliatePromotionBottomSheetInterface , PortfolioClickInterface {
     private lateinit var affiliatePortfolioViewModel: AffiliatePortfolioViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(onFocusChangeInterface=this))
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(onFocusChangeInterface=this, portfolioClickInterface = this))
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -122,7 +125,21 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         affiliatePortfolioViewModel.updateListSuccess(position)
     }
 
-    override fun onSubmitButtonClick() {
+    override fun onButtonClick(arrayList: ArrayList<AffiliateShareModel>) {
+        convertToPortfolioModel(arrayList)
+    }
+
+    private fun convertToPortfolioModel(arrayList: ArrayList<AffiliateShareModel>) {
+        for (item in affiliatePortfolioViewModel.itemList){
+            // TODO Check add notify Items
+        }
+    }
+
+
+    override fun addSocialMediaButtonClicked() {
+        AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+                null,"", "", "", "",
+                "", AffiliatePromotionBottomSheet.ORIGIN_PORTFOLIO).show(childFragmentManager, "")
 
     }
 }

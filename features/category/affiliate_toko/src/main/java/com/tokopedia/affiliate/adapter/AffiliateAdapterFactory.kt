@@ -11,7 +11,8 @@ class AffiliateAdapterFactory(
         private var shareButtonInterface: ShareButtonInterface? = null,
         var productClickInterface : ProductClickInterface? = null,
         private var promotionClickInterface : PromotionClickInterface? = null,
-        private var adapterActionInterface  : AdapterActionInterface? = null,
+        private var addSocialInterface  : AddSocialInterface? = null,
+        private var portfolioClickInterface: PortfolioClickInterface? = null,
         private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface?=null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
@@ -19,12 +20,12 @@ class AffiliateAdapterFactory(
         return when (type) {
             AffiliateSharedProductCardsItemVH.LAYOUT -> AffiliateSharedProductCardsItemVH(parent, productClickInterface)
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
-            AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface)
+            AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface,addSocialInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
             AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
             AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent,onFocusChangeInterface)
             AffiliateHeaderItemVH.LAYOUT -> AffiliateHeaderItemVH(parent)
-            AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent,adapterActionInterface)
+            AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent,addSocialInterface,portfolioClickInterface)
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
             AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
             AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)

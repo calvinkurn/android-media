@@ -3,12 +3,14 @@ package com.tokopedia.affiliate.ui.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.affiliate.interfaces.AdapterActionInterface
+import com.tokopedia.affiliate.interfaces.AddSocialInterface
+import com.tokopedia.affiliate.interfaces.PortfolioClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioButtonModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifycomponents.UnifyButton
 
-class AffiliatePortfolioButtonItemVH(itemView: View, private val adapterActionInterface: AdapterActionInterface?)
+class AffiliatePortfolioButtonItemVH(itemView: View, private val addSocialInterface: AddSocialInterface?,
+                                     private val portfolioClickInterface: PortfolioClickInterface?)
     : AbstractViewHolder<AffiliatePortfolioButtonModel>(itemView) {
 
     companion object {
@@ -20,8 +22,19 @@ class AffiliatePortfolioButtonItemVH(itemView: View, private val adapterActionIn
     override fun bind(element: AffiliatePortfolioButtonModel?) {
         itemView.findViewById<UnifyButton>(R.id.add_social_media_btn).apply {
             text = element?.buttonData?.text
-            element?.buttonData
-        }
+            buttonType = element?.buttonData?.buttonType ?: 1
+            buttonVariant = element?.buttonData?.buttonVariant ?: 1
 
+            if (element?.buttonData?.isSaveSocial == true){
+                setOnClickListener {
+                    addSocialInterface?.onSaveSocialButtonClicked()
+                }
+            }else {
+                setOnClickListener {
+                    portfolioClickInterface?.addSocialMediaButtonClicked()
+                }
+            }
+
+        }
     }
 }

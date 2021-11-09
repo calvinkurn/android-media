@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -89,11 +88,11 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             errorSecondaryAction.gone()
             setButtonFull(true)
             if(identifier == BOUGHT_IDENTIFIER){
-                errorTitle.text = getString(R.string.no_product_bought_on_tokopedia_yet)
-                errorDescription.text = getString(R.string.no_product_bought_on_tokopedia_yet_content)
+                errorTitle.text = getString(R.string.affiliate_no_product_bought_on_tokopedia_yet)
+                errorDescription.text = getString(R.string.affiliate_no_product_bought_on_tokopedia_yet_content)
             }else {
-                errorTitle.text = getString(R.string.no_product_seen_on_tokopedia_yet)
-                errorDescription.text = getString(R.string.no_product_seen_on_tokopedia_yet_content)
+                errorTitle.text = getString(R.string.affiliate_no_product_seen_on_tokopedia_yet)
+                errorDescription.text = getString(R.string.affiliate_no_product_seen_on_tokopedia_yet_content)
             }
             errorAction.text = getString(R.string.affiliate_paste_link)
             errorAction.setOnClickListener {
@@ -210,7 +209,9 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     }
 
     override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String) {
-        AffiliatePromotionBottomSheet.newInstance(productId, productName, productImage, productUrl,
+        AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+                null,
+                productId, productName, productImage, productUrl,
                 productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")
     }
 
