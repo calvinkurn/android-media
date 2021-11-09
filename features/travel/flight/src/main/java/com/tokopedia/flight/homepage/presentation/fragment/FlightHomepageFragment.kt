@@ -406,7 +406,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        binding?.flightHomepageTicker?.setHtmlDescription(travelTickerModel.message)
+        binding?.flightHomepageTicker?.setTextDescription(travelTickerModel.message)
         binding?.flightHomepageTicker?.tickerType = Ticker.TYPE_WARNING
         binding?.flightHomepageTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {

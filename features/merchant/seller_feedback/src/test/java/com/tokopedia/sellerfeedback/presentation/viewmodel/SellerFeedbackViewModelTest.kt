@@ -1,6 +1,6 @@
 package com.tokopedia.sellerfeedback.presentation.viewmodel
 
-import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.sellerfeedback.data.SubmitGlobalFeedback
 import com.tokopedia.sellerfeedback.data.SubmitGlobalFeedbackResponseWrapper
 import com.tokopedia.sellerfeedback.data.SubmitResult
