@@ -14,7 +14,7 @@ import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
  */
 class DynamicIconComponentCallback (private val context: Context?, private val homeCategoryListener: HomeCategoryListener): DynamicIconComponentListener {
     companion object {
-        val TOKONOW_ICON_ID = arrayOf("792", "831")
+        private val TOKONOW_ICON_ID = arrayOf("792", "831")
     }
     override fun onClickIcon(dynamicIcon: DynamicIconComponent.DynamicIcon, position: Int, iconPosition: Int, type: Int) {
         DynamicIconTracking.sendDynamicIconClick(
