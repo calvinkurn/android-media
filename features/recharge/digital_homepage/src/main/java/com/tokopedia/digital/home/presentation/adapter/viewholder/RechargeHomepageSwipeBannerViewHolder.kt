@@ -56,10 +56,16 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
                 autoplay = true
             }
 
-            val urlArr : ArrayList<String> = slidesList.map {
-                it.mediaUrl
-            } as ArrayList<String>
-            addBannerImages(urlArr)
+            stage.removeAllViews()
+            if (stage.childCount == 0){
+                val urlArr : ArrayList<String> = slidesList.map {
+                    it.mediaUrl
+                } as ArrayList<String>
+                addBannerImages(urlArr)
+                bind.root.post {
+                    activeIndex = 0
+                }
+            }
         }
     }
 
