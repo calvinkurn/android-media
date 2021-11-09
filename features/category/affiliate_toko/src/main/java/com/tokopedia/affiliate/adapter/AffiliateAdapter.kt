@@ -23,9 +23,24 @@ class AffiliateAdapter(affiliateAdapterFactory: AffiliateAdapterFactory)
            addElement(AffiliateShimmerModel())
        }
     }
-
-    fun stopShimmer(){
+    fun addShimmer(){
+        addElement(AffiliateShimmerModel())
+        addElement(AffiliateShimmerModel())
+        addElement(AffiliateShimmerModel())
+        addElement(AffiliateShimmerModel())
+    }
+    fun resetList(){
         this.visitables.clear()
+    }
+
+    fun removeShimmer(listSize: Int) {
+        if(itemCount >= listSize+3) {
+            this.visitables.removeAt(listSize + 3)
+            this.visitables.removeAt(listSize + 2)
+            this.visitables.removeAt(listSize + 1)
+            this.visitables.removeAt(listSize)
+            notifyItemRangeRemoved(listSize,4)
+        }
     }
 
 }

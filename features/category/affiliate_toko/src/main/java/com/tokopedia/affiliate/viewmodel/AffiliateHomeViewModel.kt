@@ -32,7 +32,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<String>()
     private var affiliateErrorMessage = MutableLiveData<String>()
-    private val pageLimit = 6
+    val pageLimit = 6
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
@@ -55,11 +55,8 @@ class AffiliateHomeViewModel @Inject constructor(
         })
     }
     fun getAffiliatePerformance(page : Int) {
-        if(page == PAGE_ZERO)
-            shimmerVisibility.value = true
+        shimmerVisibility.value = true
         launchCatchError(block = {
-            if(page == PAGE_ZERO)
-                shimmerVisibility.value = false
             affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
                 totalItemsCount.value = it.itemTotalCount
                 convertDataToVisitables(it)?.let { visitables ->

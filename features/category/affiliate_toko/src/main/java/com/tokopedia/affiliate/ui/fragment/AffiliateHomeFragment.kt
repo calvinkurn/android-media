@@ -47,7 +47,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     private var totalDataItemsCount: Int = 0
     private var isSwipeRefresh = false
-
+    private var listSize = 0
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
@@ -95,6 +95,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         swipe_refresh_layout.setOnRefreshListener {
             isSwipeRefresh = true
             loadMoreTriggerListener?.resetState()
+            listSize = 0
+            adapter.resetList()
             affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
         }
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
@@ -158,9 +160,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         affiliateHomeViewModel.getShimmerVisibility().observe(this, { visibility ->
             if (visibility != null) {
                 if (visibility)
-                    adapter.startShimmer()
+                    adapter.addShimmer()
                 else
-                    adapter.stopShimmer()
+                    adapter.removeShimmer(listSize)
             }
         })
         affiliateHomeViewModel.progressBar().observe(this, { visibility ->
@@ -188,11 +190,13 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
 
         affiliateHomeViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
+            adapter.removeShimmer(listSize)
             if(isSwipeRefresh){
                 swipe_refresh_layout.isRefreshing = false
                 isSwipeRefresh = !isSwipeRefresh
             }
             if (dataList.isNotEmpty()) {
+                listSize += dataList.size
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
             } else {
