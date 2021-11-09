@@ -144,8 +144,8 @@
     <string name="location_dot_builder">• %1s</string>
     <string name="product_shop_rating">rata-rata ulasan</string>
     <string name="product_shop_total_product">total produk</string>
-    <string name="product_shop_process_product">pesanan di proses</string>
-    <string name="product_shop_chat_reply">chat dibalas</string>
+    <string name="product_shop_process_product">pesanan diproses</string>
+    <string name="product_shop_chat_reply">balas chat &amp; diskusi</string>
     <string name="product_shop_start_sell">mulai jualan</string>
 
     <string name="shop_chat_speed_in_days">%1d hari</string>
