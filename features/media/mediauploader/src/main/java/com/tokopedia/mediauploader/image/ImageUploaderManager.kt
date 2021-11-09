@@ -4,7 +4,7 @@ import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.data.mapper.PolicyMapper
-import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.fileExtension
 import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
@@ -21,7 +21,11 @@ class ImageUploaderManager @Inject constructor(
     private val imageUploaderUseCase: GetImageUploaderUseCase
 ) : UploaderManager {
 
-    suspend operator fun invoke(file: File, sourceId: String): UploadResult {
+    suspend operator fun invoke(
+        file: File,
+        sourceId: String,
+        loader: ProgressUploader?,
+    ): UploadResult {
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
         val filePath = file.path
@@ -51,6 +55,7 @@ class ImageUploaderManager @Inject constructor(
                     UploadResult.Error(minResBitmapMessage(minRes.width, minRes.height))
                 }
                 else -> {
+                    setProgressUploader(loader)
                     upload(file, sourceId, sourcePolicy)
                 }
             }
@@ -78,8 +83,8 @@ class ImageUploaderManager @Inject constructor(
         }?: UploadResult.Error(error)
     }
 
-    override fun setProgressUploader(progress: ProgressCallback?) {
-        imageUploaderUseCase.progressCallback = progress
+    override fun setProgressUploader(progress: ProgressUploader?) {
+        imageUploaderUseCase.progressUploader = progress
     }
 
 }

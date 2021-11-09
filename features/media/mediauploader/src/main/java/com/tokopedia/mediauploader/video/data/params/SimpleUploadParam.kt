@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.video.data.params
 
-import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.util.fileBody
 import java.io.File
 
@@ -10,10 +10,10 @@ data class SimpleUploadParam(
     var timeOut: String,
 ) {
 
-    fun fileBody(progressCallback: ProgressCallback?) = file.fileBody(
+    fun fileBody(progressUploader: ProgressUploader?) = file.fileBody(
         type = TYPE_FILE,
         bodyName = BODY_FILE,
-        progressCallback = progressCallback
+        progressUploader = progressUploader
     )
 
     companion object {

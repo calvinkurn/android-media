@@ -1,5 +1,5 @@
 package com.tokopedia.mediauploader.common.state
 
-interface ProgressCallback {
+interface ProgressUploader {
     fun onProgress(percentage: Int)
 }

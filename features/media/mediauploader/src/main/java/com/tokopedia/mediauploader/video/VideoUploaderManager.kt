@@ -3,7 +3,7 @@ package com.tokopedia.mediauploader.video
 import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.data.mapper.PolicyMapper
-import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.fileExtension
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
@@ -20,7 +20,12 @@ class VideoUploaderManager @Inject constructor(
 
     private var isSimpleUpload = true
 
-    suspend operator fun invoke(file: File, sourceId: String, withTranscode: Boolean): UploadResult {
+    suspend operator fun invoke(
+        file: File,
+        sourceId: String,
+        loader: ProgressUploader?,
+        withTranscode: Boolean
+    ): UploadResult {
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
         val filePath = file.path
@@ -47,6 +52,8 @@ class VideoUploaderManager @Inject constructor(
                 else -> {
                     isSimpleUpload = file.length() <= maxSizeOfSimpleUpload.mbToBytes()
 
+                    setProgressUploader(loader)
+
                     if (!isSimpleUpload) {
                         largeUploaderManager(file, sourceId, sourcePolicy, withTranscode)
                     } else {
@@ -67,9 +74,8 @@ class VideoUploaderManager @Inject constructor(
         }
     }
 
-    override fun setProgressUploader(progress: ProgressCallback?) {
+    override fun setProgressUploader(progress: ProgressUploader?) {
         if (isSimpleUpload) {
-            // for now, the progress loader only supported for simple uploader
             simpleUploaderManager.setProgressCallback(progress)
         } else {
             largeUploaderManager.setProgressCallback(progress)

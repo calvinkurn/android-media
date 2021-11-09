@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.image.data.params
 
-import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.util.fileBody
 import java.io.File
 
@@ -15,10 +15,10 @@ data class ImageUploadParam(
         return hostUrl.isEmpty() && !file.exists() && timeOut.isEmpty()
     }
 
-    fun fileBody(progressCallback: ProgressCallback?) = file.fileBody(
+    fun fileBody(progressUploader: ProgressUploader?) = file.fileBody(
         type = SUPPORTED_CONTENT_TYPE,
         bodyName = BODY_FILE_UPLOAD,
-        progressCallback = progressCallback
+        progressUploader = progressUploader
     )
 
     companion object {

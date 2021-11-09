@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.common.util
 
 import android.os.Handler
 import android.os.Looper
-import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressUploader
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.BufferedSink
@@ -12,7 +12,7 @@ import java.io.FileInputStream
 class UploadRequestBody(
     private val file: File,
     private val contentType: MediaType?,
-    private val callback: ProgressCallback?
+    private val uploader: ProgressUploader?
 ) : RequestBody() {
 
     override fun contentType(): MediaType? = contentType
@@ -29,7 +29,7 @@ class UploadRequestBody(
             val handler = Handler(Looper.getMainLooper())
             var read = 0
             while (read != -1) {
-                handler.post(ProgressUpdater(uploaded, fileLength, callback))
+                handler.post(ProgressUpdater(uploaded, fileLength, uploader))
                 uploaded += read.toLong()
                 sink.write(buffer, 0, read)
                 read = stream.read(buffer)
@@ -40,15 +40,15 @@ class UploadRequestBody(
     private class ProgressUpdater(
         private val uploaded: Long,
         private val total: Long,
-        private val callback: ProgressCallback?
+        private val uploader: ProgressUploader?
     ): Runnable {
         override fun run() {
-            callback?.onProgress((MAX_PROGRESS_UPDATER * uploaded / total).toInt())
+            uploader?.onProgress((MAX_PROGRESS_LOADER * uploaded / total).toInt())
         }
     }
 
     companion object {
-        private const val MAX_PROGRESS_UPDATER = 100
+        private const val MAX_PROGRESS_LOADER = 100
     }
 
 }

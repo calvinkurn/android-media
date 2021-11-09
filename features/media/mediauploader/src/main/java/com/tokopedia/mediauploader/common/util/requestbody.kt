@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.common.util
 
-import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressUploader
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -13,10 +13,10 @@ fun String.requestBody(): RequestBody {
 fun File.fileBody(
     type: String,
     bodyName: String,
-    progressCallback: ProgressCallback? = null
+    progressUploader: ProgressUploader? = null
 ): MultipartBody.Part {
     val contentType = MediaType.parse(type)
-    val requestBody = UploadRequestBody(this, contentType, progressCallback)
+    val requestBody = UploadRequestBody(this, contentType, progressUploader)
     return MultipartBody.Part.createFormData(bodyName, this.name, requestBody)
 }
 

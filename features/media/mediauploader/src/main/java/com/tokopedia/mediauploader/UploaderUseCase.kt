@@ -1,13 +1,11 @@
 package com.tokopedia.mediauploader
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isImage
 import com.tokopedia.mediauploader.common.util.request
 import com.tokopedia.mediauploader.image.ImageUploaderManager
-import com.tokopedia.mediauploader.video.LargeUploaderManager
-import com.tokopedia.mediauploader.video.SimpleUploaderManager
 import com.tokopedia.mediauploader.video.VideoUploaderManager
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +17,7 @@ class UploaderUseCase @Inject constructor(
     private val videoUploaderManager: VideoUploaderManager
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
-    private var progressUploader: ProgressCallback? = null
+    private var progressUploader: ProgressUploader? = null
 
     private lateinit var sourceId: String
     private lateinit var file: File
@@ -43,22 +41,33 @@ class UploaderUseCase @Inject constructor(
     private suspend fun videoUploader(withTranscode: Boolean) = request(
         file = file,
         sourceId = sourceId,
-        loader = progressUploader,
         uploaderManager = videoUploaderManager,
-        execute = { videoUploaderManager(file, sourceId, withTranscode) }
+        execute = {
+            videoUploaderManager(
+                file,
+                sourceId,
+                progressUploader,
+                withTranscode
+            )
+        }
     )
 
     private suspend fun imageUploader() = request(
         file = file,
         sourceId = sourceId,
-        loader = progressUploader,
         uploaderManager = imageUploaderManager,
-        execute = { imageUploaderManager(file, sourceId) }
+        execute = {
+            imageUploaderManager(
+                file,
+                sourceId,
+                progressUploader
+            )
+        }
     )
 
     // Public Method
     fun trackProgress(progress: (percentage: Int) -> Unit) {
-        this.progressUploader = object : ProgressCallback {
+        this.progressUploader = object : ProgressUploader {
             override fun onProgress(percentage: Int) {
                 progress(percentage)
             }
