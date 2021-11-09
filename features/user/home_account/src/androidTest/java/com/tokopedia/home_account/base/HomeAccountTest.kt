@@ -34,76 +34,76 @@ abstract class HomeAccountTest {
     @Inject
     protected lateinit var getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCaseStub
 
-    @Inject
-    protected lateinit var getBalanceAndPointUseCase: GetBalanceAndPointUseCaseStub
-
-    @Inject
-    protected lateinit var getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCaseStub
-
-    @Inject
-    protected lateinit var getSaldoBalanceUseCase: GetSaldoBalanceUseCaseStub
-
-    @Inject
-    protected lateinit var getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCaseStub
-
-    @Inject
-    protected lateinit var getWalletEligibleUseCase: GetWalletEligibleUseCaseStub
+//    @Inject
+//    protected lateinit var getBalanceAndPointUseCase: GetBalanceAndPointUseCaseStub
+//
+//    @Inject
+//    protected lateinit var getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCaseStub
+//
+//    @Inject
+//    protected lateinit var getSaldoBalanceUseCase: GetSaldoBalanceUseCaseStub
+//
+//    @Inject
+//    protected lateinit var getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCaseStub
+//
+//    @Inject
+//    protected lateinit var getWalletEligibleUseCase: GetWalletEligibleUseCaseStub
 
     @Inject
     @Named("CentralizedUserAssetDataModelSuccess")
     protected lateinit var centralizedUserAssetDataModelSuccess: CentralizedUserAssetDataModel
+//
+//    @Inject
+//    @Named("CentralizedUserAssetDataModelFailed")
+//    protected lateinit var centralizedUserAssetDataModelFailed: CentralizedUserAssetDataModel
+//
+//    @Inject
+//    @Named("GopayBalanceAndPointDataModelSuccess")
+//    protected lateinit var gopayBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
+//
+//    @Inject
+//    @Named("GopayBalanceAndPointDataModelFailed")
+//    protected lateinit var gopayBalanceAndPointDataModelFailed: BalanceAndPointDataModel
+//
+//    @Inject
+//    @Named("TokopointBalanceAndPointDataModelSuccess")
+//    protected lateinit var tokopointBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
+//
+//    @Inject
+//    @Named("TokopointBalanceAndPointDataModelFailed")
+//    protected lateinit var tokopointBalanceAndPointDataModelFailed: BalanceAndPointDataModel
 
-    @Inject
-    @Named("CentralizedUserAssetDataModelFailed")
-    protected lateinit var centralizedUserAssetDataModelFailed: CentralizedUserAssetDataModel
+//    @Inject
+//    @Named("OvoBalanceAndPointDataModelSuccess")
+//    protected lateinit var ovoBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
+//
+//    @Inject
+//    @Named("OvoBalanceAndPointDataModelFailed")
+//    protected lateinit var ovoBalanceAndPointDataModelFailed: BalanceAndPointDataModel
 
-    @Inject
-    @Named("GopayBalanceAndPointDataModelSuccess")
-    protected lateinit var gopayBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
-
-    @Inject
-    @Named("GopayBalanceAndPointDataModelFailed")
-    protected lateinit var gopayBalanceAndPointDataModelFailed: BalanceAndPointDataModel
-
-    @Inject
-    @Named("TokopointBalanceAndPointDataModelSuccess")
-    protected lateinit var tokopointBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
-
-    @Inject
-    @Named("TokopointBalanceAndPointDataModelFailed")
-    protected lateinit var tokopointBalanceAndPointDataModelFailed: BalanceAndPointDataModel
-
-    @Inject
-    @Named("OvoBalanceAndPointDataModelSuccess")
-    protected lateinit var ovoBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
-
-    @Inject
-    @Named("OvoBalanceAndPointDataModelFailed")
-    protected lateinit var ovoBalanceAndPointDataModelFailed: BalanceAndPointDataModel
-
-    @Inject
-    @Named("SaldoBalanceAndPointDataModelSuccess")
-    protected lateinit var saldoBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
-
-    @Inject
-    @Named("SaldoBalanceAndPointDataModelFailed")
-    protected lateinit var saldoBalanceAndPointDataModelFailed: BalanceAndPointDataModel
-
-    @Inject
-    @Named("GopaylaterBalanceAndPointDataModelSuccess")
-    protected lateinit var gopaylaterBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
-
-    @Inject
-    @Named("GopaylaterBalanceAndPointDataModelFailed")
-    protected lateinit var gopaylaterBalanceAndPointDataModelFailed: BalanceAndPointDataModel
-
-    @Inject
-    @Named("CobrandCCBalanceAndPointDataModelSuccess")
-    protected lateinit var cobrandCCBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
-
-    @Inject
-    @Named("CobrandCCyBalanceAndPointDataModelFailed")
-    protected lateinit var coobrandCCBalanceAndPointDataModelFailed: BalanceAndPointDataModel
+//    @Inject
+//    @Named("SaldoBalanceAndPointDataModelSuccess")
+//    protected lateinit var saldoBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
+//
+//    @Inject
+//    @Named("SaldoBalanceAndPointDataModelFailed")
+//    protected lateinit var saldoBalanceAndPointDataModelFailed: BalanceAndPointDataModel
+//
+//    @Inject
+//    @Named("GopaylaterBalanceAndPointDataModelSuccess")
+//    protected lateinit var gopaylaterBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
+//
+//    @Inject
+//    @Named("GopaylaterBalanceAndPointDataModelFailed")
+//    protected lateinit var gopaylaterBalanceAndPointDataModelFailed: BalanceAndPointDataModel
+//
+//    @Inject
+//    @Named("CobrandCCBalanceAndPointDataModelSuccess")
+//    protected lateinit var cobrandCCBalanceAndPointDataModelSuccess: BalanceAndPointDataModel
+//
+//    @Inject
+//    @Named("CobrandCCyBalanceAndPointDataModelFailed")
+//    protected lateinit var coobrandCCBalanceAndPointDataModelFailed: BalanceAndPointDataModel
 
     protected open lateinit var activity: HomeAccountUserActivityStub
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
@@ -125,32 +125,33 @@ abstract class HomeAccountTest {
     }
 
     protected fun setupGetCentralizedUserAssetConfigUseCaseResponse(isSuccess: Boolean) {
-        getCentralizedUserAssetConfigUseCase.response = if (isSuccess) centralizedUserAssetDataModelSuccess else centralizedUserAssetDataModelFailed
+//        getCentralizedUserAssetConfigUseCase.response = if (isSuccess) centralizedUserAssetDataModelSuccess else centralizedUserAssetDataModelFailed
+        getCentralizedUserAssetConfigUseCase.response = centralizedUserAssetDataModelSuccess
     }
 
-    protected fun setupGetGopayBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
-        getBalanceAndPointUseCase.response = if (isSuccess) gopayBalanceAndPointDataModelSuccess else gopayBalanceAndPointDataModelFailed
-    }
-
-    protected fun setupGetTokopointBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
-        getTokopointsBalanceAndPointUseCase.response = if (isSuccess) tokopointBalanceAndPointDataModelSuccess else tokopointBalanceAndPointDataModelFailed
-    }
-
-    protected fun setupGetOvoBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
-        getBalanceAndPointUseCase.response = if (isSuccess) ovoBalanceAndPointDataModelSuccess else ovoBalanceAndPointDataModelFailed
-    }
-
-    protected fun setupGetSaldoBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
-        getSaldoBalanceUseCase.response = if (isSuccess) saldoBalanceAndPointDataModelSuccess else saldoBalanceAndPointDataModelFailed
-    }
-
-    protected fun setupGetGopaylaterBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
-        getBalanceAndPointUseCase.response = if (isSuccess) gopaylaterBalanceAndPointDataModelSuccess else gopaylaterBalanceAndPointDataModelFailed
-    }
-
-    protected fun setupGetCoBrandCCBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
-        getCoBrandCCBalanceAndPointUseCase.response = if (isSuccess) cobrandCCBalanceAndPointDataModelSuccess else coobrandCCBalanceAndPointDataModelFailed
-    }
+//    protected fun setupGetGopayBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
+//        getBalanceAndPointUseCase.response = if (isSuccess) gopayBalanceAndPointDataModelSuccess else gopayBalanceAndPointDataModelFailed
+//    }
+//
+//    protected fun setupGetTokopointBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
+//        getTokopointsBalanceAndPointUseCase.response = if (isSuccess) tokopointBalanceAndPointDataModelSuccess else tokopointBalanceAndPointDataModelFailed
+//    }
+//
+//    protected fun setupGetOvoBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
+//        getBalanceAndPointUseCase.response = if (isSuccess) ovoBalanceAndPointDataModelSuccess else ovoBalanceAndPointDataModelFailed
+//    }
+//
+//    protected fun setupGetSaldoBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
+//        getSaldoBalanceUseCase.response = if (isSuccess) saldoBalanceAndPointDataModelSuccess else saldoBalanceAndPointDataModelFailed
+//    }
+//
+//    protected fun setupGetGopaylaterBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
+//        getBalanceAndPointUseCase.response = if (isSuccess) gopaylaterBalanceAndPointDataModelSuccess else gopaylaterBalanceAndPointDataModelFailed
+//    }
+//
+//    protected fun setupGetCoBrandCCBalanceAndPointUseCaseResponse(isSuccess: Boolean) {
+//        getCoBrandCCBalanceAndPointUseCase.response = if (isSuccess) cobrandCCBalanceAndPointDataModelSuccess else coobrandCCBalanceAndPointDataModelFailed
+//    }
 
     fun runTest(test: () -> Unit) {
         launchDefaultFragment()

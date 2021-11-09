@@ -9,8 +9,7 @@ object HomeAccountUserComponentsStubBuilder {
     fun getComponent(applicationContext: Context, activityContext: Context): HomeAccountUserComponentsStub =
         DaggerHomeAccountUserComponentsStub.builder()
             .fakeBaseAppComponent(FakeBaseAppComponentBuilder.getComponent(applicationContext))
-            .homeAccountUserModules(HomeAccountUserModules(activityContext))
-            .sessionModule(SessionModule())
+            .fakeHomeAccountUserModules(FakeHomeAccountUserModules(activityContext))
             .homeAccountResponseModule(HomeAccountResponseModule())
             .homeAccountFakeUsecaseModule(HomeAccountFakeUsecaseModule())
             .build()

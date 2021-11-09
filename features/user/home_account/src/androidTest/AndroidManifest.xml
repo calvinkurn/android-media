@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:versionCode="1"
     android:versionName="1.0.0"
-    package="com.tokopedia.home_account.test">
+    package="com.tokopedia.home_account">
 
     <application
         android:label="New Home Account Test"
@@ -11,7 +11,7 @@
         tools:replace="android:debuggable,android:label"
         android:debuggable="false">
 
-        <activity android:name="com.tokopedia.home_account.environment.InstrumentationNewHomeAccountTestActivity"
+        <activity android:name=".stub.view.activity.HomeAccountUserActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
     </application>
