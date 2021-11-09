@@ -125,16 +125,6 @@ class UohListUseCase @Inject constructor(@ApplicationContext private val gqlRepo
                       updateTime
                       updateBy
                     }
-                    filters
-                    filtersV2 {
-                      label
-                      value
-                      isPrimary
-                    }
-                    categories {
-                      value
-                      label
-                    }
                     next
                     dateLimit
                     tickers {
