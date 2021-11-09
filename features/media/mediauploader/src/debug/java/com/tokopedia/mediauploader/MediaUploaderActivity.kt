@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.mediauploader.MediaUploaderViewModel.Companion.UploadState
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
@@ -29,7 +30,6 @@ import kotlinx.coroutines.*
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.mediauploader.MediaUploaderViewModel.Companion.UploadState
 
 class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
@@ -57,7 +57,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_media_uploader)
+        setContentView(com.tokopedia.mediauploader.R.layout.activity_media_uploader)
         initInjector()
 
         initViewComponent()
@@ -179,8 +179,8 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             filePath = File(mediaFilePath)
         )
 
-        uploaderUseCase.trackProgress {
-            progressBar.setValue(it, true)
+        uploaderUseCase.trackProgress { progress ->
+            progressBar.setValue(progress, true)
         }
 
         launch {
