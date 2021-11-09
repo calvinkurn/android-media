@@ -17,6 +17,8 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.main_testapp.*
+import com.tokopedia.navigation.presentation.activity.MainParentActivity
+import com.tokopedia.homenav.view.activity.HomeNavActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_testapp)
         userSession = UserSession(this)
+        userSession.setFirstTimeUserOnboarding(false)
 
         if (TokopediaUrl.getInstance().GQL.contains("staging")) {
             testapp_environment?.text = "STAGING URL"
@@ -115,10 +118,12 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        val appLink = etAppLink.text.toString()
-        if(appLink.isNotBlank())
-            RouteManager.route(this, appLink)
-        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this, MainParentActivity::class.java))
+
+//        val appLink = etAppLink.text.toString()
+//        if(appLink.isNotBlank())
+//            RouteManager.route(this, appLink)
+//        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
     private fun getDefaultAppLink(): String {
