@@ -78,37 +78,37 @@ class GraphqlRequest {
     }
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
-    constructor(query: String, typeOfT: Type) {
-        this.query = query
-        queryCopy = query
-        this.typeOfT = typeOfT
+    constructor(query: String?, typeOfT: Type?) {
+        this.query = query ?: ""
+        queryCopy = query ?: ""
+        this.typeOfT = typeOfT ?: String::class.java
         md5 = FingerprintManager.md5(query)
     }
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
-    constructor(query: String, doQueryHash: Boolean, typeOfT: Type) {
-        this.query = query
-        queryCopy = query
-        this.typeOfT = typeOfT
+    constructor(query: String?, doQueryHash: Boolean, typeOfT: Type?) {
+        this.query = query ?: ""
+        queryCopy = query ?: ""
+        this.typeOfT = typeOfT ?: String::class.java
         isDoQueryHash = doQueryHash
         md5 = FingerprintManager.md5(query)
     }
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
-    constructor(query: String, typeOfT: Type, shouldThrow: Boolean) : this(query, typeOfT) {
+    constructor(query: String?, typeOfT: Type?, shouldThrow: Boolean) : this(query, typeOfT) {
         isShouldThrow = shouldThrow
     }
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
-    constructor(query: String, typeOfT: Type, variables: Map<String, Any?>?) : this(query, typeOfT) {
+    constructor(query: String?, typeOfT: Type?, variables: Map<String, Any?>?) : this(query, typeOfT) {
         this.variables = variables
     }
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
     constructor(
         doQueryHash: Boolean,
-        query: String,
-        typeOfT: Type,
+        query: String?,
+        typeOfT: Type?,
         variables: Map<String, Any?>?
     ) : this(query, typeOfT) {
         this.variables = variables
@@ -117,7 +117,7 @@ class GraphqlRequest {
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
     constructor(
-        query: String, typeOfT: Type, variables: Map<String, Any?>?,
+        query: String?, typeOfT: Type?, variables: Map<String, Any?>?,
         shouldThrow: Boolean
     ) : this(query, typeOfT, variables) {
         isShouldThrow = shouldThrow
@@ -125,7 +125,7 @@ class GraphqlRequest {
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
     constructor(
-        query: String, typeOfT: Type, variables: Map<String, Any?>?,
+        query: String?, typeOfT: Type?, variables: Map<String, Any?>?,
         operationName: String?
     ) : this(query, typeOfT, variables) {
         this.operationName = operationName
@@ -133,7 +133,7 @@ class GraphqlRequest {
 
     @Deprecated("use constructor(GqlQueryInterface, ..)")
     constructor(
-        query: String, typeOfT: Type, variables: Map<String, Any?>?,
+        query: String?, typeOfT: Type?, variables: Map<String, Any?>?,
         operationName: String?, shouldThrow: Boolean
     ) : this(query, typeOfT, variables, operationName) {
         isShouldThrow = shouldThrow
