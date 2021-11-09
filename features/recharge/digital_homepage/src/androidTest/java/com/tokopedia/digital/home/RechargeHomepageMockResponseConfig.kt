@@ -95,7 +95,7 @@ class RechargeHomepageMockResponseConfig: MockModelConfig() {
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_CONTAINS_SECTION_SWIPE_BANNER,
-                getRawString(context, R.raw.recharge_homepage_product_banner_mock_response),
+                getRawString(context, R.raw.recharge_homepage_swipe_banner_mock_response),
                 FIND_BY_CONTAINS)
         return this
     }
