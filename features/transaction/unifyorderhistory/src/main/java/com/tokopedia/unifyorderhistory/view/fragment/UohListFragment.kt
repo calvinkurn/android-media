@@ -55,7 +55,6 @@ import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -63,7 +62,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -273,6 +271,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         }
 
+        const val OPEN_ORDER_REQUEST_CODE = 400
         const val URL_IMG_EMPTY_SEARCH_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_search_list.png"
         const val URL_IMG_EMPTY_ORDER_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_order_list.png"
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
@@ -431,6 +430,20 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 val toasterType = data.getIntExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE, Toaster.TYPE_NORMAL)
                 showToaster(toasterMessage, toasterType)
             }
+        } else if (requestCode == OPEN_ORDER_REQUEST_CODE) {
+            if (currIndexNeedUpdate > -1 && orderIdNeedUpdated.isNotEmpty()) {
+                val item = uohItemAdapter.listTypeData.getOrNull(currIndexNeedUpdate)
+                if (item != null
+                        && item.typeLayout == UohConsts.TYPE_ORDER_LIST
+                        && item.dataObject is UohListOrder.Data.UohOrders.Order
+                        && item.dataObject.verticalID == orderIdNeedUpdated) {
+                    uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
+                    loadOrderHistoryList(orderIdNeedUpdated)
+                    return
+                }
+            }
+            currIndexNeedUpdate = -1
+            orderIdNeedUpdated = ""
         }
     }
 
@@ -1710,11 +1723,18 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
         val detailUrl = order.metadata.detailURL
+        var intent: Intent? = null
         if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
+            intent = RouteManager.getIntentNoFallback(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
         } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
-            RouteManager.route(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
+            intent = RouteManager.getIntentNoFallback(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
         }
+
+        if (intent == null) {
+            return
+        }
+        currIndexNeedUpdate = index
+        orderIdNeedUpdated = order.verticalID
 
         // analytics
         var jsonArray = JsonArray()
@@ -1746,6 +1766,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         // requested as old flow (from old order list)
         UohAnalytics.orderDetailOpenScreenEvent()
+
+        startActivityForResult(intent, OPEN_ORDER_REQUEST_CODE)
     }
 
     override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
