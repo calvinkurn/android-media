@@ -56,8 +56,6 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
     private var confirmedCancelledOrderDialog: OrderExtensionDialog? = null
     private var respondInfo: OrderExtensionRespondInfoUiModel? = null
 
-    private var isFromDialog = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -105,9 +103,9 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
     private fun observeRespond() {
         observe(buyerOrderDetailExtensionViewModel.orderExtensionRespond) {
             setButtonLoadingFalse()
+            dismissConfirmedCancelledOrderDialog()
             when (it) {
                 is Success -> {
-//                    dismissConfirmedCancelledOrderDialog()
                     showRespondOrderExtension(it.data)
                 }
                 is Fail -> {
@@ -145,11 +143,9 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
     private fun setupCta() = binding?.run {
         btnOrderCancelled.setOnClickListener {
-            isFromDialog = true
             showConfirmedCancelledOrderDialog()
         }
         btnSubmissionExtends.setOnClickListener {
-            isFromDialog = true
             btnSubmissionExtends.isLoading = true
             buyerOrderDetailExtensionViewModel.requestRespond(
                 orderId = getOrderId(),
@@ -245,7 +241,6 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
             setPrimaryCTAText(getString(R.string.order_extension_order_cancelled))
             setSecondaryCTAText(getString(R.string.order_extension_btn_secondary))
             setPrimaryCTAClickListener {
-                isFromDialog = false
                 dialogPrimaryCTA.isLoading = true
                 buyerOrderDetailExtensionViewModel.requestRespond(
                     getOrderId(),
@@ -253,7 +248,6 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
                 )
             }
             setSecondaryCTAClickListener {
-                isFromDialog = false
                 dialogSecondaryLongCTA.isLoading = true
                 buyerOrderDetailExtensionViewModel.requestRespond(
                     getOrderId(),
