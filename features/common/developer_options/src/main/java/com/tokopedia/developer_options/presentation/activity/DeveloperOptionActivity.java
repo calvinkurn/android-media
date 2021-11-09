@@ -167,6 +167,8 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private UnifyButton alwaysOldBalanceWidget;
 
+    private UnifyButton vGotoSSELogging;
+
     @Override
     public String getScreenName() {
         return getString(R.string.screen_name);
@@ -333,6 +335,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
+
+        vGotoSSELogging = findViewById(R.id.btn_view_sse_log);
 
         UnifyButton buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
         UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
@@ -768,6 +772,10 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleLeakCanary.setOnCheckedChangeListener((buttonView, isChecked) -> {
             getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).edit().putBoolean(LEAK_CANARY_TOGGLE_KEY, isChecked).apply();
             Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
+        });
+
+        vGotoSSELogging.setOnClickListener(v -> {
+            Toast.makeText(this, "Goto SSE Logging...", Toast.LENGTH_SHORT).show();
         });
     }
 
