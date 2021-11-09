@@ -19,8 +19,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
 
-    implementation rootProject.ext.analyticsDependencies.moengage
-    implementation rootProject.ext.analyticsDependencies.moengageAmp
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.utils)
