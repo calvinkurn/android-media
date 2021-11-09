@@ -16,6 +16,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.viewmodel.AffiliatePortfolioViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -66,7 +67,8 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
 
     private fun initClickListener() {
         portfolio_cnf_btn.setOnClickListener {
-            affiliatePortfolioViewModel.checkDataAndMakeApiCall()
+//            affiliatePortfolioViewModel.checkDataAndMakeApiCall()
+            AffiliateBottomDatePicker.newInstance().show(childFragmentManager,"")
         }
     }
 
