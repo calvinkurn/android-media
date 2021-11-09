@@ -55,9 +55,18 @@ class WishlistV2ViewModel @Inject constructor(
                 val wishlistData = wishlistV2UseCase.executeSuspend(params).wishlistV2
 
                 if (wishlistData.items.isEmpty()) {
+                    val recommendationData = singleRecommendationUseCase.getData(
+                        GetRecommendationRequestParam(pageNumber = 0, pageName = "empty_wishlist")
+                    )
                     _wishlistV2Result.value =
-                        Success(listOf(WishlistV2EmptyDataModel(query = wishlistData.query)))
-                    getRecommendationOnEmptyWishlist(0)
+                        Success(
+                            listOf(
+                                WishlistV2EmptyDataModel(query = wishlistData.query),
+                                WishlistV2RecommendationDataModel(
+                                    recommendationData = listOf(recommendationData), false
+                                )
+                            )
+                        )
                 } else {
 
                     _wishlistData.value = wishlistData

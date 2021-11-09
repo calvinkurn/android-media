@@ -314,17 +314,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                         adapterData.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_CAROUSEL))
                     } else {
                         if (currRecommendationListPage == 0) {
-                            isFetchRecommendation = true
-                            if (searchQuery.isNotEmpty()) {
-                                adapterData.add(
-                                    WishlistV2TypeLayoutData(
-                                        searchQuery,
-                                        TYPE_EMPTY_NOT_FOUND
-                                    )
-                                )
-                            } else {
-                                adapterData.add(WishlistV2TypeLayoutData("", TYPE_EMPTY_STATE))
-                            }
                             adapterData.add(
                                 WishlistV2TypeLayoutData(
                                     getString(R.string.recommendation_title),
@@ -360,7 +349,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     }
                 }
                 is WishlistV2EmptyDataModel -> {
-                    if (it.query.isEmpty()) {
+                    isFetchRecommendation = true
+                    if (it.query.isNotEmpty()) {
                         adapterData.add(WishlistV2TypeLayoutData(it.query, TYPE_EMPTY_NOT_FOUND))
                     } else {
                         adapterData.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
