@@ -165,9 +165,13 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         else {
                             header.put(QUERY_HASHING_HEADER, "");
                         }
+                        String opName = requests.get(0).getOperationName();
+                        if (TextUtils.isEmpty(opName)) {
+                            opName = CacheHelper.getQueryName(requests.get(0).getQuery());
+                        }
                         Map<String, String> messageMap = new HashMap<>();
                         messageMap.put("type", "error");
-                        messageMap.put("name", CacheHelper.getQueryName(requests.get(0).getQuery()));
+                        messageMap.put("name", opName);
                         messageMap.put("key", requests.get(0).getMd5());
                         messageMap.put("hash", queryHashValues.toString());
                         ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
@@ -202,10 +206,14 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         for (int i = 0; i < size; i++) {
                             GraphqlRequest request = requests.get(i);
                             if(executeQueryHashFlow){
+                                String opName = requests.get(0).getOperationName();
+                                if (TextUtils.isEmpty(opName)) {
+                                    opName = CacheHelper.getQueryName(requests.get(0).getQuery());
+                                }
                                 mCacheManager.saveQueryHash(request.getMd5(), qhValues[i]);
                                 Map<String, String> messageMap = new HashMap<>();
                                 messageMap.put("type", "success");
-                                messageMap.put("name", CacheHelper.getQueryName(request.getQuery()));
+                                messageMap.put("name", opName);
                                 messageMap.put("key", request.getMd5());
                                 messageMap.put("hash", qhValues[i]);
                                 ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
@@ -225,7 +233,6 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             if (executeCacheFlow && childResp != null) {
                                 BackendCache cache = caches.get(request.getMd5());
                                 mCacheManager.save(request.cacheKey(), childResp.toString(), cache.getMaxAge() * 1000);
-                                Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.getQuery()) + " KEY: " + request.cacheKey());
                             }
                         }
 

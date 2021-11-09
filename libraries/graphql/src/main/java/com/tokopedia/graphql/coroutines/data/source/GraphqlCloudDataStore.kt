@@ -185,11 +185,16 @@ class GraphqlCloudDataStore @Inject constructor(
                             } else {
                                 header[QUERY_HASHING_HEADER] = ""
                             }
+                            val opName = requests[0].operationName
                             ServerLogger.log(
                                 Priority.P1, "GQL_HASHING",
                                 mapOf(
                                     "type" to "error",
-                                    "name" to CacheHelper.getQueryName(requests[0].query),
+                                    "name" to if (opName?.isNotEmpty() == true) {
+                                        opName
+                                    } else {
+                                        CacheHelper.getQueryName(requests[0].query)
+                                    },
                                     "key" to requests[0].md5,
                                     "hash" to queryHashValues.toString()
                                 )
@@ -240,11 +245,16 @@ class GraphqlCloudDataStore @Inject constructor(
                         requests.forEachIndexed { index, request ->
                             if (executeQueryHashFlow) {
                                 cacheManager.saveQueryHash(request.md5, qhValues.get(index))
+                                val opName = requests[0].operationName
                                 ServerLogger.log(
                                     Priority.P1, "GQL_HASHING",
                                     mapOf(
                                         "type" to "success",
-                                        "name" to CacheHelper.getQueryName(request.query),
+                                        "name" to if (opName?.isNotEmpty() == true) {
+                                            opName
+                                        } else {
+                                            CacheHelper.getQueryName(requests[0].query)
+                                        },
                                         "key" to request.md5,
                                         "hash" to qhValues[index]
                                     )

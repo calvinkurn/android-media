@@ -173,7 +173,6 @@ class GraphqlRepositoryImpl @Inject constructor(
                 refreshRequests.add(copyRequests[i])
                 requests.remove(copyRequests[i])
 
-                Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
             }
         } catch (jse: JsonSyntaxException) {
