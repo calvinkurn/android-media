@@ -15,6 +15,7 @@ import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
+import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.track.TrackApp
 
 object DynamicProductDetailMapper {
@@ -289,10 +290,10 @@ object DynamicProductDetailMapper {
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return UserLocationRequest(
-            localData.district_id,
-            localData.address_id,
-            localData.postal_code,
-            latlong)
+                localData.district_id.checkIfNumber("district_id"),
+                localData.address_id.checkIfNumber("address_id"),
+                localData.postal_code.checkIfNumber("postal_code"),
+                latlong)
     }
 
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {

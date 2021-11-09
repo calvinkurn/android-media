@@ -6,24 +6,13 @@ import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayCartInfoModelBuilder
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.robot.play.*
-import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.*
 import com.tokopedia.play.view.uimodel.action.ClickCartAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.state.PlayCartCount
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -70,12 +59,14 @@ class PlayCartTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        }
+        robot.use {
+            val state = robot.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            }
 
-        state.cart.shouldShow.assertTrue()
+            state.cart.shouldShow.assertTrue()
+        }
     }
 
     @Test
@@ -92,12 +83,14 @@ class PlayCartTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        }
+        robot.use {
+            val state = robot.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            }
 
-        state.cart.count.isInstanceOf(PlayCartCount.Hide::class.java)
+            state.cart.count.isInstanceOf(PlayCartCount.Hide::class.java)
+        }
     }
 
     @Test
@@ -116,14 +109,16 @@ class PlayCartTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        }
+        robot.use {
+            val state = robot.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            }
 
-        state.cart.count.isInstanceOf(PlayCartCount.Show::class.java)
-        (state.cart.count as PlayCartCount.Show).countText
-            .isEqualTo(cartCount.toString())
+            state.cart.count.isInstanceOf(PlayCartCount.Show::class.java)
+            (state.cart.count as PlayCartCount.Show).countText
+                .isEqualTo(cartCount.toString())
+        }
     }
 
     @Test
@@ -142,14 +137,16 @@ class PlayCartTest {
             dispatchers = testDispatcher
         )
 
-        val state = robot.recordState {
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
-        }
+        robot.use {
+            val state = robot.recordState {
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
+            }
 
-        state.cart.count.isInstanceOf(PlayCartCount.Show::class.java)
-        (state.cart.count as PlayCartCount.Show).countText
-            .isEqualTo("99+")
+            state.cart.count.isInstanceOf(PlayCartCount.Show::class.java)
+            (state.cart.count as PlayCartCount.Show).countText
+                .isEqualTo("99+")
+        }
     }
 
     @Test
@@ -162,19 +159,21 @@ class PlayCartTest {
             dispatchers = testDispatcher
         )
 
-        val event = robot.recordEvent {
-            setLoggedIn(true)
-            createPage(mockChannelData)
-            focusPage(mockChannelData)
+        robot.use {
+            val event = robot.recordEvent {
+                setLoggedIn(true)
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
 
-            submitAction(ClickCartAction)
-        }
+                submitAction(ClickCartAction)
+            }
 
-        event.last()
-            .isEqualTo(
-                OpenPageEvent(
-                    applink = ApplinkConst.CART
+            event.last()
+                .isEqualTo(
+                    OpenPageEvent(
+                        applink = ApplinkConst.CART
+                    )
                 )
-            )
+        }
     }
 }

@@ -72,6 +72,10 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private fun setProductStockWording(dataItem: DataItem) {
         if (dataItem.stockWording == null || dataItem.stockWording?.title.isNullOrEmpty()) {
             dataItem.stockWording = getStockWord(dataItem)
+        }else if(dataItem.stockWording?.color.isNullOrEmpty()){
+            dataItem.stockWording?.let {
+                it.color = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
+            }
         }
     }
 

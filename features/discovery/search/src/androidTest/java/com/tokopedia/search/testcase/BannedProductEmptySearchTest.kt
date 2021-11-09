@@ -16,12 +16,14 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.search.*
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UiTest
 internal class BannedProductEmptySearchTest {
 
     @get:Rule

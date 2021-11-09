@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.PopularKeywordTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
@@ -23,6 +24,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
+import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.LocalLoad
@@ -90,7 +92,8 @@ class PopularKeywordViewHolder (val view: View,
     private fun initAdapter(element: PopularKeywordListDataModel) {
         if(adapter == null) {
             adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel, adapterPosition)
-            recyclerView.layoutManager = GridLayoutManager(view.context, 2)
+            val spanCount = DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context)
+            recyclerView.layoutManager = GridLayoutManager(view.context, spanCount)
             recyclerView.adapter = adapter
         }
         adapter?.submitList(element.popularKeywordList)

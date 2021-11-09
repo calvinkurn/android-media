@@ -155,7 +155,7 @@ class PlayModule(val mContext: Context) {
         PlayChannelSSEImpl(userSession, dispatchers)
 
     @Provides
-    fun provideCastContext(@ApplicationContext context: Context) = CastContext.getSharedInstance(context)
+    fun provideCastContext(@ApplicationContext context: Context): CastContext = CastContext.getSharedInstance(context)
 
     @Provides
     fun provideCastPlayer(castContext: CastContext) = CastPlayer(castContext)

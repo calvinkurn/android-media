@@ -34,8 +34,7 @@ import javax.inject.Inject
  * Created by mzennis on 2020-01-10.
  */
 class PlayErrorFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val analytic: PlayAnalytic
+    private val analytic: PlayAnalytic
 ): TkpdBaseV4Fragment(), PlayFragmentContract {
 
     private lateinit var parentViewModel: PlayParentViewModel
