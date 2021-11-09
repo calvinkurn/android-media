@@ -161,12 +161,12 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
                 isSwipeRefresh = !isSwipeRefresh
             }
             if (dataList.isNotEmpty()) {
-                error_group.hide()
+                hideErrorGroup()
                 swipe_refresh_layout.show()
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
             } else {
-                error_group.show()
+                showErrorGroup()
                 showEmptyState()
                 swipe_refresh_layout.hide()
             }
@@ -178,9 +178,21 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
         affiliateRecommendedProductViewModel.getErrorMessage().observe(this, { errorMessage ->
             swipe_refresh_layout.hide()
-            error_group.show()
+            showErrorGroup()
             showEmptyState()
         })
+    }
+
+    private fun showErrorGroup() {
+        recommended_global_error.show()
+        affiliate_no_product_bought_iv.show()
+        affiliate_no_product_seen_iv.show()
+    }
+
+    private fun hideErrorGroup() {
+        recommended_global_error.hide()
+        affiliate_no_product_bought_iv.hide()
+        affiliate_no_product_seen_iv.hide()
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory {

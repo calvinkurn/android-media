@@ -129,6 +129,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     private fun showNoAffiliate() {
+        product_list_group.hide()
         affiliate_no_product_iv.show()
         home_global_error.run {
             show()
