@@ -63,7 +63,7 @@ class OneLinersViewHolder(
 
             try {
                 val unifyColor = stringToUnifyColor(context, content.color)
-                setTextColor(unifyColor.unifyColorResourceID ?: unifyColor.defaultColor)
+                setTextColor(unifyColor.unifyColor ?: unifyColor.defaultColor)
 
             } catch (ex: RuntimeException) {
                 ex.printStackTrace()
