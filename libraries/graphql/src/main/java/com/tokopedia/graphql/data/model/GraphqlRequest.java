@@ -179,16 +179,6 @@ public class GraphqlRequest {
         return shouldThrow;
     }
 
-    /**
-     * Should use nullCheker
-     *
-     * @param shouldThrow
-     */
-    @Deprecated
-    public void setShouldThrow(boolean shouldThrow) {
-        this.shouldThrow = shouldThrow;
-    }
-
     public boolean isNoCache() {
         return noCache;
     }
