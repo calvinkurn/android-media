@@ -911,6 +911,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         totalPrice += shipmentCostModel.getDonation();
+        shipmentCostModel.setTotalPrice(totalPrice);
 
         if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {
             ArrayList<ShipmentCrossSellModel> listCheckedCrossModel = new ArrayList<>();
@@ -918,6 +919,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (crossSellModel.isChecked()) {
                     listCheckedCrossModel.add(crossSellModel);
                     totalPrice += crossSellModel.getCrossSellModel().getPrice();
+                    shipmentCostModel.setTotalPrice(totalPrice);
                 }
             }
             shipmentCostModel.setListCrossSell(listCheckedCrossModel);
@@ -935,7 +937,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             notifyDataSetChanged();
         }
 
-        shipmentCostModel.setTotalPrice(totalPrice);
         shipmentCostModel.setBookingFee(totalBookingFee);
         updateCheckoutButtonData(null);
     }

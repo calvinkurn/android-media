@@ -43,7 +43,7 @@ class ShipmentCrossSellViewHolder(itemView: View, private val shipmentAdapterAct
         if (shipmentCrossSellModel.isEnabled) {
             cbCrossSell.isEnabled = true
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
+                llContainer.alpha = 1.0f
             }
             cbCrossSell.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
                 shipmentAdapterActionListener.onCrossSellItemChecked(isChecked, shipmentCrossSellModel.crossSellModel, index)
@@ -51,7 +51,7 @@ class ShipmentCrossSellViewHolder(itemView: View, private val shipmentAdapterAct
         } else {
             cbCrossSell.gone()
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                llContainer.foreground = ContextCompat.getDrawable(llContainer.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
+                llContainer.alpha = 0.5f
             }
         }
     }

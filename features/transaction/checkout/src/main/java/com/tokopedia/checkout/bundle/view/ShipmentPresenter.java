@@ -1380,11 +1380,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (!listShipmentCrossSellModel.isEmpty()) {
             CrossSellItemRequestModel crossSellItemRequestModel = new CrossSellItemRequestModel();
             for (ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
-                crossSellItemRequestModel.setId((int) shipmentCrossSellModel.getCrossSellModel().getId());
-                crossSellItemRequestModel.setPrice((int) shipmentCrossSellModel.getCrossSellModel().getPrice());
-                crossSellItemRequestModel.setAdditionalVerticalId((int) shipmentCrossSellModel.getCrossSellModel().getAdditionalVerticalId());
-                crossSellItemRequestModel.setTransactionType(shipmentCrossSellModel.getCrossSellModel().getTransactionType());
-                listCrossSellItemRequest.add(crossSellItemRequestModel);
+                if (shipmentCrossSellModel.isChecked()) {
+                    crossSellItemRequestModel.setId((int) shipmentCrossSellModel.getCrossSellModel().getId());
+                    crossSellItemRequestModel.setPrice((int) shipmentCrossSellModel.getCrossSellModel().getPrice());
+                    crossSellItemRequestModel.setAdditionalVerticalId((int) shipmentCrossSellModel.getCrossSellModel().getAdditionalVerticalId());
+                    crossSellItemRequestModel.setTransactionType(shipmentCrossSellModel.getCrossSellModel().getTransactionType());
+                    listCrossSellItemRequest.add(crossSellItemRequestModel);
+                }
             }
             crossSellRequest.setListItem(listCrossSellItemRequest);
         }
