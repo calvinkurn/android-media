@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -23,13 +24,16 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.navigation_common.listener.MainParentStateListener
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -40,6 +44,7 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -68,6 +73,7 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2ThreeDotsMenuBottomSheetAda
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -80,7 +86,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private var binding by autoClearedNullable<FragmentWishlistV2Binding>()
     private lateinit var wishlistV2Adapter: WishlistV2Adapter
     private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var paramWishlistV2 = WishlistV2Params()
     private var refreshHandler: RefreshHandler? = null
     private var onLoadMore = false
@@ -93,6 +98,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private var isBulkDeleteShow = false
     private val listBulkDelete: ArrayList<String> = arrayListOf()
     private var recommendationList: List<RecommendationWidget> = listOf()
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private val wishlistViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[WishlistV2ViewModel::class.java]
@@ -134,6 +140,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         const val DELETE_WISHLIST = "DELETE_WISHLIST"
         const val ATC_WISHLIST = "ADD_TO_CART"
         const val CTA_ATC = "Lihat"
+        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -560,7 +567,45 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         val shareListener = object : ShareBottomsheetListener {
 
             override fun onShareOptionClicked(shareModel: ShareModel) {
-                // usually shareModel will be used for tracking
+                // openIntentShare(null, wishlistItem.name, "", wishlistItem.url)
+
+                val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+                    type = LinkerData.PRODUCT_TYPE
+                    uri = wishlistItem.url
+                    id = userSession.userId
+                    //set and share in the Linker Data
+                    feature = shareModel.feature
+                    channel = shareModel.channel
+                    campaign = shareModel.campaign
+                    ogTitle = "${wishlistItem.name} - ${wishlistItem.priceFmt}"
+                    ogDescription = wishlistItem.shop.name
+                    if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                        ogImageUrl = shareModel.ogImgUrl
+                    }
+                })
+                LinkerManager.getInstance().executeShareRequest(
+                        LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                                val shareString = getString(
+                                        R.string.wishlist_v2_share_text,
+                                        userSession.shopName,
+                                        linkerShareData?.shareContents
+                                )
+                                shareModel.subjectName = userSession.shopName
+                                SharingUtil.executeShareIntent(
+                                        shareModel,
+                                        linkerShareData,
+                                        activity,
+                                        view,
+                                        shareString
+                                )
+
+                                universalShareBottomSheet?.dismiss()
+                            }
+
+                            override fun onError(linkerError: LinkerError?) {}
+                        })
+                )
             }
 
             override fun onCloseOptionClicked() {
@@ -568,14 +613,32 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             }
         }
 
-        val universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(shareListener)
             setMetaData(
                     wishlistItem.name,
                     wishlistItem.imageUrl
             )
         }
-        universalShareBottomSheet.show(childFragmentManager, this)
+        universalShareBottomSheet?.show(childFragmentManager, this@WishlistV2Fragment)
+    }
+
+    private fun openIntentShare(file: File?, title: String?, shareContent: String, shareUri: String) {
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = if (file == null) "text/plain" else "image/*"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            if (file != null) {
+                putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(activity, file))
+            }
+            putExtra(Intent.EXTRA_REFERRER, shareUri)
+            putExtra(Intent.EXTRA_HTML_TEXT, shareContent)
+            putExtra(Intent.EXTRA_TITLE, title)
+            putExtra(Intent.EXTRA_TEXT, shareContent)
+            putExtra(Intent.EXTRA_SUBJECT, title)
+        }
+
+        activity?.startActivity(Intent.createChooser(shareIntent, SHARE_PRODUCT_TITLE))
     }
 
     private fun renderWishlist(items: List<WishlistV2Response.Data.WishlistV2.Item>) {
@@ -632,13 +695,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 RouteManager.route(context, ApplinkConst.CART)
             }).show()
         }
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
     }
 
     override fun onCariBarangClicked() {
