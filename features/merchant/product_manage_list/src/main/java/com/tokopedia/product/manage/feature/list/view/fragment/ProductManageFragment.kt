@@ -84,7 +84,6 @@ import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.databinding.DialogProductAddBinding
-import com.tokopedia.product.manage.databinding.FragmentProductManageBinding
 import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -172,7 +171,6 @@ import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
@@ -266,8 +264,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private var tickerPagerAdapter: TickerPagerAdapter? = null
 
-    private val stockTicker: Ticker?
-        get() = binding?.layoutFragmentProductManage?.stockTicker?.root
+    private val ticker: Ticker?
+        get() = binding?.layoutFragmentProductManage?.ticker?.root
     private val mainContainer: CoordinatorLayout?
         get() = binding?.layoutFragmentProductManage?.mainContainer
     private val errorPage: GlobalError?
@@ -479,7 +477,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun animateProductTicker(isEnter: Boolean) {
         Handler().postDelayed({
-            val shouldAnimateTicker = (isEnter && tickerIsReady && (stockTicker?.visibility == View.INVISIBLE || stockTicker?.visibility == View.GONE)) || !isEnter
+            val shouldAnimateTicker = (isEnter && tickerIsReady && (ticker?.visibility == View.INVISIBLE || ticker?.visibility == View.GONE)) || !isEnter
             if (adapter.data.isNotEmpty() && shouldAnimateTicker) {
                 val enterValue: Float
                 val exitValue: Float
@@ -490,7 +488,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     enterValue = 1f
                     exitValue = 0f
                 }
-                stockTicker?.run {
+                ticker?.run {
                     val marginTop = 8.toPx()
                     val height = height.toFloat().orZero() + marginTop
                     translationY = enterValue * height
@@ -2063,7 +2061,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             updateStateScrollListener()
             showRetryToast()
         }
-        viewModel.hideStockTicker()
+        viewModel.hideTicker()
         hideLoading()
     }
 
@@ -2374,19 +2372,19 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                             context?.let { RouteManager.route(it, linkUrl.toString()) }
                         }
                     })
-                    onDismissListener = { viewModel.hideStockTicker() }
+                    onDismissListener = { viewModel.hideTicker() }
                 }
             }
-            stockTicker?.let { tickerView ->
+            ticker?.let { tickerView ->
                 val visibility = tickerView.visibility
                 tickerView.addPagerView(tickerPagerAdapter, tickerData)
                 tickerView.post {
                     tickerView.visibility = visibility
-                    viewModel.showStockTicker()
+                    viewModel.showTicker()
                 }
             }
         }
-        observe(viewModel.showStockTicker) { shouldShow ->
+        observe(viewModel.showTicker) { shouldShow ->
             if (shouldShow)                 {
                 tickerIsReady = true
             }

@@ -95,8 +95,8 @@ class ProductManageViewModel @Inject constructor(
 
     val viewState: LiveData<ViewState>
         get() = _viewState
-    val showStockTicker: LiveData<Boolean>
-        get() = _showStockTicker
+    val showTicker: LiveData<Boolean>
+        get() = _showTicker
     val tickerData: LiveData<List<TickerData>>
         get() = _tickerData
     val showAddProductOptionsMenu: LiveData<Boolean>
@@ -147,7 +147,7 @@ class ProductManageViewModel @Inject constructor(
         get() = _topAdsInfo
 
     private val _viewState = MutableLiveData<ViewState>()
-    private val _showStockTicker = MutableLiveData<Boolean>()
+    private val _showTicker = MutableLiveData<Boolean>()
     private val _tickerData = MutableLiveData<List<TickerData>>()
     private val _refreshList = MutableLiveData<Boolean>()
     private val _showAddProductOptionsMenu = MutableLiveData<Boolean>()
@@ -292,7 +292,7 @@ class ProductManageViewModel @Inject constructor(
             _refreshList.value = isRefresh
 
             showProductList(productList)
-            showStockTicker()
+            showTicker()
             hideProgressDialog()
         }, onError = {
             if (it is CancellationException) {
@@ -639,18 +639,17 @@ class ProductManageViewModel @Inject constructor(
         setFeaturedProductUseCase.cancelJobs()
     }
 
-    fun showStockTicker() {
-        val isTickerNotVisible = _showStockTicker.value == false
+    fun showTicker() {
         val isProductListSuccess = _productListResult.value is Success
-        val tickersData = _tickerData.value
-        val shouldShow = (isProductListSuccess && !tickersData.isNullOrEmpty()) || isTickerNotVisible
+        val isTickerDataNotEmpty = _tickerData.value.isNullOrEmpty().not()
+        val shouldShow = isProductListSuccess && isTickerDataNotEmpty
         if (shouldShow) {
-            _showStockTicker.value = shouldShow
+            _showTicker.value = shouldShow
         }
     }
 
-    fun hideStockTicker() {
-        _showStockTicker.value = false
+    fun hideTicker() {
+        _showTicker.value = false
     }
 
     private suspend fun editProductStatus(
