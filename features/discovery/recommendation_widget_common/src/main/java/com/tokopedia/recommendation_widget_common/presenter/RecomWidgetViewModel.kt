@@ -20,6 +20,8 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.extension.convertMiniCartToProductIdMap
+import com.tokopedia.recommendation_widget_common.extension.mappingMiniCartDataToRecommendation
 import com.tokopedia.recommendation_widget_common.presentation.model.*
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TEXT_ERROR
 import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
@@ -123,7 +125,7 @@ open class RecomWidgetViewModel @Inject constructor(
                 if (result.isNotEmpty()) {
                     val recomWidget = result[0].copy(recommendationFilterChips = recomFilterList)
                     if (isTokonow) {
-                        mappingMiniCartDataToRecommendation(recomWidget)
+                        mappingMiniCartDataToRecommendation(recomWidget, miniCartData.value)
                     }
                     _getRecommendationLiveData.postValue(recomWidget)
                 } else {
@@ -140,35 +142,8 @@ open class RecomWidgetViewModel @Inject constructor(
         }
     }
 
-    private fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget) {
-        val recomItemList = mutableListOf<RecommendationItem>()
-        recomWidget.recommendationItemList.forEach { item ->
-            val minicartcopy = miniCartData.value?.toMutableMap()
-            minicartcopy?.let {
-                if (item.isProductHasParentID()) {
-                    var variantTotalItems = 0
-                    it.values.forEach { miniCartItem ->
-                        if (miniCartItem.productParentId == item.parentID.toString()) {
-                            variantTotalItems += miniCartItem.quantity
-                        }
-                    }
-                    item.updateItemCurrentStock(variantTotalItems)
-                } else {
-                    item.updateItemCurrentStock(
-                        it[item.productId.toString()]?.quantity
-                            ?: 0
-                    )
-                }
-            }
-            recomItemList.add(item)
-        }
-        recomWidget.recommendationItemList = recomItemList
-    }
-
     fun updateMiniCartWithPageData(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        val data = miniCartSimplifiedData.miniCartItems.associateBy({ it.productId }) {
-            it
-        }
+        val data = miniCartSimplifiedData.miniCartItems.convertMiniCartToProductIdMap()
         _miniCartData.postValue(data.toMutableMap())
     }
 
@@ -176,9 +151,7 @@ open class RecomWidgetViewModel @Inject constructor(
         launchCatchError(block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
-            val data = result.miniCartItems.associateBy({ it.productId }) {
-                it
-            }
+            val data = result.miniCartItems.convertMiniCartToProductIdMap()
             _miniCartData.postValue(data.toMutableMap())
             _refreshUIMiniCartData.postValue(RecomMinicartWrapperData(pageName, result))
         }) {
