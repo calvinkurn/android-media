@@ -552,7 +552,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         fadeOut.fillAfter = true
 
         //initial appBar state is expanded
-        (activity as? BaseTelcoActivity)?.onExpandAppBar()
+        (activity as? BaseTelcoActivity)?.setupAppBar()
 
         appBarLayout.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
             var lastOffset = -1
@@ -567,13 +567,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                         //Collapsed
                         lastIsCollapsed = true
                         onCollapseAppBar()
-                        (activity as? BaseTelcoActivity)?.onCollapseAppBar()
                     }
                 } else if (verticalOffSet == 0 && lastIsCollapsed) {
                     //Expanded
                     lastIsCollapsed = false
                     onExpandAppBar()
-                    (activity as? BaseTelcoActivity)?.onExpandAppBar()
                 }
             }
         })

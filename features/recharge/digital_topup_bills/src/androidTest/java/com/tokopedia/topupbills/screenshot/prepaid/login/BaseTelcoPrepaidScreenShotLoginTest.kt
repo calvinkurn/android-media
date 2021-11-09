@@ -181,7 +181,6 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
         scrollRecyclerViewToPosition(recyclerView, 10)
 
         mActivityRule.runOnUiThread {
-            baseTelcoActivity.onCollapseAppBar()
             bannerImage.clearAnimation()
             bannerImage.startAnimation(fadeOut)
         }
