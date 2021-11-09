@@ -1314,6 +1314,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 playVOD(feedXCard =  feedXCard)
             }
             vod_full_screen_icon?.setOnClickListener {
+                 isPaused = true
                  listener?.onFullScreenCLick(feedXCard,positionInFeed, feedXCard.appLink, 0L, shouldTrack = true, true)
             }
 
@@ -1408,6 +1409,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
                 }
                 vod_full_screen_icon?.setOnClickListener {
+                    isPaused = true
                     videoPlayer?.getExoPlayer()?.currentPosition?.let {
                         it1 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink, it1,shouldTrack, true) }
                 }
@@ -1454,7 +1456,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         addViewTimer?.schedule(object : TimerTask() {
                             override fun run() {
                                 if (!isPaused) {
-                                    Log.v("Hit View", "hit view ${feedXCard.views.count} c= ${feedXCard.playChannelID}")
+                                    Log.v("Hit View", "track view ${feedXCard.views.count} c= ${feedXCard.playChannelID}")
                                     listener?.addVODView(feedXCard, feedXCard.playChannelID, positionInFeed, TIME_FIVE_SEC,true)
                                     shouldTrack = false
                                     isPaused = true

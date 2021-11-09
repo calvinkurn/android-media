@@ -15,9 +15,13 @@
 
     <!--Post Time new-->
     <string name="post_time_just_now_new">1 menit</string>
+    <string name="post_time_few_moments_ago">Beberapa detik yang lalu</string>
     <string name="post_time_minutes_ago_new">menit</string>
+    <string name="post_comment_time_minute_ago_new">menit yang lalu</string>
     <string name="post_time_hours_ago_new">jam </string>
+    <string name="post_comment_time_hours_ago_new">jam yang lalu </string>
     <string name="post_time_days_ago">hari</string>
+    <string name="post_comment_time_days_ago">hari yang lalu</string>
     <string name="post_time_hour_new">\u0020pukul\u0020</string>
     <string name="post_time_yesterday_at_new">Kemarin pukul\u0020</string>
 
