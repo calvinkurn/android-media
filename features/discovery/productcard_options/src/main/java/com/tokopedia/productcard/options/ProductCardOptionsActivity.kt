@@ -116,6 +116,6 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
     }
 
     companion object {
-        private const val FINISH_ACTIVITY_DELAY = 300L
+        private const val FINISH_ACTIVITY_DELAY = 200L
     }
 }
