@@ -20,7 +20,9 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.KEY_PRODUCT_DETAIL
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.bottomsheet.TokoNowEducationalInformationBottomSheet
+import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
@@ -33,7 +35,6 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingAd
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
-import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -47,7 +48,6 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     companion object {
         const val TAG_SHIPPING_BOTTOM_SHEET = "TAG_SHIPPING_BOTTOM_SHEET"
-        const val TAG_USP_BOTTOM_SHEET = "TAG_USP_BOTTOM_SHEET"
         const val SOURCE = "product detail page"
     }
 
@@ -169,9 +169,15 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     override fun openUspBottomSheet(freeOngkirUrl: String, uspTokoCabangImgUrl: String) {
         context?.let {
-            ProductDetailShippingTracking.onPelajariTokoCabangClicked(sharedViewModel.rateEstimateRequest.value?.userId
+            val ratesEstimateRequest = sharedViewModel.rateEstimateRequest.value
+            ProductDetailShippingTracking.onPelajariTokoCabangClicked(ratesEstimateRequest?.userId
                     ?: "")
-            ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl).show(childFragmentManager, TAG_USP_BOTTOM_SHEET)
+            val bottomSheet = if (ratesEstimateRequest?.isTokoNow == true) {
+                TokoNowEducationalInformationBottomSheet()
+            } else {
+                ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl)
+            }
+            bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
         }
     }
 
@@ -198,7 +204,7 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     override fun getLocalizingAddressHostFragment(): Fragment = this
 
-    override fun getLocalizingAddressHostSourceData(): String = KEY_PRODUCT_DETAIL
+    override fun getLocalizingAddressHostSourceData(): String = ProductDetailCommonConstant.KEY_PRODUCT_DETAIL
 
     override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
 

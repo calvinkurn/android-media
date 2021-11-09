@@ -14,13 +14,15 @@
         android:layout_marginBottom="@dimen/layout_lvl3"
         android:orientation="horizontal">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_gravity="center"
             android:layout_marginEnd="@dimen/hotel_12dp"
             android:layout_marginRight="@dimen/hotel_12dp"
-            app:srcCompat="@drawable/ic_hotel_calendar" />
+            app:icon_name="CALENDAR"
+            app:icon_color_light_enable="@color/hotel_dms_icon_color"
+            app:icon_color_night_enable="@color/hotel_dms_icon_color"/>
 
         <LinearLayout
             android:layout_width="@dimen/layout_lvl0"
@@ -112,7 +114,8 @@
             android:layout_gravity="center"
             android:layout_marginEnd="@dimen/hotel_10dp"
             android:layout_marginRight="@dimen/hotel_10dp"
-            app:srcCompat="@drawable/ic_hotel_guest_room" />
+            app:srcCompat="@drawable/ic_hotel_guest_room"
+            android:contentDescription="@string/hotel_bottom_sheets_room_guest_title"/>
 
         <LinearLayout
             android:layout_width="match_parent"

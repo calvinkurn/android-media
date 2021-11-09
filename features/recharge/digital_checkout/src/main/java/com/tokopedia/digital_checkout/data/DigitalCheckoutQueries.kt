@@ -55,6 +55,7 @@ object DigitalCheckoutQueries {
                 code
               is_coupon
               discount_amount
+              discount_amount_label
               discount_price
               discounted_amount
               discounted_price

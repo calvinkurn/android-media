@@ -101,7 +101,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
         val requests = mutableListOf(overAllRatingRequest, feedbackDetailListRequest, feedbackDetailFilterRequest)
 
         try {
-            val gqlResponse = graphQlRepository.getReseponse(requests)
+            val gqlResponse = graphQlRepository.response(requests)
 
             if (gqlResponse.getError(ProductReviewDetailOverallResponse::class.java)?.isNotEmpty() != true) {
                 productReviewInitialResponse.productReviewDetailOverallResponse = gqlResponse.getData<ProductReviewDetailOverallResponse>(ProductReviewDetailOverallResponse::class.java)

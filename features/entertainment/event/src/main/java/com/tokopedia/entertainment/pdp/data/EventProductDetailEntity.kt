@@ -105,7 +105,7 @@ data class ProductDetailData(
         val duration: String = "",
         @SerializedName("facilities")
         @Expose
-        val facilities: List<Facilities> = emptyList(),
+        val facilities: List<Facilities>? = emptyList(),
         @SerializedName("facility_group_id")
         @Expose
         val facilityGroupId: String = "",

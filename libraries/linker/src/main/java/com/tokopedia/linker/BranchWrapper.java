@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,7 +84,7 @@ public class BranchWrapper implements WrapperInterface {
 
     private void sendPreInstallData(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if (remoteConfig.getBoolean(LinkerConstants.ENABLE_XIAOMI_PAI_TRACKING) && isXiaomiPreInstallApp(context.getPackageName())) {
+        if (remoteConfig.getBoolean(LinkerConstants.ENABLE_XIAOMI_PAI_TRACKING, true) && isXiaomiPreInstallApp(context.getPackageName())) {
             Branch.getInstance().setPreinstallCampaign("xiaomipreinstallol-dp_int-tp-10001511-0000-alon-alon");
             Branch.getInstance().setPreinstallPartner("a_custom_885438735322423255");
         }
@@ -97,16 +98,24 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void createShareUrl(LinkerShareRequest linkerShareRequest, Context context) {
         if (linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
-            generateBranchLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
-                    context, linkerShareRequest.getShareCallbackInterface(),
-                    ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+
+            if (isFDLActivated(context)){
+                generateFirebaseLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
+                        context, linkerShareRequest.getShareCallbackInterface(),
+                        ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+            }else {
+                generateBranchLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
+                        context, linkerShareRequest.getShareCallbackInterface(),
+                        ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+            }
         }
     }
 
     @Override
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
-        checkBranchLinkUTMParams(linkerDeeplinkRequest);
+        checkBranchLinkUTMParams(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity());
+        handleDeferredDeeplinkFDL(linkerDeeplinkRequest);
         if (branch == null) {
             if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -137,6 +146,10 @@ public class BranchWrapper implements WrapperInterface {
                 }
             }
         }
+    }
+
+    private void handleDeferredDeeplinkFDL(LinkerDeeplinkRequest linkerDeeplinkRequest) {
+        new FirebaseDLWrapper().getFirebaseDynamicLink(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity(), ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity().getIntent());
     }
 
     private Branch.BranchReferralInitListener getBranchCallback(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
@@ -171,6 +184,41 @@ public class BranchWrapper implements WrapperInterface {
         };
     }
 
+    private Branch.BranchReferralInitListener getBranchCallbackForUtmParams(Context context, boolean uriHaveCampaignData) {
+        return new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error == null) {
+                    if(!uriHaveCampaignData && referringParams != null && referringParams.optBoolean("+clicked_branch_link")) {
+                        sendUtmParameters(context, referringParams);
+                    }else {
+                        logNonBranchLinkData(context, referringParams);
+                    }
+                }
+            }
+        };
+    }
+
+    private void sendUtmParameters(Context context, JSONObject referringParams){
+        String utmSource;
+        String utmCampaign;
+        String utmMedium;
+        String utmTerm = null;
+        String clickTime;
+        utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
+        if (!TextUtils.isEmpty(utmSource)) {
+            utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
+            utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
+            utmTerm = referringParams.optString(LinkerConstants.UTM_TERM);
+        } else {
+            utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
+            utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
+            utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
+        }
+        clickTime = referringParams.optString(LinkerConstants.CLICK_TIME);
+        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm, clickTime);
+    }
+
     private void fetchLastAttributeTouchData() {
         Branch.getInstance().getLastAttributedTouchData(
                 new ServerRequestGetLATD.BranchLastAttributedTouchDataListener() {
@@ -192,6 +240,14 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void initSession() {
         Branch.getInstance().initSession();
+    }
+
+    @Override
+    public void initSession(Activity activity, boolean uriHaveCampaignData){
+        checkBranchLinkUTMParams(activity);
+        Branch.sessionBuilder(activity)
+                .withCallback(getBranchCallbackForUtmParams(activity, uriHaveCampaignData))
+                .init();
     }
 
     @Override
@@ -275,6 +331,12 @@ public class BranchWrapper implements WrapperInterface {
                     );
                 }
                 break;
+            case LinkerConstants.EVENT_SEARCH:
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof ArrayList) {
+                    BranchHelper.sendSearchEvent(context, (ArrayList<String>) linkerGenericRequest.getDataObj());
+                }
+                break;
         }
     }
 
@@ -286,6 +348,12 @@ public class BranchWrapper implements WrapperInterface {
                 .setContentImageUrl(data.getImgUri())
                 .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC);
         return branchUniversalObject;
+    }
+
+    private void generateFirebaseLink(final LinkerData data, final Context context,
+                                      final ShareCallback shareCallback, final UserData userData) {
+        new FirebaseDLWrapper().createShortLink(shareCallback,data);
+
     }
 
     private void generateBranchLink(final LinkerData data, final Context context,
@@ -307,14 +375,18 @@ public class BranchWrapper implements WrapperInterface {
                         removeHandlerTimeoutMessage();
                         if (error == null) {
                             if (shareCallback != null) {
-                                shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
+                                if(!TextUtils.isEmpty(url)) {
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
+                                } else {
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
+                                }
                             }
                         } else {
                             if (shareCallback != null) {
                                 if (data.isThrowOnError()) {
                                     shareCallback.onError(LinkerUtils.createLinkerError(LinkerConstants.ERROR_SOMETHING_WENT_WRONG, null));
                                 } else {
-                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), getFallbackUrl(data), getFallbackUrl(data)));
                                 }
                             }
                         }
@@ -324,6 +396,15 @@ public class BranchWrapper implements WrapperInterface {
         } else {
             shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
         }
+    }
+
+    private String getFallbackUrl(LinkerData data){
+        String fallbackUrl = data.renderShareUri();
+        if(TextUtils.isEmpty(fallbackUrl)
+                && !TextUtils.isEmpty(data.getDesktopUrl())){
+            fallbackUrl = data.getDesktopUrl();
+        }
+        return fallbackUrl;
     }
 
     private LinkProperties createLinkProperties(LinkerData data, String channel, Context context, UserData userData) {
@@ -481,24 +562,7 @@ public class BranchWrapper implements WrapperInterface {
     private void checkAndSendUtmParams(Context context, JSONObject referringParams) {
         if (context == null) return;
         if (isSkipUtmEvent(context)) return;
-
-        String utmSource;
-        String utmCampaign;
-        String utmMedium;
-        String utmTerm = null;
-        String clickTime;
-        utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
-        if (!TextUtils.isEmpty(utmSource)) {
-            utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
-            utmMedium = referringParams.optString(LinkerConstants.UTM_MEDIUM);
-            utmTerm = referringParams.optString(LinkerConstants.UTM_TERM);
-        } else {
-            utmSource = referringParams.optString(LinkerConstants.BRANCH_UTM_SOURCE);
-            utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
-            utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
-        }
-        clickTime = referringParams.optString(LinkerConstants.CLICK_TIME);
-        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm, clickTime);
+        sendUtmParameters(context, referringParams);
     }
 
     private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm, String clickTime) {
@@ -523,9 +587,8 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private void checkBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest) {
+    private void checkBranchLinkUTMParams(Activity activity) {
         APP_OPEN_FROM_BRANCH_LINK = false;
-        Activity activity = ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
         if (activity != null && activity.getIntent().getData() != null){
             String intentDataStr = activity.getIntent().getData().toString();
             if(intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_1) ||
@@ -538,17 +601,17 @@ public class BranchWrapper implements WrapperInterface {
 
 
     private Boolean isBranchUtmSupportActivated(Context context) {
-        return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT);
+        return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_SUPPORT, true);
     }
 
     private Boolean isBranchUtmOnlyBranchLinkActivated(Context context) {
-        return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK);
+        return getBooleanValue(context, RemoteConfigKey.ENABLE_BRANCH_UTM_ONLY_BRANCH_LINK, false);
     }
 
-    private Boolean getBooleanValue(Context context, String key) {
+    private Boolean getBooleanValue(Context context, String key, boolean defaultValue) {
         if (remoteConfig == null)
             remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(key);
+        return remoteConfig.getBoolean(key, defaultValue);
 
     }
 
@@ -568,7 +631,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private void logValidCampaignUtmParams(Context context, String utmSource, String utmMedium, String utmCampaign, String clickTime) {
-        if(getRemoteConfig(context).getBoolean(APP_ENABLE_BRANCH_VALID_CAMPAIGN_LOGGING)) {
+        if(getRemoteConfig(context).getBoolean(APP_ENABLE_BRANCH_VALID_CAMPAIGN_LOGGING, true)) {
             new BranchHelperValidation().logValidCampaignData(utmSource, utmMedium, utmCampaign, clickTime, isFirstOpen(context), APP_OPEN_FROM_BRANCH_LINK);
         }
     }
@@ -595,7 +658,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private long getRemoteConfigTimeOutValue(Context context, String key){
-        return getRemoteConfig(context).getLong(key);
+        return getRemoteConfig(context).getLong(key, 5000);
     }
 
     private RemoteConfig getRemoteConfig(Context context){
@@ -610,7 +673,7 @@ public class BranchWrapper implements WrapperInterface {
         handler.postDelayed(
                 new Runnable() {
                     public void run() {
-                        shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
+                        shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
                         Timber.w("P2#BRANCH_LINK_TIMEOUT#error;linkdata='%s'", data.getId());
                     }
                 },
@@ -622,5 +685,10 @@ public class BranchWrapper implements WrapperInterface {
         if(handler != null){
             handler.removeCallbacksAndMessages(null);
         }
+    }
+
+    private Boolean isFDLActivated(Context context) {
+        return ((LinkerRouter) context.getApplicationContext()).
+                getBooleanRemoteConfig(LinkerConstants.FIREBASE_KEY_FDL_ENABLE, false);
     }
 }

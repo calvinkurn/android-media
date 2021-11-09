@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.mapper
 
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.*
 import com.tokopedia.search.result.presentation.model.*
@@ -42,6 +43,8 @@ class ProductViewModelMapper {
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
         productDataView.defaultView = searchProductHeader.defaultView
         productDataView.bannerDataView = convertToBannerDataView(searchProductData.banner)
+        productDataView.lastFilterDataView = convertToLastFilterDataView(searchProductModel)
+        productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
 
         return productDataView
     }
@@ -119,27 +122,27 @@ class ProductViewModelMapper {
         val isOrganicAds = otherRelatedProduct.isOrganicAds()
 
         return BroadMatchItemDataView(
-                otherRelatedProduct.id,
-                otherRelatedProduct.name,
-                otherRelatedProduct.price,
-                otherRelatedProduct.imageUrl,
-                otherRelatedProduct.url,
-                otherRelatedProduct.applink,
-                otherRelatedProduct.priceString,
-                otherRelatedProduct.shop.city,
-                otherRelatedProduct.badgeList.mapToBadgeItemDataViewList(),
-                otherRelatedProduct.freeOngkir.mapToFreeOngkirDataView(),
-                otherRelatedProduct.isWishlisted,
-                position,
-                alternativeKeyword,
-                isOrganicAds,
-                otherRelatedProduct.ads.productViewUrl,
-                otherRelatedProduct.ads.productClickUrl,
-                otherRelatedProduct.ads.productWishlistUrl,
-                otherRelatedProduct.ratingAverage,
-                otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
-                BroadMatchProduct(isOrganicAds),
-                dimension90
+                id = otherRelatedProduct.id,
+                name = otherRelatedProduct.name,
+                price = otherRelatedProduct.price,
+                imageUrl = otherRelatedProduct.imageUrl,
+                url = otherRelatedProduct.url,
+                applink = otherRelatedProduct.applink,
+                priceString = otherRelatedProduct.priceString,
+                shopLocation = otherRelatedProduct.shop.city,
+                badgeItemDataViewList = otherRelatedProduct.badgeList.mapToBadgeItemDataViewList(),
+                freeOngkirDataView = otherRelatedProduct.freeOngkir.mapToFreeOngkirDataView(),
+                isWishlisted = otherRelatedProduct.isWishlisted,
+                position = position,
+                alternativeKeyword = alternativeKeyword,
+                isOrganicAds = isOrganicAds,
+                topAdsViewUrl = otherRelatedProduct.ads.productViewUrl,
+                topAdsClickUrl = otherRelatedProduct.ads.productClickUrl,
+                topAdsWishlistUrl = otherRelatedProduct.ads.productWishlistUrl,
+                ratingAverage = otherRelatedProduct.ratingAverage,
+                labelGroupDataList = otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
+                carouselProductType = BroadMatchProduct(),
+                dimension90 = dimension90,
         )
     }
 
@@ -202,6 +205,7 @@ class ProductViewModelMapper {
         productItem.topadsImpressionUrl = productModel.ads.productViewUrl
         productItem.topadsClickUrl = productModel.ads.productClickUrl
         productItem.topadsWishlistUrl = productModel.ads.productWishlistUrl
+        productItem.topadsTag = productModel.ads.tag
         productItem.minOrder = productModel.minOrder
         productItem.productUrl = productModel.url
         productItem.pageTitle = pageTitle
@@ -280,7 +284,7 @@ class ProductViewModelMapper {
                     data.type,
                     data.position,
                     data.layout,
-                    convertToInspirationCarouselOptionViewModel(data)
+                    convertToInspirationCarouselOptionViewModel(data),
             )
         }
     }
@@ -314,7 +318,9 @@ class ProductViewModelMapper {
                     data.position,
                     data.title,
                     position,
-                    isChipsActive
+                    isChipsActive,
+                    if (data.type == TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) opt.meta else "",
+                    if (data.type != TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) opt.meta else "",
             )
         }
     }
@@ -351,6 +357,15 @@ class ProductViewModelMapper {
                 bannerModel.text,
                 bannerModel.applink,
                 bannerModel.imageUrl
+        )
+    }
+
+    private fun convertToLastFilterDataView(searchProductModel: SearchProductModel): LastFilterDataView {
+        val lastFilterData = searchProductModel.lastFilter.data
+
+        return LastFilterDataView(
+            filterList = lastFilterData.filters,
+            title = lastFilterData.title,
         )
     }
 }

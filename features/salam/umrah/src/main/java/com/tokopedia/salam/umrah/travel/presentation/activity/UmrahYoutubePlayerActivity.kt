@@ -30,7 +30,7 @@ YouTubePlayer.PlayerStateChangeListener{
     override fun onCreate(p0: Bundle?) {
         super.onCreate(p0)
         setContentView(R.layout.activity_umrah_youtube_player)
-        videoUrl = intent.getStringExtra(EXTRA_YOUTUBE_URL)
+        videoUrl = intent.getStringExtra(EXTRA_YOUTUBE_URL) ?: ""
         umrah_youtube_player.initialize(Keys.AUTH_GOOGLE_YOUTUBE_API_KEY, this)
     }
 

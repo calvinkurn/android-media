@@ -5,23 +5,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <View
-        android:id="@+id/recom_divider_1"
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/recom_divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:background="@color/Unify_N0"
-        />
-    <View
-        android:id="@+id/recom_divider_2"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:background="@color/Unify_N50"
-        />
-    <View
-        android:id="@+id/recom_divider_3"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:background="@color/Unify_N0"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         />
     <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
         android:id="@+id/tab_layout_home_feeds"
@@ -31,7 +19,7 @@
         app:tabPaddingStart="0dp"
         app:tabPaddingEnd="0dp"
         app:tabMode="scrollable"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:tabIndicatorHeight="0dp"
         />
@@ -48,7 +36,7 @@
             android:visibility="invisible"
             android:layout_gravity="top"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_10"
+            android:layout_height="10dp"
             android:background="@drawable/feed_bg_shadow_bottom"/>
     </FrameLayout>
 

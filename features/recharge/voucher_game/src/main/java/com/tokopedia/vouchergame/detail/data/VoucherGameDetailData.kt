@@ -9,23 +9,17 @@ import com.tokopedia.common.topupbills.data.product.CatalogProductInput
  */
 open class VoucherGameDetailData(
 
-        @SerializedName("needEnquiry")
-        @Expose
-        val needEnquiry: Boolean = true,
-        @SerializedName("isShowingProduct")
-        @Expose
-        val isShowingProduct: Boolean = true,
-        @SerializedName("enquiryFields")
-        @Expose
-        val enquiryFields: List<CatalogProductInput> = listOf(),
-        @SerializedName("product")
-        @Expose
-        val product: VoucherGameProductData = VoucherGameProductData()
+    @SerializedName("needEnquiry")
+    @Expose
+    val needEnquiry: Boolean = true,
+    @SerializedName("isShowingProduct")
+    @Expose
+    val isShowingProduct: Boolean = true,
+    @SerializedName("enquiryFields")
+    @Expose
+    val enquiryFields: List<CatalogProductInput> = listOf(),
+    @SerializedName("product")
+    @Expose
+    val product: VoucherGameProductData = VoucherGameProductData()
 
-) {
-        class Response(
-                @SerializedName("rechargeCatalogProductInput")
-                @Expose
-                val response: VoucherGameDetailData = VoucherGameDetailData()
-        )
-}
+)

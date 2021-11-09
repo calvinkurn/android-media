@@ -1,0 +1,40 @@
+[
+  {
+    "data": {
+      "walletappGetBalances": {
+        "balances": [
+          {
+            "activation_cta": "Aktifkan?",
+            "balance": [
+              {
+                "wallet_code": "PEMUDAPOINTS",
+                "amount": 8000000,
+                "amount_fmt": "10.000.000 Points",
+                "active": true,
+                "message": ""
+              },
+              {
+                "active": true,
+                "amount": 10000000,
+                "amount_fmt": "Rp10.000.000",
+                "message": "",
+                "wallet_code": "PEMUDA"
+              }
+            ],
+            "code": "SUCCESS",
+            "icon_url": "https://images.tokopedia.net/img/walletapp/v1/pemuda-logo-short.png",
+            "is_linked": true,
+            "masked_phone": "**********455",
+            "message": "Success",
+            "redirect_url": "https://staging.tokopedia.com/gopay",
+            "type": "PEMUDA",
+            "wallet_name": "GoPay & GoPayPoints Mock",
+            "global_menu_text": {
+              "id": "Activation CTA from BE"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

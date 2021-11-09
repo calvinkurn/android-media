@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeCarousellBinding
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeCarousellImageBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.view_recharge_home_carousell_image.view.*
 
 
 class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item>, val listener: RechargeHomepageItemListener)
@@ -20,7 +21,7 @@ class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): CarousellRechargeItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_recharge_home_carousell_image, parent, false)
+        val view = ViewRechargeHomeCarousellImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CarousellRechargeItemViewHolder(view)
     }
 
@@ -28,18 +29,20 @@ class RechargeItemCarousellAdapter(val items: List<RechargeHomepageSections.Item
         return items.size
     }
 
-    class CarousellRechargeItemViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+    class CarousellRechargeItemViewHolder(val binding : ViewRechargeHomeCarousellImageBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener) {
-            itemView.img_carousell_recharge_home_page.loadImage(element.mediaUrl)
-            itemView.setOnClickListener {
-                if(element.applink.isNotEmpty()){
-                    try {
-                        val uri = Uri.parse(element.applink)
-                        if (!uri.host.isNullOrEmpty()){
-                            onItemBindListener.onRechargeSectionItemClicked(element)
-                        }
-                    } catch (e: Exception){
+            with(binding){
+                imgCarousellRechargeHomePage.loadImage(element.mediaUrl)
+                root.setOnClickListener {
+                    if(element.applink.isNotEmpty()){
+                        try {
+                            val uri = Uri.parse(element.applink)
+                            if (!uri.host.isNullOrEmpty()){
+                                onItemBindListener.onRechargeSectionItemClicked(element)
+                            }
+                        } catch (e: Exception){
 
+                        }
                     }
                 }
             }

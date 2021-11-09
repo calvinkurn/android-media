@@ -152,4 +152,30 @@
     <string name="label_power_merchant">Power Merchant</string>
     <string name="label_official_store">Official Store</string>
     <string name="power_merchant">Power Merchant</string>
+    <string name="shop_page_setting_title">Toko Kamu</string>
+    <!-- shop new info -->
+    <string name="shop_page_setting_dashboard">Dashboard Toko</string>
+    <string name="shop_page_setting_action_manage_sale">Lihat dan atur penjualanmu di sini</string>
+    <!-- product -->
+    <string name="shop_page_setting_product">Produk</string>
+    <string name="shop_page_setting_action_display_products">Lihat daftar produk</string>
+    <string name="shop_page_setting_action_edit_etalage">Tambah dan ubah etalase</string>
+    <!-- profile -->
+    <string name="shop_page_setting_profile">Profil Toko</string>
+    <string name="shop_page_setting_action_change_profile">Ubah profil toko</string>
+    <string name="shop_page_setting_action_change_note">Ubah catatan toko</string>
+    <string name="shop_page_setting_action_manage_opening_time">Atur jam buka toko</string>
+<!--    <string name="shop_page_setting_shop_status">Status Toko</string>-->
+    <!-- shipping -->
+    <string name="shop_page_setting_shipping">Lokasi dan Pengiriman</string>
+    <string name="shop_page_setting_action_edit_location">Lokasi toko</string>
+    <string name="shop_page_setting_action_manage_shipping_service">Atur layanan pengiriman</string>
+    <!-- support -->
+    <string name="shop_page_setting_support">Bantuan</string>
+    <string name="shop_page_setting_support_center">Pusat Bantuan</string>
+    <string name="shop_page_setting_action_get_support">Dapatkan bantuan melalui Tokopedia Care</string>
+    <string name="shop_page_setting_seller_center">Pusat Seller</string>
+    <string name="shop_page_setting_action_get_tips">Dapatkan tips berjualan dan informasi penting</string>
+    <string name="shop_page_setting_no_access_error">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
+
 </resources>

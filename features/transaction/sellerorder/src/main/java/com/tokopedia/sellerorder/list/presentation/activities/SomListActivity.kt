@@ -2,11 +2,11 @@ package com.tokopedia.sellerorder.list.presentation.activities
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.*
@@ -16,9 +16,8 @@ import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActiv
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.databinding.ActivitySomListBinding
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.activity_som_list.*
 
 class SomListActivity : BaseActivity(), SomListLoadTimeMonitoringActivity {
 
@@ -27,16 +26,29 @@ class SomListActivity : BaseActivity(), SomListLoadTimeMonitoringActivity {
         fun createIntent(context: Context) = Intent(context, SomListActivity::class.java)
     }
 
+    private var _binding: ActivitySomListBinding? = null
+    private val binding get() = _binding!!
+
     override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initSomListLoadTimeMonitoring()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_som_list)
+        _binding = ActivitySomListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setupStatusBar()
         window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         setupFragment()
+    }
+
+    override fun onBackPressed() {
+        supportFragmentManager.fragments.forEach {
+            if (it is TkpdBaseV4Fragment) {
+                if (it.onFragmentBackPressed()) return
+            }
+        }
+        super.onBackPressed()
     }
 
     override fun initSomListLoadTimeMonitoring() {
@@ -85,18 +97,10 @@ class SomListActivity : BaseActivity(), SomListLoadTimeMonitoringActivity {
     }
 
     private fun setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isDarkMode()) {
-                requestStatusBarLight()
-            } else {
-                requestStatusBarDark()
-            }
-            statusBarBackground?.show()
-        }
         if (DeviceScreenInfo.isTablet(this)) {
-            toolbarShadow?.show()
+            binding.toolbarShadow.show()
         } else {
-            toolbarShadow?.gone()
+            binding.toolbarShadow.gone()
         }
     }
 }

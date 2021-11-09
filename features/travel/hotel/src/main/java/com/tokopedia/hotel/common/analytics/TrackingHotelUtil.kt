@@ -174,7 +174,7 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun hotelViewHotelListImpression(context: Context?, destination: String, destinationType: String, searchParam: SearchParam,
+    fun hotelViewHotelListImpression(context: Context?, destinationType: String, destination: String, searchParam: SearchParam,
                                      products: List<Property>, currentListDataSize: Int, screenName: String) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
@@ -188,7 +188,7 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelViewHotelListMapImpression(context: Context?, destination: String, destinationType: String, searchParam: SearchParam,
+    fun hotelViewHotelListMapImpression(context: Context?, destinationType: String, destination: String, searchParam: SearchParam,
                                         products: List<Property>, currentIndex: Int, screenName: String) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
@@ -202,7 +202,7 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun chooseHotel(context: Context?, destination: String, destinationType: String, searchParam: SearchParam,
+    fun chooseHotel(context: Context?, destinationType: String, destination: String, searchParam: SearchParam,
                     property: Property, position: Int, screenName: String) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
@@ -219,7 +219,7 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun chooseHotelFromMap(context: Context?, destination: String, destinationType: String, searchParam: SearchParam,
+    fun chooseHotelFromMap(context: Context?, destinationType: String, destination: String, searchParam: SearchParam,
                            property: Property, position: Int, screenName: String) {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
@@ -640,6 +640,13 @@ class TrackingHotelUtil {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $hotelId - $hotelPrice"
         map.addGeneralEvent(CLICK_HOTEL, CLICK_SHARE_ICON, eventLabel)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun hotelDetailViewNearbyLandmarks(context: Context, screenName: String, hotelId: Long, hotelPrice: String){
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val eventLabel = "$HOTEL_LABEL - $hotelId - $hotelPrice"
+        map.addGeneralEvent(PROMO_VIEW, VIEW_HOTEL_PDP_NEARBY_LANDMARK, eventLabel)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 

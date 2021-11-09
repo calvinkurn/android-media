@@ -43,6 +43,10 @@ class CategoryRevampActivity : DiscoveryActivity() {
         return CATEGORY_LEVELS_RESULT_TRACE
     }
 
+    override fun isFromCategory(): Boolean {
+        return true
+    }
+
     override fun getAnalytics(): BaseDiscoveryAnalytics {
         val userSession: UserSessionInterface = UserSession(this)
         return CategoryRevampAnalytics(getPageType(),

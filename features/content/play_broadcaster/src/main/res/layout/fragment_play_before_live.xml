@@ -9,7 +9,6 @@
     >
 
     <include
-        android:id="@+id/action_bar"
         layout="@layout/layout_play_action_bar"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
@@ -23,7 +22,6 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:background="@drawable/bg_play_cover"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="@id/iv_share_link"

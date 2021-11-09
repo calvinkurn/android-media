@@ -1,84 +1,60 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
 
-android {
-    testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
-    }
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-}
 buildscript {
     repositories {
         google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
-        jcenter()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
-    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
-    implementation projectOrAar(rootProject.ext.features.merchantVoucher)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
 
-    implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
-    implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.unifyDependencies.principles
 
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.miscDependencies.apacheLang
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
 
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.rxAndroid
+    implementation rootProject.ext.miscDependencies.rxJava
+
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//
     //-------------------------------------------------------------------//
-    testImplementation rootProject.ext.testDependencies.junitJupiterApi
-    testImplementation rootProject.ext.testDependencies.junitJupiterEngine
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     //-------------------------------------------------------------------//
 }
 

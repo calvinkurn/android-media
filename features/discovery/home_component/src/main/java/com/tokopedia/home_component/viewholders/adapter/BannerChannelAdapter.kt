@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
 import com.tokopedia.home_component.R
@@ -19,6 +20,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 @SuppressLint("SyntheticAccessor")
 class BannerChannelAdapter(itemList: List<BannerItemModel>, private val bannerItemListener: BannerItemListener) : RecyclerView.Adapter<BannerChannelImageViewHolder>() {
     private var itemList: List<BannerItemModel> = listOf()
+    private var imageRatio = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerChannelImageViewHolder {
         val layout = if (itemCount > 1) R.layout.layout_banner_channel_item else R.layout.layout_banner_channel_item_full
@@ -33,6 +35,10 @@ class BannerChannelAdapter(itemList: List<BannerItemModel>, private val bannerIt
         notifyDataSetChanged()
     }
 
+    fun setImageRatio(imageRatio: String) {
+        this.imageRatio = imageRatio
+    }
+
     fun getItem(listPosition: Int): BannerItemModel? {
         return if (listPosition >= 0 && listPosition < itemList.size) {
             itemList[listPosition]
@@ -43,7 +49,7 @@ class BannerChannelAdapter(itemList: List<BannerItemModel>, private val bannerIt
 
     override fun onBindViewHolder(holder: BannerChannelImageViewHolder, position: Int) {
         if(position != -1) {
-            holder.bind(itemList[position])
+            holder.bind(itemList[position], imageRatio)
         }
     }
 
@@ -56,12 +62,20 @@ class BannerChannelImageViewHolder(itemView: View, val listener: BannerItemListe
     companion object{
         private const val FPM_HOMEPAGE_BANNER = "banner_component_channel"
     }
-    fun bind(item: BannerItemModel) {
+    fun bind(item: BannerItemModel, imageRatio: String = "") {
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.url)
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).setOnClickListener { listener.onClick(adapterPosition) }
         itemView.addOnImpressionListener(item) {
             listener.onImpressed(adapterPosition)
         }
+        if (imageRatio.isNotEmpty()) setRatio(imageRatio)
+    }
+
+    private fun setRatio(imageRatio: String) {
+        val view = itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage)
+        val layoutParams = (view.layoutParams as ConstraintLayout.LayoutParams)
+        layoutParams.dimensionRatio = imageRatio
+        view.layoutParams = layoutParams
     }
 }
 

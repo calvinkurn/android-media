@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class InboxReviewInsertReputationResponseWrapper(
-        @SerializedName("inboxReviewInsertReputation")
+        @SerializedName("inboxReviewInsertReputationV2")
         @Expose
         val inboxReviewInsertReputation: InboxReviewInsertReputation = InboxReviewInsertReputation()
 )

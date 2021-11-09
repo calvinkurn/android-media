@@ -36,4 +36,18 @@ internal class CarouselProductCardListenerInfo {
                 field = value
             }
         }
+
+    var onATCNonVariantClickListener: CarouselProductCardListener.OnATCNonVariantClickListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
+
+    var onAddVariantClickListener: CarouselProductCardListener.OnAddVariantClickListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
 }

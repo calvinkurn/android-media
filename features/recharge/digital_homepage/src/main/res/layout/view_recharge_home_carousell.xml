@@ -19,7 +19,7 @@
             android:layout_marginHorizontal="@dimen/spacing_lvl4"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_3" />
+            app:typographyType="heading_4" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_recharge_home_carousell"

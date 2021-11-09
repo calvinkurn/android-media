@@ -22,14 +22,6 @@ class GqlRawQueryModule {
     fun provideRawWishlistQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.wishlist.common.R.raw.gql_get_is_wishlisted)
 
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION)
-    fun provideRawGetRateEstimation(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_rates_estimation_v3)
-
     @ProductDetailScope
     @Provides
     @IntoMap
@@ -43,13 +35,6 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE)
     fun provideGetProductAffiliate(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.affiliatecommon.R.raw.query_product_affiliate_data)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
-    @StringKey(RawQueryKeyConstant.MUTATION_FAVORITE_SHOP)
-    fun providePostFavorite(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_favorite_shop)
 
     @ProductDetailScope
     @Provides
@@ -73,22 +58,9 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context):
-            String = GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
-
-    @ProductDetailScope
-    @Provides
     @Named("atcOcsMutation")
     fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_shipment)
-    }
-
-    @ProductDetailScope
-    @Provides
-    @Named(AtcConstant.MUTATION_ATC_OCC)
-    fun provideAtcOccMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
     }
 
     @ProductDetailScope

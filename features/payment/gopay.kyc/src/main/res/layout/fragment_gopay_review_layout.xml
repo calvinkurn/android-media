@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Unify_NN0">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/midGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/kycReviewTitle"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:text="@string/gopay_kyc_review_title_text"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_3" />
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/kycCard"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/go_pay_kyc_dp_10"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:card_type="border"
+        app:layout_constraintEnd_toEndOf="@+id/midGuideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/kycReviewTitle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_NN0"
+            android:paddingBottom="@dimen/unify_space_4">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/goPayKycKtpTitle"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:text="@string/gopay_kyc_ktp_text"
+                android:textColor="@color/Unify_N700"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ktpImage"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="@dimen/unify_space_0"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:scaleType="centerCrop"
+                app:layout_constraintDimensionRatio="H,1:1"
+                app:layout_constraintEnd_toEndOf="@+id/goPayKycKtpTitle"
+                app:layout_constraintStart_toStartOf="@+id/goPayKycKtpTitle"
+                app:layout_constraintTop_toBottomOf="@+id/goPayKycKtpTitle" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/retryKtpIcon"
+                android:layout_width="@dimen/unify_space_16"
+                android:layout_height="@dimen/unify_space_16"
+                app:icon_color_light_enable="@color/Unify_G500"
+                app:icon_name="RELOAD"
+                app:layout_constraintBottom_toBottomOf="@+id/retryKtpText"
+                app:layout_constraintStart_toStartOf="@+id/goPayKycKtpTitle"
+                app:layout_constraintTop_toTopOf="@+id/retryKtpText" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/retryKtpText"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_4"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:text="@string/gopay_kyc_reset_image_text"
+                android:textColor="@color/Unify_G500"
+                app:layout_constraintEnd_toEndOf="@+id/goPayKycKtpTitle"
+                app:layout_constraintStart_toEndOf="@+id/retryKtpIcon"
+                app:layout_constraintTop_toBottomOf="@id/ktpImage"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/ktpSelfieCard"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/go_pay_kyc_dp_10"
+        app:card_type="border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/midGuideline"
+        app:layout_constraintTop_toBottomOf="@id/kycReviewTitle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Unify_NN0"
+            android:paddingBottom="@dimen/unify_space_4">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/goPayKtpSelfieTitle"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/unify_space_8"
+                android:text="@string/gopay_kyc_selfie_plus_ktp_text"
+                android:textColor="@color/Unify_N700"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ktpSelfieImage"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="@dimen/unify_space_0"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:scaleType="centerCrop"
+                app:layout_constraintDimensionRatio="H,1:1"
+                app:layout_constraintEnd_toEndOf="@+id/goPayKtpSelfieTitle"
+                app:layout_constraintStart_toStartOf="@+id/goPayKtpSelfieTitle"
+                app:layout_constraintTop_toBottomOf="@+id/goPayKtpSelfieTitle" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/retryKtpSelfieIcon"
+                android:layout_width="@dimen/unify_space_16"
+                android:layout_height="@dimen/unify_space_16"
+                app:icon_color_light_enable="@color/Unify_G500"
+                app:icon_name="RELOAD"
+                app:layout_constraintBottom_toBottomOf="@+id/retryKtpSelfieText"
+                app:layout_constraintStart_toStartOf="@+id/goPayKtpSelfieTitle"
+                app:layout_constraintTop_toTopOf="@+id/retryKtpSelfieText" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/retryKtpSelfieText"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_4"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:text="@string/gopay_kyc_reset_image_text"
+                android:textColor="@color/Unify_G500"
+                app:layout_constraintEnd_toEndOf="@+id/goPayKtpSelfieTitle"
+                app:layout_constraintStart_toEndOf="@+id/retryKtpSelfieIcon"
+                app:layout_constraintTop_toBottomOf="@id/ktpSelfieImage"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify>
+
+    <include
+        layout="@layout/gopay_kyc_bank_supervised_layout"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/sendKycButton"
+        app:layout_constraintEnd_toEndOf="@+id/sendKycButton"
+        app:layout_constraintStart_toStartOf="@+id/sendKycButton" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/sendKycButton"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        android:text="@string/gopay_kyc_submit_button_text"
+        app:layout_constraintBottom_toTopOf="@+id/tncText"
+        app:layout_constraintEnd_toEndOf="@+id/kycReviewTitle"
+        app:layout_constraintStart_toStartOf="@+id/kycReviewTitle"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tncText"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/unify_space_24"
+        android:gravity="center"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/kycReviewTitle"
+        app:layout_constraintStart_toStartOf="@+id/kycReviewTitle"
+        app:typographyType="small" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

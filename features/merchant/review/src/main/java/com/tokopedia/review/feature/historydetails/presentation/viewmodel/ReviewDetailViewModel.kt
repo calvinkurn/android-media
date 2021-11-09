@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.feature.historydetails.domain.InboxReviewInsertReputationUseCase
@@ -68,11 +67,11 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
         return userSession.userId
     }
 
-    fun submitReputation(reputationId: Long, reputationScore: Int) {
+    fun submitReputation(reputationId: String, reputationScore: Int) {
         _submitReputationResult.value = LoadingView()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
-                inboxReviewInsertReputationUseCase.setParams(reputationId, reputationScore, userSession.userId.toIntOrZero())
+                inboxReviewInsertReputationUseCase.setParams(reputationId, reputationScore)
                 inboxReviewInsertReputationUseCase.executeOnBackground()
             }
             if(response.inboxReviewInsertReputation.success == 1) {

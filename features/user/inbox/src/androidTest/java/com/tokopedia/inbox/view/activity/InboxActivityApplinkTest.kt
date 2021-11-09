@@ -9,7 +9,7 @@ import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.test.application.matcher.hasQueryParameter
 import com.tokopedia.test.application.matcher.isPointingTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -24,20 +24,18 @@ class InboxActivityApplinkTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val inbox = "com.tokopedia.inbox.view.activity.InboxActivity"
-    private val oldNotifcenter = "com.tokopedia.notifcenter.presentation.activity.NotificationActivity"
+    private val sellerNotifCenter = "com.tokopedia.notifcenter.presentation.activity.NotificationSellerActivity"
 
     @Before
     fun setUp() {
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         forceAbNewInbox()
     }
 
     private fun forceAbNewInbox() {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         applyAbKeyValue(
-            AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_NEW_INBOX
-        )
-        applyAbKeyValue(
-            AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+            RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_NEW_INBOX
         )
     }
 
@@ -127,11 +125,8 @@ class InboxActivityApplinkTest {
     }
 
     @Test
-    fun should_point_to_new_inbox_when_whitelisted_ab_old_to_new_notifcenter() {
+    fun should_point_to_new_inbox_when_using_old_notification_applink() {
         // Given
-        applyAbKeyValue(
-            AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_NEW_NOTFICENTER
-        )
         val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
 
         // When
@@ -144,34 +139,16 @@ class InboxActivityApplinkTest {
     }
 
     @Test
-    fun should_point_to_old_inbox_when_not_whitelisted_ab_old_to_new_notifcenter() {
-        // Given
-        applyAbKeyValue(
-            AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_OLD_NOTFICENTER
-        )
-        val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
-
-        // When
-        val intent = RouteManager.getIntent(context, applinkUri.toString())
-
-        // Then
-        assertThat(intent, isPointingTo(oldNotifcenter))
-    }
-
-    @Test
-    fun should_always_point_to_old_inbox_when_whitelisted_ab_old_to_new_notifcenter_on_sellerapp() {
+    fun should_always_point_to_seller_notification_when_using_old_notification_applink_in_sellerapp() {
         // Given
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
-        applyAbKeyValue(
-            AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_NEW_NOTFICENTER
-        )
         val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
 
         // When
         val intent = RouteManager.getIntent(context, applinkUri.toString())
 
         // Then
-        assertThat(intent, isPointingTo(oldNotifcenter))
+        assertThat(intent, isPointingTo(sellerNotifCenter))
     }
 
     private fun applyAbKeyValue(key: String, value: String) {

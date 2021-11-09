@@ -3,18 +3,10 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
 
 
 android {
     testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
         unitTests.all {
             testLogging.events = ["passed", "skipped", "failed"]
         }
@@ -30,24 +22,16 @@ buildscript {
         google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-        jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
-    }
-}
-
-// For instrumentation test
-android {
-    defaultConfig {
-        testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
     }
 }
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
@@ -81,11 +65,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation rootProject.ext.testDependencies.junitJupiterApi
-    testImplementation rootProject.ext.testDependencies.junitJupiterEngine
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.json
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     // instrumentation test - disabled for now

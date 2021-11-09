@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
-import android.widget.AutoCompleteTextView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
+import com.tokopedia.unifycomponents.TextFieldUnify
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -23,12 +23,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                                                                defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
 
-    protected val hintInputNumber: TextView
     protected val imgOperator: ImageView
     protected val btnClear: ImageView
-    protected val autoCompleteInputNumber: AutoCompleteTextView
+    protected val inputNumberField: TextFieldUnify
     protected val btnContactPicker: ImageView
-    protected val errorInputNumber: TextView
     protected val layoutInputNumber: ConstraintLayout
 
     private val inputNumberResult: TextView
@@ -40,56 +38,58 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     init {
         view = View.inflate(context, getLayout(), this)
-        hintInputNumber = view.findViewById(R.id.telco_hint_input_number)
         imgOperator = view.findViewById(R.id.telco_img_operator)
         btnClear = view.findViewById(R.id.telco_clear_input_number_btn)
-        autoCompleteInputNumber = view.findViewById(R.id.telco_ac_input_number)
         btnContactPicker = view.findViewById(R.id.telco_contact_picker_btn)
-        errorInputNumber = view.findViewById(R.id.telco_error_input_number)
         layoutInputNumber = view.findViewById(R.id.telco_input_number_layout)
 
         layoutResult = view.findViewById(R.id.telco_input_number_result_layout)
         imgOperatorResult = view.findViewById(R.id.telco_img_operator_result)
         inputNumberResult = view.findViewById(R.id.telco_phone_number_result)
+        inputNumberField = view.findViewById(R.id.telco_field_input_number)
 
-        autoCompleteInputNumber.clearFocus()
         btnContactPicker.setOnClickListener { listener.onNavigateToContact() }
-
         btnClear.setOnClickListener {
-            autoCompleteInputNumber.setText("")
-            errorInputNumber.visibility = View.GONE
+            inputNumberField.textFieldInput.setText("")
+            inputNumberField.textFieldWrapper.hint = context.getString(R.string.digital_client_label)
+            hideErrorInputNumber()
         }
 
-        autoCompleteInputNumber.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
+        inputNumberField.textFieldInput.run {
+            isClickable = true
+            isFocusable = false
+            clearFocus()
+            addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
 
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (count == 0) {
-                    listener.onClearAutoComplete()
-                    imgOperator.visibility = View.GONE
-                    btnClear.visibility = View.GONE
-                } else {
-                    btnClear.visibility = View.VISIBLE
                 }
-                listener.onRenderOperator()
-            }
-        })
 
-        autoCompleteInputNumber.setOnClickListener {
-            it?.run {
-                listener.onClientNumberHasFocus((this as TextView).text.toString())
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (count == 0) {
+                        listener.onClearAutoComplete()
+                        imgOperator.visibility = View.GONE
+                        btnClear.visibility = View.GONE
+                    } else {
+                        btnClear.visibility = View.VISIBLE
+                    }
+                    listener.onRenderOperator()
+                }
+            })
+
+            setOnClickListener {
+                it?.run {
+                    listener.onClientNumberHasFocus(inputNumberField.textFieldInput.text.toString())
+                }
             }
         }
     }
 
     fun clearFocusAutoComplete() {
-        autoCompleteInputNumber.clearFocus()
+        inputNumberField.textFieldInput.clearFocus()
     }
 
     open fun getLayout(): Int {
@@ -101,21 +101,30 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setErrorInputNumber(errorMessage: String) {
-        errorInputNumber.text = errorMessage
-        errorInputNumber.visibility = View.VISIBLE
+        inputNumberField.run {
+            setMessage(errorMessage)
+            setError(true)
+        }
     }
 
     private fun hideErrorInputNumber() {
-        errorInputNumber.text = ""
-        errorInputNumber.visibility = View.GONE
+        inputNumberField.run {
+            setMessage("")
+            setError(false)
+        }
     }
 
     fun setInputNumber(inputNumber: String) {
-        autoCompleteInputNumber.setText(formatPrefixClientNumber(inputNumber))
+        inputNumberField.textFieldInput.setText(formatPrefixClientNumber(inputNumber))
     }
 
     fun getInputNumber(): String {
-        return formatPrefixClientNumber(autoCompleteInputNumber.text.toString())
+        return formatPrefixClientNumber(inputNumberField.textFieldInput.text.toString())
+    }
+
+    fun setContactName(contactName: String) {
+        val validatedLabel = validateContactName(contactName)
+        inputNumberField.textFieldWrapper.hint = validatedLabel
     }
 
     fun setIconOperator(url: String) {
@@ -134,6 +143,22 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             layoutInputNumber.show()
             layoutResult.hide()
         }
+    }
+
+    private fun validateContactName(contactName: String): String {
+        val label = if (contactName.matches(REGEX_IS_ALPHABET_AND_SPACE_ONLY.toRegex()) && contactName.isNotEmpty()) {
+            contactName
+        } else {
+            context.getString(R.string.digital_client_label)
+        }
+
+        val validatedName = if (label.length > LABEL_MAX_CHAR) {
+            label.substring(0, LABEL_MAX_CHAR).plus(ELLIPSIZE)
+        } else {
+            label
+        }
+
+        return validatedName
     }
 
     private fun validatePrefixClientNumber(phoneNumber: String): String {
@@ -163,15 +188,16 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         return ""
     }
 
-    companion object {
-        private const val ALPHA_0F = 0f
-        private const val ALPHA_1F = 1f
-    }
-
     interface ActionListener {
         fun onNavigateToContact()
         fun onRenderOperator()
         fun onClearAutoComplete()
         fun onClientNumberHasFocus(clientNumber: String)
+    }
+
+    companion object {
+        private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
+        private const val LABEL_MAX_CHAR = 18
+        private const val ELLIPSIZE = "..."
     }
 }

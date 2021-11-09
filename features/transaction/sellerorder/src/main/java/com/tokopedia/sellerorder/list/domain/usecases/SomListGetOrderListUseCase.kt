@@ -28,7 +28,7 @@ class SomListGetOrderListUseCase @Inject constructor(
 
     suspend fun executeOnBackground(params: RequestParams): Pair<String, List<SomListOrderUiModel>> {
         val gqlRequest = GraphqlRequest(QUERY, SomListOrderListResponse.Data::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
         val searchKeyword = getSearchKeyword(params)
 
         val errors = gqlResponse.getError(SomListOrderListResponse.Data::class.java)
@@ -72,6 +72,7 @@ class SomListGetOrderListUseCase @Inject constructor(
                     product_id
                     product_name
                     picture
+                    product_qty
                   }
                   ticker_info {
                     text
@@ -94,6 +95,25 @@ class SomListGetOrderListUseCase @Inject constructor(
                         color
                         type
                       }
+                    }
+                  }
+                  have_product_bundle
+                  bundle_detail {
+                    total_product
+                    bundle {
+                      bundle_id
+                      order_detail {
+                        product_id
+                        product_name
+                        picture
+                        product_qty
+                      }
+                    }
+                    non_bundle {
+                      product_id
+                      product_name
+                      picture
+                      product_qty
                     }
                   }
                 }

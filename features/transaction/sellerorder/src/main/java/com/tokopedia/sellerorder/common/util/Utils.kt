@@ -11,6 +11,7 @@ import android.text.Spanned
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,6 +26,7 @@ import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -137,6 +139,14 @@ object Utils {
         }
     }
 
+    fun View?.hideKeyboard() {
+        this?.rootView?.let { view ->
+            if (view.context != null) {
+                KeyboardHandler.DropKeyboard(view.context, view)
+            }
+        }
+    }
+
     internal fun GlobalError.setUserNotAllowedToViewSom(onActionClick: () -> Unit) {
         val permissionGroup = SellerHomePermissionGroup.ORDER
         ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
@@ -149,5 +159,9 @@ object Utils {
             onActionClick.invoke()
         }
         show()
+    }
+
+    fun parseRupiah(price: String): String {
+        return "Rp ${CurrencyFormatHelper.convertToRupiah(price)}"
     }
 }

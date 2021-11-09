@@ -20,7 +20,6 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -40,7 +39,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -49,9 +47,6 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation(rootProject.ext.miscDependencies.laku6Sdk) {
@@ -65,7 +60,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.networkDependencies.glide
     implementation projectOrAar(rootProject.ext.features.commonTradein)
     implementation rootProject.ext.miscDependencies.rootbeer
     implementation projectOrAar(rootProject.ext.libraries.iris)

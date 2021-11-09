@@ -423,7 +423,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
                         val broadCastMetaData = result.data
                         setupShareBottomSheet(
                                 status = broadCastMetaData.status,
-                                quota = broadCastMetaData.quota
+                                promo = broadCastMetaData.promo
                         )
                     }
                     is Fail -> {
@@ -442,10 +442,10 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
         }
     }
 
-    private fun setupShareBottomSheet(status: Int = 0, quota: Int = 0): ShareVoucherBottomSheet? {
+    private fun setupShareBottomSheet(status: Int = 0, promo: Int = 0): ShareVoucherBottomSheet {
         val shareVoucherBottomSheet = ShareVoucherBottomSheet.createInstance()
         shareVoucherBottomSheet.setBroadCastChatStatus(status)
-        shareVoucherBottomSheet.setBroadCastChatQuota(quota)
+        shareVoucherBottomSheet.setBroadCastChatPromo(promo)
         return shareVoucherBottomSheet
     }
 

@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.SeekBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search_map.data.model.FilterRatingEnum
 import com.tokopedia.hotel.search_map.data.model.FilterV2
 import com.tokopedia.hotel.search_map.presentation.adapter.HotelSearchResultFilterV2Adapter
+import com.tokopedia.unifycomponents.RangeSliderUnify
 import kotlinx.android.synthetic.main.layout_hotel_filter_selection_range.view.*
-import kotlinx.android.synthetic.main.layout_hotel_filter_selection_range.view.base_rating_step
 
 /**
  * @author by jessica on 12/08/20
@@ -28,7 +28,11 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
         with(itemView) {
             base_rating_step.removeAllViews()
             hotel_filter_selection_range_title.text = filter.displayName
-            hotel_filter_selection_range_seekbar.max = filter.options.size - 1
+
+
+            hotel_filter_selection_range_seekbar.backgroundRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G300)
+            hotel_filter_selection_range_seekbar.activeRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
+            hotel_filter_selection_range_seekbar.knobColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
 
             val selectedValue =  filter.optionSelected.firstOrNull() ?: "0"
 
@@ -40,9 +44,13 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
                         FilterRatingEnum.ABOVE_8.value,
                         FilterRatingEnum.ABOVE_9.value)
             }
+            hotel_filter_selection_range_seekbar.updateEndValue(filter.options.lastIndex)
 
             filter.options.forEachIndexed { index, item ->
-                if (item == selectedValue) hotel_filter_selection_range_seekbar.progress = filter.options.size - index - 1
+                if (item == selectedValue) {
+                    hotel_filter_selection_range_seekbar.setInitialValue(index)
+                    hotel_filter_selection_range_seekbar.updateValue(index)
+                }
 
                 val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
 
@@ -58,25 +66,24 @@ class FilterSelectionRangeViewHolder(view: View, val onSelectedFilterChangedList
                 }
             }
 
-            if (filter.optionSelected.isEmpty())
-                hotel_filter_selection_range_seekbar.progress = hotel_filter_selection_range_seekbar.max
+            if (filter.optionSelected.isEmpty()){
+                val maxValue = hotel_filter_selection_range_seekbar.getValue().first
+                hotel_filter_selection_range_seekbar.setInitialValue(maxValue)
+                hotel_filter_selection_range_seekbar.updateValue(maxValue)
+            }
 
-            hotel_filter_selection_range_seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
-                override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                    if (filter.options.getOrNull(p1) != null) {
-                        if (p1 == filter.options.lastIndex) onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
+            hotel_filter_selection_range_seekbar.onSliderMoveListener = object : RangeSliderUnify.OnSliderMoveListener{
+                override fun onSliderMove(p0: Pair<Int, Int>) {
+                    if (filter.options.getOrNull(p0.first) != null) {
+                        if (p0.first == 0) onSelectedFilterChangedListener.onSelectedFilterChanged(filterName)
                         else {
                             onSelectedFilterChangedListener.onSelectedFilterChanged(filterName,
-                                    mutableListOf(filter.options[filter.options.size - p1 - 1]))
+                                mutableListOf(filter.options[p0.first]))
                         }
                     }
                 }
 
-                override fun onStartTrackingTouch(p0: SeekBar?) {}
-
-                override fun onStopTrackingTouch(p0: SeekBar?) {}
-
-            })
+            }
         }
     }
 

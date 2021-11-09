@@ -22,6 +22,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.databinding.LayoutSellerMenuShopInfoBinding
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
@@ -31,10 +32,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.layout_seller_menu_shop_info.view.*
-import kotlinx.android.synthetic.main.layout_seller_menu_shop_info_success.view.*
-import kotlinx.android.synthetic.main.setting_balance.view.*
-import kotlinx.android.synthetic.main.setting_partial_others_local_load.view.*
 import java.util.*
 
 class ShopInfoViewHolder(
@@ -58,9 +55,13 @@ class ShopInfoViewHolder(
         private const val TAB_PM_PARAM = "tab"
         private const val TAB_PM = "pm"
         private const val TAB_PM_PRO = "pm_pro"
+
+        private const val SHOP_AGE_SIXTY = 60
     }
 
     private val context by lazy { itemView.context }
+
+    private val binding = LayoutSellerMenuShopInfoBinding.bind(itemView)
 
     override fun bind(uiModel: ShopInfoUiModel) {
         with(uiModel.shopInfo) {
@@ -77,9 +78,9 @@ class ShopInfoViewHolder(
                             setDotVisibility(it.shopFollowers)
                         }
 
-                        localLoadOthers?.gone()
-                        shopStatus?.visible()
-                        saldoBalance?.visible()
+                        binding.layoutSahOtherLocalLoad.localLoadOthers.gone()
+                        binding.shopStatus.visible()
+                        binding.layoutSahOtherSaldo.layoutSahOtherSettingBalance.visible()
                     }
                     partialResponseStatus.first -> {
                         showNameAndAvatar()
@@ -91,25 +92,25 @@ class ShopInfoViewHolder(
                             setDotVisibility(it.shopFollowers)
                         }
 
-                        shopStatus?.visible()
-                        localLoadOthers?.run {
+                        binding.shopStatus.visible()
+                        binding.layoutSahOtherLocalLoad.localLoadOthers.run {
                             setup()
                             visible()
                         }
-                        saldoBalance?.gone()
+                        binding.layoutSahOtherSaldo.layoutSahOtherSettingBalance.gone()
                     }
                     partialResponseStatus.second -> {
                         showNameAndAvatar()
 
                         saldoBalanceUiModel?.let { setSaldoBalance(it) }
 
-                        dot?.gone()
-                        shopStatus?.gone()
-                        localLoadOthers?.run {
+                        binding.successShopInfoLayout.dot.gone()
+                        binding.shopStatus.gone()
+                        binding.layoutSahOtherLocalLoad.localLoadOthers.run {
                             setup()
                             visible()
                         }
-                        saldoBalance?.visible()
+                        binding.layoutSahOtherSaldo.layoutSahOtherSettingBalance.visible()
                     }
                 }
                 showShopScore(uiModel)
@@ -120,7 +121,7 @@ class ShopInfoViewHolder(
     private fun setDotVisibility(shopFollowers: Long) {
         val shouldShowFollowers = shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
         val dotVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
-        itemView.successShopInfoLayout?.dot?.visibility = dotVisibility
+        binding.successShopInfoLayout.dot.visibility = dotVisibility
     }
 
     private fun showNameAndAvatar() {
@@ -129,24 +130,23 @@ class ShopInfoViewHolder(
     }
 
     private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
-        itemView.successShopInfoLayout.shopBadges?.run {
+        binding.successShopInfoLayout.shopBadges.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
         }
     }
 
     private fun showShopScore(uiModel: ShopInfoUiModel) {
-        val shopAgeSixty = 60
         with(itemView) {
-            if (uiModel.shopAge < shopAgeSixty || uiModel.shopScore < 0) {
-                shopScore.text = getString(R.string.seller_menu_shop_score_empty_label)
-                shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                shopScoreMaxLabel?.hide()
+            if (uiModel.shopScore < 0) {
+                binding.successShopInfoLayout.shopScore.text = getString(R.string.seller_menu_shop_score_empty_label)
+                binding.successShopInfoLayout.shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                binding.successShopInfoLayout.shopScoreMaxLabel.hide()
             } else {
-                shopScore.text = uiModel.shopScore.toString()
-                shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                shopScoreMaxLabel?.show()
+                binding.successShopInfoLayout.shopScore.text = uiModel.shopScore.toString()
+                binding.successShopInfoLayout.shopScore.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                binding.successShopInfoLayout.shopScoreMaxLabel.show()
             }
-            shopScoreLayout.setOnClickListener {
+            binding.successShopInfoLayout.shopScoreLayout.setOnClickListener {
                 listener?.onScoreClicked()
             }
             listener?.onScoreImpressed()
@@ -156,7 +156,7 @@ class ShopInfoViewHolder(
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
         val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
         val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
-        itemView.successShopInfoLayout.shopFollowers?.run {
+        binding.successShopInfoLayout.shopFollowers.run {
             visibility = followersVisibility
             text = StringBuilder("${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}")
             setOnClickListener {
@@ -164,23 +164,21 @@ class ShopInfoViewHolder(
                 goToShopFavouriteList()
             }
         }
-        itemView.successShopInfoLayout.dot.visibility = followersVisibility
+        binding.successShopInfoLayout.dot.visibility = followersVisibility
     }
 
     private fun setShopName(shopName: String) {
-        itemView.run {
-            successShopInfoLayout.shopName?.run {
-                text = MethodChecker.fromHtml(shopName)
-                setOnClickListener {
-                    goToShopPage()
-                    sellerMenuTracker?.sendEventClickShopName()
-                }
+        binding.successShopInfoLayout.shopName.run {
+            text = MethodChecker.fromHtml(shopName)
+            setOnClickListener {
+                goToShopPage()
+                sellerMenuTracker?.sendEventClickShopName()
             }
         }
     }
 
     private fun setShopAvatar(shopAvatarUiModel: ShopAvatarUiModel) {
-        itemView.successShopInfoLayout.shopImage?.run {
+        binding.successShopInfoLayout.shopImage.run {
             urlSrc = shopAvatarUiModel.shopAvatarUrl
             sendSettingShopInfoImpressionTracking(shopAvatarUiModel, trackingListener::sendImpressionDataIris)
             setOnClickListener {
@@ -191,9 +189,9 @@ class ShopInfoViewHolder(
     }
 
     private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
-        itemView.saldoBalance.run {
-            balanceTitle?.text = context.resources.getString(R.string.setting_balance)
-            balanceValue?.text = saldoBalanceUiModel.balanceValue
+        binding.layoutSahOtherSaldo.run {
+            balanceTitle.text = context.resources.getString(R.string.setting_balance)
+            balanceValue.text = saldoBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
             listOf(balanceTitle, balanceValue).forEach {
                 it.setOnClickListener {
@@ -216,7 +214,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -226,13 +224,16 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
             is ShopType.OfficialStore -> {
                 itemView?.apply {
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
+                    setOnClickListener {
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
+                    }
                 }
             }
 
@@ -242,7 +243,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
 
@@ -253,7 +254,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -263,7 +264,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -273,7 +274,7 @@ class ShopInfoViewHolder(
                     sendSettingShopInfoImpressionTracking(shopStatusUiModel, trackingListener::sendImpressionDataIris)
                     setOnClickListener {
                         goToPowerMerchantSubscribe(TAB_PM_PRO)
-                        sellerMenuTracker?.sendEventClickShopType()
+                        sellerMenuTracker?.sendEventClickShopSettingNew()
                     }
                 }
             }
@@ -287,7 +288,7 @@ class ShopInfoViewHolder(
         }
 
         shopStatusLayout?.let { view ->
-            this.itemView.shopStatus?.run {
+            binding.shopStatus.run {
                 removeAllViews()
                 addView(view)
             }
@@ -312,15 +313,13 @@ class ShopInfoViewHolder(
             }
         }
 
-        val thresholdTransaction = 110
-        val maxTransaction = 100
         val totalTransaction = userShopInfo?.totalTransaction ?: 0
-        if (totalTransaction >= thresholdTransaction) {
+        if (totalTransaction >= Constant.ShopStatus.THRESHOLD_TRANSACTION) {
             hideTransactionSection()
         } else {
             if (userShopInfo?.periodTypePmPro == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
                 showTransactionSection()
-                if (totalTransaction > maxTransaction) {
+                if (totalTransaction > Constant.ShopStatus.MAX_TRANSACTION) {
                     txStatsRM.text = MethodChecker.fromHtml(getString(R.string.transaction_passed))
                     txTotalStatsRM.hide()
                 } else {
@@ -422,10 +421,9 @@ class ShopInfoViewHolder(
             }
         }
 
-        val roundedRadius = 16F
         ivBgPMPro.shapeAppearanceModel = ivBgPMPro.shapeAppearanceModel
                 .toBuilder()
-                .setTopLeftCorner(CornerFamily.ROUNDED, roundedRadius)
+                .setTopLeftCorner(CornerFamily.ROUNDED, Constant.ShopStatus.ROUNDED_RADIUS)
                 .build()
         powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
         return this

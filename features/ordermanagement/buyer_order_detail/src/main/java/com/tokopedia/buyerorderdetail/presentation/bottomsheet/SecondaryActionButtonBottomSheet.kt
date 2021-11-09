@@ -13,7 +13,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class SecondaryActionButtonBottomSheet(
         context: Context,
-        private val listener: ActionButtonClickListener) {
+        private val listener: ActionButtonClickListener?) {
 
     private val bottomSheet: BottomSheetUnify by lazy {
         setupSecondaryActionButtonBottomSheet(context)

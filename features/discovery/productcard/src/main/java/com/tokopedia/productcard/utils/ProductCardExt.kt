@@ -279,16 +279,15 @@ internal fun renderLabelCampaign(
 }
 
 internal fun renderLabelBestSeller(
-        isShow: Boolean,
-        labelBestSeller: Typography?,
-        productCardModel: ProductCardModel
+    isShow: Boolean,
+    labelBestSeller: Typography?,
+    productCardModel: ProductCardModel
 ) {
     labelBestSeller ?: return
 
     if (isShow) {
         labelBestSeller.initLabelBestSeller(productCardModel.getLabelBestSeller())
-    }
-    else {
+    } else {
         labelBestSeller.initLabelBestSeller(null)
     }
 }
@@ -306,6 +305,56 @@ private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardMode
     text = labelBestSellerModel.title
 }
 
+internal fun renderLabelBestSellerCategorySide(
+    isShow: Boolean,
+    textCategorySide: Typography?,
+    productCardModel: ProductCardModel
+) {
+    textCategorySide ?: return
+
+    if (isShow) {
+        textCategorySide.initLabelCategorySide(productCardModel.getLabelCategorySide())
+    } else {
+        textCategorySide.initLabelCategorySide(null)
+    }
+}
+
+private fun Typography.initLabelCategorySide(categorySideModel: ProductCardModel.LabelGroup?) {
+    if (categorySideModel == null) hide()
+    else showLabelCategorySide(categorySideModel)
+}
+
+private fun Typography.showLabelCategorySide(categorySideModel: ProductCardModel.LabelGroup) {
+    show()
+    text = categorySideModel.title
+    setTextColor(categorySideModel.type.toUnifyTextColor(context))
+}
+
+internal fun renderLabelBestSellerCategoryBottom(
+    isShow: Boolean,
+    textCategoryBottom: Typography?,
+    productCardModel: ProductCardModel
+) {
+    textCategoryBottom ?: return
+
+    if (isShow) {
+        textCategoryBottom.initLabelCategoryBottom(productCardModel.getLabelCategoryBottom())
+    } else {
+        textCategoryBottom.initLabelCategoryBottom(null)
+    }
+}
+
+private fun Typography.initLabelCategoryBottom(categoryBottomModel: ProductCardModel.LabelGroup?) {
+    if (categoryBottomModel == null) hide()
+    else showLabelCategoryBottom(categoryBottomModel)
+}
+
+private fun Typography.showLabelCategoryBottom(categoryBottomModel: ProductCardModel.LabelGroup) {
+    show()
+    text = categoryBottomModel.title
+    setTextColor(categoryBottomModel.type.toUnifyTextColor(context))
+}
+
 internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
     when (this) {
         is GradientDrawable -> setColor(safeParseColor(hexColor, Color.parseColor(defaultColor)))
@@ -313,42 +362,3 @@ internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
         is ColorDrawable -> color = safeParseColor(hexColor, Color.parseColor(defaultColor))
     }
 }
-
-internal fun renderStockBar(progressBarStock: ProgressBarUnify?, textViewStock: Typography?, productCardModel: ProductCardModel) {
-    renderStockPercentage(progressBarStock, productCardModel)
-    renderStockLabel(textViewStock, productCardModel)
-}
-
-private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCardModel: ProductCardModel) {
-    progressBarStock?.shouldShowWithAction(productCardModel.isStockBarShown()) {
-        it.setProgressIcon(icon = null)
-        if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
-            it.setProgressIcon(
-                    icon = ContextCompat.getDrawable(it.context, R.drawable.product_card_ic_fire_filled),
-                    width = it.context.resources.getDimension(FIRE_WIDTH).toInt(),
-                    height = it.context.resources.getDimension(FIRE_HEIGHT).toInt())
-        }
-        it.progressBarColorType = ProgressBarUnify.COLOR_RED
-        it.setValue(productCardModel.stockBarPercentage, false)
-    }
-}
-
-private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: ProductCardModel) {
-    textViewStockLabel?.shouldShowWithAction(productCardModel.isStockBarShown()) {
-        it.text = productCardModel.stockBarLabel
-
-        val color = getStockLabelColor(productCardModel, it)
-        it.setTextColor(color)
-    }
-}
-
-private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typography) =
-        when {
-            productCardModel.stockBarLabelColor.isNotEmpty() ->
-                safeParseColor(
-                        productCardModel.stockBarLabelColor,
-                        ContextCompat.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-                )
-            else ->
-                MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-        }

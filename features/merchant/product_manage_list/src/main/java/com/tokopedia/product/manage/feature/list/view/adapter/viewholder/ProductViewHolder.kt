@@ -4,18 +4,18 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
-import com.tokopedia.kotlin.extensions.view.getNumberFormatted
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
+import com.tokopedia.product.manage.databinding.ItemManageProductListBinding
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.item_manage_product_list.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductViewHolder(
     view: View,
-    private val listener: ProductViewHolderView
+    private val listener: ProductViewHolderView,
+    private val campaignListener: ProductCampaignInfoListener
 ): AbstractViewHolder<ProductUiModel>(view) {
 
     companion object {
@@ -23,6 +23,8 @@ class ProductViewHolder(
         var LAYOUT = R.layout.item_manage_product_list
         const val MAX_SHOWING_STOCK = 999_999
     }
+
+    private val binding by viewBinding<ItemManageProductListBinding>()
 
     override fun bind(product: ProductUiModel) {
         setTitleAndPrice(product)
@@ -38,57 +40,57 @@ class ProductViewHolder(
         showStockHintImage(product)
         showProductCheckBox(product)
         showProductTopAdsIcon(product)
+        showCampaignCountText(product)
 
         setOnClickListeners(product)
     }
 
     private fun setTitleAndPrice(product: ProductUiModel) {
-        itemView.textTitle.text = product.title
+        binding?.textTitle?.text = product.title
         val prices = mutableListOf(product.minPrice?.priceFormatted, product.maxPrice?.priceFormatted).distinct()
-        itemView.textPrice.text = prices.joinToString(" - ")
+        binding?.textPrice?.text = prices.joinToString(" - ")
     }
 
     private fun showProductStock(product: ProductUiModel) {
         product.stock?.run {
-            itemView.textStockCount.text = if (this <= MAX_SHOWING_STOCK) {
+            binding?.textStockCount?.text = if (this <= MAX_SHOWING_STOCK) {
                 getNumberFormatted()
             } else {
                 "${MAX_SHOWING_STOCK.getNumberFormatted()}+"
             }
-            itemView.textStockCount.show()
-            itemView.textStock.show()
+            binding?.textStockCount?.show()
+            binding?.textStock?.show()
         }
     }
 
     private fun showProductLabel(product: ProductUiModel) {
-        itemView.labelBanned.showWithCondition(product.isViolation())
-        itemView.labelInactive.showWithCondition(product.isInactive())
-        itemView.labelActive.showWithCondition(product.isActive())
-        itemView.labelCampaign.showWithCondition(product.isCampaign)
+        binding?.labelBanned?.showWithCondition(product.isViolation())
+        binding?.labelInactive?.showWithCondition(product.isInactive())
+        binding?.labelActive?.showWithCondition(product.isActive())
     }
 
     private fun showVariantLabel(product: ProductUiModel) {
-        itemView.labelVariant.showWithCondition(product.isVariant())
+        binding?.labelVariant?.showWithCondition(product.isVariant())
     }
 
     private fun showProductButton(product: ProductUiModel) {
         if(product.multiSelectActive) {
-            itemView.btnContactCS.hide()
-            itemView.btnEditPrice.hide()
-            itemView.btnEditStock.hide()
-            itemView.btnMoreOptions.hide()
+            binding?.btnContactCS?.hide()
+            binding?.btnEditPrice?.hide()
+            binding?.btnEditStock?.hide()
+            binding?.btnMoreOptions?.hide()
         } else {
-            itemView.btnContactCS.showWithCondition(product.isViolation())
-            itemView.btnEditPrice.showWithCondition(product.isNotViolation())
-            itemView.btnEditStock.showWithCondition(product.isNotViolation())
-            itemView.btnMoreOptions.showWithCondition(product.isNotViolation())
+            binding?.btnContactCS?.showWithCondition(product.isViolation())
+            binding?.btnEditPrice?.showWithCondition(product.isNotViolation())
+            binding?.btnEditStock?.showWithCondition(product.isNotViolation())
+            binding?.btnMoreOptions?.showWithCondition(product.isNotViolation())
         }
 
-        itemView.btnEditPrice.isEnabled = product.hasEditPriceAccess()
+        binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
     }
 
     private fun setupButtonStyle(product: ProductUiModel) {
-        itemView.btnEditPrice.apply {
+        binding?.btnEditPrice?.run {
             if (product.hasEditPriceAccess()) {
                 buttonType = UnifyButton.Type.ALTERNATE
                 buttonVariant = UnifyButton.Variant.GHOST
@@ -100,31 +102,33 @@ class ProductViewHolder(
     }
 
     private fun showStockHintImage(product: ProductUiModel) {
-        itemView.imageStockInformation
-            .showWithCondition(product.isEmpty() && product.isNotViolation())
+        binding?.imageStockInformation
+            ?.showWithCondition(product.isEmpty() && product.isNotViolation())
     }
 
     private fun showProductImage(product: ProductUiModel) {
-        loadImageFitCenter(itemView.context, itemView.imageProduct, product.imageUrl)
+        binding?.imageProduct?.let {
+            loadImageFitCenter(itemView.context, it, product.imageUrl)
+        }
     }
 
     private fun setOnClickListeners(product: ProductUiModel) {
         setOnItemClickListener(product)
         setQuickEditBtnListeners(product)
 
-        itemView.checkBoxSelect.setOnClickListener { onClickCheckBox() }
-        itemView.btnMoreOptions.setOnClickListener { listener.onClickMoreOptionsButton(product) }
-        itemView.imageStockInformation.setOnClickListener { listener.onClickStockInformation() }
-        itemView.btnContactCS.setOnClickListener { listener.onClickContactCsButton(product)}
+        binding?.checkBoxSelect?.setOnClickListener { onClickCheckBox() }
+        binding?.btnMoreOptions?.setOnClickListener { listener.onClickMoreOptionsButton(product) }
+        binding?.imageStockInformation?.setOnClickListener { listener.onClickStockInformation() }
+        binding?.btnContactCS?.setOnClickListener { listener.onClickContactCsButton(product)}
     }
 
     private fun setQuickEditBtnListeners(product: ProductUiModel) {
         if(product.isVariant()) {
-            itemView.btnEditPrice.setOnClickListener { listener.onClickEditVariantPriceButton(product) }
-            itemView.btnEditStock.setOnClickListener { listener.onClickEditVariantStockButton(product) }
+            binding?.btnEditPrice?.setOnClickListener { listener.onClickEditVariantPriceButton(product) }
+            binding?.btnEditStock?.setOnClickListener { listener.onClickEditVariantStockButton(product) }
         } else {
-            itemView.btnEditPrice.setOnClickListener { listener.onClickEditPriceButton(product) }
-            itemView.btnEditStock.setOnClickListener { listener.onClickEditStockButton(product) }
+            binding?.btnEditPrice?.setOnClickListener { listener.onClickEditPriceButton(product) }
+            binding?.btnEditStock?.setOnClickListener { listener.onClickEditStockButton(product) }
         }
     }
 
@@ -134,30 +138,65 @@ class ProductViewHolder(
                 if (product.multiSelectActive) {
                     toggleCheckBox()
                     onClickCheckBox()
-                } else {
-                    onClickProductItem(product)
                 }
             }
+            setComponentsOnItemClickListener(product, !product.multiSelectActive)
         } else {
             itemView.setOnClickListener(null)
+            setComponentsOnItemClickListener(product, false)
         }
     }
 
+    private fun setComponentsOnItemClickListener(product: ProductUiModel, isEnabled: Boolean) {
+        binding?.run {
+            val clickAction =
+                    if (isEnabled) {
+                        getComponentOnClickAction(product)
+                    } else {
+                        null
+                    }
+            imageProduct.setOnClickListener(clickAction)
+            textTitle.setOnClickListener(clickAction)
+        }
+    }
+
+    private fun getComponentOnClickAction(product: ProductUiModel) =
+            View.OnClickListener {
+                onClickProductItem(product)
+            }
+
     private fun showProductCheckBox(product: ProductUiModel) {
-        itemView.checkBoxSelect.isChecked = product.isChecked
-        itemView.checkBoxSelect.showWithCondition(product.multiSelectActive)
+        binding?.checkBoxSelect?.isChecked = product.isChecked
+        binding?.checkBoxSelect?.showWithCondition(product.multiSelectActive)
     }
 
     private fun showProductTopAdsIcon(product: ProductUiModel) {
-        itemView.imageTopAds.showWithCondition(product.hasTopAds())
+        binding?.imageTopAds?.showWithCondition(product.hasTopAds())
+    }
+
+    private fun showCampaignCountText(product: ProductUiModel) {
+        val shouldShowCampaignCount = !product.campaignTypeList.isNullOrEmpty() && product.isCampaign
+        binding?.tvManageProductItemCampaignCount?.run {
+            showWithCondition(shouldShowCampaignCount)
+            if (shouldShowCampaignCount) {
+                text = String.format(getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_count), product.getCampaignTypeCount())
+                setOnClickListener {
+                    product.campaignTypeList?.let {
+                        campaignListener.onClickCampaignInfo(it)
+                    }
+                }
+            }
+        }
     }
 
     private fun toggleCheckBox() {
-        itemView.checkBoxSelect.apply { isChecked = !isChecked }
+        binding?.checkBoxSelect?.run {
+            isChecked = !isChecked
+        }
     }
 
     private fun onClickCheckBox() {
-        val isChecked = itemView.checkBoxSelect.isChecked
+        val isChecked = binding?.checkBoxSelect?.isChecked == true
         listener.onClickProductCheckBox(isChecked, adapterPosition)
     }
 

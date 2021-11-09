@@ -6,16 +6,20 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_BALANCE_WIDGET_CUSTOMVIEW
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaGridLayoutManager
 import com.tokopedia.home.util.ViewUtils
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
@@ -27,9 +31,13 @@ class BalanceWidgetView: FrameLayout {
     private val itemContext: Context
     private var listener: HomeCategoryListener? = null
     private var rvBalance: RecyclerView? = null
-    private var layoutManager: GridLayoutManager? = null
+    private var layoutManager: NpaGridLayoutManager? = null
     private var balanceAdapter: BalanceAdapter? = null
-    private lateinit var containerWidget: LinearLayout
+    private lateinit var containerWidget: FrameLayout
+
+    private var tokopointsView: View? = null
+    private var tokopointsViewNew: View? = null
+    private var gopayActivateNewView: View? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -44,6 +52,7 @@ class BalanceWidgetView: FrameLayout {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_item_widget_balance_widget, this)
         rvBalance = view.findViewById(R.id.rv_balance_widget)
         containerWidget = view.findViewById(R.id.container_balance_widget)
+        rvBalance?.itemAnimator?.changeDuration = 0
         this.itemView = view
         this.itemContext = view.context
     }
@@ -56,33 +65,99 @@ class BalanceWidgetView: FrameLayout {
     }
 
     private fun renderWidget(element: HomeBalanceModel) {
+        if (element.isGopayEligible == null) {
+            view_balance_widget_coachmark.visibility = View.GONE
+            view_balance_widget_coachmark_new.visibility = View.GONE
+        }
+        if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible == false) {
+            view_balance_widget_coachmark.visibility = View.INVISIBLE
+            view_balance_widget_coachmark_new.visibility = View.GONE
+        } else if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible == true) {
+            view_balance_widget_coachmark.visibility = View.GONE
+            view_balance_widget_coachmark_new.visibility = View.INVISIBLE
+        } else {
+            view_balance_widget_coachmark.visibility = View.GONE
+            view_balance_widget_coachmark_new.visibility = View.GONE
+        }
         containerWidget.background = ViewUtils.generateBackgroundWithShadow(containerWidget, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
         layoutManager = getLayoutManager(element)
-        balanceAdapter = BalanceAdapter(listener)
-        rvBalance?.layoutManager = layoutManager
-        rvBalance?.adapter = balanceAdapter
-        balanceAdapter?.setItemMap(element)
+        if (balanceAdapter == null || rvBalance?.adapter == null) {
+            balanceAdapter = BalanceAdapter(listener, object: DiffUtil.ItemCallback<BalanceDrawerItemModel>() {
+                override fun areItemsTheSame(
+                    oldItem: BalanceDrawerItemModel,
+                    newItem: BalanceDrawerItemModel
+                ): Boolean {
+                    return oldItem.state == newItem.state
+                }
+
+                override fun areContentsTheSame(
+                    oldItem: BalanceDrawerItemModel,
+                    newItem: BalanceDrawerItemModel
+                ): Boolean {
+                    return oldItem == newItem
+                }
+
+            })
+            rvBalance?.layoutManager = layoutManager
+            rvBalance?.adapter = balanceAdapter
+        }
+        if (element.balanceDrawerItemModels.isEmpty()) {
+            rvBalance?.gone()
+        } else {
+            balanceAdapter?.setItemMap(element)
+            rvBalance?.show()
+        }
     }
 
-    private fun getLayoutManager(element: HomeBalanceModel): GridLayoutManager {
+    private fun getLayoutManager(element: HomeBalanceModel): NpaGridLayoutManager {
         val spanCount = when(element.balanceType) {
             HomeBalanceModel.TYPE_STATE_2 -> LAYOUT_SPAN_2
             else -> LAYOUT_SPAN_3
         }
-        return GridLayoutManager(itemView.context, spanCount)
+        return NpaGridLayoutManager(itemView.context, spanCount)
     }
 
-    private fun getBalanceWidgetRecyclerView(): RecyclerView? {
+    fun startRotationForPosition(position: Int) {
+        val viewholder = rvBalance?.findViewHolderForAdapterPosition(position)
+        viewholder?.let {
+            (it as? BalanceAdapter.Holder)?.let {
+                it.setDrawerItemWithAnimation()
+            }
+        }
+    }
+
+    fun getBalanceWidgetRecyclerView(): RecyclerView? {
         return rvBalance
     }
 
     fun getTokopointsView(): View? {
-        val tokopointsPos = balanceAdapter?.getTokopointsDataPosition() ?: -1
-        if (tokopointsPos != -1) {
-            layoutManager?.let {
-                return it.getChildAt(tokopointsPos)
-            }
+        tokopointsView = findViewById(R.id.home_coachmark_item_tokopoints)
+        return tokopointsView
+    }
+
+    fun getGopayView(): View? {
+        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+            val gopayView: View = findViewById(R.id.home_coachmark_item_gopay)
+            return gopayView
         }
         return null
+    }
+
+    fun getGopayNewView(): View? {
+        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+            val gopayViewNew: View = findViewById(R.id.home_coachmark_item_gopay_new)
+            return gopayViewNew
+        }
+        return null
+    }
+
+    fun getGopayActivateNewView(): View? {
+        gopayActivateNewView = findViewById(R.id.home_coachmark_item_gopay_activate_new)
+        return gopayActivateNewView
+    }
+
+    fun getTokopointsNewView(): View? {
+        tokopointsViewNew = findViewById(R.id.home_coachmark_item_tokopoint_new)
+        return tokopointsViewNew
     }
 }

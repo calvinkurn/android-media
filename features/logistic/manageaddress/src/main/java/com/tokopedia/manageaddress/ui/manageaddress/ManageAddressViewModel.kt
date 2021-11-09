@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.localizationchooseaddress.domain.model.StateChooseAddressParam
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
@@ -58,7 +57,7 @@ class ManageAddressViewModel @Inject constructor(
 
     private val compositeSubscription = CompositeSubscription()
 
-    fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
+    fun searchAddress(query: String, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
                 getPeopleAddressUseCase.execute(query, prevState = prevState,
@@ -83,7 +82,7 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun loadMore(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
+    fun loadMore(prevState: Int, localChosenAddrId: Long, isWhitelistChosenAddress: Boolean) {
         _addressList.value = ManageAddressState.Loading
         compositeSubscription.add(
                 getPeopleAddressUseCase.loadMore(savedQuery, page + 1, prevState, localChosenAddrId, isWhitelistChosenAddress)
@@ -106,7 +105,7 @@ class ManageAddressViewModel @Inject constructor(
         )
     }
 
-    fun deletePeopleAddress(id: String, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
+    fun deletePeopleAddress(id: String, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
         _result.value = ManageAddressState.Loading
         deletePeopleAddressUseCase.execute(id.toInt(), {
             _result.value = ManageAddressState.Success("Success")
@@ -117,7 +116,7 @@ class ManageAddressViewModel @Inject constructor(
         })
     }
 
-    fun setDefaultPeopleAddress(id: String, setAsStateChosenAddress: Boolean, prevState: Int, localChosenAddrId: Int, isWhiteListChosenAddress: Boolean) {
+    fun setDefaultPeopleAddress(id: String, setAsStateChosenAddress: Boolean, prevState: Int, localChosenAddrId: Long, isWhiteListChosenAddress: Boolean) {
         setDefaultPeopleAddressUseCase.execute(id.toInt(), setAsStateChosenAddress = setAsStateChosenAddress, onSuccess = {
             _setDefault.value = ManageAddressState.Success("Success")
             isClearData = true
@@ -129,7 +128,7 @@ class ManageAddressViewModel @Inject constructor(
 
     fun getStateChosenAddress(source: String) {
         viewModelScope.launch(onErrorGetStateChosenAddress) {
-            val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress(source)
+            val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress(source, true)
             _getChosenAddress.value = Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }
     }

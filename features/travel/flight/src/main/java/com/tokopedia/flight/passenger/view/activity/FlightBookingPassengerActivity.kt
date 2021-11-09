@@ -44,10 +44,10 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
 
     override fun getNewFragment(): Fragment {
         return FlightBookingPassengerFragment.newInstance(
-                depatureId = intent.getStringExtra(EXTRA_DEPATURE),
+                depatureId = intent.getStringExtra(EXTRA_DEPATURE) ?: "",
                 passengerModel = passengerModel ?: FlightBookingPassengerModel(),
-                luggageModels = intent.getParcelableArrayListExtra(EXTRA_LUGGAGES),
-                mealModels = intent.getParcelableArrayListExtra(EXTRA_MEALS),
+                luggageModels = intent.getParcelableArrayListExtra(EXTRA_LUGGAGES) ?: listOf(),
+                mealModels = intent.getParcelableArrayListExtra(EXTRA_MEALS) ?: listOf(),
                 isAirAsiaAirlines = intent.getBooleanExtra(EXTRA_IS_AIRASIA, false),
                 depatureDate = intent.getStringExtra(EXTRA_DEPARTURE_DATE) ?: "",
                 requestId = intent.getStringExtra(EXTRA_REQUEST_ID) ?: "",

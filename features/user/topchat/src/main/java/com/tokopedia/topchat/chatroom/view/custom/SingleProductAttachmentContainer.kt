@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
@@ -175,15 +175,15 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     fun bindData(
-            product: ProductAttachmentViewModel,
-            adapterPosition: Int,
-            listener: TopchatProductAttachmentListener,
-            deferredAttachment: DeferredViewHolderAttachment,
-            searchListener: SearchListener,
-            commonListener: CommonViewHolderListener,
-            adapterListener: AdapterListener,
-            useStrokeSender: Boolean = true,
-            parentMetaData: ParentViewHolderMetaData?
+        product: ProductAttachmentUiModel,
+        adapterPosition: Int,
+        listener: TopchatProductAttachmentListener,
+        deferredAttachment: DeferredViewHolderAttachment,
+        searchListener: SearchListener,
+        commonListener: CommonViewHolderListener,
+        adapterListener: AdapterListener,
+        useStrokeSender: Boolean = true,
+        parentMetaData: ParentViewHolderMetaData?
     ) {
         initViewHolderData(adapterPosition, parentMetaData)
         initListener(listener, deferredAttachment, searchListener, commonListener, adapterListener)
@@ -218,7 +218,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    fun updateStockState(product: ProductAttachmentViewModel) {
+    fun updateStockState(product: ProductAttachmentUiModel) {
         bindSellerStockCount(product)
         bindEmptyStockLabel(product)
     }
@@ -265,7 +265,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         this.adapterListener = adapterListener
     }
 
-    private fun bindSyncProduct(product: ProductAttachmentViewModel) {
+    private fun bindSyncProduct(product: ProductAttachmentUiModel) {
         if (!product.isLoading) return
         val chatAttachments = deferredAttachment?.getLoadedChatAttachments() ?: return
         val attachment = chatAttachments[product.attachmentId] ?: return
@@ -276,7 +276,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindLayoutGravity(product: ProductAttachmentViewModel) {
+    private fun bindLayoutGravity(product: ProductAttachmentUiModel) {
         if (product.isSender) {
             gravityRight()
         } else {
@@ -284,7 +284,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindIsLoading(product: ProductAttachmentViewModel) {
+    private fun bindIsLoading(product: ProductAttachmentUiModel) {
         if (product.isLoading) {
             loadView?.show()
         } else {
@@ -292,7 +292,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindImage(product: ProductAttachmentViewModel) {
+    private fun bindImage(product: ProductAttachmentUiModel) {
         ImageHandler.loadImageRounded2(
                 context,
                 thumbnail,
@@ -301,7 +301,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         )
     }
 
-    private fun bindProductName(product: ProductAttachmentViewModel) {
+    private fun bindProductName(product: ProductAttachmentUiModel) {
         val query = searchListener?.getSearchQuery() ?: ""
         val spanText = SpannableString(product.productName)
         if (query.isNotEmpty()) {
@@ -312,13 +312,15 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 if (lastIndex > spanText.lastIndex) {
                     lastIndex = spanText.lastIndex
                 }
-                spanText.setSpan(BackgroundColorSpan(color), index, lastIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (index < spanText.length && spanText.length >= lastIndex) {
+                    spanText.setSpan(BackgroundColorSpan(color), index, lastIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
             }
         }
         productName?.text = spanText
     }
 
-    private fun bindVariant(product: ProductAttachmentViewModel) {
+    private fun bindVariant(product: ProductAttachmentUiModel) {
         if (product.doesNotHaveVariant()) {
             hideVariantLayout()
             return
@@ -344,7 +346,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindCampaign(product: ProductAttachmentViewModel) {
+    private fun bindCampaign(product: ProductAttachmentUiModel) {
         if (product.hasDiscount) {
             toggleCampaign(View.VISIBLE)
             bindDiscount(product)
@@ -354,7 +356,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindSellerRemainingStock(product: ProductAttachmentViewModel) {
+    private fun bindSellerRemainingStock(product: ProductAttachmentUiModel) {
         if (commonListener?.isSeller() == true) {
             sellerStockContainer?.show()
             bindSellerStockCount(product)
@@ -364,11 +366,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindSellerStockCount(product: ProductAttachmentViewModel) {
+    private fun bindSellerStockCount(product: ProductAttachmentUiModel) {
         sellerStockCount?.text = product.remainingStock.toString()
     }
 
-    private fun bindSellerStockType(product: ProductAttachmentViewModel) {
+    private fun bindSellerStockType(product: ProductAttachmentUiModel) {
         val stockCategoryRes = if (product.isProductCampaign()) {
             R.string.title_campaign_stock
         } else {
@@ -377,7 +379,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         sellerStockType?.setText(stockCategoryRes)
     }
 
-    private fun bindSellerFullfilment(product: ProductAttachmentViewModel) {
+    private fun bindSellerFullfilment(product: ProductAttachmentUiModel) {
         if (commonListener?.isSeller() == true && product.isFulfillment) {
             sellerFullfilment?.show()
             ImageHandler.LoadImage(sellerFullfilmentImage, product.urlTokocabang)
@@ -386,7 +388,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindSellerUpdateStockBtn(product: ProductAttachmentViewModel) {
+    private fun bindSellerUpdateStockBtn(product: ProductAttachmentUiModel) {
         if (product.canShowFooter || commonListener?.isSeller() == false ||
                 product.isProductCampaign() || !enableUpdateStockSeller()) {
             btnUpdateStockContainer?.hide()
@@ -395,14 +397,14 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindSellerUpdateStockClick(product: ProductAttachmentViewModel) {
+    private fun bindSellerUpdateStockClick(product: ProductAttachmentUiModel) {
         btnUpdateStock?.setOnClickListener {
             listener?.updateProductStock(product, adapterPosition, parentMetaData)
             listener?.trackClickUpdateStock(product)
         }
     }
 
-    private fun bindMargin(product: ProductAttachmentViewModel) {
+    private fun bindMargin(product: ProductAttachmentUiModel) {
         val lp = layoutParams
         if (lp is LinearLayout.LayoutParams) {
             if (isNextItemOppositeFrom(product)) {
@@ -413,7 +415,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindContentPadding(product: ProductAttachmentViewModel) {
+    private fun bindContentPadding(product: ProductAttachmentUiModel) {
         val newPaddingBottom = if (btnUpdateStockContainer?.isVisible == true ||
                 footerContainer?.isVisible == true) {
             getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
@@ -425,11 +427,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun isNextItemOppositeFrom(product: ProductAttachmentViewModel): Boolean {
+    private fun isNextItemOppositeFrom(product: ProductAttachmentUiModel): Boolean {
         return adapterListener?.isOpposite(adapterPosition, product.isSender) == true
     }
 
-    private fun bindBackground(product: ProductAttachmentViewModel) {
+    private fun bindBackground(product: ProductAttachmentUiModel) {
         if (product.isSender) {
             background = bgSender
         } else {
@@ -437,11 +439,11 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindProductClick(product: ProductAttachmentViewModel) {
+    private fun bindProductClick(product: ProductAttachmentUiModel) {
         setOnClickListener { listener?.onProductClicked(product) }
     }
 
-    private fun bindImageClick(product: ProductAttachmentViewModel) {
+    private fun bindImageClick(product: ProductAttachmentUiModel) {
         iv_thumbnail?.setOnClickListener {
             listener?.trackClickProductThumbnail(product)
             it.context.startActivity(
@@ -456,22 +458,22 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun bindDiscount(product: ProductAttachmentViewModel) {
+    private fun bindDiscount(product: ProductAttachmentUiModel) {
         tv_campaign_discount?.text = "${product.dropPercentage}%"
     }
 
-    private fun bindDropPrice(product: ProductAttachmentViewModel) {
+    private fun bindDropPrice(product: ProductAttachmentUiModel) {
         tv_campaign_price?.let {
             it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             it.text = product.priceBefore
         }
     }
 
-    private fun bindPrice(product: ProductAttachmentViewModel) {
+    private fun bindPrice(product: ProductAttachmentUiModel) {
         tv_price?.text = product.productPrice
     }
 
-    private fun bindStatusContainer(product: ProductAttachmentViewModel) {
+    private fun bindStatusContainer(product: ProductAttachmentUiModel) {
         if (product.hasFreeShipping() || (product.hasReview() && product.fromBroadcast())) {
             statusContainer?.show()
         } else {
@@ -480,7 +482,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun bindRating(product: ProductAttachmentViewModel) {
+    private fun bindRating(product: ProductAttachmentUiModel) {
         if (product.hasReview() && commonListener?.isSeller() == false) {
             reviewScore?.text = product.rating.score.toString()
             reviewCount?.text = "(${product.rating.count})"
@@ -494,8 +496,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindFreeShipping(product: ProductAttachmentViewModel) {
-        if (product.hasFreeShipping()) {
+    private fun bindFreeShipping(product: ProductAttachmentUiModel) {
+        if (product.hasFreeShipping() && commonListener?.isSeller() == false) {
             freeShippingImage?.show()
             ImageHandler.loadImageRounded2(context, freeShippingImage, product.getFreeShippingImageUrl())
         } else {
@@ -503,7 +505,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindFooter(product: ProductAttachmentViewModel) {
+    private fun bindFooter(product: ProductAttachmentUiModel) {
         if (product.canShowFooter && !GlobalConfig.isSellerApp()) {
             footerContainer?.show()
             bindBuy(product)
@@ -514,7 +516,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindPreOrderLabel(product: ProductAttachmentViewModel) {
+    private fun bindPreOrderLabel(product: ProductAttachmentUiModel) {
         label?.apply {
             if (product.isPreOrder) {
                 show()
@@ -527,7 +529,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindEmptyStockLabel(product: ProductAttachmentViewModel) {
+    private fun bindEmptyStockLabel(product: ProductAttachmentUiModel) {
         label?.apply {
             if (product.hasEmptyStock()) {
                 show()
@@ -553,7 +555,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         btnWishList?.hide()
     }
 
-    private fun bindBuy(product: ProductAttachmentViewModel) {
+    private fun bindBuy(product: ProductAttachmentUiModel) {
         btnBuy?.let {
             if (product.hasEmptyStock()) {
                 it.hide()
@@ -572,7 +574,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindAtc(product: ProductAttachmentViewModel) {
+    private fun bindAtc(product: ProductAttachmentUiModel) {
         btnAtc?.let {
             if (product.hasEmptyStock()) {
                 it.hide()
@@ -585,7 +587,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindWishList(product: ProductAttachmentViewModel) {
+    private fun bindWishList(product: ProductAttachmentUiModel) {
         if (product.hasEmptyStock()) {
             btnWishList?.show()
             btnWishList?.setOnClickListener {

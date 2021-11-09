@@ -16,13 +16,15 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
-class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner), ATCNonVariantListener{
 
     private lateinit var masterProductCardItemViewModel: MasterProductCardItemViewModel
     private var masterProductCardGridView: ProductCardGridView? = null
@@ -47,6 +49,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
                 sentNotifyButtonEvent()
                 masterProductCardItemViewModel.subscribeUser()
             }
+
+            masterProductCardListView?.setAddVariantClickListener {
+                openVariantSheet()
+            }
+            masterProductCardListView?.setAddToCartNonVariantClickListener(this)
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
@@ -54,10 +61,22 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
                 sentNotifyButtonEvent()
                 masterProductCardItemViewModel.subscribeUser()
             }
+
+            masterProductCardGridView?.setAddVariantClickListener {
+                openVariantSheet()
+            }
+            masterProductCardGridView?.setAddToCartNonVariantClickListener(this)
         }
 
         productCardView.setOnClickListener {
             handleUIClick(it)
+        }
+    }
+
+    private fun openVariantSheet() {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(masterProductCardItemViewModel.components,masterProductCardItemViewModel.getUserID())
+        masterProductCardItemViewModel.getProductDataItem()?.let { dataItem ->
+            (fragment as DiscoveryFragment).openVariantBottomSheet(dataItem.productId?:"")
         }
     }
 
@@ -142,13 +161,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
                 it.text = notifyText
                 if (notifyMeStatus == true) {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.ALTERNATE
                     }
                 } else {
                     it.apply {
-                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500))
+                        setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
                         buttonVariant = UnifyButton.Variant.GHOST
                         buttonType = UnifyButton.Type.MAIN
                     }
@@ -208,5 +227,27 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
 
     private fun sentNotifyButtonEvent() {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackNotifyClick(masterProductCardItemViewModel.components, masterProductCardItemViewModel.isUserLoggedIn(),masterProductCardItemViewModel.getUserID())
+    }
+
+    override fun onQuantityChanged(quantity: Int) {
+        masterProductCardItemViewModel.updateProductQuantity(quantity)
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackEventProductATC(
+            masterProductCardItemViewModel.components,
+            masterProductCardItemViewModel.getUserID()
+        )
+        if (masterProductCardItemViewModel.isUserLoggedIn()) {
+            masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
+                if (!productItem.productId.isNullOrEmpty())
+                    (fragment as DiscoveryFragment).addOrUpdateItemCart(
+                        masterProductCardItemViewModel.getParentPositionForCarousel(),
+                        masterProductCardItemViewModel.position,
+                        productItem.productId!!,
+                        quantity
+                    )
+            }
+        } else {
+            masterProductCardItemViewModel.handleATCFailed()
+            (fragment as DiscoveryFragment).openLoginScreen()
+        }
     }
 }

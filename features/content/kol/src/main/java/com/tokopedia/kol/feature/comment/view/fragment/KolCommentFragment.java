@@ -184,7 +184,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProfile(String url) {
+    public void onGoToProfile(String url, String userId) {
         openRedirectUrl(url);
     }
 
@@ -289,7 +289,8 @@ public class KolCommentFragment extends BaseDaggerFragment
             kolComment.append(userToMention);
         } else {
             StringBuilder mentionFormatBuilder = new StringBuilder();
-            if (kolComment.getText().length() > 0 && kolComment.getText().charAt(kolComment.length() - 1) != ' ') mentionFormatBuilder.append(" ");
+            if (kolComment.getText().length() > 0 && kolComment.getText().charAt(kolComment.length() - 1) != ' ')
+                mentionFormatBuilder.append(" ");
             mentionFormatBuilder
                     .append("@")
                     .append(user.getFullName())
@@ -297,6 +298,21 @@ public class KolCommentFragment extends BaseDaggerFragment
             kolComment.append(mentionFormatBuilder.toString());
         }
         kolComment.setSelection(kolComment.length());
+    }
+
+    @Override
+    public void onHashTagClicked(String hashTag, String id) {
+
+    }
+
+    @Override
+    public void onSuccessSendReport() {
+
+    }
+
+    @Override
+    public void onErrorSendReport(String message) {
+
     }
 
     @Override
@@ -376,6 +392,11 @@ public class KolCommentFragment extends BaseDaggerFragment
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void onMenuClicked(String id, boolean canDeleteComment, int adapterPosition) {
+
     }
 
     @Override

@@ -2,19 +2,9 @@ package com.tokopedia.sessioncommon.constants
 
 object SessionConstants {
 
+    /* Please add session rollout key here */
     object Rollout {
-        const val ROLLOUT_REGISTER_ENCRYPTION = "enf_reg_and"
-        const val ROLLOUT_RESET_PASS_ENCRYPTION = "enf_rp_and"
-        const val ROLLOUT_ADD_PASS_ENCRYPTION = "enf_ap_and"
-        const val ROLLOUT_LOGIN_ENCRYPTION = "enf_cred_and"
 
-
-        const val ROLLOUT_LOGIN_ENCRYPTION_SELLER = "enf_cred_seller"
-        const val ROLLOUT_RESET_PASS_ENCRYPTION_SELLER = "enf_rp_seller"
-        const val ROLLOUT_ADD_PASS_ENCRYPTION_SELLER = "enf_ap_seller"
-        const val ROLLOUT_REGISTER_ENCRYPTION_SELLER = "enf_reg_seller"
-        const val ROLLOUT_LOGIN_FINGERPRINT = "android_login_biom"
-        const val ROLLOUT_SETTING_FINGERPRINT = "android_biometrics"
     }
 
     object FirebaseConfig {

@@ -1,82 +1,48 @@
 package com.tokopedia.mediauploader.domain
 
-import com.tokopedia.mediauploader.MediaRepository
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
-import com.tokopedia.mediauploader.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.data.entity.UploaderPolicy
-import com.tokopedia.mediauploader.stubDataPolicyRepository
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.mediauploader.stubRepository
+import com.tokopedia.mediauploader.stubRepositoryAsThrow
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class DataPolicyUseCaseTest: Spek({
-    Feature("data policy use case") {
-        val repository = mockk<MediaRepository>(relaxed = true)
-        val useCase = DataPolicyUseCase(repository)
-        val sourceId = "WXjxja"
-        val dataUploaderPolicy = DataUploaderPolicy()
+class DataPolicyUseCaseTest {
 
-        Scenario("create param with source id") {
-            var requestParams = RequestParams.create()
+    private val repository = mockk<GraphqlRepository>()
+    private val useCase = DataPolicyUseCase(repository)
 
-            When("create param") {
-                requestParams = DataPolicyUseCase.createParams(sourceId)
-            }
-            Then("it should return source id correctly") {
-                assert(requestParams.getString("source", "") == sourceId)
-            }
-        }
+    private val mockPolicy = DataUploaderPolicy()
+    private val mockSourceId = "WXjxja"
 
-        Scenario("request data policy without source id") {
-            Given("graphql repository") {
-                repository.stubDataPolicyRepository(onError = mapOf())
-            }
-            Then("it should return exception of param not found") {
-                runBlocking {
-                    assertFailsWith<Exception> {
-                        useCase(RequestParams.EMPTY)
-                    }
-                }
-            }
-        }
+    @Test fun `It should not able request data without requestId and throw exception`() {
+        runBlocking {
+            // When
+            repository.stubRepositoryAsThrow(RuntimeException())
 
-        Scenario("request data policy with source id") {
-            var requestParams = RequestParams.create()
-
-            Given("request param") {
-                requestParams = DataPolicyUseCase.createParams(sourceId)
-            }
-            Given("graphql repository") {
-                repository.stubDataPolicyRepository(onError = mapOf())
-            }
-            Then("it should return policy of uploader") {
-                runBlocking {
-                    val result = useCase(requestParams)
-                    assertEquals(dataUploaderPolicy, result)
-                }
-            }
-        }
-
-        Scenario("request data policy with null error") {
-            var requestParams = RequestParams.create()
-
-            Given("create param") {
-                requestParams = DataPolicyUseCase.createParams(sourceId)
-            }
-            Given("graphql repository") {
-                repository.stubDataPolicyRepository(onError = null)
-            }
-            Then("it should return exception of network error") {
-                runBlocking {
-                    assertFailsWith<NullPointerException> {
-                        useCase(requestParams)
-                    }
-                }
+            // Then
+            assertFailsWith<RuntimeException> {
+                useCase("")
             }
         }
     }
-})
+
+    @Test fun `It should able to request data with sourceId`() {
+        runBlocking {
+            // When
+            repository.stubRepository(
+                onSuccess = DataUploaderPolicy(),
+                onError = mapOf()
+            )
+
+            val result = useCase(mockSourceId)
+
+            // Then
+            assertEquals(mockPolicy, result)
+        }
+    }
+
+}

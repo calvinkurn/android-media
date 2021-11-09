@@ -1,10 +1,11 @@
 package com.tokopedia.play.broadcaster.di.broadcast
 
+import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
+import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalyticImpl
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
-import com.tokopedia.play.broadcaster.di.setup.PlayBroadcastSetupScope
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -45,6 +46,10 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @PlayBroadcastScope
     abstract fun bindBroadcastScheduleDataSource(dataStore: BroadcastScheduleDataStoreImpl): BroadcastScheduleDataStore
+
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindInteractiveDataSource(dataStore: InteractiveDataStoreImpl): InteractiveDataStore
 
     /**
      * Config
@@ -89,4 +94,8 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @PlayBroadcastScope
     abstract fun bindContentTaggingAnalytic(contentTaggingAnalytic: PlayBroadcastContentTaggingAnalyticImpl): PlayBroadcastContentTaggingAnalytic
+
+    @Binds
+    @PlayBroadcastScope
+    abstract fun bindnteractiveAnalytic(interactiveAnalytic: PlayBroadcastInteractiveAnalyticImpl): PlayBroadcastInteractiveAnalytic
 }

@@ -10,7 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
@@ -49,7 +49,7 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
     fun mapFeatureToDestination(context: Context, @AdminFeature adminFeature: String): Intent? {
         return when (adminFeature) {
             AdminFeature.SHOP_SCORE -> {
-                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession.shopId)
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
             }
             AdminFeature.NEW_ORDER -> {
                 RouteManager.getIntent(context, ApplinkConst.SELLER_NEW_ORDER)
@@ -127,11 +127,9 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
 
     private fun getReputationIntent(context: Context): Intent {
         val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
-        ) == AbTestPlatform.VARIANT_NEW_INBOX
-        val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
-        ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
+                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX
+        val useNewNav = true
         return if (useNewInbox && useNewNav) {
             RouteManager.getIntent(context,
                     Uri.parse(ApplinkConst.INBOX).buildUpon().apply {

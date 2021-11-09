@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "appVersionMin": 316800000,
+  "tags": [
+    "P1#DEV_CRASH#100#offline",
+    "P1#DEV_ANR#100#offline",
+    "P1#DEV_TOO_LARGE#100#offline",
+    "P1#DFM#100#offline",
+    "P1#DFM_DEFERRED#100#offline",
+    "P1#DFM_FALLBACK#100#offline",
+    "P1#DFM_OPENED#100#offline",
+    "P1#DFM_DOWNLOAD_PAGE#100#offline"
+  ],
+  "priority": [
+    false,
+    false,
+    false
+  ],
+  "query_limits": [
+    50,
+    50,
+    50
+  ]
+}

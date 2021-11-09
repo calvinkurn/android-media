@@ -3,14 +3,13 @@ package tokopedia.applink.deeplink
 import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
+import com.tokopedia.applink.DLP
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
-import com.tokopedia.applink.penalty.DeepLinkMapperPenalty
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
-import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
 import io.mockk.mockkClass
@@ -19,11 +18,11 @@ import io.mockk.unmockkAll
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import kotlin.system.measureTimeMillis
 
 open class DeepLinkMapperTestFixture {
 
     protected lateinit var context: Context
+    protected lateinit var reversedList: MutableList<DLP>
 
     @Before
     open fun setup() {
@@ -33,10 +32,9 @@ open class DeepLinkMapperTestFixture {
         mockkObject(DeeplinkMapperHome)
         mockkObject(DeeplinkMapperAccount)
         mockkObject(DeeplinkMapper)
-        mockkObject(DeepLinkMapperShopScore)
-        mockkObject(DeepLinkMapperPenalty)
         mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
+        reversedList = DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
     }
 
     @After
@@ -50,7 +48,7 @@ open class DeepLinkMapperTestFixture {
         every {
             DeeplinkMapper.getTokopediaSchemeList()
         } answers {
-            DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
+            reversedList
         }
         val actualResultReverse = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
         assertEquals(expectedDeepLink, actualResultReverse)
@@ -63,6 +61,13 @@ open class DeepLinkMapperTestFixture {
             GlobalConfig.SELLER_APPLICATION
         }
         assertEqualsDeepLinkMapper(deepLink, expectedDeepLink)
+        every {
+            DeeplinkMapper.getTokopediaSchemeList()
+        } answers {
+            reversedList
+        }
+        val actualResultReverse = DeeplinkMapper.getRegisteredNavigation(context, deepLink)
+        assertEquals(expectedDeepLink, actualResultReverse)
     }
 
     protected fun assertEqualsDeeplinkParameters(deeplink: String, vararg extras: Pair<String, String?>) {

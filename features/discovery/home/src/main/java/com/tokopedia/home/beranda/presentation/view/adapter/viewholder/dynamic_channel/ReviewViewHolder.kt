@@ -12,6 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.reputation.common.view.AnimatedReputationView
+import io.embrace.android.embracesdk.Embrace
 import kotlinx.android.synthetic.main.home_item_review.view.*
 
 class ReviewViewHolder(
@@ -37,6 +38,7 @@ class ReviewViewHolder(
 
     override fun bind(element: ReviewDataModel) {
         performanceMonitoring?.startTrace(performanceTraceName)
+        Embrace.getInstance().startEvent(performanceTraceName, null, false)
         itemView.review_card_bg?.loadImage(cardBg)
         element.suggestedProductReview.let { suggestedProductReview ->
             if (suggestedProductReview.suggestedProductReview.linkURL.isEmpty()) {
@@ -122,5 +124,6 @@ class ReviewViewHolder(
         }
         performanceMonitoring?.stopTrace()
         performanceMonitoring = null
+        Embrace.getInstance().endEvent(performanceTraceName)
     }
 }

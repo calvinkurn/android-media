@@ -8,8 +8,10 @@ import com.tokopedia.home_recom.domain.usecases.GetPrimaryProductUseCase
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.model.entity.Data
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.home_recom.model.entity.ProductDetailData
+import com.tokopedia.home_recom.model.entity.ProductRecommendationProductDetail
 import com.tokopedia.home_recom.util.RecommendationDispatcherTest
 import com.tokopedia.home_recom.util.Status
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
@@ -19,6 +21,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -45,6 +48,7 @@ class TestRecommendationPageViewModel {
     private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
     private val getPrimaryProductUseCase = mockk<GetPrimaryProductUseCase>(relaxed = true)
     private val getTopadsIsAdsUseCase = mockk<GetTopadsIsAdsUseCase>(relaxed = true)
+    private val getTopAdsHeadlineUseCase = mockk<GetTopAdsHeadlineUseCase>(relaxed = true)
     private val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
@@ -57,7 +61,8 @@ class TestRecommendationPageViewModel {
             topAdsWishlishedUseCase = topAdsWishlishedUseCase,
             addToCartUseCase = addToCartUseCase,
             getTopadsIsAdsUseCase = getTopadsIsAdsUseCase,
-            getPrimaryProductUseCase = getPrimaryProductUseCase
+            getPrimaryProductUseCase = getPrimaryProductUseCase,
+            getTopAdsHeadlineUseCase = getTopAdsHeadlineUseCase
     )
     private val recommendation = RecommendationItem(productId = 1234)
     private val recommendationTopads = RecommendationItem(productId = 1234, isTopAds = true, wishlistUrl = "1234")
@@ -77,9 +82,13 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `get success data from network with product info`(){
+    fun `get success data from network with product info`() {
         val slot = slot<Subscriber<List<RecommendationWidget>>>()
-        coEvery { getPrimaryProductUseCase.executeOnBackground() } returns PrimaryProductEntity()
+        coEvery {
+            getPrimaryProductUseCase.executeOnBackground()
+        } returns PrimaryProductEntity(
+                ProductRecommendationProductDetail(
+                        listOf(Data())))
         every { getRecommendationUseCase.getOfficialStoreRecomParams(any(), any(), any()) } returns RequestParams()
         every { getRecommendationUseCase.createObservable(any()).toBlocking().first() } returns listOf(
                 RecommendationWidget(

@@ -26,5 +26,17 @@ data class OtpRequestData(
         var errorMessage: String = "",
         @SerializedName("prefixMisscall")
         @Expose
-        var prefixMisscall: String = ""
+        var prefixMisscall: String = "",
+        @SerializedName("message_title")
+        @Expose
+        var messageTitle: String = "",
+        @SerializedName("message_sub_title")
+        @Expose
+        var messageSubTitle: String = "",
+        @SerializedName("message_img_link")
+        @Expose
+        var messageImgLink: String = "",
+        @SerializedName("error_code")
+        @Expose
+        var errorCode: String = ""
 )

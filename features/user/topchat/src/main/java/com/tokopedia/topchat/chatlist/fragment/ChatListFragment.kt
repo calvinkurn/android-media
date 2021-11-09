@@ -30,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
@@ -62,8 +63,10 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.widget.FilterMenu
+import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.data.TopchatItemMenu
@@ -430,7 +433,9 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                showLoading()
+                rv?.post {
+                    showLoading()
+                }
                 if (totalItemsCount > 1) {
                     loadData(page)
                 }
@@ -463,8 +468,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
             val arrayFilterString = chatItemListViewModel.getFilterTittles(it, isTabSeller())
 
             for ((index, title) in arrayFilterString.withIndex()) {
-                if (index == filterChecked) itemMenus.add(TopchatItemMenu(title, true))
-                else itemMenus.add(TopchatItemMenu(title, false))
+                if (index == filterChecked) itemMenus.add(TopchatItemMenu(title, hasCheck = true))
+                else itemMenus.add(TopchatItemMenu(title))
             }
 
             val title = getString(R.string.menu_chat_filter)
@@ -503,7 +508,11 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         chatItemListViewModel.getChatListMessage(page, filterChecked, sightTag)
     }
 
-    override fun chatItemClicked(element: ItemChatListPojo, itemPosition: Int) {
+    override fun chatItemClicked(
+        element: ItemChatListPojo,
+        itemPosition: Int,
+        lastActiveChat: Pair<ItemChatListPojo?, Int?>
+    ) {
         activity?.let {
             with(chatListAnalytics) {
                 eventClickChatList(
@@ -513,13 +522,15 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
             val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             intent.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, itemPosition)
+            intent.putExtra(Constant.CHAT_CURRENT_ACTIVE, element.msgId)
+            intent.putExtra(Constant.CHAT_USER_ROLE_KEY, getRole())
             this@ChatListFragment.startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
             it.overridePendingTransition(0, 0)
         }
     }
 
     override fun deleteChat(element: ItemChatListPojo, itemPosition: Int) {
-        chatItemListViewModel.chatMoveToTrash(element.msgId.toInt())
+        chatItemListViewModel.chatMoveToTrash(element.msgId)
         itemPositionLongClicked = itemPosition
     }
 
@@ -595,6 +606,12 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
             tryViewCreatedFirstSight()
         }
         onUserVisibleChanged(isVisibleToUser)
+    }
+
+    override fun onScrollToTop() {
+        rv?.post {
+            rv?.smoothScrollToPosition(RV_TOP_POSITION)
+        }
     }
 
     private fun onViewCreatedFirstSight(view: View?) {
@@ -786,6 +803,25 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         menu?.findItem(R.id.menu_chat_setting)?.isVisible = isShow
     }
 
+    private fun getRole(): Int {
+        return if(isTabSeller()) {
+            RoleType.SELLER
+        } else {
+            RoleType.BUYER
+        }
+    }
+
+    private fun isFromTopChatRoom(): Boolean {
+        return activity is TopChatRoomActivity
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(!isFromTopChatRoom()) {
+            adapter?.resetActiveChatIndicator()
+        }
+    }
+
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
         const val CHAT_TAB_TITLE = "chat_tab_title"
@@ -793,6 +829,8 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
         const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://ecs7.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
+
+        private const val RV_TOP_POSITION = 0
 
         @JvmStatic
         fun createFragment(title: String): ChatListFragment {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify
+    android:id="@+id/catalog_specifications_card_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/dp_140"
     android:layout_height="@dimen/dp_140"
@@ -12,10 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/dp_14"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="12dp"
         android:layout_gravity="center"
         >
 
@@ -33,7 +34,7 @@
             android:id="@+id/specification_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="8dp"
             app:typographyType="heading_6"
             tools:text="Layar"
             android:visibility="gone"
@@ -45,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxWidth="@dimen/dp_110"
-            android:layout_marginTop="@dimen/dp_6"
+            android:layout_marginTop="6dp"
             app:typographyType="body_3"
             android:ellipsize="end"
             android:lines="3"

@@ -10,11 +10,9 @@ import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpActivity
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.fragment.*
-import com.tokopedia.otp.verification.view.fragment.MisscallVerificationFragment
-import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -108,6 +106,10 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     fun doFragmentTransaction(fragment: Fragment, tag: String, isBackAnimation: Boolean) {
+        if(supportFragmentManager.isStateSaved || fragment.isAdded) {
+            return
+        }
+
         supportFragmentManager.popBackStack(BACK_STACK_ROOT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         val fragmentTransactionManager = supportFragmentManager.beginTransaction()
 
@@ -128,6 +130,15 @@ open class VerificationActivity : BaseOtpActivity() {
         val bundle = createBundle(modeListData, isMoreThanOne)
         val fragment = generateVerificationFragment(modeListData, bundle)
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
+    }
+
+    fun goToWhatsappNotRegistered(title: String, subtitle: String, imgLink: String) {
+        val bundle = Bundle()
+        bundle.putString(OtpConstant.OTP_WA_NOT_REGISTERED_TITLE, title)
+        bundle.putString(OtpConstant.OTP_WA_NOT_REGISTERED_SUBTITLE, subtitle)
+        bundle.putString(OtpConstant.OTP_WA_NOT_REGISTERED_IMG_LINK, imgLink)
+        val fragment = WhatsappNotRegisteredFragment.createInstance(bundle)
+        doFragmentTransaction(fragment, TAG_OTP_WA_NOT_REGISTERED, false)
     }
 
     open fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
@@ -178,5 +189,6 @@ open class VerificationActivity : BaseOtpActivity() {
         const val TAG_OTP_MODE = "otpMode"
         const val TAG_OTP_VALIDATOR = "otpValidator"
         const val TAG_OTP_MISCALL = "otpMiscall"
+        const val TAG_OTP_WA_NOT_REGISTERED = "otpWaNotRegistered"
     }
 }

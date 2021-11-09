@@ -40,7 +40,7 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
             convertUrlToBitmapAndLoadImage(
                     itemView.context,
                     url,
-                    16.toPx()
+                    itemView.context.resources.getInteger(R.integer.header_button_shop_note_icon_size).toPx()
             ){
                 try {
                     val drawableImage = BitmapDrawable(itemView.resources, it)

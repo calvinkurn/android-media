@@ -68,15 +68,17 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     fun fetchOrderDetailData() {
         launchCatchError(dispatcherProvider.main, block = {
             val orderDetailData = orderDetailUseCase.execute(orderId)
-            orderDetailData.let {
-                it.journeys.map { journey ->
-                    journey.airlineLogo = getAirlineLogo(journey)
-                    journey.airlineName = getAirlineName(journey)
-                    journey.refundableInfo = getRefundableInfo(journey)
-                    journey.departureDateAndTime = getDepartureDateAndTime(journey)
+            if(orderDetailData is Success){
+                orderDetailData.let {
+                    it.data.journeys.map { journey ->
+                        journey.airlineLogo = getAirlineLogo(journey)
+                        journey.airlineName = getAirlineName(journey)
+                        journey.refundableInfo = getRefundableInfo(journey)
+                        journey.departureDateAndTime = getDepartureDateAndTime(journey)
+                    }
                 }
             }
-            mutableOrderDetailData.postValue(Success(orderDetailData))
+            mutableOrderDetailData.postValue(orderDetailData)
         }) {
             it.printStackTrace()
             mutableOrderDetailData.postValue(Fail(it))

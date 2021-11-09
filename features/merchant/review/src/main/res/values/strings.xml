@@ -131,8 +131,8 @@
     <string name="review_form_bad_helper">Kasih tahu apa yang tidak memuaskan dan perlu ditingkatkan.</string>
     <string name="review_form_worst_helper">Kasih tahu apa yang mengecewakan dan perlu ditingkatkan.</string>
     <string name="review_form_incentives_exit_dialog_title">Yakin mau keluar? 😢</string>
-    <string name="review_form_incentives_exit_dialog_body">Tinggal sedikit lagi buat dapat TokoPoints. Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini.</string>
-    <string name="review_form_incentives_incomplete_dialog_body">Dengan ulasan lengkap, kamu bisa dapat hadiah TokoPoints, lho!</string>
+    <string name="review_form_incentives_exit_dialog_body">Tinggal sedikit lagi buat dapat hadiah dari ulasan, lho. Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini.</string>
+    <string name="review_form_incentives_incomplete_dialog_body">Ayo lengkapi dulu karena kamu bisa dapat hadiah dari ulasan, lho!</string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>
@@ -195,8 +195,6 @@
     <string name="reputation_history_label_change_date">Ubah Tanggal</string>
     <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
     <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
-    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
-    <string name="try_again">COBA KEMBALI</string>
     <string name="set_date">Atur Tanggal</string>
 
     <string name="title_tab_waiting_review">Menunggu Diulas</string>
@@ -296,8 +294,9 @@
     <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
-    <string name="review_create_incentives_label">Dapatkan TokoPoints</string>
-    <string name="review_create_rating_prompt">Seberapa puas dengan belanjaanmu?</string>
+    <string name="review_create_bottom_sheet_text_area_empty">Tulis min. 40 karakter buat dapetin hadiahnya ✍️</string>
+    <string name="review_create_bottom_sheet_text_area_partial">Lengkapi sedikit lagi biar dapet hadiahnya 🙌</string>
+    <string name="review_create_bottom_sheet_text_area_eligible">Tulisanmu sudah lengkap? Sertain foto juga, ya  📸</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>
@@ -351,8 +350,59 @@
     <string name="review_reminder_snackbar_error_action">Refresh</string>
     <string name="review_reminder_content_description_top_shadow">Top Shadow</string>
 
+    <!-- Seller Reputation -->
+    <string name="error_message_seller_reputation">Terjadi kesalahan koneksi. Silahkan coba lagi</string>
+    <string name="error_action_text_seller_reputation">COBA LAGI</string>
     <!-- Kejar Ulasan -->
     <string name="kejar_ulasan_label">Kejar Ulasan</string>
     <string name="kejar_ulasan_coach_mark_title">Cek ulasan yang ditandai</string>
     <string name="kejar_ulasan_coach_mark_subtitle">Ulasan yang masuk lewat Kejar Ulasan akan disertai dengan tanda khusus seperti ini, ya!</string>
+
+    <!-- Reading   -->
+    <string name="review_reading_title">Ulasan Pembeli</string>
+    <string name="review_reading_bottom_sheet_statistics_description">Dihitung dari jumlah rating positif (bintang 4 dan 5) dibagi dengan total rating.</string>
+    <string name="review_reading_rating_and_review_count">%s rating • %s ulasan</string>
+    <string name="review_reading_rating_only_count">%d rating (tanpa ulasan)</string>
+    <string name="review_reading_header_maximum_score">/5.0</string>
+    <string name="review_reading_sort_default">Urutkan</string>
+    <string name="review_reading_sort_most_helpful">Paling Membantu</string>
+    <string name="review_reading_sort_latest">Terbaru</string>
+    <string name="review_reading_sort_highest_rating">Rating Tertinggi</string>
+    <string name="review_reading_sort_lowest_rating">Rating Terendah</string>
+    <string name="review_reading_filter_with_attachment">Dengan Foto</string>
+    <string name="review_reading_filter_all_ratings">Semua Rating</string>
+    <string name="review_reading_filter_all_topics">Semua Topik</string>
+    <string name="review_reading_submit_filter">Terapkan Filter</string>
+    <string name="review_reading_reset_filter">Reset</string>
+    <string name="review_reading_report_option">Laporkan Ulasan</string>
+    <string name="review_reading_rating_filter_title">Rating dengan ulasan</string>
+    <string name="review_reading_topic_filter_title">Topik ulasan</string>
+    <string name="review_reading_sort_title">Urutkan</string>
+    <string name="review_reading_like">Membantu</string>
+    <string name="review_reading_like_count">%d orang terbantu</string>
+    <string name="review_reading_show_response">Lihat Balasan</string>
+    <string name="review_reading_seller_label">Penjual</string>
+    <string name="review_reading_hide_response">Tutup Balasan</string>
+    <string name="review_reading_empty_review">Tidak ada ulasan</string>
+    <string name="review_reading_filter_multiple_rating_selected">%d Rating</string>
+    <string name="review_reading_filter_multiple_topic_selected">%d Topik</string>
+    <string name="review_reading_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
+    <string name="review_reading_empty_filter_title">Oops, nggak ada ulasan yang sesuai filter</string>
+    <string name="review_reading_empty_filter_subtitle">Coba reset atau ubah filter kamu, ya.</string>
+    <string name="review_reading_success_submit_report">Kamu berhasil melaporkan ulasan ini.</string>
+    <string name="review_reading_collapse">&lt;a href="#"&gt;Tutup Ulasan&lt;/a&gt;</string>
+    <string name="review_reading_product_satisfaction_rate">%s&#37; pembeli puas belanja barang ini</string>
+    <string name="review_reading_rating_format">%.1f</string>
+    <string name="review_reading_highlighted_topic_review_count">%d ulasan</string>
+    <string name="review_reading_reviewer_stats">• %s</string>
+
+    <!-- Gallery    -->
+    <string name="review_gallery_image_count">%d/%d</string>
+    <string name="review_gallery_header_see_all">Lihat Semua</string>
+    <string name="review_gallery_variant">Varian: %s</string>
+    <string name="review_gallery_title">Foto Pembeli</string>
+
+    <!-- Credibility   -->
+    <string name="review_credibility_learn_more">Pelajari Selengkapnya</string>
+
 </resources>

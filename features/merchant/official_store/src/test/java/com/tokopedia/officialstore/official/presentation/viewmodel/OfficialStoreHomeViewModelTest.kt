@@ -2,12 +2,23 @@ package com.tokopedia.officialstore.official.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelStyle
+import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
+import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
+import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
+import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
@@ -15,6 +26,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCa
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,6 +77,15 @@ class OfficialStoreHomeViewModelTest {
     @RelaxedMockK
     lateinit var removeWishListUseCase: RemoveWishListUseCase
 
+    @RelaxedMockK
+    lateinit var getDisplayHeadlineAds: GetDisplayHeadlineAds
+
+    @RelaxedMockK
+    lateinit var getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var bestSellerMapper: BestSellerMapper
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -84,6 +105,9 @@ class OfficialStoreHomeViewModelTest {
                 addWishListUseCase,
                 topAdsWishlishedUseCase,
                 removeWishListUseCase,
+                getDisplayHeadlineAds,
+                getRecommendationUseCaseCoroutine,
+                bestSellerMapper,
                 CoroutineTestDispatchersProvider
         )
     }
@@ -337,6 +361,71 @@ class OfficialStoreHomeViewModelTest {
         verifyIsLoggedInEquals(false)
     }
 
+    @Test
+    fun given_get_headlineAds_success_then_pass_to_view() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+                listOf(
+                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP, id = channelId))
+                )
+        )
+
+        val headlineAdsResponse: MutableList<DisplayHeadlineAdsEntity.DisplayHeadlineAds> = mutableListOf()
+        headlineAdsResponse.addAll(
+                listOf(
+                        DisplayHeadlineAdsEntity.DisplayHeadlineAds(id = "1"),
+                        DisplayHeadlineAdsEntity.DisplayHeadlineAds(id = "2"),
+                        DisplayHeadlineAdsEntity.DisplayHeadlineAds(id = "3"),
+                ))
+
+        val featureShopResult = FeaturedShopDataModel(
+                channelModel = ChannelModel(
+                        id = channelId,
+                        groupId = "",
+                        channelGrids = headlineAdsResponse.mappingTopAdsHeaderToChannelGrid(),
+                        style = ChannelStyle.ChannelOS,
+
+                )
+        )
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getDisplayHeadlineAds.executeOnBackground() } returns headlineAdsResponse
+
+        viewModel.loadFirstData(category, "")
+
+        Assert.assertEquals((viewModel.featuredShopResult.value as Success).data.channelModel.id, featureShopResult.channelModel.id)
+        Assert.assertEquals((viewModel.featuredShopResult.value as Success).data.channelModel.channelGrids.size, featureShopResult.channelModel.channelGrids.size)
+    }
+
+    @Test
+    fun given_get_headlineAds_empty_list_then_pass_error_to_view() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelId = "123"
+        val sizeZero = 0
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+                listOf(
+                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP, id = channelId))
+                )
+        )
+
+        val headlineAdsResponse: MutableList<DisplayHeadlineAdsEntity.DisplayHeadlineAds> = mutableListOf()
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { getDisplayHeadlineAds.executeOnBackground() } returns headlineAdsResponse
+
+        viewModel.loadFirstData(category, "")
+
+        Assert.assertEquals(viewModel.featuredShopRemove.value?.channelModel?.channelGrids?.size ?: sizeZero, sizeZero)
+    }
+
 
     // ===================================== //
     private fun verifyIsLoggedInEquals(expectedLoggedInStatus: Boolean) {
@@ -406,7 +495,7 @@ class OfficialStoreHomeViewModelTest {
         verifyGetOfficialStoreBannersUseCaseCalled()
 
         viewModel.officialStoreBannersResult
-                .assertSuccess(expectedOSBanners)
+                .assertPairSuccess(expectedOSBanners)
     }
 
     private fun verifyOfficialStoreBenefitsEquals(
@@ -465,7 +554,7 @@ class OfficialStoreHomeViewModelTest {
         coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
 
         viewModel.officialStoreBannersResult
-                .assertError(expectedError)
+                .assertPairError(expectedError)
     }
 
     private fun verifyOfficialStoreBenefitsError(expectedError: Fail) {
@@ -500,7 +589,7 @@ class OfficialStoreHomeViewModelTest {
 
 
     private fun createRecommendation(productId: String, isTopAds: Boolean): RecommendationItem {
-        return RecommendationItem(productId = productId.toInt(), isTopAds = isTopAds)
+        return RecommendationItem(productId = productId.toLongOrZero(), isTopAds = isTopAds)
     }
 
     private fun <T> mockObservable(data: T): Observable<T> {
@@ -518,12 +607,23 @@ class OfficialStoreHomeViewModelTest {
         assertEquals(expectedValue, actualValue)
     }
 
+    private fun <T> LiveData<T>.assertPairSuccess(expectedValue: Success<*>) {
+        val actualValue = (value as? Pair<Any, Any>)?.second
+        assertEquals(expectedValue, actualValue)
+    }
+
     private fun ((Boolean, Throwable?) -> Unit).assertSuccess() {
         coVerify { this@assertSuccess.invoke(true, null) }
     }
 
     private fun <T> LiveData<T>.assertError(error: Fail) {
         val actualError = value.toString()
+        val expectedError = error.toString()
+        assertEquals(expectedError, actualError)
+    }
+
+    private fun <T> LiveData<T>.assertPairError(error: Fail) {
+        val actualError = (value as? Pair<Any, Any>)?.second.toString()
         val expectedError = error.toString()
         assertEquals(expectedError, actualError)
     }

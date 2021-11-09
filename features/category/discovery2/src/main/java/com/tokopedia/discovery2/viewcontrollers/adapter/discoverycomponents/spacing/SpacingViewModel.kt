@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spa
 
 import android.app.Application
 import android.graphics.Color
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -27,14 +28,14 @@ class SpacingViewModel(val application: Application, private val components: Com
 
         if (!spacingSize.isNullOrEmpty()) {
             viewHeight.value = spacingSize.toIntOrZero()
-            val spacingBackgroundColor = components.data?.get(0)?.background
+            val spacingBackgroundColor = components.data?.getOrNull(0)?.background
             if (spacingBackgroundColor.isNullOrEmpty()) {
-                viewBackgroundColor.value = Color.WHITE
+                viewBackgroundColor.value = ContextCompat.getColor(application.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_N0)
             } else {
                 try {
                     viewBackgroundColor.value = Color.parseColor(spacingBackgroundColor)
                 } catch (exception: IllegalArgumentException) {
-                    viewBackgroundColor.value = Color.WHITE
+                    viewBackgroundColor.value = ContextCompat.getColor(application.applicationContext, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 }
             }
         }

@@ -16,7 +16,7 @@ data class CampaignModular(
         @SerializedName("campaignTypeName")
         val campaignTypeName: String = "",
         @SerializedName("discountedPrice")
-        val discountedPrice: Int = 0,
+        val discountedPrice: Double = 0.0,
         @SerializedName("endDate")
         val endDate: String = "",
         @SerializedName("endDateUnix")
@@ -28,7 +28,7 @@ data class CampaignModular(
         @SerializedName("isAppsOnly")
         val isAppsOnly: Boolean = false,
         @SerializedName("originalPrice")
-        val originalPrice: Int = 0,
+        val originalPrice: Double = 0.0,
         @SerializedName("percentageAmount")
         val percentageAmount: Int = 0,
         @SerializedName("startDate")
@@ -48,8 +48,9 @@ data class CampaignModular(
         @SerializedName("paymentInfoWording")
         val paymentInfoWording:String = ""
 ) {
+
     companion object {
-        const val CAMPAIGN_ID_NEW_USER = 68
+        private const val ONE_THOUSAND = 1000L
     }
 
     var discountedPriceFmt: String = ""
@@ -57,8 +58,9 @@ data class CampaignModular(
 
     private fun timeIsUnder1Day(): Boolean {
         return try {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val endDate = dateFormat.parse(endDate)
+            val endDateLong = endDateUnix.toLongOrNull()?:0
+            val endDateMillis = endDateLong * ONE_THOUSAND
+            val endDate = Date(endDateMillis)
             val now = System.currentTimeMillis()
             val diff = (endDate?.time ?: 0 - now).toFloat()
             if (diff < 0) {

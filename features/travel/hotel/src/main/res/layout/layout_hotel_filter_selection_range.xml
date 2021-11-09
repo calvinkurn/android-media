@@ -16,7 +16,7 @@
         app:typographyWeight="bold"
         tools:text="@string/hotel_search_filter_rating_title" />
 
-    <SeekBar
+    <com.tokopedia.unifycomponents.RangeSliderUnify
         android:id="@+id/hotel_filter_selection_range_seekbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,10 +27,10 @@
         android:paddingLeft="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/layout_lvl0"
         android:paddingRight="@dimen/layout_lvl0"
-        android:progressDrawable="@drawable/bg_hotel_seekbar_progress"
-        android:scaleX="-1"
-        android:thumb="@drawable/bg_hotel_thumb"
-        android:thumbOffset="@dimen/layout_lvl0" />
+        android:thumbOffset="@dimen/layout_lvl0"
+        app:step="0"
+        app:separator="true"
+        app:indicator="true" />
 
     <LinearLayout
         android:id="@+id/base_rating_step"

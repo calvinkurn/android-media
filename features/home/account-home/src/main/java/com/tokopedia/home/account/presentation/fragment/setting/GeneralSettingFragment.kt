@@ -64,11 +64,14 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemV
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation_common.model.WalletPref
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationAccountSettingTicker
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -89,10 +92,10 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     @Inject
     internal lateinit var settingsPresenter: SettingsPresenter
 
-
     private lateinit var loadingView: View
     private lateinit var baseSettingView: View
     private lateinit var updateButton: UnifyButton
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private lateinit var accountAnalytics: AccountAnalytics
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -100,6 +103,13 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     private lateinit var googleSignInClient: GoogleSignInClient
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
     private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,12 +173,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         }
     }
 
-    //Request to hide Dark Mode regardless RemoteConfig
-    private fun showDarkModeSetting(): Boolean {
-        val showDarkModeSetting = false
-        return showDarkModeSetting
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadingView = view.findViewById(R.id.logout_status)
@@ -221,8 +225,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                     getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true))
 
         val isShowDarkMode = remoteConfig.getBoolean(
-                RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-        if(isShowDarkMode && showDarkModeSetting()) {
+            RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+        val isRollenceEnabledDarkMode = getAbTestPlatform().getString(
+            RollenceKey.USER_DARK_MODE_TOGGLE, "").isNotEmpty()
+
+        if(isShowDarkMode || isRollenceEnabledDarkMode) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
                     getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false,
                     GeneralSettingMenuLabel.LABEL_BETA))
@@ -542,7 +549,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
     override fun onErrorSendNotif(throwable: Throwable) {
         if (view != null) {
-            val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
             Toaster.showError(requireView(), errorMessage, Snackbar.LENGTH_LONG)
         }
     }
@@ -556,7 +563,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     }
 
     companion object {
-
         private val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
 
         @JvmStatic

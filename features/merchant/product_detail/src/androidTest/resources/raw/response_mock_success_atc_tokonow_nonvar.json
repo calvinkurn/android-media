@@ -1,0 +1,38 @@
+[
+  {
+    "data": {
+      "add_to_cart_v2": {
+        "data": {
+          "cart_id": "2909727367",
+          "customer_id": 132674703,
+          "is_trade_in": false,
+          "message": [
+            "1 barang berhasil ditambahkan ke keranjang!"
+          ],
+          "notes": "",
+          "product_id": 1920777124,
+          "quantity": 1,
+          "shop_id": 11515028,
+          "success": 1,
+          "tracker_attribution": "",
+          "tracker_list_name": "",
+          "uc_ut_param": "",
+          "warehouse_id": 11528233
+        },
+        "error_message": [
+          "1 barang berhasil ditambahkan ke keranjang!"
+        ],
+        "error_reporter": {
+          "eligible": false,
+          "texts": {
+            "cancel_button": "Batal",
+            "submit_button": "Laporkan Gangguan",
+            "submit_description": "Ayo beri tahu kami tentang gangguan ini biar bisa segera diperbaiki!",
+            "submit_title": "Barang belum bisa dimasukkan ke keranjang"
+          }
+        },
+        "status": "OK"
+      }
+    }
+  }
+]

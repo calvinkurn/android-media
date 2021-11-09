@@ -38,6 +38,7 @@ project.properties
 assets/crashlytics-build.properties
 res/values/com_crashlytics_export_strings.xml
 
+
 # buck
 .buckconfig.local
 .buckd/
@@ -61,3 +62,5 @@ unifyconfig/unifyproject.config
 
 customerapp/src/main/assets/df.cfg
 sellerapp/src/main/assets/df.cfg
+
+jacoco.exec

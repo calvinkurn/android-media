@@ -1,5 +1,6 @@
 package com.tokopedia.linker.interfaces;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.linker.requests.LinkerDeeplinkRequest;
@@ -14,4 +15,5 @@ public interface WrapperInterface {
     void sendEvent(LinkerGenericRequest linkerGenericRequest, Context context);
     void setGaClientId(String gaClientId);
     void initSession();
+    void initSession(Activity activity, boolean uriHaveCampaignData);
 }

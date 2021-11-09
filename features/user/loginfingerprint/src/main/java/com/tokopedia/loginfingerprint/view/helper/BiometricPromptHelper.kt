@@ -16,7 +16,7 @@ object BiometricPromptHelper {
         return false
     }
 
-    fun showBiometricPrompt(fragmentActivity: FragmentActivity, onSuccess: () -> Unit, onFailed: () -> Unit, onError: (Int) -> Unit) {
+    fun showBiometricPrompt(fragmentActivity: FragmentActivity, onSuccess: () -> Unit, onFailed: () -> Unit, onError: (Int, String) -> Unit) {
         val executor = ContextCompat.getMainExecutor(fragmentActivity)
         var biometricPrompt: BiometricPrompt? = null
 
@@ -24,7 +24,7 @@ object BiometricPromptHelper {
             override fun onAuthenticationError(errorCode: Int,
                                                errString: CharSequence) {
                 super.onAuthenticationError(errorCode, errString)
-                onError(errorCode)
+                onError(errorCode, errString.toString())
             }
 
             override fun onAuthenticationSucceeded(

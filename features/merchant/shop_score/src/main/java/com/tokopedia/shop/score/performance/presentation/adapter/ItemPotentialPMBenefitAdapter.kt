@@ -7,40 +7,56 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.performance.presentation.model.SectionPotentialPMBenefitUiModel
-import kotlinx.android.synthetic.main.item_potential_pm_benefit.view.*
+import com.tokopedia.shop.score.databinding.ItemPotentialPmBenefitBinding
+import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMBenefitUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
-class ItemPotentialPMBenefitAdapter(private val itemRegularMerchantListener: ItemRegularMerchantListener) : RecyclerView.Adapter<ItemPotentialPMBenefitAdapter.ItemPotentialPMBenefitViewHolder>() {
+class ItemPotentialPMBenefitAdapter(private val itemRegularMerchantListener: ItemRegularMerchantListener) :
+    RecyclerView.Adapter<ItemPotentialPMBenefitAdapter.ItemPotentialPMBenefitViewHolder>() {
 
-    private val potentialPMBenefitList: MutableList<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> = mutableListOf()
+    private val itemRMPotentialPMBenefitList:
+            MutableList<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> =
+        mutableListOf()
 
-    fun setPotentialPowerMerchantBenefit(potentialPMBenefitList: List<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>) {
-        if (potentialPMBenefitList.isNullOrEmpty()) return
-        this.potentialPMBenefitList.clear()
-        this.potentialPMBenefitList.addAll(potentialPMBenefitList)
+    fun setPotentialPowerMerchantBenefit(
+        itemRMPotentialPMBenefitList:
+        List<SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel>
+    ) {
+        if (itemRMPotentialPMBenefitList.isNullOrEmpty()) return
+        this.itemRMPotentialPMBenefitList.clear()
+        this.itemRMPotentialPMBenefitList.addAll(itemRMPotentialPMBenefitList)
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemPotentialPMBenefitViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_potential_pm_benefit, parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ItemPotentialPMBenefitViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_potential_pm_benefit, parent, false)
         return ItemPotentialPMBenefitViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ItemPotentialPMBenefitViewHolder, position: Int) {
-        val data = potentialPMBenefitList[position]
+        val data = itemRMPotentialPMBenefitList[position]
         holder.bind(data)
     }
 
-    override fun getItemCount(): Int = potentialPMBenefitList.size
+    override fun getItemCount(): Int = itemRMPotentialPMBenefitList.size
 
     inner class ItemPotentialPMBenefitViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        fun bind(data: SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel) {
-            with(itemView) {
-                iv_potential_pm_benefit?.loadImage(data.iconPotentialPMUrl)
-                tv_potential_pm_benefit?.text = MethodChecker.fromHtml(data.titlePotentialPM?.let { context.getString(it) })
+        private val binding: ItemPotentialPmBenefitBinding? by viewBinding()
 
-                setOnClickListener {
+        fun bind(data: SectionRMPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel) {
+            binding?.run {
+                ivPotentialPmBenefit.loadImage(data.iconPotentialPMUrl)
+                tvPotentialPmBenefit.text =
+                    MethodChecker.fromHtml(data.titlePotentialPM?.let {
+                        root.context.getString(it)
+                    })
+
+                root.setOnClickListener {
                     itemRegularMerchantListener.onRMSectionToPMPage()
                 }
             }

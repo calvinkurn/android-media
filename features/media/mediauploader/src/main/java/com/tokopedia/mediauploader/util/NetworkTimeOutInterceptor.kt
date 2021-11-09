@@ -14,10 +14,10 @@ class NetworkTimeOutInterceptor: Interceptor {
         val requestTimeout = timeOut?.toInt()?: DEFAULT_TIMEOUT
 
         return chain
-                .withConnectTimeout(requestTimeout, TimeUnit.SECONDS)
-                .withWriteTimeout(requestTimeout, TimeUnit.SECONDS)
-                .withReadTimeout(requestTimeout, TimeUnit.SECONDS)
-                .proceed(request)
+            .withConnectTimeout(requestTimeout, TimeUnit.SECONDS)
+            .withWriteTimeout(requestTimeout, TimeUnit.SECONDS)
+            .withReadTimeout(requestTimeout, TimeUnit.SECONDS)
+            .proceed(request)
     }
 
     companion object {

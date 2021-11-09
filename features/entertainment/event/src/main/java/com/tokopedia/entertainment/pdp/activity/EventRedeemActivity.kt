@@ -19,7 +19,7 @@ class EventRedeemActivity : BaseSimpleActivity(), HasComponent<EventPDPComponent
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (intent.extras != null) {
-            urlRedeem = intent.getStringExtra(EXTRA_URL_REDEEM)
+            urlRedeem = intent.getStringExtra(EXTRA_URL_REDEEM) ?: ""
         } else if (savedInstanceState != null) {
             urlRedeem = savedInstanceState.getString(urlRedeem, "")
         }

@@ -12,7 +12,7 @@ import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.di.DaggerHotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailFragment
-import java.util.*
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
  * @author by furqan on 22/04/19
@@ -35,26 +35,30 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
-        if (uri != null && uri.lastPathSegment!= null) {
-            propertyId = uri.lastPathSegment!!.toLong()
-            if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) checkInDate = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
-            if (!uri.getQueryParameter(PARAM_CHECK_OUT).isNullOrEmpty()) checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
-            if (!uri.getQueryParameter(PARAM_ROOM_COUNT).isNullOrEmpty()) roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT)?.toInt() ?: 0
-            if (!uri.getQueryParameter(PARAM_ADULT_COUNT).isNullOrEmpty()) adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT)?.toInt() ?: 0
+        try{
+            if (uri != null && uri.lastPathSegment!= null) {
+                propertyId = uri.lastPathSegment.toLongOrZero()
+                if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) checkInDate = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
+                if (!uri.getQueryParameter(PARAM_CHECK_OUT).isNullOrEmpty()) checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
+                if (!uri.getQueryParameter(PARAM_ROOM_COUNT).isNullOrEmpty()) roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT)?.toInt() ?: 0
+                if (!uri.getQueryParameter(PARAM_ADULT_COUNT).isNullOrEmpty()) adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT)?.toInt() ?: 0
 
-            showRoom = !(!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && (uri.getQueryParameter(PARAM_SHOW_ROOM)?.toInt() ?: 0) == 0)
+                showRoom = !(!uri.getQueryParameter(PARAM_SHOW_ROOM).isNullOrEmpty() && (uri.getQueryParameter(PARAM_SHOW_ROOM)?.toInt() ?: 0) == 0)
 
-        } else {
-            with(intent) {
-                checkInDate = getStringExtra(EXTRA_CHECK_IN_DATE) ?: ""
-                checkOutDate = getStringExtra(EXTRA_CHECK_OUT_DATE) ?: ""
-                propertyId = getLongExtra(EXTRA_PROPERTY_ID, 0)
-                roomCount = getIntExtra(EXTRA_ROOM_COUNT, 1)
-                adultCount = getIntExtra(EXTRA_ADULT_COUNT, 1)
-                destinationType = getStringExtra(EXTRA_DESTINATION_TYPE) ?: ""
-                destinationName = getStringExtra(EXTRA_DESTINATION_NAME) ?: ""
-                isDirectPayment = getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
+            } else {
+                with(intent) {
+                    checkInDate = getStringExtra(EXTRA_CHECK_IN_DATE) ?: ""
+                    checkOutDate = getStringExtra(EXTRA_CHECK_OUT_DATE) ?: ""
+                    propertyId = getLongExtra(EXTRA_PROPERTY_ID, 0)
+                    roomCount = getIntExtra(EXTRA_ROOM_COUNT, 1)
+                    adultCount = getIntExtra(EXTRA_ADULT_COUNT, 1)
+                    destinationType = getStringExtra(EXTRA_DESTINATION_TYPE) ?: ""
+                    destinationName = getStringExtra(EXTRA_DESTINATION_NAME) ?: ""
+                    isDirectPayment = getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
+                }
             }
+        }catch (t: Throwable){
+            //to prevent unsuccessful parsing, use default value
         }
         checkParameter()
 

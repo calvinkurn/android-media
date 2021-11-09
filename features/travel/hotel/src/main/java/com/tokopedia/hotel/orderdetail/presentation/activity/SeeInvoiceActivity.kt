@@ -1,16 +1,13 @@
 package com.tokopedia.hotel.orderdetail.presentation.activity
 
-import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.WebView
 import androidx.core.content.ContextCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.webview.BaseSimpleWebViewActivity

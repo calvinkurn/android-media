@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeTickerBinding
 import com.tokopedia.digital.home.model.RechargeTickerHomepageModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
@@ -12,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import kotlinx.android.synthetic.main.view_recharge_home_ticker.view.*
 
 /**
  * @author by firman on 09/03/21.
@@ -22,11 +22,12 @@ class RechargeHomepageTickerViewHolder(itemView: View, val listener: RechargeHom
         AbstractViewHolder<RechargeTickerHomepageModel>(itemView) {
 
     override fun bind(element: RechargeTickerHomepageModel) {
+        val bind = ViewRechargeHomeTickerBinding.bind(itemView)
         val section = element.rechargeTickers
-        with(itemView) {
+        with(bind) {
             if (section.isNotEmpty()) {
-                ticker_recharge_home_page_shimmering.hide()
-                ticker_recharge_home_page.apply {
+                tickerRechargeHomePageShimmering.hide()
+                tickerRechargeHomePage.apply {
                     show()
                     val tickersData = RechargeHomepageSectionMapper.
                     mapRechargeTickertoTickerData(element.rechargeTickers)
@@ -44,8 +45,8 @@ class RechargeHomepageTickerViewHolder(itemView: View, val listener: RechargeHom
                             })
                 }
             } else {
-                ticker_recharge_home_page.hide()
-                ticker_recharge_home_page_shimmering.show()
+                tickerRechargeHomePage.hide()
+                tickerRechargeHomePageShimmering.show()
             }
         }
     }

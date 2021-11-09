@@ -1,11 +1,12 @@
 {
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "networkSpeed" : ".*",
       "clientId" : ".*",
       "isLoggedInStatus" : "true|false",
       "appsflyerId": ".*",
+      "theme": ".*",
       "shopId" : "\\d+",
       "screenName" : "/cart",
       "event": "openScreen",
@@ -30,7 +31,9 @@
           "item_category": ".*",
           "dimension104": ".*",
           "dimension54": ".*",
+          "dimension117": ".*",
           "dimension53": "true|false",
+          "dimension118": ".*",
           "dimension45": "\\d+",
           "dimension56": "\\d+",
           "dimension83": "bebas ongkir|none/other|bebas ongkir extra",
@@ -39,7 +42,7 @@
           "dimension79": "\\d+",
           "item_variant": "none/other",
           "dimension49": "",
-          "dimension48": "\\d+.\\d+",
+          "dimension48": "\\d+",
           "dimension59": ".*"
         }
       ],
@@ -64,7 +67,9 @@
           "item_category": ".*",
           "dimension104": ".*",
           "dimension54": ".*",
+          "dimension117": ".*",
           "dimension53": "true|false",
+          "dimension118": ".*",
           "dimension45": "\\d+",
           "dimension56": "\\d+",
           "dimension83": "bebas ongkir|none/other|bebas ongkir extra",
@@ -73,7 +78,7 @@
           "dimension79": "\\d+",
           "item_variant": "none/other",
           "dimension49": "",
-          "dimension48": "\\d+.\\d+",
+          "dimension48": "\\d+",
           "dimension59": ".*"
         }
       ],

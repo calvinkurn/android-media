@@ -5,13 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         google()
-        maven {
-            url "https://maven.google.com"
-        }
-        google()
-        maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
-        jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
@@ -58,6 +52,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
@@ -80,10 +75,8 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
-    implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
 
-    implementation rootProject.ext.firebase.appIndexing
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config

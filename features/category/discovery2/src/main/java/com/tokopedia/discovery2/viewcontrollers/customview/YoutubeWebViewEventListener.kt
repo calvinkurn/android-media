@@ -22,4 +22,8 @@ object YoutubeWebViewEventListener {
         fun onVideoCued()
     }
 
+    interface EventPlayerReady{
+        fun onPlayerReady()
+    }
+
 }

@@ -24,7 +24,7 @@ class GetEventHomeLayoutUseCase @Inject constructor(
     override suspend fun executeOnBackground(): DealsEventHome.Response {
         val gqlRequest = GraphqlRequest(DealsGqlHomeQuery.getEventHomeQuery(),
                 DealsEventHome.Response::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(DealsEventHome.Response::class.java)
         if (!errors.isNullOrEmpty()) {

@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.roomlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
@@ -9,6 +8,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
 import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase
 import com.tokopedia.hotel.roomlist.usecase.HotelAddToCartUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations

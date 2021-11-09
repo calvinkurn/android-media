@@ -8,24 +8,27 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
  */
 
 data class TableWidgetUiModel(
-        override val id: String,
-        override val widgetType: String,
-        override val title: String,
-        override val subtitle: String,
-        override val tooltip: TooltipUiModel?,
-        override val appLink: String,
-        override val dataKey: String,
-        override val ctaText: String,
-        override val gridSize: Int,
-        override val isShowEmpty: Boolean,
-        override var data: TableDataUiModel?,
-        override var impressHolder: ImpressHolder = ImpressHolder(),
-        override var isLoaded: Boolean,
-        override var isLoading: Boolean,
-        override var isFromCache: Boolean,
-        override var isNeedToBeRemoved: Boolean = false,
-        override var emptyState: WidgetEmptyStateUiModel,
-        val tableFilters: List<WidgetFilterUiModel>
+    override val id: String,
+    override val widgetType: String,
+    override val title: String,
+    override val subtitle: String,
+    override val tooltip: TooltipUiModel?,
+    override val tag: String,
+    override val appLink: String,
+    override val dataKey: String,
+    override val ctaText: String,
+    override val gridSize: Int,
+    override val isShowEmpty: Boolean,
+    override var data: TableDataUiModel?,
+    override var impressHolder: ImpressHolder = ImpressHolder(),
+    override var isLoaded: Boolean,
+    override var isLoading: Boolean,
+    override var isFromCache: Boolean,
+    override var isNeedToBeRemoved: Boolean = false,
+    override var emptyState: WidgetEmptyStateUiModel,
+    val tableFilters: List<WidgetFilterUiModel>,
+    val maxData: Int,
+    val maxDisplay: Int
 ) : BaseWidgetUiModel<TableDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

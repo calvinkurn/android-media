@@ -22,6 +22,9 @@ import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.common.utils.DealsLocationUtils
+import com.tokopedia.deals.databinding.FragmentDealsSearchBinding
+import com.tokopedia.deals.databinding.FragmentDealsSelectLocationBinding
+import com.tokopedia.deals.databinding.LayoutDealsSearchLocationBottomsheetBinding
 import com.tokopedia.deals.location_picker.DealsLocationConstants
 import com.tokopedia.deals.location_picker.domain.viewmodel.DealsLocationViewModel
 import com.tokopedia.deals.location_picker.listener.DealsLocationListener
@@ -32,7 +35,7 @@ import com.tokopedia.deals.location_picker.ui.typefactory.DealsSelectLocationTyp
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.layout_deals_search_location_bottomsheet.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -47,6 +50,10 @@ class DealsSelectLocationFragment(
         BaseAdapterTypeFactory>(),
         DealsLocationListener,
         CoroutineScope {
+
+    private var binding by autoCleared<FragmentDealsSelectLocationBinding>()
+    private var binding2 by autoCleared<LayoutDealsSearchLocationBottomsheetBinding>()
+
     @Inject
     lateinit var dealsLocationUtils: DealsLocationUtils
 
@@ -65,7 +72,9 @@ class DealsSelectLocationFragment(
     private var initialDataList: ArrayList<Visitable<DealsSelectLocationTypeFactory>> = arrayListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_deals_select_location, container, false)
+        binding = FragmentDealsSelectLocationBinding.inflate(inflater, container, false)
+        binding2 = LayoutDealsSearchLocationBottomsheetBinding.bind(binding.root)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -251,28 +260,28 @@ class DealsSelectLocationFragment(
     }
 
     private fun setListener() {
-        sb_location?.requestFocus()
+        binding2.sbLocation.requestFocus()
 
-        sb_location?.searchBarTextField?.afterTextChangedDelayed {
+        binding2.sbLocation?.searchBarTextField?.afterTextChangedDelayed {
             onSearchTextChanged(it)
         }
 
-        sb_location?.searchBarTextField?.setOnEditorActionListener { textView, i, keyEvent ->
+        binding2.sbLocation?.searchBarTextField?.setOnEditorActionListener { textView, i, keyEvent ->
             if (i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER) {
                 onSearchSubmitted(getSearchKeyword())
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
         }
-        detect_current_location?.setOnClickListener {
+        binding2.detectCurrentLocation?.setOnClickListener {
             getCurrentLocation()
         }
     }
 
     private fun getSearchKeyword(): String {
         var query = ""
-        if (sb_location?.searchBarTextField?.text?.isNotEmpty() == true) {
-            query = sb_location?.searchBarTextField?.text.toString()
+        if (binding2.sbLocation?.searchBarTextField?.text?.isNotEmpty() == true) {
+            query = binding2.sbLocation?.searchBarTextField?.text.toString()
         }
         return query
     }

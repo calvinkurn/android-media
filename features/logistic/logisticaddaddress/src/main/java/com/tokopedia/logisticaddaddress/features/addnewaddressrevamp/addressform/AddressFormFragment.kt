@@ -3,30 +3,39 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressfor
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.text.Editable
-import android.text.InputFilter
-import android.text.TextWatcher
+import android.text.*
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.response.DistrictItem
+import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
@@ -38,8 +47,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecorati
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -52,7 +60,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.ActionListener,
-        DiscomBottomSheetFragment.ActionListener {
+        DiscomBottomSheetRevamp.DiscomRevampListener {
 
 
     private var bottomSheetInfoPenerima: BottomSheetUnify? = null
@@ -66,20 +74,18 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var isPositiveFlow: Boolean = true
     /*To differentiate user pinpoint on ANA Negative*/
     private var isPinpoint: Boolean = false
-    /*To differentiate flow from logistic or not*/
-    private var isLogisticLabel: Boolean = true
     private var validated: Boolean = true
     private val toppers: String = "Toppers-"
     private var currentKotaKecamatan: String? = ""
     private var currentAlamat: String = ""
-    private var currentKodepos: String = ""
+    private var currentPostalCode: String = ""
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
 
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
-    private lateinit var districtRecommendationBottomSheetFragment: DiscomBottomSheetFragment
+    private var districtBottomSheet: DiscomBottomSheetRevamp? = null
 
     private var binding by autoCleared<FragmentAddressFormBinding>()
 
@@ -99,7 +105,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         getComponent(AddNewAddressRevampComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentAddressFormBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -156,7 +162,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                         currentLong = it.longitude.toDouble()
                         binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
                         binding.cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
-                        if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode = currentKodepos
+                        if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode = currentPostalCode
                     }
                 }
             }
@@ -228,7 +234,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         viewModel.defaultAddress.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.addressId != 0) {
+                    if (it.data.addressId != 0L) {
                         binding.layoutCbDefaultLoc.visibility = View.VISIBLE
                     } else {
                         binding.layoutCbDefaultLoc.visibility = View.GONE
@@ -297,6 +303,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
                 formAddressNegative.etKotaKecamatan.textFieldInput.apply {
+                    inputType = InputType.TYPE_NULL
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
                             AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
@@ -328,11 +335,13 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 formAddress.etLabel.textFieldInput.setText("Rumah")
                 formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
-                formAddress.etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etAlamat.textFieldWrapper, null))
+                formAddress.etAlamatNew.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etAlamatNew.textFieldWrapper, null))
             }
         }
 
-        binding.btnSaveAddress.setOnClickListener {
+        LogisticCommonUtil.displayUserConsent(activity as Context, binding.userConsent, getString(R.string.btn_simpan))
+
+        binding.btnSaveAddressNew.setOnClickListener {
             if (validateForm()) {
                 doSaveAddress()
             }
@@ -376,19 +385,19 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddress.etAlamat.textFieldInput.text.toString().isEmpty() || formAddress.etAlamat.textFieldInput.text.toString() == " ") {
+                if (formAddress.etAlamatNew.textFieldInput.text.toString().isEmpty() || formAddress.etAlamatNew.textFieldInput.text.toString() == " ") {
                     validated = false
                     field += getString(R.string.field_alamat)
-                    setWrapperError(formAddress.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
+                    setWrapperError(formAddress.etAlamatNew.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddress.etLabel.textFieldInput.text.toString().length < 3) {
+                if (formAddress.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_label_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
-                if (formAddress.etAlamat.textFieldInput.text.toString().length < 3) {
+                if (formAddress.etAlamatNew.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
@@ -406,14 +415,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setWrapperError(formAddressNegative.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
                 }
 
-                if (formAddressNegative.etLabel.textFieldInput.text.toString().length < 3) {
+                if (formAddressNegative.etLabel.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_label_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
 
 
-                if (formAddressNegative.etAlamat.textFieldInput.text.toString().length < 3) {
+                if (formAddressNegative.etAlamat.textFieldInput.text.toString().length < MINIMUM_CHAR) {
                     validated = false
                     field += getString(R.string.field_alamat)
                     view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
@@ -501,11 +510,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        districtRecommendationBottomSheetFragment = DiscomBottomSheetFragment.newInstance(isLogisticLabel, true, isPinpoint)
-        districtRecommendationBottomSheetFragment.setActionListener(this)
-        childFragmentManager?.run {
-            districtRecommendationBottomSheetFragment.show(this, "")
-        }
+        districtBottomSheet = DiscomBottomSheetRevamp()
+        districtBottomSheet?.setListener(this)
+        districtBottomSheet?.show(this.childFragmentManager)
     }
 
     private fun checkKotaKecamatan() {
@@ -518,13 +525,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun goToPinpointPage() {
         val bundle = Bundle()
-        bundle.putDouble(AddAddressConstant.EXTRA_LATITUDE, currentLat)
-        bundle.putDouble(AddAddressConstant.EXTRA_LONGITUDE, currentLong)
+        bundle.putDouble(EXTRA_LAT, currentLat)
+        bundle.putDouble(EXTRA_LONG, currentLong)
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, false)
         bundle.putString(EXTRA_DISTRICT_NAME, currentDistrictName)
         bundle.putString(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
         bundle.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, saveDataModel)
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, true)
+        bundle.putString(EXTRA_POSTAL_CODE, currentPostalCode)
         if (!isPositiveFlow) bundle.putBoolean(EXTRA_IS_POLYGON, true)
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPONT_PAGE)
     }
@@ -632,7 +640,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
             }
 
-            formAddress.etAlamat.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
+            formAddress.etAlamatNew.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     AddNewAddressRevampAnalytics.onClickFieldAlamatPositive(userSession.userId)
                 }
@@ -666,6 +674,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setOnTouchLabelAddress(type: String) {
         if (isPositiveFlow) {
             binding.formAddress.etLabel.textFieldInput.apply {
@@ -770,9 +779,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.phone = binding.formAccount.etNomorHp.textFieldInput.text.toString()
         if (isPositiveFlow) {
             if (binding.formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
+                saveDataModel?.address1 = "${binding.formAddress.etAlamatNew.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
             } else {
-                saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text}"
+                saveDataModel?.address1 = "${binding.formAddress.etAlamatNew.textFieldInput.text}"
             }
             saveDataModel?.addressName =  binding.formAddress.etLabel.textFieldInput.text.toString()
             saveDataModel?.isAnaPositive = PARAM_ANA_POSITIVE
@@ -813,6 +822,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         const val SUCCESS = "success"
         const val NOT_SUCCESS = "not success"
 
+        const val MINIMUM_CHAR = 3
+
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {
                 arguments = Bundle().apply {
@@ -844,11 +855,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     override fun onGetDistrict(districtAddress: Address) {
-       districtRecommendationBottomSheetFragment.getDistrict(districtAddress)
+        districtBottomSheet?.getDistrict(districtAddress)
     }
 
-    override fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean) {
-        val kotaKecamatanText = "${districtAddress.districtName}, ${districtAddress.cityName} $zipCode"
+    override fun onChooseZipcode(districtAddress: Address, postalCode: String, isPinpoint: Boolean) {
+        val kotaKecamatanText = "${districtAddress.provinceName}, ${districtAddress.cityName}, ${districtAddress.districtName}"
         formattedAddress = "${districtAddress.districtName}, ${districtAddress.cityName}, ${districtAddress.provinceName}"
         currentDistrictName = districtAddress.districtName.toString()
         binding.formAddressNegative.etKotaKecamatan.textFieldInput.run {
@@ -862,8 +873,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.provinceId = districtAddress.provinceId
         saveDataModel?.districtId = districtAddress.districtId
         saveDataModel?.zipCodes = districtAddress.zipCodes
-        saveDataModel?.postalCode = zipCode
-        currentKodepos = zipCode
+        saveDataModel?.postalCode = postalCode
+        currentPostalCode = postalCode
 
         if (isPinpoint) goToPinpointPage()
     }

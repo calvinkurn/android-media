@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.digital.home.R
 import com.tokopedia.network.utils.ErrorHandler
 
@@ -34,10 +35,20 @@ class RechargeHomepageAdapter(val context: Context,
     }
 
     fun showGetListError(e: Throwable) {
-        showErrorNetwork(ErrorHandler.getErrorMessage(context, e)) {
+        val errorNetworkModel = ErrorNetworkModel()
+
+        var pair = ErrorHandler.getErrorMessagePair(context, e, ErrorHandler.Builder())
+        errorNetworkModel.errorMessage = pair.first
+        errorNetworkModel.subErrorMessage =
+            "${context.getString(com.tokopedia.kotlin.extensions.R.string.title_try_again)}. " +
+                    "Kode Error: (${pair.second})"
+        errorNetworkModel.onRetryListener = ErrorNetworkModel.OnRetryListener {
             showLoading()
             loaderListener.loadData()
         }
+        setErrorNetworkModel(errorNetworkModel)
+
+        showErrorNetwork()
     }
 
     interface LoaderListener {

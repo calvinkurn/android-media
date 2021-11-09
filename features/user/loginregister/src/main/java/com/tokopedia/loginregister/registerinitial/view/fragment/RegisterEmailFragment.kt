@@ -28,12 +28,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.utils.RegisterUtil
+import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
@@ -42,7 +42,6 @@ import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.util.PasswordUtils
@@ -173,7 +172,7 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
                                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-                        if (errorMessage == forbiddenMessage) {
+                        if (errorMessage.removeErrorCode() == forbiddenMessage) {
                             onForbidden()
                         } else {
                             onErrorRegister(errorMessage)
@@ -193,7 +192,7 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
 
     private fun initTermPrivacyView() {
         context?.run {
-            val termPrivacy = SpannableString(getString(R.string.detail_term_and_privacy))
+            val termPrivacy = SpannableString(getString(R.string.text_term_and_privacy))
             termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
             termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
             termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 34, 54, 0)
@@ -536,27 +535,13 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
         }
     }
 
-    private val abTestingRemoteConfig: RemoteConfig
-        get() = RemoteConfigInstance.getInstance().abTestPlatform
-
-    fun isEnableEncryptRollout(): Boolean {
-        val rolloutKey = if(GlobalConfig.isSellerApp()) {
-            SessionConstants.Rollout.ROLLOUT_REGISTER_ENCRYPTION_SELLER
-        } else {
-            SessionConstants.Rollout.ROLLOUT_REGISTER_ENCRYPTION
-        }
-
-        val variant = abTestingRemoteConfig.getString(rolloutKey)
-        return variant.isNotEmpty()
-    }
-
     private fun isUseEncryption(): Boolean {
-        return isEnableEncryptRollout() && isEnableEncryption
+        return isEnableEncryption
     }
 
     private fun onFailedRegisterEmail(errorMessage: String?) {
-        registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage ?: "")
-        registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage ?: "")
+        registerAnalytics?.trackFailedClickEmailSignUpButton(errorMessage?.removeErrorCode() ?: "")
+        registerAnalytics?.trackFailedClickSignUpButtonEmail(errorMessage?.removeErrorCode() ?: "")
     }
 
     val isAutoVerify: Int
@@ -572,13 +557,6 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
         private const val REQUEST_ACTIVATE_ACCOUNT = 102
 
         private const val ALREADY_REGISTERED = "sudah terdaftar"
-        private const val GO_TO_REGISTER = 0
-        private const val GO_TO_ACTIVATION_PAGE = 1
-        private const val GO_TO_LOGIN = 2
-        private const val GO_TO_RESET_PASSWORD = 3
-        private const val STATUS_ACTIVE = 1
-        private const val STATUS_PENDING = -1
-        private const val STATUS_INACTIVE = 0
         fun createInstance(bundle: Bundle?): RegisterEmailFragment {
             val fragment = RegisterEmailFragment()
             fragment.arguments = bundle

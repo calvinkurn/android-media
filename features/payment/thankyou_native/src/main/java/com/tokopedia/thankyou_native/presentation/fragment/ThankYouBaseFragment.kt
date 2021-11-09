@@ -17,7 +17,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.domain.response.DefaultChosenAddressData
+import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
@@ -31,10 +32,12 @@ import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
+import com.tokopedia.thankyou_native.presentation.adapter.model.TopAdsRequestParams
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.thankyou_native.presentation.views.GyroView
+import com.tokopedia.thankyou_native.presentation.views.TopAdsView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -51,6 +54,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
+    abstract fun getTopAdsView(): TopAdsView?
     abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
@@ -218,25 +222,52 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         })
 
         thanksPageDataViewModel.defaultAddressLiveData.observe(viewLifecycleOwner, Observer {
-            when(it){
-                is Success->{
+            when (it) {
+                is Success -> {
                     updateLocalizingAddressData(it.data)
                 }
-                is Fail->{
+                is Fail -> {
                     //do nothing
                 }
             }
         })
+
+        thanksPageDataViewModel.topAdsDataLiveData.observe(viewLifecycleOwner) {
+            addDataToTopAdsView(it)
+        }
+
     }
 
-    private fun updateLocalizingAddressData(data: DefaultChosenAddressData) {
-        context?.let {
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(it,
-                    data.addressId.toString(), data.cityId.toString(),
-                    data.districtId.toString(),
-                    data.latitude, data.longitude,
-                    "${data.addressName} ${data.receiverName}", data.postalCode)
+    private fun updateLocalizingAddressData(data: GetDefaultChosenAddressResponse) {
+        val errorCode = data.error.code
+        if (errorCode == ChooseAddressConstant.ERROR_CODE_EMPTY_LAT_LONG_PARAM || errorCode == ChooseAddressConstant.ERROR_CODE_INVALID_LAT_LONG_PARAM ||
+            errorCode == ChooseAddressConstant.ERROR_CODE_FAILED_GET_DISTRICT_DATA || errorCode == ChooseAddressConstant.ERROR_CODE_EMPTY_DISTRICT_DATA
+        ) {
+            val defaultAddress = ChooseAddressConstant.defaultAddress
+            context?.let {
+                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    it,
+                    defaultAddress.address_id, defaultAddress.city_id, defaultAddress.district_id,
+                    defaultAddress.lat, defaultAddress.long, defaultAddress.label,
+                    defaultAddress.postal_code,
+                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString()
+                )
+            }
+        } else {
+            val addressData = data.data
+            context?.let {
+                ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    it,
+                    addressData.addressId.toString(), addressData.cityId.toString(),
+                    addressData.districtId.toString(),
+                    addressData.latitude, addressData.longitude,
+                    "${addressData.addressName} ${addressData.receiverName}",
+                    addressData.postalCode,
+                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString()
+                )
+            }
         }
+
     }
 
     private fun setTopTickerData(tickerData: List<TickerData>) {
@@ -268,6 +299,14 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             } else {
                 getFeatureListingContainer()?.gone()
             }
+        }
+    }
+    private fun addDataToTopAdsView(data: TopAdsRequestParams) {
+        if (!data.topAdsUIModelList.isNullOrEmpty()) {
+            getTopAdsView()?.visible()
+            getTopAdsView()?.addData(data)
+        } else {
+            getTopAdsView()?.gone()
         }
     }
 
@@ -434,7 +473,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
 
     private fun getOrderListPageIntent(): Intent? {
-        return RouteManager.getIntent(context, ApplinkConst.MARKETPLACE_ORDER)
+        return RouteManager.getIntent(context, ApplinkConst.PURCHASE_ORDER)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

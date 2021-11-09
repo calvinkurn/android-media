@@ -3,6 +3,7 @@ package com.tokopedia.flight.orderdetail.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.flight.databinding.ItemFlightOrderDetailWebCheckinBinding
 import com.tokopedia.flight.orderdetail.presentation.adapter.viewholder.FlightOrderDetailWebCheckInViewHolder
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerModel
@@ -16,9 +17,9 @@ class FlightOrderDetailWebCheckInAdapter(private val journeyList: List<FlightOrd
     : RecyclerView.Adapter<FlightOrderDetailWebCheckInViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightOrderDetailWebCheckInViewHolder =
-            FlightOrderDetailWebCheckInViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(FlightOrderDetailWebCheckInViewHolder.LAYOUT, parent, false),
-                    listener)
+            FlightOrderDetailWebCheckInViewHolder(
+                ItemFlightOrderDetailWebCheckinBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            , listener)
 
     override fun getItemCount(): Int = journeyList.size
 

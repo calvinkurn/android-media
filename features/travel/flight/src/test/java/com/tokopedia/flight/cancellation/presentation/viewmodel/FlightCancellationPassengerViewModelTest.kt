@@ -9,7 +9,10 @@ import com.tokopedia.flight.dummy.DUMMY_CANCELLED_PASSENGER
 import com.tokopedia.flight.dummy.DUMMY_EMPTY_PASSENGER_SELECTED_CANCELLATION
 import com.tokopedia.flight.dummy.DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION
 import com.tokopedia.flight.shouldBe
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import io.mockk.MockKAnnotations
@@ -84,13 +87,15 @@ class FlightCancellationPassengerViewModelTest {
     @Test
     fun getCancellablePassenger_failToFetch_valueShouldBeNull() {
         // given
-        coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } coAnswers { throw NoSuchElementException() }
+        val message = "Telah terjadi kesalahan"
+        coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } coAnswers { throw MessageErrorException(message) }
 
         // when
         viewModel.getCancellablePassenger("", arrayListOf())
 
         // then
-        viewModel.cancellationPassengerList.value shouldBe null
+        assert(viewModel.cancellationPassengerList.value is Fail)
+        (viewModel.cancellationPassengerList.value as Fail).throwable.message shouldBe message
     }
 
     @Test
@@ -122,7 +127,7 @@ class FlightCancellationPassengerViewModelTest {
         }
 
 
-        for ((index, item) in viewModel.cancellationPassengerList.value!!.withIndex()) {
+        for ((index, item) in (viewModel.cancellationPassengerList.value as Success).data.withIndex()) {
             val swappedIndex = if (index == 1) 0 else 1
             item.invoiceId shouldBe "1234567890"
             item.passengerModelList.size shouldBe DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION[swappedIndex].passengerModelList.size

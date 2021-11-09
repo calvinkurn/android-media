@@ -40,13 +40,12 @@ object ImageEncryptionUtil {
 
         val originalFile = File(originalFilePath)
         val copyFile = File(filePath, "$TEMP_IMAGE_TAG$imageName")
+        if(copyFile.exists()) {
+            copyFile.delete()
+        }
 
         //Create a copy of original file
-        try {
-            originalFile.copyTo(copyFile)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
+        originalFile.copyTo(copyFile)
 
         return copyFile.path
     }
@@ -107,7 +106,7 @@ object ImageEncryptionUtil {
         val fis = FileInputStream(originalFilePath)
         val fs = FileOutputStream(File(encryptedImagePath))
         val out = CipherOutputStream(fs, aes)
-        out.write(fis.readBytes(1024 * 1024))
+        out.write(fis.readBytes())
         out.flush()
         out.close()
     }

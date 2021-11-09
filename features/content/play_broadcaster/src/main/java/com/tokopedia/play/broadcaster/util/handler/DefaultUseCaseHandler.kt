@@ -4,12 +4,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.util.LoggingUtils
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import java.lang.reflect.Type
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-
 
 /**
  * Created by mzennis on 06/11/20.
@@ -29,9 +29,9 @@ class DefaultUseCaseHandler(
         var retryCount = 0
         suspend fun withRetry() {
             try {
-                gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), gqlCacheStrategy)
+                gqlResponse = gqlRepository.response(listOf(gqlRequest), gqlCacheStrategy)
             } catch (throwable: Throwable) {
-                if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw DefaultNetworkThrowable()
+                if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw throwable
                 else {
                     if (retryCount++ < MAX_RETRY) withRetry()
                 }
@@ -40,12 +40,16 @@ class DefaultUseCaseHandler(
 
         withRetry()
 
-        val errors = gqlResponse?.getError(typeOfT)
-        if (!errors.isNullOrEmpty()) {
-            throw DefaultErrorThrowable(errors.first().message)
+        val response = gqlResponse ?: throw DefaultErrorThrowable()
+        val error = response.getError(typeOfT)
+        if (error == null || error.isEmpty()) {
+            return response
+        } else {
+            val errorMessage = error.mapNotNull { it.message }.joinToString(separator = ", ")
+            LoggingUtils.logGqlErrorBackend("executeOnBackground", listOf(gqlRequest).toString()
+                ,errorMessage, response.httpStatusCode.toString())
+            throw MessageErrorException(errorMessage, response.httpStatusCode.toString())
         }
-
-        return gqlResponse?: throw DefaultErrorThrowable()
     }
 
     companion object {

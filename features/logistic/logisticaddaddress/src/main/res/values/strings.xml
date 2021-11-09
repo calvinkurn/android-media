@@ -3,17 +3,8 @@
     <string name="minimal_karakter">Minimal 5 karakter</string>
     <string name="address_type_default">Rumah</string>
     <string name="title_update_address">Ubah Alamat</string>
-    <string name="title_sort_by">Urutkan</string>
-    <string name="item_address_latest">Alamat Terbaru</string>
-    <string name="item_address_name">Nama Alamat</string>
-    <string name="item_address_receiver">Nama Penerima</string>
     <string name="error_field_required">Harus diisi</string>
-    <string name="title_no">Tidak</string>
-    <string name="title_yes">Ya</string>
     <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
-    <string name="title_address">Title Address</string>
-    <string name="detail_address">Detail Address</string>
-    <string name="kata_kunci_pencarian">Kata Kunci Pencarian</string>
     <string name="title_delivery_location_pickup">Lokasi Pickup (Opsional)</string>
     <string name="hint_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
     <string name="choose_this_location">Pilih lokasi ini</string>
@@ -41,16 +32,8 @@
     <string name="hint_district_recommendation_search">Tulis min 3 karakter</string>
     <string name="hint_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
     <string name="hint_search_address_no_result">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
-    <string name="action_delete">Hapus</string>
-    <string name="action_edit">Ubah</string>
-    <string name="action_set_default">Utamakan</string>
-    <string name="title_filter_but">Filter</string>
-    <string name="delete_prompt_message" formatted="false"><![CDATA[Apakah Anda yakin ingin menghapus alamat: <b>%s</b>?]]></string>
-    <string name="prioritize_message_prompt" formatted="false"><![CDATA[Apakah Anda yakin ingin menggunakan alamat:<br/><br/><b>%s</b><br/><br/>%s<br/><br/><br/> sebagai alamat utama Anda?]]></string>
-    <string name="title_activity_manage_people_address">Pengaturan Alamat</string>
     <string name="logistic_district_recommendation_label">Kota atau Kecamatan</string>
     <string name="logistic_zip_code_label">Kode Pos</string>
-    <string name="logistic_result_error_message">Ada masalah, hubungi resolusi</string>
 
     <string name="title_shipping_dest">Tujuan Pengiriman</string>
     <string name="text_information_google_map">* Pastikan lokasi google map anda sesuai dengan alamat yang anda masukan</string>
@@ -66,11 +49,9 @@
 
     <string name="navigate_up">Navigate Up</string>
     <string name="pointer">Map Pointer</string>
-    <string name="hint_search_location">Tulis jalan / perumahan / gedung</string>
     <string name="title_bottomsheet_search_location">Cari Lokasi</string>
     <string name="current_location">Current Location</string>
     <string name="tv_current_location_text">Gunakan lokasi saya saat ini</string>
-    <string name="use_points_of_interest">Mau gunakan lokasi ini?</string>
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
     <string name="tv_detail_address_placeholder">Tulis No. Rumah, Blok, RT/RW, dll</string>
     <string name="detail_alamat">Detail Alamat</string>
@@ -91,7 +72,6 @@
     <string name="mismatch_title">Pinpoint Gagal Disimpan</string>
     <string name="mismatch_desc">Pinpoint Anda gagal disimpan. Silahkan pilih Kota atau Kecamatan secara manual terlebih dahulu</string>
     <string name="mismatch_btn_title">Mengerti</string>
-    <string name="et_nama_lokasi_label">Nama Lokasi</string>
     <string name="et_kota_kecamatan_label">Kota atau Kecamatan</string>
     <string name="et_kode_pos_label">Kode Pos</string>
     <string name="alamat_label">Alamat</string>
@@ -121,11 +101,8 @@
     <string name="validate_alamat_length">Alamat minimal 5 karakter</string>
     <string name="disabled_location_notif_title">Lokasi Anda Belum Terisi</string>
     <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
-    <string name="no_pinpoint">Belum Pinpoint</string>
-    <string name="havent_pinpoint">Sudah Pinpoint</string>
     <string name="not_found_location">Lokasi tidak terdeteksi</string>
     <string name="not_found_location_desc">Kami tidak dapat menentukan lokasimu, silakan geser pada peta atau tulis secara manual</string>
-    <string name="content_desc_et_search">input cari</string>
     <string name="content_desc_place_name">text nama tempat</string>
     <string name="content_desc_et_detail_address">input detail alamat</string>
     <string name="content_desc_btn_choose_location">button pilih lokasi ini</string>
@@ -166,7 +143,6 @@
 
     <string name="toaster_not_avail_shop_loc">Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.</string>
 
-    <string name="txt_phone_helper"> Min. 9 angka</string>
     <string name="contact_not_found">Kontak tidak ditemukan</string>
     <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>
     <string name="contact_title_coachmark">Pilih no. HP langsung dari kontakmu</string>
@@ -175,6 +151,7 @@
     <!--Search Page-->
     <string name="txt_hint_search">Tulis nama jalan/gedung/perumahan</string>
     <string name="txt_message_initial_load">Mau cara lain? Isi alamat secara manual</string>
+    <string name="txt_message_ana_negative">Tidak ketemu? Isi alamat secara manual</string>
     <string name="txt_location_not_detected">Lokasi tidak terdeteksi</string>
     <string name="txt_info_location_not_detected">Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu.</string>
 
@@ -195,7 +172,15 @@
     <string name="title_address_form">Detail Alamat</string>
     <string name="tv_pinpoint_not_defined">Kamu belum pinpoint. &lt;b&gt;Atur Pinpoint (Opsional)&lt;/b&gt;</string>
     <string name="tv_pinpoint_defined">Kamu Sudah pinpoint. &lt;b&gt;Atur Pinpoint (Opsional)&lt;/b&gt;</string>
-    <string name="tv_discom_item_revamp">%1$s, &lt;b&gt;%2$s,&lt;/b&gt; %3$s</string>
+
+    <string name="tv_discom_item_revamp_province_city_district">&lt;b&gt;%1$s, %2s, %3s&lt;/b&gt;</string>
+    <string name="tv_discom_item_revamp_province_city">&lt;b&gt;%1$s, %2s,&lt;/b&gt; %3s</string>
+    <string name="tv_discom_item_revamp_province_district">&lt;b&gt;%1$s,&lt;/b&gt; %2s, &lt;b&gt;%3$s&lt;/b&gt;</string>
+    <string name="tv_discom_item_revamp_city_district">%1$s, &lt;b&gt;%2$s, %3$s&lt;/b&gt;</string>
+    <string name="tv_discom_item_revamp_city">%1$s, &lt;b&gt;%2$s,&lt;/b&gt; %3$s</string>
+    <string name="tv_discom_item_revamp_district">%1$s, %2s, &lt;b&gt;%3$s&lt;/b&gt;</string>
+    <string name="tv_discom_item_revamp_province">&lt;b&gt;%1$s,&lt;/b&gt; %2s, %3s</string>
+
     <string name="tv_error_field">Wajib diisi</string>
     <string name="tv_title_nama_penerima_bottomsheet">Informasi nama penerima</string>
     <string name="tv_desc_nama_penerima_bottomsheet">Nama penerima akan disimpan sebagai nama &lt;b&gt;akunmu.&lt;/b&gt; Kamu bisa ubah nanti melalui halaman &lt;b&gt;Akun Saya -> Pengaturan Akun.&lt;/b&gt;</string>
@@ -209,9 +194,14 @@
     <string name="btn_simpan">Simpan</string>
     <string name="helper_nama_penerima">Ini akan jadi nama akunmu, bisa diubah nanti.</string>
 
+    <string name="txt_kota_kecamatan">Kota &amp; Kecamatan</string>
+    <string name="txt_alamat_lengkap">Alamat Lengkap</string>
+
     <string name="field_label_alamat">label alamat</string>
     <string name="field_alamat">alamat lengkap</string>
     <string name="field_nama_penerima">nama penerima</string>
     <string name="field_nomor_hp">nomor hp</string>
-    <string name="field_catatan_kurir">catatan untuk kurir</string>
+
+    <string name="postal_code_field_error">Kode pos terlalu pendek, min. 5 karakter</string>
+    <string name="tnc_description">Dengan klik \"%1$s\", kamu menyetujui Syarat &amp; Ketentuan.</string>
 </resources>

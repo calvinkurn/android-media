@@ -110,16 +110,10 @@ class CatalogListItemViewModelTest {
         val item = mockk<CatalogsValueEntity>() {
             every { id } returns 1
         }
-        val data = mockk<RedeemCouponEntity> {
-            every { coupons?.get(0) } returns mockk {
-                every { code } returns "200"
-                every { cta } returns "cta"
-                every { title } returns "title"
-                every { description } returns "description"
-
-            }
-            every { redeemMessage } returns "claim success"
-        }
+        val dummyCouponData = ArrayList<CouponDetailEntity>()
+        val couponDetailEntity = CouponDetailEntity(code = "200",cta = "cta" ,title = "title" , description = "description")
+        dummyCouponData.add(couponDetailEntity)
+        val data = RedeemCouponEntity(coupons=dummyCouponData,redeemMessage = "claim success")
         coEvery { repository.startSaveCoupon(1) } returns mockk {
             every { hachikoRedeem } returns data
         }
@@ -143,8 +137,11 @@ class CatalogListItemViewModelTest {
             every { id } returns 1
         }
 
-        coEvery { repository.startSaveCoupon(1) } throws mockk<MessageErrorException> {
-            every { message } returns "title|message|300"
+        coEvery { repository.startSaveCoupon(1) } throws mockk<CatalogGqlError> {
+            every { messageErrorException } returns  mockk{
+                every { message } returns "message"
+            }
+            every { developerMessage } returns  "title|message|300"
         }
         viewModel.startSaveCouponLiveData.observeForever(observer)
         viewModel.startSaveCoupon(item)
@@ -153,9 +150,7 @@ class CatalogListItemViewModelTest {
 
         val result = (viewModel.startSaveCouponLiveData.value as ValidationError<*, *>).data as ValidateMessageDialog
         assert(result.desc == "message")
-        assert(result.item == item)
         assert(result.messageCode == 300)
-        assert(result.title == "title")
     }
 
     @Test

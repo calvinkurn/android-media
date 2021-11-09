@@ -26,7 +26,7 @@ class TagListViewComponent(
     private val adapter = TagRecommendationListAdapter(this)
 
     init {
-        val layoutManager = FlexboxLayoutManager(rvTagsRecommendation.context);
+        val layoutManager = FlexboxLayoutManager(rvTagsRecommendation.context)
         layoutManager.flexDirection = FlexDirection.ROW
         layoutManager.justifyContent = JustifyContent.FLEX_START
         rvTagsRecommendation.layoutManager = layoutManager

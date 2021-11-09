@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -131,7 +132,7 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
             else {
                 activity?.finish()
             }
-        }else if (requestCode == REQUEST_SECURITY_QUESTION
+        }else if (requestCode == LoginConstants.Request.REQUEST_SECURITY_QUESTION
                 && resultCode == Activity.RESULT_OK
                 && data != null) {
             data.extras?.let {

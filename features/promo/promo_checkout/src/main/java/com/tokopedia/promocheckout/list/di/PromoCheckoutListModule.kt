@@ -4,6 +4,7 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
@@ -181,11 +182,13 @@ class PromoCheckoutListModule {
                                      chuckerInterceptor: ChuckerInterceptor,
                                      okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
         val builder = OkHttpClient.Builder()
+        if(GlobalConfig.isAllowDebuggingTools()){
+            builder.addInterceptor(chuckerInterceptor)
+                    .addInterceptor(httpLoggingInterceptor)
+        }
         return builder
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(chuckerInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)

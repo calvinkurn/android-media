@@ -36,4 +36,33 @@ class NotifcenterOnlyAbTest : InboxNotifcenterTest() {
         InboxAssertion.assertTotalSwitchRoleCounter(expectedTotalSellerNotifCounter.toString())
     }
 
+    @Test
+    fun should_show_title_as_Notifikasi_when_showBottomNav_is_false_and_user_has_no_shop() {
+        // Given
+        val expectedTitle = "Notifikasi"
+        inboxDep.apply {
+            userSession.fakeHasShop = false
+        }
+        startInboxActivity {
+            setShowBottomNav(it, false)
+        }
+
+        // Then
+        InboxAssertion.assertInboxTitle(expectedTitle)
+    }
+
+    @Test
+    fun should_show_title_as_Inbox_when_showBottomNav_is_true_and_user_has_no_shop() {
+        // Given
+        val expectedTitle = "Inbox"
+        inboxDep.apply {
+            userSession.fakeHasShop = false
+        }
+        startInboxActivity {
+            setShowBottomNav(it, true)
+        }
+
+        // Then
+        InboxAssertion.assertInboxTitle(expectedTitle)
+    }
 }

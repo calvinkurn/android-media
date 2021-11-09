@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.databinding.FragmentHotelChangeSearchBinding
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.CHECK_IN_DATE
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.CHECK_OUT_DATE
@@ -37,7 +38,7 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
-import kotlinx.android.synthetic.main.fragment_hotel_change_search.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 
 /**
@@ -47,9 +48,12 @@ import java.util.*
 class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
 
     private val trackingUtil: TrackingHotelUtil by lazy { TrackingHotelUtil() }
+    private var binding by autoClearedNullable<FragmentHotelChangeSearchBinding>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_change_search, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHotelChangeSearchBinding.inflate(inflater,container,false)
+        return binding?.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -144,8 +148,22 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
 
     override fun renderView() {
         super.renderView()
-        tv_hotel_homepage_destination.setText(globalSearchModel.destinationName)
-        tv_hotel_homepage_destination.setOnClickListener { onDestinationChangeClicked() }
+        binding?.tvHotelHomepageDestination?.let {
+            it.setText(globalSearchModel.destinationName)
+            it.setOnClickListener { onDestinationChangeClicked() }
+        }
+        binding?.layoutGlobalSearch?.let {
+            it.tvHotelHomepageCheckinDate.setText(data.checkInDateFmt)
+            it.tvHotelHomepageCheckoutDate.setText(data.checkOutDateFmt)
+            it.tvHotelHomepageNightCount.text = data.nightCount.toString()
+            it.tvHotelHomepageGuestInfo.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
+                data.numOfRooms, data.numOfGuests))
+
+            it.tvHotelHomepageCheckinDate.setOnClickListener { configAndRenderCheckInDate() }
+            it.tvHotelHomepageCheckoutDate.setOnClickListener { configAndRenderCheckOutDate() }
+            it.tvHotelHomepageGuestInfo.setOnClickListener { onGuestInfoClicked() }
+            it.btnHotelHomepageSearch.setOnClickListener { onCheckAvailabilityClicked() }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -158,7 +176,7 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
                                 data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
                     }
                     data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) -> {
-                        onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
+                        onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME) ?: "",
                                 searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)
                                         ?: "",
                                 searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE)

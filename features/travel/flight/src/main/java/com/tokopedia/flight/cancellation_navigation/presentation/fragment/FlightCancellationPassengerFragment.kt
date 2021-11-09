@@ -15,15 +15,19 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent
 import com.tokopedia.flight.cancellation.presentation.adapter.FlightCancellationAdapterTypeFactory
 import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightCancellationViewHolder
+import com.tokopedia.flight.cancellation.presentation.fragment.FlightCancellationPassengerFragment
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationReasonAndAttachmentModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellationPassengerViewModel
 import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReasonFragment.Companion.EXTRA_CANCELLATION_MODEL
+import com.tokopedia.flight.databinding.FragmentFlightCancellationBinding
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_flight_cancellation.*
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -42,6 +46,8 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
     private var flightCancellationWrapperModel: FlightCancellationWrapperModel = FlightCancellationWrapperModel()
     private lateinit var passengerRelationMap: Map<String, FlightCancellationPassengerModel>
 
+    private var binding by autoClearedNullable<FragmentFlightCancellationBinding>()
+
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,15 +65,17 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
-            inflater.inflate(R.layout.fragment_flight_cancellation, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentFlightCancellationBinding.inflate(inflater, container, false)
+        return binding?.root as View
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initVariable()
 
         super.onViewCreated(view, savedInstanceState)
 
-        button_submit.setOnClickListener {
+        binding?.buttonSubmit?.setOnClickListener {
             onNextButtonClicked()
         }
     }
@@ -76,15 +84,22 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         super.onActivityCreated(savedInstanceState)
 
         flightCancellationPassengerViewModel.cancellationPassengerList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it.isNotEmpty()) {
-                renderCancellationList(it)
-                setupNextButton()
-            } else {
-                activity?.let { mActivity ->
-                    val intent = Intent()
-                    intent.putExtra(EXTRA_IS_CANCEL_ERROR, true)
-                    mActivity.setResult(Activity.RESULT_CANCELED, intent)
-                    mActivity.finish()
+            when (it) {
+                is Success -> {
+                    if (it.data.isNotEmpty()) {
+                        renderCancellationList(it.data)
+                        setupNextButton()
+                    } else {
+                        activity?.let { mActivity ->
+                            val intent = Intent()
+                            intent.putExtra(FlightCancellationPassengerFragment.EXTRA_IS_CANCEL_ERROR, true)
+                            mActivity.setResult(Activity.RESULT_CANCELED, intent)
+                            mActivity.finish()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showGetListError(it.throwable)
                 }
             }
         })
@@ -173,9 +188,9 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         }
 
         if (cancellationModelList.isNotEmpty()) {
-            btn_container.visibility = View.VISIBLE
+            binding?.btnContainer?.visibility = View.VISIBLE
         } else {
-            btn_container.visibility = View.GONE
+            binding?.btnContainer?.visibility = View.GONE
         }
     }
 
@@ -192,7 +207,7 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
     }
 
     private fun hideFullLoading() {
-        btn_container.visibility = View.VISIBLE
+        binding?.btnContainer?.visibility = View.VISIBLE
     }
 
     private fun setupNextButton() {
@@ -204,11 +219,11 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
     }
 
     private fun enableNextButton() {
-        button_submit.isEnabled = true
+        binding?.buttonSubmit?.isEnabled = true
     }
 
     private fun disableNextButton() {
-        button_submit.isEnabled = false
+        binding?.buttonSubmit?.isEnabled = false
     }
 
     private fun onNextButtonClicked() {

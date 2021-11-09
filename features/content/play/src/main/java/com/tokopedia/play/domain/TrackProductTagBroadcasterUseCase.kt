@@ -1,6 +1,7 @@
 package com.tokopedia.play.domain
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -15,22 +16,13 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 07/01/21.
  */
+@GqlQuery(TrackProductTagBroadcasterUseCase.QUERY_NAME, TrackProductTagBroadcasterUseCase.QUERY)
 class TrackProductTagBroadcasterUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val dispatcher: CoroutineDispatchers,
 ): GraphqlUseCase<Boolean>(graphqlRepository) {
 
     var params: Map<String, Any> = emptyMap()
-
-    private val query = """
-        mutation trackProductTagBroadcaster(${'$'}channelId: String!, ${'$'}productIds: [String]){
-          broadcasterReportTrackViewer(
-            channelID: ${'$'}channelId,
-            productIDs: ${'$'}productIds) {
-            success
-          }
-        }
-    """.trimIndent()
 
     override suspend fun executeOnBackground(): Boolean {
         var count = 0
@@ -47,8 +39,8 @@ class TrackProductTagBroadcasterUseCase @Inject constructor(
     }
 
     private suspend fun getResponse(): Boolean = withContext(dispatcher.io) {
-        val gqlRequest = GraphqlRequest(query, ProductTracking.Response::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(
+        val gqlRequest = GraphqlRequest(TrackProductTagBroadcasterUseCaseQuery.GQL_QUERY, ProductTracking.Response::class.java, params)
+        val gqlResponse = graphqlRepository.response(
                 listOf(gqlRequest),
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         )
@@ -71,6 +63,17 @@ class TrackProductTagBroadcasterUseCase @Inject constructor(
 
         private const val PARAMS_CHANNEL_ID = "channelId"
         private const val PARAMS_PRODUCT_ID = "productIds"
+
+        const val QUERY_NAME = "TrackProductTagBroadcasterUseCaseQuery"
+        const val QUERY = """
+            mutation trackProductTagBroadcaster(${'$'}channelId: String!, ${'$'}productIds: [String]){
+              broadcasterReportTrackViewer(
+                channelID: ${'$'}channelId,
+                productIDs: ${'$'}productIds) {
+                success
+              }
+            }
+        """
 
         fun createParams(
                 channelId: String,

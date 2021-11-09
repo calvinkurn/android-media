@@ -12,7 +12,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.ArgumentMatchers.*
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyString
 
 class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
@@ -96,7 +97,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when submitReputation should execute expected usecase`() {
-        val reputationId = anyLong()
+        val reputationId = anyString()
         val reputationScore = anyInt()
         val expectedResponse = InboxReviewInsertReputationResponseWrapper(InboxReviewInsertReputation(success = 1))
 
@@ -110,7 +111,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when submitReputation fail due to backend should return expected error`() {
-        val reputationId = anyLong()
+        val reputationId = anyString()
         val reputationScore = anyInt()
         val expectedResponse = InboxReviewInsertReputationResponseWrapper(InboxReviewInsertReputation(success = 0))
 
@@ -124,7 +125,7 @@ class ReviewDetailViewModelTest : ReviewDetailViewModelTestFixture() {
 
     @Test
     fun `when submitReputation fails due to network should execute expected usecase and throw expected throwable`() {
-        val reputationId = anyLong()
+        val reputationId = anyString()
         val reputationScore = anyInt()
         val expectedResponse = Throwable()
 

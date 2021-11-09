@@ -15,6 +15,13 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+
+android {
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.commonCategory)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
@@ -54,9 +61,18 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.utils)
 
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.robolectric
 }
 
 project.ext {

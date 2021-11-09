@@ -72,11 +72,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.features.promotionsTarget)
-
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
 
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 

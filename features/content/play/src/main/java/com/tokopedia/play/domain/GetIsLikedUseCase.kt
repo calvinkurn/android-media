@@ -1,5 +1,6 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -11,7 +12,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-03.
  */
-
+@GqlQuery(GetIsLikeUseCase.QUERY_NAME, GetIsLikeUseCase.QUERY)
 class GetIsLikeUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<Boolean>(graphqlRepository) {
@@ -19,9 +20,9 @@ class GetIsLikeUseCase @Inject constructor(
     var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): Boolean {
-        val gqlRequest = GraphqlRequest(query, IsLikedContent.Response::class.java, params)
+        val gqlRequest = GraphqlRequest(GetIsLikeUseCaseQuery.GQL_QUERY, IsLikedContent.Response::class.java, params)
 
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val error = gqlResponse.getError(IsLikedContent.Response::class.java)
         if (error != null) return false
@@ -42,26 +43,19 @@ class GetIsLikeUseCase @Inject constructor(
 
         private const val CONTENT_ID = "contentID"
         private const val CONTENT_TYPE = "contentType"
-
-        private val query = getQuery()
-
-        private fun getQuery() : String {
-            val contentId = "\$contentID"
-            val contentType = "\$contentType"
-
-            return """
-               query GetIsLiked($contentId: Int, $contentType: Int) {
-                    feedGetIsLikePost(contentID: $contentId, contentType: $contentType) {
-                        error
-                        data {
-                            isLike
-                        }
+        const val QUERY_NAME = "GetIsLikeUseCaseQuery"
+        const val QUERY = """
+           query GetIsLiked(${'$'}contentID: Int, ${'$'}contentType: Int) {
+                feedGetIsLikePost(contentID: ${'$'}contentID, contentType: ${'$'}contentType) {
+                    error
+                    data {
+                        isLike
                     }
                 }
-            """.trimIndent()
-        }
+            }
+        """
 
-        fun createParam(contentId: Int, contentType: Int): HashMap<String, Any> {
+        fun createParam(contentId: Long, contentType: Int): HashMap<String, Any> {
             return hashMapOf(
                     CONTENT_ID to contentId,
                     CONTENT_TYPE to contentType

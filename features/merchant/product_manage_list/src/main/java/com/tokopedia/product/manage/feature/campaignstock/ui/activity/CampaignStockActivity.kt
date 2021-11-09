@@ -3,7 +3,6 @@ package com.tokopedia.product.manage.feature.campaignstock.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,15 +20,18 @@ class CampaignStockActivity : BaseSimpleActivity() {
         @JvmStatic
         fun createIntent(context: Context,
                          shopId: String,
-                         productId: Array<String>): Intent {
+                         productId: Array<String>,
+                         isBundling: Boolean = false): Intent {
             return Intent(context, CampaignStockActivity::class.java).apply {
                 putExtra(SHOP_ID, shopId)
                 putExtra(PRODUCT_ID, productId)
+                putExtra(IS_BUNDLING, isBundling)
             }
         }
 
         const val SHOP_ID = "extra_shop_id"
         const val PRODUCT_ID = "extra_product_id"
+        const val IS_BUNDLING = "extra_is_bundling"
 
         private const val PRODUCT_ID_SEGMENT_INDEX = 1
         private const val SHOP_ID_SEGMENT_INDEX = 2
@@ -57,7 +59,7 @@ class CampaignStockActivity : BaseSimpleActivity() {
     private fun setupStatusBarTransparent() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.transparent))
+                setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent))
             } catch (ex: Resources.NotFoundException) {
                 Timber.e(ex)
             }

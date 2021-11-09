@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -63,6 +64,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_LENGTH_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PRICE_RECOMMENDATION_BANNER_URL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
@@ -131,6 +133,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         AddEditProductPerformanceMonitoringListener {
 
     companion object {
+        const val AMOUNT_CATEGORY_RECOM_DEFAULT = 3
         private fun getDurationUnit(type: Int) =
                 when (type) {
                     UNIT_DAY -> com.tokopedia.product.addedit.R.string.label_day
@@ -539,6 +542,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productPriceEditIcon?.hide()
         }
 
+        // Set max length to 9 digits price
+        productPriceField?.let {
+            it.textFieldInput?.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(MAX_LENGTH_PRICE))
+        }
+
         productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
 
             override fun afterTextChanged(p0: Editable?) {}
@@ -683,10 +691,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitLoadingIndicator?.hide()
         }
 
-        // Setup default message for stock if shop admin or owner
-        viewModel.setupMultiLocationShopValues()
-        productStockField?.setMessage(viewModel.productStockMessage)
-
+        setupDefaultFieldMessage()
         setupSpecificationField()
         setupProductPriceRecommendationField()
         enableProductNameField()
@@ -1340,7 +1345,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun subscribeToProductPriceInputStatus() {
         viewModel.isProductPriceInputError.observe(viewLifecycleOwner, Observer {
             productPriceField?.setError(it)
-            productPriceField?.setMessage(viewModel.productPriceMessage)
+            productPriceField?.setHtmlMessage(viewModel.productPriceMessage)
         })
     }
 
@@ -1584,6 +1589,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 
+    private fun setupDefaultFieldMessage() {
+        // Setup default message for stock if shop admin or owner
+        viewModel.setupMultiLocationShopValues()
+        productPriceField?.setHtmlMessage(viewModel.productPriceMessage)
+        productStockField?.setMessage(viewModel.productStockMessage)
+    }
+
     private fun setupSpecificationField() {
         // get annotation category, if not already obtained from the server (specifications == null)
         val specifications = viewModel.productInputModel.detailInputModel.specifications
@@ -1613,6 +1625,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setOnSuggestedPriceSelected { suggestedPrice ->
                 productPriceField.setText(suggestedPrice)
                 if (viewModel.isAdding) {
+                    ProductAddMainTracking.clickPriceRecommendation()
                     displaySuggestedPriceSelected()
                 }
             }
@@ -1910,7 +1923,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         hasCategoryFromPicker = false
         productCategoryLayout?.show()
         productCategoryRecListView?.show()
-        val items = ArrayList(result.data.take(3))
+        val items = ArrayList(result.data.take(AMOUNT_CATEGORY_RECOM_DEFAULT))
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
             selectFirstCategoryRecommendation(items)

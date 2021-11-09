@@ -8,7 +8,7 @@ public class Product {
 
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private Long productId;
     @SerializedName("product_name")
     @Expose
     private String productName;
@@ -22,11 +22,11 @@ public class Product {
     @Expose
     private int productPrice;
 
-    public int getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 

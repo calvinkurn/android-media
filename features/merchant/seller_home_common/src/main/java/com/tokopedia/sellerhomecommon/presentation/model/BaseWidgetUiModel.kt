@@ -14,6 +14,7 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     val title: String
     val subtitle: String
     val tooltip: TooltipUiModel?
+    val tag: String
     val appLink: String
     val dataKey: String
     val ctaText: String
@@ -31,19 +32,19 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
 
     fun needToRefreshData(other: BaseWidgetUiModel<T>): Boolean
 
-    fun shouldShowEmptyStateIfEmpty(): Boolean =
-            emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
-                    && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
+    fun shouldShowEmptyStateIfEmpty(): Boolean {
+        return emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
+                && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
+    }
 
-    fun isEmpty(): Boolean =
-            data == null || data?.shouldRemove() == true
+    fun isEmpty(): Boolean = data == null || data?.shouldRemove() == true
 
 }
 
 data class WidgetEmptyStateUiModel(
-        val imageUrl: String = "",
-        val title: String = "",
-        val description: String = "",
-        val ctaText: String = "",
-        val appLink: String = ""
+    val imageUrl: String = "",
+    val title: String = "",
+    val description: String = "",
+    val ctaText: String = "",
+    val appLink: String = ""
 )

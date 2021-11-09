@@ -3,12 +3,8 @@ package com.tokopedia.topupbills.telco.prepaid.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -43,8 +39,8 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val productAutoCheckout: LiveData<TelcoProduct>
         get() = _productAutoCheckout
 
-    private val _favNumberSelected = MutableLiveData<TopupBillsFavNumberItem>()
-    val favNumberSelected: LiveData<TopupBillsFavNumberItem>
+    private val _favNumberSelected = MutableLiveData<String>()
+    val favNumberSelected: LiveData<String>
         get() = _favNumberSelected
 
     private val _showTotalPrice = MutableLiveData<Boolean>()
@@ -83,8 +79,8 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _positionScrollItem.postValue(position)
     }
 
-    fun setFavNumberSelected(favNumber: TopupBillsFavNumberItem) {
-        _favNumberSelected.postValue(favNumber)
+    fun setFavNumberSelected(productId: String) {
+        _favNumberSelected.postValue(productId)
     }
 
     fun setVisibilityTotalPrice(show: Boolean) {
@@ -99,23 +95,25 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _selectedFilter.postValue(filter)
     }
 
-    // cache in 10 minutes
+    fun clearCatalogProductList() {
+        _productList.value = Success(emptyList())
+    }
+
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
-                              filterData: ArrayList<HashMap<String, Any>>?, autoSelectProductId: Int = 0) {
+                              filterData: ArrayList<HashMap<String, Any>>?, autoSelectProductId: Int = 0, clientNumber: String) {
         launchCatchError(block = {
             _loadingProductList.postValue(true)
             val mapParam = HashMap<String, Any>()
             mapParam[KEY_MENU_ID] = menuId
             mapParam[KEY_OPERATOR_ID] = operatorId
+            mapParam[KEY_CLIENT_NUMBER] = arrayListOf(clientNumber)
             if (filterData != null && filterData.size > 0) {
                 mapParam[KEY_FILTER_DATA] = filterData
             }
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<TelcoCatalogProductInputMultiTab>()
 
             _loadingProductList.postValue(false)
@@ -123,7 +121,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                 _productList.postValue(Fail(MessageErrorException()))
             } else {
                 _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
-                setFavNumberSelected(TopupBillsFavNumberItem(productId = autoSelectProductId.toString()))
+                setFavNumberSelected(autoSelectProductId.toString())
             }
         }) {
             _loadingProductList.postValue(false)
@@ -142,6 +140,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         const val KEY_MENU_ID = "menuID"
         const val KEY_OPERATOR_ID = "operatorID"
         const val KEY_FILTER_DATA = "filterData"
+        const val KEY_CLIENT_NUMBER = "clientNumber"
 
         const val EXP_TIME = 10
         const val DELAY_TIME: Long = 100

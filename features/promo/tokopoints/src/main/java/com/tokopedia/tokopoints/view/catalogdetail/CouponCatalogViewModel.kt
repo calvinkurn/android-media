@@ -32,8 +32,10 @@ class CouponCatalogViewModel @Inject constructor(private val repository: CouponC
     override fun fetchLatestStatus(catalogsIds: List<Int>) {
         launchCatchError(block = {
             val data = repository.fetchLatestStatus(catalogsIds)
-            if (data.catalogStatus != null) { //For detail page we only interested in one item
-                latestStatusLiveData.value = data.catalogStatus.catalogs[0]
+            data.catalogStatus?.let {
+                if (!it.catalogs.isNullOrEmpty()) {
+                    latestStatusLiveData.value = data.catalogStatus.catalogs?.get(0)
+                }
             }
         }) {}
     }

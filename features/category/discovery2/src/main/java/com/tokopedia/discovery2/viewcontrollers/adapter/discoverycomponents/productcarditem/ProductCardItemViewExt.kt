@@ -75,8 +75,8 @@ private fun Label.trySetCustomLabelType(labelGroupType: String) {
 @ColorRes
 private fun String?.toUnifyLabelColor(): Int {
     return when (this) {
-        TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
-        else -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
+        TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
     }
 
 }

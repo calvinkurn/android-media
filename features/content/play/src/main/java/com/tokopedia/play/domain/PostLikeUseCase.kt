@@ -1,5 +1,6 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -13,6 +14,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-05.
  */
+@GqlQuery(PostLikeUseCase.QUERY_NAME, PostLikeUseCase.QUERY)
 class PostLikeUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<Boolean>(graphqlRepository) {
@@ -20,8 +22,8 @@ class PostLikeUseCase @Inject constructor(
     var params = HashMap<String, Any>()
 
     override suspend fun executeOnBackground(): Boolean {
-        val gqlRequest = GraphqlRequest(query, LikeContent.Response::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlRequest = GraphqlRequest(PostLikeUseCaseQuery.GQL_QUERY, LikeContent.Response::class.java, params)
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val response = gqlResponse.getData<LikeContent.Response>(LikeContent.Response::class.java)
@@ -45,28 +47,19 @@ class PostLikeUseCase @Inject constructor(
 
         private const val PLAY_FEED_SUCCESS = 1
 
-        private val query = getQuery()
-
-        private fun getQuery() : String {
-            val postId = "\$idPost"
-            val action = "\$action"
-            val contentId = "\$contentId"
-            val contentType = "\$contentType"
-            val likeType = "\$likeType"
-
-            return """
-                mutation PostLike($postId: Int, $action: Int, $contentId: Int, $contentType: Int, $likeType: Int){
-                    do_like_kol_post(idPost: $postId, action:$action, contentId:$contentId, contentType: $contentType, likeType: $likeType) {
-                        error
-                        data {
-                            success
-                        }
+        const val QUERY_NAME = "PostLikeUseCaseQuery"
+        const val QUERY = """
+            mutation PostLike(${'$'}idPost: Int, ${'$'}action: Int, ${'$'}contentId: Int, ${'$'}contentType: Int, ${'$'}likeType: Int){
+                do_like_kol_post(idPost: ${'$'}idPost, action: ${'$'}action, contentId: ${'$'}contentId, contentType: ${'$'}contentType, likeType: ${'$'}likeType) {
+                    error
+                    data {
+                        success
                     }
                 }
-            """.trimIndent()
-        }
+            }
+        """
 
-        fun createParam(contentId: Int, contentType: Int, likeType: Int, action: Boolean): HashMap<String, Any> {
+        fun createParam(contentId: Long, contentType: Int, likeType: Int, action: Boolean): HashMap<String, Any> {
             return hashMapOf(
                     POST_ID to 0,
                     ACTION to if(action) 1 else 0,

@@ -1,5 +1,7 @@
 package com.tokopedia.track.builder.util
 
+import android.os.Bundle
+import android.os.Parcelable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.util.BaseTrackerConst.Value.FORMAT_2_ITEMS_UNDERSCORE
@@ -119,7 +121,10 @@ abstract class BaseTrackerConst {
             val isCarousel: Boolean? = null,
             val recommendationType: String = "",
             val shopId:String = "",
-            val pageName: String = "")
+            val shopName: String = "",
+            val shopType: String = "",
+            val pageName: String = ""
+    )
 
     object Ecommerce {
         const val KEY = "ecommerce"
@@ -152,10 +157,14 @@ abstract class BaseTrackerConst {
         private const val KEY_BRAND = "brand"
         private const val KEY_VARIANT = "variant"
         private const val KEY_CATEGORY = "category"
+        private const val KEY_CATEGORY_ID = "category_id"
         private const val KEY_POSITION = "position"
         private const val KEY_LIST = "list"
         private const val KEY_ATTRIBUTION = "attribution"
         private const val KEY_QUANTITY = "quantity"
+        private const val KEY_SHOP_ID = "shopId"
+        private const val KEY_SHOP_NAME = "shopName"
+        private const val KEY_SHOP_TYPE = "shopType"
         private const val KEY_DIMENSION_11 = "dimension11"
         private const val KEY_DIMENSION_40 = "dimension40"
         private const val KEY_DIMENSION_45 = "dimension45"
@@ -201,14 +210,28 @@ abstract class BaseTrackerConst {
             )
             )
         }
-        fun getEcommerceProductAddToCart(products: List<Product>, list: String): Map<String, Any> {
+
+        fun getEcommerceProductClickBundle(products: List<Product>, list: String, buildCustomList: ((Product) -> String)?): Bundle {
+            val bundle = Bundle()
+            bundle.putString(CURRENCY_CODE, IDR)
+            val bundleActionField = Bundle()
+            bundleActionField.putString(LIST, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list)
+
+            val bundleClick = Bundle()
+            bundleClick.putBundle(ACTION_FIELD, bundleActionField)
+            bundleClick.putParcelableArrayList(PRODUCTS, getProductsClick(products, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list, buildCustomList) as java.util.ArrayList<out Parcelable>)
+            bundle.putBundle(CLICK, bundleClick)
+            return bundle
+        }
+
+        fun getEcommerceProductAddToCart(products: List<Product>, list: String, buildCustomList: ((Product) -> String)?): Map<String, Any> {
             return DataLayer.mapOf(
                     CURRENCY_CODE, IDR,
                     ADD, DataLayer.mapOf(
                     ACTION_FIELD, DataLayer.mapOf(
                     LIST, setNewList(products.firstOrNull(), list)
             ),
-                    PRODUCTS, getProductsClick(products, list)
+                    PRODUCTS, getProductsClick(products, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list, buildCustomList)
             )
             )
         }
@@ -238,6 +261,12 @@ abstract class BaseTrackerConst {
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
+        private fun getProductsClickBundle(products: List<Product>, listClick: String, buildCustomList: ((Product) -> String)? = null): List<Any>{
+            val list = ArrayList<Bundle>()
+            products.forEach { list.add(createProductBundle(it, listClick, buildCustomList)) }
+            return DataLayer.listOf(*list.toTypedArray<Any>())
+        }
+
         private fun getProductsImpression(products: List<Product>, listImpression: String, buildCustomList: ((Product) -> String)? = null): List<Any>{
             val list = ArrayList<Map<String,Any>>()
             products.forEach { list.add(createProductMap(it, listImpression, buildCustomList)) }
@@ -264,6 +293,10 @@ abstract class BaseTrackerConst {
             map[KEY_VARIANT] = if(product.variant.isNotBlank()) product.variant else NONE
             map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
+            map[KEY_CATEGORY_ID] = if(product.categoryId.isNotBlank()) product.categoryId else NONE
+            map[KEY_SHOP_ID] = if(product.shopId.isNotBlank()) product.shopId else NONE
+            map[KEY_SHOP_NAME] = if(product.shopName.isNotBlank()) product.shopId else NONE
+            map[KEY_SHOP_TYPE] = if(product.shopType.isNotBlank()) product.shopType else NONE
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = checkBebasOngkir(product)
             map[KEY_DIMENSION_40] = buildCustomList?.invoke(product) ?: if(list.isEmpty()) setNewList(product, list) else list
@@ -278,6 +311,34 @@ abstract class BaseTrackerConst {
             if(product.cartId.isNotEmpty()) map[KEY_DIMENSION_82] = NONE
             if(product.quantity.isNotEmpty()) map[KEY_QUANTITY] = product.quantity
             return map
+        }
+
+        private fun createProductBundle(product: Product, list: String = "", buildCustomList: ((Product) -> String)? = null) : Bundle{
+            val bundle = Bundle()
+            bundle.putString(KEY_ID,product.id)
+            bundle.putString(KEY_NAME, product.name)
+            bundle.putString(KEY_BRAND, if(product.brand.isNotBlank()) product.brand else NONE)
+            bundle.putString(KEY_VARIANT, if(product.variant.isNotBlank()) product.variant else NONE)
+            bundle.putString(KEY_PRICE, product.productPrice)
+            bundle.putString(KEY_CATEGORY, if(product.category.isNotBlank()) product.category else NONE)
+            bundle.putString(KEY_CATEGORY_ID, if(product.categoryId.isNotBlank()) product.categoryId else NONE)
+            bundle.putString(KEY_SHOP_ID, if(product.shopId.isNotBlank()) product.shopId else NONE)
+            bundle.putString(KEY_SHOP_NAME, if(product.shopName.isNotBlank()) product.shopName else NONE)
+            bundle.putString(KEY_SHOP_TYPE, if(product.shopType.isNotBlank()) product.shopType else NONE)
+            bundle.putString(KEY_POSITION, product.productPosition)
+            bundle.putString(KEY_DIMENSION_83, checkBebasOngkir(product))
+            bundle.putString(KEY_DIMENSION_40, buildCustomList?.invoke(product) ?: if(list.isEmpty()) setNewList(product, list) else list)
+            if(product.clusterId != -1) bundle.putString(KEY_DIMENSION_11, product.clusterId.toString())
+            if (product.channelId.isNotEmpty()) bundle.putString(KEY_DIMENSION_84, product.channelId) else NONE
+            if (product.categoryId.isNotEmpty() || product.persoType.isNotEmpty()) bundle.putString(KEY_DIMENSION_96, String.format(FORMAT_2_ITEMS_UNDERSCORE, product.persoType, product.categoryId)) else NONE
+            if (list.isNotEmpty()) bundle.putString(KEY_LIST, if (list.isEmpty()) setNewList(product, list) else list)
+            if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_45, product.cartId)
+            if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_79, product.shopId)
+            if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_80, NONE)
+            if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_81, "")
+            if(product.cartId.isNotEmpty()) bundle.putString(KEY_DIMENSION_82, NONE)
+            if(product.quantity.isNotEmpty()) bundle.putString(KEY_QUANTITY, product.quantity)
+            return bundle
         }
 
         private fun checkBebasOngkir(product: Product): String{

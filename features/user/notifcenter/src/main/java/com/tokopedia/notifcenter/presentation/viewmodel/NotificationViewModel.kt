@@ -47,21 +47,21 @@ interface INotificationViewModel {
 }
 
 class NotificationViewModel @Inject constructor(
-        private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
-        private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase,
-        private val bumpReminderUseCase: NotifcenterSetReminderBumpUseCase,
-        private val deleteReminderUseCase: NotifcenterDeleteReminderBumpUseCase,
-        private val clearNotifUseCase: ClearNotifCounterUseCase,
-        private val markAsReadUseCase: MarkNotificationAsReadUseCase,
-        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-        private val removeWishListUseCase: RemoveWishListUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        private var addToCartUseCase: AddToCartUseCase,
-        private var notifOrderListUseCase: NotifOrderListUseCase,
-        private val dispatcher: CoroutineDispatchers
+    private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
+    private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase,
+    private val bumpReminderUseCase: NotifcenterSetReminderBumpUseCase,
+    private val deleteReminderUseCase: NotifcenterDeleteReminderBumpUseCase,
+    private val clearNotifUseCase: ClearNotifCounterUseCase,
+    private val markAsReadUseCase: MarkNotificationAsReadUseCase,
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val addWishListUseCase: AddWishListUseCase,
+    private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+    private val removeWishListUseCase: RemoveWishListUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    private var addToCartUseCase: AddToCartUseCase,
+    private var notifOrderListUseCase: NotifOrderListUseCase,
+    private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io), INotificationViewModel {
 
     var filter: Long = NotifcenterDetailUseCase.FILTER_NONE
@@ -112,19 +112,19 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun loadNotifOrderList(
-            @RoleType
-            role: Int?
+        @RoleType
+        role: Int?
     ) {
         if (role == null) return
         launchCatchError(dispatcher.io,
-                {
-                    notifOrderListUseCase.getOrderList(role).collect {
-                        _orderList.postValue(it)
-                    }
-                },
-                {
-                    _orderList.postValue(Resource.error(it, null))
+            {
+                notifOrderListUseCase.getOrderList(role).collect {
+                    _orderList.postValue(it)
                 }
+            },
+            {
+                _orderList.postValue(Resource.error(it, null))
+            }
         )
     }
 
@@ -132,158 +132,158 @@ class NotificationViewModel @Inject constructor(
      * Load notification on first page
      */
     fun loadFirstPageNotification(
-            @RoleType
-            role: Int?
+        @RoleType
+        role: Int?
     ) {
         if (role == null) return
         notifcenterDetailUseCase.getFirstPageNotification(filter, role,
-                {
-                    _mutateNotificationItems.value = Success(it)
-                    if (!hasFilter() && role == RoleType.BUYER) {
-                        loadTopAdsBannerData()
-                    }
-                },
-                {
-                    _mutateNotificationItems.value = Fail(it)
+            {
+                _mutateNotificationItems.value = Success(it)
+                if (!hasFilter() && role == RoleType.BUYER) {
+                    loadTopAdsBannerData()
                 }
+            },
+            {
+                _mutateNotificationItems.value = Fail(it)
+            }
         )
     }
 
     fun loadNotificationFilter(
-            @RoleType
-            role: Int?
+        @RoleType
+        role: Int?
     ) {
         if (role == null) return
         launchCatchError(dispatcher.io,
-                {
-                    notifcenterFilterUseCase.getFilter(role).collect {
-                        _filterList.postValue(it)
-                    }
-                },
-                {
-                    _filterList.postValue(Resource.error(it, null))
+            {
+                notifcenterFilterUseCase.getFilter(role).collect {
+                    _filterList.postValue(it)
                 }
+            },
+            {
+                _filterList.postValue(Resource.error(it, null))
+            }
         )
     }
 
 
     fun markNotificationAsRead(
-            @RoleType
-            role: Int?,
-            element: NotificationUiModel
+        @RoleType
+        role: Int?,
+        element: NotificationUiModel
     ) {
         if (role == null) return
         launchCatchError(dispatcher.io,
-                {
-                    markAsReadUseCase.markAsRead(role, element.notifId).collect { }
-                },
-                { }
+            {
+                markAsReadUseCase.markAsRead(role, element.notifId).collect { }
+            },
+            { }
         )
     }
 
     fun loadMoreEarlier(
-            @RoleType
-            role: Int?
+        @RoleType
+        role: Int?
     ) {
         if (role == null) return
         notifcenterDetailUseCase.getMoreEarlierNotifications(
-                filter, role,
-                {
-                    _mutateNotificationItems.value = Success(it)
-                },
-                {
-                    _mutateNotificationItems.value = Fail(it)
-                }
+            filter, role,
+            {
+                _mutateNotificationItems.value = Success(it)
+            },
+            {
+                _mutateNotificationItems.value = Fail(it)
+            }
         )
     }
 
     fun loadMoreNew(
-            @RoleType
-            role: Int?,
-            onSuccess: (NotificationDetailResponseModel) -> Unit,
-            onError: (Throwable) -> Unit
+        @RoleType
+        role: Int?,
+        onSuccess: (NotificationDetailResponseModel) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         if (role == null) return
         notifcenterDetailUseCase.getMoreNewNotifications(
-                filter, role, onSuccess, onError
+            filter, role, onSuccess, onError
         )
     }
 
     fun loadMoreEarlier(
-            @RoleType
-            role: Int?,
-            onSuccess: (NotificationDetailResponseModel) -> Unit,
-            onError: (Throwable) -> Unit
+        @RoleType
+        role: Int?,
+        onSuccess: (NotificationDetailResponseModel) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         if (role == null) return
         notifcenterDetailUseCase.getMoreEarlierNotifications(
-                filter, role, onSuccess, onError
+            filter, role, onSuccess, onError
         )
     }
 
     fun bumpReminder(product: ProductData, notif: NotificationUiModel) {
         launchCatchError(dispatcher.io,
-                {
-                    bumpReminderUseCase.bumpReminder(
-                            product.productId.toString(),
-                            notif.notifId
-                    ).collect {
-                        it.referer = product.productId
-                        _bumpReminder.postValue(it)
-                    }
-                },
-                {
-                    val error = Resource.error(it, null).apply {
-                        referer = product.productId
-                    }
-                    _bumpReminder.postValue(error)
+            {
+                bumpReminderUseCase.bumpReminder(
+                    product.productId.toString(),
+                    notif.notifId
+                ).collect {
+                    it.referer = product.productId
+                    _bumpReminder.postValue(it)
                 }
+            },
+            {
+                val error = Resource.error(it, null).apply {
+                    referer = product.productId
+                }
+                _bumpReminder.postValue(error)
+            }
         )
     }
 
     fun deleteReminder(product: ProductData, notification: NotificationUiModel) {
         launchCatchError(dispatcher.io,
-                {
-                    deleteReminderUseCase.deleteReminder(
-                            product.productId.toString(),
-                            notification.notifId
-                    ).collect {
-                        it.referer = product.productId
-                        _deleteReminder.postValue(it)
-                    }
-                },
-                {
-                    val error = Resource.error(it, null).apply {
-                        referer = product.productId
-                    }
-                    _deleteReminder.postValue(error)
+            {
+                deleteReminderUseCase.deleteReminder(
+                    product.productId.toString(),
+                    notification.notifId
+                ).collect {
+                    it.referer = product.productId
+                    _deleteReminder.postValue(it)
                 }
+            },
+            {
+                val error = Resource.error(it, null).apply {
+                    referer = product.productId
+                }
+                _deleteReminder.postValue(error)
+            }
         )
     }
 
     fun loadRecommendations(page: Int) {
         launchCatchError(dispatcher.io,
-                {
-                    val params = getRecommendationUseCase.getRecomParams(
-                            page,
-                            RECOM_WIDGET,
-                            RECOM_SOURCE_INBOX_PAGE,
-                            emptyList()
+            {
+                val params = getRecommendationUseCase.getRecomParams(
+                    page,
+                    RECOM_WIDGET,
+                    RECOM_SOURCE_INBOX_PAGE,
+                    emptyList()
+                )
+                val recommendationWidget = getRecommendationUseCase
+                    .createObservable(params)
+                    .toBlocking()
+                    .single()
+                    .getOrNull(0) ?: RecommendationWidget()
+                withContext(dispatcher.main) {
+                    _recommendations.value = getRecommendationVisitables(
+                        page, recommendationWidget
                     )
-                    val recommendationWidget = getRecommendationUseCase
-                        .createObservable(params)
-                        .toBlocking()
-                        .single()
-                        .getOrNull(0) ?: RecommendationWidget()
-                    withContext(dispatcher.main) {
-                        _recommendations.value = getRecommendationVisitables(
-                                page, recommendationWidget
-                        )
-                    }
-                },
-                {
-                    it.printStackTrace()
                 }
+            },
+            {
+                it.printStackTrace()
+            }
         )
     }
 
@@ -292,8 +292,8 @@ class NotificationViewModel @Inject constructor(
     }
 
     override fun addWishlist(
-            model: RecommendationItem,
-            callback: ((Boolean, Throwable?) -> Unit)
+        model: RecommendationItem,
+        callback: ((Boolean, Throwable?) -> Unit)
     ) {
         if (model.isTopAds) {
             addWishListTopAds(model, callback)
@@ -303,138 +303,138 @@ class NotificationViewModel @Inject constructor(
     }
 
     override fun removeWishList(
-            model: RecommendationItem,
-            callback: (((Boolean, Throwable?) -> Unit))
+        model: RecommendationItem,
+        callback: (((Boolean, Throwable?) -> Unit))
     ) {
         removeWishListUseCase.createObservable(
-                model.productId.toString(),
-                userSessionInterface.userId,
-                object : WishListActionListener {
-                    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-                    override fun onSuccessAddWishlist(productId: String?) {}
-                    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                        callback.invoke(false, Throwable(errorMessage))
-                    }
-
-                    override fun onSuccessRemoveWishlist(productId: String?) {
-                        callback.invoke(true, null)
-                    }
+            model.productId.toString(),
+            userSessionInterface.userId,
+            object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
+                override fun onSuccessAddWishlist(productId: String?) {}
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    callback.invoke(false, Throwable(errorMessage))
                 }
+
+                override fun onSuccessRemoveWishlist(productId: String?) {
+                    callback.invoke(true, null)
+                }
+            }
         )
     }
 
     fun clearNotifCounter(
-            @RoleType
-            role: Int?
+        @RoleType
+        role: Int?
     ) {
         if (role == null) return
         launchCatchError(dispatcher.io,
-                {
-                    clearNotifUseCase.clearNotifCounter(role).collect {
-                        _clearNotif.postValue(it)
-                    }
-                }, { }
+            {
+                clearNotifUseCase.clearNotifCounter(role).collect {
+                    _clearNotif.postValue(it)
+                }
+            }, { }
         )
     }
 
     private fun addWishListTopAds(
-            model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)
+        model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)
     ) {
         launchCatchError(dispatcher.io,
-                {
-                    val params = RequestParams.create()?.apply {
-                        putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
-                    }
-                    val response = topAdsWishlishedUseCase.createObservable(params)
-                            .toBlocking().single()
-                    if (response.data != null) {
-                        callback.invoke(true, null)
-                    }
-                },
-                {
-                    callback.invoke(false, it)
+            {
+                val params = RequestParams.create()?.apply {
+                    putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
                 }
+                val response = topAdsWishlishedUseCase.createObservable(params)
+                    .toBlocking().single()
+                if (response.data != null) {
+                    callback.invoke(true, null)
+                }
+            },
+            {
+                callback.invoke(false, it)
+            }
         )
     }
 
     private fun addWishListNormal(
-            model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)
+        model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)
     ) {
         addWishListUseCase.createObservable(
-                model.productId.toString(),
-                userSessionInterface.userId,
-                object : WishListActionListener {
-                    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                        callback.invoke(false, Throwable(errorMessage))
-                    }
-
-                    override fun onSuccessAddWishlist(productId: String?) {
-                        callback.invoke(true, null)
-                    }
-
-                    override fun onErrorRemoveWishlist(
-                            errorMessage: String?, productId: String?
-                    ) {
-                    }
-
-                    override fun onSuccessRemoveWishlist(productId: String?) {}
+            model.productId.toString(),
+            userSessionInterface.userId,
+            object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    callback.invoke(false, Throwable(errorMessage))
                 }
+
+                override fun onSuccessAddWishlist(productId: String?) {
+                    callback.invoke(true, null)
+                }
+
+                override fun onErrorRemoveWishlist(
+                    errorMessage: String?, productId: String?
+                ) {
+                }
+
+                override fun onSuccessRemoveWishlist(productId: String?) {}
+            }
         )
     }
 
     private fun loadTopAdsBannerData() {
         launchCatchError(
-                dispatcher.io,
-                {
-                    val results = topAdsImageViewUseCase.getImageData(
-                            topAdsImageViewUseCase.getQueryMap(
-                                    "",
-                                    TOP_ADS_SOURCE,
-                                    "",
-                                    TOP_ADS_COUNT,
-                                    TOP_ADS_DIMEN_ID,
-                                    ""
-                            )
+            dispatcher.io,
+            {
+                val results = topAdsImageViewUseCase.getImageData(
+                    topAdsImageViewUseCase.getQueryMap(
+                        "",
+                        TOP_ADS_SOURCE,
+                        "",
+                        TOP_ADS_COUNT,
+                        TOP_ADS_DIMEN_ID,
+                        ""
                     )
-                    if (results.isNotEmpty()) {
-                        _topAdsBanner.postValue(NotificationTopAdsBannerUiModel(results.first()))
-                    }
-                    loadRecommendations(1)
-                },
-                {
-                    it.printStackTrace()
-                    loadRecommendations(1)
+                )
+                if (results.isNotEmpty()) {
+                    _topAdsBanner.postValue(NotificationTopAdsBannerUiModel(results.first()))
                 }
+                loadRecommendations(1)
+            },
+            {
+                it.printStackTrace()
+                loadRecommendations(1)
+            }
         )
 
     }
 
     fun addProductToCart(
-            requestParams: RequestParams,
-            onSuccessAddToCart: (data: DataModel) -> Unit,
-            onError: (msg: String) -> Unit
+        requestParams: RequestParams,
+        onSuccessAddToCart: (data: DataModel) -> Unit,
+        onError: (msg: String) -> Unit
     ) {
         launchCatchError(
-                dispatcher.io,
-                block = {
-                    val atcResponse = addToCartUseCase.createObservable(requestParams)
-                            .toBlocking()
-                            .single().data
-                    withContext(dispatcher.main) {
-                        if (atcResponse.success == 1) {
-                            onSuccessAddToCart(atcResponse)
-                        } else {
-                            onError(atcResponse.message.getOrNull(0) ?: "")
-                        }
-                    }
-                },
-                onError = {
-                    withContext(dispatcher.main) {
-                        it.message?.let { errorMsg ->
-                            onError(errorMsg)
-                        }
+            dispatcher.io,
+            block = {
+                val atcResponse = addToCartUseCase.createObservable(requestParams)
+                    .toBlocking()
+                    .single().data
+                withContext(dispatcher.main) {
+                    if (atcResponse.success == 1) {
+                        onSuccessAddToCart(atcResponse)
+                    } else {
+                        onError(atcResponse.message.getOrNull(0) ?: "")
                     }
                 }
+            },
+            onError = {
+                withContext(dispatcher.main) {
+                    it.message?.let { errorMsg ->
+                        onError(errorMsg)
+                    }
+                }
+            }
         )
     }
 
@@ -460,8 +460,8 @@ class NotificationViewModel @Inject constructor(
         * getRecommendationVisitables also used in the unit test class
         * */
         fun getRecommendationVisitables(
-                page: Int,
-                recommendationWidget: RecommendationWidget
+            page: Int,
+            recommendationWidget: RecommendationWidget
         ): RecommendationDataModel {
             var items: List<Visitable<*>> = recommendationWidget.recommendationItemList.map {
                 RecommendationUiModel(it)

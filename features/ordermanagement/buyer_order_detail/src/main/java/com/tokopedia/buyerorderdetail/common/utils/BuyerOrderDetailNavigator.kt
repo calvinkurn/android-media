@@ -21,6 +21,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import java.net.URLDecoder
 
 class BuyerOrderDetailNavigator(
         private val activity: Activity,
@@ -31,28 +32,13 @@ class BuyerOrderDetailNavigator(
         private const val KEY_URL = "url"
         private const val TELEPHONY_URI = "tel:"
         private const val PREFIX_HTTP = "http"
+        private const val PREFIX_HTTPS = "https://"
         private const val INVOICE_REF_NUM = "invoice_ref_num"
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
     }
 
     private fun composeCallIntentData(phoneNumber: String): Uri {
         return Uri.parse("$TELEPHONY_URI$phoneNumber")
-    }
-
-    private fun createProductListPayload(productList: List<ProductListUiModel.ProductUiModel>): String {
-        return GsonSingleton.instance.toJson(JsonArray(productList.size).apply {
-            productList.forEach {
-                add(createProductPayload(it))
-            }
-        })
-    }
-
-    private fun createProductPayload(it: ProductListUiModel.ProductUiModel): JsonObject {
-        return JsonObject().apply {
-            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_TITLE, it.productName)
-            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_PRICE, it.priceText)
-            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_IMAGE_URL, it.productThumbnailUrl)
-        }
     }
 
     private fun applyTransition() {
@@ -78,8 +64,13 @@ class BuyerOrderDetailNavigator(
     }
 
     fun goToTrackShipmentPage(orderId: String, trackingUrl: String) {
+        val decodedUrl = if (trackingUrl.startsWith(PREFIX_HTTPS)) {
+            trackingUrl
+        } else {
+            URLDecoder.decode(trackingUrl, BuyerOrderDetailMiscConstant.ENCODING_UTF_8)
+        }
         val appLink = Uri.parse(ApplinkConst.ORDER_TRACKING).buildUpon()
-                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl)
+                .appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
                 .build()
                 .toString()
         val intent = RouteManager.getIntent(activity, appLink, orderId)
@@ -116,10 +107,9 @@ class BuyerOrderDetailNavigator(
     ) {
         if (buyerOrderDetailData is Success) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)
-            val payload: Map<String, Any> = mapOf(
+            val payload: Map<String, Any?> = mapOf(
                     BuyerRequestCancellationIntentParamKey.SHOP_NAME to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName,
                     BuyerRequestCancellationIntentParamKey.INVOICE to buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
-                    BuyerRequestCancellationIntentParamKey.JSON_LIST_PRODUCT to createProductListPayload(buyerOrderDetailData.data.productListUiModel.productList),
                     BuyerOrderDetailCommonIntentParamKey.ORDER_ID to buyerOrderDetailData.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
                     BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
                     BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,
@@ -139,9 +129,15 @@ class BuyerOrderDetailNavigator(
         val intent = RouteManager.getIntent(activity, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, buyerOrderDetailData.productListUiModel.productListHeaderUiModel.shopId)
         intent.putExtra(ApplinkConst.Chat.INVOICE_ID, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderId)
         intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice)
-        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productName.orEmpty())
+        val productName =
+            buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productName ?:
+            buyerOrderDetailData.productListUiModel.productBundlingList?.firstOrNull()?.bundleItemList?.firstOrNull()?.productName
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName.orEmpty())
         intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.purchaseDate)
-        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productThumbnailUrl.orEmpty())
+        val productThumbnail =
+            buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productThumbnailUrl ?:
+            buyerOrderDetailData.productListUiModel.productBundlingList?.firstOrNull()?.bundleItemList?.firstOrNull()?.productThumbnailUrl
+        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, productThumbnail.orEmpty())
         intent.putExtra(ApplinkConst.Chat.INVOICE_URL, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.url)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatus)
@@ -158,12 +154,15 @@ class BuyerOrderDetailNavigator(
     }
 
     fun openAppLink(appLink: String, shouldRefreshWhenBack: Boolean) {
-        if (appLink.startsWith(PREFIX_HTTP)) {
-            openWebView(appLink, shouldRefreshWhenBack)
+        val intent: Intent? = RouteManager.getIntentNoFallback(activity, appLink)
+        if (intent == null) {
+            if (appLink.startsWith(PREFIX_HTTP)) {
+                openWebView(appLink, shouldRefreshWhenBack)
+            }
         } else {
-            val intent: Intent = RouteManager.getIntent(activity, appLink)
-            val requestCode = if (shouldRefreshWhenBack) BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
-            else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+            val requestCode = if (shouldRefreshWhenBack) {
+                BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
+            } else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
             fragment.startActivityForResult(intent, requestCode)
             applyTransition()
         }

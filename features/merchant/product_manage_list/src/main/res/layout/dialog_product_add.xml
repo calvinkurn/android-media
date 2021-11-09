@@ -10,10 +10,10 @@
     <RelativeLayout
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_20"
+        android:padding="20dp"
         android:background="@drawable/bg_rounded_chat_input">
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_success_addproduct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,22 +22,20 @@
             android:gravity="center"
             android:text="@string/popup_label_static"
             android:textColor="@color/Unify_N700"
-            android:textStyle="bold"
-            app:fontSize="subHeadline" />
+            app:typographyType="heading_2"/>
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_static_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/txt_success_addproduct"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_20"
-            android:text="dijual!"
+            android:layout_marginBottom="20dp"
+            android:text="@string/popup_label_static_second"
             android:textColor="@color/Unify_N700"
-            android:textStyle="bold"
-            app:fontSize="subHeadline" />
+            app:typographyType="heading_2" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_static_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,38 +43,36 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:text="@string/popup_label_tips_trick"
-            app:fontSize="title" />
+            app:typographyType="body_1"/>
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_tips_trick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/txt_static_2"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/dp_25"
-            android:text="baru di sini."
-            app:fontSize="title" />
+            android:text="@string/popup_label_tips_trick_second"
+            app:typographyType="body_1" />
 
-        <Button
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/filterSubmitButton"
-            style="@style/Button.Submit.Green.Full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_tips_trick"
-            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginBottom="10dp"
             android:text="@string/courier_option" />
 
-        <Button
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_product_list"
-            style="@style/Button.Submit.White.Border.Full"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/filterSubmitButton"
-            android:text="@string/product_option" />
+            android:text="@string/product_option"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonType="alternate"/>
 
     </RelativeLayout>
-
-
 
 </LinearLayout>
 

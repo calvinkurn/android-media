@@ -6,10 +6,11 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.util.TobacoErrorException
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
-import com.tokopedia.usecase.RequestParams
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -40,7 +41,11 @@ class GetPdpLayoutUseCaseTest {
     public val thrown = ExpectedException.none()
 
     private val useCaseTest by lazy {
-        GetPdpLayoutUseCase(gqlUseCase)
+        GetPdpLayoutUseCase(gqlUseCase, "")
+    }
+
+    private val useCaseTestLayoutId by lazy {
+        GetPdpLayoutUseCase(gqlUseCase, "56")
     }
 
     @Before
@@ -100,6 +105,31 @@ class GetPdpLayoutUseCaseTest {
                 gqlUseCase.executeOnBackground()
             }
         }
+    }
+
+    @Test
+    fun `given layout id from dev option should match`() = runBlocking {
+        coEvery {
+            gqlUseCase.executeOnBackground()
+        } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
+
+        useCaseTestLayoutId.executeOnBackground()
+
+        val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
+        Assert.assertEquals(layoutId, "56")
+    }
+
+    @Test
+    fun `given layout id from dev and from param should use from param`() = runBlocking {
+        coEvery {
+            gqlUseCase.executeOnBackground()
+        } returns createMockGraphqlResponse(ERROR_TYPE.SUCCESS)
+
+        useCaseTestLayoutId.requestParams = GetPdpLayoutUseCase.createParams("", "", "", "", "122", UserLocationRequest(), "")
+        useCaseTestLayoutId.executeOnBackground()
+
+        val layoutId = useCaseTestLayoutId.requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
+        Assert.assertEquals(layoutId, "122")
     }
 
     private fun createMockGraphqlResponse(type: ERROR_TYPE): GraphqlResponse {

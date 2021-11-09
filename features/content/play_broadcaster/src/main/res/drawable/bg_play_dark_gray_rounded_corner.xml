@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/play_dms_summary_background"/>
-    <corners android:radius="@dimen/spacing_lvl2"/>
+    <solid android:color="@color/play_dms_N700_40"/>
+    <corners android:radius="@dimen/spacing_lvl3"/>
 </shape>

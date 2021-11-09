@@ -13,6 +13,7 @@ data class DescriptionWidgetUiModel (
         override val title: String,
         override val subtitle: String,
         override val tooltip: TooltipUiModel?,
+        override val tag: String,
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,

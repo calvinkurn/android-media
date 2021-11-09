@@ -26,20 +26,20 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant
-import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -54,23 +54,26 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    protected lateinit var otpData: OtpData
-    protected lateinit var adapter: VerificationMethodAdapter
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
+    private lateinit var otpData: OtpData
+    private lateinit var adapter: VerificationMethodAdapter
 
     protected var isMoreThanOneMethod: Boolean = true
+    private var clear: Boolean = false
+    private var done = false
+    private var isLoginRegisterFlow = false
 
     protected val viewmodel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
-    }
-
-    private val abTestPlatform by lazy {
-        RemoteConfigInstance.getInstance().abTestPlatform
     }
 
     override var viewBound = VerificationMethodViewBinding()
@@ -145,7 +148,10 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         val otpType = otpData.otpType.toString()
         if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
                 && otpData.userIdEnc.isNotEmpty()) {
-            viewmodel.getVerificationMethod2FA(otpType, otpData.accessToken, otpData.userIdEnc)
+            viewmodel.getVerificationMethod2FA(
+                    otpType = otpType,
+                    validateToken = otpData.accessToken,
+                    userIdEnc = otpData.userIdEnc)
         } else {
             viewmodel.getVerificationMethod(
                     otpType = otpType,
@@ -221,28 +227,14 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun setFooter(linkType: Int) {
         when (linkType) {
-            TYPE_CHANGE_PHONE_UPLOAD_KTP -> setAbTestFooter()
-            TYPE_PROFILE_SETTING -> onProfileSettingType()
+            TYPE_CHANGE_PHONE_UPLOAD_KTP -> onDefaultFooterType()
+            TYPE_PROFILE_SETTING -> onProfileSettingFooterType()
             else -> onTypeHideLink()
         }
-
     }
 
-    private fun setAbTestFooter() {
-        val abTestKeyInactivePhone1 = abTestPlatform.getString(AB_TEST_KEY_INACTIVE_PHONE_1, "")
-
-        if (abTestKeyInactivePhone1 == AB_TEST_KEY_INACTIVE_PHONE_1) {
-            onVariant1InactivePhone()
-        } else {
-            onInactivePhoneNumber(getString(R.string.my_phone_number_is_inactive))
-        }
-    }
-
-    private fun onVariant1InactivePhone() {
-        onInactivePhoneNumber(getString(R.string.cellphone_number_has_changed))
-    }
-
-    private fun onVariant2InactivePhone() {
+    private fun inactivePhoneFooterWithTicker() {
+        viewBound.phoneInactive?.hide()
         viewBound.phoneInactiveTicker?.visible()
         viewBound.phoneInactiveTicker?.setHtmlDescription(String.format(getString(R.string.change_inactive_phone_number_html), ""))
         viewBound.phoneInactiveTicker?.setDescriptionClickEvent(object : TickerCallback {
@@ -254,41 +246,24 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         })
     }
 
-    private fun onVariant3InactivePhone() {
-        val message = getString(R.string.change_inactive_phone_number)
-        val clickableMessage = getString(R.string.change_phone_number)
-        val spannable = SpannableString(message)
-        spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        onGoToInactivePhoneNumber()
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
-                    }
-                },
-                message.indexOf(clickableMessage),
-                message.indexOf(clickableMessage) + clickableMessage.length,
-                0)
-        viewBound.phoneInactive?.visible()
-        context?.let { ContextCompat.getColor(it, R.color.Unify_N700_68) }?.let {
-            viewBound.phoneInactive?.setTextColor(it)
+    private fun inactivePhoneFooter(message: String, clickableMessage: String, onClick: () -> Unit) {
+        context?.let {
+            val spannable = SpannableString(message).apply {
+                setSpan(clickableSpan { onClick.invoke() },
+                    message.indexOf(clickableMessage),
+                    message.indexOf(clickableMessage) + clickableMessage.length,
+                    0
+                )
+            }
+            viewBound.phoneInactive?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
+            viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
+            viewBound.phoneInactive?.visible()
         }
-        viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
-        viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
     private fun onTypeHideLink() {
         viewBound.phoneInactive?.hide()
-    }
-
-    private fun onInactivePhoneNumber(text: String) {
-        viewBound.phoneInactive?.visible()
-        viewBound.phoneInactive?.text = text
-        viewBound.phoneInactive?.setOnClickListener {
-            onGoToInactivePhoneNumber()
-        }
     }
 
     open fun onGoToInactivePhoneNumber() {
@@ -307,33 +282,28 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
-    private fun onProfileSettingType() {
-        val message = getString(R.string.my_phone_inactive_change_at_setting)
-        val spannable = SpannableString(message)
-        spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        activity?.let {
-                            val intent = RouteManager.getIntent(it, ApplinkConst.SETTING_PROFILE)
-                            startActivity(intent)
-                            it.finish()
-                        }
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
-                    }
-                },
-                message.indexOf(getString(R.string.setting)),
-                message.indexOf(getString(R.string.setting)) + getString(R.string.setting).length,
-                0)
-        viewBound.phoneInactive?.visible()
-        context?.let { ContextCompat.getColor(it, R.color.Unify_N700_68) }?.let {
-            viewBound.phoneInactive?.setTextColor(it)
+    private fun onDefaultFooterType() {
+        val message = getString(R.string.change_inactive_phone_number).orEmpty()
+        val clickableMessage = getString(R.string.otp_change_phone_number).orEmpty()
+        inactivePhoneFooter(message, clickableMessage) {
+            onGoToInactivePhoneNumber()
         }
-        viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
-        viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
+    }
 
+    private fun onProfileSettingFooterType() {
+        val message = getString(R.string.my_phone_inactive_change_at_setting).orEmpty()
+        val clickableMessage = getString(R.string.setting).orEmpty()
+        inactivePhoneFooter(message, clickableMessage) {
+            gotoSettingProfile()
+        }
+    }
+
+    private fun gotoSettingProfile() {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.SETTING_PROFILE)
+            startActivity(intent)
+            it.finish()
+        }
     }
 
     private fun loadTickerTrouble(otpModeListData: OtpModeListData) {
@@ -342,6 +312,25 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
             viewBound.ticker?.setHtmlDescription(otpModeListData.tickerTrouble)
         } else {
             viewBound.ticker?.hide()
+        }
+    }
+
+    private fun clickableSpan(callback: () -> Unit): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                callback.invoke()
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                context?.let {
+                    ds.isUnderlineText = false
+                    ds.color = MethodChecker.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    )
+                }
+            }
         }
     }
 
@@ -358,7 +347,6 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     companion object {
 
         private const val TITLE = "Verifikasi"
-        private const val AB_TEST_KEY_INACTIVE_PHONE_1 = "inactive_pn_11"
 
         private const val TYPE_HIDE_LINK = 0
         private const val TYPE_CHANGE_PHONE_UPLOAD_KTP = 1

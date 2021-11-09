@@ -36,6 +36,10 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
+
+    buildFeatures{
+        viewBinding true
+    }
 }
 
 buildscript {
@@ -83,12 +87,12 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.calendar
-    implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.sortFilter
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.carousel
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.utils)
 

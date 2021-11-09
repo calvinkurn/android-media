@@ -96,6 +96,7 @@ dependencies {
 //    implementation projectOrAar(rootProject.ext.features.topchat)
     implementation projectOrAar(rootProject.ext.features.liveness)
     implementation projectOrAar(rootProject.ext.features.updateinactivephone)
+    implementation projectOrAar(rootProject.ext.features.telephony_masking)
 
     implementation projectOrAar(rootProject.ext.features.sellerOnboarding)
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
@@ -109,10 +110,12 @@ dependencies {
 
 //    Merchant
     implementation projectOrAar(rootProject.ext.features.shopPage)
+    implementation projectOrAar(rootProject.ext.features.reviewShop)
     implementation projectOrAar(rootProject.ext.features.statistic)
     implementation projectOrAar(rootProject.ext.features.sellerMenu)
     implementation projectOrAar(rootProject.ext.features.sellerAction)
     implementation projectOrAar(rootProject.ext.features.snapshot)
+    implementation projectOrAar(rootProject.ext.features.atcVariant)
 
     // Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)

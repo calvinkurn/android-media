@@ -69,7 +69,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
                 }
 
                 is Fail -> {
-                    isErrorMutable.value = EventPDPErrorEntity(true, result.throwable.message)
+                    isErrorMutable.value = EventPDPErrorEntity(true, result.throwable)
                 }
             }
 
@@ -87,8 +87,8 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
 
     fun getWhiteListUser(userId: Int, email: String, pdpData: ProductDetailData){
         launchCatchError(block={
-            val userValidated = EventValidateUser(pdpData.id.toInt(),
-                    userId, email)
+            val userValidated = EventValidateUser(pdpData.id.toLong(),
+                    userId.toLong(), email)
             useCaseWhiteListValidation.setValidateUser(userValidated)
             val result = withContext(dispatcher) {
                 convertToValidateResponse(useCaseWhiteListValidation.executeOnBackground())
@@ -98,10 +98,6 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
             validateScannerMutable.value = false
         })
 
-    }
-
-    private fun convertToValidateResponse(typeRestResponseMap: Map<Type, RestResponse>): EventValidateResponse {
-        return typeRestResponseMap[EventValidateResponse::class.java]?.getData() as EventValidateResponse
     }
 
     fun getDataHighlight(eventPDPHighlightEntity: EventPDPHighlightEntity) {
@@ -183,7 +179,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
     private fun mapperHighlight(result: EventPDPContentCombined): EventPDPHighlightEntity {
         val list: MutableList<Highlight> = mutableListOf()
         val pdpData = result.eventProductDetailEntity.eventProductDetail.productDetailData
-        val facilities = result.eventProductDetailEntity.eventProductDetail.productDetailData.facilities.sortedBy { it.priority }
+        val facilities = result.eventProductDetailEntity.eventProductDetail.productDetailData.facilities?.sortedBy { it.priority }
         if (!facilities.isNullOrEmpty()) {
             for (i in facilities.indices) {
                 if (facilities[i].type == typeHighlight)
@@ -197,7 +193,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
 
     private fun mapperFacilities(result: EventPDPContentCombined): EventPDPFacilitiesEntity {
         val list: MutableList<Facilities> = mutableListOf()
-        val facilities = result.eventProductDetailEntity.eventProductDetail.productDetailData.facilities.sortedBy { it.priority }
+        val facilities = result.eventProductDetailEntity.eventProductDetail.productDetailData.facilities?.sortedBy { it.priority }
         if (!facilities.isNullOrEmpty()) {
             for (i in facilities.indices) {
                 if (facilities[i].type == typeFacilities)
@@ -267,6 +263,10 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
         const val SECTION_ABOUT = "Tentang Kegiatan Ini"
         const val SECTION_LOCATION = "Gimana cara ke sana?"
         const val SECTION_INFORMATION = "Informasi Penting"
+
+        private fun convertToValidateResponse(typeRestResponseMap: Map<Type, RestResponse>): EventValidateResponse {
+            return typeRestResponseMap[EventValidateResponse::class.java]?.getData() as EventValidateResponse
+        }
 
     }
 }

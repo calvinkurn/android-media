@@ -44,14 +44,16 @@ class CartTestInterceptor : BaseOccInterceptor() {
     }
 }
 
-const val GET_OCC_CART_QUERY = "get_occ_cart_page"
-const val UPDATE_CART_OCC_QUERY = "update_cart_occ"
+const val GET_OCC_CART_QUERY = "get_occ_multi"
+const val UPDATE_CART_OCC_QUERY = "update_cart_occ_multi"
 
 const val GET_OCC_CART_PAGE_CREDIT_CARD_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_revamp_response.json"
 const val GET_OCC_CART_PAGE_CREDIT_CARD_EXPIRED_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_expired_revamp_response.json"
 const val GET_OCC_CART_PAGE_MULTIPLE_CREDIT_CARD_DELETED_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_multiple_credit_card_deleted_revamp_response.json"
 const val GET_OCC_CART_PAGE_CREDIT_CARD_ERROR_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_error_revamp_response.json"
 const val GET_OCC_CART_PAGE_CREDIT_CARD_MIN_AMOUNT_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_min_amount_revamp_response.json"
+
+const val GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_afpb_response.json"
 
 const val GET_OCC_CART_PAGE_DEBIT_CARD_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_debit_card_revamp_response.json"
 
@@ -83,15 +85,21 @@ const val GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_WITH_PAYMENT_2_RESPONSE_PATH = "c
 const val GET_OCC_CART_PAGE_LAST_APPLY_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_last_apply_revamp_response.json"
 const val GET_OCC_CART_PAGE_LAST_APPLY_WITH_LOW_MAXIMUM_PAYMENT_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_last_apply_with_low_maximum_payment_revamp_response.json"
 
-const val GET_OCC_CART_PAGE_REMOVE_PROFILE_PRE_RESPONSE_PATH = "cart/get_occ_cart_page_remove_profile_pre_response.json"
-
 const val GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_RESPONSE_PATH = "cart/get_occ_cart_page_remove_profile_post_response.json"
-const val GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_WITH_TICKER_RESPONSE_PATH = "cart/get_occ_cart_page_remove_profile_post_with_ticker_response.json"
 
 const val GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_ADDRESS_RESPONSE_PATH = "cart/get_occ_cart_page_remove_profile_post_no_address_response.json"
 const val GET_OCC_CART_PAGE_REMOVE_PROFILE_POST_NO_SHIPMENT_RESPONSE_PATH = "cart/get_occ_cart_page_remove_profile_post_no_shipment_response.json"
 
 const val GET_OCC_CART_PAGE_SHOP_TYPE_PM_PRO_RESPONSE_PATH = "cart/get_occ_cart_page_shop_type_pm_pro_response.json"
+
+const val GET_OCC_CART_PAGE_MULTI_PRODUCT_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_response.json"
+const val GET_OCC_CART_PAGE_MULTI_PRODUCT_WHOLESALE_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_wholesale_response.json"
+const val GET_OCC_CART_PAGE_MULTI_PRODUCT_WITH_SOME_ERROR_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_with_some_error_response.json"
+const val GET_OCC_CART_PAGE_MULTI_PRODUCT_ALL_ERROR_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_all_error_response.json"
+const val GET_OCC_CART_PAGE_MULTI_PRODUCT_ORDER_ERROR_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_order_error_response.json"
+
+const val GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_tokonow_response.json"
+const val GET_OCC_CART_PAGE_MULTI_PRODUCT_TOKONOW_NEAR_OVERWEIGHT_RESPONSE_PATH = "cart/get_occ_cart_page_multi_product_tokonow_near_overweight_response.json"
 
 const val UPDATE_CART_OCC_SUCCESS_RESPONSE_PATH = "cart/update_cart_occ_success_response.json"
 const val UPDATE_CART_OCC_DIALOG_PROMPT_RESPONSE_PATH = "cart/update_cart_occ_dialog_prompt_response.json"

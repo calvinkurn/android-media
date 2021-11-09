@@ -16,13 +16,14 @@ import com.tokopedia.flight.cancellationdetail.presentation.adapter.*
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.viewholder.FlightOrderCancellationDetailJourneyViewHolder
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailPassengerModel
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
+import com.tokopedia.flight.databinding.FragmentFlightCancellationDetailBinding
 import com.tokopedia.flight.detail.view.adapter.FlightSimpleAdapter
 import com.tokopedia.flight.detail.view.model.SimpleModel
 import com.tokopedia.flight.orderdetail.data.OrderDetailCancellation
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
 import com.tokopedia.utils.date.DateUtil
-import kotlinx.android.synthetic.main.fragment_flight_cancellation_detail.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 
 /**
@@ -35,19 +36,25 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
 
     private var isPassengerInfoShowed = true
 
+    private var binding by autoClearedNullable<FragmentFlightCancellationDetailBinding>()
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(FlightOrderDetailComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_cancellation_detail, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentFlightCancellationDetailBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        renderView()
+        if(::cancellationDetail.isInitialized){
+            renderView()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,9 +102,9 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
     }
 
     private fun renderView() {
-        cancellation_status.requestFocus()
-        cancellation_status.text = cancellationDetail.cancellationDetail.statusStr
-        cancellation_date.text = DateUtil.formatDate(
+        binding?.cancellationStatus?.requestFocus()
+        binding?.cancellationStatus?.text = cancellationDetail.cancellationDetail.statusStr
+        binding?.cancellationDate?.text = DateUtil.formatDate(
                 DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 DateUtil.DEFAULT_VIEW_FORMAT,
                 cancellationDetail.cancellationDetail.createTime)
@@ -105,7 +112,7 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
         // journey detail
         val journeyTypeFactory: FlightOrderCancellationDetailJourneyTypeFactory = FlightOrderCancellationDetailJourneyAdapterJourneyTypeFactory(this, JOURNEY_TITLE_FONT_SIZE)
         val journeyAdapter = BaseListAdapter<FlightOrderDetailJourneyModel, FlightOrderCancellationDetailJourneyTypeFactory>(journeyTypeFactory)
-        recycler_view_flight.adapter = journeyAdapter
+        binding?.recyclerViewFlight?.adapter = journeyAdapter
 
         journeyAdapter.addElement(cancellationDetail.cancellationDetail.journeys)
         journeyAdapter.notifyDataSetChanged()
@@ -113,13 +120,13 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
         // passenger detail
         val passengerTypeFactory = FlightOrderCancellationDetailPassengerAdapterTypeFactory()
         val passengerAdapter = BaseListAdapter<FlightOrderCancellationDetailPassengerModel, FlightOrderCancellationDetailPassengerTypeFactory>(passengerTypeFactory)
-        recycler_view_data_passenger.adapter = passengerAdapter
+        binding?.recyclerViewDataPassenger?.adapter = passengerAdapter
 
         passengerAdapter.addElement(cancellationDetail.cancellationDetail.passengers)
         passengerAdapter.notifyDataSetChanged()
 
-        layout_expendable_passenger.setOnClickListener {
-            image_expendable_passenger.startAnimation(AnimationUtils.loadAnimation(context, R.anim.flight_rotate_reverse))
+        binding?.layoutExpendablePassenger?.setOnClickListener {
+            binding?.imageExpendablePassenger?.startAnimation(AnimationUtils.loadAnimation(context, R.anim.flight_rotate_reverse))
             togglePassengerInfo()
         }
 
@@ -136,31 +143,31 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
             if (cancellationDetail.cancellationDetail.refundDetail.topInfo.isNotEmpty()) {
                 val refundTopAdapter = FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL)
                 refundTopAdapter.addData(generateSimpleViewModel(cancellationDetail.cancellationDetail.refundDetail.topInfo))
-                rv_bottom_top_info.layoutManager = LinearLayoutManager(context)
-                rv_bottom_top_info.adapter = refundTopAdapter
+                binding?.rvBottomTopInfo?.layoutManager = LinearLayoutManager(context)
+                binding?.rvBottomTopInfo?.adapter = refundTopAdapter
             } else {
-                rv_bottom_top_info.visibility = View.GONE
-                bottom_first_separator.visibility = View.GONE
+                binding?.rvBottomTopInfo?.visibility = View.GONE
+                binding?.bottomFirstSeparator?.visibility = View.GONE
             }
 
             // middle info
             if (cancellationDetail.cancellationDetail.refundDetail.middleInfo.isNotEmpty()) {
                 val refundMiddleAdapter = FlightCancellationRefundDetailMiddleAdapter(cancellationDetail.cancellationDetail.refundDetail.middleInfo)
-                rv_bottom_middle_info.layoutManager = LinearLayoutManager(context)
-                rv_bottom_middle_info.adapter = refundMiddleAdapter
+                binding?.rvBottomMiddleInfo?.layoutManager = LinearLayoutManager(context)
+                binding?.rvBottomMiddleInfo?.adapter = refundMiddleAdapter
             } else {
-                rv_bottom_middle_info.visibility = View.GONE
-                bottom_second_separator.visibility = View.GONE
+                binding?.rvBottomMiddleInfo?.visibility = View.GONE
+                binding?.bottomSecondSeparator?.visibility = View.GONE
             }
 
             // bottom info
             if (cancellationDetail.cancellationDetail.refundDetail.bottomInfo.isNotEmpty()) {
                 val refundBottomAdapter = FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_RED)
                 refundBottomAdapter.addData(generateSimpleViewModel(cancellationDetail.cancellationDetail.refundDetail.bottomInfo))
-                rv_bottom_bottom_info.layoutManager = LinearLayoutManager(context)
-                rv_bottom_bottom_info.adapter = refundBottomAdapter
+                binding?.rvBottomBottomInfo?.layoutManager = LinearLayoutManager(context)
+                binding?.rvBottomBottomInfo?.adapter = refundBottomAdapter
             } else {
-                rv_bottom_bottom_info.visibility = View.GONE
+                binding?.rvBottomBottomInfo?.visibility = View.GONE
             }
 
             // notes
@@ -172,14 +179,14 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
                 refundNotesAdapter.setTitleOnly(true)
                 refundNotesAdapter.setTitleMaxLines(NOTES_MAX_LINES)
                 refundNotesAdapter.setViewModels(generateSimpleViewModel(cancellationDetail.cancellationDetail.refundDetail.notes))
-                rv_bottom_notes.layoutManager = LinearLayoutManager(context)
-                rv_bottom_notes.adapter = refundNotesAdapter
+                binding?.rvBottomNotes?.layoutManager = LinearLayoutManager(context)
+                binding?.rvBottomNotes?.adapter = refundNotesAdapter
             } else {
-                rv_bottom_notes.visibility = View.GONE
+                binding?.rvBottomNotes?.visibility = View.GONE
             }
 
         } else {
-            container_bottom_info.visibility = View.GONE
+            binding?.containerBottomInfo?.visibility = View.GONE
         }
     }
 
@@ -201,20 +208,21 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
 
     private fun hidePassengerInfo() {
         isPassengerInfoShowed = false
-        recycler_view_data_passenger.visibility = View.GONE
-        image_expendable_passenger.rotation = 180f
+        binding?.recyclerViewDataPassenger?.visibility = View.GONE
+        binding?.imageExpendablePassenger?.rotation = IMAGE_ROTATION
     }
 
     private fun showPassengerInfo() {
         isPassengerInfoShowed = true
-        recycler_view_data_passenger.visibility = View.VISIBLE
-        image_expendable_passenger.rotation = 0f
+        binding?.recyclerViewDataPassenger?.visibility = View.VISIBLE
+        binding?.imageExpendablePassenger?.rotation = 0f
     }
 
     companion object {
 
         private const val JOURNEY_TITLE_FONT_SIZE = 16F
         private const val NOTES_MAX_LINES = 5
+        private const val IMAGE_ROTATION = 180f
 
         fun createInstance(savedInstanceCacheManagerId: String): FlightOrderCancellationDetailFragment =
                 FlightOrderCancellationDetailFragment().also {

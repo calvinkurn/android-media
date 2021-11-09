@@ -26,6 +26,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.dynamicFeatures)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -54,6 +55,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.miscDependencies.workManager
     
     //TEST
     testImplementation rootProject.ext.testDependencies.mockk

@@ -63,9 +63,9 @@ class HeaderDateUiModel : Visitable<TopChatTypeFactory> {
     }
 
     companion object {
+        const val DATE_FORMAT = "d MMM yyyy"
         private const val RELATIVE_TODAY = "Hari ini"
         private const val RELATIVE_YESTERDAY = "Kemarin"
-        private const val DATE_FORMAT = "d MMM yyyy"
         private const val HEADER_DATE_FORMAT = "d MMMM, yyyy"
     }
 }

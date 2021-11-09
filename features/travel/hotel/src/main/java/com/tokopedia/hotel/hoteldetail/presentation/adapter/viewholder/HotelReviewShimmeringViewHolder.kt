@@ -1,16 +1,16 @@
 package com.tokopedia.hotel.hoteldetail.presentation.adapter.viewholder
 
 import androidx.annotation.LayoutRes
-import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.ItemHotelReviewShimmeringBinding
 
 /**
  * @author by jessica on 22/04/19
  */
 
-class HotelReviewShimmeringViewHolder(itemView: View) : AbstractViewHolder<LoadingModel>(itemView) {
+class HotelReviewShimmeringViewHolder(val binding: ItemHotelReviewShimmeringBinding) : AbstractViewHolder<LoadingModel>(binding.root) {
 
     override fun bind(element: LoadingModel) {}
 

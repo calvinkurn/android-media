@@ -16,18 +16,17 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.mock.AddEditProductEditingMockResponseConfig
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
+import com.tokopedia.product.addedit.utils.InstrumentedTestUtil
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performClick
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performDialogPrimaryClick
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performDialogSecondaryClick
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performPressBack
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performReplaceText
 import com.tokopedia.product.addedit.utils.InstrumentedTestUtil.performScrollAndClick
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.trackingoptimizer.constant.Constant
 import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Before
@@ -90,6 +89,7 @@ class AddEditProductEditingAnalyticTest {
 
     @After
     fun afterTest() {
+        InstrumentedTestUtil.deleteAllDraft()
         gtmLogDBSource.deleteAll().toBlocking().first()
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
     }
@@ -176,6 +176,7 @@ class AddEditProductEditingAnalyticTest {
         performScrollAndClick(R.id.tv_start_add_edit_product_variant)
         performPressBack()
         performDialogSecondaryClick()
+        Thread.sleep(500)
     }
 
     private fun testEditPromotion() {

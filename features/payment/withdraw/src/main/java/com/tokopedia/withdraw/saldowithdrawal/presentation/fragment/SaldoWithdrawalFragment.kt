@@ -322,9 +322,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
 
     private fun initializeViewPager() {
         arguments?.let {
-            saldoWithdrawalPagerAdapter = SaldoWithdrawalPagerAdapter(context!!, childFragmentManager)
-            saldoWithdrawalPagerAdapter.fragmentList.add(BuyerSaldoWithdrawalFragment.getInstance(it))
-            saldoWithdrawalPagerAdapter.fragmentList.add(SellerSaldoWithdrawalFragment.getInstance(it))
+            saldoWithdrawalPagerAdapter = SaldoWithdrawalPagerAdapter(context!!, childFragmentManager, it)
             viewPagerSaldoWithdrawal.adapter = saldoWithdrawalPagerAdapter
             tabSaldoWithdrawal.tabLayout.setupWithViewPager(viewPagerSaldoWithdrawal)
             if (buyerSaldoBalance == 0L) {
@@ -483,7 +481,7 @@ class SaldoWithdrawalFragment : BaseDaggerFragment(), WithdrawalJoinRPCallback, 
     private fun onVerificationCompleted(data: Intent) {
         if (data.hasExtra(ApplinkConstInternalGlobal.PARAM_UUID) ||
                 ::withdrawalRequest.isInitialized) {
-            val uuid: String = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID)
+            val uuid: String = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID) ?: ""
             submitWithdrawalRequest(withdrawalRequest, uuid)
         }
     }

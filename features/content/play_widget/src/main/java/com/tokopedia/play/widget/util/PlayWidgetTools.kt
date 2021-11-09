@@ -24,7 +24,8 @@ class PlayWidgetTools @Inject constructor(
         private val useCase: PlayWidgetUseCase,
         private val lazyReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
         private val lazyUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-        private val mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>
+        private val mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
+        private val connectionUtil: PlayWidgetConnectionUtil,
 ){
 
     private val reminderUseCase: PlayWidgetReminderUseCase
@@ -37,7 +38,7 @@ class PlayWidgetTools @Inject constructor(
             widgetType: PlayWidgetUseCase.WidgetType,
             coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidget {
         return withContext(coroutineContext) {
-            useCase.params = PlayWidgetUseCase.createParams(widgetType)
+            useCase.params = PlayWidgetUseCase.createParams(widgetType, connectionUtil.isEligibleForHeavyDataUsage())
             useCase.executeOnBackground()
         }
     }

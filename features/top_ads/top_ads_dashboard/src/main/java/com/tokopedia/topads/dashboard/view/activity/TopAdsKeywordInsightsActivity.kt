@@ -18,6 +18,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.KEY_
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_FROM_BID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_FROM_NEG
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_FROM_POS
+import com.tokopedia.topads.dashboard.data.model.ErrorsItem
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain

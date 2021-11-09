@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -22,7 +21,6 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
     @Test
     fun `Show ProductCountViewModel in Navigation Revamp`() {
         `Given Search Product API will return SearchProductModel`(searchProductCommonResponseJSON.jsonToObject())
-        `Given AB Test return navigation revamp`()
         setUp()
         `Given visitable list will be captured`()
         `When Load Data`()
@@ -33,12 +31,6 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
         every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
-    }
-
-    private fun `Given AB Test return navigation revamp`() {
-        every {
-            productListView.abTestRemoteConfig?.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-        }.answers { AbTestPlatform.NAVIGATION_VARIANT_REVAMP }
     }
 
     private fun `Given visitable list will be captured`() {

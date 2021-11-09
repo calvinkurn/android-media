@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -24,6 +25,7 @@ import com.tokopedia.flight.cancellation.presentation.activity.FlightCancellatio
 import com.tokopedia.flight.cancellation.presentation.fragment.FlightCancellationPassengerFragment
 import com.tokopedia.flight.cancellation_navigation.presentation.FlightCancellationActivity
 import com.tokopedia.flight.cancellationdetail.presentation.activity.FlightOrderCancellationListActivity
+import com.tokopedia.flight.databinding.FragmentFlightOrderDetailBinding
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailBrowserActivity
 import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity
@@ -38,13 +40,14 @@ import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDet
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_flight_order_detail.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -65,6 +68,8 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     private var isTravelInsurance: Boolean = false
     private var isZeroCancellation: Boolean = false
+
+    private var binding by autoClearedNullable<FragmentFlightOrderDetailBinding>()
 
     override fun getScreenName(): String = ""
 
@@ -90,8 +95,10 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             flightOrderDetailViewModel.fetchCrossSellData()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_flight_order_detail, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentFlightOrderDetailBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -112,11 +119,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     var message = ""
                     try {
                         val gson = Gson()
-                        val errorData = gson.fromJson<FlightOrderDetailErrorModel>(it.throwable.message, FlightOrderDetailErrorModel::class.java)
-                        title = errorData.title
-                        message = errorData.message
-                    } catch (t: Throwable) {
-                        message = getString(R.string.flight_error_pick_journey)
+                        val itemType = object : TypeToken<List<FlightOrderDetailErrorModel>>() {}.type
+                        val errorData = gson.fromJson<List<FlightOrderDetailErrorModel>>(it.throwable.message, itemType)
+                        title = errorData[0].title
+                        message = errorData[0].message
+                    } catch (error: Throwable) {
+                        message = ErrorHandler.getErrorMessage(requireContext(), error)
                     }
                     renderErrorView(title, message)
                 }
@@ -222,33 +230,33 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-        containerContentOrderDetail.visibility = View.GONE
-        containerLoaderOrderDetail.visibility = View.VISIBLE
-        containerFlightOrderError.visibility = View.GONE
+        binding?.containerContentOrderDetail?.visibility = View.GONE
+        binding?.containerLoaderOrderDetail?.visibility = View.VISIBLE
+        binding?.containerFlightOrderError?.visibility = View.GONE
     }
 
     private fun hideLoading() {
-        containerContentOrderDetail.visibility = View.VISIBLE
-        containerLoaderOrderDetail.visibility = View.GONE
-        containerFlightOrderError.visibility = View.GONE
+        binding?.containerContentOrderDetail?.visibility = View.VISIBLE
+        binding?.containerLoaderOrderDetail?.visibility = View.GONE
+        binding?.containerFlightOrderError?.visibility = View.GONE
     }
 
     private fun showError() {
-        containerContentOrderDetail.visibility = View.GONE
-        containerLoaderOrderDetail.visibility = View.GONE
-        containerFlightOrderError.visibility = View.VISIBLE
+        binding?.containerContentOrderDetail?.visibility = View.GONE
+        binding?.containerLoaderOrderDetail?.visibility = View.GONE
+        binding?.containerFlightOrderError?.visibility = View.VISIBLE
     }
 
     private fun hideError() {
-        containerContentOrderDetail.visibility = View.GONE
-        containerLoaderOrderDetail.visibility = View.VISIBLE
-        containerFlightOrderError.visibility = View.GONE
+        binding?.containerContentOrderDetail?.visibility = View.GONE
+        binding?.containerLoaderOrderDetail?.visibility = View.VISIBLE
+        binding?.containerFlightOrderError?.visibility = View.GONE
     }
 
     private fun renderView(data: FlightOrderDetailDataModel) {
         /* Render Order Status */
-        flightOrderDetailHeaderStatus.listener = this
-        flightOrderDetailHeaderStatus.setData(
+        binding?.flightOrderDetailHeaderStatus?.listener = this
+        binding?.flightOrderDetailHeaderStatus?.setData(
                 data.status,
                 data.statusString,
                 flightOrderDetailViewModel.orderId,
@@ -256,34 +264,34 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 data.payment.gatewayName,
                 data.payment.totalAmountStr
         )
-        flightOrderDetailHeaderStatus.buildView()
+        binding?.flightOrderDetailHeaderStatus?.buildView()
 
         /* Render Journey Ticket View */
-        flightOrderDetailJourney.listener = this
-        flightOrderDetailJourney.setData(
+        binding?.flightOrderDetailJourney?.listener = this
+        binding?.flightOrderDetailJourney?.setData(
                 data.hasETicket,
                 data.journeys
         )
-        flightOrderDetailJourney.buildView()
+        binding?.flightOrderDetailJourney?.buildView()
 
         /* Render Passenger View */
-        flightOrderDetailPassenger.setData(data.passengers)
-        flightOrderDetailPassenger.buildView()
+        binding?.flightOrderDetailPassenger?.setData(data.passengers)
+        binding?.flightOrderDetailPassenger?.buildView()
 
         /* Setup Cancellation Detail View */
         if (data.cancellations.isNotEmpty()) {
-            containerFlightOrderDetailCancellationDetail.visibility = View.VISIBLE
-            containerFlightOrderDetailCancellationDetail.setOnClickListener {
+            binding?.containerFlightOrderDetailCancellationDetail?.visibility = View.VISIBLE
+            binding?.containerFlightOrderDetailCancellationDetail?.setOnClickListener {
                 navigateToCancellationDetailPage()
             }
         } else {
-            containerFlightOrderDetailCancellationDetail.visibility = View.GONE
+            binding?.containerFlightOrderDetailCancellationDetail?.visibility = View.GONE
         }
 
         /* Render Insurance View */
         if (data.insurances.isNotEmpty()) {
-            flightOrderDetailInsurance.visibility = View.VISIBLE
-            flightOrderDetailInsurance.listener = object : FlightOrderDetailButtonsView.Listener {
+            binding?.flightOrderDetailInsurance?.visibility = View.VISIBLE
+            binding?.flightOrderDetailInsurance?.listener = object : FlightOrderDetailButtonsView.Listener {
                 override fun onTopButtonClicked() {}
 
                 override fun onBottomButtonClicked() {}
@@ -297,7 +305,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 }
             }
 
-            flightOrderDetailInsurance.setData(
+            binding?.flightOrderDetailInsurance?.setData(
                     getString(R.string.flight_order_detail_insurance_title_label),
                     FlightOrderDetailButtonModel(
                             MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
@@ -314,14 +322,14 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                             false
                     )
             )
-            flightOrderDetailInsurance.buildView()
+            binding?.flightOrderDetailInsurance?.buildView()
         } else {
-            flightOrderDetailInsurance.visibility = View.GONE
+            binding?.flightOrderDetailInsurance?.visibility = View.GONE
         }
 
         /* Render Web Check In View */
         val isWebCheckInButtonVisible: Pair<Boolean, String> = flightOrderDetailViewModel.isWebCheckInAvailable(data)
-        flightOrderDetailCheckIn.listener = object : FlightOrderDetailButtonsView.Listener {
+        binding?.flightOrderDetailCheckIn?.listener = object : FlightOrderDetailButtonsView.Listener {
             override fun onTopButtonClicked() {
                 flightOrderDetailViewModel.trackClickWebCheckIn()
                 context?.let {
@@ -336,7 +344,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             }
 
         }
-        flightOrderDetailCheckIn.setData(
+        binding?.flightOrderDetailCheckIn?.setData(
                 getString(R.string.flight_order_detail_check_in_title_label),
                 FlightOrderDetailButtonModel(
                         MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_web_check_in),
@@ -354,11 +362,11 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                         true
                 )
         )
-        flightOrderDetailCheckIn.buildView()
+        binding?.flightOrderDetailCheckIn?.buildView()
 
         /* Render Contact Us */
-        tgFlightOrderContactUs.text = MethodChecker.fromHtml(getString(R.string.flight_order_detail_contact_us))
-        tgFlightOrderContactUs.setOnClickListener {
+        binding?.tgFlightOrderContactUs?.text = MethodChecker.fromHtml(getString(R.string.flight_order_detail_contact_us))
+        binding?.tgFlightOrderContactUs?.setOnClickListener {
             RouteManager.route(requireContext(), data.contactUsURL)
         }
 
@@ -367,16 +375,16 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     private fun renderCrossSell(crossSellData: TravelCrossSelling) {
         if (crossSellData.items.isNotEmpty()) {
-            flightOrderDetailCrossSell.visibility = View.VISIBLE
-            flightOrderDetailCrossSell.buildView(crossSellData)
-            flightOrderDetailCrossSell.setListener(object : TravelCrossSellAdapter.OnItemClickListener {
+            binding?.flightOrderDetailCrossSell?.visibility = View.VISIBLE
+            binding?.flightOrderDetailCrossSell?.buildView(crossSellData)
+            binding?.flightOrderDetailCrossSell?.setListener(object : TravelCrossSellAdapter.OnItemClickListener {
                 override fun onItemClickListener(item: TravelCrossSelling.Item, position: Int) {
                     RouteManager.route(context, item.uri)
                 }
 
             })
         } else {
-            flightOrderDetailCrossSell.visibility = View.GONE
+            binding?.flightOrderDetailCrossSell?.visibility = View.GONE
         }
     }
 
@@ -450,18 +458,18 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     private fun renderErrorView(title: String, message: String) {
         if (title.isNotEmpty()) {
-            tgFlightOrderErrorTitle.visibility = View.VISIBLE
-            tgFlightOrderErrorTitle.text = title
+            binding?.tgFlightOrderErrorTitle?.visibility = View.VISIBLE
+            binding?.tgFlightOrderErrorTitle?.text = title
         } else {
-            tgFlightOrderErrorTitle.visibility = View.GONE
+            binding?.tgFlightOrderErrorTitle?.visibility = View.GONE
         }
         if (message.isNotEmpty()) {
-            tgFlightOrderErrorMessage.visibility = View.VISIBLE
-            tgFlightOrderErrorMessage.text = message
+            binding?.tgFlightOrderErrorMessage?.visibility = View.VISIBLE
+            binding?.tgFlightOrderErrorMessage?.text = message
         } else {
-            tgFlightOrderErrorMessage.visibility = View.GONE
+            binding?.tgFlightOrderErrorMessage?.visibility = View.GONE
         }
-        btnFlightOrderError.setOnClickListener {
+        binding?.btnFlightOrderError?.setOnClickListener {
             hideError()
             flightOrderDetailViewModel.fetchOrderDetailData()
         }

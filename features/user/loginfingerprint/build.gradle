@@ -1,43 +1,26 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'de.mannodermaus.android-junit5'
-apply from: "../../../compile-unit-test.gradle"
 
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-    mavenCentral()
-}
 
 buildscript {
     repositories {
         google()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         mavenCentral()
-        jcenter()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
 android {
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
+    buildFeatures {
+        viewBinding true
     }
-
-    testOptions {
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
-        }
+    defaultConfig {
+        multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 }
 
@@ -45,12 +28,13 @@ dependencies {
 
     //Features
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
-    implementation projectOrAar(rootProject.ext.features.loginphone)
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
 
     //Libraries
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     //Unify Dependencies
     implementation rootProject.ext.unifyDependencies.principles
@@ -63,7 +47,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
-    //Support Libs Dependencies
+    implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.libraries.track)
 
     //Misc Dependencies
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
@@ -75,12 +60,10 @@ dependencies {
 
     //Debug Tools
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     //Test Dependencies
     testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.testDependencies.kotlinTest
@@ -90,6 +73,15 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
+
+    // Instrumentation Test
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
 
 }
 

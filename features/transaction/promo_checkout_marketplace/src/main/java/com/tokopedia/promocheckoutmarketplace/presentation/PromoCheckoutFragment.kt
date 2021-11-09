@@ -48,6 +48,7 @@ import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
@@ -68,7 +69,6 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
 import com.tokopedia.purchase_platform.common.constant.*
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -808,7 +808,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun initializeToolbar(view: View) {
         activity?.let {
-            val appbar = view.findViewById<Toolbar>(R.id.toolbar)
+            val appbar = view.findViewById<Toolbar>(R.id.toolbar_promo_checkout)
             appbar.removeAllViews()
             toolbar = getToolbarPromoCheckout()
             toolbar?.let {

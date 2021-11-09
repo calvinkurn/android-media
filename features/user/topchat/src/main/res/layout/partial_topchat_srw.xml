@@ -9,8 +9,9 @@
 
     <LinearLayout
         android:id="@+id/rv_srw_content_container"
-        android:layout_width="@dimen/dp_topchat_290"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl6"
         android:layout_gravity="end"
         android:orientation="vertical">
 

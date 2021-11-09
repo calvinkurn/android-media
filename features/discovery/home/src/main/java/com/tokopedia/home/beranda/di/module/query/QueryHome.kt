@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.di.module.query
 
 object QueryHome {
-    val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!, \$numOfChannel: Int!, \$token: String!, \$param: String!, \$location: String){\n" +
+    const val dynamicChannelQuery : String = "query getDynamicChannel(\$groupIDs: String!, \$numOfChannel: Int!, \$token: String!, \$param: String!, \$location: String){\n" +
             "    dynamicHomeChannel {\n" +
             "        channels(groupIDs: \$groupIDs, numOfChannel: \$numOfChannel, token: \$token, param: \$param, location: \$location){\n" +
             "          id\n" +
@@ -24,6 +24,14 @@ object QueryHome {
             "          token\n" +
             "          widgetParam\n" +
             "          contextualInfo\n" +
+            "          viewAllCard {\n" +
+            "              id\n" +
+            "              contentType\n" +
+            "              title\n" +
+            "              description\n" +
+            "              imageUrl\n" +
+            "              gradientColor\n" +
+            "          }\n" +
             "          header {\n" +
             "            id\n" +
             "            name\n" +

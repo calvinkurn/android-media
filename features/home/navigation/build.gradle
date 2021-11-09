@@ -39,6 +39,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
     implementation projectOrAar(rootProject.ext.features.accountHome)
@@ -93,6 +94,8 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.miscDependencies.chips
+    implementation project(rootProject.ext.features.homeWishlist)
+
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation "org.robolectric:multidex:3.4.2"
 

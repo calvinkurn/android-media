@@ -5,17 +5,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
@@ -33,24 +38,21 @@ import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
+import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
+import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
-import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
+import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.Event
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.pageheader.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -58,29 +60,32 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Provider
 
 class ShopHomeViewModel @Inject constructor(
-    private val userSession: UserSessionInterface,
-    private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase,
-    private val getShopProductUseCase: GqlGetShopProductUseCase,
-    private val dispatcherProvider: CoroutineDispatchers,
-    private val addToCartUseCase: AddToCartUseCase,
-    private val addToCartOccUseCase: AddToCartOccUseCase,
-    private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
-    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
-    private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
-    private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
-    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-    private val shopProductSortMapper: ShopProductSortMapper,
-    private val mvcSummaryUseCase: MVCSummaryUseCase,
-    private val playWidgetTools: PlayWidgetTools
-) : BaseViewModel(dispatcherProvider.main) {
+        private val userSession: UserSessionInterface,
+        private val getShopProductUseCase: GqlGetShopProductUseCase,
+        private val dispatcherProvider: CoroutineDispatchers,
+        private val addToCartUseCase: AddToCartUseCase,
+        private val addToCartOccUseCase: AddToCartOccMultiUseCase,
+        private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
+        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
+        private val getCampaignNotifyMeUseCase: Provider<GetCampaignNotifyMeUseCase>,
+        private val checkCampaignNotifyMeUseCase: Provider<CheckCampaignNotifyMeUseCase>,
+        private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+        private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+        private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+        private val shopProductSortMapper: ShopProductSortMapper,
+        private val mvcSummaryUseCase: MVCSummaryUseCase,
+        private val playWidgetTools: PlayWidgetTools,
+        private val gqlShopPageGetHomeType: GqlShopPageGetHomeType,
+        private val getShopPageHomeLayoutV2UseCase: Provider<GetShopPageHomeLayoutV2UseCase>
+    ) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
@@ -91,9 +96,17 @@ class ShopHomeViewModel @Inject constructor(
         get() = _productListData
     private val _productListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
 
-    val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
-        get() = _shopHomeLayoutData
-    private val _shopHomeLayoutData = MutableLiveData<Result<ShopPageHomeLayoutUiModel>>()
+    val shopHomeWidgetLayoutData: LiveData<Result<ShopPageHomeWidgetLayoutUiModel>>
+        get() = _shopHomeWidgetLayoutData
+    private val _shopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageHomeWidgetLayoutUiModel>>()
+
+    val shopHomeWidgetContentData : Flow<Result<Map<Pair<String,String>, BaseShopHomeWidgetUiModel?>>>
+        get() = _shopHomeWidgetContentData
+    private val _shopHomeWidgetContentData = MutableSharedFlow<Result<Map<Pair<String,String>, BaseShopHomeWidgetUiModel?>>>()
+
+    val shopHomeWidgetContentDataError : Flow<List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>>
+        get() = _shopHomeWidgetContentDataError
+    private val _shopHomeWidgetContentDataError = MutableSharedFlow<List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>>()
 
     val shopHomeMerchantVoucherLayoutData: LiveData<Result<ShopHomeVoucherUiModel>>
             get() = _shopHomeMerchantVoucherLayoutData
@@ -144,79 +157,36 @@ class ShopHomeViewModel @Inject constructor(
     val userId: String
         get() = userSession.userId
 
-    fun getShopPageHomeData(
-            shopId: String,
-            shopProductFilterParameter: ShopProductFilterParameter,
-            initialProductListData: ShopProduct.GetShopProduct?,
-            widgetUserAddressLocalData: LocalCacheModel
+    fun getShopPageHomeWidgetLayoutData(
+            shopId: String
     ) {
         launchCatchError(block = {
-            val shopLayoutWidget = asyncCatchError(
-                    dispatcherProvider.io,
-                    block = {
-                        getShopPageHomeLayout(shopId, widgetUserAddressLocalData)
-                    },
-                    onError = {
-                        _shopHomeLayoutData.postValue(Fail(it))
-                        null
-                    }
-            )
-            val productList = asyncCatchError(
-                    dispatcherProvider.io,
-                    block = {
-                        if(initialProductListData == null)
-                            getProductListData(shopId, 1, shopProductFilterParameter,widgetUserAddressLocalData)
-                        else
-                            null
-                    },
-                    onError = { null }
-            )
-
-            val sortResponse  = asyncCatchError(
-                    dispatcherProvider.io,
-                    block = {
-                        getSortListData()
-                    },
-                    onError = {
-                        null
-                    }
-            )
-
-            shopLayoutWidget.await()?.let {
-
-                _shopHomeLayoutData.postValue(Success(it))
-
-                if(initialProductListData == null) {
-                    productList.await()?.let { productListData ->
-                        _productListData.postValue(Success(productListData))
-                    }
-                }else{
-                    _productListData.postValue(Success(mapToShopHomeProductUiModel(
-                            shopId,
-                            1,
-                            initialProductListData
-                    )))
-                }
-                sortResponse.await()?.let{  sortResponse ->
-                    sortListData  = sortResponse
-                }
-
-                getPlayWidget(shopId, Success(it))
+            val shopHomeLayoutResponse = withContext(dispatcherProvider.io) {
+                gqlShopPageGetHomeType.isFromCacheFirst = false
+                gqlShopPageGetHomeType.params = GqlShopPageGetHomeType.createParams(
+                        shopId.toIntOrZero()
+                )
+                gqlShopPageGetHomeType.executeOnBackground()
             }
+            val shopHomeLayoutUiModelPlaceHolder = ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(
+                    shopHomeLayoutResponse.homeLayoutData
+            )
+            _shopHomeWidgetLayoutData.postValue(Success(shopHomeLayoutUiModelPlaceHolder))
         }) {
-            it.printStackTrace()
+            _shopHomeWidgetLayoutData.postValue(Fail(it))
         }
     }
 
     fun getNewProductList(
             shopId: String,
             page: Int,
+            productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io) {
-                getProductListData(shopId, page, shopProductFilterParameter, widgetUserAddressLocalData)
+                getProductListData(shopId, page, productPerPage, shopProductFilterParameter, widgetUserAddressLocalData)
             }
             _productListData.postValue(Success(listProductData))
         }) {
@@ -224,28 +194,25 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    fun getMerchantVoucherCoupon(shopId: String, context: Context?) {
-        val result = shopHomeLayoutData.value
-        if (result is Success && !result.data.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().isNullOrEmpty()) {
-            launchCatchError(dispatcherProvider.io, block = {
-                var uiModel = result.data.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
-                val response =  mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
-                uiModel = uiModel?.copy(
-                        data = ShopPageMapper.mapToVoucherCouponUiModel(response.data, shopId),
-                        isError = false
+    fun getMerchantVoucherCoupon(shopId: String, context: Context?, shopHomeVoucherUiModel: ShopHomeVoucherUiModel) {
+        launchCatchError(dispatcherProvider.io, block = {
+            var uiModel = shopHomeVoucherUiModel
+            val response = mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
+            uiModel = uiModel.copy(
+                    data = ShopPageMapper.mapToVoucherCouponUiModel(response.data, shopId),
+                    isError = false
+            )
+            val code = response.data?.resultStatus?.code
+            if (code != CODE_STATUS_SUCCESS) {
+                val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(response.data?.resultStatus?.message.toString()))
+                logExceptionToCrashlytics(
+                        ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
+                        Throwable(errorMessage)
                 )
-                val code = response.data?.resultStatus?.code
-                if (code != CODE_STATUS_SUCCESS) {
-                    val errorMessage = ErrorHandler.getErrorMessage(context, MessageErrorException(response.data?.resultStatus?.message.toString()))
-                    logExceptionToCrashlytics(
-                            ShopPageExceptionHandler.ERROR_WHEN_GET_MERCHANT_VOUCHER_DATA,
-                            Throwable(errorMessage)
-                    )
-                }
-                _shopHomeMerchantVoucherLayoutData.postValue(Success(uiModel as ShopHomeVoucherUiModel))
-            }) {
-                _shopHomeMerchantVoucherLayoutData.postValue(Fail(it))
             }
+            _shopHomeMerchantVoucherLayoutData.postValue(Success(uiModel))
+        }) {
+            _shopHomeMerchantVoucherLayoutData.postValue(Fail(it))
         }
     }
 
@@ -259,7 +226,7 @@ class ShopHomeViewModel @Inject constructor(
             val addToCartSubmitData = withContext(dispatcherProvider.io) {
                 submitAddProductToCart(shopId, product)
             }
-            if (addToCartSubmitData.data.success == 1)
+            if (addToCartSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE)
                 onSuccessAddToCart(addToCartSubmitData.data)
             else
                 onErrorAddToCart(MessageErrorException(addToCartSubmitData.data.message.first()))
@@ -278,7 +245,7 @@ class ShopHomeViewModel @Inject constructor(
             val addToCartOccSubmitData = withContext(dispatcherProvider.io) {
                 submitAddProductToCartOcc(shopId, product)
             }
-            if (addToCartOccSubmitData.data.success == 1)
+            if (addToCartOccSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE)
                 onSuccessAddToCartOcc(addToCartOccSubmitData.data)
             else
                 onErrorAddToCartOcc(MessageErrorException(addToCartOccSubmitData.data.message.first()))
@@ -307,29 +274,10 @@ class ShopHomeViewModel @Inject constructor(
         }) {}
     }
 
-    private suspend fun getShopPageHomeLayout(
-            shopId: String,
-            widgetUserAddressLocalData: LocalCacheModel
-    ): ShopPageHomeLayoutUiModel {
-        getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(
-                ShopLayoutWidgetParamsModel().apply {
-                    this.shopId = shopId
-                    districtId = widgetUserAddressLocalData.district_id
-                    cityId = widgetUserAddressLocalData.city_id
-                    latitude = widgetUserAddressLocalData.lat
-                    longitude = widgetUserAddressLocalData.long
-                }
-        )
-        return ShopPageHomeMapper.mapToShopPageHomeLayoutUiModel(
-                getShopPageHomeLayoutUseCase.executeOnBackground(),
-                ShopUtil.isMyShop(shopId, userSessionShopId),
-                isLogin
-        )
-    }
-
     private suspend fun getProductListData(
             shopId: String,
             page: Int,
+            productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ): GetShopHomeProductUiModel {
@@ -342,6 +290,7 @@ class ShopHomeViewModel @Inject constructor(
                     rating = shopProductFilterParameter.getRating()
                     pmax = shopProductFilterParameter.getPmax()
                     pmin = shopProductFilterParameter.getPmin()
+                    fcategory = shopProductFilterParameter.getCategory()
                     userDistrictId = widgetUserAddressLocalData.district_id
                     userCityId = widgetUserAddressLocalData.city_id
                     userLat = widgetUserAddressLocalData.lat
@@ -349,11 +298,11 @@ class ShopHomeViewModel @Inject constructor(
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
-        return mapToShopHomeProductUiModel(shopId, page, productListResponse)
+        return mapToShopHomeProductUiModel(shopId, page, productPerPage, productListResponse)
     }
 
-    private fun mapToShopHomeProductUiModel(shopId: String, page: Int, productListResponse: ShopProduct.GetShopProduct) : GetShopHomeProductUiModel {
-        val isHasNextPage = ShopUtil.isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
+    private fun mapToShopHomeProductUiModel(shopId: String, page: Int, productPerPage: Int, productListResponse: ShopProduct.GetShopProduct) : GetShopHomeProductUiModel {
+        val isHasNextPage = ShopUtil.isHasNextPage(page, productPerPage, productListResponse.totalData)
         val productListUiModelData = productListResponse.data.map {
             ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
                     it,
@@ -396,18 +345,19 @@ class ShopHomeViewModel @Inject constructor(
         return addToCartUseCase.createObservable(requestParams).toBlocking().first()
     }
 
-    private fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
-        val requestParams = RequestParams.create().apply {
-            putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                    productId = product.id ?: "",
-                    shopId = shopId,
-                    quantity = product.minimumOrder.toString(),
-                    productName = product.name ?: "",
-                    price = product.displayedPrice ?: "",
-                    userId = userId
-            ))
-        }
-        return addToCartOccUseCase.createObservable(requestParams).toBlocking().first()
+    private suspend fun submitAddProductToCartOcc(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
+        return addToCartOccUseCase.setParams(AddToCartOccMultiRequestParams(
+                carts = listOf(
+                        AddToCartOccMultiCartParam(
+                                productId = product.id ?: "",
+                                shopId = shopId,
+                                quantity = product.minimumOrder.toString(),
+                                productName = product.name ?: "",
+                                price = product.displayedPrice ?: ""
+                        )
+                ),
+                userId = userId
+        )).executeOnBackground().mapToAddToCartDataModel()
     }
 
     private suspend fun checkListProductWishlist(
@@ -425,7 +375,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun clearCache() {
         clearGetShopProductUseCase()
-        getShopPageHomeLayoutUseCase.clearCache()
+        gqlShopPageGetHomeType.clearCache()
     }
 
     fun getCampaignNplRemindMeStatus(model: ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem) {
@@ -437,7 +387,7 @@ class ShopHomeViewModel @Inject constructor(
             val getCampaignNotifyMeUiModel = ShopPageHomeMapper.mapToGetCampaignNotifyMeUiModel(
                     getCampaignNotifyMeModel
             )
-            _campaignNplRemindMeStatusData.postValue(Success(getCampaignNotifyMeUiModel))
+            _campaignNplRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
         }) {}
     }
 
@@ -480,10 +430,10 @@ class ShopHomeViewModel @Inject constructor(
     }
 
 
-    fun getBottomSheetFilterData() {
+    fun getBottomSheetFilterData(shopId: String = "") {
         launchCatchError(coroutineContext, block = {
             val filterBottomSheetData = withContext(dispatcherProvider.io) {
-                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
+                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams(shopId)
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
             }
             filterBottomSheetData.data.let {
@@ -499,12 +449,13 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getFilterResultCount(
             shopId: String,
+            productPerPage: Int,
             tempShopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val filterResultProductCount = withContext(dispatcherProvider.io) {
-                getFilterResultCountData(shopId, tempShopProductFilterParameter, widgetUserAddressLocalData)
+                getFilterResultCountData(shopId, productPerPage, tempShopProductFilterParameter, widgetUserAddressLocalData)
             }
             _shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
         }) {}
@@ -512,18 +463,20 @@ class ShopHomeViewModel @Inject constructor(
 
     private suspend fun getFilterResultCountData(
             shopId: String,
+            productPerPage: Int,
             tempShopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ): Int {
         val filter = ShopProductFilterInput(
                 ShopPageConstant.START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
+                productPerPage,
                 "",
                 ALL_SHOWCASE_ID,
                 tempShopProductFilterParameter.getSortId().toIntOrZero(),
                 tempShopProductFilterParameter.getRating(),
                 tempShopProductFilterParameter.getPmax(),
                 tempShopProductFilterParameter.getPmin(),
+                tempShopProductFilterParameter.getCategory(),
                 widgetUserAddressLocalData.district_id,
                 widgetUserAddressLocalData.city_id,
                 widgetUserAddressLocalData.lat,
@@ -545,14 +498,10 @@ class ShopHomeViewModel @Inject constructor(
     /**
      * Play widget
      */
-    fun getPlayWidget(shopId: String, shopResultLayoutUiModel: Result<ShopPageHomeLayoutUiModel>? = _shopHomeLayoutData.value) {
-        if (shopResultLayoutUiModel !is Success) return
-        val shopLayoutUiModel = shopResultLayoutUiModel.data
-        val carouselPlayWidgetUiModel = shopLayoutUiModel.listWidget.find { it is CarouselPlayWidgetUiModel }
-        if (carouselPlayWidgetUiModel !is CarouselPlayWidgetUiModel) return
+    fun getPlayWidget(shopId: String, carouselPlayWidgetUiModel: CarouselPlayWidgetUiModel) {
         launchCatchError(block = {
             val response = playWidgetTools.getWidgetFromNetwork(
-                    if (GlobalConfig.isSellerApp()) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
+                    if (shopId == userSessionShopId) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
                     dispatcherProvider.io
             )
             val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevModel = _playWidgetObservable.value?.widgetUiModel)
@@ -573,6 +522,15 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
+    fun updatePlayWidgetReminder(channelId: String?, isReminder: Boolean) {
+        if (channelId == null) return
+
+        updateWidget {
+            val reminderType = if(isReminder) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
+            it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, reminderType))
+        }
+    }
+
     fun shouldUpdatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
         if (!isLogin) _playWidgetReminderEvent.value = Pair(channelId, reminderType)
         else updatePlayWidgetToggleReminder(channelId, reminderType)
@@ -590,8 +548,8 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io
             )
 
-            when (val success = playWidgetTools.mapWidgetToggleReminder(response)) {
-                success -> {
+            when (playWidgetTools.mapWidgetToggleReminder(response)) {
+                true -> {
                     _playWidgetReminderObservable.postValue(Success(reminderType))
                 }
                 else -> {
@@ -641,15 +599,105 @@ class ShopHomeViewModel @Inject constructor(
         if (currentValue != null) _playWidgetObservable.postValue(onUpdate(currentValue))
     }
 
-    fun isCampaignFollower(campaignId: String): Boolean {
-        val homeLayoutData = shopHomeLayoutData.value
-        if (homeLayoutData !is Success) return false
-        return homeLayoutData.data.listWidget.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>().any {
-            val campaignItem = it.data?.firstOrNull()
-            val nplItemCampaignId = campaignItem?.campaignId.orEmpty()
-            val dynamicRule = campaignItem?.dynamicRule
-            val dynamicRuleDescription = dynamicRule?.descriptionHeader.orEmpty()
-            nplItemCampaignId == campaignId && dynamicRuleDescription.isNotEmpty()
+    fun getWidgetContentData(
+            listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
+            shopId: String,
+            widgetUserAddressLocalData: LocalCacheModel
+    ) {
+        launchCatchError(block = {
+            val responseWidgetContent = withContext(dispatcherProvider.io) {
+                val useCase = getShopPageHomeLayoutV2UseCase.get()
+                useCase.params = GetShopPageHomeLayoutV2UseCase.createParams(
+                        ShopLayoutWidgetParamsModel(
+                                shopId = shopId,
+                                districtId = widgetUserAddressLocalData.district_id,
+                                cityId = widgetUserAddressLocalData.city_id,
+                                latitude = widgetUserAddressLocalData.lat,
+                                longitude = widgetUserAddressLocalData.long,
+                                listWidgetRequest = listWidgetLayout.map {
+                                    ShopPageWidgetRequestModel(
+                                            it.widgetId,
+                                            it.widgetMasterId,
+                                            it.widgetType,
+                                            it.widgetName
+                                    )
+                                }
+                        )
+                )
+                useCase.executeOnBackground()
+            }
+            val listShopHomeWidget = ShopPageHomeMapper.mapToListShopHomeWidget(
+                    responseWidgetContent.listWidget,
+                    ShopUtil.isMyShop(shopId, userSessionShopId),
+                    isLogin
+            )
+            val mapShopHomeWidgetData = mutableMapOf<Pair<String, String>, BaseShopHomeWidgetUiModel?>().apply{
+                listWidgetLayout.onEach {
+                    val widgetLayoutId = it.widgetId
+                    val matchedWidget = listShopHomeWidget.firstOrNull { shopHomeWidget ->
+                        shopHomeWidget.widgetId == widgetLayoutId
+                    }
+                    if (matchedWidget != null) {
+                        put(Pair(it.widgetId, it.widgetMasterId), matchedWidget)
+                    } else {
+                        put(Pair(it.widgetId, it.widgetMasterId) , null)
+                    }
+                }
+            }
+            _shopHomeWidgetContentData.emit(Success(mapShopHomeWidgetData))
+        }) {
+            _shopHomeWidgetContentDataError.emit(listWidgetLayout)
+            _shopHomeWidgetContentData.emit(Fail(it))
+        }
+    }
+
+    fun getProductGridListWidgetData(
+            shopId: String,
+            productPerPage: Int,
+            shopProductFilterParameter: ShopProductFilterParameter,
+            initialProductListData: ShopProduct.GetShopProduct?,
+            widgetUserAddressLocalData: LocalCacheModel
+    ){
+        launchCatchError(block = {
+            val productList = asyncCatchError(
+                    dispatcherProvider.io,
+                    block = {
+                        if (initialProductListData == null)
+                            getProductListData(shopId, ShopPageConstant.START_PAGE, productPerPage, shopProductFilterParameter, widgetUserAddressLocalData)
+                        else
+                            null
+                    },
+                    onError = { null }
+            )
+
+            val sortResponse = asyncCatchError(
+                    dispatcherProvider.io,
+                    block = {
+                        getSortListData()
+                    },
+                    onError = {
+                        null
+                    }
+            )
+            sortResponse.await()?.let {
+                if (initialProductListData == null) {
+                    productList.await()?.let { productListData ->
+                        _productListData.postValue(Success(productListData))
+                    }
+                } else {
+                    _productListData.postValue(Success(mapToShopHomeProductUiModel(
+                            shopId,
+                            productPerPage,
+                            ShopPageConstant.START_PAGE,
+                            initialProductListData
+                    )))
+                }
+                it.let { sortResponse ->
+                    sortListData = sortResponse
+                }
+            }
+        }) {
+
         }
     }
 

@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.RollenceKey
 
 var idlingResource: TkpdIdlingResource? = null
 
@@ -71,21 +72,12 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
         updateTitle("")
         component.inject(this)
         sendOpenScreenEvent(intent.data)
         idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
         idlingResource?.increment()
     }
-
-
-    private fun setSecureWindowFlag() {
-        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
-            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
-        }
-    }
-
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
 
@@ -239,10 +231,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         val isNewNavigationEnabled = FirebaseRemoteConfigImpl(this).getBoolean(KEY_CONFIG_NEW_NAVIGATION,
                 false)
         if(isNewNavigationEnabled) {
-            getAbTestPlatform()?.let {
-                return (it.getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-                        == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
-            }
+            return true
         }
         return false
     }

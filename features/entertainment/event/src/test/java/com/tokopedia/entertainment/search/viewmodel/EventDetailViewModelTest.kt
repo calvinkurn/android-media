@@ -1,31 +1,22 @@
 package com.tokopedia.entertainment.search.viewmodel
 
 import android.content.Context
-import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
-import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
 import com.tokopedia.entertainment.search.data.CategoryModel
 import com.tokopedia.entertainment.search.data.EventDetailResponse
-import com.tokopedia.entertainment.search.data.EventSearchFullLocationResponse
 import com.tokopedia.entertainment.search.data.mapper.SearchMapper
-import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
-import com.tokopedia.entertainment.search.viewmodel.EventLocationViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -33,7 +24,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.io.File
-import java.lang.Exception
 import java.lang.reflect.Type
 
 
@@ -96,7 +86,7 @@ class EventDetailViewModelTest {
         errors[EventDetailResponse.Data::class.java] = listOf(errorGql)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } coAnswers {
             GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }
@@ -104,7 +94,7 @@ class EventDetailViewModelTest {
         eventDetailViewModel.getData(query = "")
 
         Assert.assertNotNull(eventDetailViewModel.errorReport.value)
-        Assert.assertEquals(eventDetailViewModel.errorReport.value, errorGql.message)
+        Assert.assertEquals((eventDetailViewModel.errorReport.value as Throwable).message, errorGql.message)
         assert(!eventDetailViewModel.isItRefreshing.value!!)
         assert(!eventDetailViewModel.isItShimmering.value!!)
         assert(!eventDetailViewModel.showParentView.value!!)
@@ -124,7 +114,7 @@ class EventDetailViewModelTest {
         val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
         categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 
@@ -151,7 +141,7 @@ class EventDetailViewModelTest {
         categoryModel.hashSet = hashSet
         categoryModel.position = 2
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 
@@ -179,7 +169,7 @@ class EventDetailViewModelTest {
         categoryModel.hashSet = hashSet
         categoryModel.position = 2
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 
@@ -205,7 +195,7 @@ class EventDetailViewModelTest {
         val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
         categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 
@@ -249,5 +239,51 @@ class EventDetailViewModelTest {
 
         //then
         assertEquals(eventDetailViewModel.category, "12,13")
+    }
+
+    @Test
+    fun checkCategoryIsDifferentOrEmpty_CategoryDataSize_ReturnTrue(){
+        //given
+        eventDetailViewModel.hashSet.add("12")
+        eventDetailViewModel.categoryData = mutableListOf(CategoryTextBubbleAdapter.CategoryTextBubble("12", "Event"))
+
+        val listCategory = EventDetailResponse.Data.EventChildCategory(
+                listOf(EventDetailResponse.Data.EventChildCategory.CategoriesItem("tokopedia://"),
+                        EventDetailResponse.Data.EventChildCategory.CategoriesItem("tokopedia://")
+                ))
+        //when
+        val actual = eventDetailViewModel.categoryIsDifferentOrEmpty(listCategory)
+
+        //then
+        assertEquals(actual, true)
+    }
+
+    @Test
+    fun checkCategoryIsDifferentOrEmpty_HashEmpty_ReturnTrue(){
+        //given
+        eventDetailViewModel.categoryData = mutableListOf(CategoryTextBubbleAdapter.CategoryTextBubble("12", "Event"))
+
+        val listCategory = EventDetailResponse.Data.EventChildCategory(
+                listOf(EventDetailResponse.Data.EventChildCategory.CategoriesItem("tokopedia://")))
+        //when
+        val actual = eventDetailViewModel.categoryIsDifferentOrEmpty(listCategory)
+
+        //then
+        assertEquals(actual, true)
+    }
+
+    @Test
+    fun checkCategoryIsDifferentOrEmpty_CategoryListSize_ReturnTrue(){
+        //given
+        eventDetailViewModel.hashSet.add("12")
+        eventDetailViewModel.categoryData = mutableListOf(CategoryTextBubbleAdapter.CategoryTextBubble("12", "Event"))
+
+        val listCategory = EventDetailResponse.Data.EventChildCategory(
+                listOf(EventDetailResponse.Data.EventChildCategory.CategoriesItem("tokopedia://")))
+        //when
+        val actual = eventDetailViewModel.categoryIsDifferentOrEmpty(listCategory)
+
+        //then
+        assertEquals(actual, true)
     }
 }

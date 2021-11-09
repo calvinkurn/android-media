@@ -1,9 +1,9 @@
 package com.tokopedia.travelhomepage.destination.model.mapper
 
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionModel
+import com.tokopedia.travelhomepage.destination.model.TravelHomepageOrderListModel
+import com.tokopedia.travelhomepage.destination.model.TravelHomepageRecommendationModel
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.ORDER_LIST_ORDER
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
 
 /**
  * @author by jessica on 2019-08-14

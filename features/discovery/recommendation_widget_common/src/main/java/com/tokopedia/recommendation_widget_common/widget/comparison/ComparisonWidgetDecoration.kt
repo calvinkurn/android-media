@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recommendation_widget_common.R
 
-class ComparisonWidgetDecoration() : RecyclerView.ItemDecoration() {
+class ComparisonWidgetDecoration : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val itemCount = ((parent.layoutManager?.itemCount?:0)-1)
         val currentPosition = parent.layoutManager?.getPosition(view)

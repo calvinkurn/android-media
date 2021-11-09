@@ -82,7 +82,7 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
         position: Int
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.chat_srw_bubble
             )
         ).check(matches(isExpanded()))
@@ -92,7 +92,7 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
         position: Int
     ) {
         onView(
-            withRecyclerView(R.id.recycler_view).atPositionOnView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                 position, R.id.chat_srw_bubble
             )
         ).check(matches(not(isExpanded())))

@@ -17,14 +17,14 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
+import com.tokopedia.shop.score.databinding.FragmentPenaltyDetailBinding
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.detail.PenaltyDetailStepperAdapter
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
-import kotlinx.android.synthetic.main.fragment_penalty_detail.*
-import kotlinx.android.synthetic.main.fragment_penalty_page.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ShopPenaltyDetailFragment : BaseDaggerFragment() {
@@ -36,6 +36,8 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
 
     private val penaltyDetailStepperAdapter by lazy { PenaltyDetailStepperAdapter() }
+
+    private val binding: FragmentPenaltyDetailBinding? by viewBinding()
 
     private var itemPenalty: ItemPenaltyUiModel? = null
     private var keyCacheManagerId = ""
@@ -54,7 +56,11 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         getComponent(PenaltyComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_penalty_detail, container, false)
     }
 
@@ -67,7 +73,12 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            activity?.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            )
             cacheManager = SaveInstanceCacheManager(it, keyCacheManagerId)
         }
         setupActionBar()
@@ -89,33 +100,46 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     }
 
     private fun initDataView(shopPenaltyDetailUiModel: ShopPenaltyDetailUiModel) {
-        tvTitleDetailPenalty?.text = shopPenaltyDetailUiModel.titleDetail
-        tvStartDateDetailPenalty?.text = getString(R.string.date_penalty_detail, shopPenaltyDetailUiModel.startDateDetail)
-        tvSummaryDetailPenalty?.text = shopPenaltyDetailUiModel.summaryDetail
-        tv_total_deduction_point_penalty?.text = MethodChecker.fromHtml(getString(R.string.total_deduction_point_performance,
-                shopPenaltyDetailUiModel.deductionPointPenalty))
-        tvEndDateDetailPenalty?.text = MethodChecker.fromHtml(getString(R.string.point_deduction_date_result_detail_penalty,
+        binding?.tvTitleDetailPenalty?.text = shopPenaltyDetailUiModel.titleDetail
+        binding?.tvStartDateDetailPenalty?.text =
+            getString(R.string.date_penalty_detail, shopPenaltyDetailUiModel.startDateDetail)
+        binding?.tvSummaryDetailPenalty?.text = shopPenaltyDetailUiModel.summaryDetail
+        binding?.tvTotalDeductionPointPenalty?.text = MethodChecker.fromHtml(
+            getString(
+                R.string.total_deduction_point_performance,
+                shopPenaltyDetailUiModel.deductionPointPenalty
+            )
+        )
+        binding?.tvEndDateDetailPenalty?.text = MethodChecker.fromHtml(
+            getString(
+                R.string.point_deduction_date_result_detail_penalty,
                 shopPenaltyDetailUiModel.prefixDateDetail,
-                shopPenaltyDetailUiModel.endDateDetail))
-        tvDescResultDetailPenalty?.text = shopPenaltyDetailUiModel.descStatusPenalty
+                shopPenaltyDetailUiModel.endDateDetail
+            )
+        )
+        binding?.tvDescResultDetailPenalty?.text = shopPenaltyDetailUiModel.descStatusPenalty
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
 
-        ic_info_status_penalty?.setOnClickListener {
+        binding?.icInfoStatusPenalty?.setOnClickListener {
             showStatusPenaltyBottomSheet()
         }
 
-        btnCallHelpCenter?.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ShopScoreConstant.HELP_URL)
+        binding?.btnCallHelpCenter?.setOnClickListener {
+            RouteManager.route(
+                context,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                ShopScoreConstant.HELP_URL
+            )
             shopScorePenaltyTracking.clickLearMoreHelpCenterPenaltyDetail()
         }
 
-        if (btnCallHelpCenter?.isVisible == true) {
+        if (binding?.btnCallHelpCenter?.isVisible == true) {
             shopScorePenaltyTracking.impressHelpCenterPenaltyDetail()
         }
     }
 
     private fun setupRvStepper(stepperList: List<ShopPenaltyDetailUiModel.StepperPenaltyDetail>) {
-        val gridLayoutManager = GridLayoutManager(context, 5)
+        val gridLayoutManager = GridLayoutManager(context, MAX_SPAN_COUNT)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return if (stepperList.size == position + 1) {
@@ -123,7 +147,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
                 } else SPAN_WIDTH_DEFAULT
             }
         }
-        rv_timeline_status_penalty?.apply {
+        binding?.rvTimelineStatusPenalty?.apply {
             layoutManager = gridLayoutManager
             adapter = penaltyDetailStepperAdapter
         }
@@ -138,8 +162,8 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            setSupportActionBar(penalty_detail_toolbar)
-            supportActionBar?.apply {
+            setSupportActionBar(binding?.penaltyDetailToolbar)
+            supportActionBar?.run {
                 title = getString(R.string.title_penalty_detail_shop_score)
             }
         }
@@ -150,6 +174,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         const val KEY_CACHE_MANAGE_ID = "extra_cache_manager_id"
         const val SPAN_WIDTH_DEFAULT = 2
         const val SPAN_WIDTH_LAST_ITEM = 1
+        const val MAX_SPAN_COUNT = 5
 
         fun newInstance(): ShopPenaltyDetailFragment {
             return ShopPenaltyDetailFragment()

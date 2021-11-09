@@ -2,7 +2,6 @@ package com.tokopedia.atc_common.domain.usecase
 
 import com.tokopedia.atc_common.MockResponseProvider
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.atc_common.data.model.request.chosenaddress.ChosenAddressAddToCartRequestHelper
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
@@ -12,9 +11,15 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUES
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.usecase.RequestParams
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockkObject
+import io.mockk.unmockkObject
+import io.mockk.verify
+import io.mockk.verifySequence
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -29,7 +34,7 @@ class AddToCartUseCaseTest {
     private lateinit var addToCartDataMapper: AddToCartDataMapper
 
     @MockK(relaxed = true)
-    private lateinit var chosenAddressAddToCartRequestHelper: ChosenAddressAddToCartRequestHelper
+    private lateinit var chosenAddressRequestHelper: ChosenAddressRequestHelper
 
     @MockK(relaxUnitFun = true)
     private lateinit var graphqlUseCase: GraphqlUseCase
@@ -45,7 +50,7 @@ class AddToCartUseCaseTest {
     fun before() {
         MockKAnnotations.init(this)
         mockkObject(AddToCartBaseAnalytics)
-        addToCartUseCase = AddToCartUseCase("mock_query", graphqlUseCase, addToCartDataMapper, chosenAddressAddToCartRequestHelper)
+        addToCartUseCase = AddToCartUseCase(graphqlUseCase, addToCartDataMapper, chosenAddressRequestHelper)
     }
 
     @After

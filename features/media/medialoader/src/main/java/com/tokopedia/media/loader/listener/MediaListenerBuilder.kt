@@ -8,7 +8,10 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.kotlin.extensions.view.formattedToMB
+import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.Properties
+import kotlin.math.abs
 import com.tokopedia.media.loader.tracker.PerformanceTracker.postRender as trackPerformancePostRender
 import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
 
@@ -39,15 +42,21 @@ object MediaListenerBuilder {
                 isFirstResource: Boolean
         ): Boolean {
             val pageName = context.javaClass.name.split(".").last()
-            val fileSize = resource?.let { BitmapCompat.getAllocationByteCount(it).toString() }?: "0"
+
+            val fileSize = resource?.allocationByteCount?.toString() ?: "0"
+            val fileSizeInMb = fileSize.toLong().formattedToMB()
+
             val loadTime = (System.currentTimeMillis() - startTime).toString()
+
+            // save for an accumulative bitmap size in local
+            Loader.bitmapSize()?.saveSize(fileSize)
 
             // only track if the URL from CDN service
             trackPerformancePostRender(
                 performanceMonitoring,
                 pageName,
                 loadTime,
-                fileSize
+                fileSizeInMb
             )
 
             // override the load time into properties

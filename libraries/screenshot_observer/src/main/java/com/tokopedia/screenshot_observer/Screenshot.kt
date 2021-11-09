@@ -22,7 +22,10 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_action_screenshot.view.*
 
 
-open class Screenshot(contentResolver: ContentResolver, protected open val listener: BottomSheetListener? = null) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
+open class Screenshot @JvmOverloads constructor(
+    contentResolver: ContentResolver, protected open val listener: BottomSheetListener? = null,
+    protected open val toasterSellerListener: ToasterSellerListener? = null
+) : Application.ActivityLifecycleCallbacks, ScreenshotObserver.Listener {
     private val mHandlerThread: HandlerThread = HandlerThread("ScreenshotObserver")
     private val mHandler: Handler
     private val mContentResolver: ContentResolver
@@ -30,7 +33,10 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
     private var currentActivity: Activity? = null
     private var savedUri: Uri? = null
     private var className: String = ""
-    private val requiredPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    private val requiredPermissions = arrayOf(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
     init {
         mHandlerThread.start()
@@ -39,17 +45,21 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
         mContentObserver = ScreenshotObserver(mHandler, contentResolver, this)
     }
 
-    fun register() {
+    private fun register() {
         mContentResolver.registerContentObserver(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                true,
-                mContentObserver
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            true,
+            mContentObserver
         )
     }
 
     private fun allPermissionsGranted(activity: Activity): Boolean {
         for (permission in requiredPermissions) {
-            if (ActivityCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    activity,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 return false
             }
         }
@@ -62,18 +72,19 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
         }
 
         val bottomSheetFeedback = BottomSheetUnify()
-        val viewBottomSheet = View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
-            btn_add_feedback.setOnClickListener {
-                listener?.onFeedbackClicked(uri, className, true)
-                bottomSheetFeedback.dismiss()
+        val viewBottomSheet =
+            View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
+                btn_add_feedback.setOnClickListener {
+                    listener?.onFeedbackClicked(uri, className, true)
+                    bottomSheetFeedback.dismiss()
+                }
+                btn_dismiss.setOnClickListener {
+                    bottomSheetFeedback.dismiss()
+                }
             }
-            btn_dismiss.setOnClickListener {
-                bottomSheetFeedback.dismiss()
-            }
-        }
 
-       bottomSheetFeedback.apply {
-           setChild(viewBottomSheet)
+        bottomSheetFeedback.apply {
+            setChild(viewBottomSheet)
         }
 
         val fm = (activity as AppCompatActivity).supportFragmentManager
@@ -86,6 +97,10 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
 
     interface BottomSheetListener {
         fun onFeedbackClicked(uri: Uri?, className: String, isFromScreenshot: Boolean)
+    }
+
+    interface ToasterSellerListener {
+        fun showToaster(uri: Uri?, currentActivity: Activity?)
     }
 
     override fun onActivityPaused(activity: Activity) {
@@ -109,17 +124,21 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
     }
 
     override fun onActivityResumed(activity: Activity) {
-        register()
         currentActivity = activity
         className = activity.localClassName
+        register()
     }
 
     override fun onScreenShotTaken(uri: Uri) {
         savedUri = uri
         currentActivity?.let {
             if (!allPermissionsGranted(it) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if(!GlobalConfig.isSellerApp()) ScreenshotAnalytics.eventUseScreenshot()
-                openBottomSheetFeedback(it, uri, className)
+                if (GlobalConfig.isSellerApp()) {
+                    toasterSellerListener?.showToaster(uri, it)
+                } else {
+                    openBottomSheetFeedback(it, uri, className)
+                    ScreenshotAnalytics.eventUseScreenshot()
+                }
             } else {
                 handleItem(uri)
             }
@@ -137,8 +156,12 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
             if (cursor != null && cursor.moveToFirst()) {
                 val Name = generateScreenshotDataFromCursor(cursor)
                 if (Name != null && currentActivity != null) {
-                    if(!GlobalConfig.isSellerApp()) ScreenshotAnalytics.eventUseScreenshot()
-                    openBottomSheetFeedback(currentActivity, uri, className)
+                    if (GlobalConfig.isSellerApp()) {
+                        toasterSellerListener?.showToaster(uri, currentActivity)
+                    } else {
+                        openBottomSheetFeedback(currentActivity, uri, className)
+                        ScreenshotAnalytics.eventUseScreenshot()
+                    }
                 }
             }
         } finally {
@@ -158,7 +181,7 @@ open class Screenshot(contentResolver: ContentResolver, protected open val liste
     companion object {
         private val FILE_NAME_PREFIX = "screenshot"
         private val PROJECTION = arrayOf(
-                MediaStore.Images.Media.DISPLAY_NAME
+            MediaStore.Images.Media.DISPLAY_NAME
         )
     }
 

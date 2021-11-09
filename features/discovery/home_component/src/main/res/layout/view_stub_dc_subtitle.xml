@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<com.tokopedia.unifyprinciples.Typography app:typographyType="body_3"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/channel_subtitle"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginLeft="16dp"
+    android:layout_marginStart="16dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_centerVertical="true"
@@ -12,4 +12,5 @@
     android:lines="1"
     android:ellipsize="end"
     tools:text="Berakhir dalam"
-    android:textIsSelectable="false" />
+    android:textIsSelectable="false"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />

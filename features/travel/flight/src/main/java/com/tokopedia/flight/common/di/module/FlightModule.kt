@@ -13,7 +13,6 @@ import com.tokopedia.flight.cancellation.data.FlightCancellationCloudDataSource
 import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.flight.common.data.model.FlightErrorResponse
 import com.tokopedia.flight.common.data.repository.FlightRepositoryImpl
-import com.tokopedia.flight.common.data.source.FlightAuthInterceptor
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi
 import com.tokopedia.flight.common.data.source.cloud.api.retrofit.StringResponseConverter
 import com.tokopedia.flight.common.di.qualifier.FlightChuckQualifier
@@ -65,14 +64,12 @@ class FlightModule {
     @FlightScope
     @Provides
     fun provideOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
-                            flightAuthInterceptor: FlightAuthInterceptor,
                             @FlightChuckQualifier chuckInterceptor: Interceptor,
                             @FlightQualifier okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
                 .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .addInterceptor(flightAuthInterceptor)
                 .addInterceptor(ErrorResponseInterceptor(FlightErrorResponse::class.java))
 
         if (GlobalConfig.isAllowDebuggingTools()) {

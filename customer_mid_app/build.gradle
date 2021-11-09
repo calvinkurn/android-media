@@ -8,11 +8,7 @@ buildscript {
         google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-        jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
-        maven {
-            url 'https://www.jitpack.io'
-        }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -59,7 +55,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.flightOrderList)
     implementation projectOrAar(rootProject.ext.features.travelCountryCode)
     implementation projectOrAar(rootProject.ext.features.travelPassenger)
-    implementation projectOrAar(rootProject.ext.features.review)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.variantCommon)
@@ -83,6 +78,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.logisticcart)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.chatcommon)
     implementation projectOrAar(rootProject.ext.features.nps)
     implementation projectOrAar(rootProject.ext.features.qrscanner)
@@ -100,9 +96,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.attachproduct)
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation projectOrAar(rootProject.ext.features.loginregister)
-    implementation projectOrAar(rootProject.ext.features.loginphone)
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.features.commonDigital)
+    implementation projectOrAar(rootProject.ext.features.digitalRecommendation)
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
     implementation projectOrAar(rootProject.ext.features.loyaltyCommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
@@ -138,7 +135,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.imagePreviewSlider)
+    implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
+    implementation projectOrAar(rootProject.ext.features.reviewInbox)
+    implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.youtubeCommon)
     implementation projectOrAar(rootProject.ext.features.merchantVoucher)
@@ -222,7 +222,11 @@ dependencies {
     // lint checks
     lintChecks rootProject.ext.tkpdInternalLibDependencies.lint
 
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
 
+    //new relic sdk
+    implementation rootProject.ext.miscDependencies.newRelic
 
     // unify dependencies
     implementation rootProject.ext.unifyDependencies.principles
@@ -270,7 +274,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -284,7 +287,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayerUi
     implementation rootProject.ext.miscDependencies.exoPlayerRtmp
 
-    implementation rootProject.ext.firebase.appIndexing
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
@@ -296,6 +298,7 @@ dependencies {
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.liveDataKtx
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.coroutineCore
@@ -308,8 +311,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticGTMUtil
     implementation(rootProject.ext.miscDependencies.facebook) {

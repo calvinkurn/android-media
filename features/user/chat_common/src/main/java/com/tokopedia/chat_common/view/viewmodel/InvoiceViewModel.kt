@@ -1,7 +1,7 @@
 package com.tokopedia.chat_common.view.viewmodel
 
 abstract class InvoiceViewModel (
-        val id: Int,
+        val id: String,
         val invoiceCode: String,
         val productName: String,
         val date: String,

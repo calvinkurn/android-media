@@ -46,7 +46,7 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCMenuDetailResponse::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())
             }.getSuccessData<RechargeCCMenuDetailResponse>()
@@ -69,7 +69,7 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCBankListReponse::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
             }.getSuccessData<RechargeCCBankListReponse>()
@@ -92,7 +92,7 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCCatalogPrefix::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
             }.getSuccessData<RechargeCCCatalogPrefix>()

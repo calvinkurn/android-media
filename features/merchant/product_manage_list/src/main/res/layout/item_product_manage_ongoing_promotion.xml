@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/product_manage_ongoing_campaign_item_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_product_manage_ongoing_promotion_item"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:layout_marginEnd="@dimen/product_manage_ongoing_campaign_item_image_margin_end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_product_manage_ongoing_promotion_item"
+        app:layout_constraintTop_toTopOf="@id/tv_product_manage_ongoing_promotion_item"
+        app:layout_constraintBottom_toBottomOf="@id/tv_product_manage_ongoing_promotion_item"
+        tools:src="@tools:sample/avatars"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_product_manage_ongoing_promotion_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/product_manage_ongoing_campaign_item_name_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyType="heading_6"
+        tools:text="Diskon Toko"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

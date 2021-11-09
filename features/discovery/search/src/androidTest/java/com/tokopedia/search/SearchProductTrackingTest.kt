@@ -1,7 +1,6 @@
 package com.tokopedia.search
 
-import android.app.Activity
-import android.app.Instrumentation.ActivityResult
+import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
@@ -9,37 +8,48 @@ import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/search/search_product.json"
-private const val TAG = "SearchProductTest"
+private const val ANALYTIC_VALIDATOR_QUERY_THANOS_ID = "7"
 
 internal class SearchProductTrackingTest {
 
     @get:Rule
-    val activityRule = IntentsTestRule(SearchActivity::class.java, false, false)
+    val activityRule = IntentsTestRule(
+        SearchActivity::class.java,
+        false,
+        false
+    )
+
+    @get:Rule
+    val cassavaTestRule = CassavaTestRule(
+        isFromNetwork = true
+//        isFromNetwork = false
+    )
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val recyclerViewId = R.id.recyclerview
     private var recyclerView: RecyclerView? = null
     private var recyclerViewIdlingResource: IdlingResource? = null
     private val gtmLogDBSource = GtmLogDBSource(context)
+    private val blockAllIntentsMonitor = Instrumentation.ActivityMonitor(
+        null as String?,
+        null,
+        true
+    )
 
     @Before
     fun setUp() {
@@ -53,7 +63,7 @@ internal class SearchProductTrackingTest {
 
         setupIdlingResource()
 
-        intending(isInternal()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+        InstrumentationRegistry.getInstrumentation().addMonitor(blockAllIntentsMonitor)
     }
 
     private fun setupIdlingResource() {
@@ -67,25 +77,29 @@ internal class SearchProductTrackingTest {
     fun testTracking() {
         performUserJourney()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
-                hasAllSuccess())
+        cassavaTestRule.validate(
+            ANALYTIC_VALIDATOR_QUERY_THANOS_ID,
+//            ANALYTIC_VALIDATOR_QUERY_FILE_NAME
+        )
     }
 
     private fun performUserJourney() {
         onView(withId(recyclerViewId)).check(matches(isDisplayed()))
 
         val productListAdapter = recyclerView.getProductListAdapter()
-        val topAdsItemPosition = productListAdapter.itemList.getFirstTopAdsProductPosition()
-        val organicItemPosition = productListAdapter.itemList.getFirstOrganicProductPosition()
+        val topAdsPosition = productListAdapter.itemList.getFirstTopAdsProductPosition()
+        val organicPosition = productListAdapter.itemList.getFirstOrganicProductPosition()
 
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(topAdsItemPosition, click()))
-        onView(withId(recyclerViewId)).perform(actionOnItemAtPosition<ProductItemViewHolder>(organicItemPosition, click()))
+        recyclerView.perform(actionOnItemAtPosition<ProductItemViewHolder>(topAdsPosition, click()))
+        recyclerView.perform(actionOnItemAtPosition<ProductItemViewHolder>(organicPosition, click()))
 
         activityRule.activity.finish()
     }
 
     @After
     fun tearDown() {
+        InstrumentationRegistry.getInstrumentation().removeMonitor(blockAllIntentsMonitor)
+
         gtmLogDBSource.deleteAll().subscribe()
 
         IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)

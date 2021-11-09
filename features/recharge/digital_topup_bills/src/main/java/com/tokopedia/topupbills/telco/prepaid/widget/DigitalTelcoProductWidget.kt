@@ -3,17 +3,21 @@ package com.tokopedia.topupbills.telco.prepaid.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.data.TelcoAttributesProduct
 import com.tokopedia.topupbills.telco.data.TelcoCatalogDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapter
 import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapterFactory
+import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductMccmListViewHolder
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
 import com.tokopedia.topupbills.telco.prepaid.model.DigitalTrackProductTelco
 
@@ -27,8 +31,9 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     private val recyclerView: RecyclerView
 
-    private lateinit var adapter: TelcoProductAdapter
+    lateinit var adapter: TelcoProductAdapter
     private lateinit var listener: ActionListener
+    private var hasMccmProduct = false
 
     init {
         val view = View.inflate(context, R.layout.view_telco_product_list, this)
@@ -39,78 +44,176 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         this.listener = listener
     }
 
-    fun renderProductList(productType: Int, showTitle: Boolean, productList: List<TelcoCatalogDataCollection>) {
+    fun renderProductList(productType: Int, showTitle: Boolean, productList: List<TelcoCatalogDataCollection>,
+                          isTabSelected: Boolean) {
+
+        hasMccmProduct = false
+
         val dataCollection = mutableListOf<Visitable<*>>()
-        val dataTracking = mutableListOf<TelcoProduct>()
-        productList.map {
-            if (showTitle) {
-                if (it.name.isNotEmpty()) {
-                    dataCollection.add(TelcoCatalogDataCollection(it.name, listOf()))
-                } else {
-                    dataCollection.add(TelcoCatalogDataCollection(context.getString(R.string.telco_other_recommendation), listOf()))
-                }
-            }
-            dataCollection.addAll(it.products)
-            dataTracking.addAll(it.products)
+        dataCollection.addAll(productList.filter { it.isMccm() })
+        if (dataCollection.isNotEmpty()) {
+            hasMccmProduct = true
         }
 
-        adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(productType, object : TelcoProductViewHolder.OnClickListener {
-            override fun onClickItemProduct(element: TelcoProduct, position: Int) {
-                val label = getLabelProductItem(element.id)
-                listener.onClickProduct(element, position, label)
+        productList.map {
+            if (!it.isMccm()) {
+                if (showTitle) {
+                    if (it.name.isNotEmpty()) {
+                        dataCollection.add(TelcoCatalogDataCollection(it.name, listOf()))
+                    } else {
+                        if (productType == TelcoProductType.PRODUCT_GRID) {
+                            dataCollection.add(TelcoCatalogDataCollection(context.getString(R.string.telco_choose_denom), listOf()))
+                        } else {
+                            dataCollection.add(TelcoCatalogDataCollection(context.getString(R.string.telco_other_recommendation), listOf()))
+                        }
+                    }
+                }
+                dataCollection.addAll(it.products)
             }
+        }
 
-            override fun onClickSeeMoreProduct(element: TelcoProduct, position: Int) {
-                listener.onSeeMoreProduct(element, position)
-            }
-        }))
+        assignPositionToDataCollection(dataCollection)
+
+        adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(productType, getProductListener(), getMccmListener()))
         recyclerView.adapter = adapter
+
         if (productType == TelcoProductType.PRODUCT_GRID) {
-            recyclerView.layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
+            val gridLayout = GridLayoutManager(context, PRODUCT_GRID_SPAN_LAYOUT, RecyclerView.VERTICAL, false)
+            gridLayout.spanSizeLookup = object : SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    val singleGridThreshold = if (hasMccmProduct) SINGLE_GRID_THRESHOLD_1 else SINGLE_GRID_THRESHOLD_0
+                    return if (position <= singleGridThreshold) PRODUCT_GRID_SPAN_LAYOUT else SINGLE_PRODUCT_GRID_SPAN_LAYOUT
+                }
+            }
+            recyclerView.layoutManager = gridLayout
         } else {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerView.layoutManager = linearLayoutManager
         }
+
         adapter.renderList(dataCollection)
 
-        getVisibleProductItemsToUsersTracking(DEFAULT_POS_FIRST_ITEM, DEFAULT_POS_LAST_ITEM, dataTracking)
+        trackFirstVisibleItemToUser(dataCollection, isTabSelected)
+        recyclerView.clearOnScrollListeners()
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    calculateProductItemVisibleItemTracking(dataTracking)
+                    calculateProductItemVisibleItemTracking(dataCollection)
                 }
             }
         })
     }
 
-    fun calculateProductItemVisibleItemTracking(productList: List<TelcoProduct>) {
+    private fun trackFirstVisibleItemToUser(productList: List<Visitable<*>>, isTabSelected: Boolean) {
+        recyclerView.viewTreeObserver
+                .addOnGlobalLayoutListener(
+                        object : ViewTreeObserver.OnGlobalLayoutListener {
+                            override fun onGlobalLayout() {
+                                // At this point the layout is complete and the
+                                // dimensions of recyclerView and any child views
+                                // are known.
+                                if (isTabSelected) {
+                                    calculateProductItemVisibleItemTracking(productList)
+                                }
+                                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            }
+                        })
+    }
+
+    fun trackFirstMccmVisibleItemToUser() {
+        if (hasMccmProduct) {
+            recyclerView.findViewHolderForAdapterPosition(MCCM_WIDGET_POSITION)?.let {
+                (it as TelcoProductMccmListViewHolder).trackCurrentVisibleMccmProduct()
+            }
+        }
+    }
+
+    private fun assignPositionToDataCollection(dataCollection: List<Visitable<*>>) {
+        var productCount = 0
+        for (data in dataCollection) {
+            if (data is TelcoProduct) {
+                data.productPosition = productCount
+                productCount++
+            }
+        }
+    }
+
+    private fun getProductListener() = object : TelcoProductViewHolder.ActionListener {
+        override fun onClickItemProduct(element: TelcoProduct, position: Int) {
+            val label = getLabelProductItem(element.id)
+            listener.onClickProduct(element, position, label)
+            adapter.selectedMccmPosition = RecyclerView.NO_POSITION
+        }
+
+        override fun onClickSeeMoreProduct(element: TelcoProduct, position: Int) {
+            listener.onSeeMoreProduct(element, position)
+        }
+
+        override fun onTrackSpecialProductImpression(itemProduct: TelcoProduct, position: Int) {
+            listener.onTrackImpressionSpecialProduct(itemProduct, position)
+        }
+    }
+
+    private fun getMccmListener() = object : TelcoProductMccmListViewHolder.OnClickListener {
+        override fun onTrackImpressionMccmProductsList(productList: List<DigitalTrackProductTelco>) {
+            listener.onTrackImpressionMccmProductsList(productList)
+        }
+
+        override fun onClickMccm(element: TelcoProduct, position: Int) {
+            listener.onClickMccmProduct(element, position)
+            adapter.selectedMccmPosition = position
+        }
+
+        override fun onClickLihatDetail(element: TelcoProduct, position: Int) {
+            listener.onSeeMoreMccmProduct(element, position)
+        }
+    }
+
+    fun calculateProductItemVisibleItemTracking(productList: List<Visitable<*>>) {
         var firstPos = 0
         var lastPos = 0
-        if (recyclerView.layoutManager is LinearLayoutManager) {
-            firstPos = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-            lastPos = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-        } else if (recyclerView.layoutManager is GridLayoutManager) {
-            firstPos = (recyclerView.layoutManager as GridLayoutManager).findFirstCompletelyVisibleItemPosition()
-            lastPos = (recyclerView.layoutManager as GridLayoutManager).findLastCompletelyVisibleItemPosition()
+        if (recyclerView.layoutManager is GridLayoutManager) {
+            firstPos = (recyclerView.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+            lastPos = (recyclerView.layoutManager as GridLayoutManager).findLastVisibleItemPosition()
+        } else if (recyclerView.layoutManager is LinearLayoutManager) {
+            firstPos = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+            lastPos = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
         }
         getVisibleProductItemsToUsersTracking(firstPos, lastPos, productList)
     }
 
-    private fun getVisibleProductItemsToUsersTracking(firstPos: Int, lastPos: Int, productList: List<TelcoProduct>) {
+    private fun getVisibleProductItemsToUsersTracking(firstPos: Int, lastPos: Int, productList: List<Visitable<*>>) {
         val digitalTrackProductTelcoList = mutableListOf<DigitalTrackProductTelco>()
+
         for (i in firstPos..lastPos) {
-            if (firstPos >= 0 && lastPos <= productList.size - 1) {
-                digitalTrackProductTelcoList.add(DigitalTrackProductTelco(productList[i], i))
+            if (firstPos >= 0 && lastPos < productList.size) {
+                val product = productList[i]
+                if (product is TelcoProduct) {
+                    digitalTrackProductTelcoList.add(DigitalTrackProductTelco(product, product.productPosition))
+                }
+
             }
         }
-        if (digitalTrackProductTelcoList.size > 0) {
+        if (digitalTrackProductTelcoList.isNotEmpty()) {
             listener.onTrackImpressionProductsList(digitalTrackProductTelcoList)
         }
     }
 
     fun selectProductItem(position: Int) {
         adapter.selectItemProduct(position)
+        if (hasMccmProduct) {
+            recyclerView.findViewHolderForAdapterPosition(MCCM_WIDGET_POSITION)?.let {
+                (it as TelcoProductMccmListViewHolder).adapter.selectItemProduct(RecyclerView.NO_POSITION)
+            }
+        }
+    }
+
+    fun selectMccmProductItem(position: Int) {
+        adapter.selectItemProduct(RecyclerView.NO_POSITION)
+        recyclerView.findViewHolderForAdapterPosition(MCCM_WIDGET_POSITION)?.let {
+            (it as TelcoProductMccmListViewHolder).adapter.selectItemProduct(position)
+        }
     }
 
     fun resetSelectedProductItem() {
@@ -171,15 +274,23 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     interface ActionListener {
         fun onClickProduct(itemProduct: TelcoProduct, position: Int, labelList: String)
+        fun onClickMccmProduct(itemProduct: TelcoProduct, position: Int)
         fun onSeeMoreProduct(itemProduct: TelcoProduct, position: Int)
+        fun onSeeMoreMccmProduct(itemProduct: TelcoProduct, position: Int)
         fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
+        fun onTrackImpressionMccmProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
         fun onScrollToPositionItem(position: Int)
+        fun onTrackImpressionSpecialProduct(itemProduct: TelcoProduct, position: Int)
     }
 
     companion object {
-        //add default pos first and last to fire tracking visible item for first time
-        const val DEFAULT_POS_FIRST_ITEM = 0
-        const val DEFAULT_POS_LAST_ITEM = 3
+        const val MCCM_WIDGET_POSITION = 0
+
+        const val PRODUCT_GRID_SPAN_LAYOUT = 2
+        const val SINGLE_PRODUCT_GRID_SPAN_LAYOUT = 1
+        
+        const val SINGLE_GRID_THRESHOLD_1 = 1
+        const val SINGLE_GRID_THRESHOLD_0 = 0
     }
 
 }

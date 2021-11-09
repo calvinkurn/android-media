@@ -11,7 +11,6 @@ buildscript {
         google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-        jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
@@ -49,6 +48,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

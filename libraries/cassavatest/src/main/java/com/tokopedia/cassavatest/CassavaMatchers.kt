@@ -15,10 +15,16 @@ fun hasAllSuccess(): Matcher<List<Validator>> {
         override fun describeMismatchSafely(item: List<Validator>?, mismatchDescription: Description?) {
             val indexWithFailure = item?.mapIndexed { index, validator ->
                 if (validator.status != Status.SUCCESS) index else -1
-            }?.filter { it >= 0 }?.joinToString()
+            }?.filter { it >= 0 } ?: emptyList()
+
             mismatchDescription
-                    ?.appendText(" has mismatch status on query number ")
-                    ?.appendValue(indexWithFailure)
+                    ?.appendText(" has mismatch status on")
+
+            indexWithFailure.map {
+                mismatchDescription
+                        ?.appendText("\n\nQuery Number ${it + 1} with possible errors : \n")
+                        ?.appendText(item?.get(it)?.errors ?: "")
+            }
         }
 
         override fun matchesSafely(result: List<Validator>): Boolean {

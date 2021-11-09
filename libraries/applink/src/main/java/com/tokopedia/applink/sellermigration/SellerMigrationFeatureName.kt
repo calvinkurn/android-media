@@ -27,7 +27,8 @@ import androidx.annotation.StringDef
     SellerMigrationFeatureName.FEATURE_PLAY_FEED,
     SellerMigrationFeatureName.FEATURE_FINANCIAL_SERVICES,
     SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT,
-    SellerMigrationFeatureName.FEATURE_DISCUSSION
+    SellerMigrationFeatureName.FEATURE_DISCUSSION,
+    SellerMigrationFeatureName.FEATURE_CENTRALIZED_PROMO
 ])
 annotation class SellerMigrationFeatureName {
     companion object {

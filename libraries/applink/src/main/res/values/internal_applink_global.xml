@@ -18,6 +18,7 @@
     <string name="path_profile_completion">/profile-completion</string>
     <string name="path_setting_profile">/setting-profile</string>
     <string name="path_liveness_detection">/liveness-detection</string>
+    <string name="path_telephony_masking">/telephony-masking</string>
 
     <string name="path_landing_shop_creation">/landing-shop-creation</string>
     <string name="path_phone_shop_creation">/phone-shop-creation</string>
@@ -30,6 +31,7 @@
     <string name="path_shop_talk">/shop-talk/.*\\/</string>
     <string name="path_user_identification_info">/user-identification-info</string>
     <string name="path_user_identification_form">/user-identification-form</string>
+    <string name="path_user_identification_only">/user-identification-only</string>
     <string name="path_change_name">/change-name</string>
     <string name="path_change_gender">/change-gender</string>
     <string name="path_change_phone_number">/change-phone-number</string>
@@ -48,7 +50,10 @@
     <string name="path_video_picker">/video-picker</string>
     <string name="path_image_editor">/image-editor</string>
     <string name="path_webview" translatable="false">/webview</string>
+    <string name="path_webview_download" translatable="false">/webviewdownload</string>
+    <string name="path_webview_back_home" translatable="false">/webviewbackhome</string>
     <string name="path_webview_download_html" translatable="false">/webview-download-html</string>
+    <string name="path_browser" translatable="false">/browser</string>
     <string name="path_setting_profile_phone_verification" translatable="false">/setting-profile-phone-verification</string>
     <string name="path_setting_referral_phone_verification" translatable="false">/setting-referral-phone-verification</string>
     <string name="path_dynamic_features_install" translatable="false">/dynamic-features-install/.*\\/</string>
@@ -65,6 +70,7 @@
     <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
     <string name="path_payment_setting" translatable="false">/payment-setting</string>
     <string name="path_home_account_old" translatable="false">/account-home-old</string>
+    <string name="path_youtube_video" translatable="false">/youtube-video</string>
 
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
     <string name="path_user_login" translatable="false">/login</string>
@@ -93,6 +99,8 @@
 
     <string name="new_home_account">/new-home-account</string>
 
+    <string name="funds_and_investment">/funds-and-investment</string>
+
     <string name="path_screen_recorder">/screen-recorder</string>
 
     <string name="path_internal_feedback">/internal-feedback</string>
@@ -101,5 +109,7 @@
     <string name="path_ovo_add_name">/ovo-add-name</string>
     <string name="path_ovo_final_page">/ovo-final-page</string>
     <string name="path_ovo_regis_init">/ovo-reg-init</string>
+
+    <string name="path_image_picker_insta">/image-picker/v2/</string>
 
 </resources>

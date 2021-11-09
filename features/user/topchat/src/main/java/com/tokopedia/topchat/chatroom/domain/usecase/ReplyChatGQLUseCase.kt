@@ -1,8 +1,10 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
 import androidx.collection.ArrayMap
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam.generateParentReplyRequestPayload
 import javax.inject.Inject
 
 open class ReplyChatGQLUseCase @Inject constructor(
@@ -13,9 +15,10 @@ open class ReplyChatGQLUseCase @Inject constructor(
             msgId: String,
             msg: String,
             filePath: String,
-            source: String
+            source: String,
+            parentReply: ParentReply? = null
     ): ChatReplyPojo {
-        val params = generateParam(msgId, msg, filePath, source)
+        val params = generateParam(msgId, msg, filePath, source, parentReply)
         return gqlUseCase.apply {
             setTypeClass(ChatReplyPojo::class.java)
             setRequestParams(params)
@@ -28,6 +31,7 @@ open class ReplyChatGQLUseCase @Inject constructor(
         msg: String,
         filePath: String,
         source: String,
+        parentReply: ParentReply?
     ): Map<String, Any> {
         val requestParams = ArrayMap<String, Any>()
         requestParams[PARAM_MSG_ID] = msgId
@@ -35,6 +39,8 @@ open class ReplyChatGQLUseCase @Inject constructor(
         requestParams[PARAM_ATTACHMENT_TYPE] = 2
         requestParams[PARAM_FILE_PATH] = filePath
         requestParams[PARAM_SOURCE] = source
+        val parentReplyStr = generateParentReplyRequestPayload(parentReply)?.toString() ?: ""
+        requestParams[PARAM_PARENT_REPLY] = parentReplyStr
         return requestParams
     }
 
@@ -48,27 +54,43 @@ open class ReplyChatGQLUseCase @Inject constructor(
         private const val PARAM_ATTACHMENT_TYPE = "attachmentType"
         private const val PARAM_FILE_PATH = "filePath"
         private const val PARAM_SOURCE = "source"
+        private const val PARAM_PARENT_REPLY = "parentReply"
 
-        private const val query = "mutation ($$PARAM_MSG_ID:String!, $$PARAM_MSG:String!, $$PARAM_ATTACHMENT_TYPE:Int!, $$PARAM_FILE_PATH:String!, $$PARAM_SOURCE:String!)" +
-                " {\n" +
-                "  chatReplyChat(msgID: $$PARAM_MSG_ID, msg: $$PARAM_MSG, attachmentType: $$PARAM_ATTACHMENT_TYPE, filePath: $$PARAM_FILE_PATH, source: $$PARAM_SOURCE) {\n" +
-                "    msgID\n" +
-                "    senderID\n" +
-                "    msg\n" +
-                "    replyTime\n" +
-                "    from\n" +
-                "    role\n" +
-                "    attachment {\n" +
-                "      id\n" +
-                "      type\n" +
-                "      fallback {\n" +
-                "        html\n" +
-                "        message\n" +
-                "      }\n" +
-                "      attributes\n" +
-                "    }\n" +
-                "  }\n" +
-                "}"
+        private val query = """
+            mutation chatReplyChat( 
+                    $$PARAM_MSG_ID:String!,  
+                    $$PARAM_MSG:String!, 
+                    $$PARAM_ATTACHMENT_TYPE:Int!, 
+                    $$PARAM_FILE_PATH:String!, 
+                    $$PARAM_SOURCE:String!, 
+                    $$PARAM_PARENT_REPLY:String! 
+                ) { 
+                  chatReplyChat(
+                      msgID: $$PARAM_MSG_ID,
+                      msg: $$PARAM_MSG, 
+                      attachmentType: $$PARAM_ATTACHMENT_TYPE, 
+                      filePath: $$PARAM_FILE_PATH, 
+                      source: $$PARAM_SOURCE,
+                      parentReply: $$PARAM_PARENT_REPLY
+                  ) { 
+                    msgID 
+                    senderID 
+                    msg 
+                    replyTime 
+                    from 
+                    role 
+                    attachment { 
+                      id 
+                      type 
+                      fallback { 
+                        html 
+                        message 
+                      } 
+                      attributes 
+                    } 
+                  } 
+                }
+        """.trimIndent()
     }
 
 }

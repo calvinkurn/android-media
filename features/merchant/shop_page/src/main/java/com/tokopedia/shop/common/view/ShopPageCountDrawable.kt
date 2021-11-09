@@ -7,6 +7,14 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.shop.R
 
 class ShopPageCountDrawable(context: Context) : Drawable() {
+
+    companion object{
+        private const val CENTER_X_COUNTER = 1
+        private const val CENTER_Y_COUNTER = 3
+        private const val RADIUS_COUNTER_FOR_SHORT_COUNT = 5.5
+        private const val RADIUS_COUNTER_FOR_LONG_COUNT = 6.5
+    }
+
     private var badgePaint: Paint? = null
     private var textPaint: Paint? = null
     private val txtRect = Rect()
@@ -40,14 +48,14 @@ class ShopPageCountDrawable(context: Context) : Drawable() {
 
         /*Using Math.max rather than Math.min */
         val radius = Math.max(width, height) / 2 / 2
-        val centerX = width - radius - 1
-        val centerY = radius - 3
+        val centerX = width - radius - CENTER_X_COUNTER
+        val centerY = radius - CENTER_Y_COUNTER
         badgePaint?.let{
             if (count.length <= 2) {
                 // Draw badge circle.
-                canvas.drawCircle(centerX, centerY, (radius + 5.5).toFloat(), it)
+                canvas.drawCircle(centerX, centerY, (radius + RADIUS_COUNTER_FOR_SHORT_COUNT).toFloat(), it)
             } else {
-                canvas.drawCircle(centerX, centerY, (radius + 6.5).toFloat(), it)
+                canvas.drawCircle(centerX, centerY, (radius + RADIUS_COUNTER_FOR_LONG_COUNT).toFloat(), it)
             }
         }
         // Draw badge count text inside the circle.

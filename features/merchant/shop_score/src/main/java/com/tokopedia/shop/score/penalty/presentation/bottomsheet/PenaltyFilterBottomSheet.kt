@@ -8,13 +8,13 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.databinding.BottomsheetFilterPenaltyBinding
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyBottomSheetListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapter
@@ -22,13 +22,13 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenalt
 import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottomSheetListener {
+class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenaltyBinding>(),
+    FilterPenaltyBottomSheetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -38,17 +38,18 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
     }
 
     private var isApplyFilter = false
-    private var rvPenaltyFilter: RecyclerView? = null
-    private var btnShowPenalty: UnifyButton? = null
 
     private val filterPenaltyAdapterTypeFactory by lazy { FilterPenaltyAdapterFactory(this) }
     private val filterPenaltyAdapter by lazy { FilterPenaltyAdapter(filterPenaltyAdapterTypeFactory) }
 
     private var penaltyFilterFinishListener: PenaltyFilterFinishListener? = null
 
+    override fun bind(view: View) = BottomsheetFilterPenaltyBinding.bind(view)
+
     override fun getLayoutResId(): Int = R.layout.bottomsheet_filter_penalty
 
-    override fun getTitleBottomSheet(): String = getString(R.string.title_penalty_filter_bottom_sheet)
+    override fun getTitleBottomSheet(): String =
+        getString(R.string.title_penalty_filter_bottom_sheet)
 
     override fun show(fragmentManager: FragmentManager?) {
         fragmentManager?.let {
@@ -62,7 +63,11 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
         getComponent(PenaltyComponent::class.java)?.inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         showKnob = true
         isDragable = true
         isHideable = true
@@ -76,7 +81,6 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getDataCacheFromManager()
-        initView(view)
         setupRecyclerView()
         observePenaltyFilter()
         observeUpdateFilterSelected()
@@ -94,7 +98,12 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
         super.onDestroy()
     }
 
-    override fun onChipsFilterItemClick(nameFilter: String, chipType: String, chipTitle: String, position: Int) {
+    override fun onChipsFilterItemClick(
+        nameFilter: String,
+        chipType: String,
+        chipTitle: String,
+        position: Int
+    ) {
         when (nameFilter) {
             ShopScoreConstant.TITLE_SORT -> {
                 viewModelShopPenalty.updateFilterSelected(nameFilter, chipType, position)
@@ -106,14 +115,20 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
     }
 
     private fun getDataCacheFromManager() {
-        val cacheManager = context?.let { SaveInstanceCacheManager(it, arguments?.getString(KEY_CACHE_MANAGER_ID_PENALTY_FILTER)) }
-        val filterTypePenalty = cacheManager?.get(KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper::class.java)
+        val cacheManager = context?.let {
+            SaveInstanceCacheManager(
+                it,
+                arguments?.getString(KEY_CACHE_MANAGER_ID_PENALTY_FILTER)
+            )
+        }
+        val filterTypePenalty =
+            cacheManager?.get(KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper::class.java)
                 ?: FilterTypePenaltyUiModelWrapper()
         viewModelShopPenalty.getFilterPenalty(filterTypePenalty.penaltyFilterList)
     }
 
     private fun clickBtnApplied() {
-        btnShowPenalty?.setOnClickListener {
+        binding?.btnShowPenalty?.setOnClickListener {
             isApplyFilter = true
             penaltyFilterFinishListener?.onClickFilterApplied(viewModelShopPenalty.getPenaltyFilterUiModelList())
             dismiss()
@@ -174,7 +189,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
 
     private fun checkIsSelected(): Boolean {
         viewModelShopPenalty.getPenaltyFilterUiModelList().forEach {
-            it.chipsFilerList.forEach { chips ->
+            it.chipsFilterList.forEach { chips ->
                 if (chips.isSelected) {
                     return true
                 }
@@ -184,15 +199,10 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore(), FilterPenaltyBottom
     }
 
     private fun setupRecyclerView() {
-        rvPenaltyFilter?.apply {
+        binding?.rvPenaltyFilterBottomSheet?.run {
             layoutManager = context?.let { LinearLayoutManager(it) }
             adapter = filterPenaltyAdapter
         }
-    }
-
-    private fun initView(view: View) {
-        rvPenaltyFilter = view.findViewById(R.id.rvPenaltyFilterBottomSheet)
-        btnShowPenalty = view.findViewById(R.id.btnShowPenalty)
     }
 
     fun setPenaltyFilterFinishListener(penaltyFilterFinishListener: PenaltyFilterFinishListener) {

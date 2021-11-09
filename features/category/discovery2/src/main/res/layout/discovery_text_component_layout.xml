@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         tools:text="Header test 123" />

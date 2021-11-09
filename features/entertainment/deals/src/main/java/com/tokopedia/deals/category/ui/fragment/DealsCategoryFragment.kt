@@ -3,7 +3,9 @@ package com.tokopedia.deals.category.ui.fragment
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -29,6 +31,8 @@ import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
+import com.tokopedia.deals.databinding.FragmentDealsBrandBinding
+import com.tokopedia.deals.databinding.FragmentDealsCategoryBinding
 import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
@@ -38,8 +42,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.fragment_deals_category.*
-import kotlinx.android.synthetic.main.item_deals_chips_list.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 
@@ -48,6 +51,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
         DealsBrandActionListener, ProductCardListener,
         DealChipsListActionListener, DealsCategoryFilterBottomSheetListener,
         EmptyStateListener {
+
+    private var binding by autoCleared<FragmentDealsCategoryBinding>()
 
     private var categoryID: String = ""
 
@@ -67,6 +72,17 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewModel()
+    }
+
+    override fun inflate_tmp(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+        x: (inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) -> View
+    ): View {
+        val view =  super.inflate_tmp(inflater, container, savedInstanceState, x)
+        binding = FragmentDealsCategoryBinding.bind(view)
+        return view
     }
 
     private fun initViewModel() {
@@ -132,17 +148,17 @@ class DealsCategoryFragment : DealsBaseFragment(),
             when (dealsBaseItemDataView) {
                 is DealsBrandsDataView -> {
                     if (dealsBaseItemDataView.isSuccess) {
-                        one_row_shimmering.hide()
-                        shimmering.hide()
+                        binding.oneRowShimmering.root.hide()
+                        binding.shimmering.root.hide()
                     }  else {
-                        one_row_shimmering.show()
-                        shimmering.show()
+                        binding.oneRowShimmering.root.show()
+                        binding.shimmering.root.show()
                     }
                 }
 
                 is DealsEmptyDataView -> {
-                    shimmering.hide()
-                    one_row_shimmering.hide()
+                    binding.shimmering.root.hide()
+                    binding.oneRowShimmering.root.hide()
                 }
             }
         }
@@ -234,8 +250,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private var chips: List<ChipDataView> = listOf()
 
     private fun renderChips() {
-        filter_shimmering.hide()
-        sort_filter_deals_category.visible()
+        binding.container.filterShimmering.root.hide()
+        binding.container.sortFilterDealsCategory.visible()
 
         val filterItems = arrayListOf<SortFilterItem>()
         try {
@@ -254,7 +270,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
             if (chip.id == categoryID) chip.isSelected = true
         }
 
-        sort_filter_deals_category.run {
+        binding.container.sortFilterDealsCategory.run {
             var selectedChips = 0
             filterItems.forEachIndexed { index, sortFilterItem ->
                 if (chips[index].isSelected) {
@@ -296,7 +312,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private var additionalSelectedFilterCount = 0
 
     private fun selectFilterFromChipsData() {
-        sort_filter_deals_category.let { sortFilter ->
+        binding.container.sortFilterDealsCategory.let { sortFilter ->
             sortFilter.chipItems?.let { chipItems ->
                 for ((i, item) in chipItems.withIndex()) {
                     if (chips[i].isSelected) item.type = ChipsUnify.TYPE_SELECTED

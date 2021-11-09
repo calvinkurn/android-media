@@ -3,6 +3,20 @@
   "mode": "exact",
   "query": [
     {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": ".+",
+      "appsflyerId": ".+",
+      "shopId": ".*",
+      "screenName": "/digital/Kartu Kredit",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "theme": ".+"
+    },
+    {
       "event": "viewDigitalIris",
       "eventAction": "view pdp page",
       "eventCategory": "digital - homepage",

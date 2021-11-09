@@ -39,8 +39,6 @@ import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.media.loader.loadIcon
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import kotlin.math.roundToInt
 
 /**
@@ -80,7 +78,6 @@ class OvoWidgetView: FrameLayout {
 
 
     private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
-    private var navRollanceType: String = ""
 
     fun bind(element: HeaderDataModel, listener: HomeCategoryListener?) {
         this.listener = listener
@@ -114,18 +111,13 @@ class OvoWidgetView: FrameLayout {
     }
 
     private fun renderLogin(element: HeaderDataModel) {
-        navRollanceType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
-        )
         val containerOvo = itemView.findViewById<LinearLayout>(R.id.container_ovo)
         containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
         renderOvoLayout(element)
         renderTokoPoint(element)
         containerOvo.weightSum = 7f
-        if (navRollanceType.equals(AbTestPlatform.NAVIGATION_VARIANT_REVAMP)) {
-            renderBebasOngkirSection(element)
-            containerOvo.weightSum = 0f
-        }
+        renderBebasOngkirSection(element)
+        containerOvo.weightSum = 0f
     }
 
     private fun goToScanner() {

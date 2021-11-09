@@ -1,10 +1,15 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.search.result.domain.model.AceSearchProductModel
+import com.tokopedia.search.result.domain.model.HeadlineAdsModel
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
+import com.tokopedia.search.utils.UrlParamUtils
+import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
+import java.util.HashMap
 
 internal fun graphqlRequests(request: MutableList<GraphqlRequest>.() -> Unit) =
         mutableListOf<GraphqlRequest>().apply {
@@ -15,9 +20,10 @@ internal fun MutableList<GraphqlRequest>.addAceSearchProductRequest(params: Stri
         add(createAceSearchProductRequest(params))
 }
 
+@GqlQuery("AceSearchProduct", ACE_SEARCH_PRODUCT_QUERY)
 internal fun createAceSearchProductRequest(params: String) =
         GraphqlRequest(
-                ACE_SEARCH_PRODUCT_QUERY,
+                AceSearchProduct.GQL_QUERY,
                 AceSearchProductModel::class.java,
                 mapOf(SearchConstant.GQL.KEY_PARAMS to params)
         )
@@ -28,12 +34,45 @@ internal fun MutableList<GraphqlRequest>.addProductAdsRequest(requestParams: Req
         }
 }
 
+@GqlQuery("TopAdsProduct", TOPADS_PRODUCT_QUERY)
 internal fun createTopAdsProductRequest(params: String) =
         GraphqlRequest(
-                TOPADS_PRODUCT_QUERY,
+                TopAdsProduct.GQL_QUERY,
                 ProductTopAdsModel::class.java,
                 mapOf(SearchConstant.GQL.KEY_PARAMS to params)
         )
+
+internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
+    requestParams: RequestParams,
+    headlineParams: String,
+) {
+    if (!requestParams.isSkipHeadlineAds()) {
+        add(createHeadlineAdsRequest(headlineParams = headlineParams))
+    }
+}
+
+internal fun createHeadlineParams(
+    parameters: Map<String?, Any?>,
+    itemCount: Int,
+): String {
+    val headlineParams = HashMap(parameters)
+
+    headlineParams[TopAdsParams.KEY_EP] = SearchConstant.HeadlineAds.HEADLINE
+    headlineParams[TopAdsParams.KEY_TEMPLATE_ID] = SearchConstant.HeadlineAds.HEADLINE_TEMPLATE_VALUE
+    headlineParams[TopAdsParams.KEY_ITEM] = itemCount
+    headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = SearchConstant.HeadlineAds.HEADLINE_PRODUCT_COUNT
+    headlineParams[SearchConstant.HeadlineAds.INFINITESEARCH] = true
+
+    return UrlParamUtils.generateUrlParamString(headlineParams)
+}
+
+@GqlQuery("HeadlineAds", HEADLINE_ADS_QUERY)
+internal fun createHeadlineAdsRequest(headlineParams: String) =
+    GraphqlRequest(
+        HeadlineAds.GQL_QUERY,
+        HeadlineAdsModel::class.java,
+        mapOf(SearchConstant.GQL.KEY_HEADLINE_PARAMS to headlineParams)
+    )
 
 private const val ACE_SEARCH_PRODUCT_QUERY = """
     query SearchProduct(${'$'}params: String!) {
@@ -120,6 +159,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         productClickUrl
                         productWishlistUrl
                         productViewUrl
+                        tag
                     }
                     shop {
                         id
@@ -195,6 +235,7 @@ private const val TOPADS_PRODUCT_QUERY = """
                 product_click_url
                 product_wishlist_url
                 shop_click_url
+                tag
                 product {
                     id
                     name
@@ -270,6 +311,99 @@ private const val TOPADS_PRODUCT_QUERY = """
             }
             template {
                 is_ad
+            }
+        }
+    }
+"""
+
+private const val HEADLINE_ADS_QUERY = """
+    query HeadlineAds(${'$'}headline_params: String!) {
+        headlineAds: displayAdsV3(displayParams: ${'$'}headline_params) {
+            status {
+                error_code
+                message
+            }
+            header {
+                process_time
+                total_data
+            }
+            data {
+                id
+                ad_ref_key
+                redirect
+                ad_click_url
+                headline {
+                    template_id
+                    name
+                    image {
+                        full_url
+                        full_ecs
+                    }
+                    shop {
+                        id
+                        name
+                        domain
+                        tagline
+                        slogan
+                        location
+                        city
+                        gold_shop
+                        gold_shop_badge
+                        shop_is_official
+                        pm_pro_shop
+                        merchant_vouchers
+                        product {
+                            id
+                            name
+                            price_format
+                            applinks
+                            product_cashback
+                            product_cashback_rate
+                            product_new_label
+                            count_review_format
+                            rating_average
+                            label_group {
+                                title
+                                type
+                                position
+                                url
+                            }
+                            free_ongkir {
+                                is_active
+                                img_url
+                            }
+                            image_product{
+                                product_id
+                                product_name
+                                image_url
+                                image_click_url
+                            }
+                            campaign {
+                                original_price
+                                discount_percentage
+                            }
+                        }
+                        image_shop {
+                            cover
+                            s_url
+                            xs_url
+                            cover_ecs
+                            s_ecs
+                            xs_ecs
+                        }
+                    }
+                    badges {
+                        image_url
+                        show
+                        title
+                    }
+                    button_text
+                    promoted_text
+                    description
+                    uri
+                    layout
+                }
+                applinks
             }
         }
     }

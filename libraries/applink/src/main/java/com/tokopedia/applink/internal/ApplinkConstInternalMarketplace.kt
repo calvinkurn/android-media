@@ -47,11 +47,27 @@ object ApplinkConstInternalMarketplace {
     const val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
     const val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}&aff_unique_id={affiliate_uuid}"
 
+    // AtcVariantActivity
+    @JvmField
+    val ATC_VARIANT = "$INTERNAL_MARKETPLACE/atc-variant/{product_id}/{shop_id}/" +
+            "?pageSource={pageSource}&" +
+            "isTokoNow={isTokoNow}&" +
+            "cdListName={cdListName}"
+
     // ProductManageActivity
     const val PRODUCT_MANAGE_LIST = "$INTERNAL_MARKETPLACE/product-manage-list"
 
-    // ReviewProductActivity, "x_prd_nm" = productName
+    // ReadReviewActivity, "x_prd_nm" = productName
     const val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
+
+    // ReadReviewActivity
+    const val SHOP_REVIEW = "$INTERNAL_MARKETPLACE/shop/{id}/review"
+
+    // ReviewProductActivity, "x_prd_nm" = productName
+    const val PRODUCT_REVIEW_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review-old"
+
+    // ReviewCredibilityActivity
+    const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
 
     // StockReminderActivity
     const val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"
@@ -79,8 +95,11 @@ object ApplinkConstInternalMarketplace {
 
     const val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
 
-    // ImageReviewGalleryActivity
+    // ReviewGalleryActivity
     const val IMAGE_REVIEW_GALLERY = "$INTERNAL_MARKETPLACE/product/{id}/review/gallery"
+
+    // ImageReviewGalleryActivity
+    const val IMAGE_REVIEW_GALLERY_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review/gallery-old"
 
     //ShopOpenRoutingActivity
     const val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
@@ -162,21 +181,14 @@ object ApplinkConstInternalMarketplace {
     const val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
     const val REPORT_PRODUCT_URL = "$INTERNAL_MARKETPLACE/product-report/{id}/?url={url}"
 
-    // ShopScoreDetailActivity
-    const val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
-
     // ChatSearchActivity
     const val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
 
-    // NotificationActivity
-    const val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
-
-    const val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
-
-    const val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
-
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
+
+    // BenefitPackageActivity
+    const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 

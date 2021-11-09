@@ -11,7 +11,6 @@ buildscript {
         google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-        jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         google()
     }
@@ -99,6 +98,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
+    // Embrace
+    implementation rootProject.ext.miscDependencies.embraceSdk
+
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.dbDependencies.dbRoomKtx
@@ -157,6 +159,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -171,6 +174,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting

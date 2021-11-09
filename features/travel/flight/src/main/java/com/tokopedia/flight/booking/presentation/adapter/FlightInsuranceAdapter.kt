@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.FlightCart
+import com.tokopedia.flight.databinding.ItemFlightBookingInsuranceBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_flight_booking_insurance.view.*
 
 /**
  * @author by jessica on 2019-11-01
@@ -30,7 +30,7 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
     lateinit var listener: ViewHolder.ActionListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-            LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false))
+        ItemFlightBookingInsuranceBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount(): Int = insuranceList.size
 
@@ -43,36 +43,36 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
         notifyDataSetChanged()
     }
 
-    class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+    class ViewHolder(val binding: ItemFlightBookingInsuranceBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(insurance: FlightCart.Insurance, listener: ActionListener?) {
-            with(view) {
-                tv_insurance_title.text = insurance.name
-                tv_insurance_subtitle.text = insurance.description
-                cb_insurance.isChecked = insurance.defaultChecked
+            with(binding) {
+                tvInsuranceTitle.text = insurance.name
+                tvInsuranceSubtitle.text = insurance.description
+                cbInsurance.isChecked = insurance.defaultChecked
 
-                if (insurance.benefits.isEmpty()) insurance_highlight_benefit_container.hide()
+                if (insurance.benefits.isEmpty()) insuranceHighlightBenefitContainer.hide()
                 else renderHighlightBenefit(insurance.benefits, insurance.tncUrl, insurance.name, listener ?: null)
 
                 listener?.onInsuranceChecked(insurance, insurance.defaultChecked)
-                cb_insurance.setOnCheckedChangeListener { _, checked -> listener?.onInsuranceChecked(insurance, checked) }
+                cbInsurance.setOnCheckedChangeListener { _, checked -> listener?.onInsuranceChecked(insurance, checked) }
             }
         }
 
         private fun renderHighlightBenefit(list: List<FlightCart.Benefit>, tncUrl: String, name: String, listener: ActionListener?) {
-            with(view) {
-                insurance_highlight_benefit_container.show()
+            with(binding) {
+                insuranceHighlightBenefitContainer.show()
                 val highlightedBenefit = list[0]
-                tv_insurance_highlight.text = highlightedBenefit.title
-                tv_insurance_highlight_detail.text = setUpTncText(highlightedBenefit.description, tncUrl, name, listener, context)
-                tv_insurance_highlight_detail.movementMethod = LinkMovementMethod.getInstance()
-                iv_insurance.loadImage(highlightedBenefit.icon)
+                tvInsuranceHighlight.text = highlightedBenefit.title
+                tvInsuranceHighlightDetail.text = setUpTncText(highlightedBenefit.description, tncUrl, name, listener, itemView.context)
+                tvInsuranceHighlightDetail.movementMethod = LinkMovementMethod.getInstance()
+                ivInsurance.loadImage(highlightedBenefit.icon)
                 if (list.size > 1) renderMoreBenefit(list.subList(1, list.size))
                 else {
-                    seperator_2.hide()
-                    layout_insurance_highlight.hide()
-                    seperator_3.hide()
-                    rv_more_benefits.hide()
+                    seperator2.hide()
+                    layoutInsuranceHighlight.hide()
+                    seperator3.hide()
+                    rvMoreBenefits.hide()
                 }
             }
         }
@@ -104,20 +104,20 @@ class FlightInsuranceAdapter: RecyclerView.Adapter<FlightInsuranceAdapter.ViewHo
         }
 
         private fun renderMoreBenefit(list: List<FlightCart.Benefit>) {
-            with(view) {
-                tv_insurance_highlight_see_more.text = String.format(context.getString(R.string.flight_booking_insurance_other_benefit), list.size)
-                rv_more_benefits.layoutManager = LinearLayoutManager(context)
-                rv_more_benefits.adapter = FlightInsuranceBenefitAdapter(list)
+            with(binding) {
+                tvInsuranceHighlightSeeMore.text = String.format(itemView.context.getString(R.string.flight_booking_insurance_other_benefit), list.size)
+                rvMoreBenefits.layoutManager = LinearLayoutManager(itemView.context)
+                rvMoreBenefits.adapter = FlightInsuranceBenefitAdapter(list)
 
-                layout_insurance_highlight.setOnClickListener {
-                    if (rv_more_benefits.isVisible) {
-                        seperator_3.hide()
-                        rv_more_benefits.hide()
-                        iv_insurance_highlight_see_more_arrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
+                layoutInsuranceHighlight.setOnClickListener {
+                    if (rvMoreBenefits.isVisible) {
+                        seperator3.hide()
+                        rvMoreBenefits.hide()
+                        ivInsuranceHighlightSeeMoreArrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
                     } else {
-                        seperator_3.show()
-                        rv_more_benefits.show()
-                        iv_insurance_highlight_see_more_arrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
+                        seperator3.show()
+                        rvMoreBenefits.show()
+                        ivInsuranceHighlightSeeMoreArrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
                     }
                 }
             }
