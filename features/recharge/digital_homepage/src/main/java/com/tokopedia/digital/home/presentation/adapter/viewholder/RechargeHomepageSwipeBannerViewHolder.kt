@@ -23,13 +23,17 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
         val bind = ViewRechargeHomeSwipeBannerBinding.bind(itemView)
         slidesList = element.section.items
         try {
-            initBanner(bind, element)
+            if (slidesList.isNotEmpty()){
+                initBanner(bind)
+            }else{
+                listener.loadRechargeSectionData(element.visitableId())
+            }
         }catch (exception: Exception){
             exception.printStackTrace()
         }
     }
 
-    private fun initBanner(bind: ViewRechargeHomeSwipeBannerBinding, element: RechargeHomepageSwipeBannerModel){
+    private fun initBanner(bind: ViewRechargeHomeSwipeBannerBinding){
         bind.rechargeHomeSwipeBanner.apply {
             freeMode = false
             centerMode = true
@@ -37,15 +41,15 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
             slideToShow = 1.0f
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
             onItemClick = {
-                listener.onRechargeSectionItemClicked(slidesList[it])
+                if(::slidesList.isInitialized) listener.onRechargeSectionItemClicked(slidesList[it])
             }
 
-            if(element.section.items.isNotEmpty()){
-                autoplayDuration = 5000L
-                autoplay = true
+            if(slidesList.size == 1){
+                autoplay = false
             }
             else {
-                listener.loadRechargeSectionData(element.visitableId())
+                autoplayDuration = AUTOPLAY_DURATION
+                autoplay = true
             }
 
             val urlArr : ArrayList<String> = slidesList.map {
@@ -56,7 +60,7 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
     }
 
     override fun onActiveIndexChanged(prev: Int, current: Int) {
-        if(current >= 0 && current < slidesList.size){
+        if(::slidesList.isInitialized && current >= 0 && current < slidesList.size){
             listener.onRechargeSwipeBannerImpression(slidesList[current])
         }
     }
@@ -64,5 +68,7 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_swipe_banner
+
+        const val AUTOPLAY_DURATION = 5000L
     }
 }
