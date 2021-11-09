@@ -163,19 +163,16 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
-                getMiniCartUseCase.execute({
-                    val isInitialLoad = _getLayout.value == null
+                val data = getMiniCartUseCase.executeOnBackground()
+                val isInitialLoad = _getLayout.value == null
 
-                    if(isInitialLoad) {
-                        setMiniCartAndProductQuantity(it)
-                    } else {
-                        setProductAddToCartQuantity(it)
-                    }
+                if(isInitialLoad) {
+                    setMiniCartAndProductQuantity(data)
+                } else {
+                    setProductAddToCartQuantity(data)
+                }
 
-                    _miniCart.postValue(Success(it))
-                }, {
-                    _miniCart.postValue(Fail(it))
-                })
+                _miniCart.postValue(Success(data))
             }) {
                 _miniCart.postValue(Fail(it))
             }
