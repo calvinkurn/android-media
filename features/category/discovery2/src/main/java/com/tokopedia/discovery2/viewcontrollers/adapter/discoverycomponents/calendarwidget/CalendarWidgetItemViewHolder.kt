@@ -85,10 +85,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 layoutParams.width = (width / 2.5).roundToInt()
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
-                imageLayoutParams.width =
-                    layoutParams.width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
                 imageLayoutParams.height = (layoutParams.height / 2.2).roundToInt()
-                calendarImage.layoutParams = imageLayoutParams
+                imageLayoutParams.width = imageLayoutParams.height
+                    calendarImage.layoutParams = imageLayoutParams
                 itemView.findViewById<Typography>(R.id.calendar_title).setType(Typography.HEADING_6)
                 itemView.findViewById<Typography>(R.id.calendar_date).setType(Typography.BODY_3)
             }
@@ -96,15 +95,17 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 if(calendarLayout == Calendar.GRID){
                     layoutParams.width =
                         ((width)/ 2)
+                    imageLayoutParams.width =
+                        layoutParams.width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_48)
                 } else {
                     layoutParams.width =
                         ((width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)) / 2)
+                    imageLayoutParams.width =
+                        layoutParams.width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_48)
                 }
                 layoutParams.height =
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_280)
-                imageLayoutParams.width =
-                    layoutParams.width - itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
-                imageLayoutParams.height = (layoutParams.height / 2.2).roundToInt()
+                imageLayoutParams.height = ((imageLayoutParams.width * 16) / 19)
                 calendarImage.layoutParams = imageLayoutParams
                 itemView.findViewById<Typography>(R.id.calendar_title).setType(Typography.HEADING_4)
                 itemView.findViewById<Typography>(R.id.calendar_date).setType(Typography.BODY_2)
@@ -135,6 +136,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         val calendarImage: ImageUnify = itemView.findViewById(R.id.calendar_image)
         val calendarButton: UnifyButton = itemView.findViewById(R.id.calendar_button)
         dataItem.apply {
+            calendarCardUnify.setOnClickListener {
+                RouteManager.route(itemView.context, cta)
+            }
             calendarImage.loadImage(imageUrl)
             if (!titleLogoUrl.isNullOrEmpty()) {
                 calendarTitle.hide()
@@ -152,9 +156,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarButton.text =
                     itemView.context.getString(R.string.discovery_button_event_expired)
                 calendarButton.buttonType = UnifyButton.Type.ALTERNATE
-                if (!boxColor.isNullOrEmpty()) {
-                    setColouredBackground(boxColor)
-                }
             } else {
                 calendarButton.show()
                 calendarExpiredAlpha.hide()
@@ -168,19 +169,20 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     calendarDateAlpha.gone()
                     calendarDate.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_clr_2F89FC))
                 }
-                if (Utils.isFutureSaleOngoing(startDate ?: "", endDate ?: "")) {
+                /**Commented code to be removed when backend is ready **/
+//                if (Utils.isFutureSaleOngoing(startDate ?: "", endDate ?: "", TIMER_DATE_FORMAT)) {
                     calendarButton.text =
                         itemView.context.getString(R.string.discovery_button_event_ongoing)
                     calendarButton.buttonType = UnifyButton.Type.MAIN
                     calendarButton.setOnClickListener {
                         RouteManager.route(itemView.context, buttonApplink)
                     }
-                } else {
-                    calendarButton.text = itemView.context.getString(R.string.discovery_button_event_reminder)
-                    calendarButton.buttonType = UnifyButton.Type.ALTERNATE
-                    calendarWidgetItemViewModel.checkUserPushStatus(notifyCampaignId)
-                    mNotifyCampaignId = notifyCampaignId
-                }
+//                } else {
+//                    calendarButton.text = itemView.context.getString(R.string.discovery_button_event_reminder)
+//                    calendarButton.buttonType = UnifyButton.Type.ALTERNATE
+//                    calendarWidgetItemViewModel.checkUserPushStatus(notifyCampaignId)
+//                    mNotifyCampaignId = notifyCampaignId
+//                }
             }
             calendarDate.text = textDate
             calendarDesc.text = if(description.isNullOrEmpty()) itemView.context.getString(R.string.discovery_calendar_line) else description

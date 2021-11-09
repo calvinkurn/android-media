@@ -6,13 +6,16 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.CAROUSEL
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.CarouselProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 
 class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
@@ -22,7 +25,8 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
     private var linearLayoutManager: LinearLayoutManager =
         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mDiscoveryRecycleAdapter: DiscoveryRecycleAdapter
-
+    private val carouselRecyclerViewDecorator =
+        CarouselProductCardItemDecorator(itemView.context?.resources?.getDimensionPixelSize(R.dimen.dp_8))
     init {
         calendarCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
@@ -36,7 +40,25 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
         if (mDiscoveryRecycleAdapter.itemCount == 0 || calendarWidgetCarouselViewModel.getCalendarList().isNullOrEmpty()) {
             addShimmer()
         }
+        addDecorator()
         handleCarouselPagination()
+    }
+
+    private fun addDecorator() {
+        calendarWidgetCarouselViewModel.components.properties?.let {
+            if (it.calendarType == Constant.Calendar.DYNAMIC || it.calendarLayout == CAROUSEL) {
+                if (calendarCarouselRecyclerView.itemDecorationCount > 0)
+                    calendarCarouselRecyclerView.removeItemDecorationAt(0)
+                calendarCarouselRecyclerView.addItemDecoration(carouselRecyclerViewDecorator)
+            } else {
+                calendarCarouselRecyclerView.setMargin(
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                )
+            }
+        }
     }
 
     private fun handleCarouselPagination() {

@@ -209,7 +209,7 @@ data class DataItem(
         @SerializedName("coupon_code")
         val couponCode: String? = "",
 
-        @SerializedName("cta")
+        @SerializedName("cta", alternate = ["cta_url"])
         val cta: String? = "",
 
         @SerializedName("cta_desktop")
