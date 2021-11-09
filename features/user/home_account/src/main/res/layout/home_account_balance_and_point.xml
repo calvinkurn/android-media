@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/home_account_balance_and_point_view_more"
-        android:textColor="@color/Unify_N500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="@+id/home_account_balance_and_point_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/home_account_balance_and_point_title"
