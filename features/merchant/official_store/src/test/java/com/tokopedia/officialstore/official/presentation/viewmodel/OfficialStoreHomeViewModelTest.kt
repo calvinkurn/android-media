@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
+import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
@@ -371,7 +372,7 @@ class OfficialStoreHomeViewModelTest {
         val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
         dynamicChannelResponse.addAll(
                 listOf(
-                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP, id = channelId))
+                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_FEATURED_SHOP, id = channelId))
                 )
         )
 
@@ -412,7 +413,7 @@ class OfficialStoreHomeViewModelTest {
         val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
         dynamicChannelResponse.addAll(
                 listOf(
-                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP, id = channelId))
+                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_FEATURED_SHOP, id = channelId))
                 )
         )
 

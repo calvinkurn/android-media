@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.common
 
+import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 
@@ -12,8 +13,8 @@ interface OfficialStoreConstant {
 
             fun getProductCardTopAdsComponentName(channel: Channel): String {
                 return when (channel.layout) {
-                    DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> OS_MIX_TOP_TOP_ADS
-                    DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> OS_MIX_LEFT_TOP_ADS
+                    DynamicChannelLayout.LAYOUT_MIX_TOP -> OS_MIX_TOP_TOP_ADS
+                    DynamicChannelLayout.LAYOUT_MIX_LEFT -> OS_MIX_LEFT_TOP_ADS
                     else -> ""
                 }
             }
