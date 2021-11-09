@@ -310,6 +310,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.getProductListData(
                 shopId,
                 START_PAGE,
+                ShopUtil.getProductPerPage(context),
                 selectedEtalaseId,
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
@@ -852,7 +853,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
         showLoading()
         initialProductListData?.let{
-            viewModel.setInitialProductList(shopId, it)
+            viewModel.setInitialProductList(shopId, ShopUtil.getProductPerPage(context), it)
         }
         viewModel.getShopFilterData(shopId)
         isOnViewCreated = false
@@ -929,6 +930,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.getProductListData(
                 shopId,
                 page,
+                ShopUtil.getProductPerPage(context),
                 selectedEtalaseId,
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
@@ -1389,6 +1391,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             viewModel.getProductListData(
                     shopId,
                     START_PAGE,
+                    ShopUtil.getProductPerPage(context),
                     etalaseItemDataModel.etalaseId,
                     shopProductFilterParameter ?: ShopProductFilterParameter(),
                     ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
@@ -1559,6 +1562,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel.getFilterResultCount(
                 shopId,
+                ShopUtil.getProductPerPage(context),
                 tempShopProductFilterParameter,
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         )
