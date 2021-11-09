@@ -264,11 +264,6 @@ class GraphqlCloudDataStore @Inject constructor(
                                         objectData.toString(),
                                         cache.maxAge * 1000.toLong()
                                     )
-                                    Timber.d(
-                                        "Android CLC - Request saved to cache " + CacheHelper.getQueryName(
-                                            request.query
-                                        ) + " KEY: " + request.cacheKey()
-                                    )
                                 }
                             }
                         }

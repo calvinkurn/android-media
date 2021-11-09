@@ -45,6 +45,7 @@ import timber.log.Timber;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getAkamaiQueryMap;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
 import static com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER;
+import static com.tokopedia.graphql.util.Const.TKPD_AKAMAI;
 
 /**
  * Retrieve the response from Cloud and dump the same in disk if cache was enable by consumer.
@@ -96,8 +97,16 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
             }
             header.put(QUERY_HASHING_HEADER, queryHashingHeaderValue.toString());
         }
-        if (UtilsKt.getAkamaiQueryMap(requests.get(0).getQuery())) {
+        String akamaiQuery;
+        List<String> queryNameList = requests.get(0).getQueryNameList();
+        if (queryNameList != null && queryNameList.size() > 0) {
+            akamaiQuery = getAkamaiQueryMap(queryNameList);
+        } else {
+            akamaiQuery = getAkamaiQueryMap(requests.get(0).getQuery());
+        }
+        if (!TextUtils.isEmpty(akamaiQuery)) {
             header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
+            header.put(TKPD_AKAMAI, akamaiQuery);
         }
         return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
     }
