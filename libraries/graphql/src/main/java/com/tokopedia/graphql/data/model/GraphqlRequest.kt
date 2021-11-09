@@ -1,209 +1,156 @@
-package com.tokopedia.graphql.data.model;
+package com.tokopedia.graphql.data.model
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.tokopedia.graphql.FingerprintManager;
-import com.tokopedia.graphql.GraphqlConstant;
-
-import java.lang.reflect.Type;
-import java.util.Map;
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
+import com.tokopedia.graphql.FingerprintManager
+import com.tokopedia.graphql.GraphqlConstant
+import java.lang.reflect.Type
 
 /**
  * Object of this class will be dispatch over the network
  */
-public class GraphqlRequest {
+class GraphqlRequest {
     @Expose
     @SerializedName(GraphqlConstant.GqlApiKeys.QUERY)
-    private String query; /*Mandatory parameter*/
+    var query /*Mandatory parameter*/: String = ""
 
     @Expose
     @SerializedName(GraphqlConstant.GqlApiKeys.VARIABLES)
-    private Map<String, Object> variables;
+    var variables: Map<String, Any?>? = null
 
     @Expose
     @SerializedName(GraphqlConstant.GqlApiKeys.OPERATION_NAME)
-    private String operationName;
+    var operationName: String? = null
+        private set
 
     /*transient by nature hence it will not be part of request body*/
-    private transient Type typeOfT; /*Mandatory parameter*/
+    @Transient
+    var typeOfT /*Mandatory parameter*/: Type
+        private set
 
-    private transient String queryCopy;
+    @Transient
+    var queryNameList: List<String>? = emptyList()
+        private set
 
-    private transient int queryHashRetryCount = 1;
+    @Transient
+    var queryCopy: String
 
-    private transient boolean doQueryHash = false;
+    @Transient
+    var queryHashRetryCount = 1
 
-    private transient String url;
+    @Transient
+    var isDoQueryHash = false
+
+    @Transient
+    var url: String? = null
+        private set
 
     /*transient by nature hence it will not be part of request body*/
-    private transient boolean shouldThrow = true; /*Optional parameter*/
+    @Transient
+    var isShouldThrow = true /*Optional parameter*/
+        private set
 
     @Expose(serialize = false, deserialize = false)
-    private transient boolean noCache;
+    @Transient
+    var isNoCache = false
 
     @Expose(serialize = false, deserialize = false)
-    private String md5;
+    var md5: String
+        private set
 
-    public String getQueryCopy() {
-        return queryCopy;
+    fun setUrlPath(urlPath: String?) {
+        url = urlPath
     }
 
-    public void setQuery(String query) {
-        this.query = query;
+    constructor(gqlQueryInterface: GqlQueryInterface,
+                typeOfT: Type,
+                variables: Map<String, Any?>? = null,
+                shouldThrow: Boolean = true) {
+        this.query = gqlQueryInterface.getQuery()
+        this.operationName = gqlQueryInterface.getTopOperationName()
+        this.queryNameList = gqlQueryInterface.getOperationNameList()
+        queryCopy = query
+        md5 = FingerprintManager.md5(query)
+        this.typeOfT = typeOfT
+        this.variables = variables
+        isShouldThrow = shouldThrow
     }
 
-    public void setQueryCopy(String queryCopy) {
-        this.queryCopy = queryCopy;
+    @Deprecated("use constructor(GqlQueryInterface, ..)")
+    constructor(query: String, typeOfT: Type) {
+        this.query = query
+        queryCopy = query
+        this.typeOfT = typeOfT
+        md5 = FingerprintManager.md5(query)
     }
 
-    public boolean isDoQueryHash() {
-        return doQueryHash;
+    @Deprecated("use constructor(GqlQueryInterface, ..)")
+    constructor(query: String, doQueryHash: Boolean, typeOfT: Type) {
+        this.query = query
+        queryCopy = query
+        this.typeOfT = typeOfT
+        isDoQueryHash = doQueryHash
+        md5 = FingerprintManager.md5(query)
     }
 
-    public void setDoQueryHash(boolean doQueryHash) {
-        this.doQueryHash = doQueryHash;
+    @Deprecated("use constructor(GqlQueryInterface, ..)")
+    constructor(query: String, typeOfT: Type, shouldThrow: Boolean) : this(query, typeOfT) {
+        isShouldThrow = shouldThrow
     }
 
-    public int getQueryHashRetryCount() {
-        return queryHashRetryCount;
+    @Deprecated("use constructor(GqlQueryInterface, ..)")
+    constructor(query: String, typeOfT: Type, variables: Map<String, Any?>?) : this(query, typeOfT) {
+        this.variables = variables
     }
 
-    public void setQueryHashRetryCount(int queryHashRetryCount) {
-        this.queryHashRetryCount = queryHashRetryCount;
+    @Deprecated("use constructor(GqlQueryInterface, ..)")
+    constructor(
+        doQueryHash: Boolean,
+        query: String,
+        typeOfT: Type,
+        variables: Map<String, Any?>?
+    ) : this(query, typeOfT) {
+        this.variables = variables
+        isDoQueryHash = doQueryHash
     }
 
-    public void setUrlPath(String urlPath) {
-        this.url = urlPath;
+    @Deprecated("use constructor(GqlQueryInterface, ..)")
+    constructor(
+        query: String, typeOfT: Type, variables: Map<String, Any?>?,
+        shouldThrow: Boolean
+    ) : this(query, typeOfT, variables) {
+        isShouldThrow = shouldThrow
     }
 
-    public String getUrl(){
-        return url;
+    @Deprecated("use constructor(GqlQueryInterface, ..)")
+    constructor(
+        query: String, typeOfT: Type, variables: Map<String, Any?>?,
+        operationName: String?
+    ) : this(query, typeOfT, variables) {
+        this.operationName = operationName
     }
 
-    public GraphqlRequest(String query, Type typeOfT) {
-        this.query = query;
-        this.queryCopy = query;
-        this.typeOfT = typeOfT;
-        this.md5 = FingerprintManager.md5(query);
-    }
-
-    public GraphqlRequest(String query, boolean doQueryHash, Type typeOfT) {
-        this.query = query;
-        this.queryCopy = query;
-        this.typeOfT = typeOfT;
-        this.doQueryHash = doQueryHash;
-        this.md5 = FingerprintManager.md5(query);
-    }
-
-    /**
-     * Use constructor without param shouldThrow for null checker
-     *
-     * @param query
-     * @param typeOfT
-     * @param shouldThrow
-     */
-    public GraphqlRequest(String query, Type typeOfT, boolean shouldThrow) {
-        this(query, typeOfT);
-        this.shouldThrow = shouldThrow;
-    }
-
-    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables) {
-        this(query, typeOfT);
-        this.variables = variables;
-    }
-
-    public GraphqlRequest(boolean doQueryHash, String query, Type typeOfT, Map<String, Object> variables) {
-        this(query, typeOfT);
-        this.variables = variables;
-        this.doQueryHash = doQueryHash;
-    }
-
-    /**
-     * Use constructor without param shouldThrow for null checker
-     *
-     * @param query
-     * @param typeOfT
-     * @param variables
-     * @param shouldThrow
-     */
-    @Deprecated
-    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
-                          boolean shouldThrow) {
-        this(query, typeOfT, variables);
-        this.shouldThrow = shouldThrow;
-    }
-
-    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
-                          String operationName) {
-        this(query, typeOfT, variables);
-        this.operationName = operationName;
-    }
-
-    /**
-     * Use constructor without param shouldThrow for null checker
-     *
-     * @param query
-     * @param typeOfT
-     * @param variables
-     * @param operationName
-     * @param shouldThrow
-     */
-    @Deprecated
-    public GraphqlRequest(String query, Type typeOfT, Map<String, Object> variables,
-                          String operationName, boolean shouldThrow) {
-        this(query, typeOfT, variables, operationName);
-        this.shouldThrow = shouldThrow;
-    }
-
-    public String getQuery() {
-        return query;
-    }
-
-    public Map<String, Object> getVariables() {
-        return variables;
-    }
-
-    public void setVariables(Map<String, Object> variables) {
-        this.variables = variables;
-    }
-
-    public String getOperationName() {
-        return operationName;
-    }
-
-    public Type getTypeOfT() {
-        return typeOfT;
-    }
-
-    public boolean isShouldThrow() {
-        return shouldThrow;
-    }
-
-    public boolean isNoCache() {
-        return noCache;
-    }
-
-    public void setNoCache(boolean noCache) {
-        this.noCache = noCache;
-    }
-
-    public String getMd5() {
-        return md5;
+    @Deprecated("use constructor(GqlQueryInterface, ..)")
+    constructor(
+        query: String, typeOfT: Type, variables: Map<String, Any?>?,
+        operationName: String?, shouldThrow: Boolean
+    ) : this(query, typeOfT, variables, operationName) {
+        isShouldThrow = shouldThrow
     }
 
     //Do not rewrite on remove it
-    @Override
-    public String toString() {
+    override fun toString(): String {
         return "GraphqlRequest{" +
                 "query='" + query + '\'' +
                 ", variables=" + variables +
                 ", operationName='" + operationName + '\'' +
                 ", typeOfT=" + typeOfT +
-                ", shouldThrow=" + shouldThrow +
-                '}';
+                ", shouldThrow=" + isShouldThrow +
+                '}'
     }
 
-    public String cacheKey() {
-        return FingerprintManager.md5(query + variables);
+    fun cacheKey(): String {
+        return FingerprintManager.md5(query + variables)
     }
 }

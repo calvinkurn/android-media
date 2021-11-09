@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.akamai.botman.CYFMonitor;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.tokopedia.akamai_bot_lib.UtilsKt;
 import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlCacheManager;
@@ -41,7 +42,7 @@ import retrofit2.Response;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.tokopedia.akamai_bot_lib.UtilsKt.isAkamai;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.getAkamaiQueryMap;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
 import static com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER;
 
@@ -95,7 +96,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
             }
             header.put(QUERY_HASHING_HEADER, queryHashingHeaderValue.toString());
         }
-        if (isAkamai(requests.get(0).getQuery())) {
+        if (UtilsKt.getAkamaiQueryMap(requests.get(0).getQuery())) {
             header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
         }
         return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));

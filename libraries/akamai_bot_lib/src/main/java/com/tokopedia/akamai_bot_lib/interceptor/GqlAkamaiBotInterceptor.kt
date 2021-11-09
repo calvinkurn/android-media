@@ -42,7 +42,7 @@ class GqlAkamaiBotInterceptor : Interceptor {
                                 val jsonObject: JSONObject = jsonArray.getJSONObject(0)
                                 val query = jsonObject.getString("query")
 
-                                val xTkpdAkamai = getAny(query)
+                                val xTkpdAkamai = getQueryListFromQueryString(query)
                                         .asSequence()
                                         .filter { it ->
                                     registeredGqlFunctions.containsKey(it)
