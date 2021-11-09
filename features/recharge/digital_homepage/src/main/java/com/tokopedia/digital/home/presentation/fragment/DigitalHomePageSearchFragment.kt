@@ -27,6 +27,7 @@ import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalCo
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory
+import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchDoubleLineViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
 import com.tokopedia.digital.home.util.DigitalHomepageGqlQuery
@@ -38,7 +39,9 @@ import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
-        DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener {
+        DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener,
+        DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener
+{
 
     protected var binding by autoCleared<ViewRechargeHomeSearchBinding>()
     @Inject
@@ -180,7 +183,7 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageSearchTypeFactory {
-        return DigitalHomePageSearchTypeFactory(this)
+        return DigitalHomePageSearchTypeFactory(this, this)
     }
 
     override fun onItemClicked(t: DigitalHomePageSearchCategoryModel?) {
@@ -207,6 +210,10 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
     override fun onSearchCategoryClicked(category: DigitalHomePageSearchCategoryModel, position: Int) {
         rechargeHomepageAnalytics.eventSearchResultPageClick(category, position,
                 userSession.userId, searchBarScreenName)
+        RouteManager.route(context, category.applink)
+    }
+
+    override fun onSearchDoubleLineClicked(category: DigitalHomePageSearchCategoryModel, position: Int) {
         RouteManager.route(context, category.applink)
     }
 

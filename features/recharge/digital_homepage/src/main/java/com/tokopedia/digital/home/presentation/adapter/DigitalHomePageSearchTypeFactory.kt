@@ -7,7 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
 
-class DigitalHomePageSearchTypeFactory(val onSearchCategoryClickListener: DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener)
+class DigitalHomePageSearchTypeFactory(
+        val onSearchCategoryClickListener: DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener,
+        val onSearchDoubleLineClickListener: DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener
+)
     : BaseAdapterTypeFactory() {
 
     fun type(digitalHomePageSearchCategoryModel: DigitalHomePageSearchCategoryModel): Int {
@@ -18,7 +21,7 @@ class DigitalHomePageSearchTypeFactory(val onSearchCategoryClickListener: Digita
         when (type) {
             DigitalHomePageSearchViewHolder.LAYOUT -> return DigitalHomePageSearchViewHolder(parent, onSearchCategoryClickListener)
             DigitalHomePageSearchHeaderViewHolder.LAYOUT -> return DigitalHomePageSearchHeaderViewHolder(parent)
-            DigitalHomePageSearchDoubleLineViewHolder.LAYOUT -> return DigitalHomePageSearchDoubleLineViewHolder(parent)
+            DigitalHomePageSearchDoubleLineViewHolder.LAYOUT -> return DigitalHomePageSearchDoubleLineViewHolder(parent, onSearchDoubleLineClickListener)
         }
         return super.createViewHolder(parent, type)
     }

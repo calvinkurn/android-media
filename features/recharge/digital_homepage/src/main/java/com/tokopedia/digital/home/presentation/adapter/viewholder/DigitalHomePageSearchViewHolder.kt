@@ -1,9 +1,5 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R

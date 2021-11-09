@@ -9,7 +9,7 @@ import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMappe
 import com.tokopedia.media.loader.loadImageCircle
 
 
-class DigitalHomePageSearchDoubleLineViewHolder (itemView: View?) :
+class DigitalHomePageSearchDoubleLineViewHolder (itemView: View?, private val onSearchDoubleLineClickListener: OnSearchDoubleLineClickListener) :
         AbstractViewHolder<DigitalHomePageSearchCategoryModel>(itemView) {
 
     override fun bind(element: DigitalHomePageSearchCategoryModel) {
@@ -20,10 +20,16 @@ class DigitalHomePageSearchDoubleLineViewHolder (itemView: View?) :
             }
             tgMainTitleDoubleLine.text = boldReverseSearchAutoComplete(element.label, element.searchQuery)
             tgMainDescDoubleLine.text = element.subtitle
+
+            root.setOnClickListener { onSearchDoubleLineClickListener.onSearchDoubleLineClicked(element, adapterPosition) }
         }
     }
 
     companion object {
         val LAYOUT = R.layout.view_digital_home_search_double_line_item
+    }
+
+    interface OnSearchDoubleLineClickListener {
+        fun onSearchDoubleLineClicked(category: DigitalHomePageSearchCategoryModel, position: Int)
     }
 }
