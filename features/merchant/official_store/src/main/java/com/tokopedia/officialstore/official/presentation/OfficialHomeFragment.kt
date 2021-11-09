@@ -626,6 +626,14 @@ class OfficialHomeFragment :
         return userSession.isLoggedIn
     }
 
+    override fun getUserId(): String {
+        return userSession.userId
+    }
+
+    override fun getTrackingObject(): OfficialStoreTracking? {
+        return tracking
+    }
+
     override fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String) {
         tracking?.seeAllBannerFlashSaleClickedComponent(
                 viewModel.currentSlugDC,
