@@ -178,13 +178,17 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         viewModel?.stickyContent?.observe(lifecycleOwner, {
             when (it) {
                 is Success -> {
-                    setContent(it.data.tickerDataModels[0])
-                    page?.let { _page ->
-                        if (isOnDelay(_page)) {
-                            hide()
-                        } else {
-                            tracker.viewOnPage(_page)
-                            show()
+                    if (it.data.tickerDataModels.isEmpty()) {
+                        hide()
+                    } else {
+                        setContent(it.data.tickerDataModels.first())
+                        page?.let { _page ->
+                            if (isOnDelay(_page)) {
+                                hide()
+                            } else {
+                                tracker.viewOnPage(_page)
+                                show()
+                            }
                         }
                     }
                 }

@@ -56,6 +56,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     // Test
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.testDependencies.junit
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
