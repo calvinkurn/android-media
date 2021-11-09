@@ -379,14 +379,6 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onRechargeSwipeBannerImpression(element: RechargeHomepageSections.Item) {
-        if(::homeComponentsData.isInitialized){
-            element.tracking.find { it.action == RechargeHomepageAnalytics.ACTION_IMPRESSION }?.run {
-                rechargeHomepageAnalytics.rechargeEnhanceEcommerceEvent(data)
-            }
-        }
-    }
-
     override fun onRechargeSectionEmpty(sectionID: String) {
         val index = adapter.data.indexOfFirst {
             (it is RechargeHomepageSectionModel && it.visitableId().equals(sectionID)) ||

@@ -9,13 +9,14 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeSwipeBannerBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeHomepageSwipeBannerModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 
 /**
  * @author: astidhiyaa on 01/11/21.
  */
 class RechargeHomepageSwipeBannerViewHolder(itemView: View,
                                             val listener: RechargeHomepageItemListener)
-    : AbstractViewHolder<RechargeHomepageSwipeBannerModel>(itemView), CarouselUnify.OnActiveIndexChangedListener {
+    : AbstractViewHolder<RechargeHomepageSwipeBannerModel>(itemView){
 
     private lateinit var slidesList: List<RechargeHomepageSections.Item>
 
@@ -25,6 +26,9 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
         try {
             if (slidesList.isNotEmpty()){
                 initBanner(bind)
+                bind.root.addOnImpressionListener(element.section){
+                    listener.onRechargeSectionItemImpression(element.section)
+                }
             }else{
                 listener.loadRechargeSectionData(element.visitableId())
             }
@@ -56,12 +60,6 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
                 it.mediaUrl
             } as ArrayList<String>
             addBannerImages(urlArr)
-        }
-    }
-
-    override fun onActiveIndexChanged(prev: Int, current: Int) {
-        if(::slidesList.isInitialized && current >= 0 && current < slidesList.size){
-            listener.onRechargeSwipeBannerImpression(slidesList[current])
         }
     }
 
