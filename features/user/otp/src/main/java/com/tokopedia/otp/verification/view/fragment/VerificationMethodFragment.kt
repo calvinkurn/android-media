@@ -35,6 +35,7 @@ import com.tokopedia.otp.silentverification.view.dialog.SilentVerificationDialog
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpConstant.OtpMode.SILENT_VERIFICATION
+import com.tokopedia.otp.verification.domain.data.OtpConstant.RemoteConfigKey.SILENT_VERIF_ENABLE
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
@@ -87,6 +88,10 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
+    private fun isEnableSilentVerif(): Boolean {
+        return remoteConfig.getBoolean(SILENT_VERIF_ENABLE, false)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
@@ -132,7 +137,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun gotoSilentVerificationPage(modeListData: ModeListData) {
-        if(activity != null) {
+        if(activity != null && isEnableSilentVerif()) {
             (activity as VerificationActivity).goToSilentVerificationpage(modeListData)
         }
     }

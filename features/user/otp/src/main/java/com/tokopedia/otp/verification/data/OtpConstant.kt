@@ -32,4 +32,8 @@ object OtpConstant {
         const val AFTER_LOGIN_PHONE = 148
         const val RESET_PIN = 149
     }
+
+    object RemoteConfigKey {
+        const val SILENT_VERIF_ENABLE = "android_user_silent_verification"
+    }
 }
