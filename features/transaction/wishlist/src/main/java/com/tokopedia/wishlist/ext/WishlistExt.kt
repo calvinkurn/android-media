@@ -18,7 +18,9 @@ fun List<RecommendationWidget>.mappingRecommendationToWishlist(
     val recommendationPositionInThisPage = ((currentPage-1) * maxItemInPage) + recommendationPositionInPage
     list.addAll(wishlistVisitable)
     list.add(recommendationPositionInThisPage,
-        WishlistV2RecommendationWrapper(this, isCarousel = true))
+        WishlistV2RecommendationDataModel(this, isCarousel = true))
+
+    list
 
     return list
 }
@@ -43,7 +45,8 @@ fun List<WishlistV2Data>.mappingTopadsBannerToWishlist(
     val recommendationPositionInThisPage = ((currentPage-1) * maxItemInPage) + recommendationPositionInPage
     val list = mutableListOf<WishlistV2Data>()
     list.addAll(this)
-    list.add(recommendationPositionInThisPage, WishlistV2TopAdsWrapper(topAdsData = topadsBanner))
+    list.add(recommendationPositionInThisPage, WishlistV2TopAdsDataModel(topAdsData = topadsBanner))
+    list
     return list
 }
 
@@ -60,10 +63,10 @@ fun mappingTopadsBannerWithRecommendationToWishlist(
     val list = mutableListOf<WishlistV2Data>()
     list.addAll(wishlistVisitable)
 
-        list.add(recommendationPositionInThisPage, WishlistV2TopAdsWrapper(topAdsData = topadsBanner))
+        list.add(recommendationPositionInThisPage, WishlistV2TopAdsDataModel(topAdsData = topadsBanner))
 
         list.add(recommendationIndex,
-            WishlistV2RecommendationWrapper(
+            WishlistV2RecommendationDataModel(
                 listRecommendation, true), )
 
     return list

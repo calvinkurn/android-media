@@ -19,7 +19,6 @@ import com.tokopedia.wishlist.ext.mappingRecommendationToWishlist
 import com.tokopedia.wishlist.ext.mappingTopadsBannerToWishlist
 import com.tokopedia.wishlist.ext.mappingTopadsBannerWithRecommendationToWishlist
 import com.tokopedia.wishlist.ext.mappingWishlistToVisitable
-import com.tokopedia.wishlist.util.WishlistV2Consts
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -44,10 +43,6 @@ class WishlistV2ViewModel @Inject constructor(
     val wishlistData: LiveData<WishlistV2Response.Data.WishlistV2>
         get() = _wishlistData
 
-//    private val _recommendationResult = MutableLiveData<Result<List<RecommendationWidget>>>()
-//    val recommendationResult: LiveData<Result<List<RecommendationWidget>>>
-//        get() = _recommendationResult
-
     private val _deleteWishlistV2Result =
         MutableLiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
     val deleteWishlistV2Result: LiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>
@@ -61,7 +56,7 @@ class WishlistV2ViewModel @Inject constructor(
 
                 if (wishlistData.items.isEmpty()) {
                     _wishlistV2Result.value =
-                        Success(listOf(WishlistV2EmptyWrapper(query = wishlistData.query)))
+                        Success(listOf(WishlistV2EmptyDataModel(query = wishlistData.query)))
                     getRecommendationOnEmptyWishlist(0)
                 } else {
 
@@ -133,13 +128,16 @@ class WishlistV2ViewModel @Inject constructor(
     }
 
     fun getRecommendationOnEmptyWishlist(page: Int) {
-        launchCatchError(block = {
-            val widget = singleRecommendationUseCase.getData(
-                GetRecommendationRequestParam(pageNumber = page, pageName = "empty_wishlist")
-            )
-            _wishlistV2Result.value =
-                Success(listOf(WishlistV2RecommendationWrapper(listOf(widget), false)))
-        }) {
+        launch {
+            try {
+                val widget = singleRecommendationUseCase.getData(
+                    GetRecommendationRequestParam(pageNumber = page, pageName = "empty_wishlist")
+                )
+                _wishlistV2Result.value =
+                    Success(listOf(WishlistV2RecommendationDataModel(listOf(widget), false)))
+            } catch (e: Exception) {
+                _wishlistV2Result.value = Fail(e.fillInStackTrace())
+            }
         }
     }
 
@@ -186,10 +184,10 @@ class WishlistV2ViewModel @Inject constructor(
                     var pageToken = ""
                     if (recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(
                             recommendationPositionInPreviousPage
-                        ) is WishlistV2TopAdsWrapper
+                        ) is WishlistV2TopAdsDataModel
                     ) {
                         pageToken =
-                            (wishlistVisitable[recommendationPositionInPreviousPage] as WishlistV2TopAdsWrapper).topAdsData.nextPageToken
+                            (wishlistVisitable[recommendationPositionInPreviousPage] as WishlistV2TopAdsDataModel).topAdsData.nextPageToken
                                 ?: ""
                     }
                     val topadsResult = topAdsImageViewUseCase.getImageData(
@@ -251,10 +249,10 @@ class WishlistV2ViewModel @Inject constructor(
                     var pageToken = ""
                     if (recommendationPositionInPreviousPage >= 0 && wishlistVisitable.getOrNull(
                             recommendationPositionInPreviousPage
-                        ) is WishlistV2TopAdsWrapper
+                        ) is WishlistV2TopAdsDataModel
                     ) {
                         pageToken =
-                            (wishlistVisitable[recommendationPositionInPreviousPage] as WishlistV2TopAdsWrapper).topAdsData.nextPageToken
+                            (wishlistVisitable[recommendationPositionInPreviousPage] as WishlistV2TopAdsDataModel).topAdsData.nextPageToken
                                 ?: ""
                     }
                     val results = topAdsImageViewUseCase.getImageData(
@@ -293,15 +291,18 @@ class WishlistV2ViewModel @Inject constructor(
     fun getNextPageWishlistData(param: WishlistV2Params) {
         launch {
             try {
-                val previousData = if (_wishlistV2Result.value is Success) {
-                    (_wishlistV2Result.value as Success<List<WishlistV2Data>>).data
-                } else {
-                    listOf()
-                }
                 val data = wishlistV2UseCase.executeSuspend(param).wishlistV2
 
-                val newPageVisitableData = data.items.mappingWishlistToVisitable()
+                val previousData = if (_wishlistV2Result.value is Success) {
+                    (_wishlistV2Result.value as Success<List<WishlistV2Data>>).data.toMutableList()
+                } else {
+                    mutableListOf()
+                }
 
+                val newPageVisitableData = mutableListOf<WishlistV2Data>().apply {
+                    addAll(previousData)
+                    addAll(data.items.mappingWishlistToVisitable())
+                }
                 if (data.items.size >= recommendationPositionInPage && param.page % 2 == 0) {
                     _wishlistV2Result.value = Success(getRecommendationWishlist(newPageVisitableData, param.page, data.items.map { it.id }, recommendationPositionInPage))
                 } else {

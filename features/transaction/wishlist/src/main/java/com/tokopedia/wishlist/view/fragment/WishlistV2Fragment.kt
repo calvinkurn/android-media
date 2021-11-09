@@ -293,7 +293,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     val data = result.data
                     hideLoader()
                     renderWishlistV2Data(data)
-                    scrollRecommendationListener.updateStateAfterGetData()
                 }
                 is Fail -> {
                     refreshHandler?.finishRefresh()
@@ -307,25 +306,40 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         val adapterData = arrayListOf<WishlistV2TypeLayoutData>()
         data.forEach {
             when(it) {
-                is WishlistV2TopAdsWrapper -> {
+                is WishlistV2TopAdsDataModel -> {
                     adapterData.add(WishlistV2TypeLayoutData(it.topAdsData, TYPE_TOPADS))
                 }
-                is WishlistV2RecommendationWrapper -> {
+                is WishlistV2RecommendationDataModel -> {
                     if (it.isCarousel) {
                         adapterData.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_CAROUSEL))
                     } else {
                         if (currRecommendationListPage == 0) {
                             isFetchRecommendation = true
                             if (searchQuery.isNotEmpty()) {
-                                adapterData.add(WishlistV2TypeLayoutData(searchQuery, TYPE_EMPTY_NOT_FOUND))
+                                adapterData.add(
+                                    WishlistV2TypeLayoutData(
+                                        searchQuery,
+                                        TYPE_EMPTY_NOT_FOUND
+                                    )
+                                )
                             } else {
-                                adapterData.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
+                                adapterData.add(WishlistV2TypeLayoutData("", TYPE_EMPTY_STATE))
                             }
-                            adapterData.add(WishlistV2TypeLayoutData(getString(R.string.recommendation_title), TYPE_RECOMMENDATION_TITLE))
+                            adapterData.add(
+                                WishlistV2TypeLayoutData(
+                                    getString(R.string.recommendation_title),
+                                    TYPE_RECOMMENDATION_TITLE
+                                )
+                            )
                         }
                         currRecommendationListPage += 1
                         it.recommendationData.firstOrNull()?.recommendationItemList?.forEach { recommendationItem ->
-                            adapterData.add(WishlistV2TypeLayoutData(recommendationItem, TYPE_RECOMMENDATION_LIST))
+                            adapterData.add(
+                                WishlistV2TypeLayoutData(
+                                    recommendationItem,
+                                    TYPE_RECOMMENDATION_LIST
+                                )
+                            )
                         }
                     }
                 }
@@ -333,18 +347,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     it.item.run {
                         val productModel = ProductCardModel(
                             productImageUrl = imageUrl,
-                        isWishlistVisible = true,
-                        productName = name,
-                        shopName = shop.name,
-                        formattedPrice = priceFmt,
-                        shopLocation = shop.location,
-                        isShopRatingYellow = true,
-                        hasSecondaryButton = true,
-                        hasTambahKeranjangButton = true)
+                            isWishlistVisible = true,
+                            productName = name,
+                            shopName = shop.name,
+                            formattedPrice = priceFmt,
+                            shopLocation = shop.location,
+                            isShopRatingYellow = true,
+                            hasSecondaryButton = true,
+                            hasTambahKeranjangButton = true
+                        )
                         adapterData.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout()))
                     }
                 }
-                is WishlistV2EmptyWrapper -> {
+                is WishlistV2EmptyDataModel -> {
                     if (it.query.isEmpty()) {
                         adapterData.add(WishlistV2TypeLayoutData(it.query, TYPE_EMPTY_NOT_FOUND))
                     } else {
@@ -358,8 +373,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         if (data.any { element -> element is WishlistV2DataModel }) {
             currPage += 1
         }
-        // ini msh salah soalnya kalo onloadmore nya true si onrecom nya false jadi ttp masuk sini
-        if ((!onLoadMore && !isFetchRecommendation) || (!onLoadMoreRecommendation && isFetchRecommendation) ) {
+
+        if ((!isFetchRecommendation) || (!onLoadMoreRecommendation && isFetchRecommendation) ) {
             wishlistV2Adapter.addList(adapterData)
             scrollRecommendationListener.resetState()
         } else {
@@ -401,32 +416,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         binding?.run {
             wishlistCountLabel.text = getString(R.string.wishlist_count_label, totalData)
         }
-    }
-
-    private fun renderEmptyState() {
-        if (!onLoadMoreRecommendation) {
-            val listItem = arrayListOf<WishlistV2TypeLayoutData>()
-            if (searchQuery.isNotEmpty()) {
-                listItem.add(WishlistV2TypeLayoutData(searchQuery, TYPE_EMPTY_NOT_FOUND))
-            } else {
-                listItem.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
-            }
-            wishlistV2Adapter.addList(listItem)
-            scrollRecommendationListener.resetState()
-        }
-        renderRecommendationList()
-    }
-
-    private fun renderRecommendationList() {
-        val listItem = arrayListOf<WishlistV2TypeLayoutData>()
-        if(!onLoadMoreRecommendation) {
-            listItem.add(WishlistV2TypeLayoutData(getString(R.string.recommendation_title), TYPE_RECOMMENDATION_TITLE))
-        }
-        recommendationList.firstOrNull()?.recommendationItemList?.forEach {
-            listItem.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_LIST))
-        }
-        wishlistV2Adapter.appendList(listItem)
-        scrollRecommendationListener.updateStateAfterGetData()
     }
 
     private fun showLoader() {
@@ -527,31 +516,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         })
         bottomSheetThreeDotsMenu.show(childFragmentManager)
     }
-
-//    private fun renderWishlist(item: WishlistV2Response.Data.WishlistV2.Item) {
-//        val listItem = arrayListOf<WishlistV2TypeLayoutData>()
-//        items.forEach { item ->
-//            val productModel = ProductCardModel(
-//                    productImageUrl = item.imageUrl,
-//                    isWishlistVisible = true,
-//                    productName = item.name,
-//                    shopName = item.shop.name,
-//                    formattedPrice = item.priceFmt,
-//                    shopLocation = item.shop.location,
-//                    isShopRatingYellow = true,
-//                    hasSecondaryButton = true,
-//                    hasTambahKeranjangButton = true)
-//            listItem.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item))
-//        }
-//
-//        if (!onLoadMore) {
-//            wishlistV2Adapter.addList(listItem)
-//            scrollRecommendationListener.resetState()
-//        } else {
-//            wishlistV2Adapter.appendList(listItem)
-//            scrollRecommendationListener.updateStateAfterGetData()
-//        }
-//    }
 
     private fun showToaster(message: String, actionText: String, type: Int) {
         val toasterSuccess = Toaster
