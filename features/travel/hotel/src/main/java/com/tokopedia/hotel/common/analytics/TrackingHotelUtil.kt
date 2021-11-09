@@ -655,9 +655,9 @@ class TrackingHotelUtil {
         val list = ArrayList<Map<String, Any>>()
         val map = HashMap<String, Any>()
         map[ID_LABEL] = hotelId
-        map[NAME_LABEL] = SLASH_HOTEL_LABEL
-        map[POSITION_LABEL] = 0
-        map[CREATIVE_LABEL] = hotelName
+        map[NAME_LABEL] = hotelName
+        map[POSITION_LABEL] = ""
+        map[CREATIVE_LABEL] = NAME_HOTEL_PDP_NEARBY_LANDMARK
         list.add(map)
 
         return DataLayer.listOf(*list.toTypedArray<Any>())
