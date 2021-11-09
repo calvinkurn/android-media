@@ -209,6 +209,8 @@ data class ShopInfo(
                 else
                     "reguler"
             }
+        fun isOfficialStore() = isOfficial == 1
+        fun isGoldMerchant() = isGold == 1
     }
 
     var allowManage: Boolean = (isAllowManage == 1)

@@ -86,6 +86,9 @@ class NewShopPageViewModelTest {
     @RelaxedMockK
     lateinit var getShopOperationalHoursListUseCase: Lazy<GqlGetShopOperationalHoursListUseCase>
 
+    @RelaxedMockK
+    lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
+
 
     @RelaxedMockK
     lateinit var context: Context
@@ -117,6 +120,7 @@ class NewShopPageViewModelTest {
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
                 getShopOperationalHoursListUseCase,
+                gqlGetShopOperationalHourStatusUseCase,
                 testCoroutineDispatcherProvider
         )
     }
@@ -496,11 +500,11 @@ class NewShopPageViewModelTest {
         coEvery {
             gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
         } returns ShopInfo()
-        shopPageViewModel.getShopInfoData(mockShopId, mockShopDomain, false)
+        shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
         assert(shopPageViewModel.shopPageTickerData.value is Success)
         assert(shopPageViewModel.shopPageShopShareData.value is Success)
 
-        shopPageViewModel.getShopInfoData("0", mockShopDomain, true)
+        shopPageViewModel.getShopShareAndOperationalHourStatusData("0", mockShopDomain, true)
         assert(shopPageViewModel.shopPageTickerData.value is Success)
         assert(shopPageViewModel.shopPageShopShareData.value is Success)
     }
@@ -512,7 +516,7 @@ class NewShopPageViewModelTest {
         coEvery {
             gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()
         } throws Throwable()
-        shopPageViewModel.getShopInfoData(mockShopId, mockShopDomain, false)
+        shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
         assert(shopPageViewModel.shopPageTickerData.value == null)
         assert(shopPageViewModel.shopPageShopShareData.value == null)
     }

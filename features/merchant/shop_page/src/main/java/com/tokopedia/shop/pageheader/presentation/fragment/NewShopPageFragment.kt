@@ -653,12 +653,7 @@ class NewShopPageFragment :
 
         shopViewModel?.shopPageTickerData?.observe(owner, Observer { result ->
             if (result is Success) {
-                shopPageHeaderDataModel?.let {
-                    it.statusTitle = result.data.statusTitle
-                    it.statusMessage = result.data.statusMessage
-                    it.shopStatus = result.data.shopStatus
-                    shopPageFragmentHeaderViewHolder?.updateShopTicker(it, isMyShop)
-                }
+                shopPageFragmentHeaderViewHolder?.updateShopTicker(result.data, isMyShop)
             }
         })
 
@@ -811,14 +806,14 @@ class NewShopPageFragment :
     }
 
     private fun getShopPageP2Data() {
-        getShopInfoData()
+        getShopShareAndOperationalHourStatusData()
         getFollowStatus()
         getSellerPlayWidget()
         getShopOperationalHoursData()
     }
 
-    private fun getShopInfoData() {
-        shopViewModel?.getShopInfoData(shopId, shopDomain ?: "", isRefresh)
+    private fun getShopShareAndOperationalHourStatusData() {
+        shopViewModel?.getShopShareAndOperationalHourStatusData(shopId, shopDomain ?: "", isRefresh)
     }
 
     private fun getSellerPlayWidget() {
