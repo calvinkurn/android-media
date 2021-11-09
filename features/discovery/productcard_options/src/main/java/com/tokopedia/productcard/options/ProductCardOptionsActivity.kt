@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.options
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -25,13 +26,13 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
 
     @field:[Inject Named(PRODUCT_CARD_OPTIONS_VIEW_MODEL_FACTORY)]
     lateinit var productCardOptionsViewModelFactory: ViewModelProvider.Factory
-    private var bottomSheetProductCardOptions = BottomSheetUnify()
+    private var bottomSheetProductCardOptions: BottomSheetUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         configBottomsheet()
-        bottomSheetProductCardOptions.show(supportFragmentManager,tagFragment)
+        bottomSheetProductCardOptions?.show(supportFragmentManager,tagFragment)
     }
 
     override fun getLayoutRes(): Int {
@@ -78,9 +79,9 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
     override fun finish() {
         fragment?.let {
             removeFragment(it)
-            super.finish()
-            overridePendingTransition(0, 0)
         }
+        super.finish()
+        overridePendingTransition(0, 0)
     }
 
     private fun removeFragment(fragment: Fragment) {
@@ -90,21 +91,18 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
                 .commitAllowingStateLoss()
     }
 
-    private fun cancelBottomSheetAnimation(fragment: Fragment) {
-        fragment.view?.clearAnimation()
-        fragment.view?.animate()?.cancel()
-    }
-
     private fun configBottomsheet() {
         val childView = View.inflate(this.baseContext, R.layout.product_card_options_activity_layout, null)
-        bottomSheetProductCardOptions.apply {
+        bottomSheetProductCardOptions = BottomSheetUnify().apply {
             setChild(childView)
             showKnob = true
             showHeader = false
             showCloseIcon = false
             isHideable = true
             setOnDismissListener {
-                finish()
+                Handler().postDelayed({
+                    finish()
+                }, FINISH_ACTIVITY_DELAY)
             }
             setShowListener {
                 childFragmentManager
@@ -112,17 +110,12 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
                         .replace(R.id.parentView, newFragment, tagFragment)
                         .commit()
 
-                bottomSheetProductCardOptions.bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onSlide(p0: View, p1: Float) {
-                    }
-
-                    override fun onStateChanged(p0: View, p1: Int) {
-                        Toast.makeText(this@ProductCardOptionsActivity, "$p1" , Toast.LENGTH_SHORT).show();
-
-                    }
-                })
+                bottomSheetProductCardOptions = null
             }
         }
+    }
 
+    companion object {
+        private const val FINISH_ACTIVITY_DELAY = 300L
     }
 }
