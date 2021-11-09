@@ -1,6 +1,6 @@
 {
   "readme": "Digital Recommendation Widget",
-  "mode": "subset",
+  "mode": "exact",
   "query": [
     {
       "event": "view_item_list",

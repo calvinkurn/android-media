@@ -48,6 +48,15 @@
       "eventLabel": ".* - .*",
       "currentSite": "tokopediadigital",
       "businessUnit": "recharge",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickCheckout",
+      "eventCategory": "digital - order detail page",
+      "eventAction": "click on feature button",
+      "eventLabel": ".* - .*",
+      "currentSite": "tokopediadigital",
+      "businessUnit": "recharge",
       "sessionIris": ".*",
       "userId": ".*"
     }
