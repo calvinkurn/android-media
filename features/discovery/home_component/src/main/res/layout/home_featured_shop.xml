@@ -36,14 +36,13 @@
             <View
                 android:id="@+id/featured_shop_background"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="160dp"
                 android:background="@color/Unify_Y200"
                 android:clickable="true"
                 android:focusable="true"
                 android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/home_component_header_view"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 />
 
