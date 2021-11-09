@@ -219,9 +219,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 addIcon(IconList.ID_MESSAGE) {}
                 addIcon(IconList.ID_NOTIFICATION) {}
                 addIcon(IconList.ID_CART) {}
-                if (isNavRevamp()) {
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
-                }
+                addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             wishlistNavtoolbar.setIcon(icons)
 
@@ -641,20 +639,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             remoteConfigInstance = RemoteConfigInstance(activity?.application)
         }
         return remoteConfigInstance.abTestPlatform
-    }
-
-    private fun isNavRevamp(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp ?: (getAbTestPlatform().getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
-                    (getAbTestPlatform().getString(
-                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
     }
 
     override fun onCariBarangClicked() {
