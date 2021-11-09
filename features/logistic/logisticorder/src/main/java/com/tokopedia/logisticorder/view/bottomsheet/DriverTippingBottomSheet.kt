@@ -4,17 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.BottomsheetTippingGojekBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
+import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.view.TrackingPageViewModel
+import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
@@ -30,7 +36,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         ViewModelProvider(this, viewModelFactory)[TrackingPageViewModel::class.java]
     }
 
-    private var orderId: String = ""
+    private var orderId: String? = ""
+    private var trackingDataModel: TrackingDataModel? = TrackingDataModel()
+    private lateinit var tippingValueAdapter: TippingValueAdapter
 
     init {
         setOnDismissListener {
@@ -89,8 +97,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         }
     }
 
-    fun setOrderId(orderId: String) {
+    fun setTrackingValue(orderId: String?, data: TrackingDataModel) {
         this.orderId = orderId
+        this.trackingDataModel = data
     }
 
     private fun initObserver() {
@@ -107,12 +116,56 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     }
 
     private fun setDriverTipLayout(logisticDriverModel: LogisticDriverModel) {
-        if (logisticDriverModel.status == 100) {
-            //driver found
-        } else if (logisticDriverModel.status == 150)  {
-            //tip sedang diproses
-        } else if (logisticDriverModel.status == 200) {
-            //post payment
+        val driverData = logisticDriverModel.driverTipData
+        when (logisticDriverModel.status) {
+            100 -> {
+                //driver found
+                binding.paymentTippingLayout.visibility = View.VISIBLE
+                binding.resultTippingLayout.visibility = View.GONE
+                binding.btnTipping.text = "Pilih Pembayaran"
+
+                val chipsLayoutManagerTipping = ChipsLayoutManager.newBuilder(binding.root.context)
+                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                    .build()
+
+                ViewCompat.setLayoutDirection(binding.rvChipsTip, ViewCompat.LAYOUT_DIRECTION_LTR)
+                tippingValueAdapter = TippingValueAdapter()
+                tippingValueAdapter.tippingValueList = driverData.prepayment.presetAmount.toMutableList()
+
+                binding.rvChipsTip.apply {
+                    layoutManager = chipsLayoutManagerTipping
+                    adapter = tippingValueAdapter
+                }
+
+
+                binding.tickerTippingGojek.apply {
+                    setHtmlDescription(String.format(getString(R.string.driver_tipping_ticker_new), driverData.prepayment.info.first(), driverData.prepayment.info.last()))
+                }
+            }
+            150 -> {
+                //tip sedang diproses
+            }
+            200 -> {
+                //post payment
+                binding.resultTippingLayout.visibility = View.VISIBLE
+                binding.paymentTippingLayout.visibility = View.GONE
+                binding.btnTipping.text = "Mengerti"
+
+                binding.apply {
+                    imgTipDriver.setImage(R.drawable.ic_succes_tipping_gojek, 0F)
+                    tvTipResult.text = "Tip kamu sudah diberikan!"
+                    tvTipResultDesc.text = "Tip 100% ditransfer ke driver setelah pesanan sampai. Tip akan dikembalikan ke kamu jika pesanan batal"
+                    tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
+                    tvDriverNameValue.text = driverData.lastDriver.name
+                    tvPhoneNumberValue.text = driverData.lastDriver.phone
+                    tvLicenseValue.text = driverData.lastDriver.licenseNumber
+
+                    chipsPayment.chip_image_icon.setImageUrl(driverData.payment.methodIcon)
+                    chipsPayment.chipText = String.format(getString(R.string.payment_value), driverData.payment.method, driverData.payment.amountFormatted)
+                }
+
+            }
         }
     }
 }

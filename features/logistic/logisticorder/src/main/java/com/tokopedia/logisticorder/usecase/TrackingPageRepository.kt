@@ -36,7 +36,7 @@ class TrackingPageRepository @Inject constructor(@ApplicationContext private val
         return gql.getResponse(request)
     }
 
-    suspend fun getDriverTip(orderId: String) : GetDriverTipResponse {
+    suspend fun getDriverTip(orderId: String?) : GetDriverTipResponse {
         val param = mapOf("input" to mapOf(
             "order_id" to orderId))
         val request = GraphqlRequest(TrackingPageQuery.getDriverTip,

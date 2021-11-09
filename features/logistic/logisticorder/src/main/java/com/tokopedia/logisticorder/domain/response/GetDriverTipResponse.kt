@@ -12,10 +12,6 @@ data class LogisticDriverTipResponse(
     val messageError: String = "",
     @SerializedName("status")
     val status: Int = 0,
-    @SerializedName("status_title")
-    val statusTitle: String = "",
-    @SerializedName("status_subtitle")
-    val statusSubtitle: String = "",
     @SerializedName("data")
     val driverTipData: DriverTipData = DriverTipData()
 )
@@ -25,8 +21,19 @@ data class DriverTipData(
     val lastDriver: LastDriver = LastDriver(),
     @SerializedName("status")
     val status: Int = 0,
+    @SerializedName("status_title")
+    val statusTitle: String = "",
+    @SerializedName("status_subtitle")
+    val statusSubtitle: String = "",
     @SerializedName("prepayment")
     val prepayment: Prepayment = Prepayment(),
+    @SerializedName("payment")
+    val payment: Payment = Payment()
+)
+
+data class Prepayment(
+    @SerializedName("info")
+    val info: List<String> = listOf(),
     @SerializedName("preset_amount")
     val presetAmount: List<Int> = listOf(),
     @SerializedName("max_amount")
@@ -37,7 +44,13 @@ data class DriverTipData(
     val paymentLink: String = ""
 )
 
-data class Prepayment(
-    @SerializedName("info")
-    val info: List<String> = listOf()
+data class Payment(
+    @SerializedName("amount")
+    val amount: Int = 0,
+    @SerializedName("amount_formatted")
+    val amountFormatted: String = "",
+    @SerializedName("method")
+    val method: String = "",
+    @SerializedName("method_icon")
+    val methodIcon: String = ""
 )

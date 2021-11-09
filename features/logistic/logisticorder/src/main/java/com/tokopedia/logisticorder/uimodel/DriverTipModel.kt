@@ -10,21 +10,29 @@ data class DriverTipModel(
 data class LogisticDriverModel(
     var messageError: String = "",
     var status: Int = 0,
-    var statusTitle: String = "",
-    var statusSubtitle: String = "",
     var driverTipData: DriverTipDataModel = DriverTipDataModel()
 )
 
 data class DriverTipDataModel(
     var lastDriver: LastDriverModel = LastDriverModel(),
     var status: Int = 0,
+    var statusTitle: String = "",
+    var statusSubtitle: String = "",
     var prepayment: PrepaymentModel = PrepaymentModel(),
+    var payment: PaymentModel = PaymentModel()
+)
+
+data class PrepaymentModel(
+    var info: List<String> = listOf(),
     var presetAmount: List<Int> = listOf(),
     var maxAmount: Int =  0,
     var minAmount: Int =  0,
     var paymentLink: String = ""
 )
 
-data class PrepaymentModel(
-    var info: List<String> = listOf()
+data class PaymentModel(
+    var amount: Int = 0,
+    var amountFormatted: String = "",
+    var method: String = "",
+    var methodIcon: String = ""
 )

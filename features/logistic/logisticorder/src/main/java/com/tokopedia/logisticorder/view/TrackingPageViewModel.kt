@@ -75,7 +75,7 @@ class TrackingPageViewModel @Inject constructor(
         }
     }
 
-    fun getDriverTipsData(orderId: String) {
+    fun getDriverTipsData(orderId: String?) {
         viewModelScope.launch {
             try {
                 val driverTipData = repo.getDriverTip(orderId)

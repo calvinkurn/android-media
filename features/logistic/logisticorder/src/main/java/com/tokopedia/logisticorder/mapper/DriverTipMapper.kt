@@ -1,11 +1,7 @@
 package com.tokopedia.logisticorder.mapper
 
-import com.tokopedia.logisticorder.domain.response.DriverTipData
-import com.tokopedia.logisticorder.domain.response.GetDriverTipResponse
-import com.tokopedia.logisticorder.domain.response.LastDriver
-import com.tokopedia.logisticorder.uimodel.DriverTipDataModel
-import com.tokopedia.logisticorder.uimodel.LastDriverModel
-import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
+import com.tokopedia.logisticorder.domain.response.*
+import com.tokopedia.logisticorder.uimodel.*
 import javax.inject.Inject
 
 class DriverTipMapper @Inject constructor(){
@@ -15,8 +11,6 @@ class DriverTipMapper @Inject constructor(){
         return LogisticDriverModel().apply {
             messageError = data.messageError
             status = data.status
-            statusTitle = data.statusTitle
-            statusSubtitle = data.statusSubtitle
             driverTipData = mapDriverTip(data.driverTipData)
         }
     }
@@ -25,10 +19,10 @@ class DriverTipMapper @Inject constructor(){
         return DriverTipDataModel().apply {
             lastDriver = mapLastDriverData(response.lastDriver)
             status = response.status
-            presetAmount = response.presetAmount
-            maxAmount = response.maxAmount
-            minAmount = response.minAmount
-            paymentLink = response.paymentLink
+            statusTitle = response.statusTitle
+            statusSubtitle = response.statusSubtitle
+            prepayment = mapPrePaymentData(response.prepayment)
+            payment = mapPaymentData(response.payment)
         }
     }
 
@@ -39,6 +33,25 @@ class DriverTipMapper @Inject constructor(){
             phone = lastDriver.phone
             licenseNumber = lastDriver.licenseNumber
             isChanged = lastDriver.isChanged
+        }
+    }
+
+    private fun mapPrePaymentData(prePaymentData: Prepayment): PrepaymentModel {
+        return PrepaymentModel().apply {
+            info = prePaymentData.info
+            presetAmount = prePaymentData.presetAmount
+            maxAmount = prePaymentData.maxAmount
+            minAmount = prePaymentData.minAmount
+            paymentLink = prePaymentData.paymentLink
+        }
+    }
+
+    private fun mapPaymentData(paymentData: Payment): PaymentModel {
+        return PaymentModel().apply {
+            amount = paymentData.amount
+            amountFormatted = paymentData.amountFormatted
+            method = paymentData.method
+            methodIcon = paymentData.methodIcon
         }
     }
 }

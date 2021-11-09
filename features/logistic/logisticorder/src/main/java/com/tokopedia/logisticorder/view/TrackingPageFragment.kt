@@ -26,6 +26,7 @@ import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter
 import com.tokopedia.logisticorder.databinding.FragmentTrackingPageBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
+import com.tokopedia.logisticorder.domain.response.TrackingData
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.TippingModel
@@ -37,7 +38,6 @@ import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
 import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
-import com.tokopedia.logisticorder.view.imagepreview.ImagePreviewLogisticActivity
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -117,7 +117,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             when (it) {
                 is Success -> {
                     hideLoading()
-                    populateTipping(it.data.tipping)
+                    populateTipping(it.data)
                     populateView(it.data)
                 }
                 is Fail -> {
@@ -184,8 +184,9 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     }
 
-    private fun populateTipping(data: TippingModel) {
-        if (data.status != 100 || data.status != 150 || data.status != 200 || data.status != 300) {
+    private fun populateTipping(data: TrackingDataModel) {
+        val tippingData = data.tipping
+        if (tippingData.status != 100 || tippingData.status != 150 || tippingData.status != 200 || tippingData.status != 300) {
             binding?.tippingGojekLayout?.root?.visibility = View.GONE
         } else {
             setTippingData(data)
@@ -193,12 +194,13 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         }
     }
 
-    private fun setTippingData(data: TippingModel) {
+    private fun setTippingData(data: TrackingDataModel) {
+        val tippingData = data.tipping
         binding?.tippingGojekLayout?.apply {
-            ImageHandler.loadImageFitCenter(context, imgDriver, data.lastDriver.photo)
+            ImageHandler.loadImageFitCenter(context, imgDriver, tippingData.lastDriver.photo)
 
-            driverName.text = data.lastDriver.name
-            driverPhone.text = data.lastDriver.phone + "•" + data.lastDriver.licenseNumber
+            driverName.text = tippingData.lastDriver.name
+            driverPhone.text = tippingData.lastDriver.phone + "•" + tippingData.lastDriver.licenseNumber
 
             tippingText.text = "Yuk, beri tip ke driver"
             tippingDescription.text = "Tip 100% diterima driver"
@@ -208,7 +210,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             }
 
             btnTipping.setOnClickListener {
-                DriverTippingBottomSheet().setOrderId(mOrderId)
+                DriverTippingBottomSheet().setTrackingValue(mOrderId, data)
                 DriverTippingBottomSheet().show(parentFragmentManager)
             }
         }
