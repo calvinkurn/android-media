@@ -27,10 +27,13 @@ import java.io.InterruptedIOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.net.ssl.SSLContext;
@@ -97,9 +100,17 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
             }
             header.put(QUERY_HASHING_HEADER, queryHashingHeaderValue.toString());
         }
+
+        //akamai query Logic
         String akamaiQuery;
-        List<String> queryNameList = requests.get(0).getQueryNameList();
-        if (queryNameList != null && queryNameList.size() > 0) {
+        ArrayList<String> queryNameList = new ArrayList<>();
+        for (GraphqlRequest req : requests) {
+            List<String> qnl = req.getQueryNameList();
+            if (qnl != null && qnl.size() > 0) {
+                queryNameList.addAll(qnl);
+            }
+        }
+        if (queryNameList.size() > 0) {
             akamaiQuery = getAkamaiQueryMap(queryNameList);
         } else {
             akamaiQuery = getAkamaiQueryMap(requests.get(0).getQuery());
@@ -108,6 +119,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
             header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
             header.put(TKPD_AKAMAI, akamaiQuery);
         }
+
         return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
     }
 

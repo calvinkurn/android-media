@@ -52,10 +52,17 @@ class GraphqlCloudDataStore @Inject constructor(
     private suspend fun getResponse(requests: List<GraphqlRequest>): Response<JsonArray> {
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
         val header = mutableMapOf<String, String>()
+
+        //akamai query Logic
         val akamaiQuery: String?
-        val queryNameList = requests.first().queryNameList
-        akamaiQuery = if (queryNameList?.isNotEmpty() == true) {
-            getAkamaiQueryMap(queryNameList)
+        val queryNameList = mutableSetOf<String>()
+        requests.forEach { req ->
+            req.queryNameList?.let { qnl ->
+                queryNameList.addAll(qnl)
+            }
+        }
+        akamaiQuery = if (queryNameList.isNotEmpty()) {
+            getAkamaiQueryMap(queryNameList.toList())
         } else {
             getAkamaiQueryMap(requests.first().query)
         }
@@ -63,6 +70,7 @@ class GraphqlCloudDataStore @Inject constructor(
             header[AKAMAI_SENSOR_DATA_HEADER] = GraphqlClient.getFunction().akamaiValue
             header[TKPD_AKAMAI] = akamaiQuery
         }
+
         if (requests[0].isDoQueryHash) {
             val queryHashingHeaderValue = StringBuilder()
             for (graphqlRequest in requests) {
