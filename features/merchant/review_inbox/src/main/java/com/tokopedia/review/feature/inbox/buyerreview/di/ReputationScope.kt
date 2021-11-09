@@ -7,4 +7,4 @@ import javax.inject.Scope
  */
 @Scope
 @kotlin.annotation.Retention(AnnotationRetention.BINARY)
-internal annotation class ReputationScope 
+annotation class ReputationScope
