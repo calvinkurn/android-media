@@ -173,6 +173,8 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -261,6 +263,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private var progressDialog: ProgressDialog? = null
     private var optionsMenu: Menu? = null
+
+    private var tickerPagerAdapter: TickerPagerAdapter? = null
 
     private val stockTicker: Ticker?
         get() = binding?.layoutFragmentProductManage?.stockTicker?.root
@@ -356,7 +360,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         setupSelectAll()
         setupErrorPage()
         setupNoAccessPage()
-        setupStockTicker()
         renderCheckedView()
 
         observeShopInfo()
@@ -488,7 +491,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     exitValue = 0f
                 }
                 stockTicker?.run {
-                    val height = height.toFloat().orZero()
+                    val marginTop = 8.toPx()
+                    val height = height.toFloat().orZero() + marginTop
                     translationY = enterValue * height
                     show()
 
@@ -882,17 +886,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 RouteManager.route(context, ApplinkConst.SellerApp.SELLER_APP_HOME)
             }
         }
-    }
-
-    private fun setupStockTicker() {
-        stockTicker?.setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-            }
-
-            override fun onDismiss() {
-                viewModel.hideStockTicker()
-            }
-        })
     }
 
     private fun showFilterBottomSheet() {
@@ -2091,6 +2084,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         viewModel.getProductManageAccess()
     }
 
+    private fun getTickerData() {
+        viewModel.getTickerData()
+    }
+
     private fun getFiltersTab(withDelay: Boolean = false) {
         viewModel.getFiltersTab(withDelay)
     }
@@ -2367,6 +2364,28 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is HideLoadingDialog -> hideProgressDialogVariant()
             }
         }
+        observe(viewModel.tickerData) { tickerData ->
+            var tickerPagerAdapter = tickerPagerAdapter
+            if (tickerPagerAdapter == null) {
+                tickerPagerAdapter = TickerPagerAdapter(context, tickerData)
+                this.tickerPagerAdapter = tickerPagerAdapter.apply {
+                    setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                        override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                            context?.let { RouteManager.route(it, linkUrl.toString()) }
+                        }
+                    })
+                    onDismissListener = { viewModel.hideStockTicker() }
+                }
+            }
+            stockTicker?.let { tickerView ->
+                val visibility = tickerView.visibility
+                tickerView.addPagerView(tickerPagerAdapter, tickerData)
+                tickerView.post {
+                    tickerView.visibility = visibility
+                    viewModel.showStockTicker()
+                }
+            }
+        }
         observe(viewModel.showStockTicker) { shouldShow ->
             if (shouldShow)                 {
                 tickerIsReady = true
@@ -2439,6 +2458,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     if (access.productList) {
                         getProductList()
 
+                        getTickerData()
                         getFiltersTab()
                         getProductListFeaturedOnlySize()
                         getTopAdsFreeClaim()
