@@ -6,7 +6,6 @@ import com.tokopedia.mediauploader.common.data.consts.NETWORK_ERROR
 import com.tokopedia.mediauploader.common.data.consts.TIMEOUT_ERROR
 import com.tokopedia.mediauploader.common.logger.ERROR_MAX_LENGTH
 import com.tokopedia.mediauploader.common.logger.trackToTimber
-import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import okhttp3.internal.http2.ConnectionShutdownException
 import okhttp3.internal.http2.StreamResetException
@@ -37,12 +36,9 @@ fun String.addPrefix(): String {
 suspend fun request(
     sourceId: String,
     file: File,
-    loader: ProgressCallback? = null,
     uploaderManager: UploaderManager,
     execute: suspend () -> UploadResult,
 ): UploadResult {
-    uploaderManager.setProgressUploader(loader)
-
     return try {
         execute().also {
             if (it is UploadResult.Error) {
