@@ -2,8 +2,6 @@ package com.tokopedia.play.fake
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play_common.sse.model.SSEAction
-import com.tokopedia.play_common.sse.model.SSEResponse
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketResponse

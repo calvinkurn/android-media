@@ -87,12 +87,12 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
-import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_EMAIL
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_LOGIN_METHOD
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_PHONE
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -100,7 +100,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -177,7 +176,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var validateToken = ""
     private var isLoginAfterSq = false
 
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
     private var socmedButton: UnifyButton? = null
@@ -562,7 +560,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         resetError()
         if (isValid(email, password)) {
             showLoadingLogin()
-            if (isEnableEncryption() && useHash) {
+            if (isEnableEncryptConfig() && useHash) {
                 viewModel.loginEmailV2(email = email, password = password, useHash = useHash)
             } else {
                 viewModel.loginEmail(email, password)
@@ -751,7 +749,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -1158,30 +1156,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
-    }
-
-    fun isEnableEncryptRollout(): Boolean {
-        val rolloutKey = if (GlobalConfig.isSellerApp()) {
-            SessionConstants.Rollout.ROLLOUT_LOGIN_ENCRYPTION_SELLER
-        } else {
-            SessionConstants.Rollout.ROLLOUT_LOGIN_ENCRYPTION
-        }
-
-        val variant = getAbTestPlatform().getString(rolloutKey)
-        return variant.isNotEmpty()
-    }
-
     fun isEnableEncryptConfig(): Boolean {
         return isEnableEncryptConfig
-    }
-
-    open fun isEnableEncryption(): Boolean {
-        return isEnableEncryptRollout() && isEnableEncryptConfig()
     }
 
     override fun showNotRegisteredEmailDialog(email: String, isPending: Boolean) {

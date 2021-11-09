@@ -1,6 +1,7 @@
 package com.tokopedia.play_common.view
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
@@ -62,20 +63,20 @@ private fun parseColor(colorHex: String): Int {
     }
 }
 
-suspend fun Context.getDrawableFromUrl(
+suspend fun Context.getBitmapFromUrl(
     url: String,
     size: Size? = null,
     cacheStrategy: DiskCacheStrategy = DiskCacheStrategy.NONE,
-): Drawable? = suspendCancellableCoroutine { cont ->
+): Bitmap? = suspendCancellableCoroutine { cont ->
     Glide.with(this)
-        .asDrawable()
+        .asBitmap()
         .load(url)
         .diskCacheStrategy(cacheStrategy)
-        .listener(object : RequestListener<Drawable> {
+        .listener(object : RequestListener<Bitmap> {
             override fun onLoadFailed(
                 e: GlideException?,
                 model: Any?,
-                target: Target<Drawable>?,
+                target: Target<Bitmap>?,
                 isFirstResource: Boolean
             ): Boolean {
                 cont.resume(null)
@@ -83,9 +84,9 @@ suspend fun Context.getDrawableFromUrl(
             }
 
             override fun onResourceReady(
-                resource: Drawable?,
+                resource: Bitmap?,
                 model: Any?,
-                target: Target<Drawable>?,
+                target: Target<Bitmap>?,
                 dataSource: DataSource?,
                 isFirstResource: Boolean
             ): Boolean {

@@ -301,7 +301,9 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 arrivalEstimation = composeETA(shipment.eta),
                 courierNameAndProductName = shipment.shippingDisplayName,
                 isFreeShipping = meta.isBebasOngkir,
-                boBadgeUrl = meta.boImageUrl
+                boBadgeUrl = meta.boImageUrl,
+                etaChanged = shipment.etaIsUpdated,
+                etaUserInfo = shipment.userUpdatedInfo
         )
     }
 
