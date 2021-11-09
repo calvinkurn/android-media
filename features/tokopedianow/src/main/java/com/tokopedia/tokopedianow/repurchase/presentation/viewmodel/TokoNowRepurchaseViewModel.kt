@@ -291,11 +291,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(listOf(shopId))
-                getMiniCartUseCase.execute({
-                    setProductAddToCartQuantity(it)
-                }, {
-                    _atcQuantity.postValue(Fail(it))
-                })
+                val data = getMiniCartUseCase.executeOnBackground()
+                setProductAddToCartQuantity(data)
             }) {
                 _atcQuantity.postValue(Fail(it))
             }
