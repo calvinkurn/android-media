@@ -1,5 +1,5 @@
-query ThanksPageData(paymentIDStr : String!, $merchant: String!){
-  thanksPageData(paymentIDStr: paymentIDStr, merchant: $merchant){
+query ThanksPageData($paymentIDStr : String!, $merchant: String!){
+  thanksPageData(paymentIDStr: $paymentIDStr, merchant: $merchant){
     current_site
     business_unit
     merchant_code
