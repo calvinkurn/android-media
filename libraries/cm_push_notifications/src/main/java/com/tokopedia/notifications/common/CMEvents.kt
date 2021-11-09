@@ -58,6 +58,7 @@ object IrisAnalyticsEvents {
     private const val CLICKED_ELEMENT_ID = "clicked_element_id"
     private const val INAPP_TYPE = "inapp_type"
     private const val LABEL = "eventlabel"
+    private const val SHOP_ID = "shop_id"
 
     private const val AMPLIFICATION = "amplification"
 
@@ -99,7 +100,7 @@ object IrisAnalyticsEvents {
         if (baseNotificationModel.isAmplification) {
             values[LABEL] = AMPLIFICATION
         }
-
+        addShopIdForPushEvent(eventName,values,baseNotificationModel.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
@@ -111,6 +112,7 @@ object IrisAnalyticsEvents {
         if (elementID != null) {
             values[CLICKED_ELEMENT_ID] = elementID
         }
+        addShopIdForPushEvent(eventName,values,baseNotificationModel.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
@@ -134,11 +136,25 @@ object IrisAnalyticsEvents {
 
     }
 
+    private fun addShopIdForPushEvent(
+        eventName: String,
+        values: HashMap<String, Any>,
+        shopId: String?
+    ) {
+
+        shopId?.let { id ->
+            if (eventName == PUSH_RECEIVED || eventName == PUSH_CLICKED || eventName == PUSH_DISMISSED) {
+                values[SHOP_ID] = id
+            }
+        }
+    }
+
     fun sendInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
         if (cmInApp.isTest)
             return
         val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
         val values = addBaseValues(context, eventName, cmInApp)
+        addShopIdForInAppEvent(eventName, values, cmInApp.shopId)
         trackEvent(context, irisAnalytics, values)
 
     }
@@ -151,6 +167,7 @@ object IrisAnalyticsEvents {
         elementID?.let {
             values[CLICKED_ELEMENT_ID] = elementID
         }
+        addShopIdForInAppEvent(eventName, values, cmInApp.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
@@ -220,6 +237,19 @@ object IrisAnalyticsEvents {
         return values
 
     }
+
+    private fun addShopIdForInAppEvent(
+        eventName: String,
+        values: HashMap<String, Any>,
+        shopId: String?
+    ) {
+        shopId?.let { id ->
+            if (eventName == INAPP_RECEIVED || eventName == INAPP_CLICKED || eventName == INAPP_DISMISSED) {
+                values[SHOP_ID] = id
+            }
+        }
+    }
+
 }
 
 object CMEvents {
