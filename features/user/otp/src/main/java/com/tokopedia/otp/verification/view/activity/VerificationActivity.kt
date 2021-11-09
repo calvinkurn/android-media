@@ -1,6 +1,5 @@
 package com.tokopedia.otp.verification.view.activity
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -193,14 +192,16 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
-            REQUEST_SILENT_VERIF -> {
-                if(resultCode == Activity.RESULT_OK) {
-                    setResult(Activity.RESULT_OK, data)
-                    finish()
-                }
-            }
-        }
+//        when(requestCode) {
+//            REQUEST_SILENT_VERIF -> {
+//                if(resultCode == Activity.RESULT_OK) {
+//                    setResult(Activity.RESULT_OK, data)
+//                    finish()
+//                } else if(resultCode == RESULT_DELETE_METHOD) {
+//
+//                }
+//            }
+//        }
         super.onActivityResult(requestCode, resultCode, data)
     }
 

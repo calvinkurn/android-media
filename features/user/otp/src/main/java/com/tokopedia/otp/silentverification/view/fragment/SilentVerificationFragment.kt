@@ -137,7 +137,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         viewModel.validationResponse.observe(viewLifecycleOwner, {
             when(it) {
                 is Success -> onValidateSuccess(it.data)
-                is Fail -> onVerificationError(it.throwable)
+                is Fail -> onValidateFailed()
             }
         })
     }
@@ -291,6 +291,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         binding?.fragmentSilentVerifTryAgainBtn?.show()
         binding?.fragmentSilentVerifTryAgainBtn?.text = getString(R.string.fragment_silent_verif_label_button_change_method)
         binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
+            activity?.setResult(RESULT_DELETE_METHOD)
             activity?.finish()
         }
         binding?.fragmentSilentVerifTryChangeMethodBtn?.hide()
@@ -385,12 +386,12 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     // to be deleted, for testing purpose only
     private fun verifyWithoutSwitching(url: String) {
-        val okHttpClient =
-            OkHttpClient.Builder().build()
-        val request: Request = Request.Builder()
-            .url(url)
-            .build()
         try {
+            val okHttpClient =
+                OkHttpClient.Builder().build()
+            val request: Request = Request.Builder()
+                .url(url)
+                .build()
             okHttpClient.newCall(request).enqueue(object: Callback {
                 override fun onResponse(call: Call, response: Response) {
                     val result = response.body()?.string()
@@ -399,9 +400,11 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
-                    e.printStackTrace()
-                    onVerificationError(e)
                     println("verify:onResponse:${e.message}")
+                    e.printStackTrace()
+                    activity?.runOnUiThread {
+                        onVerificationError(e)
+                    }
                 }
             })
         } catch (ex: Exception) {
@@ -424,6 +427,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         private const val LOTTIE_BG_ANIMATION = "https://assets.tokopedia.net/asts/android/user/silent_verification/silent_verif_animation_bg_small.json"
 
         const val SILENT_VERIFICATION_SCREEN = "silentVerification"
+
+        const val RESULT_DELETE_METHOD = 100
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = SilentVerificationFragment()

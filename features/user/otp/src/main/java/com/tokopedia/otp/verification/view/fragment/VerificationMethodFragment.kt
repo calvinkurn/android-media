@@ -1,5 +1,7 @@
 package com.tokopedia.otp.verification.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
@@ -32,6 +34,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.silentverification.view.dialog.SilentVerificationDialogUtils
+import com.tokopedia.otp.silentverification.view.fragment.SilentVerificationFragment.Companion.RESULT_DELETE_METHOD
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpConstant.OtpMode.SILENT_VERIFICATION
@@ -39,6 +42,7 @@ import com.tokopedia.otp.verification.domain.data.OtpConstant.RemoteConfigKey.SI
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
+import com.tokopedia.otp.verification.view.activity.VerificationActivity.Companion.REQUEST_SILENT_VERIF
 import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
@@ -88,8 +92,27 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
+    fun createBundle(modeListData: ModeListData? = null, isMoreThanOne: Boolean = true): Bundle {
+        val bundle = Bundle()
+        bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, isLoginRegisterFlow)
+        modeListData?.let {
+            bundle.putParcelable(OtpConstant.OTP_MODE_EXTRA, it)
+        }
+        bundle.putBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, isMoreThanOne)
+        return bundle
+    }
+
+    open fun goToSilentVerificationpage(modeListData: ModeListData) {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SILENT_VERIFICAITON)
+        val bundle = createBundle(modeListData)
+        bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_SILENT_VERIF)
+    }
+
     private fun isEnableSilentVerif(): Boolean {
-        return remoteConfig.getBoolean(SILENT_VERIF_ENABLE, false)
+        return remoteConfig.getBoolean(SILENT_VERIF_ENABLE, true)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,10 +161,25 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun gotoSilentVerificationPage(modeListData: ModeListData) {
         if(activity != null && isEnableSilentVerif()) {
-            (activity as VerificationActivity).goToSilentVerificationpage(modeListData)
+            goToSilentVerificationpage(modeListData)
+//            (activity as VerificationActivity).goToSilentVerificationpage(modeListData)
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode) {
+            REQUEST_SILENT_VERIF -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    activity?.setResult(Activity.RESULT_OK, data)
+                    activity?.finish()
+                } else if(resultCode == RESULT_DELETE_METHOD) {
+                    val list = adapter.listData.filter { it.modeText != SILENT_VERIFICATION }.toMutableList()
+                    adapter.setList(list)
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
     private fun onSilentVerificationClicked(modeListData: ModeListData) {
         if (ConnectivityUtils.isSilentVerificationPossible(activity)){
             gotoSilentVerificationPage(modeListData)
@@ -251,7 +289,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun showListView(otpModeListData: OtpModeListData) {
         if(context != null) {
-            if(!ConnectivityUtils.isSilentVerificationPossible(requireContext())) {
+            if(!ConnectivityUtils.isSilentVerificationPossible(requireContext()) || !isEnableSilentVerif()) {
                 otpModeListData.modeList.removeAll { it.modeText == SILENT_VERIFICATION }
             }
         }
