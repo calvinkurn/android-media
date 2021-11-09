@@ -2,6 +2,7 @@ package com.tokopedia.attachproduct
 
 import android.content.Context
 import android.content.Intent
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.pressImeActionButton
@@ -10,13 +11,14 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.attachproduct.data.model.AceSearchProductResponse
 import com.tokopedia.attachproduct.stub.data.GraphqlRepositoryStub
 import com.tokopedia.attachproduct.stub.di.*
-import com.tokopedia.attachproduct.stub.view.AttachProductTestActivity
 import com.tokopedia.attachproduct.test.R
 import com.tokopedia.attachproduct.utils.FileUtils
 import com.tokopedia.attachproduct.utils.ViewUtils
+import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.test.application.espresso_component.CommonAssertion
 import org.junit.After
 import org.junit.Before
@@ -29,29 +31,21 @@ class AttachProductTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        AttachProductTestActivity::class.java, false, false)
+        AttachProductActivity::class.java, false, false)
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     protected val applicationContext: Context
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
-    @Inject
     lateinit var repositoryStub: GraphqlRepositoryStub
 
     @Before
     fun before() {
-        fakeBaseComponent = DaggerFakeBaseAppComponent.builder()
+        val fakeBaseComponent = DaggerFakeBaseAppComponent.builder()
             .fakeAppModule(FakeAppModule(applicationContext)).build()
-        fakeBaseComponent?.inject(this)
-        fakeComponent = DaggerFakeAttachProductComponent.builder().fakeBaseAppComponent(
-            fakeBaseComponent!!).fakeAttachProductModule(FakeAttachProductModule(repositoryStub)).build()
-    }
-
-    @After
-    fun after() {
-        fakeBaseComponent = null
-        fakeBaseComponent = null
+        ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(fakeBaseComponent)
+        repositoryStub = fakeBaseComponent!!.repo() as GraphqlRepositoryStub
     }
 
     @Test
@@ -141,10 +135,5 @@ class AttachProductTest {
         //THEN
         onView(withId(R.id.recycler_view)).check(CommonAssertion.RecyclerViewItemCountAssertion(10))
 
-    }
-
-    companion object {
-        var fakeComponent: FakeAttachProductComponent? = null
-        var fakeBaseComponent: FakeBaseAppComponent? = null
     }
 }

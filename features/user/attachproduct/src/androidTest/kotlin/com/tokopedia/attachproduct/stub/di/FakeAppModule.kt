@@ -53,7 +53,7 @@ class FakeAppModule(private val context: Context) {
     @Provides
     @ApplicationContext
     @ApplicationScope
-    fun provideGraphqlRepository(repositoryStub: GraphqlRepositoryStub): GraphqlRepository {
-        return repositoryStub
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return GraphqlRepositoryStub()
     }
 }

@@ -34,11 +34,6 @@ class AttachProductModule(private val context: Context) {
 
     @Provides
     @AttachProductScope
-    fun provideGraphqlRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
-    }
-    @Provides
-    @AttachProductScope
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
 
@@ -50,7 +45,7 @@ class AttachProductModule(private val context: Context) {
 
     @Provides
     @AttachProductScope
-    fun provideUseCase(repository: GraphqlRepository, query: String, dispatcher: CoroutineDispatcher): AttachProductUseCase {
+    fun provideUseCase(@ApplicationContext repository: GraphqlRepository, query: String, dispatcher: CoroutineDispatcher): AttachProductUseCase {
         return AttachProductUseCase(repository, query, dispatcher)
     }
 }
