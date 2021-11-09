@@ -339,7 +339,7 @@ class ShopScoreMapper @Inject constructor(
                 }
                 sellerType == SellerTypeConstants.REACTIVATED_SELLER -> {
                     when {
-                        shopScore < SHOP_SCORE_ZERO -> {
+                        shopScore < SHOP_SCORE_ZERO && shopAge > SHOP_AGE_NINETY -> {
                             titleHeaderShopService =
                                 context?.getString(R.string.title_reactivated_seller_level_0)
                                     ?: ""
@@ -1103,15 +1103,15 @@ class ShopScoreMapper @Inject constructor(
         }
     }
 
+    private fun isShowProtectedParameterNewSeller(shopAge: Int, dateShopCreated: String): Boolean {
+        return shopAge in GoldMerchantUtil.getNNStartShowProtectedParameterNewSeller(dateShopCreated)..SHOP_AGE_FIFTY_NINE
+    }
+
     private fun isReactivatedSellerBeforeFirstMonday(
         shopScore: Long,
         shopAge: Long
     ): Boolean {
-        return shopAge > SHOP_AGE_FIFTY_NINE && shopScore < SHOP_SCORE_ZERO
-    }
-
-    private fun isShowProtectedParameterNewSeller(shopAge: Int, dateShopCreated: String): Boolean {
-        return shopAge in GoldMerchantUtil.getNNStartShowProtectedParameterNewSeller(dateShopCreated)..SHOP_AGE_FIFTY_NINE
+        return shopAge > SHOP_AGE_NINETY && shopScore < SHOP_SCORE_ZERO
     }
 
     private fun isReactivatedSellerAfterComeback(
