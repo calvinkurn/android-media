@@ -25,13 +25,14 @@ class AffiliatePortfolioViewModel@Inject constructor(
     private var affiliatePortfolioData = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var updateListItem = MutableLiveData<Int>()
     private val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+
     fun createDefaultListForSm() {
         itemList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
         itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Instagram","","Contoh: instagram.com/tokopedia","Link tidak valid.",false,type = INSTAGRAM)))
         itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Tiktok","","Contoh: tiktok.com/tokopedia","Link tidak valid.",false,type = TIKTOK)))
         itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData("Link Youtube","","Contoh: youtube.com/tokopedia","Link tidak valid.",false,type = YOUTUBE)))
         itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media")))
-        affiliatePortfolioData.value=itemList
+        affiliatePortfolioData.value = itemList
     }
     fun updateList(position: Int, text: String) {
         (itemList[position] as? AffiliatePortfolioUrlModel)?.portfolioItm?.text=text
@@ -40,9 +41,9 @@ class AffiliatePortfolioViewModel@Inject constructor(
         itemList.forEachIndexed {i,item->
             if(item is AffiliatePortfolioUrlModel)
             {
-                if(!item.portfolioItm.text.isNullOrEmpty()&&!isValidUrl(item.portfolioItm.text)){
+                if(!item.portfolioItm.text.isNullOrEmpty() && !isValidUrl(item.portfolioItm.text)){
                     item.portfolioItm.isError=true
-                    updateListItem.value=i
+                    updateListItem.value = i
                     return
                 }
 

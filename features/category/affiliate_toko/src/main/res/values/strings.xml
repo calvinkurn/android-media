@@ -6,6 +6,10 @@
     <string name="affiliate_promo">Promosikan</string>
     <string name="affiliate_bantuan">Bantuan</string>
 
+    <string name="daftar_affiliate">Daftar Affiliate</string>
+    <string name="subtitle_portfolio">1 dari 2 langkah</string>
+    <string name="subtitle_terms">2 dari 2 langkah</string>
+
     <string name="tag_lottie_animation_view">lottieAnimationView</string>
     <string name="tag_title_textview">titleTextView</string>
     <string name="tag_badge_textview">badgeTextView</string>

@@ -11,9 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL
-import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
-import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
@@ -24,16 +22,17 @@ import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
+import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.webview.BaseSessionWebViewFragment
-import java.util.Stack
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.BaseSessionWebViewFragment
+import kotlinx.android.synthetic.main.affiliate_layout.*
+import java.util.*
 import javax.inject.Inject
 
 
@@ -49,6 +48,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private lateinit var affiliateVM: AffiliateViewModel
     private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
+    private var userActionRequiredForRegister = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,8 +106,17 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showAffiliatePortal() {
+        clearBackStack()
+        affiliate_background_layout.show()
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
+    }
+
+    private fun clearBackStack() {
+        for(frag in supportFragmentManager.fragments){
+            supportFragmentManager.popBackStack()
+        }
+        fragmentStack.clear()
     }
 
     private fun initBottomNavigationView() {
@@ -135,7 +144,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
                 showAffiliatePortal()
             }else {
-                showLoginPortal()
+                if(!userActionRequiredForRegister)
+                    navigateToPortfolioFragment()
             }
         })
     }
@@ -234,5 +244,14 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     override fun navigateToTermsFragment() {
         openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance())
+    }
+
+    override fun navigateToPortfolioFragment() {
+        openFragment(AffiliatePortfolioFragment.getFragmentInstance(this))
+    }
+
+    override fun validateUserStatus() {
+        userActionRequiredForRegister = true
+        affiliateVM.getAffiliateValidateUser()
     }
 }

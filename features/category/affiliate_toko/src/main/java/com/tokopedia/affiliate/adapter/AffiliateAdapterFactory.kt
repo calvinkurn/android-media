@@ -3,10 +3,7 @@ package com.tokopedia.affiliate.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
-import com.tokopedia.affiliate.interfaces.ProductClickInterface
-import com.tokopedia.affiliate.interfaces.PromotionClickInterface
-import com.tokopedia.affiliate.interfaces.ShareButtonInterface
+import com.tokopedia.affiliate.interfaces.*
 import com.tokopedia.affiliate.ui.viewholder.*
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 
@@ -14,6 +11,7 @@ class AffiliateAdapterFactory(
         private var shareButtonInterface: ShareButtonInterface? = null,
         var productClickInterface : ProductClickInterface? = null,
         private var promotionClickInterface : PromotionClickInterface? = null,
+        private var adapterActionInterface  : AdapterActionInterface? = null,
         private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface?=null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
@@ -26,7 +24,7 @@ class AffiliateAdapterFactory(
             AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
             AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent,onFocusChangeInterface)
             AffiliateHeaderItemVH.LAYOUT -> AffiliateHeaderItemVH(parent)
-            AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent)
+            AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent,adapterActionInterface)
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
             AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
             AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)

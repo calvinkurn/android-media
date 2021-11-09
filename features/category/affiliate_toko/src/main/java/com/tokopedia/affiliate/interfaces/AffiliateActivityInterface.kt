@@ -4,4 +4,8 @@ interface AffiliateActivityInterface {
 
     fun navigateToTermsFragment()
 
+    fun navigateToPortfolioFragment()
+
+    fun validateUserStatus()
+
 }

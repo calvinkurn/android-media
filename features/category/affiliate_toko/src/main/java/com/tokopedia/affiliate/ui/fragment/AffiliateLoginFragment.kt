@@ -137,12 +137,15 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             affiliate_login_card.hide()
 
         } else {
+
+            affiliateNavigationInterface.validateUserStatus()
+
             affiliate_login_text.text = "Daftarkan akun ini:"
             affiliate_daftar_text.text = "Daftar Affiliate dengan akun lain? "
             affiliate_keluar_btn.text = "Keluar"
             affiliate_sign_up_btn.text = "Daftar Sekarang"
             affiliate_sign_up_btn.setOnClickListener {
-                affiliateNavigationInterface.navigateToTermsFragment()
+                affiliateNavigationInterface.navigateToPortfolioFragment()
             }
 
             affiliate_keluar_btn.setOnClickListener {
