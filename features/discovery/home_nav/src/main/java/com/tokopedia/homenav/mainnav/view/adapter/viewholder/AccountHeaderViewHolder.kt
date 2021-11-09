@@ -1,16 +1,14 @@
 package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.Typeface.BOLD
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -26,10 +24,11 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
+import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -50,6 +49,7 @@ class AccountHeaderViewHolder(itemView: View,
     override val coroutineContext = masterJob + Dispatchers.Main
 
     private lateinit var layoutNonLogin: ConstraintLayout
+    private lateinit var layoutLoginHeader: ConstraintLayout
     private lateinit var layoutLogin: ConstraintLayout
 
     companion object {
@@ -109,6 +109,7 @@ class AccountHeaderViewHolder(itemView: View,
     }
 
     private fun initViewHolder() {
+        layoutLoginHeader = itemView.findViewById(R.id.layout_login_header)
         layoutLogin = itemView.findViewById(R.id.layout_login)
         layoutNonLogin = itemView.findViewById(R.id.layout_nonlogin)
         layoutNonLogin.visibility = View.GONE
@@ -117,27 +118,29 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun renderLoginState(element: AccountHeaderDataModel) {
         layoutLogin.visibility = View.VISIBLE
-        val userImage: ImageUnify = layoutLogin.findViewById(R.id.img_user_login)
-        val usrBadge: ImageUnify = layoutLogin.findViewById(R.id.usr_badge)
-        val usrOvoBadge: ImageUnify = layoutLogin.findViewById(R.id.usr_ovo_badge)
-        val btnSettings: ImageView = layoutLogin.findViewById(R.id.btn_settings)
-        val btnTryAgain: ImageView = layoutLogin.findViewById(R.id.btn_try_again)
-        val usrSaldoBadge: ImageUnify = layoutLogin.findViewById(R.id.usr_saldo_badge)
-        val tvName: Typography = layoutLogin.findViewById(R.id.tv_name)
-        val tvOvo: Typography = layoutLogin.findViewById(R.id.tv_ovo)
-        val tvSaldo: Typography = layoutLogin.findViewById(R.id.tv_saldo)
-        val usrSaldoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_saldo_badge_shimmer)
-        val tvOvoShimmer: View = layoutLogin.findViewById(R.id.tv_ovo_shimmer)
-        val usrOvoBadgeShimmer: View = layoutLogin.findViewById(R.id.usr_ovo_badge_shimmer)
-        val tvSaldoShimmer: View = layoutLogin.findViewById(R.id.tv_saldo_shimmer)
+        val userImage: ImageUnify = layoutLoginHeader.findViewById(R.id.img_user_login)
+        val usrBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_badge)
+        val usrOvoBadge: ImageUnify = layoutLoginHeader.findViewById(R.id.usr_ovo_badge)
+        val btnSettings: IconUnify = layoutLoginHeader.findViewById(R.id.btn_settings)
+        val btnTryAgain: CardView = layoutLoginHeader.findViewById(R.id.btn_try_again)
+        val usrSaldoBadge: IconUnify = layoutLoginHeader.findViewById(R.id.usr_saldo_badge)
+        val tvName: Typography = layoutLoginHeader.findViewById(R.id.tv_name)
+        val tvOvo: Typography = layoutLoginHeader.findViewById(R.id.tv_ovo)
+        val tvSaldo: Typography = layoutLoginHeader.findViewById(R.id.tv_saldo)
+        val usrSaldoBadgeShimmer: View = layoutLoginHeader.findViewById(R.id.usr_saldo_badge_shimmer)
+        val usrOvoBadgeShimmer: View = layoutLoginHeader.findViewById(R.id.usr_ovo_badge_shimmer)
+        //shop
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopTitle: Typography = layoutLogin.findViewById(R.id.usr_shop_title)
         val tvShopNotif: NotificationUnify = layoutLogin.findViewById(R.id.usr_shop_notif)
         val shimmerShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_shop_info)
-        val btnTryAgainShopInfo: ImageView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
+        val btnTryAgainShopInfo: CardView = layoutLogin.findViewById(R.id.btn_try_again_shop_info)
+        val shimmerTryAgainShopInfo: LoaderUnify = layoutLogin.findViewById(R.id.shimmer_btn_try_again)
+        val arrowRight : IconUnify = layoutLogin.findViewById(R.id.image_arrow_right)
+        val containerShop : ConstraintLayout = layoutLogin.findViewById(R.id.container_shop)
 
-        val sectionSaldo: View = layoutLogin.findViewById(R.id.section_header_saldo)
-        val sectionWallet: View = layoutLogin.findViewById(R.id.section_header_wallet)
+        val sectionSaldo: View = layoutLoginHeader.findViewById(R.id.section_header_saldo)
+        val sectionWallet: View = layoutLoginHeader.findViewById(R.id.section_header_wallet)
 
         /**
          * Initial state
@@ -148,7 +151,7 @@ class AccountHeaderViewHolder(itemView: View,
         sectionWallet.visible()
         btnSettings.visible()
 
-        layoutLogin.setOnClickListener {
+        layoutLoginHeader.setOnClickListener {
             TrackingProfileSection.onClickProfileSection(userSession.userId)
             mainNavListener.onProfileSectionClicked()
         }
@@ -159,6 +162,7 @@ class AccountHeaderViewHolder(itemView: View,
         btnTryAgainShopInfo.gone()
         btnTryAgain.gone()
         shimmerShopInfo.gone()
+        shimmerTryAgainShopInfo.gone()
 
         if (
             !element.isCacheData && (element.profileDataModel.isGetUserNameError ||
@@ -172,22 +176,8 @@ class AccountHeaderViewHolder(itemView: View,
          * Button for error handling
          */
         btnTryAgain.setOnClickListener{mainNavListener.onErrorProfileRefreshClicked(adapterPosition)}
-        btnTryAgain.setImageDrawable(
-                getIconUnifyDrawable(
-                        itemView.context,
-                        IconUnify.REPLAY,
-                        ContextCompat.getColor(itemView.context, R.color.Unify_Y400)
-                )
-        )
 
         btnTryAgainShopInfo.setOnClickListener{mainNavListener.onErrorShopInfoRefreshClicked(adapterPosition)}
-        btnTryAgainShopInfo.setImageDrawable(
-                getIconUnifyDrawable(
-                        itemView.context,
-                        IconUnify.REPLAY,
-                        ContextCompat.getColor(itemView.context, R.color.Unify_Y400)
-                )
-        )
 
         /**
          * Set user profile data
@@ -197,7 +187,7 @@ class AccountHeaderViewHolder(itemView: View,
             userImage.isClickable = false
             tvName.isClickable = false
             if (profileData.isGetUserNameError) {
-                tvName.text = MethodChecker.fromHtml(AccountHeaderDataModel.ERROR_TEXT_PROFILE)
+                tvName.text = getString(R.string.mainnav_general_error)
             } else {
                 configureNameAndBadgeSwitcher(
                     tvName,
@@ -221,23 +211,19 @@ class AccountHeaderViewHolder(itemView: View,
                 profileSaldo.isGetSaldoError -> {
                     if (element.profileWalletAppDataModel.isWalletAppFailed ||
                             element.profileMembershipDataModel.isTokopointExternalAmountError) {
-                        sectionSaldo.gone()
+                        sectionSaldo.visible()
                     } else {
                         tvSaldo.text = itemView.context.getString(R.string.mainnav_general_error)
                         usrSaldoBadge.gone()
-                        usrSaldoBadgeShimmer.visible()
-                        tvSaldoShimmer.invisible()
+                        sectionSaldo.visible()
                     }
                 }
 
                 !profileSaldo.isGetSaldoError -> {
-                    usrSaldoBadgeShimmer.invisible()
-                    tvSaldoShimmer.invisible()
-                    usrSaldoBadge.setImageResource(R.drawable.ic_saldo)
                     if (profileSaldo.saldo.isEmpty()) {
-                        sectionSaldo.gone()
+                        sectionSaldo.visible()
                     } else {
-                        tvSaldo.text = itemView.context.getString(R.string.account_saldo_fmt, profileSaldo.saldo)
+                        tvSaldo.text = profileSaldo.saldo
                         sectionSaldo.visible()
                     }
                 }
@@ -249,10 +235,8 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         if (element.isCacheData) {
-            tvOvoShimmer.visible()
             usrOvoBadgeShimmer.visible()
             usrSaldoBadgeShimmer.visible()
-            tvSaldoShimmer.visible()
             tvOvo.invisible()
             usrOvoBadge.invisible()
             usrSaldoBadge.invisible()
@@ -260,8 +244,8 @@ class AccountHeaderViewHolder(itemView: View,
             /**
              * Remove loading shimmering view
              */
-            tvOvoShimmer.invisible()
             usrOvoBadgeShimmer.invisible()
+            usrSaldoBadgeShimmer.invisible()
             tvOvo.visible()
             usrOvoBadge.visible()
 
@@ -273,19 +257,15 @@ class AccountHeaderViewHolder(itemView: View,
                     element.profileWalletAppDataModel.let { walletAppModel ->
                         when {
                             walletAppModel.isWalletAppLinked -> {
-                                if(walletAppModel.gopayBalance.isEmpty() && walletAppModel.gopayPointsBalance.isEmpty()) {
-                                    sectionWallet.gone()
-                                } else {
-                                    val gopayBalance = if(walletAppModel.gopayBalance.isNotEmpty()) walletAppModel.gopayBalance else DEFAULT_BALANCE_VALUE
-                                    val gopayPointsBalance = if(walletAppModel.gopayPointsBalance.isNotEmpty()) walletAppModel.gopayPointsBalance else DEFAULT_BALANCE_POINTS_VALUE
+                                val gopayBalance = if(walletAppModel.gopayBalance.isNotEmpty()) walletAppModel.gopayBalance else DEFAULT_BALANCE_VALUE
+                                val gopayPointsBalance = if(walletAppModel.gopayPointsBalance.isNotEmpty()) walletAppModel.gopayPointsBalance else DEFAULT_BALANCE_POINTS_VALUE
 
-                                    tvOvo.text = String.format(
-                                        itemView.context.getString(R.string.mainnav_wallet_app_format),
-                                        gopayBalance,
-                                        gopayPointsBalance
-                                    )
-                                    usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
-                                }
+                                tvOvo.text = String.format(
+                                    itemView.context.getString(R.string.mainnav_wallet_app_format),
+                                    gopayBalance,
+                                    gopayPointsBalance
+                                )
+                                usrOvoBadge.loadImage(walletAppModel.walletAppImageUrl)
                             }
                             !walletAppModel.isWalletAppLinked -> {
                                 if (walletAppModel.walletAppActivationCta.isNotEmpty()) {
@@ -297,7 +277,9 @@ class AccountHeaderViewHolder(itemView: View,
                                      */
                                     tvOvo.text = itemView.context.getText(R.string.mainnav_general_error)
                                     usrOvoBadge.gone()
-                                    usrOvoBadgeShimmer.visible()
+                                    usrOvoBadgeShimmer.gone()
+                                    usrSaldoBadgeShimmer.gone()
+                                    btnTryAgain.visible()
                                 }
                             }
                             walletAppModel.isWalletAppFailed -> {
@@ -321,8 +303,8 @@ class AccountHeaderViewHolder(itemView: View,
                                 profileMembership.tokopointPointAmount
                             )
                             val span = SpannableString(spanText)
-                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)), 0, profileMembership.tokopointExternalAmount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)), profileMembership.tokopointExternalAmount.length + 1, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                             tvOvo.setText(span, TextView.BufferType.SPANNABLE)
                             usrOvoBadge.setImageUrl(profileMembership.tokopointBadgeUrl)
                         }
@@ -349,33 +331,34 @@ class AccountHeaderViewHolder(itemView: View,
                 tvShopTitle.gone()
                 btnTryAgainShopInfo.gone()
                 tvShopNotif.gone()
+                arrowRight.gone()
                 shimmerShopInfo.visible()
+                shimmerTryAgainShopInfo.visible()
             } else if (profileSeller.isGetShopError) {
                 btnTryAgainShopInfo.visible()
                 tvShopInfo.visible()
                 tvShopTitle.gone()
                 shimmerShopInfo.gone()
+                shimmerTryAgainShopInfo.gone()
                 tvShopNotif.gone()
-
+                arrowRight.gone()
                 tvShopInfo.text = getString(R.string.error_state_shop_info)
             } else if (!profileSeller.isGetShopError) {
+                btnTryAgainShopInfo.gone()
+                shimmerShopInfo.gone()
+                shimmerTryAgainShopInfo.gone()
                 tvShopInfo.visible()
                 tvShopTitle.visible()
                 tvShopNotif.visible()
-
-                btnTryAgainShopInfo.gone()
-                shimmerShopInfo.gone()
+                arrowRight.visible()
 
                 val shopTitle: String
                 val shopInfo: CharSequence
                 if (!profileSeller.hasShop){
                     shopTitle = itemView.context?.getString(R.string.account_header_store_empty_shop).orEmpty()
                     shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
-                } else if (!profileSeller.adminRoleText.isNullOrEmpty()) {
-                    shopTitle = itemView.context?.getString(R.string.account_header_store_title_role).orEmpty()
-                    shopInfo = profileSeller.adminRoleText.orEmpty()
                 } else {
-                    shopTitle = itemView.context?.getString(R.string.account_header_store_title).orEmpty()
+                    shopTitle = ""
                     shopInfo = MethodChecker.fromHtml(profileSeller.shopName)
                 }
                 tvShopTitle.run {
@@ -385,16 +368,11 @@ class AccountHeaderViewHolder(itemView: View,
                 tvShopInfo.run {
                     visible()
                     text = shopInfo
-                    setOnClickListener {
-                        if (profileSeller.hasShop)
-                            onShopClicked(profileSeller.canGoToSellerAccount)
-                        else {
-                            RouteManager.route(context, ApplinkConst.CREATE_SHOP)
-                            TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
-                        }
-                    }
                 }
-                tvShopInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                containerShop.setOnClickListener {
+                    shopClicked(profileSeller, it.context)
+                }
+                tvShopInfo.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                 tvShopInfo.setWeight(Typography.BOLD)
                 if (profileSeller.shopOrderCount > 0) {
                     tvShopNotif.visible()
@@ -403,6 +381,15 @@ class AccountHeaderViewHolder(itemView: View,
                     tvShopNotif.gone()
                 }
             }
+        }
+    }
+
+    private fun shopClicked(profileSeller: ProfileSellerDataModel, context: Context) {
+        if (profileSeller.hasShop)
+            onShopClicked(profileSeller.canGoToSellerAccount)
+        else {
+            RouteManager.route(context, ApplinkConst.CREATE_SHOP)
+            TrackingProfileSection.onClickOpenShopSection(mainNavListener.getUserId())
         }
     }
 
@@ -420,10 +407,6 @@ class AccountHeaderViewHolder(itemView: View,
             TrackingProfileSection.onClickRegisterButton("")
             mainNavListener.onProfileRegisterClicked()
         }
-    }
-
-    private fun getSharedPreference(): SharedPreferences {
-        return itemView.context.getSharedPreferences(AccountHeaderDataModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
     }
 
     private fun getCurrentGreetings() : String {
@@ -464,6 +447,7 @@ class AccountHeaderViewHolder(itemView: View,
     private fun configureNameAndBadgeSwitcher(tvName: Typography, greetingString: String, nameString: String, ivBadge: ImageView, badgeGreetingsUrl: String, badgeUrl: String) {
         if (needToSwitchText) {
             tvName.text = greetingString
+            ivBadge.visible()
             ivBadge.loadImage(badgeGreetingsUrl)
             launch {
                 delay(GREETINGS_DELAY)
@@ -473,6 +457,7 @@ class AccountHeaderViewHolder(itemView: View,
             }
         } else {
             tvName.text = nameString
+            ivBadge.visible()
             ivBadge.loadImage(badgeUrl)
         }
     }
