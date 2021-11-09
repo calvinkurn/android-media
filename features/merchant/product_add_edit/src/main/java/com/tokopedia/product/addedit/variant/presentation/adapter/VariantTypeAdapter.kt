@@ -7,6 +7,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeViewHolder
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeViewHolder.ViewHolderState
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 
 class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     : RecyclerView.Adapter<VariantTypeViewHolder>(), VariantTypeViewHolder.OnVariantTypeViewHolderClickListener {
@@ -103,6 +104,23 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
             }
         }
         manageUnselectedItems(getSelectedCount())
+    }
+
+    fun deleteItem(variantDetail: VariantDetail) {
+        if (variantDetail.variantID == CUSTOM_VARIANT_TYPE_ID) {
+            val deletedIndex = items.indexOfFirst {
+                it.name == variantDetail.name
+            }
+            items.removeAt(deletedIndex)
+            selectedItems.removeAt(deletedIndex)
+        } else {
+            val deletedIndex = items.indexOfFirst {
+                it.variantID == variantDetail.variantID
+            }
+            deselectItem(deletedIndex)
+        }
+        clickListener.onVariantTypeChanged(getSelectedItems().size)
+        notifyDataSetChanged()
     }
 
     private fun manageUnselectedItems(selectedCount: Int) {

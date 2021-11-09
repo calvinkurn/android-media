@@ -184,7 +184,15 @@ class AddEditProductVariantFragment :
         }
         showCoachmarkCustomVariantType()
         titleLayoutVariantType.setActionButtonOnClickListener {
-            CustomVariantManageBottomSheet().show(childFragmentManager)
+            val bottomSheet = CustomVariantManageBottomSheet(variantTypeAdapter?.getSelectedItems())
+            bottomSheet.setOnVariantTypeEditedListener {
+                variantTypeAdapter?.deleteItem(it)
+                variantTypeAdapter?.addData(it)
+            }
+            bottomSheet.setOnVariantTypeDeletedListener {
+                variantTypeAdapter?.deleteItem(it)
+            }
+            bottomSheet.show(childFragmentManager)
         }
 
         variantTypeAdapter = VariantTypeAdapter(this)
@@ -390,6 +398,7 @@ class AddEditProductVariantFragment :
 
     override fun onVariantTypeChanged(selectedCount: Int) {
         buttonAddVariantType.isEnabled = selectedCount < MAX_SELECTED_VARIANT_TYPE
+        titleLayoutVariantType.isActionButtonVisible = selectedCount.isMoreThanZero()
     }
 
     fun onBackPressed() {

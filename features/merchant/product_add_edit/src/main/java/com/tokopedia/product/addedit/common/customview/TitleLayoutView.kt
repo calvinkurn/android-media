@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.common.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+3import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.setTextOrGone
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -10,6 +11,11 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TitleLayoutView : BaseCustomView {
 
+    var isActionButtonVisible: Boolean = false
+        set(value) {
+            field = value
+            refreshViews()
+        }
     var title: String = ""
         set(value) {
             field = value
@@ -75,6 +81,7 @@ class TitleLayoutView : BaseCustomView {
         titleLayoutViewTitle?.setTextOrGone(title)
         titleLayoutViewSubtitle?.setTextOrGone(subtitle)
         titleLayoutViewActionText?.setTextOrGone(actionText)
+        titleLayoutViewActionText?.isVisible = isActionButtonVisible
     }
 
     fun setActionButtonOnClickListener(onClickListener: OnClickListener) {

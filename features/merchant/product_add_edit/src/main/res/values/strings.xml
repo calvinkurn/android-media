@@ -24,6 +24,7 @@
     <string name="action_add">Tambah</string>
     <string name="action_done">Selesai</string>
     <string name="action_save">Simpan</string>
+    <string name="action_oke">Oke</string>
 
     <!-- add edit product photo -->
     <string name="add_product_photo_header">Foto Produk</string>
@@ -353,12 +354,15 @@
     <string name="label_variant_value_empty">Belum ada %1s yang bisa dipilih. Tambah pilihan %2s dulu, ya.</string>
     <string name="label_cvt_tips">Beri nama varian atau pakai varian dari kategori lain. Kamu bisa buat maksimum 2 varian, ya.</string>
     <string name="label_cvt_tips_title">Sekarang kamu bisa buat varian sendiri</string>
+    <string name="label_cvt_edit_conf_title">Hapus tipe varian %1s?</string>
+    <string name="label_cvt_edit_conf_desc">Tipe varian ini dan semua pilihannya akan hilang.</string>
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
     <string name="error_illegal_variant_name">Nama berisi kata terlarang. Coba nama lain, ya.</string>
     <string name="error_symbol_variant_name"><![CDATA[ Nama hanya terdiri dari abjad (A–Z), angka (0–9), atau simbol (/ - % _ * | # $ &). ]]></string>
     <string name="error_used_variant_name">Nama sudah digunakan. Coba nama lain, ya.</string>
     <string name="error_min_char_variant_name">Minimum 3 karakter, ya.</string>
+    <string name="error_cannot_change_variant_recommendation">Nama varian dari rekomendasi Tokopedia tidak bisa diubah, ya.</string>
 
     <!-- Admin Revamp -->
     <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>
