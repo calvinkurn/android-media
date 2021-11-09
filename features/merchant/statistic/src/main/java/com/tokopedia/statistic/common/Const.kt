@@ -64,4 +64,8 @@ object Const {
         const val OPERATIONAL_LEARN_MORE =
             "https://www.tokopedia.com/help/article/apa-itu-wawasan-operasional?source=sapp-wawasan-operasional"
     }
+
+    object Image {
+        const val IMG_EXCLUSIVE_IDENTIFIER = "https://images.tokopedia.net/img/android/statistic/img_stc_exclusive_identifier.png"
+    }
 }

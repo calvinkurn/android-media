@@ -251,5 +251,4 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         //Then
         assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
     }
-
 }
