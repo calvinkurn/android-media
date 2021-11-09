@@ -315,7 +315,7 @@ class ShopScoreMapper @Inject constructor(
                         context?.getString(R.string.desc_new_seller_level_0)
                             ?: ""
                 }
-                shopScore > SHOP_SCORE_NULL && shopAge < SHOP_AGE_SIXTY -> {
+                shopScore > SHOP_SCORE_NULL && shopAge < SHOP_AGE_NINETY -> {
                     when {
                         shopScore < SHOP_SCORE_SIXTY -> {
                             titleHeaderShopService =
