@@ -55,13 +55,14 @@ object MediaLoaderTarget {
                     request = it
                 ).load(source)
 
-                // delay handler
-                if (properties.renderDelay <= 0L) {
-                    request.into(target)
-                } else {
-                    handler.postDelayed({
+                if (target is MediaTarget<*>) {
+                    if (properties.renderDelay <= 0L) {
                         request.into(target)
-                    }, properties.renderDelay)
+                    } else {
+                        handler.postDelayed({
+                            request.into(target)
+                        }, properties.renderDelay)
+                    }
                 }
             }
         }
