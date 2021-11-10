@@ -113,6 +113,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -1381,9 +1382,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             CrossSellItemRequestModel crossSellItemRequestModel = new CrossSellItemRequestModel();
             for (ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
                 if (shipmentCrossSellModel.isChecked()) {
-                    crossSellItemRequestModel.setId(Integer.parseInt(shipmentCrossSellModel.getCrossSellModel().getId()));
+                    crossSellItemRequestModel.setId(Utils.toIntOrZero(shipmentCrossSellModel.getCrossSellModel().getId()));
                     crossSellItemRequestModel.setPrice((int) shipmentCrossSellModel.getCrossSellModel().getPrice());
-                    crossSellItemRequestModel.setAdditionalVerticalId(Integer.parseInt(shipmentCrossSellModel.getCrossSellModel().getAdditionalVerticalId()));
+                    crossSellItemRequestModel.setAdditionalVerticalId(Utils.toIntOrZero(shipmentCrossSellModel.getCrossSellModel().getAdditionalVerticalId()));
                     crossSellItemRequestModel.setTransactionType(shipmentCrossSellModel.getCrossSellModel().getTransactionType());
                     listCrossSellItemRequest.add(crossSellItemRequestModel);
                 }
