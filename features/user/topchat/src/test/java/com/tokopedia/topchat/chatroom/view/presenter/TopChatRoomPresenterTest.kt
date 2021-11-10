@@ -4,15 +4,12 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
@@ -28,7 +25,6 @@ import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTes
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exProductId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exResultProduct
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSendMessage
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exShopId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSticker
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exUrl
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exUserId
@@ -37,7 +33,6 @@ import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTes
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.successGetChatListGroupSticker
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.successGetOrderProgressResponse
 import com.tokopedia.topchat.common.data.Resource
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import io.mockk.*
@@ -120,7 +115,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
             getChatUseCase.unsubscribe()
             getTemplateChatRoomUseCase.unsubscribe()
             replyChatUseCase.unsubscribe()
-            addToCartUseCase.unsubscribe()
             groupStickerUseCase.safeCancel()
             chatAttachmentUseCase.safeCancel()
         }
@@ -548,60 +542,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `when success addProductToCart`() {
-        // Given
-        val onSuccess: (data: DataModel) -> Unit = mockk(relaxed = true)
-        val successAtc = getSuccessAtcModel()
-        every {
-            addToCartUseCase.createObservable(any())
-        } returns Observable.just(successAtc)
-
-        // When
-        presenter.addProductToCart(RequestParams(), onSuccess, {})
-
-        // Then
-        verify(exactly = 1) {
-            onSuccess.invoke(successAtc.data)
-        }
-    }
-
-    @Test
-    fun `when error addProductToCart`() {
-        // Given
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
-        val errorAtc = getErrorAtcModel()
-        every {
-            addToCartUseCase.createObservable(any())
-        } returns Observable.just(errorAtc)
-
-        // When
-        presenter.addProductToCart(RequestParams(), {}, onError)
-
-        // Then
-        verify(exactly = 1) {
-            onError.invoke("Gagal menambahkan produk")
-        }
-    }
-
-    @Test
-    fun `when error throwable addProductToCart`() {
-        // Given
-        val onError: (msg: String) -> Unit = mockk(relaxed = true)
-        val errorMsg = "Gagal menambahkan produk"
-        every {
-            addToCartUseCase.createObservable(any())
-        } throws IllegalStateException(errorMsg)
-
-        // When
-        presenter.addProductToCart(RequestParams(), {}, onError)
-
-        // Then
-        verify(exactly = 1) {
-            onError.invoke(errorMsg)
-        }
-    }
-
-    @Test
     fun `success load srw`() {
         // Given
         val observer: Observer<Resource<ChatSmartReplyQuestionResponse>> = mockk()
@@ -695,19 +635,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
 
         // Then
         assertThat(presenter.attachProductWarehouseId, `is`(warehouseId))
-    }
-
-    private fun getErrorAtcModel(): AddToCartDataModel {
-        return AddToCartDataModel().apply {
-            data.success = 0
-            data.message.add("Gagal menambahkan produk")
-        }
-    }
-
-    private fun getSuccessAtcModel(): AddToCartDataModel {
-        return AddToCartDataModel().apply {
-            data.success = 1
-        }
     }
 
 }

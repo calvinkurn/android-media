@@ -488,13 +488,14 @@ class TokoNowHomeFragment: Fragment(),
         isFirstImpressionOnBanner = if (!isFirstImpressionOnBanner) {
             true
         } else {
-            analytics.onImpressBannerPromo(userSession.userId, channelModel)
+            analytics.onImpressBannerPromo(userSession.userId, channelModel, localCacheModel?.warehouse_id.toLongOrZero().toString())
             false
         }
     }
 
     override fun onShareBtnSharingEducationClicked() {
         shareClicked(shareHomeTokonow())
+        analytics.onClickShareToOthers(userSession.userId)
     }
 
     override fun onCloseBtnSharingEducationClicked(id: String) {
@@ -737,6 +738,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun onClickShareButton() {
         shareClicked(shareHomeTokonow())
+        analytics.onClickShareButton()
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {

@@ -103,17 +103,25 @@
 
     <string name="default_member_title">Rewards</string>
     <string name="new_home_account_label_beta">BETA</string>
+
+    <!--  Link Account Resources  -->
     <string name="link_account_main_title"><![CDATA[Link your Tokopedia & Gojek accounts to get better deals!]]></string>
     <string name="link_account_description"><![CDATA[You can get GoPayPoints cashback, level up your Tokopedia Rewards & GoClub memberships, and use GoPay on Tokopedia.]]></string>
     <string name="link_account_btn_primary">Let’s Do It!</string>
     <string name="link_account_label">Sambungin ke Gojek</string>
 
     <string name="label_link_account">Akun Tersambung</string>
+    <string name="label_link_acc_not_linked">Belum tersambung</string>
+    <string name="label_link_acc_gojek">Gojek</string>
+    <string name="label_link_acc_linked_date">Tersambung %1$s</string>
+    <string name="label_link_acc_phone">+%1$s -\u0020</string>
+
+    <string name="label_link_acc_unknown_error">Hubungi</string>
+
     <string name="link_account_layout_description">Atur akun yang tersambung ke Tokopedia</string>
     <string name="label_toolbar_verifikasi_akun">Verifikasi Akun</string>
     <string name="label_toolbar_aktifasi_gopay">\u0020\u0020\u0020Aktifin GoPay</string>
 
-    <string name="hyperlink">Learn more about Android app development at\n<a href="https://learntodroid.com">LearnToDroid.com</a></string>
     <string name="label_call_tokopedia">Butuh bantuan?\nHubungi Tim Tokopedia Care</string>
 
     <string name="label_link_account_menu_skip">Lewati</string>
