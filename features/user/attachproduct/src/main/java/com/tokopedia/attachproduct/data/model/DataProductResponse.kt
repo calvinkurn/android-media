@@ -41,6 +41,9 @@ data class DataProductResponse (
     val freeOngkir: FreeOngkir = FreeOngkir(),
 
     @SerializedName("stock")
-    val stock: Int = 1
+    val stock: Int = 1,
+
+    @SerializedName("childs")
+    val childs: List<Int> = listOf()
 
 )

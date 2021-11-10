@@ -98,6 +98,7 @@ class SendableProductPreview(
             .withStatus(productPreview.status)
             .withImages(listOf(productPreview.imageUrl))
             .withNeedSync(false)
+            .withIsSupportVariant(productPreview.isSupportVariant)
             .build()
     }
 

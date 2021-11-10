@@ -1480,7 +1480,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickBuyProductAttachment(element)
-        if (element.variants.isNullOrEmpty()) {
+        if (element.isSupportVariant) {
+            showAtcVariantHelper(element.productId, element.shopId.toString())
+        } else {
             doBuyAndAtc(element) {
                 analytics.trackSuccessDoBuyAndAtc(
                     element, it,
@@ -1490,14 +1492,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 val intent = RouteManager.getIntent(context, ApplinkConst.CART)
                 startActivity(intent)
             }
-        } else {
-            showAtcVariantHelper(element.productId, element.shopId.toString())
         }
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        if (element.variants.isNullOrEmpty()) {
+        if (element.isSupportVariant) {
+            showAtcVariantHelper(element.productId, element.shopId.toString())
+        } else {
             doBuyAndAtc(element) {
                 analytics.trackSuccessDoBuyAndAtc(
                     element, it,
@@ -1518,8 +1520,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     }.show()
                 }
             }
-        } else {
-            showAtcVariantHelper(element.productId, element.shopId.toString())
         }
     }
 

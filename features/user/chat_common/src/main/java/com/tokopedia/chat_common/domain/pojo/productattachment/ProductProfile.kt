@@ -77,4 +77,6 @@ class ProductProfile {
     @SerializedName("parent_id")
     @Expose
     var parentId: String = "0"
+    @SerializedName("is_variant")
+    var isSupportVariant: Boolean = false
 }

@@ -77,6 +77,7 @@ open class ProductAttachmentUiModel protected constructor(
     var colorHexVariant: String = ""
     var sizeVariantId: String = ""
     var sizeVariant: String = ""
+    var isSupportVariant: Boolean = builder.isSupportVariant
 
     init {
         if (variants.isNotEmpty()) {
@@ -305,6 +306,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var isPreOrder: Boolean = false
         internal var images: List<String> = emptyList()
         internal var needSync: Boolean = true
+        internal var isSupportVariant: Boolean = false
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
             withProductId(product.productId)
@@ -328,6 +330,7 @@ open class ProductAttachmentUiModel protected constructor(
             withWishList(product.productProfile.wishList)
             withImages(product.productProfile.images)
             withRating(product.productProfile.rating)
+            withIsSupportVariant(product.productProfile.isSupportVariant)
             return self()
         }
 
@@ -448,6 +451,11 @@ open class ProductAttachmentUiModel protected constructor(
 
         fun withNeedSync(needSync: Boolean): Builder {
             this.needSync = needSync
+            return self()
+        }
+
+        fun withIsSupportVariant(isSupportVariant: Boolean): Builder {
+            this.isSupportVariant = isSupportVariant
             return self()
         }
 

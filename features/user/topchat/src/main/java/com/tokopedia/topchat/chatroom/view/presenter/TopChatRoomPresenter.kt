@@ -796,7 +796,7 @@ open class TopChatRoomPresenter @Inject constructor(
         if (resultProducts.isNotEmpty()) clearAttachmentPreview()
         for (resultProduct in resultProducts) {
             val productPreview = ProductPreview(
-                id = resultProduct.productId.toString(),
+                id = resultProduct.productId,
                 imageUrl = resultProduct.productImageThumbnail,
                 name = resultProduct.name,
                 price = resultProduct.price,
@@ -805,8 +805,8 @@ open class TopChatRoomPresenter @Inject constructor(
                 dropPercentage = resultProduct.dropPercentage,
                 productFsIsActive = resultProduct.isFreeOngkirActive,
                 productFsImageUrl = resultProduct.imgUrlFreeOngkir,
-                remainingStock = resultProduct.stock
-
+                remainingStock = resultProduct.stock,
+                isSupportVariant = resultProduct.isSupportVariant
             )
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)
