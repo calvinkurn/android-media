@@ -10,8 +10,11 @@ import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
+import com.tokopedia.shop.databinding.ItemShopProductChangeGridSectionViewBinding
 import com.tokopedia.shop.product.view.datamodel.ShopProductChangeGridSectionUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
+
 /**
  * Created by normansyahputa on 2/22/18.
  */
@@ -26,6 +29,7 @@ class ShopProductChangeGridSectionViewHolder(
         val LAYOUT = R.layout.item_shop_product_change_grid_section_view
     }
 
+    private val viewBinding : ItemShopProductChangeGridSectionViewBinding? by viewBinding()
     private val drawableProductGridList : Int
         get() = R.drawable.ic_shop_page_product_grid_list
 
@@ -34,10 +38,9 @@ class ShopProductChangeGridSectionViewHolder(
 
     private val drawableProductGridBig : Int
         get() = R.drawable.ic_shop_page_product_grid_big
-
-    private val labelTotalProduct: Typography? = itemView.findViewById(R.id.label_total_product)
-    private val ivGridIcon: IconUnify? = itemView.findViewById(R.id.iv_grid_icon)
-    private val labelTampilan: Typography? = itemView.findViewById(R.id.label_tampilan)
+    private val labelTotalProduct: Typography? = viewBinding?.labelTotalProduct
+    private val ivGridIcon: IconUnify? = viewBinding?.ivGridIcon
+    private val labelTampilan: Typography? = viewBinding?.labelTampilan
 
     override fun bind(model: ShopProductChangeGridSectionUiModel) {
         val productListDataFormatted = model.totalProduct.thousandFormatted()
