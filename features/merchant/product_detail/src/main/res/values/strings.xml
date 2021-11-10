@@ -142,7 +142,7 @@
     <string name="shop_online_last_date"><![CDATA[Terakhir online <b>%1s</b>]]></string>
     <string name="shop_online">• Online</string>
     <string name="location_dot_builder">• %1s</string>
-    <string name="product_shop_rating">rata-rata ulasan</string>
+    <string name="product_shop_rating">rating toko</string>
     <string name="product_shop_total_product">total produk</string>
     <string name="product_shop_process_product">pesanan diproses</string>
     <string name="product_shop_chat_reply">balas chat &amp; diskusi</string>
