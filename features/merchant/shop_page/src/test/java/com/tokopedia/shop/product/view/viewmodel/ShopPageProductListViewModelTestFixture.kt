@@ -72,6 +72,7 @@ abstract class ShopPageProductListViewModelTestFixture {
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var shopPageProductListResultViewModel: ShopPageProductListResultViewModel
     protected val addressWidgetData: LocalCacheModel = LocalCacheModel()
+    protected val mockProductPerPage = 10
     private val testCoroutineDispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
     }

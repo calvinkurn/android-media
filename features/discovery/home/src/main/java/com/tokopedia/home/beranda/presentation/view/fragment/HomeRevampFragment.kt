@@ -1816,28 +1816,31 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setupPlayWidgetCoordinator()
         bannerCarouselCallback = BannerComponentCallback(context, this)
         val adapterFactory = HomeAdapterFactory(
-                this,
-                this,
-                this,
-                homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
-                this,
-                HomeComponentCallback(this),
-                DynamicLegoBannerComponentCallback(context, this),
-                RecommendationListCarouselComponentCallback(this),
-                MixLeftComponentCallback(this),
-                MixTopComponentCallback(this),
-                HomeReminderWidgetCallback(RechargeRecommendationCallback(context, this),
-                        SalamWidgetCallback(context, this, getUserSession())),
-                ProductHighlightComponentCallback(this),
-                Lego4AutoBannerComponentCallback(context, this),
-                FeaturedShopComponentCallback(context, this),
-                playWidgetCoordinator,
-                this,
-                CategoryNavigationCallback(context, this),
-                RechargeBUWidgetCallback(context, this),
-                bannerCarouselCallback,
-                DynamicIconComponentCallback(context, this),
-                Lego6AutoBannerComponentCallback(context, this)
+            this,
+            this,
+            this,
+            homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
+            this,
+            HomeComponentCallback(this),
+            DynamicLegoBannerComponentCallback(context, this),
+            RecommendationListCarouselComponentCallback(this),
+            MixLeftComponentCallback(this),
+            MixTopComponentCallback(this),
+            HomeReminderWidgetCallback(
+                RechargeRecommendationCallback(context, this),
+                SalamWidgetCallback(context, this, getUserSession())
+            ),
+            ProductHighlightComponentCallback(this),
+            Lego4AutoBannerComponentCallback(context, this),
+            FeaturedShopComponentCallback(context, this),
+            playWidgetCoordinator,
+            this,
+            CategoryNavigationCallback(context, this),
+            RechargeBUWidgetCallback(context, this),
+            bannerCarouselCallback,
+            DynamicIconComponentCallback(context, this),
+            Lego6AutoBannerComponentCallback(context, this),
+            CampaignWidgetComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2102,7 +2105,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         stickyLoginView?.loadContent()
         loadEggData()
-        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
     override fun onChooseAddressUpdated() {
@@ -2155,7 +2157,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         stickyLoginView?.loadContent()
         loadEggData()
-        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
     private fun resetFeedState() {
@@ -2180,7 +2181,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.addOneTimeGlobalLayoutListener {
             homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache)
             homePerformanceMonitoringListener = null
-            fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
             if (fragmentCreatedForFirstTime) {
                 fragmentCreatedForFirstTime = false
                 conditionalViewModelRefresh()
@@ -2724,12 +2724,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         super.onHiddenChanged(hidden)
         userVisibleHint = !hidden
         fragmentFramePerformanceIndexMonitoring.onFragmentHidden(hidden)
-    }
-
-    private fun fetchTokopointsNotification(type: String) {
-        if (activity != null) {
-            TokoPointsNotificationManager.fetchNotification(activity, type, childsFragmentManager)
-        }
     }
 
     override fun hideEggOnScroll() {
