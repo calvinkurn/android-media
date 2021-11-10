@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -20,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -27,7 +27,6 @@ import com.bumptech.glide.Glide;
 import com.otaliastudios.cameraview.CameraException;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraUtils;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.controls.Facing;
@@ -40,11 +39,11 @@ import com.tokopedia.homecredit.R;
 import com.tokopedia.homecredit.di.component.HomeCreditComponent;
 import com.tokopedia.homecredit.viewModel.HomeCreditViewModel;
 import com.tokopedia.iconunify.IconUnify;
+import com.tokopedia.usecase.coroutines.Result;
+import com.tokopedia.usecase.coroutines.Success;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -203,46 +202,21 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         if (mCaptureNativeSize == null) {
             mCaptureNativeSize = cameraView.getPictureSize();
         }
-        try {
-            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), bitmap -> {
-                if (bitmap != null) {
-                    File cameraResultFile = saveToCacheDirectory(imageByte);
-                    if (cameraResultFile != null) {
-                        onSuccessImageTakenFromCamera(cameraResultFile);
-                    }
+        homeCreditViewModel.computeImageArray(imageByte, mCaptureNativeSize, getFileLocationFromDirectory());
+        homeCreditViewModel.getImageDetailLiveData().observe(this, new Observer<Result<Bitmap>>() {
+            @Override
+            public void onChanged(Result<Bitmap> bitmapResult) {
+                Bitmap myBitmap = ((Success<Bitmap>) bitmapResult).getData();
+                if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()) {
+                    Bitmap flippedBitmap = ImageHandler.flip(myBitmap, true, false);
+                    loadImageFromBitmap(getContext(), imageCaptured, flippedBitmap);
+                } else {
+                    loadImageFromBitmap(getContext(), imageCaptured, myBitmap);
                 }
-            });
-        } catch (Throwable error) {
-            File cameraResultFile = saveToCacheDirectory(imageByte);
-            if (cameraResultFile != null) {
-                onSuccessImageTakenFromCamera(cameraResultFile);
+                hideCameraProp();
             }
-        }
-    }
-
-    protected void onSuccessImageTakenFromCamera(File imgFile) {
-        String imagePath = imgFile.getAbsolutePath();
-        finalCameraResultFilePath = imagePath;
-        try {
-            File file = new File(imagePath);
-            if (file.exists()) {
-                Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-                if (myBitmap != null) {
-                    if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()) {
-                        Bitmap flippedBitmap = ImageHandler.flip(myBitmap, true, false);
-                        myBitmap.recycle();
-                        loadImageFromBitmap(getContext(), imageCaptured, flippedBitmap);
-                    } else {
-                        loadImageFromBitmap(getContext(), imageCaptured, myBitmap);
-                    }
-                }
-            }
-            hideCameraProp();
-        } catch (Throwable e) {
-
-        }
+        });
         reset();
-
     }
 
     private void loadImageFromBitmap(Context context, final ImageView imageView, Bitmap bitmap) {
@@ -386,28 +360,5 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     }
 
-
-    private File saveToCacheDirectory(byte[] imageByte) {
-        FileOutputStream out = null;
-        try {
-            File file = getFileLocationFromDirectory();
-            out = new FileOutputStream(file);
-            out.write(imageByte);
-            return file;
-        } catch (Exception e) {
-            if (getActivity() != null)
-                getActivity().finish();
-            return null;
-        } finally {
-            if (out != null) {
-                try {
-                    out.flush();
-                    out.close();
-                } catch (IOException e) {
-                }
-
-            }
-        }
-    }
 
 }
