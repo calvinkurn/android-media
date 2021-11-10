@@ -17,6 +17,7 @@ data class ChatRoomHeaderUiModel constructor(
         var shopId: Long = 0,
         val isOfficial: Boolean = false,
         val isGold: Boolean = false,
+        var shopType: Int = 0,
         val badge: String = ""
 ) : Parcelable {
 
@@ -28,7 +29,10 @@ data class ChatRoomHeaderUiModel constructor(
         const val ROLE_SHOP: String = "shop"
         const val ROLE_OFFICIAL: String = "administrator"
         const val TAG_OFFICIAL: String = "Official"
-
+        const val SHOP_TYPE_REGULAR = "reguler"
+        const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
+        const val SHOP_TYPE_OFFICIAL_STORE = "official_Store"
+        const val SHOP_TYPE_TOKONOW = "tokonow"
     }
 
 
