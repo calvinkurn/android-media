@@ -1,6 +1,7 @@
 package com.tokopedia.analyticsdebugger.sse.ui.mapper
 
 import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELogEntity
+import com.tokopedia.analyticsdebugger.sse.helper.DateTimeHelper
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ class SSELogMapper @Inject constructor() {
             id = it.id,
             event = it.event,
             message = it.message,
-            timestamp = it.timestamp
+            dateTime = DateTimeHelper.formatDate(it.timestamp)
         )
     }
 }

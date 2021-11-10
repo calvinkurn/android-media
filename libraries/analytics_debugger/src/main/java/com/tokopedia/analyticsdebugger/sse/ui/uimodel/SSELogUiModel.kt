@@ -10,5 +10,5 @@ data class SSELogUiModel(
     val id: Long = 0,
     val event: String,
     val message: String,
-    val timestamp: Long,
+    val dateTime: String,
 )

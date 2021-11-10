@@ -26,13 +26,8 @@ class SSELoggingFragment: Fragment() {
     private lateinit var viewModel: SSELoggingViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjection()
         super.onCreate(savedInstanceState)
-        val component = DaggerSSELoggingComponent.builder().baseAppComponent(
-            (requireActivity().application as BaseMainApplication).baseAppComponent
-        ).build()
-        component.inject(this)
-
-
     }
 
     override fun onCreateView(
@@ -48,6 +43,13 @@ class SSELoggingFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         viewModel.getLog()
+    }
+
+    private fun initInjection() {
+        val component = DaggerSSELoggingComponent.builder().baseAppComponent(
+            (requireActivity().application as BaseMainApplication).baseAppComponent
+        ).build()
+        component.inject(this)
     }
 
     private fun initObserver() {
