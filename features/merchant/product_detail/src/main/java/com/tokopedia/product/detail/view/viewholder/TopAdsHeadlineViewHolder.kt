@@ -85,6 +85,12 @@ class TopAdsHeadlineViewHolder(view: View, val userId: String) :
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
         topadsHeadlineView.displayAds(cpmModel)
-        titleView.show()
+        cpmModel.data?.let {
+            if(it.size > 0){
+                titleView.show()
+            } else {
+                titleView.hide()
+            }
+        }
     }
 }

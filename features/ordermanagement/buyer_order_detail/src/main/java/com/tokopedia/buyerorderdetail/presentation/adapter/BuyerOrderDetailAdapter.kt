@@ -142,11 +142,9 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBundlingListSection(
-        productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>?
+        productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>
     ) {
-        productBundlingList?.let {
-            addAll(it)
-        }
+        addAll(productBundlingList)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierDriverInfoSection(

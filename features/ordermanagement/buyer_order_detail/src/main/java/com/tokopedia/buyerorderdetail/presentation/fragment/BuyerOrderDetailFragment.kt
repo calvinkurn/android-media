@@ -28,6 +28,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapt
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
@@ -50,6 +51,7 @@ import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationD
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -70,7 +72,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         ProductBundlingViewHolder.Listener,
         TickerViewHolder.TickerViewHolderListener,
         DigitalRecommendationViewHolder.ActionListener,
-//        RecommendationWidgetListener,
+        CourierInfoViewHolder.CourierInfoViewHolderListener,
         PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener {
 
     companion object {
@@ -557,6 +559,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
                 viewModel.getShopType().toString(),
                 viewModel.getUserId()
         )
+    }
+
+    override fun onEtaChangedClicked(delayedInfo: String) {
+        showEtaBottomSheet(delayedInfo)
+    }
+
+    private fun showEtaBottomSheet(etaChangedDescription: String) {
+        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(etaChangedDescription)
+        parentFragmentManager?.run {
+            delayedEtaBottomSheetFragment.show(this, "")
+        }
     }
 
     override fun onProductCardClick(recommendationItem: RecommendationItem, applink: String) {

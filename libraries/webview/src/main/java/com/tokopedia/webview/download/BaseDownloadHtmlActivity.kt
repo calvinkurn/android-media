@@ -49,7 +49,7 @@ open class BaseDownloadHtmlActivity : BaseSimpleActivity() {
                         baseDownloadFragment.printEticket()
                     true
                 }
-                else -> false
+                else -> super.onOptionsItemSelected(item)
             }
 
     private fun init(savedInstanceState: Bundle?) {

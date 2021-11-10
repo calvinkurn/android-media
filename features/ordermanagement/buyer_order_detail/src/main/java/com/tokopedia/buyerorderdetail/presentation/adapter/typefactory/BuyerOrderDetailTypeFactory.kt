@@ -16,6 +16,7 @@ class BuyerOrderDetailTypeFactory(
         private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener,
         private val digitalRecommendationData: DigitalRecommendationData,
         private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
+        private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
         private val  buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
 ) : BaseAdapterTypeFactory() {
 
@@ -94,7 +95,7 @@ class BuyerOrderDetailTypeFactory(
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
             CopyableKeyValueViewHolder.LAYOUT -> CopyableKeyValueViewHolder(parent)
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent, navigator)
-            CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(parent)
+            CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(parent, courierInfoViewHolderListener)
             OrderStatusHeaderViewHolder.LAYOUT -> OrderStatusHeaderViewHolder(parent, navigator)
             OrderStatusInfoViewHolder.LAYOUT -> OrderStatusInfoViewHolder(parent, navigator)
             PaymentGrandTotalViewHolder.LAYOUT -> PaymentGrandTotalViewHolder(parent)

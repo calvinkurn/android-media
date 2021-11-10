@@ -29,7 +29,7 @@ class AnimatedVectorDetector: Detector(), SourceCodeScanner, XmlScanner {
         val JAVA_ISSUE = Issue.create(
             id = "AnimatedVectorDrawable",
             briefDescription = "Unsafe animated vector usage.",
-            explanation = "Animated vector drawable without <target> tag can lead to crash on lollipop device.",
+            explanation = "Animated vector drawable without target tag can lead to crash on lollipop device.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.FATAL,
@@ -39,7 +39,7 @@ class AnimatedVectorDetector: Detector(), SourceCodeScanner, XmlScanner {
         val XML_ISSUE = Issue.create(
             id = "AnimatedVectorDrawable",
             briefDescription = "Unsafe animated vector usage.",
-            explanation = "Animated vector drawable without <target> tag can lead to crash on lollipop device.",
+            explanation = "Animated vector drawable without target tag can lead to crash on lollipop device.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.FATAL,
@@ -50,7 +50,7 @@ class AnimatedVectorDetector: Detector(), SourceCodeScanner, XmlScanner {
         private const val METHOD_CREATE = "create"
         private const val ANIMATED_VECTOR_PACKAGE = "androidx.vectordrawable.graphics.drawable"
         private const val ANIMATED_VECTOR_CLASS = "$ANIMATED_VECTOR_PACKAGE.AnimatedVectorDrawableCompat"
-        private const val ERROR_MESSAGE = "Unsafe animated vector usage. Animated vector should have <target> tag."
+        private const val ERROR_MESSAGE = "Unsafe animated vector usage. Animated vector should have target tag."
     }
 
     private val animatedVectorResources = Sets.newHashSet<String>()

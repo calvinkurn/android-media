@@ -161,12 +161,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             this.tokonowPageNameListener = tokonowPageNameListener
             bindTemporaryHeader(tempHeaderName)
             bindWidgetWithPageName(
-                    pageName = pageName,
-                    isForceRefresh = isForceRefresh,
-                    isTokonow = isTokonow,
-                    keyword = keyword,
-                    categoryIds = categoryIds,
-                    productIds = productIds
+                pageName = pageName,
+                isForceRefresh = isForceRefresh,
+                isTokonow = isTokonow,
+                keyword = keyword,
+                categoryIds = categoryIds,
+                productIds = productIds
             )
         } catch (e: Exception) {
             this.basicListener?.onWidgetFail(pageName, e)
@@ -425,11 +425,11 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             adapter?.clearAllElements()
             itemView.loadingRecom.visible()
             viewModel?.loadRecommendationCarousel(
-                    pageName = pageName,
-                    productIds = productIds,
-                    categoryIds = categoryIds,
-                    keywords = listOf(keyword),
-                    isTokonow = isTokonow
+                pageName = pageName,
+                productIds = productIds,
+                categoryIds = categoryIds,
+                keywords = listOf(keyword),
+                isTokonow = isTokonow
             )
         } else {
             itemView.loadingRecom.gone()
@@ -484,7 +484,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onWidgetResume() {
-        getMiniCartData()
+//        getMiniCartData()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)

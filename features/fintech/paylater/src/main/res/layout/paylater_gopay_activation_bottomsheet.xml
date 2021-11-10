@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageDisplayer"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="@id/tokoToGoPayHeader"
+        app:layout_constraintRight_toRightOf="@id/tokoToGoPayHeader"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokoToGoPayHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="51dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginRight="51dp"
+        android:gravity="center"
+        android:text="@string/pay_later_connect_gopay"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageDisplayer"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokoToGoPaySubHeader"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginRight="@dimen/unify_space_16"
+        android:gravity="center"
+        android:text="@string/paylater_to_use_gopay"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokoToGoPayHeader"
+        app:typographyType="body_1" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:text="@string/paylater_gopay_connect_account"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokoToGoPaySubHeader"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="filled"
+
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

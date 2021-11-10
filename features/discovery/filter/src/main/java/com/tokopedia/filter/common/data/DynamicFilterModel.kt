@@ -10,21 +10,11 @@ import kotlinx.android.parcel.Parcelize
 class DynamicFilterModel(@SerializedName("data")
                          @Expose
                          var data: DataValue = DataValue(),
-                         @SerializedName("process_time")
-                         @Expose
-                         var processTime: String = "",
                          @SerializedName("status")
                          @Expose
                          var status: String = "",
-                         @SerializedName("isOfficialSelectedFlag")
-                         @Expose
-                         var isOfficialSelectedFlag: Boolean = false,
                          var defaultSortValue: String = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
 ) : Parcelable {
-
-    fun getIsOfficialSelectedFlag(): Boolean {
-        return isOfficialSelectedFlag
-    }
 
     fun isEmpty(): Boolean {
         return data.filter.map { it.options }.flatten().isEmpty()
@@ -33,4 +23,17 @@ class DynamicFilterModel(@SerializedName("data")
     fun hasSort() = data.sort.isNotEmpty()
 
     fun getSortKey() = if (hasSort()) data.sort[0].key else ""
+
+    fun getAppliedSort(mapParameter: Map<String, Any>): Sort? {
+        val sortValue = mapParameter[getSortKey()]?.toString() ?: ""
+
+        return if (defaultSortValue == sortValue) null
+        else findAppliedSort(sortValue)
+    }
+
+    private fun findAppliedSort(sortValue: String): Sort? =
+        data.sort.find {
+            it.key == getSortKey()
+                && it.value == sortValue
+        }
 }

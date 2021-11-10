@@ -174,9 +174,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
         val buyerOrderDetailResult = _buyerOrderDetailResult.value
         return if (buyerOrderDetailResult is Success) {
             buyerOrderDetailResult.data.productListUiModel.productList.map {
-                categoryIdMap.add(it.categoryId.toIntOrNull() ?: 0)
+                categoryIdMap.add(it.categoryId.toIntOrZero())
             }
-            buyerOrderDetailResult.data.productListUiModel.productBundlingList?.forEach { bundle ->
+            buyerOrderDetailResult.data.productListUiModel.productBundlingList.forEach { bundle ->
                 bundle.bundleItemList.forEach {
                     categoryIdMap.add(it.categoryId.toIntOrZero())
                 }
