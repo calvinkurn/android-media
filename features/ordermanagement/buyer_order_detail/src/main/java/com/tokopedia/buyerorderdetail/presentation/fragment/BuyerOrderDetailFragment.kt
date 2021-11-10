@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -29,6 +30,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRec
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
@@ -75,7 +77,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         ProductBundlingViewHolder.Listener,
         TickerViewHolder.TickerViewHolderListener,
         DigitalRecommendationViewHolder.ActionListener,
-        RecommendationWidgetListener {
+        RecommendationWidgetListener,
+        PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener {
 
     companion object {
         @JvmStatic
@@ -124,7 +127,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         SaveInstanceCacheManager(requireContext(), true)
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData, this, pageName, arraylist)
+        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData, this, pageName, arraylist, this)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -621,5 +624,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         productCardOptionsModel.productPosition = position
         productCardOptionsModel.screenName = header
         return productCardOptionsModel
+    }
+
+    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+        viewLifecycleOwner.lifecycle.addObserver(observer)
     }
 }

@@ -21,6 +21,7 @@ class BuyerOrderDetailTypeFactory(
         private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
         private val pageName: String,
         private val arraylist: ArrayList<String>,
+        private val  buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
 ) : BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
@@ -117,7 +118,7 @@ class BuyerOrderDetailTypeFactory(
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
             DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
 //            BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(parent, recommendationWidgetListener)
-            PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(parent, pageName, arraylist)
+            PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(parent, buyerOrderDetailBindRecomWidgetListener)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -1,13 +1,14 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.*
 
-class PgRecommendationViewHolder(itemView: View, private val pageName: String, private val arraylist: ArrayList<String>): AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
+class PgRecommendationViewHolder(itemView: View, private val buyerOrderDetailBindRecomWidgetListener: BuyerOrderDetailBindRecomWidgetListener): AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
         RecomCarouselWidgetBasicListener {
 
     companion object {
@@ -18,14 +19,16 @@ class PgRecommendationViewHolder(itemView: View, private val pageName: String, p
             itemView.findViewById(R.id.widget_recom)
 
     override fun bind(element: PGRecommendationWidgetUiModel) {
-        recomWidget.bind(
-                pageName = element.pageName,
-                productIds = element.productIdList,
-                adapterPosition = adapterPosition,
-                basicListener = this,
-                tokonowPageNameListener = null,
-
-        )
+        recomWidget.run {
+            buyerOrderDetailBindRecomWidgetListener.setViewToLifecycleOwner(this)
+            this.bind(
+                    pageName = element.pageName,
+                    productIds = element.productIdList,
+                    adapterPosition = adapterPosition,
+                    basicListener = this@PgRecommendationViewHolder,
+                    tokonowPageNameListener = null
+            )
+        }
     }
 
     override fun onChannelExpired(data: RecommendationCarouselData, channelPosition: Int) {
@@ -53,6 +56,11 @@ class PgRecommendationViewHolder(itemView: View, private val pageName: String, p
     }
 
     override fun onWidgetFail(pageName: String, e: Throwable) {
+    }
+
+    interface BuyerOrderDetailBindRecomWidgetListener{
+
+        fun setViewToLifecycleOwner(observer: LifecycleObserver)
     }
 
 }
