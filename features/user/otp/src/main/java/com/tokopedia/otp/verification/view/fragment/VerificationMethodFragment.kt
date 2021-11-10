@@ -38,7 +38,6 @@ import com.tokopedia.otp.silentverification.view.fragment.SilentVerificationFrag
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpConstant.OtpMode.SILENT_VERIFICATION
-import com.tokopedia.otp.verification.domain.data.OtpConstant.RemoteConfigKey.SILENT_VERIF_ENABLE
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
@@ -47,6 +46,7 @@ import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
@@ -112,7 +112,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun isEnableSilentVerif(): Boolean {
-        return remoteConfig.getBoolean(SILENT_VERIF_ENABLE, true)
+        return remoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION, true)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

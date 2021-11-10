@@ -87,12 +87,12 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
-import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_EMAIL
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_LOGIN_METHOD
 import com.tokopedia.loginregister.login.view.activity.LoginActivity.Companion.PARAM_PHONE
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -109,7 +109,6 @@ import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
-import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
@@ -1682,10 +1681,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun handleSilentVerificationFlow() {
-
-    }
-
     private fun onSuccessRegisterCheck(): (RegisterCheckData) -> Unit {
         return {
             trackSuccessValidate()
@@ -1694,11 +1689,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
                 userSession.tempPhoneNumber = partialRegisterInputView?.textValue
                 if (it.isExist) {
-                    if(isEnableSilentVerif && ConnectivityUtils.isSilentVerificationPossible(activity)) {
-                        handleSilentVerificationFlow()
-                    } else {
-                        goToLoginPhoneVerifyPage(it.view.replace("-", ""))
-                    }
+                    goToLoginPhoneVerifyPage(it.view.replace("-", ""))
                 } else {
                     analytics.trackerOnPhoneNumberNotExist()
                     goToRegisterPhoneVerifyPage(it.view.replace("-", ""))
