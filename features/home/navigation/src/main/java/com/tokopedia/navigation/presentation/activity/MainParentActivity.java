@@ -195,6 +195,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
     public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
     public static final String PARAM_HOME = "home";
+    public static final String PARAM_ACTIVITY_WISHLIST = "activity_wishlist";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -760,9 +761,19 @@ public class MainParentActivity extends BaseActivity implements
             }
             fragmentList.add(OfficialHomeContainerFragment.newInstance(bundleOS));
         }
-        Bundle bundleWishlist = new Bundle();
+
+        // old wishlist - will apply rollence here
+        /*Bundle bundleWishlist = new Bundle();
         bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
-        fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
+        fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));*/
+
+        Bundle bundleWishlist = getIntent().getExtras();
+        if (bundleWishlist == null) {
+            bundleWishlist = new Bundle();
+        }
+        bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST, PARAM_HOME);
+        bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
+        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
 
         Bundle bundleUoh = getIntent().getExtras();
         if (bundleUoh == null) {

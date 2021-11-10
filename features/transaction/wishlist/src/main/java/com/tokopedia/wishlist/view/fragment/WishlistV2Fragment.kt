@@ -217,7 +217,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 statusbar.gone()
             } else {
-                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
             }
             val icons = IconBuilder(
                     IconBuilderFlag(pageSource = pageSource)
