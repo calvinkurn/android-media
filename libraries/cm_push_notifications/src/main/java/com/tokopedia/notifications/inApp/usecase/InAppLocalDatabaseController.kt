@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.inApp.usecase
 
-import android.app.Application
+import android.content.Context
 import android.util.Log
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -10,11 +10,11 @@ import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.util.HashMap
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class InAppLocalDatabaseController private constructor(
-    private val application: Application,
+    private val applicationContext: Context,
     private val repositoryManager: RepositoryManager
 ) : CoroutineScope {
 
@@ -27,11 +27,11 @@ class InAppLocalDatabaseController private constructor(
             }
     private val deleteExpireInAppUseCase: DeleteExpireInAppUseCase
             by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-                DeleteExpireInAppUseCase(application, repositoryManager)
+                DeleteExpireInAppUseCase(applicationContext, repositoryManager)
             }
     private val saveInAppUseCase: SaveInAppUseCase
             by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-                SaveInAppUseCase(application, repositoryManager)
+                SaveInAppUseCase(applicationContext, repositoryManager)
             }
 
     fun getInAppData(
@@ -92,13 +92,13 @@ class InAppLocalDatabaseController private constructor(
         private const val SERVER_LOG_EXCEPTION = "exception"
 
         fun getInstance(
-            application: Application,
+            applicationContext: Context,
             repositoryManager: RepositoryManager
         ): InAppLocalDatabaseController =
             INSTANCE ?: synchronized(this) {
                 INSTANCE
                     ?: InAppLocalDatabaseController(
-                        application,
+                        applicationContext,
                         repositoryManager
                     ).also { INSTANCE = it }
             }

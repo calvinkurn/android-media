@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.inApp.viewEngine
 
-import android.app.Application
+import android.content.Context
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.GsonBuilder
@@ -20,7 +20,7 @@ import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class CMInAppProcessor(
-    private val application: Application?,
+    private val applicationContext: Context,
     private val inAppSaveListener: InAppSaveListener
 ) : CoroutineScope {
 
@@ -31,19 +31,11 @@ class CMInAppProcessor(
         try {
             val cmInApp: CMInApp? = CmInAppBundleConvertor.getCmInApp(remoteMessage)
             cmInApp?.let {
-                if (application != null) {
-                    IrisAnalyticsEvents.trackCmINAppEvent(
-                        application, cmInApp,
-                        IrisAnalyticsEvents.INAPP_DELIVERED, null
-                    )
-                    downloadImagesAndUpdateDB(cmInApp)
-                } else {
-                    val messageMap: MutableMap<String, String> = HashMap()
-                    messageMap["type"] = "validation"
-                    messageMap["reason"] = "application_null"
-                    messageMap["data"] = ""
-                    ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap)
-                }
+                IrisAnalyticsEvents.trackCmINAppEvent(
+                    applicationContext, cmInApp,
+                    IrisAnalyticsEvents.INAPP_DELIVERED, null
+                )
+                downloadImagesAndUpdateDB(cmInApp)
             }
         } catch (e: Exception) {
             val data: Map<String, String> = remoteMessage.data
@@ -65,19 +57,11 @@ class CMInAppProcessor(
             val amplificationCMInApp = gson.fromJson(dataString, AmplificationCMInApp::class.java)
             val cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp)
             cmInApp?.let {
-                if (application != null) {
-                    cmInApp.isAmplification = true
-                    IrisAnalyticsEvents.sendAmplificationInAppEvent(
-                        application, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp
-                    )
-                    downloadImagesAndUpdateDB(cmInApp)
-                } else {
-                    val messageMap: MutableMap<String, String> = HashMap()
-                    messageMap["type"] = "validation"
-                    messageMap["reason"] = "application_null"
-                    messageMap["data"] = ""
-                    ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap)
-                }
+                cmInApp.isAmplification = true
+                IrisAnalyticsEvents.sendAmplificationInAppEvent(
+                    applicationContext, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp
+                )
+                downloadImagesAndUpdateDB(cmInApp)
             }
         } catch (e: Exception) {
             val messageMap: MutableMap<String, String> = HashMap()
@@ -95,10 +79,10 @@ class CMInAppProcessor(
         launchCatchError(
             block = {
                 val processedCMInApp =
-                    ImageDownloadManager.downloadImages(application!!.applicationContext, cmInApp)
+                    ImageDownloadManager.downloadImages(applicationContext, cmInApp)
                 if (processedCMInApp.type == CmInAppConstant.TYPE_DROP) {
                     IrisAnalyticsEvents.sendInAppEvent(
-                        application.applicationContext,
+                        applicationContext,
                         IrisAnalyticsEvents.INAPP_CANCELLED,
                         processedCMInApp
                     )
@@ -117,7 +101,7 @@ class CMInAppProcessor(
 
     private fun saveInApp(processedCMInApp: CMInApp, inAppSaveListener: InAppSaveListener) {
         InAppLocalDatabaseController.getInstance(
-            application!!,
+            applicationContext,
             RepositoryManager.getInstance()
         ).saveInApp(processedCMInApp, inAppSaveListener)
     }

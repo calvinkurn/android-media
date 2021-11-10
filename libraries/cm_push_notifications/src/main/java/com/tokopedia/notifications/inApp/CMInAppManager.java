@@ -137,17 +137,10 @@ public class CMInAppManager implements CmInAppListener,
     private void showInAppNotification(String name, int entityHashCode, boolean isActivity) {
         if (excludeScreenList != null && excludeScreenList.contains(name))
             return;
-        if (cmRemoteConfigUtils == null) {
-            fetchInAppVOld(name, entityHashCode, isActivity);
+        if (isFetchInAppNewFlowEnabled()) {
+            fetchInAppVNew(name, entityHashCode, isActivity);
         } else {
-            boolean isNewFetchEnabled =
-                    cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_FETCH,
-                            false);
-            if (isNewFetchEnabled) {
-                fetchInAppVNew(name, entityHashCode, isActivity);
-            } else {
-                fetchInAppVOld(name, entityHashCode, isActivity);
-            }
+            fetchInAppVOld(name, entityHashCode, isActivity);
         }
     }
 
@@ -168,6 +161,11 @@ public class CMInAppManager implements CmInAppListener,
                         CMInAppManager.this.notificationsDataResult((List<CMInApp>) inAppList,
                                 entityHashCode, name)
                 );
+    }
+
+    private Boolean isFetchInAppNewFlowEnabled() {
+        return cmRemoteConfigUtils != null && cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_FETCH,
+                false);
     }
 
     @Override
@@ -277,64 +275,77 @@ public class CMInAppManager implements CmInAppListener,
 
     public void handleCMInAppPushPayload(RemoteMessage cmInAppRemoteMessage) {
 
-        if (cmRemoteConfigUtils == null) {
-            //todo enable old flow here
-//            handlePushPayloadVOld(cmInAppRemoteMessage);
+        if (isSaveInAppNewFlowEnabled()) {
             handlePushPayloadVNew(cmInAppRemoteMessage);
         } else {
-            boolean isNewSaveEnabled =
-                    cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_SAVE,
-                            false);
-            if (isNewSaveEnabled) {
-                handlePushPayloadVNew(cmInAppRemoteMessage);
-            } else {
-                //todo enable old flow here
-//                handlePushPayloadVOld(cmInAppRemoteMessage);
-                handlePushPayloadVNew(cmInAppRemoteMessage);
-            }
+            handlePushPayloadVOld(cmInAppRemoteMessage);
         }
-
     }
 
     private void handlePushPayloadVOld(RemoteMessage cmInAppRemoteMessage) {
-        new CMInAppController(application, this)
-                .processAndSaveCMInAppRemotePayload(cmInAppRemoteMessage);
+        if (application != null) {
+            new CMInAppController(application.getApplicationContext(), this)
+                    .processAndSaveCMInAppRemotePayload(cmInAppRemoteMessage);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
     }
 
     private void handlePushPayloadVNew(RemoteMessage cmInAppRemoteMessage) {
-        new CMInAppProcessor(application, this::onNewInAppStored)
-                .processAndSaveCMInAppRemotePayload(cmInAppRemoteMessage);
+        if (application != null) {
+            new CMInAppProcessor(application.getApplicationContext(), this::onNewInAppStored)
+                    .processAndSaveCMInAppRemotePayload(cmInAppRemoteMessage);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
     }
 
     public void handleCMInAppAmplificationData(String cmInAppAmplificationDataString) {
 
-        if (cmRemoteConfigUtils == null) {
-            //todo enable old flow here
-//            handleCMInAppAmplificationDataVOld(cmInAppAmplificationDataString);
+        if (isSaveInAppNewFlowEnabled()) {
             handleCMInAppAmplificationDataVNew(cmInAppAmplificationDataString);
         } else {
-            boolean isNewSaveEnabled =
-                    cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_SAVE,
-                            false);
-            if (isNewSaveEnabled) {
-                handleCMInAppAmplificationDataVNew(cmInAppAmplificationDataString);
-            } else {
-                //todo enable old flow here
-//                handleCMInAppAmplificationDataVOld(cmInAppAmplificationDataString);
-                handleCMInAppAmplificationDataVNew(cmInAppAmplificationDataString);
-            }
+            handleCMInAppAmplificationDataVOld(cmInAppAmplificationDataString);
         }
-
     }
 
     private void handleCMInAppAmplificationDataVOld(String cmInAppAmplificationDataString) {
-        new CMInAppController(application, this)
-                .processAndSaveCMInAppAmplificationData(cmInAppAmplificationDataString);
+        if (application != null) {
+            new CMInAppController(application.getApplicationContext(), this::onNewInAppStored)
+                    .processAndSaveCMInAppAmplificationData(cmInAppAmplificationDataString);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
     }
 
     private void handleCMInAppAmplificationDataVNew(String cmInAppAmplificationDataString) {
-        new CMInAppProcessor(application, this::onNewInAppStored)
-                .processAndSaveCMInAppAmplificationData(cmInAppAmplificationDataString);
+        if (application != null) {
+            new CMInAppProcessor(application.getApplicationContext(), this::onNewInAppStored)
+                    .processAndSaveCMInAppAmplificationData(cmInAppAmplificationDataString);
+        } else {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "validation");
+            messageMap.put("reason", "application_null");
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
+    }
+
+    private Boolean isSaveInAppNewFlowEnabled() {
+        return cmRemoteConfigUtils != null && cmRemoteConfigUtils.getBooleanRemoteConfig(ENABLE_NEW_INAPP_LOCAL_SAVE,
+                false);
     }
 
     private void onNewInAppStored() {

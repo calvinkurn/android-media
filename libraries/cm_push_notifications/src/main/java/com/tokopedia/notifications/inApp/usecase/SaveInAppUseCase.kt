@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.inApp.usecase
 
 import android.app.Application
+import android.content.Context
 import com.tokopedia.notifications.common.IrisAnalyticsEvents
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.InAppDataDao
@@ -9,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class SaveInAppUseCase(
-    private val application: Application,
+    private val applicationContext: Context,
     private val repositoryManager: RepositoryManager
 ) {
 
@@ -109,13 +110,13 @@ class SaveInAppUseCase(
         oldCMInApp?.let {
             //send event and delete this inApp
             sendIrisEvent(IrisAnalyticsEvents.INAPP_CANCELLED, it)
-            repositoryManager.inAppDataDao?.deleteRecord(it.id)
+            inAppDataDao.deleteRecord(it.id)
         }
     }
 
     private fun sendIrisEvent(event: String, cmInApp: CMInApp) {
         IrisAnalyticsEvents.sendInAppEvent(
-            application.applicationContext,
+            applicationContext,
             event,
             cmInApp
         )
