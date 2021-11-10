@@ -1,5 +1,6 @@
 package com.tokopedia.shop.pageheader.util
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
@@ -39,7 +40,7 @@ object NewShopPageHeaderMapper {
                 shopInfoOsData.data.isOfficial,
                 shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
                 shopPageHomeTypeData.shopHomeType,
-                shopName,
+                MethodChecker.fromHtml(shopName).toString(),
                 shopAvatar,
                 "",
                 feedWhitelistData.isWhitelist,
