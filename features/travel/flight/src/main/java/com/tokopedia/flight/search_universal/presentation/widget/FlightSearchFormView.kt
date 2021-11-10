@@ -67,20 +67,6 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         setClassView(getClassById(flightDashboardCache.classCache))
 
         renderTripView()
-
-        if (flightDashboardCache.departureDate.isNotEmpty() &&
-                !flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultDepartureDate())) {
-            setDepartureDate(flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD))
-        } else {
-            setDepartureDate(generateDefaultDepartureDate())
-        }
-
-        if (flightDashboardCache.returnDate.isNotEmpty() &&
-                !flightDashboardCache.returnDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultReturnDate(departureDate))) {
-            setReturnDate(flightDashboardCache.returnDate.toDate(DateUtil.YYYY_MM_DD))
-        } else {
-            setReturnDate(generateDefaultReturnDate(departureDate))
-        }
     }
 
     fun setRoundTrip(isRoundTrip: Boolean) {
@@ -349,8 +335,22 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         separatorReturnDate.hide()
     }
 
-    fun setDate(isChecked: Boolean){
-        this.isAvailableToday = isChecked
+    fun setDate(isTodayAllowed: Boolean){
+        this.isAvailableToday = isTodayAllowed
+
+        if (flightDashboardCache.departureDate.isNotEmpty() &&
+            !flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultDepartureDate())) {
+            setDepartureDate(flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD))
+        } else {
+            setDepartureDate(generateDefaultDepartureDate())
+        }
+
+        if (flightDashboardCache.returnDate.isNotEmpty() &&
+            !flightDashboardCache.returnDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultReturnDate(departureDate))) {
+            setReturnDate(flightDashboardCache.returnDate.toDate(DateUtil.YYYY_MM_DD))
+        } else {
+            setReturnDate(generateDefaultReturnDate(departureDate))
+        }
     }
 
     private fun generateDefaultDepartureDate(): Date {
