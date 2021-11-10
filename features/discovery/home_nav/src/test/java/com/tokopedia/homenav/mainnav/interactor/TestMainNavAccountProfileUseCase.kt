@@ -52,7 +52,7 @@ class TestMainNavAccountProfileUseCase {
     }
 
     @Test
-    fun `When tokopoints response is above zero and saldo response is zero onMapToHeaderModel then tokopoints is not empty and saldo is empty`(){
+    fun `When tokopoints response is above zero and saldo response is zero onMapToHeaderModel then tokopoints is not empty and saldo is not empty`(){
         val getTokopointsStatusFiltered = mockk<GetTokopointStatusFiltered>(relaxed = true)
         val getSaldoUseCase = mockk<GetSaldoUseCase>(relaxed = true)
 
@@ -72,7 +72,7 @@ class TestMainNavAccountProfileUseCase {
             getProfileDataUseCase.executeOnBackground()
         }
         Assert.assertTrue(accountDataModel.profileMembershipDataModel.tokopointPointAmount.isNotEmpty())
-        Assert.assertTrue(accountDataModel.profileSaldoDataModel.saldo.isEmpty())
+        Assert.assertTrue(accountDataModel.profileSaldoDataModel.saldo.isNotEmpty())
     }
 
     @Test
@@ -100,7 +100,7 @@ class TestMainNavAccountProfileUseCase {
     }
 
     @Test
-    fun `When tokopoints response is zero and saldo response above zero onMapToHeaderModel then tokopoints is empty and saldo is not empty`(){
+    fun `When tokopoints response is zero and saldo response above zero onMapToHeaderModel then tokopoints is zero and saldo is not empty`(){
         val getTokopointsStatusFiltered = mockk<GetTokopointStatusFiltered>(relaxed = true)
         val getSaldoUseCase = mockk<GetSaldoUseCase>(relaxed = true)
 
@@ -119,12 +119,12 @@ class TestMainNavAccountProfileUseCase {
         val accountDataModel = runBlocking {
             getProfileDataUseCase.executeOnBackground()
         }
-        Assert.assertTrue(accountDataModel.profileMembershipDataModel.tokopointPointAmount.isEmpty())
+        Assert.assertTrue(accountDataModel.profileMembershipDataModel.tokopointPointAmount == "0")
         Assert.assertTrue(accountDataModel.profileSaldoDataModel.saldo.isNotEmpty())
     }
 
     @Test
-    fun `When tokopoints response is zero and saldo response is zero onMapToHeaderModel then tokopoints is empty and saldo is not empty`(){
+    fun `When tokopoints response is zero and saldo response is zero onMapToHeaderModel then tokopoints is zero and saldo is zero`(){
         val getTokopointsStatusFiltered = mockk<GetTokopointStatusFiltered>(relaxed = true)
         val getSaldoUseCase = mockk<GetSaldoUseCase>(relaxed = true)
 
@@ -143,7 +143,7 @@ class TestMainNavAccountProfileUseCase {
         val accountDataModel = runBlocking {
             getProfileDataUseCase.executeOnBackground()
         }
-        Assert.assertTrue(accountDataModel.profileMembershipDataModel.tokopointPointAmount.isEmpty())
+        Assert.assertTrue(accountDataModel.profileMembershipDataModel.tokopointPointAmount == "0")
         Assert.assertTrue(accountDataModel.profileSaldoDataModel.saldo.isNotEmpty())
     }
 
@@ -384,7 +384,7 @@ class TestMainNavAccountProfileUseCase {
         Assert.assertTrue(accountDataModel.profileWalletAppDataModel.isWalletAppLinked)
         Assert.assertTrue(accountDataModel.profileWalletAppDataModel.gopayBalance.isNotEmpty())
         Assert.assertTrue(accountDataModel.profileWalletAppDataModel.gopayPointsBalance.isNotEmpty())
-        Assert.assertTrue(accountDataModel.profileSaldoDataModel.saldo.isEmpty())
+        Assert.assertTrue(accountDataModel.profileSaldoDataModel.saldo.isNotEmpty())
         Assert.assertTrue(accountDataModel.profileMembershipDataModel.tokopointPointAmount.isEmpty())
     }
 

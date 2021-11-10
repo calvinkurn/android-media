@@ -203,4 +203,5 @@
     <string name="field_nomor_hp">nomor hp</string>
 
     <string name="postal_code_field_error">Kode pos terlalu pendek, min. 5 karakter</string>
+    <string name="tnc_description">Dengan klik \"%1$s\", kamu menyetujui Syarat &amp; Ketentuan.</string>
 </resources>
