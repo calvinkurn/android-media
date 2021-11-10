@@ -78,6 +78,7 @@ open class AddToCartDoneBottomSheet :
         private const val abNewPdpAfterAtcKey = "PDP ATC 2020"
         private const val oldVariantPDP = "PDP after ATC"
         private const val className: String = "com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet"
+        private const val HEIGHT_SCALING = 0.9f
     }
 
     @Inject
@@ -330,7 +331,7 @@ open class AddToCartDoneBottomSheet :
                 val displaymetrics = DisplayMetrics()
                 activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
                 val screenHeight = displaymetrics.heightPixels
-                val maxHeight = (screenHeight * 0.9f).toInt()
+                val maxHeight = (screenHeight * HEIGHT_SCALING).toInt()
                 val params = parent.layoutParams
                 params.height = maxHeight
                 parent.layoutParams = params

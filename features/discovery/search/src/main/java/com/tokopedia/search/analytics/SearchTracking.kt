@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.tokopedia.analytic_constant.Event.Companion.ADDTOCART
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -939,5 +940,66 @@ object SearchTracking {
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(generalSearchShopDataLayer)
+    }
+
+    @JvmStatic
+    fun trackEventLastFilterImpression(
+        iris: Iris,
+        keyword: String,
+        filter: String,
+        pageSource: String,
+    ) {
+        val impressionDataLayer = DataLayer.mapOf(
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_SAVE_LAST_FILTER,
+            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.PAGE_SOURCE, pageSource,
+        )
+
+        iris.saveEvent(impressionDataLayer)
+    }
+
+    private fun getLastFilterEventLabel(keyword: String, filter: String): String =
+        SearchEventTracking.Label.KEYWORD_FILTER.format(keyword, filter)
+
+    @JvmStatic
+    fun trackEventLastFilterClickApply(
+        keyword: String,
+        filter: String,
+        pageSource: String,
+    ) {
+        val clickDataLayer = DataLayer.mapOf(
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_SAVE_LAST_FILTER,
+            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.PAGE_SOURCE, pageSource,
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(clickDataLayer)
+    }
+
+    @JvmStatic
+    fun trackEventLastFilterClickClose(
+        keyword: String,
+        filter: String,
+        pageSource: String,
+    ) {
+        val clickDataLayer = DataLayer.mapOf(
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLOSE_SAVE_LAST_FILTER,
+            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.PAGE_SOURCE, pageSource,
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(clickDataLayer)
     }
 }

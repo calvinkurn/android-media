@@ -9,8 +9,6 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.BaseChatUiModel.Builder.Companion.generateCurrentReplyTime
@@ -39,7 +37,6 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
@@ -83,7 +80,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
@@ -104,9 +100,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
-    private var getShopFollowingUseCase: GetShopFollowingUseCase,
-    private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
-    private var addToCartUseCase: AddToCartUseCase,
     private var compressImageUseCase: CompressImageUseCase,
     private var seamlessLoginUsecase: SeamlessLoginUsecase,
     private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
@@ -752,21 +745,11 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun getShopFollowingStatus(
-        shopId: Long,
-        onError: (Throwable) -> Unit,
-        onSuccessGetShopFollowingStatus: (Boolean) -> Unit
-    ) {
-        getShopFollowingUseCase.getStatus(shopId, onError, onSuccessGetShopFollowingStatus)
-    }
-
     override fun detachView() {
         destroyWebSocket()
         getChatUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
-        getShopFollowingUseCase.safeCancel()
-        addToCartUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()
         groupStickerUseCase.safeCancel()
         chatAttachmentUseCase.safeCancel()
@@ -779,32 +762,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun stopTyping() {
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(thisMessageId))
-    }
-
-    override fun followUnfollowShop(
-        shopId: String,
-        onError: (Throwable) -> Unit,
-        onSuccess: (isSuccess: Boolean) -> Unit,
-        action: ToggleFavouriteShopUseCase.Action?
-    ) {
-        val param = if (action != null) {
-            ToggleFavouriteShopUseCase.createRequestParam(shopId, action)
-        } else {
-            ToggleFavouriteShopUseCase.createRequestParam(shopId)
-        }
-        toggleFavouriteShopUseCase.execute(
-            param,
-            object : Subscriber<Boolean>() {
-                override fun onCompleted() {}
-
-                override fun onError(e: Throwable) {
-                    onError(e)
-                }
-
-                override fun onNext(success: Boolean) {
-                    onSuccess(success)
-                }
-            })
     }
 
     override fun addAttachmentPreview(sendablePreview: SendablePreview) {
@@ -965,35 +922,6 @@ open class TopChatRoomPresenter @Inject constructor(
         chatBackgroundUseCase.getBackground(
             ::onLoadBackgroundFromCache, ::onSuccessLoadBackground
         ) {}
-    }
-
-    override fun addProductToCart(
-        requestParams: RequestParams,
-        onSuccessAddToCart: (data: DataModel) -> Unit,
-        onError: (msg: String) -> Unit
-    ) {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val atcResponse = addToCartUseCase.createObservable(requestParams)
-                    .toBlocking()
-                    .single().data
-                withContext(dispatchers.main) {
-                    if (atcResponse.success == 1) {
-                        onSuccessAddToCart(atcResponse)
-                    } else {
-                        onError(atcResponse.message.getOrNull(0) ?: "")
-                    }
-                }
-            },
-            onError = {
-                withContext(dispatchers.main) {
-                    it.message?.let { errorMsg ->
-                        onError(errorMsg)
-                    }
-                }
-            }
-        )
     }
 
     override fun addOngoingUpdateProductStock(

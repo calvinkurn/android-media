@@ -12,23 +12,25 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.listener.*
 import com.tokopedia.topads.sdk.base.Config
 
-class ProductListTypeFactoryImpl(private val productListener: ProductListener,
-                                 private val tickerListener: TickerListener,
-                                 private val suggestionListener: SuggestionListener,
-                                 private val globalNavListener: GlobalNavListener,
-                                 private val bannerAdsListener: BannerAdsListener,
-                                 private val emptyStateListener: EmptyStateListener,
-                                 private val recommendationListener: RecommendationListener,
-                                 private val inspirationCarouselListener: InspirationCarouselListener,
-                                 private val broadMatchListener: BroadMatchListener,
-                                 private val inspirationCardListener: InspirationCardListener,
-                                 private val searchInTokopediaListener: SearchInTokopediaListener,
-                                 private val searchNavigationListener: SearchNavigationClickListener,
-                                 private val topAdsImageViewListener: TopAdsImageViewListener,
-                                 private val chooseAddressListener: ChooseAddressListener,
-                                 private val bannerListener: BannerListener,
-                                 private val topAdsConfig: Config,
-                                 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
+class ProductListTypeFactoryImpl(
+    private val productListener: ProductListener,
+    private val tickerListener: TickerListener,
+    private val suggestionListener: SuggestionListener,
+    private val globalNavListener: GlobalNavListener,
+    private val bannerAdsListener: BannerAdsListener,
+    private val emptyStateListener: EmptyStateListener,
+    private val recommendationListener: RecommendationListener,
+    private val inspirationCarouselListener: InspirationCarouselListener,
+    private val broadMatchListener: BroadMatchListener,
+    private val inspirationCardListener: InspirationCardListener,
+    private val searchInTokopediaListener: SearchInTokopediaListener,
+    private val searchNavigationListener: SearchNavigationClickListener,
+    private val topAdsImageViewListener: TopAdsImageViewListener,
+    private val chooseAddressListener: ChooseAddressListener,
+    private val bannerListener: BannerListener,
+    private val lastFilterListener: LastFilterListener,
+    private val topAdsConfig: Config,
+) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
 
@@ -46,9 +48,12 @@ class ProductListTypeFactoryImpl(private val productListener: ProductListener,
 
     override fun type(productItem: ProductItemDataView): Int {
         return when (recyclerViewItem) {
-            SearchConstant.RecyclerView.VIEW_LIST -> ListProductItemViewHolder.LAYOUT
-            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID -> BigGridProductItemViewHolder.LAYOUT
-            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID -> SmallGridProductItemViewHolder.LAYOUT
+            SearchConstant.RecyclerView.VIEW_LIST ->
+                ListProductItemViewHolder.LAYOUT
+            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
+                BigGridProductItemViewHolder.LAYOUT
+            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID ->
+                SmallGridProductItemViewHolder.LAYOUT
             else -> SmallGridProductItemViewHolder.LAYOUT
         }
     }
@@ -92,8 +97,10 @@ class ProductListTypeFactoryImpl(private val productListener: ProductListener,
     override fun type(inspirationCardDataView: InspirationCardDataView): Int {
         return when (recyclerViewItem) {
             SearchConstant.RecyclerView.VIEW_LIST,
-            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID -> BigGridInspirationCardViewHolder.LAYOUT
-            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID -> SmallGridInspirationCardViewHolder.LAYOUT
+            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
+                BigGridInspirationCardViewHolder.LAYOUT
+            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID ->
+                SmallGridInspirationCardViewHolder.LAYOUT
             else -> SmallGridInspirationCardViewHolder.LAYOUT
         }
     }
@@ -126,58 +133,53 @@ class ProductListTypeFactoryImpl(private val productListener: ProductListener,
         return BannerViewHolder.LAYOUT
     }
 
+    override fun type(lastFilterDataView: LastFilterDataView): Int =
+        LastFilterViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ListProductItemViewHolder.LAYOUT -> ListProductItemViewHolder(view, productListener)
-
-            SmallGridProductItemViewHolder.LAYOUT -> SmallGridProductItemViewHolder(view, productListener)
-
-            BigGridProductItemViewHolder.LAYOUT -> BigGridProductItemViewHolder(view, productListener)
-
+            ListProductItemViewHolder.LAYOUT ->
+                ListProductItemViewHolder(view, productListener)
+            SmallGridProductItemViewHolder.LAYOUT ->
+                SmallGridProductItemViewHolder(view, productListener)
+            BigGridProductItemViewHolder.LAYOUT ->
+                BigGridProductItemViewHolder(view, productListener)
             CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener)
-
             TickerViewHolder.LAYOUT -> TickerViewHolder(view, tickerListener)
-
             SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(view, suggestionListener)
-
             ProductEmptySearchViewHolder.LAYOUT ->
-                ProductEmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig)
-
+                ProductEmptySearchViewHolder(
+                    view,
+                    emptyStateListener,
+                    bannerAdsListener,
+                    topAdsConfig,
+                )
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
-
-            InspirationCarouselViewHolder.LAYOUT -> InspirationCarouselViewHolder(view, inspirationCarouselListener)
-
+            InspirationCarouselViewHolder.LAYOUT ->
+                InspirationCarouselViewHolder(view, inspirationCarouselListener)
             SearchLoadingMoreViewHolder.LAYOUT -> SearchLoadingMoreViewHolder(view)
-
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
-
-            RecommendationItemViewHolder.LAYOUT -> RecommendationItemViewHolder(view, recommendationListener)
-
+            RecommendationItemViewHolder.LAYOUT ->
+                RecommendationItemViewHolder(view, recommendationListener)
             BannedProductsEmptySearchViewHolder.LAYOUT -> BannedProductsEmptySearchViewHolder(view)
-
             BannedProductsTickerViewHolder.LAYOUT -> BannedProductsTickerViewHolder(view)
-
             BroadMatchViewHolder.LAYOUT -> BroadMatchViewHolder(view, broadMatchListener)
-
             SmallGridInspirationCardViewHolder.LAYOUT ->
                 SmallGridInspirationCardViewHolder(view, inspirationCardListener)
-
             BigGridInspirationCardViewHolder.LAYOUT ->
                 BigGridInspirationCardViewHolder(view, inspirationCardListener)
-
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view)
-
             SearchProductTitleViewHolder.LAYOUT -> SearchProductTitleViewHolder(view)
-
-            SearchInTokopediaViewHolder.LAYOUT -> SearchInTokopediaViewHolder(view, searchInTokopediaListener)
-
-            SearchProductCountViewHolder.LAYOUT -> SearchProductCountViewHolder(view, searchNavigationListener)
-
-            SearchProductTopAdsImageViewHolder.LAYOUT -> SearchProductTopAdsImageViewHolder(view, topAdsImageViewListener)
-
-            ChooseAddressViewHolder.LAYOUT -> ChooseAddressViewHolder(view, chooseAddressListener, searchNavigationListener)
-
+            SearchInTokopediaViewHolder.LAYOUT ->
+                SearchInTokopediaViewHolder(view, searchInTokopediaListener)
+            SearchProductCountViewHolder.LAYOUT ->
+                SearchProductCountViewHolder(view, searchNavigationListener)
+            SearchProductTopAdsImageViewHolder.LAYOUT ->
+                SearchProductTopAdsImageViewHolder(view, topAdsImageViewListener)
+            ChooseAddressViewHolder.LAYOUT ->
+                ChooseAddressViewHolder(view, chooseAddressListener, searchNavigationListener)
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
+            LastFilterViewHolder.LAYOUT -> LastFilterViewHolder(view, lastFilterListener)
 
             else -> super.createViewHolder(view, type)
         }

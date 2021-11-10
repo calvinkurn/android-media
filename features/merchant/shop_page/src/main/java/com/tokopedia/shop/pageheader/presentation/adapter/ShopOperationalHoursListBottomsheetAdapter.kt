@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
+import com.tokopedia.shop.databinding.ItemShopOperationalHoursBinding
 import com.tokopedia.shop.common.util.OperationalHoursUtil
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Rafli Syam on 16/04/2021
@@ -38,14 +40,15 @@ class ShopOperationalHoursListBottomsheetAdapter(
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
+        private val viewBinding: ItemShopOperationalHoursBinding? by viewBinding()
         private var tvOperationalDay: Typography? = null
         private var tvOperationalDateTime: Typography? = null
         private var itemDivider: View? = null
 
         init {
-            tvOperationalDay = itemView.findViewById(R.id.tvOperationalDay)
-            tvOperationalDateTime = itemView.findViewById(R.id.tvOperationalDateTime)
-            itemDivider = itemView.findViewById(R.id.item_separator_ops_hour)
+            tvOperationalDay = viewBinding?.tvOperationalDay
+            tvOperationalDateTime = viewBinding?.tvOperationalDateTime
+            itemDivider = viewBinding?.itemSeparatorOpsHour
         }
 
         fun bind(element: ShopOperationalHour) {

@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.managepassword.R
@@ -25,8 +24,6 @@ import com.tokopedia.managepassword.changepassword.view.viewmodel.LiveDataValida
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -44,8 +41,6 @@ import javax.inject.Inject
  */
 
 class ChangePasswordFragment : BaseDaggerFragment() {
-
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private var isEnableEncryption = false
 
@@ -117,13 +112,6 @@ class ChangePasswordFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
-    }
-
     private fun fetchRemoteConfig() {
         if (context != null) {
             val firebaseRemoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
@@ -131,19 +119,8 @@ class ChangePasswordFragment : BaseDaggerFragment() {
         }
     }
 
-    fun isEnableEncryptRollout(): Boolean {
-        val rolloutKey = if(GlobalConfig.isSellerApp()) {
-            SessionConstants.Rollout.ROLLOUT_RESET_PASS_ENCRYPTION_SELLER
-        } else {
-            SessionConstants.Rollout.ROLLOUT_RESET_PASS_ENCRYPTION
-        }
-
-        val variant = getAbTestPlatform().getString(rolloutKey)
-        return variant.isNotEmpty()
-    }
-
     private fun isUseEncryption(): Boolean {
-        return isEnableEncryptRollout() && isEnableEncryption
+        return isEnableEncryption
     }
 
     private fun initObserver() {

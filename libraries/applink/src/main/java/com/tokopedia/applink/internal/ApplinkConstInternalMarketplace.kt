@@ -183,9 +183,6 @@ object ApplinkConstInternalMarketplace {
     const val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
     const val REPORT_PRODUCT_URL = "$INTERNAL_MARKETPLACE/product-report/{id}/?url={url}"
 
-    // ShopScoreDetailActivity
-    const val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
-
     // ChatSearchActivity
     const val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
 
