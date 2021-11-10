@@ -48,9 +48,9 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore<BottomSheetNewSellerS
         val popupEndTenureUiModel = cacheManager?.get<PopupEndTenureUiModel>(
             KEY_ITEM_END_TENURE_POP_UP, PopupEndTenureUiModel::class.java
         )
-        ivNewSellerIllustration?.loadImage(ShopScoreConstant.IL_NEW_SELLER_SHOP_SCORE_URL)
+        ivNewSellerIllustration.loadImage(ShopScoreConstant.IL_NEW_SELLER_SHOP_SCORE_URL)
         popupEndTenureUiModel?.let {
-            tvShopLevel?.text =
+            tvShopLevel.text =
                 getString(R.string.title_level_pop_up_end_tenure, it.shopLevel)
             setShopScore(it.shopScore)
             setupLevelBarNewSeller(it.shopLevel)
@@ -75,7 +75,7 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore<BottomSheetNewSellerS
                 ) {
                     tvTipsIncreasePerformance.hide()
                     setDescTicker(popupEndTenureUiModel)
-                    tickerTipsIncreasePerformance?.show()
+                    tickerTipsIncreasePerformance.show()
                 } else {
                     tvTipsIncreasePerformance.show()
                     tickerTipsIncreasePerformance.hide()
@@ -103,14 +103,14 @@ class BottomSheetPopupEndTenure : BaseBottomSheetShopScore<BottomSheetNewSellerS
     private fun setDescTicker(popupEndTenureUiModel: PopupEndTenureUiModel?) = binding?.run {
         when {
             isPowerMerchant(popupEndTenureUiModel).value -> {
-                tickerTipsIncreasePerformance?.tickerTitle =
+                tickerTipsIncreasePerformance.tickerTitle =
                     getString(R.string.title_warning_new_seller_shop_score_pm)
                 tickerTipsIncreasePerformance.setTextDescription(
                     getString(R.string.desc_warning_new_seller_shop_score_pm)
                 )
             }
             isPowerMerchantPro(popupEndTenureUiModel).value -> {
-                tickerTipsIncreasePerformance?.tickerTitle =
+                tickerTipsIncreasePerformance.tickerTitle =
                     getString(R.string.title_warning_new_seller_shop_score_pm_pro)
                 tickerTipsIncreasePerformance.setTextDescription(
                     getString(R.string.desc_warning_new_seller_shop_score_pm_pro)
