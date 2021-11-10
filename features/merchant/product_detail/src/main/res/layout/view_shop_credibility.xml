@@ -127,7 +127,6 @@
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_1"
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_info_title_1"
-        app:layout_constraintTop_toTopOf="@id/shop_credibility_info_title_1"
         app:typographyType="body_3"
         tools:text="rating toko" />
 
@@ -145,6 +144,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintBottom_toTopOf="@id/shop_credibility_info_ticker"
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_icon_2"
         app:layout_constraintTop_toBottomOf="@id/shop_credibility_info_title_1"
@@ -164,7 +164,6 @@
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_2"
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_info_title_2"
-        app:layout_constraintTop_toTopOf="@id/shop_credibility_info_title_2"
         app:typographyType="body_3"
         tools:text="jumlah produk" />
 
