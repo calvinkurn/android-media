@@ -211,7 +211,7 @@ class CreateReviewProgressBar : BaseCustomView {
     }
 
     private fun setBadRatingOldFlowEmptyText() {
-        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_need_bad_rating_reason)
+        progressBarText?.text = context.getString(R.string.review_form_progress_bar_bad_empty_old)
     }
 
     private fun setBadRatingEmptyText() {

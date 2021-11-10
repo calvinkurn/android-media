@@ -107,6 +107,7 @@
     <string name="review_create_dialog_body">Tinggal sedikit lagi, lho. Ulasanmu tidak tersimpan jika kamu keluar halaman ini.</string>
     <string name="review_create_activity_title">Tulis Ulasan</string>
     <string name="review_create_submit_edit">Simpan</string>
+    <string name="review_form_progress_bar_bad_empty_old">Ceritain alasanmu, yuk ✍️</string>
     <string name="review_form_progress_bar_good_empty">Makin lengkap, makin mantap 👍</string>
     <string name="review_form_progress_bar_good_need_photo">Fotoin barangnya dong 📸</string>
     <string name="review_form_progress_bar_good_need_text">Ceritain dong pengalamanmu</string>
