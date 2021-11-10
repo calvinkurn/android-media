@@ -906,7 +906,7 @@ class TokoNowRepurchaseFragment:
     private fun createTokoNowEmptyStateOocListener(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
         return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
             override fun onRefreshLayoutPage() {
-                onRefreshLayoutPage()
+                refreshLayout()
             }
 
             override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
