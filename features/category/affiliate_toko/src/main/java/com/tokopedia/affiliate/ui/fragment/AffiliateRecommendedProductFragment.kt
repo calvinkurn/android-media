@@ -36,6 +36,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     private var totalDataItemsCount: Int = 0
     private var isSwipeRefresh = false
+    private var listSize = 0
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -124,6 +125,8 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             recyclerView.layoutManager = layoutManager
             swipe_refresh_layout.setOnRefreshListener {
                 isSwipeRefresh = true
+                listSize = 0
+                adapter.resetList()
                 loadMoreTriggerListener?.resetState()
                 affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
             }
@@ -146,20 +149,21 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         affiliateRecommendedProductViewModel.getShimmerVisibility().observe(this, { visibility ->
             if (visibility != null) {
                 if (visibility)
-                    adapter.startShimmer(true)
+                    adapter.addShimmer(true)
                 else {
-                    adapter.resetList()
-                    adapter.notifyItemRangeChanged(0,4)
+                    adapter.removeShimmer(listSize)
                 }
             }
         })
 
         affiliateRecommendedProductViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
+            adapter.removeShimmer(listSize)
             if(isSwipeRefresh){
                 swipe_refresh_layout.isRefreshing = false
                 isSwipeRefresh = !isSwipeRefresh
             }
             if (dataList.isNotEmpty()) {
+                listSize += dataList.size
                 hideErrorGroup()
                 swipe_refresh_layout.show()
                 adapter.addMoreData(dataList)

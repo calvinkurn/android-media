@@ -32,7 +32,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<String>()
     private var affiliateErrorMessage = MutableLiveData<String>()
-    val pageLimit = 6
+    private val pageLimit = 6
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {

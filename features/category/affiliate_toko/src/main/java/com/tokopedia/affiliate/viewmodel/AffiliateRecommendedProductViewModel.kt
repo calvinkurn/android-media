@@ -23,11 +23,8 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
     private val pageLimit = 20
 
     fun getAffiliateRecommendedProduct(identifier : String,page : Int) {
-        if(page == PAGE_ZERO)
-            shimmerVisibility.value = true
+        shimmerVisibility.value = true
         launchCatchError(block = {
-            if(page == PAGE_ZERO)
-                shimmerVisibility.value = false
             affiliateRecommendedProductUseCase.affiliateGetRecommendedProduct(identifier,page,pageLimit).recommendedAffiliateProduct?.data?.let {
                 totalItemsCount.value = it.pageInfo?.totalCount
                 val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()

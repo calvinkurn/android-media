@@ -7,40 +7,24 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredShimmer
 class AffiliateAdapter(affiliateAdapterFactory: AffiliateAdapterFactory)
     : BaseAdapter<AffiliateAdapterFactory>(affiliateAdapterFactory) {
 
-    fun startShimmer(isStaggered : Boolean = false){
-        // TODO Optimize
-       if (isStaggered){
-           this.visitables.clear()
-           addElement(AffiliateStaggeredShimmerModel())
-           addElement(AffiliateStaggeredShimmerModel())
-           addElement(AffiliateStaggeredShimmerModel())
-           addElement(AffiliateStaggeredShimmerModel())
-       }else {
-           this.visitables.clear()
-           addElement(AffiliateShimmerModel())
-           addElement(AffiliateShimmerModel())
-           addElement(AffiliateShimmerModel())
-           addElement(AffiliateShimmerModel())
-       }
-    }
-    fun addShimmer(){
-        addElement(AffiliateShimmerModel())
-        addElement(AffiliateShimmerModel())
-        addElement(AffiliateShimmerModel())
-        addElement(AffiliateShimmerModel())
+    private val shimmerItemCount = 4
+
+    fun addShimmer(isStaggered : Boolean = false){
+        for (i in 1..shimmerItemCount) {
+            if(isStaggered) addElement(AffiliateStaggeredShimmerModel())
+            else addElement(AffiliateShimmerModel())
+        }
     }
     fun resetList(){
         this.visitables.clear()
     }
 
     fun removeShimmer(listSize: Int) {
-        if(itemCount >= listSize+3) {
-            this.visitables.removeAt(listSize + 3)
-            this.visitables.removeAt(listSize + 2)
-            this.visitables.removeAt(listSize + 1)
-            this.visitables.removeAt(listSize)
-            notifyItemRangeRemoved(listSize,4)
+        if(itemCount >= (listSize + shimmerItemCount - 1)) {
+            for(i in shimmerItemCount - 1 downTo 0){
+                this.visitables.removeAt(listSize + i)
+            }
+            notifyItemRangeRemoved(listSize,shimmerItemCount)
         }
     }
-
 }
