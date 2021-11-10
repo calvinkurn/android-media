@@ -18,7 +18,6 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -47,9 +46,6 @@ open class ProductManageViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
-
-    @RelaxedMockK
-    lateinit var topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase
 
     @RelaxedMockK
     lateinit var getShopManagerPopupsUseCase: GetShopManagerPopupsUseCase
@@ -92,7 +88,6 @@ open class ProductManageViewModelTestFixture {
                 gqlGetShopInfoUseCase,
                 getShopInfoTopAdsUseCase,
                 userSessionInterface,
-                topAdsGetShopDepositGraphQLUseCase,
                 getShopManagerPopupsUseCase,
                 getProductListUseCase,
                 setFeaturedProductUseCase,

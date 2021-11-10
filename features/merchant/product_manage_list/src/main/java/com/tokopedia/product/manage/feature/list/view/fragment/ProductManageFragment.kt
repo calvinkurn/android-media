@@ -38,7 +38,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -63,7 +62,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
@@ -73,6 +71,7 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_IS_STOCK_CHANGED
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
@@ -84,7 +83,6 @@ import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.databinding.DialogProductAddBinding
-import com.tokopedia.product.manage.databinding.FragmentProductManageBinding
 import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -165,10 +163,6 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.*
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP
-import com.tokopedia.topads.common.data.model.DataDeposit
-import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
-import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
-import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -290,8 +284,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         get() = binding?.layoutFragmentProductManage?.btnMultiEdit
     private val recyclerView: VerticalRecyclerView?
         get() = binding?.layoutFragmentProductManage?.recyclerView
-    private val topAdsWidgetFreeClaim: TopAdsWidgetFreeClaim?
-        get() = binding?.layoutFragmentProductManage?.topAdsWidgetFreeClaim
     private val progressBar: LoaderUnify?
         get() = binding?.layoutFragmentProductManage?.progressBar
     private val interceptor: FrameLayout?
@@ -370,7 +362,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         observeEditPrice()
         observeEditStock()
         observeMultiEdit()
-        observeGetFreeClaim()
         observeGetPopUpInfo()
 
         observeSetFeaturedProduct()
@@ -1295,22 +1286,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         progressBar?.hide()
     }
 
-    private fun onErrorGetFreeClaim() {
-        topAdsWidgetFreeClaim?.visibility = View.GONE
-    }
-
-    private fun onSuccessGetFreeClaim(dataDeposit: DataDeposit) {
-        val freeDeposit = dataDeposit.freeDeposit
-
-        if (freeDeposit.nominal > 0 && freeDeposit.status == DEPOSIT_ACTIVE) {
-            topAdsWidgetFreeClaim?.setContent(MethodChecker.fromHtml(getString(com.tokopedia.topads.freeclaim.R.string.free_claim_template, freeDeposit.nominalFmt,
-                    freeDeposit.remainingDays.toString() + "", TOPADS_FREE_CLAIM_URL)))
-            topAdsWidgetFreeClaim?.visibility = View.VISIBLE
-        } else {
-            topAdsWidgetFreeClaim?.visibility = View.GONE
-        }
-    }
-
     private fun onSuccessGetPopUp(isShowPopup: Boolean, productId: String) {
         if (isShowPopup) {
             initPopUpDialog(productId).show()
@@ -1918,7 +1893,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         removeObservers(viewModel.multiEditProductResult)
         removeObservers(viewModel.deleteProductResult)
         removeObservers(viewModel.editPriceResult)
-        removeObservers(viewModel.getFreeClaimResult)
         removeObservers(viewModel.getPopUpResult)
         removeObservers(viewModel.setFeaturedProductResult)
         removeObservers(viewModel.toggleMultiSelect)
@@ -2074,11 +2048,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         hideLoading()
     }
 
-    private fun getTopAdsFreeClaim() {
-        val query = GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.gql_get_deposit)
-        viewModel.getFreeClaim(query, userSession.shopId)
-    }
-
     private fun getGoldMerchantStatus() {
         viewModel.getGoldMerchantStatus()
     }
@@ -2122,18 +2091,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Success -> onSuccessGetPopUp(it.data.isSuccess, it.data.productId)
                 is Fail -> {
                     onErrorGetPopUp()
-                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
-                }
-            }
-        }
-    }
-
-    private fun observeGetFreeClaim() {
-        observe(viewModel.getFreeClaimResult) {
-            when (it) {
-                is Success -> onSuccessGetFreeClaim(it.data)
-                is Fail -> {
-                    onErrorGetFreeClaim()
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
                 }
             }
@@ -2441,7 +2398,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
                         getFiltersTab()
                         getProductListFeaturedOnlySize()
-                        getTopAdsFreeClaim()
                         getGoldMerchantStatus()
                         getTopAdsInfo()
 

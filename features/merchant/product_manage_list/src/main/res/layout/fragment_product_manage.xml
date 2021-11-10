@@ -32,14 +32,6 @@
             android:orientation="vertical"
             app:elevation="0dp">
 
-            <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
-                android:id="@+id/topAdsWidgetFreeClaim"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
             <com.tokopedia.unifycomponents.SearchBarUnify
                 android:id="@+id/search_bar_product_manage"
                 android:layout_width="match_parent"
