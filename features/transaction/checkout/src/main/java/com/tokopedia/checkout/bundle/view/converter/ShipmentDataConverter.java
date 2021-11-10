@@ -101,7 +101,7 @@ public class ShipmentDataConverter {
 
     public ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         ArrayList<ShipmentCrossSellModel> listCrossSellModel = new ArrayList<>();
-        if (cartShipmentAddressFormData.getCrossSell() != null && !cartShipmentAddressFormData.getCrossSell().isEmpty()) {
+        if (!cartShipmentAddressFormData.getCrossSell().isEmpty()) {
             for (int i = 0; i<cartShipmentAddressFormData.getCrossSell().size(); i++) {
                 ShipmentCrossSellModel shipmentCrossSellModel = new ShipmentCrossSellModel();
                 shipmentCrossSellModel.setChecked(cartShipmentAddressFormData.getCrossSell().get(i).isChecked());

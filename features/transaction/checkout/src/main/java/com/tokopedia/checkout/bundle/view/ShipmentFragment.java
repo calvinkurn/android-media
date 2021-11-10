@@ -529,7 +529,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 String digitalProductName = crossSellModel.getInfo().getTitle();
 
                 checkoutAnalyticsCourierSelection.eventViewAutoCheckCrossSell(userSessionInterface.getUserId(),
-                        (i+1)+"", eventLabel, digitalProductName, getChildCatIdsCrossSell(shipmentCartItemModelList));
+                        String.valueOf(i+1), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModelList));
             }
         }
 
@@ -578,14 +578,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private ArrayList<Long> getChildCatIdsCrossSell(List<ShipmentCartItemModel> shipmentCartItemModelList) {
-        ArrayList<Long> childCatIds = new ArrayList<>();
+    private ArrayList<Long> getCrossSellChildCategoryId(List<ShipmentCartItemModel> shipmentCartItemModelList) {
+        ArrayList<Long> childCategoryIds = new ArrayList<>();
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
             for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
-                childCatIds.add(cartItemModel.getProductId());
+                childCategoryIds.add(cartItemModel.getProductId());
             }
         }
-        return childCatIds;
+        return childCategoryIds;
     }
 
     private void addShippingCompletionTicker(boolean isEligibleNewShippingExperience) {
@@ -1897,7 +1897,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         String digitalProductName = crossSellModel.getInfo().getTitle();
 
         List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
-        checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(checked, userSessionInterface.getUserId(), index+"", eventLabel, digitalProductName, getChildCatIdsCrossSell(shipmentCartItemModels));
+        checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(checked, userSessionInterface.getUserId(), String.valueOf(index), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModels));
     }
 
     @Override

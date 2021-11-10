@@ -654,7 +654,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setShipmentDonationModel(null);
         }
 
-        if (cartShipmentAddressFormData.getCrossSell() != null && !cartShipmentAddressFormData.getCrossSell().isEmpty()) {
+        if (!cartShipmentAddressFormData.getCrossSell().isEmpty()) {
             ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel = shipmentDataConverter.getListShipmentCrossSellModel(cartShipmentAddressFormData);
             setListShipmentCrossSellModel(listShipmentCrossSellModel);
         } else {
