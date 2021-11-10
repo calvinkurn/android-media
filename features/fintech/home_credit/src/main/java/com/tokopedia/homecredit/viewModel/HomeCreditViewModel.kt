@@ -9,6 +9,3 @@ class HomeCreditViewModel @Inject constructor(
     private val homeCreditUseCase: HomeCreditUseCase,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io)
-{
-    
-}

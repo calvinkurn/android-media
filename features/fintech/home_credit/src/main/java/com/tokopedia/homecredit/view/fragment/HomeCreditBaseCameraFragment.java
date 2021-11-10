@@ -20,6 +20,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.otaliastudios.cameraview.CameraException;
@@ -36,6 +38,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.homecredit.R;
 import com.tokopedia.homecredit.di.component.HomeCreditComponent;
+import com.tokopedia.homecredit.viewModel.HomeCreditViewModel;
 import com.tokopedia.iconunify.IconUnify;
 
 import java.io.ByteArrayOutputStream;
@@ -45,6 +48,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
@@ -72,6 +77,11 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     private List<Flash> supportedFlashList;
     private Size mCaptureNativeSize;
     private ProgressDialog progressDialog;
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+
+    HomeCreditViewModel homeCreditViewModel = null;
 
     @Override
     protected void initInjector() {
@@ -135,6 +145,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     }
 
     public void initListeners() {
+        homeCreditViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(HomeCreditViewModel.class);
         cameraListener = new CameraListener() {
 
             @Override
@@ -188,6 +199,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     }
 
     private void generateImage(byte[] imageByte) {
+
         if (mCaptureNativeSize == null) {
             mCaptureNativeSize = cameraView.getPictureSize();
         }

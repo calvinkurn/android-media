@@ -37,7 +37,6 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity implements Ha
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
