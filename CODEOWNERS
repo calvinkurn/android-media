@@ -248,7 +248,6 @@
 /features/im/install_referral                           @tokopedia/android-core-dev
 /features/im/common_promo                               @tokopedia/android-core-dev
 /features/im/referral                   				@tokopedia/android-minionyoda-dev
-/features/im/moengage_wrapper                   		@tokopedia/android-minionyoda-dev
 /features/ovop2p                                        @tokopedia/android-minionyoda-dev
 /features/payment/common_payment                        @tokopedia/android-minionyoda-dev
 /features/digital/instant_debit_bca                     @tokopedia/android-minionyoda-dev
