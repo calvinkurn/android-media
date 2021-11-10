@@ -2,18 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textResults"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        app:typographyType="heading_3"
-        android:layout_margin="@dimen/unify_space_8"
-        app:typographyWeight="bold"
-        android:gravity="center"
-        tools:text="5 times" />
+
+
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/rvDatabaseList"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       tools:listitem="@layout/db_inspector_database_item_layout"
+       tools:itemCount="5" />
 
 </LinearLayout>

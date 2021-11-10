@@ -17,16 +17,6 @@ internal class DatabaseSourceImpl @Inject constructor(
             .filter { name -> ignoredExtensions.none { extension -> name.endsWith(extension) } }
             .map { path -> context.getDatabasePath(path) }
             .toMutableSet()
-
-        /*val filter = FileFilter { file ->
-            (file.isFile && file.canRead() && (file.extension in allowedExtension))
-        }
-        getFiles(context.filesDir)
-            .filter { file -> filter.accept(file) }
-            .forEach { file ->
-                databases.add(file)
-            }
-        */
         return databases.toList()
 
     }
