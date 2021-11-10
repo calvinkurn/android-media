@@ -107,7 +107,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         // add custom variant
         selectedVariantDetails.forEach { variantDetail ->
             val isVariantIdExist = items.any {
-                it.variantID == variantDetail.variantID
+                it.name == variantDetail.name
             }
             if (!isVariantIdExist) {
                 addData(variantDetail)
