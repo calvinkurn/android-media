@@ -542,7 +542,6 @@ class TokoNowHomeFragment: Fragment(),
                 }
                 warehouseId == 0L -> {
                     showEmptyStateNoAddress()
-                    viewModelTokoNow.trackOpeningScreenOoc(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
                 }
                 else -> {
                     showLayout()
@@ -601,6 +600,7 @@ class TokoNowHomeFragment: Fragment(),
         if (localCacheModel?.city_id?.isBlank() == true && localCacheModel?.district_id?.isBlank() == true) {
             showEmptyState(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE)
         } else {
+            viewModelTokoNow.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
             showEmptyState(EMPTY_STATE_NO_ADDRESS)
         }
     }
@@ -831,12 +831,10 @@ class TokoNowHomeFragment: Fragment(),
             when(it) {
                 is Success -> {
                     setupChooseAddress(it.data)
-                    viewModelTokoNow.trackOpeningScreenOoc(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
                 }
                 is Fail -> {
                     showEmptyStateNoAddress()
                     logChooseAddressError(it.throwable)
-                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
                 }
             }
         }
@@ -906,19 +904,12 @@ class TokoNowHomeFragment: Fragment(),
             }
         }
 
-        viewModelTokoNow.openScreenTracker.observeOnce(viewLifecycleOwner, { screenName ->
+        observe(viewModelTokoNow.openScreenTracker) { screenName ->
             TokoNowCommonAnalytics.onOpenScreen(
                 isLoggedInStatus = userSession.isLoggedIn,
                 screenName = screenName
             )
-        })
-
-        viewModelTokoNow.openScreenOocTracker.observeOnce(viewLifecycleOwner, { screenName ->
-            TokoNowCommonAnalytics.onOpenScreen(
-                isLoggedInStatus = userSession.isLoggedIn,
-                screenName = screenName
-            )
-        })
+        }
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {

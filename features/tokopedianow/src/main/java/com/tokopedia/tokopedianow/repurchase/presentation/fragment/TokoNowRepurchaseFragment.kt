@@ -560,12 +560,10 @@ class TokoNowRepurchaseFragment:
             when(it) {
                 is Success -> {
                     setupChooseAddress(it.data)
-                    viewModel.trackOpeningScreenOoc(SCREEN_NAME_TOKONOW_OOC + REPURCHASE_TOKONOW)
                 }
                 is Fail -> {
-                    showEmptyState(EMPTY_STATE_OOC)
+                    showEmptyStateOoc()
                     logChooseAddressError(it.throwable)
-                    viewModel.trackOpeningScreen(REPURCHASE_TOKONOW)
                 }
             }
         }
@@ -630,21 +628,12 @@ class TokoNowRepurchaseFragment:
             }
         }
 
-        viewModel.openScreenTracker.observeOnce(viewLifecycleOwner, { screenName ->
-                TokoNowCommonAnalytics.onOpenScreen(
-                    isLoggedInStatus = userSession.isLoggedIn,
-                    screenName = screenName
-                )
-            }
-        )
-
-        viewModel.openScreenOocTracker.observeOnce(viewLifecycleOwner, { screenName ->
-                TokoNowCommonAnalytics.onOpenScreen(
-                    isLoggedInStatus = userSession.isLoggedIn,
-                    screenName = screenName
-                )
-            }
-        )
+        observe(viewModel.openScreenTracker) { screenName ->
+            TokoNowCommonAnalytics.onOpenScreen(
+                isLoggedInStatus = userSession.isLoggedIn,
+                screenName = screenName
+            )
+        }
     }
 
     private fun trackRepurchaseAddToCart(quantity: Int, data: RepurchaseProductUiModel) {
@@ -792,8 +781,7 @@ class TokoNowRepurchaseFragment:
             when {
                 shopId == 0L -> viewModel.getChooseAddress(SOURCE)
                 warehouseId == 0L -> {
-                    showEmptyState(EMPTY_STATE_OOC)
-                    viewModel.trackOpeningScreenOoc(SCREEN_NAME_TOKONOW_OOC + REPURCHASE_TOKONOW)
+                    showEmptyStateOoc()
                 }
                 else -> {
                     showLayout()
@@ -835,10 +823,11 @@ class TokoNowRepurchaseFragment:
         viewModel.getMiniCart(shopId, warehouseId)
     }
 
-    private fun showEmptyState(id: String) {
-        viewModel.showEmptyState(id)
+    private fun showEmptyStateOoc() {
+        viewModel.showEmptyState(EMPTY_STATE_OOC)
         miniCartWidget?.hide()
         setupPadding(false)
+        viewModel.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + REPURCHASE_TOKONOW)
     }
 
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {

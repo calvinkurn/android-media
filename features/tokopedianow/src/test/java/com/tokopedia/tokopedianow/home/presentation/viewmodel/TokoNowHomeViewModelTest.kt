@@ -49,9 +49,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when tracking with setting screenName should give the same result`() {
         viewModel.trackOpeningScreen(HOMEPAGE_TOKONOW)
         verifyTrackOpeningScreen()
-
-        viewModel.trackOpeningScreenOoc(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
-        verifyTrackOpeningScreenOoc()
     }
 
     @Test

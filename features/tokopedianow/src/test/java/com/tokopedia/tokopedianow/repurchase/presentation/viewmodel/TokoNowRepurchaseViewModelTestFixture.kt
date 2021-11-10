@@ -171,11 +171,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         Assert.assertEquals(REPURCHASE_TOKONOW, actualResponse)
     }
 
-    protected fun verifyTrackOpeningScreenOoc() {
-        val actualResponse = viewModel.openScreenOocTracker.value
-        Assert.assertEquals(SCREEN_NAME_TOKONOW_OOC + REPURCHASE_TOKONOW, actualResponse)
-    }
-
     protected fun verifyGetChooseAddressFail() {
         val actualResponse = viewModel.chooseAddress.value
         Assert.assertTrue(actualResponse is Fail)

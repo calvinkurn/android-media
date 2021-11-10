@@ -138,11 +138,6 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertEquals(HOMEPAGE_TOKONOW, actualResponse)
     }
 
-    protected fun verifyTrackOpeningScreenOoc() {
-        val actualResponse = viewModel.openScreenOocTracker.value
-        Assert.assertEquals(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW, actualResponse)
-    }
-
     protected fun verfifyGetChooseAddressSuccess(expectedResponse: GetStateChosenAddressResponse) {
         val actualResponse = viewModel.chooseAddress.value
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)

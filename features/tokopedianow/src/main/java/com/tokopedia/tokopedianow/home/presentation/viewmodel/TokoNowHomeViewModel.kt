@@ -112,8 +112,6 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _atcQuantity
     val openScreenTracker: LiveData<String>
         get() = _openScreenTracker
-    val openScreenOocTracker: LiveData<String>
-        get() = _openScreenOocTracker
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -125,7 +123,6 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _homeAddToCartTracker = MutableLiveData<HomeAddToCartTracker>()
     private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _openScreenTracker = MutableLiveData<String>()
-    private val _openScreenOocTracker = MutableLiveData<String>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -136,10 +133,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun trackOpeningScreen(screenName: String) {
         _openScreenTracker.value = screenName
-    }
-
-    fun trackOpeningScreenOoc(screenName: String) {
-        _openScreenOocTracker.value = screenName
     }
 
     fun getLoadingState() {

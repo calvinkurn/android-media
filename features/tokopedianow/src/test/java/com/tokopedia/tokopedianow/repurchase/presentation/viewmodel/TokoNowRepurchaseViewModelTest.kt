@@ -48,9 +48,6 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
     fun `when tracking with setting screenName should give the same result`() {
         viewModel.trackOpeningScreen(REPURCHASE_TOKONOW)
         verifyTrackOpeningScreen()
-
-        viewModel.trackOpeningScreenOoc(SCREEN_NAME_TOKONOW_OOC + REPURCHASE_TOKONOW)
-        verifyTrackOpeningScreenOoc()
     }
 
     @Test
