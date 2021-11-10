@@ -9,6 +9,7 @@ import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.quest_widget.domain.QuestWidgetUseCase
 import com.tokopedia.quest_widget.util.LiveDataResult
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -21,27 +22,43 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
 
     val questWidgetListLiveData = SingleLiveEvent<LiveDataResult<QuestData>>()
 
-    fun getWidgetList(channel: Int, channelSlug: String, page: String){
-        launchCatchError(block = {
-            questWidgetListLiveData.postValue(LiveDataResult.loading())
-            val response = questWidgetUseCase.getResponse(questWidgetUseCase.getQueryParams(channel, channelSlug, page))
-            if (response != null) {
-                response.questWidgetList.let { widgetData ->
-                    val configList = ArrayList<Config>()
-                    widgetData.questWidgetList.forEach { questWidgetListItem ->
-                        configList.add(convertStringToConfig(questWidgetListItem.config))
+    fun getWidgetList(channel: Int, channelSlug: String, page: String, userSession: UserSession){
+
+        if(userSession.isLoggedIn) {
+            launchCatchError(block = {
+                questWidgetListLiveData.postValue(LiveDataResult.loading())
+                val response = questWidgetUseCase.getResponse(
+                    questWidgetUseCase.getQueryParams(
+                        channel,
+                        channelSlug,
+                        page
+                    )
+                )
+                if (response != null) {
+                    response.questWidgetList.let { widgetData ->
+                        val configList = ArrayList<Config>()
+                        widgetData.questWidgetList.forEach { questWidgetListItem ->
+                            configList.add(convertStringToConfig(questWidgetListItem.config))
+                        }
+                        val questData = QuestData(configList, response)
+                        questWidgetListLiveData.postValue(LiveDataResult.success(questData))
                     }
-                    val questData = QuestData(configList, response)
-                    questWidgetListLiveData.postValue(LiveDataResult.success(questData))
+                } else {
+                    questWidgetListLiveData.postValue(
+                        LiveDataResult.error(
+                            Exception(
+                                ERROR_NULL_RESPONSE
+                            )
+                        )
+                    )
                 }
-            }
-            else
-            {
-                questWidgetListLiveData.postValue(LiveDataResult.error(Exception(ERROR_NULL_RESPONSE)))
-            }
-        }, onError = {
-            questWidgetListLiveData.postValue(LiveDataResult.error(it))
-        })
+            }, onError = {
+                questWidgetListLiveData.postValue(LiveDataResult.error(it))
+            })
+        }
+        else{
+            questWidgetListLiveData.postValue(LiveDataResult.nonLogin())
+        }
     }
 
     private fun convertStringToConfig(configString: String?) : Config {

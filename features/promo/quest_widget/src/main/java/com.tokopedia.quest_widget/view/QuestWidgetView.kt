@@ -5,13 +5,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quest_widget.R
@@ -19,10 +16,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.quest_widget.data.QuestData
-import com.tokopedia.quest_widget.data.WidgetData
 import com.tokopedia.quest_widget.di.DaggerQuestComponent
 import com.tokopedia.quest_widget.util.LiveDataResult
-import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unifyprinciples.Typography
@@ -86,6 +81,10 @@ class QuestWidgetView @JvmOverloads constructor(
                     shimmerQuestWidget.hide()
                     questWidgetError.show()
                 }
+                LiveDataResult.STATUS.NON_LOGIN -> {
+                    questWidgetLogin.show()
+                    shimmerQuestWidget.hide()
+                }
             }
         })
     }
@@ -93,7 +92,7 @@ class QuestWidgetView @JvmOverloads constructor(
     private fun setData(data: QuestData?) {
 
         tvLabel.text = data?.widgetData?.pageDetail?.title
-        tvLihat.text = data?.widgetData?.pageDetail?.text
+        tvLihat.text = data?.widgetData?.pageDetail?.cta?.text
 
         val list = data?.widgetData?.questWidgetList
 
@@ -113,12 +112,8 @@ class QuestWidgetView @JvmOverloads constructor(
 
     // the only call required to setup this widget
     fun getQuestList(channel: Int, channelSlug: String, page: String) {
-        if(userSession.isLoggedIn) {
-            viewModel.getWidgetList(channel, channelSlug, page)
-        }
-        else{
-            questWidgetLogin.show()
-            shimmerQuestWidget.hide()
-        }
+
+        val userSession = UserSession(context)
+        viewModel.getWidgetList(channel, channelSlug, page, userSession)
     }
 }

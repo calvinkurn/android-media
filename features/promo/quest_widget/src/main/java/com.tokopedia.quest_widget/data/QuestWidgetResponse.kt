@@ -16,7 +16,7 @@ data class WidgetData(
     @SerializedName("isEligible")
     val isEligible: Boolean? = null,
 
-    @SerializedName("pageDetail")
+    @SerializedName("widgetPageDetail")
     val pageDetail: PageDetail? = null
 )
 
@@ -31,26 +31,39 @@ data class QuestWidgetList(
 
 data class QuestWidgetListItem(
 
+    @SerializedName("id")
+    val id: Int? = null,
+
+    @SerializedName("title")
+    val title: String? = null,
+
+    @SerializedName("description")
+    val description: String? = null,
+
+    @SerializedName("isDisabledIcon")
+    val isDisabledIcon: Boolean? = null,
+
     @SerializedName("progressInfoText")
     val progressInfoText: String? = null,
 
     @SerializedName("expiredDate")
     val expiredDate: String? = null,
 
-    @SerializedName("description")
-    val description: String? = null,
+
+    @SerializedName("cardBannerBackgroundURL")
+    val cardBannerBackgroundURL: String? = null,
+
+    @SerializedName("detailBannerBackgroundURL")
+    val detailBannerBackgroundURL: String? = null,
+
+    @SerializedName("widgetPrizeIconURL")
+    val widgetPrizeIconURL: String? = null,
 
     @SerializedName("label")
     val label: Label? = null,
 
-    @SerializedName("title")
-    val title: String? = null,
-
-    @SerializedName("prize")
-    val prize: List<PrizeItem?>? = null,
-
-    @SerializedName("isDisabledIcon")
-    val isDisabledIcon: Boolean? = null,
+    @SerializedName("config")
+    val config: String? = null,
 
     @SerializedName("questUser")
     val questUser: QuestUser? = null,
@@ -61,14 +74,12 @@ data class QuestWidgetListItem(
     @SerializedName("actionButton")
     val actionButton: ActionButton? = null,
 
-    @SerializedName("id")
-    val id: Int? = null,
+    @SerializedName("prize")
+    val prize: List<PrizeItem?>? = null,
 
     @SerializedName("category")
-    val category: Category? = null,
+    val category: Category? = null
 
-    @SerializedName("config")
-    val config: String? = null
 )
 
 data class ResultStatus(
@@ -121,11 +132,15 @@ data class Label(
 
 data class Cta(
 
-    @SerializedName("applink")
-    val applink: String? = null,
+    @SerializedName("text")
+    val text: String? = null,
 
     @SerializedName("url")
-    val url: String? = null
+    val url: String? = null,
+
+    @SerializedName("applink")
+    val applink: String? = null
+
 )
 
 data class PrizeItem(
@@ -163,23 +178,21 @@ data class Category(
 
 data class TaskItem(
 
-    @SerializedName("progress")
-    val progress: Progress? = null,
-
     @SerializedName("id")
     val id: Int? = null,
 
     @SerializedName("title")
-    val title: String? = null
+    val title: String? = null,
+
+    @SerializedName("progress")
+    val progress: Progress? = null
+
 )
 
 data class PageDetail(
 
     @SerializedName("cta")
     val cta: Cta? = null,
-
-    @SerializedName("text")
-    val text: String? = null,
 
     @SerializedName("title")
     val title: String? = null
@@ -193,7 +206,6 @@ data class Progress(
     @SerializedName("target")
     val target: Int? = null
 )
-
 
 data class Config(
     @SerializedName("banner_icon_url")
@@ -209,7 +221,10 @@ data class Config(
     val banner_background_color: String? = null,
 
     @SerializedName("milestone_text")
-    val milestone_text: String? = null
+    val milestone_text: String? = null,
+
+    @SerializedName("pages")
+    val pages: ArrayList<String>? = null
 
 )
 

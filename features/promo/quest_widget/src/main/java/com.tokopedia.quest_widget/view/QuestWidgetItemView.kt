@@ -75,6 +75,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
                 scaleUpIcon(ivBannerIcon , iconContainer, true)
             }
             QuestUserStatus.CLAIMED -> {
+
             }
             QuestUserStatus.IDLE -> {
                 startTranslationAnimation()
@@ -238,6 +239,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
                     if (showBox) {
                         showBox = false
                         translationAnimation(ivBannerIconSecond, ivBannerIcon)
+                        timer.cancel()
                     }
                     else{
                         showBox = true

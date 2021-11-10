@@ -38,130 +38,18 @@
             app:typographyType="body_3"
             app:typographyWeight="bold" />
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_200"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:src="@drawable/quest_nonlogin"
+            app:layout_constraintStart_toStartOf="@id/tv_label"
+            app:layout_constraintEnd_toEndOf="@id/tv_lihat"
+            app:layout_constraintTop_toBottomOf="@id/tv_label"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.tokopedia.unifycomponents.CardUnify
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dim_12dp"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginStart="@dimen/spacing_lvl4">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/iv_banner_icon"
-                    android:layout_width="@dimen/dim_56dp"
-                    android:layout_height="@dimen/dim_56dp"
-                    android:src="@drawable/iconunify_sign_in"
-                    android:layout_marginStart="@dimen/dim_12dp"
-                    android:layout_marginBottom="@dimen/dim_14dp"
-                    android:layout_marginTop="@dimen/dim_14dp"
-                    android:tint="@color/green_200"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_banner_title"
-                    android:layout_width="@dimen/dim_0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Login"
-                    app:layout_constraintWidth_default="percent"
-                    app:layout_constraintWidth_percent="0.6"
-                    android:textColor="@color/Unify_NN950"
-                    android:layout_marginStart="@dimen/dim_12dp"
-                    android:layout_marginLeft="@dimen/dim_12dp"
-                    android:layout_marginTop="@dimen/dim_5dp"
-                    android:layout_marginEnd="@dimen/spacing_lvl5"
-                    android:layout_marginRight="@dimen/spacing_lvl5"
-                    app:layout_constraintStart_toEndOf="@id/iv_banner_icon"
-                    app:layout_constraintTop_toTopOf="@id/iv_banner_icon"
-                    app:typographyType="body_2"
-                    app:typographyWeight="bold" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_banner_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Login to view the content"
-                    android:layout_marginTop="@dimen/dim_2dp"
-                    android:layout_marginEnd="@dimen/dim_12dp"
-                    android:textColor="@color/Unify_NN950"
-                    app:layout_constraintStart_toStartOf="@id/tv_banner_title"
-                    app:layout_constraintTop_toBottomOf="@id/tv_banner_title"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.tokopedia.unifycomponents.CardUnify>
-
-        <com.tokopedia.unifycomponents.CardUnify
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:requiresFadingEdge="horizontal"
-            android:layout_marginTop="@dimen/dim_12dp"
-            android:layout_marginLeft="@dimen/spacing_lvl3"
-            android:layout_marginStart="@dimen/spacing_lvl3">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/iv_banner_icon1"
-                    android:layout_width="@dimen/dim_56dp"
-                    android:layout_height="@dimen/dim_56dp"
-                    android:src="@drawable/iconunify_sign_in"
-                    android:layout_marginStart="@dimen/dim_12dp"
-                    android:layout_marginBottom="@dimen/dim_14dp"
-                    android:layout_marginTop="@dimen/dim_14dp"
-                    android:tint="@color/green_200"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_banner_title1"
-                    android:layout_width="@dimen/dim_0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Login"
-                    android:textColor="@color/Unify_NN950"
-                    android:layout_marginStart="@dimen/dim_12dp"
-                    android:layout_marginLeft="@dimen/dim_12dp"
-                    android:layout_marginTop="@dimen/dim_5dp"
-                    android:layout_marginEnd="@dimen/spacing_lvl5"
-                    android:layout_marginRight="@dimen/spacing_lvl5"
-                    app:layout_constraintStart_toEndOf="@id/iv_banner_icon1"
-                    app:layout_constraintTop_toTopOf="@id/iv_banner_icon1"
-                    app:typographyType="body_2"
-                    app:typographyWeight="bold" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Login"
-                    android:layout_marginTop="@dimen/dim_2dp"
-                    android:layout_marginEnd="@dimen/dim_12dp"
-                    android:textColor="@color/Unify_NN950"
-                    app:layout_constraintStart_toStartOf="@id/tv_banner_title1"
-                    app:layout_constraintTop_toBottomOf="@id/tv_banner_title1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.tokopedia.unifycomponents.CardUnify>
-
-    </LinearLayout>
 </LinearLayout>
