@@ -268,6 +268,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return 0
     }
 
+    override fun type(questWidgetModel: QuestWidgetModel): Int {
+        return 0
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -433,7 +437,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             legoSixAutoListener,
                             homeComponentListener,
                             parentRecycledViewPool)
+            QuestWidgetViewHolder.LAYOUT -> viewHolder =
+                QuestWidgetViewHolder(view)
             else -> viewHolder = super.createViewHolder(view, type)
+
         }
 
         return viewHolder

@@ -163,7 +163,7 @@ data class QuestUser(
     val id: Int? = null,
 
     @SerializedName("status")
-    val status: String? = null
+    var status: String? = null
 )
 
 data class Category(

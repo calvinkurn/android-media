@@ -23,7 +23,8 @@ import com.tokopedia.quest_widget.data.QuestWidgetListItem
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 
 const val LAGITEXT = "x lagi "
 
@@ -69,16 +70,21 @@ class QuestWidgetItemView @JvmOverloads constructor(
         when(item.questUser?.status){
             QuestUserStatus.ON_PROGRESS ->{
                 scaleDownIcon(ivBannerIcon, iconContainer, false) { setProgressBarvalue(progress) }
+                item.questUser.status = QuestUserStatus.ANIMATED
             }
             QuestUserStatus.COMPLETED -> {
                 scaleDownIcon(ivBannerIcon, iconContainer, true) { setProgressBarvalue(progress) }
                 scaleUpIcon(ivBannerIcon , iconContainer, true)
+                item.questUser.status = QuestUserStatus.ANIMATED
             }
             QuestUserStatus.CLAIMED -> {
 
             }
             QuestUserStatus.IDLE -> {
                 startTranslationAnimation()
+                item.questUser.status = QuestUserStatus.ANIMATED
+            }
+            else->{
             }
         }
         val desc = item.actionButton?.shortText + " " + (item.task?.get(0)?.progress?.current?.let {
@@ -89,7 +95,6 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
         tvBannerDesc.text =
             desc + LAGITEXT + context.resources.getString(R.string.str_dot) + " " + item.label?.title
-
     }
 
     private fun calculateProgress(progress:Progress?):Float{
@@ -154,8 +159,6 @@ class QuestWidgetItemView @JvmOverloads constructor(
                 completion?.let {
                     it()
                 }
-                if(completed){}
-
             }
             override fun onAnimationCancel(p0: Animator?) {
             }
@@ -248,7 +251,6 @@ class QuestWidgetItemView @JvmOverloads constructor(
                 }
             }
         }, START_DELAY, START_DELAY)
-
     }
 
     private fun dpToPx(dp: Int): Float {
