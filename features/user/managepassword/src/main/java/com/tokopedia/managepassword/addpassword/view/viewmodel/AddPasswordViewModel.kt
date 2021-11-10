@@ -62,12 +62,12 @@ class AddPasswordViewModel @Inject constructor(
             ))
 
             if (response.addPassword.isSuccess) {
-                _response.postValue(Success(response.addPassword))
+                _response.value = Success(response.addPassword)
             } else {
-                _response.postValue(Fail(Throwable(response.addPassword.errorMessage)))
+                _response.value = Fail(Throwable(response.addPassword.errorMessage))
             }
         }, {
-            _response.postValue(Fail(it))
+            _response.value = Fail(it)
         })
     }
 
@@ -86,31 +86,31 @@ class AddPasswordViewModel @Inject constructor(
                 ))
 
                 if (response.addPassword.isSuccess) {
-                    _response.postValue(Success(response.addPassword))
+                    _response.value = Success(response.addPassword)
                 } else {
-                    _response.postValue(Fail(Throwable(response.addPassword.errorMessage)))
+                    _response.value = Fail(Throwable(response.addPassword.errorMessage))
                 }
             } else {
-                _response.postValue(Fail(Throwable("")))
+                _response.value = Fail(Throwable(""))
             }
         }, {
-            _response.postValue(Fail(it))
+            _response.value = Fail(it)
         })
     }
 
     fun validatePassword(password: CharSequence) {
         when {
             password.isEmpty() -> {
-                _validatePassword.postValue(Fail(Throwable(ERROR_FIELD_REQUIRED)))
+                _validatePassword.value = Fail(Throwable(ERROR_FIELD_REQUIRED))
             }
             password.length < MIN_COUNT -> {
-                _validatePassword.postValue(Fail(Throwable(ERROR_MIN_CHAR)))
+                _validatePassword.value = Fail(Throwable(ERROR_MIN_CHAR))
             }
             password.length > MAX_COUNT -> {
-                _validatePassword.postValue(Fail(Throwable(ERROR_MAX_CHAR)))
+                _validatePassword.value = Fail(Throwable(ERROR_MAX_CHAR))
             }
             else -> {
-                _validatePassword.postValue(Success(""))
+                _validatePassword.value = Success("")
             }
         }
     }
@@ -118,16 +118,16 @@ class AddPasswordViewModel @Inject constructor(
     fun validatePasswordConfirmation(password: CharSequence) {
         when {
             password.isEmpty() -> {
-                _validatePasswordConfirmation.postValue(Fail(Throwable(ERROR_FIELD_REQUIRED)))
+                _validatePasswordConfirmation.value = Fail(Throwable(ERROR_FIELD_REQUIRED))
             }
             password.length < MIN_COUNT -> {
-                _validatePasswordConfirmation.postValue(Fail(Throwable(ERROR_MIN_CHAR)))
+                _validatePasswordConfirmation.value = Fail(Throwable(ERROR_MIN_CHAR))
             }
             password.length > MAX_COUNT -> {
-                _validatePasswordConfirmation.postValue(Fail(Throwable(ERROR_MAX_CHAR)))
+                _validatePasswordConfirmation.value = Fail(Throwable(ERROR_MAX_CHAR))
             }
             else -> {
-                _validatePasswordConfirmation.postValue(Success(""))
+                _validatePasswordConfirmation.value = Success("")
             }
         }
     }
@@ -138,12 +138,5 @@ class AddPasswordViewModel @Inject constructor(
         private const val ERROR_FIELD_REQUIRED = "Harus diisi"
         private const val ERROR_MIN_CHAR = "Minimum $MIN_COUNT karakter"
         private const val ERROR_MAX_CHAR = "Maksimum $MAX_COUNT karakter"
-
-        fun createRequestParams(password: String, confirmationPassword: String): Map<String, Any> {
-            return mapOf(
-                    ManagePasswordConstant.PARAM_PASSWORD to password,
-                    ManagePasswordConstant.PARAM_PASSWORD_CONFIRMATION to confirmationPassword
-            )
-        }
     }
 }
