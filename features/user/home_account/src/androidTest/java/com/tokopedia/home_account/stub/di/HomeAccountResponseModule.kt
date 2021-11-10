@@ -12,13 +12,13 @@ import javax.inject.Named
 @Module
 class HomeAccountResponseModule {
 
-    @HomeAccountUserScope
-    @Named("CentralizedUserAssetDataModelSuccess")
-    @Provides
-    fun provideCentralizedUserAssetDataModelSuccess(): CentralizedUserAssetDataModel = AndroidFileUtil.parse(
-        R.raw.success_get_centralized_user_asset_config,
-        CentralizedUserAssetDataModel::class.java
-    )
+//    @HomeAccountUserScope
+//    @Named("CentralizedUserAssetDataModelSuccess")
+//    @Provides
+//    fun provideCentralizedUserAssetDataModelSuccess(): CentralizedUserAssetDataModel = AndroidFileUtil.parse(
+//        R.raw.success_get_centralized_user_asset_config,
+//        CentralizedUserAssetDataModel::class.java
+//    )
 
 //    @HomeAccountUserScope
 //    @Named("CentralizedUserAssetDataModelFailed")

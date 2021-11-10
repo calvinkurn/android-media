@@ -77,10 +77,6 @@ class HomeAccountUserModules(val context: Context) {
 
     @HomeAccountUserScope
     @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @HomeAccountUserScope
-    @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
 }

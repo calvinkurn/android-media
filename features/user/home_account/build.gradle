@@ -137,6 +137,7 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.espressoIdlingResource)
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.miscDependencies.dagger
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 
 }

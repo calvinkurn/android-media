@@ -11,6 +11,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInst
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
+import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.domain.FakeUserSession
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
@@ -51,12 +52,17 @@ class FakeAppModule(private val context: Context) {
     @Provides
     @ApplicationContext
     fun provideGraphqlRepository(): GraphqlRepository {
-        return getInstance().graphqlRepository
+        return GraphqlRepositoryStub()
     }
 
     @Provides
     fun provideGraphqlUsecase(): GraphqlUseCaseInterface {
         return GraphqlUseCase()
+    }
+
+    @Provides
+    fun userSession(@ApplicationContext context: Context): UserSessionInterface {
+        return FakeUserSession(context)
     }
 
 }

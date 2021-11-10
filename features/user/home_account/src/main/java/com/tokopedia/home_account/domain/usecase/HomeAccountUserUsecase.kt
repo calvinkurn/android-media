@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -18,8 +19,8 @@ import javax.inject.Inject
  */
 
 open class HomeAccountUserUsecase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val rawQueries: Map<String, String>
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val rawQueries: Map<String, String>
 ): GraphqlUseCase<UserAccountDataModel>(graphqlRepository) {
 
     fun executeUseCase(onSuccess: (UserAccountDataModel) -> Unit, onError: (Throwable) -> Unit){
