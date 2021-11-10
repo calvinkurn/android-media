@@ -95,7 +95,7 @@ class SearchProductFirstPageGqlUseCase(
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
     private fun createQuickFilterRequest(query: String, params: String) =
             GraphqlRequest(
-                    QuickFilter.GQL_QUERY,
+                    QuickFilter(),
                     QuickFilterModel::class.java,
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
@@ -123,7 +123,7 @@ class SearchProductFirstPageGqlUseCase(
     @GqlQuery("InspirationCarousel", SEARCH_INSPIRATION_CAROUSEL_QUERY)
     private fun createSearchInspirationCarouselRequest(params: String) =
             GraphqlRequest(
-                    InspirationCarousel.GQL_QUERY,
+                    InspirationCarousel(),
                     SearchInspirationCarouselModel::class.java,
                     mapOf(GQL.KEY_PARAMS to params)
             )
@@ -137,7 +137,7 @@ class SearchProductFirstPageGqlUseCase(
     @GqlQuery("InspirationWidget", SEARCH_INSPIRATION_WIDGET_QUERY)
     private fun createSearchInspirationWidgetRequest(params: String) =
             GraphqlRequest(
-                    InspirationWidget.GQL_QUERY,
+                    InspirationWidget(),
                     SearchInspirationWidgetModel::class.java,
                     mapOf(GQL.KEY_PARAMS to params)
             )
@@ -153,7 +153,7 @@ class SearchProductFirstPageGqlUseCase(
     @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
     private fun createGetLastFilterRequest(params: String) =
         GraphqlRequest(
-            GetLastFilter.GQL_QUERY,
+            GetLastFilter(),
             LastFilterModel::class.java,
             mapOf(GQL.KEY_PARAMS to params)
         )
