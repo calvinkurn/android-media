@@ -20,6 +20,7 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             setupProductListSection(newData.productListUiModel)
             setupShipmentInfoSection(newData.shipmentInfoUiModel)
             setupPaymentInfoSection(newData.paymentInfoUiModel)
+            addThickDividerSection()
             setUpPhysicalRecommendationSection(newData.pgRecommendationWidgetUiModel)
             setupDigitalRecommendationSection()
         }
@@ -74,7 +75,6 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         addThinDividerSection()
         addPaymentGrandTotalSection(paymentInfoUiModel.paymentGrandTotal)
         addTickerSection(paymentInfoUiModel.ticker)
-        addThickDividerSection()
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupDigitalRecommendationSection() {

@@ -38,7 +38,6 @@ import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDia
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
@@ -48,17 +47,12 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
-import com.tokopedia.discovery.common.manager.showProductCardOptions
-import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
-import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -565,42 +559,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         )
     }
 
-//    override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-//        RecommendationWidgetTracker.sendClickTracker(recommendationItem, userSession.userId)
-//        RouteManager.route(context, recommendationItem.url)
-//    }
-//
-//    override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-//        context?.let { TrackingQueue(it).putEETracking(RecommendationWidgetTracker.getImpressionTracker(recommendationItem, userSession.userId) as HashMap<String, Any>) }
-//    }
-//
-//    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-//        showProductCardOptions(
-//                this,
-//                recommendationItem.createProductCardOptionsModel(widgetPosition))
-//    }
-//
-//    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, chipsPosition: Int) {
-//    }
-//
-//    override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
-//        RouteManager.route(context, appLink)
-//    }
-//
-//    override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
-//        RouteManager.route(context, appLink)
-//    }
+    override fun onProductCardClick(recommendationItem: RecommendationItem, applink: String) {
+        RecommendationWidgetTracker.sendClickTracker(recommendationItem, userSession.userId)
+        RouteManager.route(context, applink)
+    }
 
-    private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
-        val productCardOptionsModel = ProductCardOptionsModel()
-        productCardOptionsModel.hasWishlist = true
-        productCardOptionsModel.isWishlisted = isWishlist
-        productCardOptionsModel.productId = productId.toString()
-        productCardOptionsModel.isTopAds = isTopAds
-        productCardOptionsModel.topAdsWishlistUrl = wishlistUrl
-        productCardOptionsModel.productPosition = position
-        productCardOptionsModel.screenName = header
-        return productCardOptionsModel
+    override fun onProductCardImpress(recommendationItem: RecommendationItem) {
+        context?.let { TrackingQueue(it).putEETracking(RecommendationWidgetTracker.getImpressionTracker(recommendationItem, userSession.userId) as HashMap<String, Any>) }
+    }
+
+    override fun onSeeAllProductCardClick(appLink: String) {
+        RouteManager.route(context, appLink)
     }
 
     override fun setViewToLifecycleOwner(observer: LifecycleObserver) {

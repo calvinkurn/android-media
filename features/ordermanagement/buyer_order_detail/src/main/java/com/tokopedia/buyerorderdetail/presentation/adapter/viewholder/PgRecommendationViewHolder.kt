@@ -5,6 +5,8 @@ import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.*
 
@@ -21,6 +23,7 @@ class PgRecommendationViewHolder(itemView: View,
             itemView.findViewById(R.id.widget_recom)
 
     override fun bind(element: PGRecommendationWidgetUiModel) {
+        itemView.show()
         recomWidget.run {
             buyerOrderDetailBindRecomWidgetListener.setViewToLifecycleOwner(this)
             this.bind(
@@ -37,15 +40,20 @@ class PgRecommendationViewHolder(itemView: View,
     }
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
+        buyerOrderDetailBindRecomWidgetListener.onSeeAllProductCardClick(applink)
     }
 
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
     }
 
     override fun onRecomProductCardImpressed(data: RecommendationCarouselData, recomItem: RecommendationItem, itemPosition: Int, adapterPosition: Int) {
+        buyerOrderDetailBindRecomWidgetListener.onProductCardImpress(recomItem)
+
     }
 
     override fun onRecomProductCardClicked(data: RecommendationCarouselData, recomItem: RecommendationItem, applink: String, itemPosition: Int, adapterPosition: Int) {
+        buyerOrderDetailBindRecomWidgetListener.onProductCardClick(recomItem, applink)
+
     }
 
     override fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int) {
@@ -55,12 +63,20 @@ class PgRecommendationViewHolder(itemView: View,
     }
 
     override fun onChannelWidgetEmpty() {
+        itemView.hide()
     }
 
     override fun onWidgetFail(pageName: String, e: Throwable) {
+        itemView.hide()
     }
 
     interface BuyerOrderDetailBindRecomWidgetListener {
+
+        fun onProductCardClick(recommendationItem: RecommendationItem, applink: String)
+
+        fun onProductCardImpress(recommendationItem: RecommendationItem)
+
+        fun onSeeAllProductCardClick(appLink: String)
 
         fun setViewToLifecycleOwner(observer: LifecycleObserver)
     }
