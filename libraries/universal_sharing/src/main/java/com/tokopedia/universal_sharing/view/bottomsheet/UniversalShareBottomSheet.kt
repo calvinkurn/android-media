@@ -222,6 +222,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
 
+    private var affiliateQueryData : Any? = null
+
     //observer flag
     private var preserveImage: Boolean = false
     //parent fragment
@@ -565,6 +567,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun setRequestData(requestPayLoad: Map<String, Any>?){
         requestDataMap = requestPayLoad
+    }
+
+    fun setAffiliateRequestData(requestData:Any?){
+        affiliateQueryData = requestData
     }
 
     fun setBottomSheetTitle(title: String){
