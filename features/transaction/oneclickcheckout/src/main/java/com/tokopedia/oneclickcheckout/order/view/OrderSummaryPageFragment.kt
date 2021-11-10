@@ -548,7 +548,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     view?.let { v ->
                         var message = it.errorMessage
                         if (message.isBlank()) {
-                            message = if (it.throwable is com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException) {
+                            message = if (it.throwable is AkamaiErrorException) {
                                 it.throwable.message ?: DEFAULT_LOCAL_ERROR_MESSAGE
                             } else {
                                 ErrorHandler.getErrorMessage(context, it.throwable)
