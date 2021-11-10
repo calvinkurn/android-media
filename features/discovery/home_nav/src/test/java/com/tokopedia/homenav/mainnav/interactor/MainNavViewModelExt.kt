@@ -1,6 +1,5 @@
 package com.tokopedia.homenav.mainnav.interactor
 
-import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
@@ -23,7 +22,6 @@ import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.profile.ShopData
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,7 +32,6 @@ import io.mockk.mockk
 
 fun createViewModel (
         getProfileDataUseCase: GetProfileDataUseCase? = null,
-        getProfileDataCacheUseCase: GetProfileDataCacheUseCase? = null,
         getBuListUseCase: GetCategoryGroupUseCase? = null,
         dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
         userSession: UserSessionInterface? = null,
@@ -70,9 +67,6 @@ fun createViewModel (
     val getProfileDataUseCaseMock = getOrUseDefault(getProfileDataUseCase) {
         coEvery { it.executeOnBackground() }.answers { AccountHeaderDataModel() }
     }
-    val getProfileDataCacheUseCaseMock = getOrUseDefault(getProfileDataCacheUseCase) {
-        coEvery { it.executeOnBackground() }.answers { AccountHeaderDataModel() }
-    }
     val getBuListDataUseCaseMock = getOrUseDefault(getBuListUseCase) {
         coEvery { it.executeOnBackground() }.answers { listOf() }
     }
@@ -92,7 +86,6 @@ fun createViewModel (
             getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCaseMock,
             getProfileDataUseCase = getProfileDataUseCaseMock,
             getCategoryGroupUseCase = getBuListDataUseCaseMock,
-            getProfileDataCacheUseCase = getProfileDataCacheUseCaseMock,
             getShopInfoUseCase = getShopInfoUseCaseMock,
             accountAdminInfoUseCase = accountAdminInfoUseCaseMock
     )

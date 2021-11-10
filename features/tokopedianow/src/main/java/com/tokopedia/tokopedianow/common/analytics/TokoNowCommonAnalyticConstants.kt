@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.analytics
 object TokoNowCommonAnalyticConstants {
 
     object EVENT{
+        const val EVENT_VIEW_TOKONOW_IRIS = "viewTokoNowIris"
         const val EVENT_CLICK_TOKONOW = "clickTokoNow"
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_ITEM = "view_item"
@@ -64,6 +65,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_ACTION_FIELD = "actionField"
         const val KEY_PRODUCTS = "products"
         const val KEY_IS_LOGGED_IN_STATUS = "isLoggedInStatus"
+        const val KEY_WAREHOUSE_ID = "warehouseId"
     }
 
     object VALUE {

@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
 import com.tokopedia.applink.RouteManager
@@ -93,12 +92,16 @@ import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_LAYOUT
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.LOAD_LAYOUT_ERROR
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
+import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
@@ -148,7 +151,7 @@ class TokoNowHomeFragment: Fragment(),
         const val DEFAULT_QUANTITY = 0
         const val SHARE_URL = "https://www.tokopedia.com/now"
         const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
-        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
+        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/tokonow/og_tokonow.jpg"
         const val PAGE_SHARE_NAME = "TokoNow"
         const val SHARE = "Share"
 
@@ -178,7 +181,8 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowProductCardListener = this,
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
-                serverErrorListener = this
+                serverErrorListener = this,
+                tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener()
             ),
             differ = HomeListDiffer()
         )
@@ -203,6 +207,7 @@ class TokoNowHomeFragment: Fragment(),
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
     private var hasEducationalInformationAppeared = false
+    private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -222,6 +227,7 @@ class TokoNowHomeFragment: Fragment(),
     private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
         firebaseRemoteConfig.let {
@@ -338,6 +344,8 @@ class TokoNowHomeFragment: Fragment(),
             adapter.removeHomeChooseAddressWidget()
         }
     }
+
+    override fun onClickChooseAddressWidgetTracker() { }
 
     override fun onCategoryRetried() {
         val item = adapter.getItem(TokoNowCategoryGridUiModel::class.java)
@@ -480,13 +488,14 @@ class TokoNowHomeFragment: Fragment(),
         isFirstImpressionOnBanner = if (!isFirstImpressionOnBanner) {
             true
         } else {
-            analytics.onImpressBannerPromo(userSession.userId, channelModel)
+            analytics.onImpressBannerPromo(userSession.userId, channelModel, localCacheModel?.warehouse_id.toLongOrZero().toString())
             false
         }
     }
 
     override fun onShareBtnSharingEducationClicked() {
         shareClicked(shareHomeTokonow())
+        analytics.onClickShareToOthers(userSession.userId)
     }
 
     override fun onCloseBtnSharingEducationClicked(id: String) {
@@ -516,6 +525,21 @@ class TokoNowHomeFragment: Fragment(),
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun initPerformanceMonitoring() {
+        pageLoadTimeMonitoring = (activity as? TokoNowHomeActivity)?.pageLoadTimeMonitoring
+        pageLoadTimeMonitoring?.startNetworkPerformanceMonitoring()
+    }
+
+    private fun startRenderPerformanceMonitoring() {
+        pageLoadTimeMonitoring?.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderPerformanceMonitoring() {
+        rvHome?.addOneTimeGlobalLayoutListener {
+            pageLoadTimeMonitoring?.stopRenderPerformanceMonitoring()
+        }
     }
 
     private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
@@ -714,6 +738,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun onClickShareButton() {
         shareClicked(shareHomeTokonow())
+        analytics.onClickShareButton()
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -997,9 +1022,11 @@ class TokoNowHomeFragment: Fragment(),
         showFailedToFetchData()
         stickyLoginLoadContent()
         logHomeLayoutError(throwable)
+        stopRenderPerformanceMonitoring()
     }
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        startRenderPerformanceMonitoring()
         showHomeLayout(data)
         loadHeaderBackground()
         checkAddressDataAndServiceArea()
@@ -1016,6 +1043,7 @@ class TokoNowHomeFragment: Fragment(),
         showHomeLayout(data)
         hideHeaderBackground()
         stickyLoginLoadContent()
+        stopRenderPerformanceMonitoring()
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
@@ -1023,6 +1051,7 @@ class TokoNowHomeFragment: Fragment(),
         showHeaderBackground()
         stickyLoginLoadContent()
         getProductAddToCartQuantity()
+        stopRenderPerformanceMonitoring()
     }
 
     private fun checkAddressDataAndServiceArea() {
@@ -1033,20 +1062,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        try {
-            val items = mutableListOf<Visitable<*>>()
-            val iterator = data.items.iterator()
-
-            while(iterator.hasNext()) {
-                iterator.next()?.let {
-                    items.add(it.layout)
-                }
-            }
-
-            adapter.submitList(items)
-        } catch (e: Exception) {
-
-        }
+        adapter.submitList(data.items)
     }
 
     private fun addLoadMoreListener() {
@@ -1337,6 +1353,18 @@ class TokoNowHomeFragment: Fragment(),
                 resources.getString(R.string.tokopedianow_home_share_title),
                 resources.getString(R.string.tokopedianow_home_share_desc),
         )
+    }
+
+    private fun createTokoNowEmptyStateOocListener(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+        return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+            override fun onRefreshLayoutPage() {
+                onRefreshLayout()
+            }
+
+            override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
+
+            override fun onGetEventCategory(): String = EVENT_CATEGORY_HOME_PAGE
+        }
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
