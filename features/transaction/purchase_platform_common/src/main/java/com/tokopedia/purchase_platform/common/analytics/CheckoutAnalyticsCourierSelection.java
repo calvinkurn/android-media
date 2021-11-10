@@ -602,7 +602,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendGeneralEvent(gtmMap);
     }
 
-    public void eventViewAutoCheckCrossSell(String userId, String position, String eventLabel, String digitalProductName, ArrayList<Long> childCatIds) {
+    public void eventViewAutoCheckCrossSell(String userId, String position, String eventLabel, String digitalProductName, ArrayList<Long> childCategoryIds) {
         sendEnhancedEcommerce(DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.PROMO_VIEW,
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.IMPRESSION_CROSS_SELL_ICON,
@@ -616,7 +616,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                                 DataLayer.mapOf(
                                         ConstantTransactionAnalytics.Key.CREATIVE, digitalProductName,
                                         ID, "",
-                                        NAME, childCatIds.toString(),
+                                        NAME, childCategoryIds.toString(),
                                         ConstantTransactionAnalytics.Key.POSITION, position)
                         )))));
     }

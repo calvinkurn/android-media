@@ -461,7 +461,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (shipmentCrossSellModelList != null && !shipmentCrossSellModelList.isEmpty()) {
             for (ShipmentCrossSellModel shipmentCrossSellModel : shipmentCrossSellModelList) {
                 if (shipmentCrossSellModel != null && crossSellModel != null) {
-                    if (shipmentCrossSellModel.getCrossSellModel().getId() == crossSellModel.getId()) {
+                    if (shipmentCrossSellModel.getCrossSellModel().getId().equals(crossSellModel.getId())) {
                         shipmentCrossSellModel.setChecked(checked);
                         updateShipmentCostModel();
                         notifyItemChanged(getShipmentCostPosition());

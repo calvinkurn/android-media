@@ -644,7 +644,7 @@ class ShipmentMapper @Inject constructor() {
         shipmentAddressFormDataResponse.crossSell.forEach { crossSell ->
             arrayListCrossSell.add(
                     CrossSellModel().apply {
-                        id = crossSell.id.toLong()
+                        id = crossSell.id
                         checkboxDisabled = crossSell.checkboxDisabled
                         isChecked = crossSell.isChecked
                         additionalVerticalId = crossSell.additionalVerticalId

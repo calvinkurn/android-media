@@ -42,17 +42,13 @@ class ShipmentCrossSellViewHolder(itemView: View, private val shipmentAdapterAct
 
         if (shipmentCrossSellModel.isEnabled) {
             cbCrossSell.isEnabled = true
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                llContainer.alpha = 1.0f
-            }
+            llContainer.alpha = 1.0f
             cbCrossSell.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
                 shipmentAdapterActionListener.onCrossSellItemChecked(isChecked, shipmentCrossSellModel.crossSellModel, index)
             }
         } else {
             cbCrossSell.gone()
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                llContainer.alpha = 0.5f
-            }
+            llContainer.alpha = 0.5f
         }
     }
 

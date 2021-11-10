@@ -1063,7 +1063,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
             CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
             String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
-            String digitalProductId = String.valueOf(crossSellModel.getId());
+            String digitalProductId = crossSellModel.getId();
             String eventLabel = digitalCategoryName + " " + digitalProductId;
             String digitalProductName = crossSellModel.getInfo().getTitle();
 
@@ -1381,9 +1381,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             CrossSellItemRequestModel crossSellItemRequestModel = new CrossSellItemRequestModel();
             for (ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
                 if (shipmentCrossSellModel.isChecked()) {
-                    crossSellItemRequestModel.setId((int) shipmentCrossSellModel.getCrossSellModel().getId());
+                    crossSellItemRequestModel.setId(Integer.parseInt(shipmentCrossSellModel.getCrossSellModel().getId()));
                     crossSellItemRequestModel.setPrice((int) shipmentCrossSellModel.getCrossSellModel().getPrice());
-                    crossSellItemRequestModel.setAdditionalVerticalId((int) shipmentCrossSellModel.getCrossSellModel().getAdditionalVerticalId());
+                    crossSellItemRequestModel.setAdditionalVerticalId(Integer.parseInt(shipmentCrossSellModel.getCrossSellModel().getAdditionalVerticalId()));
                     crossSellItemRequestModel.setTransactionType(shipmentCrossSellModel.getCrossSellModel().getTransactionType());
                     listCrossSellItemRequest.add(crossSellItemRequestModel);
                 }

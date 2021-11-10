@@ -8,13 +8,13 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class CrossSellModel(
-        var id: Long = 0,
+        var id: String = "",
         var checkboxDisabled: Boolean = false,
         var isChecked: Boolean = false,
         var price: Long = 0,
         var info: CrossSellInfoModel = CrossSellInfoModel(),
         var orderSummary: CrossSellOrderSummaryModel = CrossSellOrderSummaryModel(),
         var bottomSheet: CrossSellBottomSheetModel = CrossSellBottomSheetModel(),
-        var additionalVerticalId: Long = 0,
+        var additionalVerticalId: String = "",
         var transactionType: String = ""
 ) : Parcelable

@@ -29,9 +29,8 @@ data class CrossSellResponse(
         @SerializedName("bottom_sheet")
         val bottomSheet: CrossSellBottomSheet = CrossSellBottomSheet(),
 
-        @SuppressLint("Invalid Data Type")
         @SerializedName("additional_vertical_id")
-        val additionalVerticalId: Long = 0,
+        val additionalVerticalId: String = "",
 
         @SerializedName("transaction_type")
         val transactionType: String = "")

@@ -524,7 +524,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
                 CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
                 String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
-                long digitalProductId = crossSellModel.getId();
+                String digitalProductId = crossSellModel.getId();
                 String eventLabel = digitalCategoryName + " " + digitalProductId;
                 String digitalProductName = crossSellModel.getInfo().getTitle();
 
@@ -1892,7 +1892,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
-        long digitalProductId = crossSellModel.getId();
+        String digitalProductId = crossSellModel.getId();
         String eventLabel = digitalCategoryName + " " + digitalProductId;
         String digitalProductName = crossSellModel.getInfo().getTitle();
 
