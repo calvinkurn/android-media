@@ -64,7 +64,7 @@ import timber.log.Timber;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-@Deprecated(message = "Please use medialoader module instead")
+@Deprecated(message = "Please adopt the image loader with medialoader instead")
 public class ImageHandler {
 
     public static final int IMAGE_WIDTH_HD = 1280;
