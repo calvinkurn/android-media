@@ -3,7 +3,7 @@ package com.tokopedia.product.addedit.common.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-3import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.setTextOrGone
 import com.tokopedia.unifycomponents.BaseCustomView

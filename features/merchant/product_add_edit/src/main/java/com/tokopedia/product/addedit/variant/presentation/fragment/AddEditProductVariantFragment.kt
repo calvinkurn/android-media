@@ -55,6 +55,7 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.VariantPhotoAd
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantValueAdapter
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
@@ -926,11 +927,13 @@ class AddEditProductVariantFragment :
     }
 
     private fun setupAddEditVariantPage(variantDataList: List<VariantDetail>, selectedVariantDetails: List<VariantDetail>) {
-        // setup variant type section view
+       // setup variant type section view
         variantTypeAdapter?.setData(variantDataList)
         variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)
+
         // set selected variant types
         variantTypeAdapter?.setSelectedItems(selectedVariantDetails)
+
         // if editing old variant data (given data is reversed) then you should reverse
         // selectedVariantDetails data first
         viewModel.updateIsOldVariantData(variantTypeAdapter?.getSelectedItems().orEmpty(), selectedVariantDetails)
@@ -939,29 +942,32 @@ class AddEditProductVariantFragment :
         } else {
             selectedVariantDetails
         }
+
         // update variant selection state
         if (selectedVariantDetails.size == 1) viewModel.isSingleVariantTypeIsSelected = true
+
         // set selected variant unit and values
         displayedVariantDetail.forEachIndexed { index, variantDetail ->
-
             val selectedVariantUnit = variantDetail.units.firstOrNull()
                     ?: Unit()
             val selectedVariantUnitValues = variantDetail.units.firstOrNull()?.unitValues
                     ?: mutableListOf()
-            val selectedVariantData = variantDataList.first {
-                it.variantID == variantDetail.variantID
-            }
+            val selectedVariantData = variantTypeAdapter?.getSelectedItems()?.getOrNull(index)
+                ?: return@forEachIndexed // break loop if invalid index inputted
 
             // add custom unit values to variant data
-            val selectedCustomVariantUnitValues = selectedVariantUnitValues.filter {
-                it.variantUnitValueID == CUSTOM_VARIANT_UNIT_VALUE_ID
-            }
-            // add custom variant unit values to variant data
-            if (selectedCustomVariantUnitValues.isNotEmpty()) {
-                // find the unit and add the values
-                selectedVariantData.units.find {
-                    it.variantUnitID == selectedVariantUnit.variantUnitID
-                }?.unitValues?.addAll(selectedCustomVariantUnitValues)
+            if (variantDetail.variantID != CUSTOM_VARIANT_TYPE_ID) {
+                val selectedCustomVariantUnitValues = selectedVariantUnitValues.filter {
+                    it.variantUnitValueID == CUSTOM_VARIANT_UNIT_VALUE_ID
+                }
+
+                // add custom variant unit values to variant data
+                if (selectedCustomVariantUnitValues.isNotEmpty()) {
+                    // find the unit and add the values
+                    selectedVariantData.units.find {
+                        it.variantUnitID == selectedVariantUnit.variantUnitID
+                    }?.unitValues?.addAll(selectedCustomVariantUnitValues)
+                }
             }
 
             val adapterPosition = variantDataList.indexOfFirst {

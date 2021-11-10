@@ -93,6 +93,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     }
 
     fun setSelectedItems(selectedVariantDetails: List<VariantDetail>) {
+        // add predefined variant
         items.forEachIndexed { position, variantDetail ->
             val isVariantIdExist = selectedVariantDetails.any {
                 it.variantID == variantDetail.variantID
@@ -103,6 +104,16 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
                 }
             }
         }
+        // add custom variant
+        selectedVariantDetails.forEach { variantDetail ->
+            val isVariantIdExist = items.any {
+                it.variantID == variantDetail.variantID
+            }
+            if (!isVariantIdExist) {
+                addData(variantDetail)
+            }
+        }
+        // enable/ disable selection if reached max selection
         manageUnselectedItems(getSelectedCount())
     }
 
