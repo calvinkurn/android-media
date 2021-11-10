@@ -3,21 +3,25 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
-import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
+import javax.inject.Inject
 
-class GetShopFollowingUseCaseStub(
-        private val gqlUseCase: GraphqlUseCaseStub<ShopFollowingPojo>,
-        dispatchers: CoroutineDispatchers
-) : GetShopFollowingUseCase(gqlUseCase, dispatchers) {
+class GetShopFollowingUseCaseStub @Inject constructor(
+    private val repository: GraphqlRepositoryStub,
+    dispatcher: CoroutineDispatchers
+): GetShopFollowingUseCase(repository, dispatcher) {
 
     var response: ShopFollowingPojo = ShopFollowingPojo()
         set(value) {
-            gqlUseCase.response = value
+            repository.createMapResult(response::class.java, value)
             field = value
         }
 
-    init {
-        gqlUseCase.response = response
-    }
-
+    var errorMessage = ""
+        set(value) {
+            if(value.isNotEmpty()) {
+                repository.createErrorMapResult(response::class.java, value)
+            }
+            field = value
+        }
 }

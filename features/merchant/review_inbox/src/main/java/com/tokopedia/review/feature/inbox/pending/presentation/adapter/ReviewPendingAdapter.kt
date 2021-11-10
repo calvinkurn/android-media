@@ -6,6 +6,7 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 
+
 class ReviewPendingAdapter(
         reviewPendingAdapterTypeFactory: ReviewPendingAdapterTypeFactory
 ) : BaseListAdapter<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(reviewPendingAdapterTypeFactory) {
@@ -19,10 +20,14 @@ class ReviewPendingAdapter(
     }
 
     fun insertCredibilityWidget(reviewPendingCredibilityUiModel: ReviewPendingCredibilityUiModel) {
-        visitables.add(reviewPendingCredibilityUiModel)
+        if (visitables.filterIsInstance<ReviewPendingCredibilityUiModel>().isEmpty()) {
+            visitables.add(reviewPendingCredibilityUiModel)
+        }
     }
 
     fun insertEmptyModel(reviewPendingEmptyUiModel: ReviewPendingEmptyUiModel) {
-        visitables.add(reviewPendingEmptyUiModel)
+        if (visitables.filterIsInstance<ReviewPendingEmptyUiModel>().isEmpty()) {
+            visitables.add(reviewPendingEmptyUiModel)
+        }
     }
 }
