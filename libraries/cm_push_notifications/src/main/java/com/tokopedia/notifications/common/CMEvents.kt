@@ -142,10 +142,12 @@ object IrisAnalyticsEvents {
         shopId: String?
     ) {
 
-        shopId?.let { id ->
-            if (eventName == PUSH_RECEIVED || eventName == PUSH_CLICKED || eventName == PUSH_DISMISSED) {
-                values[SHOP_ID] = id
-            }
+        if (!shopId.isNullOrBlank()
+            && (eventName == PUSH_RECEIVED
+                    || eventName == PUSH_CLICKED
+                    || eventName == PUSH_DISMISSED)
+        ) {
+            values[SHOP_ID] = shopId
         }
     }
 
@@ -243,10 +245,13 @@ object IrisAnalyticsEvents {
         values: HashMap<String, Any>,
         shopId: String?
     ) {
-        shopId?.let { id ->
-            if (eventName == INAPP_RECEIVED || eventName == INAPP_CLICKED || eventName == INAPP_DISMISSED) {
-                values[SHOP_ID] = id
-            }
+
+        if (!shopId.isNullOrBlank()
+            && (eventName == INAPP_RECEIVED
+                    || eventName == INAPP_CLICKED
+                    || eventName == INAPP_DISMISSED)
+        ) {
+            values[SHOP_ID] = shopId
         }
     }
 
