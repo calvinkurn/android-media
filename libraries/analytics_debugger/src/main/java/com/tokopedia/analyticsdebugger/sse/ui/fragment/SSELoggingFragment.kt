@@ -1,18 +1,28 @@
 package com.tokopedia.analyticsdebugger.sse.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.sse.di.DaggerSSELoggingComponent
 import com.tokopedia.analyticsdebugger.sse.ui.viewmodel.SSELoggingViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.hideLoading
+import com.tokopedia.kotlin.extensions.view.show
+import kotlinx.android.synthetic.main.fragment_sse_logging.*
 import javax.inject.Inject
 
 /**
@@ -24,6 +34,10 @@ class SSELoggingFragment: Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var viewModel: SSELoggingViewModel
+
+    private lateinit var etSSELogSearch: EditText
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var rvSSELog: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjection()
@@ -41,8 +55,16 @@ class SSELoggingFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView(view)
         initObserver()
+        initListener()
         viewModel.getLog()
+    }
+
+    private fun initView(view: View) {
+        etSSELogSearch = view.findViewById(R.id.etSSELogSearch)
+        swipeRefresh = view.findViewById(R.id.swipeRefresh)
+        rvSSELog = view.findViewById(R.id.rvSSELog)
     }
 
     private fun initInjection() {
@@ -54,9 +76,31 @@ class SSELoggingFragment: Fragment() {
 
     private fun initObserver() {
         viewModel.observableSSELog.observe(viewLifecycleOwner) {
+            swipeRefresh.isRefreshing = false
             it.forEach {
                 Log.d("<LOG>", it.toString())
             }
+        }
+    }
+
+    private fun initListener() {
+        etSSELogSearch.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideKeyboard()
+                swipeRefresh.isRefreshing = true
+
+                Toast.makeText(requireContext(), etSSELogSearch.text, Toast.LENGTH_SHORT).show()
+            }
+            true
+        }
+
+
+    }
+
+    private fun hideKeyboard() {
+        requireActivity().currentFocus?.let {
+            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
         }
     }
 
