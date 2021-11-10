@@ -1085,9 +1085,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_FEEDBACK_FORM -> if (GlobalConfig.isAllowDebuggingTools()) {
                 RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
             }
-            AccountConstants.SettingCode.SETTING_OLD_ACCOUNT -> if (GlobalConfig.isAllowDebuggingTools()) {
-                RouteManager.route(activity, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
-            }
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
