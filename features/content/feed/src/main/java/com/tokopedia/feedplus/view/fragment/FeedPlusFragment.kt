@@ -1741,11 +1741,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isTopads: Boolean,
         playChannelId: String
     ) {
+        val typeVOD = type == TYPE_FEED_X_CARD_PLAY
         activity?.let {
             val urlString = when {
                 typeASGC -> {
                     String.format(getString(R.string.feed_share_asgc_weblink), id.toString())
-                }else -> {
+                }
+                typeVOD -> {
+                    String.format(getString(R.string.feed_vod_share_weblink), playChannelId)
+                }
+                else -> {
                     String.format(getString(R.string.feed_share_weblink), id.toString())
                 }
             }
