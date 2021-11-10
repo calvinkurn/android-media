@@ -9,7 +9,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun testRun() {
         runTest {
-
+            Thread.sleep(3000)
         }
     }
 }

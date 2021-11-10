@@ -59,10 +59,4 @@ class FakeAppModule(private val context: Context) {
     fun provideGraphqlUsecase(): GraphqlUseCaseInterface {
         return GraphqlUseCase()
     }
-
-    @Provides
-    fun userSession(@ApplicationContext context: Context): UserSessionInterface {
-        return FakeUserSession(context)
-    }
-
 }

@@ -9,8 +9,4 @@ import dagger.Component
 
 @ApplicationScope
 @Component(modules = [FakeAppModule::class])
-interface FakeBaseAppComponent : BaseAppComponent {
-
-    @ApplicationContext
-    fun repo(): GraphqlRepository
-}
+interface FakeBaseAppComponent : BaseAppComponent

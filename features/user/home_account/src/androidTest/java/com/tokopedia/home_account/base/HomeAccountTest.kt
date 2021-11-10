@@ -11,12 +11,14 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.home_account.common.idling.FragmentTransactionIdle
 import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
 import com.tokopedia.home_account.data.model.CentralizedUserAssetDataModel
-import com.tokopedia.home_account.di.DaggerHomeAccountUserComponents
+import com.tokopedia.home_account.di.*
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.di.DaggerFakeBaseAppComponent
 import com.tokopedia.home_account.stub.di.FakeAppModule
 import com.tokopedia.home_account.stub.domain.usecase.*
+import com.tokopedia.home_account.stub.view.activity.HomeAccountUserActivityStub
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
+import com.tokopedia.sessioncommon.di.SessionModule
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -25,7 +27,7 @@ abstract class HomeAccountTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        HomeAccountUserActivity::class.java, false, false
+        HomeAccountUserActivityStub::class.java, false, false
     )
 
     @get:Rule
@@ -44,7 +46,14 @@ abstract class HomeAccountTest {
     @Before
     open fun before() {
         val appComponent = DaggerFakeBaseAppComponent.builder().fakeAppModule(FakeAppModule(applicationContext)).build()
-        repo = appComponent.repo() as GraphqlRepositoryStub
+        repo = appComponent.graphqlRepository() as GraphqlRepositoryStub
+        homeAccountUserComponents = DaggerHomeAccountUserComponentsStub.builder()
+            .fakeBaseAppComponent(appComponent)
+            .fakeHomeAccountUserModules(FakeHomeAccountUserModules(context))
+            .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
+            .homeAccountUserQueryModules(HomeAccountUserQueryModules())
+            .sessionModule(SessionModule())
+            .build()
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(appComponent)
     }
 
@@ -75,11 +84,12 @@ abstract class HomeAccountTest {
     ) {
         val intent = Intent()
         intentModifier(intent)
+        activityTestRule.activity
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
     }
 
     companion object {
-//        lateinit var homeAccountUserComponents: HomeAccountUserComponentsStub
+        lateinit var homeAccountUserComponents: HomeAccountUserComponentsStub
     }
 }
