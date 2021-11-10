@@ -90,8 +90,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:gravity="center_vertical"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toTopOf="@+id/title_play"
@@ -101,9 +101,9 @@
                 android:id="@+id/live"
                 layout="@layout/layout_live_badge"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
+                android:layout_height="20dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
                 android:visibility="gone"
                 tools:visibility="visible"
                 />

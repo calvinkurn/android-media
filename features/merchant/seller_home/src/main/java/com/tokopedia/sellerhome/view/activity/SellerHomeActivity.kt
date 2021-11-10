@@ -163,16 +163,12 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (DeviceScreenInfo.isTablet(this)) {
             accelerometerOrientationListener.register()
         }
+        navigator?.setSelectedPageSellerFeedback()
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleAppLink(intent)
-
-        val sellerHomeLifecycleState = navigator?.getHomeFragment()?.lifecycle?.currentState
-        if (sellerHomeLifecycleState?.isAtLeast(Lifecycle.State.CREATED) == true) {
-            navigator?.getHomeFragment()?.onNewIntent(intent?.data)
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

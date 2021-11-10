@@ -8,6 +8,7 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import junit.framework.TestCase.assertTrue
@@ -17,24 +18,6 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
-
-    @Test
-    fun `when validate os merchant type with provided shopId should return success`() {
-        runBlocking {
-            mockkObject(GqlGetIsShopOsUseCase)
-            onCheckOsMerchantType_thenReturn()
-
-            val shopId: Int = 123456
-            shopSettingsInfoViewModel.validateOsMerchantType(shopId)
-
-            verifySuccessCheckOsMerchantTypeCalled(shopId)
-
-            val expectedValue = Success(GetIsShopOfficialStore())
-            assertTrue(shopSettingsInfoViewModel.checkOsMerchantTypeData.value is Success)
-            shopSettingsInfoViewModel.checkOsMerchantTypeData.verifySuccessEquals(expectedValue)
-        }
-    }
-
 
     @Test
     fun `when get shop data with provided shopid and includeos should return success`() {
@@ -52,15 +35,21 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
             } returns shopInfo
 
             coEvery {
+                getShopBasicDataUseCase.getData(any())
+            } returns shopBasicData
+
+            coEvery {
                 getShopStatusUseCase.executeOnBackground()
             } returns pmOsStatus
 
             shopSettingsInfoViewModel.getShopData(shopId, includeOs)
+            val expectedResultShopBadget = Success(sampleShopBadgeValue)
             val expectedResultShopBasicData = Success(shopBasicData)
             val expectedResultGoldGetPmOsStatus = Success(pmOsStatus)
+
             assertTrue(shopSettingsInfoViewModel.shopBadgeData.value is Success)
             shopSettingsInfoViewModel.shopBadgeData
-                    .verifySuccessEquals(Success(sampleShopBadgeValue))
+                    .verifySuccessEquals(expectedResultShopBadget)
 
             assertTrue(shopSettingsInfoViewModel.shopBasicData.value is Success)
             shopSettingsInfoViewModel.shopBasicData
@@ -69,6 +58,22 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
             assertTrue(shopSettingsInfoViewModel.shopStatusData.value is Success)
             shopSettingsInfoViewModel.shopStatusData
                     .verifySuccessEquals(expectedResultGoldGetPmOsStatus)
+        }
+    }
+
+    @Test
+    fun `when validate os merchant type with provided shopId should return success`() {
+        runBlocking {
+            mockkObject(GqlGetIsShopOsUseCase)
+
+            coEvery { checkOsMerchantUseCase.executeOnBackground() } returns GetIsShopOfficialStore()
+
+            val shopId: Int = 123456
+            shopSettingsInfoViewModel.validateOsMerchantType(shopId)
+
+            val expectedValue = Success(GetIsShopOfficialStore())
+            assertTrue(shopSettingsInfoViewModel.checkOsMerchantTypeData.value is Success)
+            shopSettingsInfoViewModel.checkOsMerchantTypeData.verifySuccessEquals(expectedValue)
         }
     }
 
@@ -89,6 +94,87 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
         val isSuccessSubscribe = shopSettingsInfoViewModel.updateScheduleResult.observeAwaitValue()
 
         assertTrue(isSuccessSubscribe is Success)
+    }
+
+    @Test
+    fun `when get shop data with provided shopid and includeos should return fail`() {
+        runBlocking {
+            val shopId: String = "123456"
+            val includeOs: Boolean = false
+
+            coEvery {
+                getShopInfoUseCase.executeOnBackground()
+            } throws Exception()
+
+            shopSettingsInfoViewModel.getShopData(shopId, includeOs)
+
+            assertTrue(shopSettingsInfoViewModel.shopBadgeData.value is Fail)
+        }
+    }
+
+    @Test
+    fun `when get shop basic data with provided shopid and includeos should return fail`() {
+        runBlocking {
+            val shopId: String = "123456"
+            val includeOs: Boolean = false
+
+            coEvery {
+                getShopBasicDataUseCase.getData(any())
+            } throws Exception()
+
+            shopSettingsInfoViewModel.getShopData(shopId, includeOs)
+
+            assertTrue(shopSettingsInfoViewModel.shopBasicData.value is Fail)
+        }
+    }
+
+    @Test
+    fun `when get shop status with provided shopid and includeos should return fail`() {
+        runBlocking {
+            val shopId: String = "123456"
+            val includeOs: Boolean = false
+
+            coEvery {
+                getShopStatusUseCase.executeOnBackground()
+            } throws Exception()
+
+            shopSettingsInfoViewModel.getShopData(shopId, includeOs)
+
+            assertTrue(shopSettingsInfoViewModel.shopStatusData.value is Fail)
+        }
+    }
+
+    @Test
+    fun `when update shop schedule with provided action open closeNow false should return fail`() {
+        val action: Int = ShopScheduleActionDef.OPEN
+        val closeNow: Boolean = false
+        val closeStart: String = ""
+        val closeEnd: String = ""
+        val closeNote: String = ""
+
+        every {
+            updateShopScheduleUseCase.getData(any())
+        } throws Exception()
+
+        shopSettingsInfoViewModel.updateShopSchedule(action, closeNow, closeStart, closeEnd, closeNote)
+
+        val isSuccessSubscribe = shopSettingsInfoViewModel.updateScheduleResult.observeAwaitValue()
+
+        assertTrue(isSuccessSubscribe is Fail)
+    }
+
+    @Test
+    fun `when validate os merchant type with provided shopId should return fail`() {
+        runBlocking {
+            mockkObject(GqlGetIsShopOsUseCase)
+
+            coEvery { checkOsMerchantUseCase.executeOnBackground() } throws Exception()
+
+            val shopId: Int = 123456
+            shopSettingsInfoViewModel.validateOsMerchantType(shopId)
+
+            assertTrue(shopSettingsInfoViewModel.checkOsMerchantTypeData.value is Fail)
+        }
     }
 
     @Test

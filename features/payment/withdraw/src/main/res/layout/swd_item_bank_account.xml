@@ -69,7 +69,6 @@
         app:srcCompat="@drawable/swd_ic_power_merchant"
         app:unify_image_corner_radius="0" />
 
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBankAccountHolderName"
         android:layout_width="@dimen/unify_space_0"
@@ -81,7 +80,7 @@
         android:lineSpacingExtra="@dimen/sp_4"
         android:singleLine="true"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintEnd_toEndOf="@id/tvBankName"
+        app:layout_constraintEnd_toStartOf="@id/ivBankSelector"
         app:layout_constraintStart_toStartOf="@id/tvBankName"
         app:layout_constraintTop_toBottomOf="@+id/tvBankName"
         app:typographyType="body_3"
@@ -93,16 +92,31 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginRight="@dimen/unify_space_16"
         android:ellipsize="marquee"
         android:lineSpacingExtra="@dimen/sp_4"
         android:singleLine="true"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintEnd_toEndOf="@id/tvBankName"
+        app:layout_constraintEnd_toStartOf="@id/ivBankSelector"
         app:layout_constraintStart_toStartOf="@id/tvBankName"
         app:layout_constraintTop_toBottomOf="@id/tvBankAccountHolderName"
         app:typographyType="body_3"
         tools:text="Admin Fee " />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvWarningMessage"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:textColor="@color/Unify_R600"
+        app:layout_constraintEnd_toStartOf="@id/ivBankSelector"
+        app:layout_constraintStart_toStartOf="@id/tvBankName"
+        app:layout_constraintTop_toBottomOf="@id/tvAdminFee"
+        app:typographyType="body_3"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Karena BCA sedang ada kendala, dana akan masuk lebih lama tetapi masih dalam 1x24 jam. " />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerUnify"
@@ -113,7 +127,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvAdminFee" />
+        app:layout_constraintTop_toBottomOf="@id/tvWarningMessage" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
