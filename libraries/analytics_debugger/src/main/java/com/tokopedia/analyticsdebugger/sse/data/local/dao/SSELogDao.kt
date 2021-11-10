@@ -9,7 +9,7 @@ import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELogEntity
  * Created By : Jonathan Darwin on November 09, 2021
  */
 @Dao
-interface SSEDao {
+interface SSELogDao {
 
     @Insert
     fun insert(sseLog: SSELogEntity)

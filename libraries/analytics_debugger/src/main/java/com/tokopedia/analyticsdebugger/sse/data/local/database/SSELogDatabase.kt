@@ -4,13 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELog
+import com.tokopedia.analyticsdebugger.sse.data.local.dao.SSELogDao
+import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELogEntity
 
 /**
  * Created By : Jonathan Darwin on November 09, 2021
  */
-@Database(entities = [SSELog::class], version = 1)
+@Database(entities = [SSELogEntity::class], version = 1)
 abstract class SSELogDatabase: RoomDatabase() {
+
+    abstract fun sseLogDao(): SSELogDao
 
     companion object {
 

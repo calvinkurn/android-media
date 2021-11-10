@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.sse.domain.`interface`
+package com.tokopedia.analyticsdebugger.sse.domain.repository
 
 import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELogEntity
 

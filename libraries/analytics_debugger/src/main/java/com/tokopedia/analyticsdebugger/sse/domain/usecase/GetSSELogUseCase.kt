@@ -1,6 +1,6 @@
 package com.tokopedia.analyticsdebugger.sse.domain.usecase
 
-import com.tokopedia.analyticsdebugger.sse.domain.`interface`.SSELogRepository
+import com.tokopedia.analyticsdebugger.sse.domain.repository.SSELogRepository
 import com.tokopedia.analyticsdebugger.sse.ui.mapper.SSELogMapper
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
 import com.tokopedia.usecase.coroutines.UseCase
@@ -16,14 +16,12 @@ class GetSSELogUseCaseImpl @Inject constructor(
 
     private var query: String = ""
 
-
-    override suspend fun executeOnBackground(): List<SSELogUiModel> {
-        return sseLogMapper.mapEntityToUiModel(sseLogRepository.get(query))
+    fun setParam(query: String) {
+        this.query = query;
     }
 
-    companion object {
-        fun setParam(query: String) {
-            query
-        }
+    override suspend fun executeOnBackground(): List<SSELogUiModel> {
+        val response = sseLogRepository.get(query)
+        return sseLogMapper.mapEntityToUiModel(response)
     }
 }

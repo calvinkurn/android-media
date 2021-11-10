@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey
 const val SSE_LOG_TABLE_NAME = "sse_log"
 
 @Entity(tableName = SSE_LOG_TABLE_NAME)
-data class SSELog(
+data class SSELogEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
