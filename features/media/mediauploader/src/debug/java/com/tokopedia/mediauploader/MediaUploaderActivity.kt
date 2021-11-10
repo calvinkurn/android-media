@@ -23,6 +23,7 @@ import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.mediauploader.MediaUploaderViewModel.Companion.UploadState
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -231,7 +232,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
         val sourceUpload = when {
             isUploadImage -> "image-uploader"
-            file.length() >= THRESHOLD_LARGE_FILE_SIZE -> "large-uploader"
+            file.length() >= 10.mbToBytes() -> "large-uploader"
             else -> "simple-uploader"
         }
 
@@ -305,7 +306,6 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     }
 
     companion object {
-        private const val THRESHOLD_LARGE_FILE_SIZE = 20971520
         private const val REQUEST_IMAGE_PICKER = 123
         private const val REQUEST_VIDEO_PICKER = 456
 
