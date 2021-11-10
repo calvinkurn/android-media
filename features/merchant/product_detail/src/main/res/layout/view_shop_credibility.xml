@@ -63,7 +63,7 @@
         app:layout_constraintTop_toTopOf="@id/shop_credibility_name"
         app:typographyType="small"
         app:typographyWeight="bold"
-        tools:text="By GoApotik"
+        tools:text="Go-Apotik"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
