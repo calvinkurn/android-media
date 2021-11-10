@@ -8,4 +8,5 @@ data class PlayChannelReportUiModel(
         val totalLike: Long = 0L,
         val totalLikeFmt: String = "0",
         val shouldTrack: Boolean = true,
+        val sourceType: String = ""
 )

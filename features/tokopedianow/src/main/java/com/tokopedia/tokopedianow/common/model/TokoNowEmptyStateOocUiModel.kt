@@ -5,7 +5,7 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowEmptyStateOo
 
 data class TokoNowEmptyStateOocUiModel (
         val id: String = "",
-        val eventCategory: String = ""
+        val hostSource: String = ""
 ) : Visitable<TokoNowEmptyStateOocTypeFactory> {
     override fun type(typeFactory: TokoNowEmptyStateOocTypeFactory): Int {
         return typeFactory.type(this)

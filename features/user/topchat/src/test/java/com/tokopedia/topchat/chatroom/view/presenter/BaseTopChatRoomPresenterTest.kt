@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.presenter
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ImageUploadUiModel
@@ -15,7 +14,6 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
@@ -72,12 +70,6 @@ abstract class BaseTopChatRoomPresenterTest {
 
     @RelaxedMockK
     protected lateinit var replyChatUseCase: ReplyChatUseCase
-
-    @RelaxedMockK
-    protected lateinit var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
-
-    @RelaxedMockK
-    protected lateinit var addToCartUseCase: AddToCartUseCase
 
     @RelaxedMockK
     protected lateinit var compressImageUseCase: CompressImageUseCase
@@ -270,8 +262,6 @@ abstract class BaseTopChatRoomPresenterTest {
                 topChatRoomWebSocketMessageMapper,
                 getTemplateChatRoomUseCase,
                 replyChatUseCase,
-                toggleFavouriteShopUseCase,
-                addToCartUseCase,
                 compressImageUseCase,
                 seamlessLoginUsecase,
                 getChatRoomSettingUseCase,

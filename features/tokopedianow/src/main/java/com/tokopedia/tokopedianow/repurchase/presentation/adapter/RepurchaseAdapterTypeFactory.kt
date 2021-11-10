@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseS
 
 class RepurchaseAdapterTypeFactory(
     private val tokoNowListener: TokoNowView? = null,
+    private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener? = null,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener? = null,
     private val productCardListener: RepurchaseProductCardListener,
@@ -67,7 +68,7 @@ class RepurchaseAdapterTypeFactory(
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowListener, tokoNowChooseAddressWidgetListener)
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(
                 view,
-                tokoNowListener
+                tokoNowEmptyStateOocListener
             )
             TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(
                 view,

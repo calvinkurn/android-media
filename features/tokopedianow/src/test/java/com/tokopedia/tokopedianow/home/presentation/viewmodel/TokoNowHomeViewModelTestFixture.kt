@@ -23,6 +23,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
@@ -126,6 +127,11 @@ abstract class TokoNowHomeViewModelTestFixture {
     protected fun verifyMiniCartNullResponse() {
         val actualResponse = viewModel.miniCart.value
         Assert.assertNull(actualResponse)
+    }
+
+    protected fun verifyTrackOpeningScreen() {
+        val actualResponse = viewModel.openScreenTracker.value
+        Assert.assertEquals(HOMEPAGE_TOKONOW, actualResponse)
     }
 
     protected fun verfifyGetChooseAddressSuccess(expectedResponse: GetStateChosenAddressResponse) {
