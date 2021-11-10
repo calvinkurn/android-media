@@ -6,7 +6,7 @@ import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModu
 import dagger.Component
 
 @BuyerOrderDetailScope
-@Component(modules = [BuyerOrderDetailModule::class, BuyerOrderDetailViewModelModule::class, RecommendationCoroutineModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [BuyerOrderDetailModule::class, BuyerOrderDetailViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface BuyerOrderDetailComponent {
     fun inject(buyerOrderDetailFragment: BuyerOrderDetailFragment)
 }

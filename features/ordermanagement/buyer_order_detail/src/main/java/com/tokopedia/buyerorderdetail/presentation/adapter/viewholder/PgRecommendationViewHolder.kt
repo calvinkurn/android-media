@@ -8,7 +8,9 @@ import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetU
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.*
 
-class PgRecommendationViewHolder(itemView: View, private val buyerOrderDetailBindRecomWidgetListener: BuyerOrderDetailBindRecomWidgetListener): AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
+class PgRecommendationViewHolder(itemView: View,
+                                 private val buyerOrderDetailBindRecomWidgetListener: BuyerOrderDetailBindRecomWidgetListener) :
+        AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
         RecomCarouselWidgetBasicListener {
 
     companion object {
@@ -58,7 +60,7 @@ class PgRecommendationViewHolder(itemView: View, private val buyerOrderDetailBin
     override fun onWidgetFail(pageName: String, e: Throwable) {
     }
 
-    interface BuyerOrderDetailBindRecomWidgetListener{
+    interface BuyerOrderDetailBindRecomWidgetListener {
 
         fun setViewToLifecycleOwner(observer: LifecycleObserver)
     }

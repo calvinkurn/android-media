@@ -57,7 +57,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -77,7 +76,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         ProductBundlingViewHolder.Listener,
         TickerViewHolder.TickerViewHolderListener,
         DigitalRecommendationViewHolder.ActionListener,
-        RecommendationWidgetListener,
+//        RecommendationWidgetListener,
         PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener {
 
     companion object {
@@ -108,9 +107,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     private var emptyStateBuyerOrderDetail: EmptyStateUnify? = null
     private var loaderBuyerOrderDetail: LoaderUnify? = null
-//    private val physicalRecommendationWidget = PGRecommendationWidgetUiModel()
-    private var pageName = ""
-    private val arraylist = arrayListOf<String>()
 
     private val viewModel: BuyerOrderDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
@@ -127,7 +123,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         SaveInstanceCacheManager(requireContext(), true)
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData, this, pageName, arraylist, this)
+        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData, this, this)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -205,7 +201,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
             observeReceiveConfirmation()
             observeAddSingleToCart()
             observeAddMultipleToCart()
-            observeRecommendationWidgetData()
         }
     }
 
@@ -338,8 +333,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
             buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
             when (result) {
                 is Success -> {onSuccessGetBuyerOrderDetail(result.data)
-//                    pageName = result.data.pgRecommendationWidgetUiFields.pageName
-//                    arraylist.addAll(result.data.pgRecommendationWidgetUiFields.productIdList)
                 }
                 is Fail -> onFailedGetBuyerOrderDetail(result.throwable)
             }
@@ -383,22 +376,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun observeRecommendationWidgetData() {
-//        viewModel.recommendationWidgetResult.observe(viewLifecycleOwner) { result ->
-//            when (result) {
-//                is Success -> {
-//                    onSuccessRecommendationResponse(result.data)
-//                }
-//                is Fail -> {
-//                    adapter.removeElement(physicalRecommendationWidget)
-//                }
-//            }
-//        }
-    }
-
-    private fun onSuccessRecommendationResponse(bestSellerDataModel: BestSellerDataModel) {
-//        adapter.updateRecommendationWidget(physicalRecommendationWidget, bestSellerDataModel as RecommendationVisitable)
-    }
 
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
         val orderId = viewModel.getOrderId()
@@ -588,31 +565,31 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        RecommendationWidgetTracker.sendClickTracker(recommendationItem, userSession.userId)
-        RouteManager.route(context, recommendationItem.url)
-    }
-
-    override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        context?.let { TrackingQueue(it).putEETracking(RecommendationWidgetTracker.getImpressionTracker(recommendationItem, userSession.userId) as HashMap<String, Any>) }
-    }
-
-    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        showProductCardOptions(
-                this,
-                recommendationItem.createProductCardOptionsModel(widgetPosition))
-    }
-
-    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, chipsPosition: Int) {
-    }
-
-    override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
-        RouteManager.route(context, appLink)
-    }
-
-    override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
-        RouteManager.route(context, appLink)
-    }
+//    override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+//        RecommendationWidgetTracker.sendClickTracker(recommendationItem, userSession.userId)
+//        RouteManager.route(context, recommendationItem.url)
+//    }
+//
+//    override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+//        context?.let { TrackingQueue(it).putEETracking(RecommendationWidgetTracker.getImpressionTracker(recommendationItem, userSession.userId) as HashMap<String, Any>) }
+//    }
+//
+//    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+//        showProductCardOptions(
+//                this,
+//                recommendationItem.createProductCardOptionsModel(widgetPosition))
+//    }
+//
+//    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, chipsPosition: Int) {
+//    }
+//
+//    override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+//        RouteManager.route(context, appLink)
+//    }
+//
+//    override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+//        RouteManager.route(context, appLink)
+//    }
 
     private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {
         val productCardOptionsModel = ProductCardOptionsModel()

@@ -54,7 +54,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
+    implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
@@ -67,8 +69,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.dagger
-    implementation project(path: ':features:discovery:recommendation_widget_common')
-    implementation project(path: ':libraries:tracking_optimizer')
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 

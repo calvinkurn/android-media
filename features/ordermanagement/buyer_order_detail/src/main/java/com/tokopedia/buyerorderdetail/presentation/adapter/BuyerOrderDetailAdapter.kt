@@ -225,17 +225,6 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         }
     }
 
-    fun updateRecommendationWidget(
-            oldItem: Visitable<BuyerOrderDetailTypeFactory>,
-            newItem: Visitable<RecommendationTypeFactory>
-    ) {
-        val index = visitables.indexOf(oldItem)
-        if (index != -1) {
-            visitables[index] = newItem
-            notifyItemChanged(index, oldItem to newItem)
-        }
-    }
-
     fun removeDigitalRecommendation() {
         val dividerIndex = visitables.indexOfLast { it is ThickDividerUiModel }
         val index = visitables.indexOfLast { it is DigitalRecommendationUiModel }
