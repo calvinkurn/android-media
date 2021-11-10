@@ -20,7 +20,6 @@
             app:contentInsetLeft="@dimen/layout_lvl0"
             app:contentInsetStart="@dimen/layout_lvl0"
             app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
-            app:layout_scrollFlags="scroll|enterAlways"
             app:navigationIcon="@drawable/ic_system_action_back_grayscale_24">
 
             <com.tokopedia.unifycomponents.SearchBarUnify
