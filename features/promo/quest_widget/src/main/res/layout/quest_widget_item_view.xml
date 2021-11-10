@@ -53,6 +53,16 @@
             app:layout_constraintStart_toStartOf="@id/progressBarContainer"
             app:layout_constraintTop_toTopOf="@id/progressBarContainer" />
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_banner_icon_second"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
+            android:translationY="56dp"
+            app:layout_constraintBottom_toBottomOf="@id/progressBarContainer"
+            app:layout_constraintEnd_toEndOf="@id/progressBarContainer"
+            app:layout_constraintStart_toStartOf="@id/progressBarContainer"
+            app:layout_constraintTop_toTopOf="@id/progressBarContainer" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_banner_title"
             android:layout_width="@dimen/dim_0dp"
