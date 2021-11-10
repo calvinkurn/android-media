@@ -1033,7 +1033,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         if (shipmentCrossSellModel.isChecked()) isCrossSellChecked = true;
                     }
                     if (isCrossSellChecked) {
-                        triggerCrossSellClickPilihPembayaran();
+                        triggerCrossSellClickPilihPembayaran(checkoutRequest);
                     }
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else if (checkoutData.getErrorReporter().getEligible()) {
@@ -1059,7 +1059,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         };
     }
 
-    private void triggerCrossSellClickPilihPembayaran() {
+    private void triggerCrossSellClickPilihPembayaran(CheckoutRequest checkoutRequest) {
         List<ShipmentCrossSellModel> shipmentCrossSellModelList = getListShipmentCrossSellModel();
         for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
             CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
@@ -1067,6 +1067,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             String digitalProductId = crossSellModel.getId();
             String eventLabel = digitalCategoryName + " " + digitalProductId;
             String digitalProductName = crossSellModel.getInfo().getTitle();
+
+            ArrayList<String> listShopId = new ArrayList<>();
+            ArrayList<String> listShopName = new ArrayList<>();
+            ArrayList<String> listShopType = new ArrayList<>();
+            for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.getData()) {
+                if (dataCheckoutRequest != null) {
+                    for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.getShopProducts()) {
+                        if (shopProductCheckoutRequest != null) {
+                            for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.getProductData()) {
+                                if (productDataCheckoutRequest != null) {
+                                    listShopId.add(productDataCheckoutRequest.getProductShopId());
+                                    listShopName.add(productDataCheckoutRequest.getProductShopName());
+                                    listShopType.add(productDataCheckoutRequest.getProductShopType());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             List<Object> productList = new ArrayList<>();
             List<ShipmentCartItemModel> cartItemModelList = getShipmentCartItemModelList();
@@ -1079,9 +1098,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             ConstantTransactionAnalytics.Key.NAME, cartItemModel.getName(),
                             ConstantTransactionAnalytics.Key.PRICE, cartItemModel.getPrice(),
                             ConstantTransactionAnalytics.Key.QUANTITY, cartItemModel.getQuantity(),
-                            ConstantTransactionAnalytics.Key.SHOP_ID, cartItemModel.getShopId(),
-                            ConstantTransactionAnalytics.Key.SHOP_NAME, cartItemModel.getShopName(),
-                            ConstantTransactionAnalytics.Key.SHOP_TYPE, "",
+                            ConstantTransactionAnalytics.Key.SHOP_ID, listShopId.toString(),
+                            ConstantTransactionAnalytics.Key.SHOP_NAME, listShopName.toString(),
+                            ConstantTransactionAnalytics.Key.SHOP_TYPE, listShopType.toString(),
                             ConstantTransactionAnalytics.Key.VARIANT, digitalProductName
                     ));
                 }
