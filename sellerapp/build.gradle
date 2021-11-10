@@ -139,7 +139,7 @@ android {
     configurations.all {
         resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
-        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.6.0'
     }
 
     // Specifies 4 flavor dimensions.
