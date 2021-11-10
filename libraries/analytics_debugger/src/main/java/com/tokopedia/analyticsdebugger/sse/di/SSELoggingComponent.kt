@@ -8,7 +8,7 @@ import dagger.Component
  * Created By : Jonathan Darwin on November 10, 2021
  */
 @Component(
-    modules = [SSELoggingModule::class, SSELoggingViewModelModule::class],
+    modules = [SSELoggingModule::class, SSELoggingViewModelModule::class, SSELoggingBindModule::class],
     dependencies = [BaseAppComponent::class]
 )
 @SSELoggingScope

@@ -9,7 +9,7 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on November 09, 2021
  */
-class GetSSELogUseCaseImpl @Inject constructor(
+class GetSSELogUseCase @Inject constructor(
     private val sseLogRepository: SSELogRepository,
     private val sseLogMapper: SSELogMapper
 ): UseCase<List<SSELogUiModel>>() {
