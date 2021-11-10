@@ -4,11 +4,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
@@ -305,9 +305,8 @@ class NewShopPageViewModelTest {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()
 
-        mockkStatic(ImageHandler::class)
-        every { ImageHandler.loadImageWithTarget(any(), any(), any()) } answers {
-            (thirdArg() as CustomTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
+        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+            (lastArg() as MediaBitmapEmptyTarget).onResourceReady(mockBitmap, mockTransition)
         }
 
         mockkStatic(ImageProcessingUtil::class)
@@ -325,9 +324,8 @@ class NewShopPageViewModelTest {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()
 
-        mockkStatic(ImageHandler::class)
-        every { ImageHandler.loadImageWithTarget(any(), any(), any()) } answers {
-            (thirdArg() as CustomTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
+        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+            (lastArg() as MediaBitmapEmptyTarget).onResourceReady(mockBitmap, mockTransition)
         }
 
         mockkStatic(ImageProcessingUtil::class)
@@ -344,9 +342,8 @@ class NewShopPageViewModelTest {
     fun `check whether shopImagePath value is null when onLoadCleared is called on saveShopImageToPhoneStorage`() {
         val mockDrawable = mockk<Drawable>()
 
-        mockkStatic(ImageHandler::class)
-        every { ImageHandler.loadImageWithTarget(any(), any(), any()) } answers {
-            (thirdArg() as CustomTarget<Bitmap>).onLoadCleared(mockDrawable)
+        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+            (lastArg() as MediaBitmapEmptyTarget).onLoadCleared(mockDrawable)
         }
 
         mockkStatic(ImageProcessingUtil::class)
@@ -356,8 +353,7 @@ class NewShopPageViewModelTest {
 
     @Test
     fun `check whether shopImagePath value is null when ImageHandler loadImageWithTarget throws exception`() {
-        mockkStatic(ImageHandler::class)
-        every { ImageHandler.loadImageWithTarget(any(), any(), any()) } throws Exception()
+        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } throws Exception()
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value == null)
     }
