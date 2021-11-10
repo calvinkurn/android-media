@@ -19,6 +19,7 @@
         android:id="@+id/tv_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Hadiah misi menantimu"
         android:layout_marginTop="@dimen/dim_12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,6 +31,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Lihat Semua"
         android:id="@+id/tv_lihat"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,10 +55,9 @@
         app:layout_constraintStart_toStartOf="@id/tv_label"
         />
 
+        <include layout="@layout/quest_widget_error" android:visibility="gone" android:id="@+id/quest_widget_error"/>
+
+        <include layout="@layout/quest_widget_login" android:visibility="gone" android:id="@+id/quest_widget_login"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <include layout="@layout/quest_widget_error" android:visibility="gone" android:id="@+id/quest_widget_error"/>
-
-    <include layout="@layout/quest_widget_login" android:visibility="gone" android:id="@+id/quest_widget_login"/>
-
 </FrameLayout>

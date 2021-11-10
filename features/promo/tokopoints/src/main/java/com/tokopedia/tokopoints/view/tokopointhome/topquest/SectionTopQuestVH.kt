@@ -19,6 +19,6 @@ class SectionTopQuestVH(val view: View, val listener: RewardsRecomListener) : Re
 
     fun bind(data: RewardsRecommendation) {
          val view:QuestWidgetView = view.findViewById(R.id.topquest)
-         view.getQuestList(0,"","")
+         view.getQuestList(0,"","myreward")
     }
 }

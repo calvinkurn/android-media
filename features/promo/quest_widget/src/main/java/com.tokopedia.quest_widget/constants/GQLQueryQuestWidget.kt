@@ -6,7 +6,7 @@ object GQLQueryQuestWidget {
     
  query questWidgetList(${'$'}channel: Int, ${'$'}channelSlug: String, ${'$'}page: String) { 
  questWidgetList: questWidgetList(input: {channel: ${'$'}channel, channelSlug: ${'$'}channelSlug, page: ${'$'}page}) {
-    questWidgetList {
+   questWidgetList {
       id
       title
       description
@@ -15,6 +15,7 @@ object GQLQueryQuestWidget {
       expiredDate
       cardBannerBackgroundURL
       detailBannerBackgroundURL
+      widgetPrizeIconURL
       label {
         title
         description
@@ -62,12 +63,12 @@ object GQLQueryQuestWidget {
       reason
     }
     isEligible
-    pageDetail {
+    widgetPageDetail {
       title
-      text
       cta {
+        text
         url
-        applink
+        appLink
       }
     }
   }

@@ -12,12 +12,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quest_widget.R
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.quest_widget.di.DaggerQuestComponent
 import com.tokopedia.quest_widget.util.LiveDataResult
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unifyprinciples.Typography
@@ -41,7 +43,8 @@ class QuestWidgetView @JvmOverloads constructor(
     private var shimmerQuestWidget: ConstraintLayout
     private var constraintLayoutQuestWidget: ConstraintLayout
     private var questWidgetError: LinearLayout
-    private var questWidgetLogin: LinearLayout
+    private var questWidgetLogin: ImageUnify
+    private var rvError: RecyclerView
     var userSession: UserSessionInterface
 
     @Inject
@@ -58,6 +61,8 @@ class QuestWidgetView @JvmOverloads constructor(
         constraintLayoutQuestWidget = findViewById(R.id.constraintLayoutQuestWidget)
         questWidgetError = findViewById(R.id.quest_widget_error)
         questWidgetLogin = findViewById(R.id.quest_widget_login)
+
+        rvError = questWidgetError.findViewById(R.id.rv_error)
 
         DaggerQuestComponent.builder()
             .build().inject(this)
@@ -107,6 +112,14 @@ class QuestWidgetView @JvmOverloads constructor(
 
         tvLihat.setOnClickListener {
             RouteManager.route(context, data?.widgetData?.pageDetail?.cta?.url)
+        }
+
+        questWidgetLogin.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+
+        rvError.setOnClickListener {
+            //TODO HANDLE ERROR
         }
     }
 

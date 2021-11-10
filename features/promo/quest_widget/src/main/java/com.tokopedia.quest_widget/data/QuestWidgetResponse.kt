@@ -49,7 +49,6 @@ data class QuestWidgetListItem(
     @SerializedName("expiredDate")
     val expiredDate: String? = null,
 
-
     @SerializedName("cardBannerBackgroundURL")
     val cardBannerBackgroundURL: String? = null,
 

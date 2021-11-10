@@ -20,7 +20,7 @@ const val ERROR_NULL_RESPONSE = "Response is null"
 
 class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: CoroutineDispatcher, val questWidgetUseCase: QuestWidgetUseCase): BaseViewModel(workerDispatcher) {
 
-    val questWidgetListLiveData = SingleLiveEvent<LiveDataResult<QuestData>>()
+    val questWidgetListLiveData = SingleLiveEvent<LiveDataResult<QuestData?>>()
 
     fun getWidgetList(channel: Int, channelSlug: String, page: String, userSession: UserSession){
 
@@ -35,13 +35,17 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
                     )
                 )
                 if (response != null) {
-                    response.questWidgetList.let { widgetData ->
+                    response.data?.questWidgetList.let { widgetData ->
                         val configList = ArrayList<Config>()
-                        widgetData.questWidgetList.forEach { questWidgetListItem ->
+                        widgetData?.questWidgetList?.forEach { questWidgetListItem ->
                             configList.add(convertStringToConfig(questWidgetListItem.config))
                         }
-                        val questData = QuestData(configList, response)
-                        questWidgetListLiveData.postValue(LiveDataResult.success(questData))
+                        val questData = response.data?.let { QuestData(configList, it) }
+                        LiveDataResult.success(questData)?.let {
+                            questWidgetListLiveData.postValue(
+                                it
+                            )
+                        }
                     }
                 } else {
                     questWidgetListLiveData.postValue(
