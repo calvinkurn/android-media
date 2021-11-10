@@ -12,6 +12,7 @@ fun List<RecommendationWidget>.mappingRecommendationToWishlist(
     currentPage: Int,
     wishlistVisitable: List<WishlistV2Data>,
     recommendationPositionInPage: Int,
+    topAdsPositionInPage: Int,
     maxItemInPage: Int): List<WishlistV2Data>{
     val list = mutableListOf<WishlistV2Data>()
 
@@ -39,10 +40,11 @@ fun List<WishlistV2DataModel>.combineVisitable(secondList: List<WishlistV2DataMo
 
 fun List<WishlistV2Data>.mappingTopadsBannerToWishlist(
     topadsBanner: TopAdsImageViewModel,
-    recommendationPositionInPage: Int,
+    topAdsPositionInPage: Int,
     currentPage: Int,
-    maxItemInPage: Int): List<WishlistV2Data>{
-    val recommendationPositionInThisPage = ((currentPage-1) * maxItemInPage) + recommendationPositionInPage
+    maxItemInPage: Int,
+    wishlistItemInList: Int): List<WishlistV2Data>{
+    val recommendationPositionInThisPage = ((currentPage-1) * maxItemInPage) + (topAdsPositionInPage + (currentPage -1)) + (wishlistItemInList.div(24))
     val list = mutableListOf<WishlistV2Data>()
     list.addAll(this)
     list.add(recommendationPositionInThisPage, WishlistV2TopAdsDataModel(topAdsData = topadsBanner))
@@ -55,6 +57,7 @@ fun mappingTopadsBannerWithRecommendationToWishlist(
     wishlistVisitable: List<WishlistV2Data>,
     listRecommendation: List<RecommendationWidget>,
     recommendationPositionInPage: Int,
+    topAdsPositionInPage: Int,
     currentPage: Int,
     isInBulkMode: Boolean,
     maxItemInPage: Int,
