@@ -23,6 +23,8 @@ class SSELogRepositoryImpl @Inject constructor(
                 "test $it",
                 1
             )
+        }.filter {
+            it.event.contains(query) || it.message.contains(query)
         }
 //        database.sseLogDao().get(query)
     }

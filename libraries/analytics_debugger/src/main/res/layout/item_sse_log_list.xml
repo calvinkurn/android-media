@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_lvl3"
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingBottom="@dimen/spacing_lvl3"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
     android:layout_marginBottom="@dimen/spacing_lvl3"
     android:background="@color/white"
     >

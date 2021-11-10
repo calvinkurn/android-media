@@ -12,12 +12,14 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.sse.di.DaggerSSELoggingComponent
+import com.tokopedia.analyticsdebugger.sse.ui.adapter.SSELogAdapter
 import com.tokopedia.analyticsdebugger.sse.ui.viewmodel.SSELoggingViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.hideLoading
@@ -34,6 +36,8 @@ class SSELoggingFragment: Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var viewModel: SSELoggingViewModel
+
+    private val adapter: SSELogAdapter by lazy { SSELogAdapter() }
 
     private lateinit var etSSELogSearch: EditText
     private lateinit var swipeRefresh: SwipeRefreshLayout
@@ -58,13 +62,19 @@ class SSELoggingFragment: Fragment() {
         initView(view)
         initObserver()
         initListener()
-        viewModel.getLog()
+
+        loadData()
     }
 
     private fun initView(view: View) {
-        etSSELogSearch = view.findViewById(R.id.etSSELogSearch)
-        swipeRefresh = view.findViewById(R.id.swipeRefresh)
-        rvSSELog = view.findViewById(R.id.rvSSELog)
+        etSSELogSearch = view.findViewById(R.id.et_sse_log_search)
+        swipeRefresh = view.findViewById(R.id.swipe_refresh)
+        rvSSELog = view.findViewById(R.id.rv_sse_log)
+
+        rvSSELog.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@SSELoggingFragment.adapter
+        }
     }
 
     private fun initInjection() {
@@ -77,9 +87,7 @@ class SSELoggingFragment: Fragment() {
     private fun initObserver() {
         viewModel.observableSSELog.observe(viewLifecycleOwner) {
             swipeRefresh.isRefreshing = false
-            it.forEach {
-                Log.d("<LOG>", it.toString())
-            }
+            adapter.updateData(it)
         }
     }
 
@@ -87,14 +95,28 @@ class SSELoggingFragment: Fragment() {
         etSSELogSearch.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 hideKeyboard()
-                swipeRefresh.isRefreshing = true
+
+                loadData()
 
                 Toast.makeText(requireContext(), etSSELogSearch.text, Toast.LENGTH_SHORT).show()
             }
             true
         }
 
+        swipeRefresh.setOnRefreshListener {
+            loadData()
+        }
 
+        adapter.setOnClickListener {
+            Toast.makeText(requireContext(), it.event, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadData() {
+        val query = etSSELogSearch.text.toString()
+
+        swipeRefresh.isRefreshing = true
+        viewModel.getLog(query)
     }
 
     private fun hideKeyboard() {

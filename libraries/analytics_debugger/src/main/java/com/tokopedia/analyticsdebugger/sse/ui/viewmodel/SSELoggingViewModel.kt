@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.analyticsdebugger.sse.domain.usecase.GetSSELogUseCase
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,9 +21,10 @@ class SSELoggingViewModel @Inject constructor(
     val observableSSELog: LiveData<List<SSELogUiModel>>
         get() = _observableSSELog
 
-    fun getLog() {
+    fun getLog(query: String) {
         viewModelScope.launch {
-            getSSELogUseCase.setParam("")
+            delay(2000)
+            getSSELogUseCase.setParam(query)
             _observableSSELog.value = getSSELogUseCase.executeOnBackground()
         }
     }
