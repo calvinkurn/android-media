@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.databinding.ShopPageTabViewBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import java.lang.ref.WeakReference
 
@@ -21,8 +22,8 @@ internal class ShopPageFragmentPagerAdapter(
         ctx: Context?,
         fragment: Fragment
 ) : FragmentStateAdapter(fragment) {
-    private val registeredFragments = SparseArrayCompat<Fragment>()
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
+    private var viewBinding: ShopPageTabViewBinding? = null
 
     private companion object {
         val tabViewLayout = R.layout.shop_page_tab_view
@@ -30,16 +31,17 @@ internal class ShopPageFragmentPagerAdapter(
 
     private val ctxRef = WeakReference(ctx)
 
-    fun getTabView(position: Int, selectedPosition: Int): View? = LayoutInflater.from(ctxRef.get())
-            .inflate(tabViewLayout, null)?.apply {
-                val shopPageTabViewIcon: ImageView? = findViewById(R.id.shop_page_tab_view_icon)
-                shopPageTabViewIcon?.setImageDrawable(getTabIconDrawable(position,  position == selectedPosition))
-            }
+    fun getTabView(position: Int, selectedPosition: Int): View = ShopPageTabViewBinding.inflate(LayoutInflater.from(ctxRef.get())).apply {
+        val shopPageTabViewIcon: ImageView = this.shopPageTabViewIcon
+        shopPageTabViewIcon.setImageDrawable(getTabIconDrawable(position, position == selectedPosition))
+    }.root
 
     fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
-        tab.customView?.apply {
-            val shopPageTabViewIcon: ImageView? = findViewById(R.id.shop_page_tab_view_icon)
-            shopPageTabViewIcon?.setImageDrawable(getTabIconDrawable(tab.position, isActive))
+        tab.customView?.let {
+            ShopPageTabViewBinding.bind(it).apply {
+                val shopPageTabViewIcon: ImageView = this.shopPageTabViewIcon
+                shopPageTabViewIcon.setImageDrawable(getTabIconDrawable(tab.position, isActive))
+            }
         }
     }
 

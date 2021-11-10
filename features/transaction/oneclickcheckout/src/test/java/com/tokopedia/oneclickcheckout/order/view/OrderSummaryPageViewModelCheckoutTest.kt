@@ -391,6 +391,39 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Checkout On Disable Button State`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.DISABLE)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.DISABLE)
+
+        // When
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        // Then
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
+    fun `Checkout On Loading Shipment`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(isLoading = true)
+
+        // When
+        orderSummaryPageViewModel.finalUpdate({
+            //do nothing
+        }, false)
+
+        // Then
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+    }
+
+    @Test
     fun `Checkout Error Prompt`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)

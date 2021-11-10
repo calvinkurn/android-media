@@ -11,12 +11,14 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.WidgetShopPageHomeSliderSquareBinding
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeSliderSquareAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by rizqiaryansa on 2020-02-25.
@@ -32,10 +34,10 @@ class ShopHomeSliderSquareViewHolder(
         @LayoutRes
         val LAYOUT_RES = R.layout.widget_shop_page_home_slider_square
     }
-
+    private val viewBinding: WidgetShopPageHomeSliderSquareBinding? by viewBinding()
     private var shopHomeSliderSquareAdapter: ShopHomeSliderSquareAdapter? = null
-    private var rvCarouselShopPageHome: RecyclerView? = itemView.findViewById(R.id.rvCarouselShopPageHome)
-    private var tgHeaderSliderSquare: Typography? = itemView.findViewById(R.id.tgHeaderSliderSquare)
+    private var rvCarouselShopPageHome: RecyclerView? = viewBinding?.rvCarouselShopPageHome
+    private var tgHeaderSliderSquare: Typography? = viewBinding?.tgHeaderSliderSquare
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
