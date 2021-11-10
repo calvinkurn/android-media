@@ -66,12 +66,9 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor() : UseCase<ClearPromo
 
     private fun query() = """
             mutation {
-                clearCacheAutoApplyStack(
-                        serviceID: "#serviceId",
-                promoCode: #promoCode,
-                isOCC: #isOCC) {
-                Success
-                ticker_message
-            }
-            }"""
+                clearCacheAutoApplyStack(serviceID: "#serviceId", promoCode: #promoCode, isOCC: #isOCC) {
+                    Success
+                    ticker_message
+                }
+            }""".trimIndent()
 }
