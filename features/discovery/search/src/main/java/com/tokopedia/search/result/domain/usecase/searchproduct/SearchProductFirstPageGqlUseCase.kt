@@ -106,9 +106,10 @@ class SearchProductFirstPageGqlUseCase(
         }
     }
 
+    @GqlQuery("GlobalNav", GLOBAL_NAV_GQL_QUERY)
     private fun createGlobalSearchNavigationRequest(query: String, params: String) =
             GraphqlRequest(
-                    GLOBAL_NAV_GQL_QUERY,
+                    GlobalNav(),
                     GlobalSearchNavigationModel::class.java,
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
             )
