@@ -39,6 +39,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private lateinit var departureDate: Date
     private lateinit var returnDate: Date
+    var isAvailableToday: Boolean = false
 
     init {
         View.inflate(context, R.layout.layout_flight_search_view, this)
@@ -348,8 +349,13 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         separatorReturnDate.hide()
     }
 
-    private fun generateDefaultDepartureDate(): Date =
+    private fun generateDefaultDepartureDate(): Date {
+        return if(isAvailableToday){
+            DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 0).removeTime()
+        }else{
             DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, DEFAULT_MIN_DEPARTURE_DATE_FROM_TODAY).removeTime()
+        }
+    }
 
     private fun generateDefaultReturnDate(departureDate: Date): Date =
             departureDate.addTimeToSpesificDate(Calendar.DATE, 1).removeTime()
