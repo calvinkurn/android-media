@@ -10,6 +10,8 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ActivityShopHomePageYoutubePlayerBinding
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 
 /**
@@ -31,12 +33,13 @@ class ShopHomePageYoutubePlayerActivity : AppCompatActivity(), YouTubePlayer.OnI
     private var isFullScreen = false
     private var videoUrl: String? = null
     private var youtubePlayerScreen: YouTubePlayer? = null
+    private val viewBinding: ActivityShopHomePageYoutubePlayerBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_home_page_youtube_player)
 
-        toolbar = findViewById(R.id.toolbarVideo)
+        toolbar = viewBinding?.toolbarVideo
 
         setupActionBar()
 

@@ -12,10 +12,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
+import com.tokopedia.shop.databinding.LayoutShopHeaderPlayWidgetBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderPlayWidgetButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHeaderPlayWidgetViewHolder(
         itemView: View,
@@ -40,11 +42,11 @@ class ShopHeaderPlayWidgetViewHolder(
         )
     }
 
-
-    private val playSgcWidgetContainer = itemView.findViewById<CardView>(R.id.play_sgc_widget_container)
-    private val playSgcLetsTryLiveTypography = itemView.findViewById<Typography>(R.id.play_sgc_lets_try_live)
-    private val playSgcBtnStartLiveLottieAnimationView = itemView.findViewById<LottieAnimationView>(R.id.play_sgc_btn_start_live)
-    private val widgetPlayRootContainer: FrameLayout? = itemView.findViewById(R.id.widget_play_root_container)
+    private val viewBinding: LayoutShopHeaderPlayWidgetBinding? by viewBinding()
+    private val playSgcWidgetContainer = viewBinding?.playSgcWidgetContainer
+    private val playSgcLetsTryLiveTypography = viewBinding?.playSgcLetsTryLive
+    private val playSgcBtnStartLiveLottieAnimationView = viewBinding?.playSgcBtnStartLive
+    private val widgetPlayRootContainer: FrameLayout? = viewBinding?.widgetPlayRootContainer
 
     override fun bind(shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {
         val modelComponent = shopHeaderWidgetUiModel.components.filterIsInstance<ShopHeaderPlayWidgetButtonComponentUiModel>().firstOrNull()
@@ -54,7 +56,7 @@ class ShopHeaderPlayWidgetViewHolder(
                 setupTextContentSgcWidget()
                 setLottieAnimationFromUrl(itemView.context.getString(R.string.shop_page_lottie_sgc_url))
                 shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
-                playSgcBtnStartLiveLottieAnimationView.setOnClickListener {
+                playSgcBtnStartLiveLottieAnimationView?.setOnClickListener {
                     shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
                     listener.onStartLiveStreamingClicked(
                             modelComponent,
@@ -82,7 +84,7 @@ class ShopHeaderPlayWidgetViewHolder(
     }
 
     private fun setupTextContentSgcWidget() {
-        if (playSgcLetsTryLiveTypography.text.isBlank()) playSgcLetsTryLiveTypography.text = MethodChecker.fromHtml(itemView.context.getString(R.string.shop_page_play_widget_title))
+        if (playSgcLetsTryLiveTypography?.text?.isBlank() == true) playSgcLetsTryLiveTypography.text = MethodChecker.fromHtml(itemView.context.getString(R.string.shop_page_play_widget_title))
     }
 
     /**
@@ -90,8 +92,8 @@ class ShopHeaderPlayWidgetViewHolder(
      */
     private fun setLottieAnimationFromUrl(animationUrl: String) {
         LottieCompositionFactory.fromUrl(itemView.context, animationUrl).addListener { result ->
-            playSgcBtnStartLiveLottieAnimationView.setComposition(result)
-            playSgcBtnStartLiveLottieAnimationView.playAnimation()
+            playSgcBtnStartLiveLottieAnimationView?.setComposition(result)
+            playSgcBtnStartLiveLottieAnimationView?.playAnimation()
         }
     }
 }
