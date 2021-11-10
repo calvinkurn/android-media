@@ -67,7 +67,8 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
         renderTripView()
 
-        if (flightDashboardCache.departureDate.isNotEmpty()) {
+        if (flightDashboardCache.departureDate.isNotEmpty() &&
+                !flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD).before(generateDefaultDepartureDate())) {
             setDepartureDate(flightDashboardCache.departureDate.toDate(DateUtil.YYYY_MM_DD))
         } else {
             setDepartureDate(generateDefaultDepartureDate())
