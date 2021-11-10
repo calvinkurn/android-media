@@ -1,9 +1,6 @@
 package com.tokopedia.home.account.presentation.presenter;
 
-import android.content.Context;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.home.account.domain.GetAccountSettingConfigUseCase;
 import com.tokopedia.home.account.presentation.AccountSetting;
 import com.tokopedia.home.account.presentation.subscriber.GetAccountSettingConfigSubscriber;

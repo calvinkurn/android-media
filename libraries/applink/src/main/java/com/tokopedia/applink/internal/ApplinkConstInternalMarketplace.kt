@@ -14,9 +14,6 @@ object ApplinkConstInternalMarketplace {
 
     const val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}"
 
-    // StoreSettingActivity
-    const val STORE_SETTING = "$INTERNAL_MARKETPLACE/store-setting"
-
     // QrScannerActivity
     const val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner/{need_result}/"
 

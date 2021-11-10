@@ -5,28 +5,6 @@ package com.tokopedia.home.account
  * @author okasurya on 7/20/18.
  */
 object AccountConstants {
-    const val QUERY = "query"
-    const val TOPADS_QUERY = "topads_query"
-    const val VARIABLES = "variables"
-    const val RC_GIFTCARD_ENABLE = "enable_gift_card_transaction_history_entry"
-    const val RC_LOCALSERVICE_ENABLE = "enable_local_service_transaction_history_entry"
-    const val RC_FOOD_AND_VOUCHER_ICON_ENABLE = "enable_food_and_voucher_icon"
-    const val TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp"
-    const val SALDO_QUERY = "saldo_query"
-    const val REWARD_SHORTCUT_QUERY= "reward_shortcut_query"
-    const val SHOP_LOCATION_QUERY = "query_shop_location"
-    const val TITLE_UOH_MENUNGGU_PEMBAYARAN = "Menunggu Pembayaran"
-    const val TITLE_UOH_DALAM_PROSES = "Dalam Proses"
-    const val TITLE_UOH_SEMUA_TRANSAKSI = "Semua Transaksi"
-    const val TITLE_UOH_ETICKET = "E-tiket & E-voucher Aktif"
-    const val TITLE_UOH_TRANSAKSI_BERLANGSUNG = "Transaksi Berlangsung"
-
-    object Navigation {
-        const val SEE_ALL = "lihat_semua"
-        const val TRAIN_ORDER_LIST = "train_order_list"
-        const val TOPADS = "topads"
-    }
-
     object Analytics {
         const val CLICK_HOME_PAGE = "clickHomePage"
         const val CLICK_SETTING = "clickSetting"
@@ -39,13 +17,6 @@ object AccountConstants {
         const val AKUN_SAYA = "akun saya"
         const val CLICK = "click"
         const val SHOP_CLICK = "Click"
-        const val PROFILE = "profile"
-        const val TOKOPOINTS = "tokopoints"
-        const val MY_COUPON = "kupon saya"
-        const val LOAN = "modal usaha"
-        const val PEMBELI = "pembeli"
-        const val CLICK_CHALLENGE = "challenge"
-        const val BY_ME = "by.me"
         const val PENJUAL = "penjual"
         const val USER = "user"
         const val SETTING = "setting"
@@ -65,28 +36,14 @@ object AccountConstants {
         const val DEVELOPER_OPTIONS = "developer options"
         const val LOGOUT = "logout"
         const val CLEAR_CACHE = "clear cache"
-        const val SCREEN_RECORDER = "perekam layar"
-        const val USER_DATA = "user_data"
         const val ADVANCED_SETTING = "pengaturan tambahan"
         const val PERSONAL_DATA = "personal data"
         const val ADDRESS_LIST = "address list"
-        const val KYC = "kyc"
         const val PASSWORD = "password"
-        const val INFORMATION = "information"
-        const val ETALASE = "etalase"
-        const val PRODUCT = "product"
-        const val LOCATION = "location"
-        const val SHIPPING = "shipping"
-        const val PAYMENT = "payment"
-        const val NOTES = "notes"
         const val TOKOCASH = "tokocash"
         const val BALANCE = "balance"
         const val ACCOUNT_BANK = "account bank"
         const val CREDIT_CARD = "credit card"
-        const val APPLICATION = "application"
-        const val EMAIL = "email"
-        const val TOKOPEDIA = "tokopedia"
-        const val NEWS_LETTER = "newsletter"
         const val SCREEN_NAME = "screenName"
         const val EVENT = "event"
         const val EVENT_CATEGORY = "eventCategory"
@@ -110,11 +67,6 @@ object AccountConstants {
         const val EVENT_ACTION_DALAM_PROSES = "click on button dalam proses"
         const val EVENT_ACTION_ETICKET_EVOUCHER = "click on e-tiket & e-voucher aktif"
         const val EVENT_ACTION_CLICK_SCREEN_RECORDER = "click on screen recorder"
-        const val OVO_PAY_LATER_CATEGORY = "fin - android main screen"
-        const val OVO_PAY_LATER_CLICK = "ovo - pay later click"
-        const val OVO_PAY_LATER_LABEL = "success - %s"
-        const val OVO_PAY_ICON_CLICK = "ovo - tokopedia pay icon click"
-        const val BY_ME_CURATION = "kurasi produk by.me"
         const val CLICK_FINTECH_MICROSITE = "clickFintechMicrosite"
         const val CLICK_ON_PASSWORD = "click on kata sandi"
         const val EVENT_CLICK_ACCOUNT = "clickAccount"
@@ -151,10 +103,7 @@ object AccountConstants {
         const val ITEM_POWER_MERCHANT = "Power Merchant"
         const val DATA_DIMENSION_83 = "dimension83"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
-        const val JUAL = "jual"
-        const val BELI = "beli"
         const val EVENT_CATEGORY_AKUN_PEMBELI = "akun saya pembeli"
-        const val EVENT_ACTION_CLICK_AVATAR = "click - profile avatar"
         const val EVENT_ACTION_ACCOUNT_PROMOTION_IMPRESSION = "account promotion impression"
         const val EVENT_ACTION_ACCOUNT_PROMOTION_CLICK = "click reward section"
         const val EVENT_ACTION_ACCOUNT_PROMOTION_REWARD_CLICK = "click entry point to reward page"
@@ -163,17 +112,9 @@ object AccountConstants {
         const val FIELD_CREATIVE = "creative"
         const val FIELD_CREATIVE_URL = "creative_url"
         const val FIELD_POSITION = "position"
-        const val CREATIVE_TOKOPOINTS = "tokopoints"
-        const val CREATIVE_KUPON_SAYA = "kupon saya"
-        const val CREATIVE_TOKO_MEMBER = "toko member"
-        const val POSITION_TOKOPOINT = 1
-        const val POSITION_KUPON_SAYA = 2
-        const val POSITION_TOKOMEMBER = 3
         const val EVENT_PROMO_VIEW = "promoView"
-        const val EVENT_PROMO_CLICK = "promoClick"
         const val PROMOTIONS = "promotions"
         const val PROMOTION_VIEW = "promoView"
-        const val PROMOTION_CLICK = "promoClick"
         const val VALUE_ACCOUNT_PROMOTION_NAME = "/account_profile_buyer/promotion"
         const val CLICK_NOTIF_CENTER = "clickNotifCenter"
         const val NOTIF_CENTER = "notif center"
@@ -188,7 +129,6 @@ object AccountConstants {
         const val EVENT_ACTION_TS_USR_MENU = "click on notif setting from setting page"
         const val USER_BELI = "user/beli"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
-        const val USER_ID = "userId"
         const val BUSINESS_UNIT = "businessUnit"
         const val USER_PLATFORM = "user platform"
         const val HOME_AND_BROWSE = "home & browse"
@@ -196,21 +136,10 @@ object AccountConstants {
         const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
     }
 
-    object MOENGAGE {
-        const val SHOP_ID = "shop_id"
-        const val SHOP_NAME = "shop_name"
-        const val TOTAL_SOLD_ITEM = "total_sold_item"
-        const val TOPADS_AMT = "topads_amt"
-        const val HAS_PURCHASED_MARKETPLACE = "has_purchased_marketplace"
-        const val LAST_TRANSACT_DATE = "last_transaction_date"
-    }
-
     interface ErrorCodes {
         companion object {
             const val ERROR_CODE_NULL_MENU = "ACC001"
             const val ERROR_CODE_ACCOUNT_SETTING_CONFIG = "ASC001"
-            const val ERROR_CODE_BUYER_ACCOUNT = "ACB001"
-            const val ERROR_CODE_SELLER_ACCOUNT = "ACS001"
         }
     }
 
