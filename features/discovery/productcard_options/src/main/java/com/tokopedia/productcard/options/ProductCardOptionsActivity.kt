@@ -94,6 +94,7 @@ internal class ProductCardOptionsActivity : BaseSimpleActivity() {
             showHeader = false
             showCloseIcon = false
             isHideable = true
+            clearContentPadding = true
             setOnDismissListener {
                 Handler().postDelayed({
                     finish()
