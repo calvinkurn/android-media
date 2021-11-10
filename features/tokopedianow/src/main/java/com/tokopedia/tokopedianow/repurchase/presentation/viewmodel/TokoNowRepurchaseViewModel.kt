@@ -167,19 +167,16 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
-                getMiniCartUseCase.execute({
-                    val isInitialLoad = _getLayout.value == null
+                val data = getMiniCartUseCase.executeOnBackground()
+                val isInitialLoad = _getLayout.value == null
 
-                    if(isInitialLoad) {
-                        setMiniCartAndProductQuantity(it)
-                    } else {
-                        setProductAddToCartQuantity(it)
-                    }
+                if(isInitialLoad) {
+                    setMiniCartAndProductQuantity(data)
+                } else {
+                    setProductAddToCartQuantity(data)
+                }
 
-                    _miniCart.postValue(Success(it))
-                }, {
-                    _miniCart.postValue(Fail(it))
-                })
+                _miniCart.postValue(Success(data))
             }) {
                 _miniCart.postValue(Fail(it))
             }
@@ -298,11 +295,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(listOf(shopId))
-                getMiniCartUseCase.execute({
-                    setProductAddToCartQuantity(it)
-                }, {
-                    _atcQuantity.postValue(Fail(it))
-                })
+                val data = getMiniCartUseCase.executeOnBackground()
+                setProductAddToCartQuantity(data)
             }) {
                 _atcQuantity.postValue(Fail(it))
             }
