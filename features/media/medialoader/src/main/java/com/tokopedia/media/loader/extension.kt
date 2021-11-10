@@ -13,6 +13,7 @@ import com.tokopedia.media.loader.data.ERROR_RES_UNIFY
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.media.loader.MediaLoaderApi.loadImage as loadImageBuilder
 import com.tokopedia.media.loader.MediaLoaderTarget.loadImage as loadImageWithTarget
@@ -141,6 +142,19 @@ fun <T: View> loadImageWithTarget(
     url: String,
     properties: Properties.() -> Unit,
     mediaTarget: MediaTarget<T>
+) {
+    loadImageWithTarget(
+        context,
+        Properties().apply(properties).setSource(url),
+        mediaTarget
+    )
+}
+
+fun loadImageWithEmptyTarget(
+    context: Context,
+    url: String,
+    properties: Properties.() -> Unit,
+    mediaTarget: MediaBitmapEmptyTarget
 ) {
     loadImageWithTarget(
         context,
