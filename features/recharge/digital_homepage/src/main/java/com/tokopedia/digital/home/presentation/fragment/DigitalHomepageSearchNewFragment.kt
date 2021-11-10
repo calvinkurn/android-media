@@ -18,6 +18,8 @@ class DigitalHomepageSearchNewFragment: DigitalHomePageSearchFragment() {
     override fun searchCategory(searchQuery: String) {
         if (!searchQuery.isNullOrEmpty()) {
             viewModel.searchAutoComplete(viewModel.mapAutoCompleteParams(searchBarRedirection, searchQuery), searchQuery)
+        } else {
+            viewModel.cancelAutoComplete()
         }
     }
 

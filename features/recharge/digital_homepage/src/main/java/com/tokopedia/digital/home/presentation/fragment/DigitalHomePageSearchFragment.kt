@@ -115,12 +115,7 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
                     if (searchText != searchFor){
                         return@launch
                     } else {
-                        if (searchText.isEmpty()) {
-                            clearAllData()
-                            renderList(emptyList())
-                        } else {
-                            onSearchBarTextChanged(text.toString())
-                        }
+                        onSearchBarTextChanged(text.toString())
                     }
                 }
             }

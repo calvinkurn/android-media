@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -24,6 +24,8 @@ class DigitalHomePageSearchViewModel @Inject constructor(
         private val searchAutoCompleteHomePageUseCase: SearchAutoCompleteHomePageUseCase,
         private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
+
+    private lateinit var job: Job
 
     private val mutableSearchCategoryList = MutableLiveData<Result<List<DigitalHomePageSearchCategoryModel>>>()
     val searchCategoryList: LiveData<Result<List<DigitalHomePageSearchCategoryModel>>>
@@ -54,11 +56,22 @@ class DigitalHomePageSearchViewModel @Inject constructor(
     }
 
     fun searchAutoComplete(map: Map<String, Any>, searchQuery: String){
-        launchCatchError(block = {
+        job = launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 searchAutoCompleteHomePageUseCase.searchAutoCompleteList(map, searchQuery)
             }
             mutableSearchCategoryList.postValue(Success(data))
+        }) {
+            mutableSearchCategoryList.postValue(Fail(it))
+        }
+    }
+
+    fun cancelAutoComplete(){
+        launchCatchError(block = {
+            if (::job.isInitialized && job.isActive){
+                job.cancelAndJoin()
+            }
+            mutableSearchCategoryList.postValue(Success(emptyList()))
         }) {
             mutableSearchCategoryList.postValue(Fail(it))
         }
