@@ -239,7 +239,7 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
 
     private fun initSearchForm() {
         mChildView.flightSearchFormView.listener = this
-        mChildView.flightSearchFormView.isAvailableToday = true
+        mChildView.flightSearchFormView.setDate(true)
     }
 
     private fun showMessageErrorInSnackbar(resourceId: Int) {

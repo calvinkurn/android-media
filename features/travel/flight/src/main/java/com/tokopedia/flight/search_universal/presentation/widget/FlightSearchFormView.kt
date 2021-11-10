@@ -349,6 +349,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         separatorReturnDate.hide()
     }
 
+    fun setDate(isChecked: Boolean){
+        this.isAvailableToday = isChecked
+    }
+
     private fun generateDefaultDepartureDate(): Date {
         return if(isAvailableToday){
             DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 0).removeTime()
