@@ -60,10 +60,11 @@ dependencies {
 
 
 project.ext {
-    artifactId = 'quest-widget'
+    artifactId = 'merchant-voucher-widget'
     groupId = 'com.tokopedia.promo'
-    versionName = "0.0.1"
-    artifactName = "quest-widget_widget-release"
+    versionName = "0.0.2"
+    artifactName = "merchant_voucher_widget-release"
 }
+
 
 apply from: '../../../publish_local.gradle'
