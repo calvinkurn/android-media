@@ -1720,17 +1720,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onCommentClick(
-        positionInFeed: Int,
-        id: Int,
-        authorType: String,
-        type: String,
-        isFollowed: Boolean,
-        isVideo: Boolean,
-        shopId: String,
-        playChannelId: String
-    ) {
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, isVideo: Boolean, shopId: String, playChannelId: String, isClickIcon: Boolean) {
+        if (isClickIcon)
         feedAnalytics.eventClickOpenComment(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else id.toString(), type, isFollowed, authorType, isVideo)
+        else if (type == TYPE_FEED_X_CARD_PLAY && isClickIcon)
+        feedAnalytics.eventClickLihatSemuaComment(playChannelId, type, isFollowed, authorType, isVideo)
+
         gotToKolComment(positionInFeed, id, authorType, isVideo, isFollowed, type)
     }
 

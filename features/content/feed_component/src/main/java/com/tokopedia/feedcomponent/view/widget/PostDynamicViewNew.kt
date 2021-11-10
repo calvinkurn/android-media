@@ -761,13 +761,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
             authId = authorId
         val isVideo = mediaType != TYPE_IMAGE
         commentButton.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId = playChannelId)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId = playChannelId, isClickIcon = true)
         }
         seeAllCommentText.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId = playChannelId)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId = playChannelId, isClickIcon = false)
         }
         addCommentHint.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId=playChannelId)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed, isVideo, playChannelId=playChannelId, isClickIcon = true)
         }
     }
 

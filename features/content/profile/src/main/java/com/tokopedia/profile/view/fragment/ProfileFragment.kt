@@ -896,7 +896,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, isVideo: Boolean, shopId: String, playChannelId: String) {
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, isVideo: Boolean, shopId: String, playChannelId: String, onClickIcon: Boolean) {
         profileAnalytics.eventClickComment(isOwner, userId.toString())
         onGoToKolComment(positionInFeed, id, false, "")
     }

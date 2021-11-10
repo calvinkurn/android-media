@@ -654,7 +654,8 @@ open class DynamicPostViewHolder(v: View,
             isFollowed: Boolean = false,
             isVideo: Boolean,
             shopId: String = "",
-            playChannelId: String = ""
+            playChannelId: String = "",
+            isClickIcon:Boolean = true
         )
 
         fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)

@@ -689,7 +689,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed, boolean isVideo, @NotNull String shopId,@NotNull String playChannelId) {
+    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType, @NotNull String type, boolean isFollowed, boolean isVideo, @NotNull String shopId,@NotNull String playChannelId, boolean isIconClick) {
         onGoToKolComment(positionInFeed, id);
     }
 
