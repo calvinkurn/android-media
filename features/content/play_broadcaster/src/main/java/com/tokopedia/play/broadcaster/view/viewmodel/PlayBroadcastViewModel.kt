@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import android.content.Context
 import android.os.Handler
 import androidx.lifecycle.*
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -140,8 +141,10 @@ internal class PlayBroadcastViewModel @Inject constructor(
         get() = _observableShareInfo.value.orEmpty()
     val interactiveId: String
         get() = getCurrentSetupDataStore().getInteractiveId()
-    val interactiveTitle: String
-        get() = getCurrentSetupDataStore().getInteractiveTitle()
+    val activeInteractiveTitle: String
+        get() = getCurrentSetupDataStore().getActiveInteractiveTitle()
+    val setupInteractiveTitle: String
+        get() = getCurrentSetupDataStore().getSetupInteractiveTitle()
     val selectedInteractiveDuration: Long
         get() = getCurrentSetupDataStore().getSelectedInteractiveDuration()
     val interactiveDurations: List<Long>
@@ -173,15 +176,14 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val _observableLivePusherStats = MutableLiveData<PlayLivePusherStatistic>()
     private val _observableLivePusherInfo = MutableLiveData<PlayLiveInfoUiModel>()
 
-    private val _configInfo = _observableConfigInfo.asFlow()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
 
     private val _channelUiState = _configInfo
-        .filterIsInstance<NetworkResult.Success<ConfigurationUiModel>>()
+        .filterNotNull()
         .map {
             PlayChannelUiState(
-                canStream = it.data.streamAllowed,
-                tnc = it.data.tnc,
+                canStream = it.streamAllowed,
+                tnc = it.tnc,
             )
         }
 
@@ -237,6 +239,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private var socketJob: Job? = null
 
+    private val gson by lazy { Gson() }
+
     init {
         _observableChatList.value = mutableListOf()
         livePusherMediator.addListener(liveViewStateListener)
@@ -264,11 +268,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
             _observableConfigInfo.value = NetworkResult.Loading
 
             val configUiModel = channelRepo.getChannelConfiguration()
-            _observableConfigInfo.value = NetworkResult.Success(configUiModel)
-
-            if (!configUiModel.streamAllowed) return@launchCatchError
-
             setChannelId(configUiModel.channelId)
+
+            _configInfo.value = configUiModel
 
             // create channel when there are no channel exist
             if (configUiModel.channelType == ChannelType.Unknown) createChannel()
@@ -282,6 +284,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
                     throw err
                 }
             }
+
+            _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
             setProductConfig(configUiModel.productTagConfig)
             setCoverConfig(configUiModel.coverConfig)
@@ -466,7 +470,11 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun setInteractiveTitle(title: String) {
-        getCurrentSetupDataStore().setInteractiveTitle(title)
+        getCurrentSetupDataStore().setSetupInteractiveTitle(title)
+    }
+
+    private fun setActiveInteractiveTitle(title: String) {
+        getCurrentSetupDataStore().setActiveInteractiveTitle(title)
     }
 
     fun setSelectedInteractiveDuration(durationInMs: Long) {
@@ -494,6 +502,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
             )
             val interactiveUiModel = playBroadcastMapper.mapInteractiveSession(response, title, durationInMs)
             setInteractiveId(interactiveUiModel.id)
+            setActiveInteractiveTitle(interactiveUiModel.title)
             handleActiveInteractive()
             resetSetupInteractive()
             _observableCreateInteractiveSession.value = NetworkResult.Success(interactiveUiModel)
@@ -551,6 +560,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private suspend fun handleActiveInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
+        setInteractiveId(interactive.id.toString())
+        setActiveInteractiveTitle(interactive.title)
         when (val status = interactive.timeStatus) {
             is PlayInteractiveTimeStatus.Scheduled -> onInteractiveScheduled(
                 timeToStartInMs = status.timeToStartInMs,
@@ -660,7 +671,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private suspend fun handleWebSocketMessage(message: WebSocketResponse) {
         val result = withContext(dispatcher.computation) {
-            val socketMapper = PlayBroadcastWebSocketMapper(message)
+            val socketMapper = PlayBroadcastWebSocketMapper(message, gson)
             socketMapper.map()
         }
         when(result) {

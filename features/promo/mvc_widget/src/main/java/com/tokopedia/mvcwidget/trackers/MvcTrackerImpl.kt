@@ -52,7 +52,7 @@ interface MvcTrackerImpl {
     //Reward GTM for Bottomsheet CTA
     fun userClickBottomSheetCTA(@FollowWidgetType widgetType: String, label: String, userId: String)
 
-    fun tokomemberImpressionOnPdp(shopId: String,userId: String?)
+    fun tokomemberImpressionOnPdp(shopId: String,userId: String?, isTokomember: Boolean)
 
     fun viewMVCCoupon(label: String, mapData: HashMap< String,Any> , @MvcSource source: Int)
 

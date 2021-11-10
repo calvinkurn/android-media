@@ -22,15 +22,13 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.constant.ConstantValue
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAddToCartTracker
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_FILTER
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_SEARCH
@@ -47,7 +45,7 @@ import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMappe
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addLayoutList
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addProduct
-import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecom
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addRecomWidget
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addServerErrorState
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.removeAllProduct
@@ -64,6 +62,7 @@ import com.tokopedia.tokopedianow.repurchase.domain.usecase.GetRepurchaseProduct
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.repurchase.presentation.model.RepurchaseProductListMeta
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.usecase.coroutines.Fail
@@ -80,7 +79,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
@@ -106,6 +104,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         get() = _atcQuantity
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
+    val repurchaseAddToCartTracker: LiveData<RepurchaseAddToCartTracker>
+        get() = _repurchaseAddToCartTracker
 
     private val _getLayout = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _loadMore = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
@@ -115,6 +115,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
     private val _atcQuantity = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
+    private val _repurchaseAddToCartTracker = MutableLiveData<RepurchaseAddToCartTracker>()
 
     private var localCacheModel: LocalCacheModel? = null
     private var productListMeta: RepurchaseProductListMeta? = null
@@ -231,11 +232,11 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }) {}
     }
 
-    fun onClickAddToCart(productId: String, quantity: Int, shopId: String) {
+    fun onClickAddToCart(productId: String, quantity: Int, type: String, shopId: String) {
         val miniCartItem = getMiniCartItem(productId)
 
         when {
-            miniCartItem == null -> addItemToCart(productId, shopId, quantity)
+            miniCartItem == null -> addItemToCart(productId, shopId, type, quantity)
             quantity.isZero() -> removeItemFromCart(miniCartItem)
             else -> updateItemCart(miniCartItem, quantity)
         }
@@ -416,29 +417,6 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }
     }
 
-    private fun getProductRecomAsync(pageName: String): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            val recommendationWidgets = getRecommendationUseCase.getData(
-                GetRecommendationRequestParam(
-                    pageName = pageName,
-                    xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
-                    xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
-                )
-            )
-
-            if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
-                layoutList.addProductRecom(pageName, recommendationWidgets.first())
-
-                val layout = RepurchaseLayoutUiModel(
-                    layoutList = layoutList,
-                    state = TokoNowLayoutState.UPDATE
-                )
-
-                _getLayout.postValue(Success(layout))
-            }
-        }) { /* nothing to do */ }
-    }
-
     private fun getCategoryGridAsync(): Deferred<Unit?> {
         return asyncCatchError(block = {
             val warehouseId = localCacheModel?.warehouse_id.orEmpty()
@@ -489,7 +467,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }
     }
 
-    private fun addItemToCart(productId: String, shopId: String, quantity: Int) {
+    private fun addItemToCart(productId: String, shopId: String, type: String, quantity: Int) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
             productId = productId,
             shopId = shopId,
@@ -497,10 +475,32 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            trackProductAddToCart(productId, quantity, type, it.data.cartId)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
         })
+    }
+
+    private fun trackProductAddToCart(
+        productId: String,
+        quantity: Int,
+        type: String,
+        cartId: String
+    ) {
+        if(type == PRODUCT_REPURCHASE) {
+            trackRepurchaseAddToCart(productId, quantity, cartId)
+        }
+    }
+
+    private fun trackRepurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
+        val items = layoutList.filterIsInstance(RepurchaseProductUiModel::class.java)
+        val item = items.firstOrNull { it.id == productId }
+
+        item?.let {
+            val data = RepurchaseAddToCartTracker(quantity, cartId, it)
+            _repurchaseAddToCartTracker.postValue(data)
+        }
     }
 
     private fun removeItemFromCart(miniCartItem: MiniCartItem) {
@@ -578,7 +578,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
                 layoutList.clear()
                 layoutList.addChooseAddress()
                 layoutList.addEmptyStateOoc()
-                getProductRecomAsync(PAGE_NAME_RECOMMENDATION_OOC_PARAM).await()
+                layoutList.addRecomWidget(PAGE_NAME_RECOMMENDATION_OOC_PARAM)
             }
             ERROR_STATE_FAILED_TO_FETCH_DATA -> {
                 layoutList.clear()
@@ -589,7 +589,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
                 layoutList.addChooseAddress()
                 layoutList.addEmptyStateNoResult()
                 getCategoryGridAsync().await()
-                getProductRecomAsync(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM).await()
+                layoutList.addRecomWidget(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
             }
         }
     }

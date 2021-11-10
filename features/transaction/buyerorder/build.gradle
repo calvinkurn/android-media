@@ -61,7 +61,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.flightOrderList)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.features.searchbar)
     implementation projectOrAar(rootProject.ext.features.digitalRecommendation)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
@@ -99,7 +98,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-    implementation projectOrAar(rootProject.ext.features.navigationCommon)
 
     // ui test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore

@@ -246,6 +246,7 @@ class NewShopPageViewModel @Inject constructor(
                     rating = shopProductFilterParameter.getRating()
                     pmax = shopProductFilterParameter.getPmax()
                     pmin = shopProductFilterParameter.getPmin()
+                    fcategory = shopProductFilterParameter.getCategory()
                     userDistrictId = widgetUserAddressLocalData.district_id
                     userCityId = widgetUserAddressLocalData.city_id
                     userLat = widgetUserAddressLocalData.lat
@@ -328,13 +329,8 @@ class NewShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopBroadcasterConfig(shopId: String): Broadcaster.Config {
-        var broadcasterConfig = Broadcaster.Config()
-        try {
-            getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
-            broadcasterConfig = getBroadcasterShopConfigUseCase.get().executeOnBackground()
-        } catch (t: Throwable) {
-        }
-        return broadcasterConfig
+        getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
+        return getBroadcasterShopConfigUseCase.get().executeOnBackground()
     }
 
     fun getFollowStatusData(shopId: String, followButtonVariantType: String) {
@@ -387,7 +383,8 @@ class NewShopPageViewModel @Inject constructor(
             }
             _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
         }) {
-            _shopSellerPLayWidgetData.postValue(Fail(it))
+            val broadcasterConfig = Broadcaster.Config()
+            _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
         }
     }
 

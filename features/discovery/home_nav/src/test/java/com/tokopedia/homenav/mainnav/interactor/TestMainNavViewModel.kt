@@ -621,59 +621,6 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `Success get account admin info`() {
-        val position = 0
-        val isLocationAdmin: Boolean = true
-        val expectedAdminRoleText = "Joko Tingkir"
-        val adminDataResponse =
-            AdminDataResponse(
-                data = AdminData(
-                    adminTypeText = expectedAdminRoleText,
-                    detail = AdminDetailInformation(
-                        roleType = AdminRoleType(
-                            isLocationAdmin = isLocationAdmin
-                        )
-                    ),
-                    status = "1"
-                )
-            )
-        val expectedCanGoToSellerAccount = !isLocationAdmin
-        val accountInfoPair = Pair(adminDataResponse, null)
-        val refreshShopBasicDataUseCase = mockk<RefreshShopBasicDataUseCase>()
-        val gqlRepository = mockk<GraphqlRepository>()
-        val accountAdminInfoUseCase = spyk(AccountAdminInfoUseCase(refreshShopBasicDataUseCase, gqlRepository))
-        val userSession = mockk<UserSessionInterface>(relaxed = true)
-        coEvery {
-            accountAdminInfoUseCase.executeOnBackground()
-        } returns accountInfoPair
-        coEvery {
-            userSession.hasShop()
-        } returns true
-        coEvery {
-            userSession.isShopOwner
-        } returns false
-        coEvery {
-            userSession.isLocationAdmin
-        } returns false
-        coEvery {
-            userSession.isLoggedIn
-        } returns true
-
-        viewModel = createViewModel(
-            accountAdminInfoUseCase = accountAdminInfoUseCase,
-            userSession = userSession)
-        viewModel.getMainNavData(false)
-
-        val mainNavDataModel = viewModel.mainNavLiveData.value
-        (mainNavDataModel?.dataList?.getOrNull(position) as? AccountHeaderDataModel).let { actualResult ->
-            val actualCanGoToSellerAccount = actualResult?.profileSellerDataModel?.canGoToSellerAccount
-            val actualAdminRoleText = actualResult?.profileSellerDataModel?.adminRoleText
-            Assert.assertEquals(expectedAdminRoleText, actualAdminRoleText)
-            Assert.assertEquals(expectedCanGoToSellerAccount, actualCanGoToSellerAccount)
-        }
-    }
-
-    @Test
     fun `Error getUserNameAndPictureData missing name`(){
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {

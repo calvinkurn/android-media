@@ -8,6 +8,6 @@ data class StockWording(
         var title: String? = "",
 
         @SerializedName("color")
-        var color: String? = "#1e31353b"
+        var color: String? = ""
 
 )
