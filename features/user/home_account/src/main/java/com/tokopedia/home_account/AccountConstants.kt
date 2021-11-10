@@ -200,7 +200,6 @@ object AccountConstants {
         const val SETTING_ABOUT_US = 36
         const val SETTING_NOTIFICATION = 38
         const val SETTING_SECURITY = 39
-        const val SETTING_OLD_ACCOUNT = 40
         const val SETTING_MORE_MEMBER = 43
         const val SETTING_INSTANT_PAYMENT = 44
         const val SETTING_INSTANT_BUY = 45
