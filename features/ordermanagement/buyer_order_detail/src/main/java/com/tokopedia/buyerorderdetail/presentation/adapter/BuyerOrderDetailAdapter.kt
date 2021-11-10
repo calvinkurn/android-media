@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.BuyerOrderDetailDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.model.*
-import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
 
 @Suppress("UNCHECKED_CAST")
 class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :

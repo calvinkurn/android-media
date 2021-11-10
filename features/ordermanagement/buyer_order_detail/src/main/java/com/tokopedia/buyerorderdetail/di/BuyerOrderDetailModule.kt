@@ -31,5 +31,4 @@ class BuyerOrderDetailModule {
     @Provides
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
             MultiRequestGraphqlUseCase(graphqlRepository)
-
 }

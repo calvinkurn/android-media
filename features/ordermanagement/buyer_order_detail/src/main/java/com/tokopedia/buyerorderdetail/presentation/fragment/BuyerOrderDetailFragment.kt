@@ -328,8 +328,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
             setupRecyclerView()
             buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
             when (result) {
-                is Success -> {onSuccessGetBuyerOrderDetail(result.data)
-                }
+                is Success -> onSuccessGetBuyerOrderDetail(result.data)
                 is Fail -> onFailedGetBuyerOrderDetail(result.throwable)
             }
             swipeRefreshBuyerOrderDetail?.isRefreshing = false
