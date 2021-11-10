@@ -381,7 +381,6 @@ class NewShopPageViewModel @Inject constructor(
                         null
                     }
             )
-            gqlGetShopOperationalHourStatusUseCase
             val shopOperationalHourStatusData = asyncCatchError(
                     dispatcherProvider.io,
                     block = {
