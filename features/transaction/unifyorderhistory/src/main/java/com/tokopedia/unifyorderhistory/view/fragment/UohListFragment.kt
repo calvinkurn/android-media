@@ -271,7 +271,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         }
 
-        const val OPEN_ORDER_REQUEST_CODE = 400
         const val URL_IMG_EMPTY_SEARCH_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_search_list.png"
         const val URL_IMG_EMPTY_ORDER_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_order_list.png"
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
@@ -295,6 +294,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
         const val RESULT_CODE_SUCCESS = 1
         const val EXTEND_ORDER_REQUEST_CODE = 400
+        const val OPEN_ORDER_REQUEST_CODE = 500
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -436,7 +436,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 if (item != null
                         && item.typeLayout == UohConsts.TYPE_ORDER_LIST
                         && item.dataObject is UohListOrder.Data.UohOrders.Order
-                        && item.dataObject.verticalID == orderIdNeedUpdated) {
+                        && item.dataObject.orderUUID == orderIdNeedUpdated) {
                     uohItemAdapter.showLoaderAtIndex(currIndexNeedUpdate)
                     loadOrderHistoryList(orderIdNeedUpdated)
                     return
@@ -1734,7 +1734,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             return
         }
         currIndexNeedUpdate = index
-        orderIdNeedUpdated = order.verticalID
+        orderIdNeedUpdated = order.orderUUID
 
         // analytics
         var jsonArray = JsonArray()
