@@ -20,7 +20,7 @@ private val getAnyPattern =
     Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_\\s]+)((?=\\()|(?=\\{)).*(?=\\{)")
 val getMutationPattern: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")
 
-val map = ConcurrentHashMap<String, String>()
+val map = ConcurrentHashMap<Int, String>()
 
 fun initAkamaiBotManager(app: Application?) {
     app?.let { CYFMonitor.initialize(it) }
@@ -59,11 +59,11 @@ val registeredGqlFunctions = mapOf(
     "GetStatusInactivePhoneNumber" to "rgsc",
 )
 
-fun getAkamaiQueryMap(query: String): String? {
-    return getAkamaiQueryMap(getQueryListFromQueryString(query))
+fun getAkamaiQuery(query: String): String? {
+    return getAkamaiQuery(getQueryListFromQueryString(query))
 }
 
-fun getAkamaiQueryMap(queryNameList: List<String>): String? {
+fun getAkamaiQuery(queryNameList: List<String>): String? {
     return queryNameList.asSequence()
         .filter {
             registeredGqlFunctions.containsKey(it)
@@ -153,18 +153,20 @@ fun <E> setExpire(
 }
 
 fun getQueryListFromQueryString(input: String): MutableList<String> {
-    if (map[input]?.isEmpty() == true) {
-        return map[input]?.let { mutableListOf(it) } ?: mutableListOf()
+    val hash = input.hashCode()
+    if (map[hash]?.isEmpty() == true) {
+        return map[hash]?.let { mutableListOf(it) } ?: mutableListOf()
     }
 
     val m = getAnyPattern.matcher(input.replace("\n", " "))
     val any = mutableListOf<String>()
 
     while (m.find()) {
-        any.add(m.group(1))
-        map.putIfAbsent(input, m.group(1))
+        m.group(1)?.let {
+            any.add(it)
+            map.putIfAbsent(hash, it)
+        }
     }
-
     return any
 }
 

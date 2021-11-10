@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.tokopedia.akamai_bot_lib.getAkamaiQueryMap
+import com.tokopedia.akamai_bot_lib.getAkamaiQuery
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -27,7 +27,6 @@ import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
 import okhttp3.internal.http2.ConnectionShutdownException
 import retrofit2.Response
-import timber.log.Timber
 import java.io.InterruptedIOException
 import java.lang.NullPointerException
 import java.net.SocketException
@@ -53,23 +52,7 @@ class GraphqlCloudDataStore @Inject constructor(
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
         val header = mutableMapOf<String, String>()
 
-        //akamai query Logic
-        val akamaiQuery: String?
-        val queryNameList = mutableSetOf<String>()
-        requests.forEach { req ->
-            req.queryNameList?.let { qnl ->
-                queryNameList.addAll(qnl)
-            }
-        }
-        akamaiQuery = if (queryNameList.isNotEmpty()) {
-            getAkamaiQueryMap(queryNameList.toList())
-        } else {
-            getAkamaiQueryMap(requests.first().query)
-        }
-        if (akamaiQuery?.isNotEmpty() == true) {
-            header[AKAMAI_SENSOR_DATA_HEADER] = GraphqlClient.getFunction().akamaiValue
-            header[TKPD_AKAMAI] = akamaiQuery
-        }
+        putAkamaiHeader(header, requests)
 
         if (requests[0].isDoQueryHash) {
             val queryHashingHeaderValue = StringBuilder()
@@ -107,6 +90,26 @@ class GraphqlCloudDataStore @Inject constructor(
             header,
             FingerprintManager.getQueryDigest(requests)
         )
+    }
+
+    private fun putAkamaiHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
+        //akamai query Logic
+        var akamaiQuery = ""
+        requests.forEach { req ->
+            val queryNamelist = req.queryNameList
+            akamaiQuery = if (queryNamelist?.isNotEmpty() == true) {
+                getAkamaiQuery(queryNamelist) ?: ""
+            } else {
+                getAkamaiQuery(req.query) ?: ""
+            }
+            if (akamaiQuery.isNotEmpty()) {
+                return@forEach
+            }
+        }
+        if (akamaiQuery.isNotEmpty()) {
+            header[AKAMAI_SENSOR_DATA_HEADER] = GraphqlClient.getFunction().akamaiValue
+            header[TKPD_AKAMAI] = akamaiQuery
+        }
     }
 
     override suspend fun getResponse(

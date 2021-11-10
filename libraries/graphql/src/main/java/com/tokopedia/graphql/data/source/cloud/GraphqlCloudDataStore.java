@@ -27,13 +27,10 @@ import java.io.InterruptedIOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.net.ssl.SSLContext;
@@ -43,9 +40,8 @@ import javax.net.ssl.SSLParameters;
 import okhttp3.internal.http2.ConnectionShutdownException;
 import retrofit2.Response;
 import rx.Observable;
-import timber.log.Timber;
 
-import static com.tokopedia.akamai_bot_lib.UtilsKt.getAkamaiQueryMap;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.getAkamaiQuery;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
 import static com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER;
 import static com.tokopedia.graphql.util.Const.TKPD_AKAMAI;
@@ -102,25 +98,28 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
         }
 
         //akamai query Logic
-        String akamaiQuery;
-        ArrayList<String> queryNameList = new ArrayList<>();
+        putAkamaiHeader(header, requests);
+
+        return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
+    }
+
+    public void putAkamaiHeader(Map<String, String> header, List<GraphqlRequest> requests) {
+        String akamaiQuery = null;
         for (GraphqlRequest req : requests) {
             List<String> qnl = req.getQueryNameList();
             if (qnl != null && qnl.size() > 0) {
-                queryNameList.addAll(qnl);
+                akamaiQuery = getAkamaiQuery(qnl);
+            } else {
+                akamaiQuery = UtilsKt.getAkamaiQuery(req.getQuery());
             }
-        }
-        if (queryNameList.size() > 0) {
-            akamaiQuery = getAkamaiQueryMap(queryNameList);
-        } else {
-            akamaiQuery = getAkamaiQueryMap(requests.get(0).getQuery());
+            if (!TextUtils.isEmpty(akamaiQuery)){
+                break;
+            }
         }
         if (!TextUtils.isEmpty(akamaiQuery)) {
             header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
             header.put(TKPD_AKAMAI, akamaiQuery);
         }
-
-        return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
     }
 
     @Override
