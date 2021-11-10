@@ -846,11 +846,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             coachMarkItem.forEach { item ->
                                 item.setCoachmarkShownPref()
                             }
-                            showBalanceWidgetCoachmark(
-                                    ctx,
-                                    containsNewGopayAndTokopoints,
-                                    tokopointsBalanceCoachmark
-                            )
+                            if (getUserSession().isLoggedIn) {
+                                showBalanceWidgetCoachmark(
+                                        ctx,
+                                        containsNewGopayAndTokopoints,
+                                        tokopointsBalanceCoachmark
+                                )
+                            } else {
+                                showTokonowCoachmark()
+                            }
                         }
                         try {
                             it.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
@@ -884,9 +888,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             )) {
             if (!isNewWalletAppCoachmarkShown(ctx)) {
                 showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx)) {
+            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
                 showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && isNewTokopointCoachmarkShown(ctx)) {
+            } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
                 showTokonowCoachmark()
             }
         }
@@ -908,7 +912,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 try {
                     if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
                         gopayCoachmark.onDismissListener = {
-                            showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+                            if (!isNewTokopointCoachmarkShown(it) && tokopointsBalanceCoachmark != null) {
+                                showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+                            } else {
+                                showTokonowCoachmark()
+                            }
                             setNewWalletAppCoachmarkShown(it)
                         }
                         gopayCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
