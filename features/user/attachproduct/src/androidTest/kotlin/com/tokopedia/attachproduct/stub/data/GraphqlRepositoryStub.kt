@@ -1,5 +1,8 @@
 package com.tokopedia.attachproduct.stub.data
 
+import com.tokopedia.attachproduct.data.model.AceSearchProductResponse
+import com.tokopedia.attachproduct.test.R
+import com.tokopedia.attachproduct.utils.FileUtils
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -10,26 +13,33 @@ import javax.inject.Inject
 
 class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
 
-    var resultData: MutableMap<Type, Any> = hashMapOf()
-    var errorData: MutableMap<Type, List<GraphqlError>> = hashMapOf()
+    private var errorData: MutableMap<Type, List<GraphqlError>> = hashMapOf()
+
+    var state: TestState = TestState.DEFAULT
 
     override suspend fun response(
         requests: List<GraphqlRequest>,
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
-        return GraphqlResponse(resultData, errorData, false)
-    }
+        when (state) {
+            TestState.DEFAULT -> {
+                val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product, AceSearchProductResponse::class.java)
+                return GraphqlResponse(mapOf(AceSearchProductResponse::class.java to response), errorData, false)
+            }
+            TestState.EMPTY -> {
+                val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product_empty, AceSearchProductResponse::class.java)
+                return GraphqlResponse(mapOf(AceSearchProductResponse::class.java to response), errorData, false)
+            }
 
-    var filter = false
-
-    fun setResultData(type: Type, response: Any) {
-        resultData[type] = response
-    }
-
-    fun setError(type: Type, error: String) {
-        val graphqlError = GraphqlError().apply {
-            message = error
+            TestState.FILTER -> {
+                val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product_filter, AceSearchProductResponse::class.java)
+                return GraphqlResponse(mapOf(AceSearchProductResponse::class.java to response), errorData, false)
+            }
+            else -> {
+                val response = AceSearchProductResponse()
+                return GraphqlResponse(mapOf(AceSearchProductResponse::class.java to response), errorData, false)
+            }
         }
-        errorData[type] = listOf(graphqlError)
+
     }
 }

@@ -45,7 +45,7 @@ import javax.inject.Inject
 /**
  * Created by Hendri on 13/02/18.
  */
-open class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachProductListAdapterTypeFactory>(), CheckableInteractionListenerWithPreCheckedAction, AttachProductContract.View {
+class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachProductListAdapterTypeFactory>(), CheckableInteractionListenerWithPreCheckedAction, AttachProductContract.View {
 
     private var _binding: FragmentAttachProductBinding? = null
 

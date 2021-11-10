@@ -12,19 +12,17 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.attachproduct.data.model.AceSearchProductResponse
 import com.tokopedia.attachproduct.stub.data.GraphqlRepositoryStub
+import com.tokopedia.attachproduct.stub.data.TestState
 import com.tokopedia.attachproduct.stub.di.*
 import com.tokopedia.attachproduct.test.R
 import com.tokopedia.attachproduct.utils.FileUtils
 import com.tokopedia.attachproduct.utils.ViewUtils
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.test.application.espresso_component.CommonAssertion
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import javax.inject.Inject
 
 
 class AttachProductTest {
@@ -33,7 +31,6 @@ class AttachProductTest {
     var activityTestRule = IntentsTestRule(
         AttachProductActivity::class.java, false, false)
 
-    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     protected val applicationContext: Context
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
@@ -52,8 +49,7 @@ class AttachProductTest {
     fun should_render_empty_view_when_list_empty() {
 
         //GIVEN
-        val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product_empty, AceSearchProductResponse::class.java)
-        repositoryStub.setResultData(AceSearchProductResponse::class.java, response)
+        repositoryStub.state = TestState.EMPTY
         activityTestRule.launchActivity(Intent())
 
         //THEN
@@ -66,8 +62,6 @@ class AttachProductTest {
     @Test
     fun showing_not_empty_products_and_showing_10_products() {
         //GIVEN
-        val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product, AceSearchProductResponse::class.java)
-        repositoryStub.setResultData(AceSearchProductResponse::class.java, response)
         activityTestRule.launchActivity(Intent())
 
         //THEN
@@ -80,8 +74,6 @@ class AttachProductTest {
     fun showing_button_send_product_when_check_product() {
 
         //WHEN
-        val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product, AceSearchProductResponse::class.java)
-        repositoryStub.setResultData(AceSearchProductResponse::class.java, response)
         activityTestRule.launchActivity(Intent())
 
         //GIVEN
@@ -97,8 +89,6 @@ class AttachProductTest {
     fun showing_search_bar_and_search_product() {
 
         //WHEN
-        val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product, AceSearchProductResponse::class.java)
-        repositoryStub.setResultData(AceSearchProductResponse::class.java, response)
         activityTestRule.launchActivity(Intent())
 
         //GIVEN
@@ -109,8 +99,7 @@ class AttachProductTest {
 
         onView(withId(R.id.searchbar_textfield)).perform(ViewActions.typeText(text))
 
-        val responseFilter = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product_filter, AceSearchProductResponse::class.java)
-        repositoryStub.setResultData(AceSearchProductResponse::class.java, responseFilter)
+        repositoryStub.state = TestState.FILTER
 
         onView(withId(R.id.searchbar_textfield)).perform(pressImeActionButton())
 
@@ -123,8 +112,6 @@ class AttachProductTest {
     fun swipe_up_should_refresh() {
 
         //WHEN
-        val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product, AceSearchProductResponse::class.java)
-        repositoryStub.setResultData(AceSearchProductResponse::class.java, response)
         activityTestRule.launchActivity(Intent())
 
         //GIVEN

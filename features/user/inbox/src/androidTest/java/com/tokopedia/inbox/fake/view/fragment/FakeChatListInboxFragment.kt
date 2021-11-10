@@ -9,7 +9,6 @@ class FakeChatListInboxFragment : ChatListInboxFragment() {
         return InboxTest.chatListComponent!!
     }
 
-
     companion object {
         fun create(): FakeChatListInboxFragment {
             return FakeChatListInboxFragment()
