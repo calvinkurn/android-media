@@ -59,6 +59,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     private lateinit var affiliateHomeViewModel: AffiliateHomeViewModel
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
 
+    private var isUserBlackListed = false
+
     companion object {
         fun getFragmentInstance(affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
             return AffiliateHomeFragment().apply {
@@ -242,6 +244,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 }
                 ANNOUNCEMENT__TYPE_USER_BLACKLIST -> {
                     affiliateHomeViewModel.getAffiliateValidateUser()
+                    isUserBlackListed = true
+                    (activity as? AffiliateActivity)?.setBlackListedStatus(isUserBlackListed)
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data.announcementTitle,
                         announcementData.getAffiliateAnnouncement.data.announcementDescription,
@@ -327,7 +331,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     override fun onProductClick(productId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {
         if(status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE){
-            AffiliatePromotionBottomSheet.newInstance(productId , productName , productImage, productUrl,productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_HOME).show(childFragmentManager, "")
+            AffiliatePromotionBottomSheet.newInstance(productId , productName , productImage, productUrl,productIdentifier,
+                    AffiliatePromotionBottomSheet.ORIGIN_HOME,!isUserBlackListed).show(childFragmentManager, "")
         }else {
             AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE).show(childFragmentManager, "")
         }

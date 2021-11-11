@@ -31,6 +31,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private var fragmentStack = Stack<String>()
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
 
+    private var isUserBlackListed = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initBottomNavigationView()
@@ -171,5 +173,13 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                 HELP_MENU
             )
         }
+    }
+
+    fun setBlackListedStatus(blackListed : Boolean) {
+        isUserBlackListed = blackListed
+    }
+
+    fun getBlackListedStatus() : Boolean{
+        return  isUserBlackListed
     }
 }

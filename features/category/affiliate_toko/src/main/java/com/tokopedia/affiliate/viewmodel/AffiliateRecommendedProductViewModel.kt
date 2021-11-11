@@ -21,6 +21,7 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
     private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<String>()
     private val pageLimit = 20
+    var isUserBlackListed : Boolean = false
 
     fun getAffiliateRecommendedProduct(identifier : String,page : Int) {
         shimmerVisibility.value = true
@@ -31,7 +32,8 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
                 it.cards?.firstOrNull()?.items?.let { items ->
                     for (product in items){
                         product?.let {
-                           tempList.add(AffiliateStaggeredPromotionCardModel(product))
+                            product.isLinkGenerationAllowed = !isUserBlackListed
+                            tempList.add(AffiliateStaggeredPromotionCardModel(product))
                         }
                     }
                     affiliateDataList.value = tempList

@@ -18,6 +18,7 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.AffiliateSearchData
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
 import com.tokopedia.affiliate_toko.R
@@ -80,6 +81,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         setUpRecyclerView()
         setUpEmptyState()
         sendScreenEvent()
+        affiliateRecommendedProductViewModel.isUserBlackListed = (activity as? AffiliateActivity)?.getBlackListedStatus() ?: false
         affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
     }
 

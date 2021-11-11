@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.affiliate.ui.viewholder.AffiliateStaggeredPromotionCardItemVH
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toPx
@@ -29,18 +30,22 @@ class AffiliateItemOffSetDecoration : RecyclerView.ItemDecoration() {
         if(position < 0)
             return
         val spanIndex = (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).spanIndex
-        if (spanIndex.isZero()) {
-            //settings for left column
-            var top=0
-            if(position<2) top=parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-            val left = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-            //setMargins(view, left = left,top = top)
-        } else {
-            //settings for right column
-            var top=0
-            if(position<2) top = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-            val right = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-            //setMargins(view, right = right,top = top)
+        when (parent.adapter?.getItemViewType(position)) {
+            AffiliateStaggeredPromotionCardItemVH.LAYOUT -> {
+                if (spanIndex.isZero()) {
+                    //settings for left column
+                    var top = 0
+                    if (position < 2) top = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
+                    val left = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
+                    setMargins(view, left = left, top = top)
+                } else {
+                    //settings for right column
+                    var top = 0
+                    if (position < 2) top = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
+                    val right = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
+                    setMargins(view, right = right, top = top)
+                }
+            }
         }
     }
 
