@@ -5,6 +5,7 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductRobot
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -71,4 +72,22 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
     }
 
+    @Test
+    fun chat_order_via_product_card() {
+        // Given
+        val journeyId = "108"
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+        preventOpenOtherActivity()
+
+        // When
+        ProductRobot.clickSingleProductCardAt(1)
+        ProductRobot.clickSingleProductCardAtcButtonAt(1)
+        ProductRobot.clickSingleProductCardBuyButtonAt(1)
+
+        // Then
+        // TODO: validate later when success get query Id from thanos
+//        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
+    }
 }
