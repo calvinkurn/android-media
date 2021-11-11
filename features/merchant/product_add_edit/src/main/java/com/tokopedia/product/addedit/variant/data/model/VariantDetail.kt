@@ -18,8 +18,5 @@ data class VariantDetail (
         var status: Int = 0,
         @SerializedName("Units")
         @Expose
-        var units: List<Unit> = emptyList(),
-        @SerializedName("isCustomVariant")
-        @Expose
-        var isCustomVariant: Boolean = false
+        var units: List<Unit> = emptyList()
 )

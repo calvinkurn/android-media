@@ -125,14 +125,17 @@ class CustomVariantInputBottomSheet : BottomSheetUnify() {
                         setMessage(getString(R.string.error_min_char_variant_name))
                     }
                     else -> {
-                        setMessage("")
                         isInputError = false
-                        onDataSubmitted?.invoke(getText())
-                        dismiss()
+                        submitData(getText())
                     }
                 }
             }
         }
+    }
+
+    private fun submitData(variantTitle: String) {
+        dismiss()
+        onDataSubmitted?.invoke(variantTitle)
     }
 
     fun setOnDataSubmitted(listener: (variantTypeName: String) -> Unit) {

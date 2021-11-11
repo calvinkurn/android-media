@@ -970,9 +970,8 @@ class AddEditProductVariantFragment :
                 }
             }
 
-            val adapterPosition = variantDataList.indexOfFirst {
-                it.variantID == variantDetail.variantID
-            }
+            val adapterPosition = variantTypeAdapter?.getSelectedAdapterPosition()?.
+                getOrNull(index).orZero()
 
             when (index) {
                 VARIANT_VALUE_LEVEL_ONE_POSITION -> {

@@ -637,8 +637,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun createCustomVariantTypeModel(variantName: String): VariantDetail {
         return VariantDetail(
             name = variantName,
-            units = listOf(Unit()),
-            isCustomVariant = true
+            units = listOf(Unit())
         )
     }
 }

@@ -92,6 +92,16 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         }
     }
 
+    fun getSelectedAdapterPosition(): List<Int> {
+        val result: MutableList<Int> = mutableListOf()
+        selectedItems.forEachIndexed { index, viewHolderState ->
+            if (viewHolderState == ViewHolderState.SELECTED) {
+                result.add(index)
+            }
+        }
+        return result
+    }
+
     fun setSelectedItems(selectedVariantDetails: List<VariantDetail>) {
         // add predefined variant
         items.forEachIndexed { position, variantDetail ->

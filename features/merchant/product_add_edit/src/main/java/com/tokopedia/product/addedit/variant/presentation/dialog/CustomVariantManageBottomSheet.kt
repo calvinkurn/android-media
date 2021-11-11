@@ -15,6 +15,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.databinding.AddEditProductCustomVariantManageBottomSheetContentBinding
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeSelectedAdapter
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -59,7 +60,9 @@ class CustomVariantManageBottomSheet(
         val adapter = VariantTypeSelectedAdapter()
         binding?.recyclerViewVariantSelected?.adapter = adapter
         binding?.recyclerViewVariantSelected?.layoutManager = LinearLayoutManager(context)
-        adapter.setData(selectedVariantDetail?.map { Pair(it.name, it.isCustomVariant) }.orEmpty())
+        adapter.setData(selectedVariantDetail?.map {
+            Pair(it.name, it.variantID == CUSTOM_VARIANT_TYPE_ID)
+        }.orEmpty())
         adapter.setOnEditButtonClickedListener {
             selectedVariantDetail?.getOrNull(it)?.let { variantDetail ->
                 showEditConfDialog(variantDetail)
