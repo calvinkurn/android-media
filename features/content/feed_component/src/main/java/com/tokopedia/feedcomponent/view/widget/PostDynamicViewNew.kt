@@ -1393,6 +1393,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             vod_frozen_view?.gone()
             vod_full_screen_icon?.visible()
+            Log.v("Hit View", "hit view reset loading isPaused ${isPaused}")
+
 
 
             if (handlerAnim == null) {
@@ -1433,11 +1435,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVODLoading()
+                        isPaused = false
+                        Log.v("Hit View", "hit view initial loading isPaused ${isPaused}")
+
                     }
 
                     override fun onVideoReadyToPlay() {
                         hideVODLoading()
                         vod_timer_view.visible()
+                        vod_lanjut_menonton_btn?.gone()
+                        vod_frozen_view?.gone()
+                        Log.v("Hit View", "hit view on ready isPaused ${isPaused}")
+
                         if(!isPaused) {
                             if (secondCountDownTimer != null) {
                                 secondCountDownTimer?.cancel()
