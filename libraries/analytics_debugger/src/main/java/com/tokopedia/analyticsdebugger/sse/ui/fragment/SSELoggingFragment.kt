@@ -1,11 +1,7 @@
 package com.tokopedia.analyticsdebugger.sse.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +13,7 @@ import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.sse.di.DaggerSSELoggingComponent
 import com.tokopedia.analyticsdebugger.sse.ui.adapter.SSELogAdapter
 import com.tokopedia.analyticsdebugger.sse.ui.viewmodel.SSELoggingViewModel
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
@@ -35,7 +32,7 @@ class SSELoggingFragment: Fragment() {
 
     private val adapter: SSELogAdapter by lazy { SSELogAdapter() }
 
-    private lateinit var etSSELogSearch: EditText
+    private lateinit var etSSELogSearch: SearchInputView
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var rvSSELog: RecyclerView
     private lateinit var tvNoData: Typography
@@ -94,13 +91,13 @@ class SSELoggingFragment: Fragment() {
     }
 
     private fun initListener() {
-        etSSELogSearch.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                hideKeyboard()
+        etSSELogSearch.setListener(object: SearchInputView.Listener {
+            override fun onSearchSubmitted(text: String?) {
                 loadData()
             }
-            true
-        }
+
+            override fun onSearchTextChanged(text: String?) {}
+        })
 
         swipeRefresh.setOnRefreshListener {
             loadData()
@@ -108,17 +105,10 @@ class SSELoggingFragment: Fragment() {
     }
 
     private fun loadData() {
-        val query = etSSELogSearch.text.toString()
+        val query = etSSELogSearch.searchText
 
         swipeRefresh.isRefreshing = true
         viewModel.getLog(query)
-    }
-
-    private fun hideKeyboard() {
-        requireActivity().currentFocus?.let {
-            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(it.windowToken, 0)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

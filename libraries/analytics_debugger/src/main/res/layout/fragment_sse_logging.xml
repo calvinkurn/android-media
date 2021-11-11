@@ -4,13 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
+    <com.tokopedia.design.text.SearchInputView
         android:id="@+id/et_sse_log_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl3"
-        android:autofillHints="Search..."
-        android:hint="@string/sse_log_search_hint"
         android:imeOptions="actionSearch"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
