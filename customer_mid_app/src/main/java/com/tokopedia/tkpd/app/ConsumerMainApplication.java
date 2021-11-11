@@ -171,7 +171,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppPackageNameWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppPackageNameWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this, true);
     }
 
     private boolean checkPackageName() {
@@ -225,7 +225,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return executePreCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(preWeave, RemoteConfigKey.ENABLE_SEQ1_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(preWeave, RemoteConfigKey.ENABLE_SEQ1_ASYNC, context, true);
     }
 
     private void createAndCallPostSeq() {
@@ -237,7 +237,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return executePostCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context, true);
     }
 
     private void createAndCallFontLoad() {
@@ -249,7 +249,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return loadFontsInBg();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(fontWeave, RemoteConfigKey.ENABLE_SEQ5_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(fontWeave, RemoteConfigKey.ENABLE_SEQ5_ASYNC, context, true);
     }
 
     @NotNull
@@ -505,7 +505,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_AB_TEST, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_AB_TEST, context, false);
     }
 
     private void fetchAbTestVariant() {

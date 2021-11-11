@@ -184,7 +184,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this, true);
     }
 
     private boolean initLibraries() {
@@ -206,7 +206,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeHanselInit();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(hanselWeave, RemoteConfigKey.ENABLE_ASYNC_HANSEL_INIT, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(hanselWeave, RemoteConfigKey.ENABLE_ASYNC_HANSEL_INIT, getApplicationContext(), true);
     }
 
     private boolean executeHanselInit() {
@@ -227,7 +227,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeIrisInitialize();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this, true);
     }
 
     private boolean executeIrisInitialize() {
@@ -478,7 +478,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext(), true);
     }
 
     @Override
@@ -499,7 +499,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeAppflyerInit();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_APPSFLYER_INIT, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_APPSFLYER_INIT, getApplicationContext(), true);
     }
 
     private boolean executeAppflyerInit() {

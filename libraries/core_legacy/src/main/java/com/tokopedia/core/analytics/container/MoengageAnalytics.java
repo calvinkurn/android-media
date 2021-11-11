@@ -57,7 +57,7 @@ public class MoengageAnalytics extends ContextAnalytics {
                     return sendExistingUserAndInstallTrackingEvent();
                 }
             };
-            Weaver.Companion.executeWeaveCoRoutineWithFirebase(installTrackingWeave, RemoteConfigKey.ENABLE_ASYNC_INSTALLTRACK, context);
+            Weaver.Companion.executeWeaveCoRoutineWithFirebase(installTrackingWeave, RemoteConfigKey.ENABLE_ASYNC_INSTALLTRACK, context, true);
         } catch(Exception ex){
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "error");
