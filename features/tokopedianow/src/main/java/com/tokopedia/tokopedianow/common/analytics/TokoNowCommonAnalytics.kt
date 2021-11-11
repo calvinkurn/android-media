@@ -17,13 +17,12 @@ import com.tokopedia.track.interfaces.Analytics
 
 object TokoNowCommonAnalytics {
 
-    fun onOpenScreen(isLoggedInStatus : Boolean, screenName: String, userId: String) {
+    fun onOpenScreen(isLoggedInStatus : Boolean, screenName: String) {
         hitCommonScreenTracker(
             screenName,
             mutableMapOf(
                 Pair(TrackAppUtils.EVENT, EVENT_OPEN_SCREEN),
                 Pair(KEY_IS_LOGGED_IN_STATUS, isLoggedInStatus.toString()),
-                Pair(KEY_USER_ID, userId)
             )
         )
     }
