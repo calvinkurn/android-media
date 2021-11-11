@@ -88,8 +88,8 @@ class InspirationCarouselViewHolder(
 
     private fun configureInspirationCarouselChipsVisibility() {
         binding?.let {
-            it.inspirationCarouselSeeAllButton?.gone()
-            it.inspirationCarouselOptionList?.gone()
+            it.inspirationCarouselSeeAllButton.gone()
+            it.inspirationCarouselOptionList.gone()
         }
     }
 
