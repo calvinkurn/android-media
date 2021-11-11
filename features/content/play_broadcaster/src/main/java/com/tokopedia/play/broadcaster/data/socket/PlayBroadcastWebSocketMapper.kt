@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.domain.model.NewMetricList
 import com.tokopedia.play.broadcaster.domain.model.ProductTagging
 import com.tokopedia.play.broadcaster.domain.model.TotalLike
 import com.tokopedia.play.broadcaster.domain.model.TotalView
+import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import java.lang.reflect.Type
@@ -43,6 +44,7 @@ class PlayBroadcastWebSocketMapper(
             PlaySocketEnum.Freeze.value -> convertToModel(response.jsonObject, Freeze::class.java)
             PlaySocketEnum.Banned.value -> convertToModel(response.jsonObject, Banned::class.java)
             PlaySocketEnum.ChannelInteractive.value -> convertToModel(response.jsonObject, ChannelInteractive::class.java)
+            PlaySocketEnum.PinnedMessage.value -> convertToModel(response.jsonObject, PinnedMessageSocketResponse::class.java)
             else -> null
         }
     }

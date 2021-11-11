@@ -773,8 +773,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
      */
     override fun onShopInfoClicked(itemId: Int, componentTrackDataModel: ComponentTrackDataModel) {
         when (itemId) {
-            R.id.btn_follow -> onShopFavoriteClick()
-            R.id.shop_ava, R.id.shop_name -> gotoShopDetail(componentTrackDataModel)
+            R.id.shop_credibility_button_follow -> onShopFavoriteClick()
+            R.id.shop_credibility_ava, R.id.shop_credibility_name -> gotoShopDetail(componentTrackDataModel)
             else -> {
 
             }
@@ -3606,7 +3606,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     goToLogin()
                 }
             }
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
 
         }
     }
