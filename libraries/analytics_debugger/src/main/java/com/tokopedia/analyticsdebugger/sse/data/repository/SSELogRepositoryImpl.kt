@@ -1,5 +1,6 @@
 package com.tokopedia.analyticsdebugger.sse.data.repository
 
+import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.sse.data.local.database.SSELogDatabase
 import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELogEntity
@@ -26,7 +27,11 @@ class SSELogRepositoryImpl @Inject constructor(
 //        }.filter {
 //            it.event.contains(query) || it.message.contains(query)
 //        }
-        database.sseLogDao().get(query)
+        Log.d("<LOG>", "masuk repo")
+        val response = database.sseLogDao().get(query)
+        Log.d("<LOG>", "response : $response")
+        response
+//        database.sseLogDao().get(query)
     }
 
     override suspend fun insert(sseLogEntity: SSELogEntity) {

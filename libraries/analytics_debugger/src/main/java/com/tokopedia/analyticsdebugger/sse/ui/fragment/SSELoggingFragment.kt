@@ -95,10 +95,7 @@ class SSELoggingFragment: Fragment() {
         etSSELogSearch.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 hideKeyboard()
-
                 loadData()
-
-                Toast.makeText(requireContext(), etSSELogSearch.text, Toast.LENGTH_SHORT).show()
             }
             true
         }
