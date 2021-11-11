@@ -356,19 +356,32 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     }
                 }
                 is WishlistV2DataModel -> {
-                    it.item.run {
+                    val listGroupLabel = arrayListOf<ProductCardModel.LabelGroup>()
+
+                    it.item.labelGroup.forEach { labelGroupItem ->
+                        val labelGroup = ProductCardModel.LabelGroup(
+                                position = labelGroupItem.position,
+                                title = labelGroupItem.title,
+                                type = labelGroupItem.type,
+                                imageUrl = labelGroupItem.url)
+                        listGroupLabel.add(labelGroup)
+                    }
+
+                    val isButtonAtc = it.item.buttons.primaryButton.action == ATC_WISHLIST
+                    it.item.also { item ->
                         val productModel = ProductCardModel(
-                            productImageUrl = imageUrl,
+                            productImageUrl = item.imageUrl,
                             isWishlistVisible = true,
-                            productName = name,
-                            shopName = shop.name,
-                            formattedPrice = priceFmt,
-                            shopLocation = shop.location,
+                            productName = item.name,
+                            shopName = item.shop.name,
+                            formattedPrice = item.priceFmt,
+                            shopLocation = item.shop.location,
                             isShopRatingYellow = true,
                             hasSecondaryButton = true,
-                            hasTambahKeranjangButton = true
-                        )
-                        adapterData.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout()))
+                            tambahKeranjangButton = isButtonAtc,
+                            lihatBarangSerupaButton = !isButtonAtc,
+                            labelGroupList = listGroupLabel)
+                        adapterData.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item))
                     }
                 }
                 is WishlistV2EmptyDataModel -> {

@@ -31,23 +31,14 @@ import timber.log.Timber
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 15/10/21.
- */
-class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
-                                              private val wishlistV2UseCase: WishlistV2UseCase,
-                                              private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-                                              private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
-                                              private val recommendationUseCase: GetRecommendationUseCase,
-                                              private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
-class WishlistV2ViewModel @Inject constructor(
-    private val dispatcher: CoroutineDispatchers,
-    private val wishlistV2UseCase: WishlistV2UseCase,
-    private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
-    private val recommendationUseCase: GetRecommendationUseCase,
-    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-    private val singleRecommendationUseCase: GetSingleRecommendationUseCase
-) : BaseViewModel(dispatcher.main) {
+class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
+                                            private val wishlistV2UseCase: WishlistV2UseCase,
+                                            private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+                                            private val bulkDeleteWishlistV2UseCase: BulkDeleteWishlistV2UseCase,
+                                            private val recommendationUseCase: GetRecommendationUseCase,
+                                            private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+                                            private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
+                                            private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _wishlistV2Result = MutableLiveData<Result<List<WishlistV2Data>>>()
     val wishlistV2Result: LiveData<Result<List<WishlistV2Data>>>
@@ -56,6 +47,10 @@ class WishlistV2ViewModel @Inject constructor(
     private val _wishlistData = MutableLiveData<WishlistV2Response.Data.WishlistV2>()
     val wishlistData: LiveData<WishlistV2Response.Data.WishlistV2>
         get() = _wishlistData
+
+    private val _wishlistV2Data = MutableLiveData<Result<List<WishlistV2TypeLayoutData>>>()
+    val wishlistV2Data: LiveData<Result<List<WishlistV2TypeLayoutData>>>
+        get() = _wishlistV2Data
 
     private val _deleteWishlistV2Result =
         MutableLiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
@@ -102,7 +97,7 @@ class WishlistV2ViewModel @Inject constructor(
                             )
                         }
 
-                        // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
+                        // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
                         wishlistData.items.size == maxItemInPage -> {
                             _wishlistV2Result.value = Success(
                                 getTopadsAndRecommendationWishlist(
@@ -114,7 +109,7 @@ class WishlistV2ViewModel @Inject constructor(
                             )
                         }
 
-                        // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
+                        // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
                         wishlistData.items.size > maxItemInPage -> {
                             if (wishlistData.totalData > newMinItemRegularRule) {
                                 _wishlistV2Result.value = Success(
