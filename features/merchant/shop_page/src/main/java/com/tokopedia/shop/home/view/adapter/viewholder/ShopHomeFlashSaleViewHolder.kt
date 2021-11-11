@@ -53,6 +53,7 @@ class ShopHomeFlashSaleViewHolder(
         private const val ONE_THOUSAND = 1000
         private const val ONE_MILLION = 1000000
         private const val MAX_PRODUCT_CARD_SIZE = 5
+        private const val EMPTY_STRING = ""
     }
 
     init {
@@ -187,7 +188,7 @@ class ShopHomeFlashSaleViewHolder(
         return when {
             reminder == ZERO -> getString(R.string.shop_page_label_remind_me)
             // reminder < 100 => direct number
-            reminder < ONE_HUNDRED -> reminder.toString()
+            reminder <= ONE_HUNDRED -> EMPTY_STRING
             reminder / ONE_MILLION >= ONE -> {
                 // reminder in million => e.g. 2 jt
                 (reminder / ONE_MILLION).toString() + " " + getString(R.string.shop_page_label_million)
