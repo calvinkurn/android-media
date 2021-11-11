@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <corners android:radius="8dp" />
+    <corners android:radius="@dimen/unify_space_8" />
     <solid
         android:strokeAlpha="0.7"
         android:fillColor="@color/Unify_NN900"
@@ -11,7 +11,7 @@
     <padding
         android:right="@dimen/dp_8" android:left="@dimen/dp_8" android:bottom="@dimen/dp_6" android:top="@dimen/dp_6" />
     <stroke
-        android:width="2dp"
+        android:width="@dimen/unify_space_2"
         android:color="@color/Unify_N0" />
 
 </shape>

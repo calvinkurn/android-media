@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.view.presenter
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -177,7 +176,6 @@ class FeedViewModel @Inject constructor(
         })
     }
     fun trackVisitChannel(channelId: String,rowNumber: Int) {
-        Log.v("Hit View", "track ${channelId}")
 
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
             trackVisitChannelBroadcasterUseCase.setRequestParams(FeedBroadcastTrackerUseCase.createParams(channelId))

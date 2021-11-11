@@ -2698,7 +2698,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
                 view.count = view.count + 1
 
-            adapter.notifyItemChanged(rowNumber, PAYLOAD_ANIMATE_LIKE)
         }
     }
 

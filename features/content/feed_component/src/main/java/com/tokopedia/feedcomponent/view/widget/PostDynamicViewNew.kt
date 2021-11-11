@@ -14,7 +14,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -252,7 +251,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
 
     fun bindLike(feedXCard: FeedXCard) {
-        Log.v("Hit View", "bindViews view ${feedXCard.views.count}")
 
         if (feedXCard.typename == TYPE_FEED_X_CARD_VOD) {
             bindViews(feedXCard)
@@ -453,7 +451,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
     private fun bindViews(feedXCard: FeedXCard){
-        Log.v("Hit View", "bindViews view ${feedXCard.views.count}")
 
         val view = feedXCard.views
         if (feedXCard.like.isLiked) {
@@ -1393,7 +1390,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             vod_frozen_view?.gone()
             vod_full_screen_icon?.visible()
-            Log.v("Hit View", "hit view reset loading isPaused ${isPaused}")
 
 
 
@@ -1417,6 +1413,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
                 }
                 vod_full_screen_icon?.setOnClickListener {
+                    addViewTimer?.cancel()
                     isPaused = true
                     vod_lanjut_menonton_btn?.gone()
                     vod_frozen_view?.gone()
@@ -1424,6 +1421,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         it1 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink, it1,shouldTrack, true) }
                 }
                 vod_lanjut_menonton_btn?.setOnClickListener {
+                    addViewTimer?.cancel()
                     vod_lanjut_menonton_btn?.gone()
                     vod_frozen_view?.gone()
                     videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink,it2,false, false)}
@@ -1436,16 +1434,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     override fun onInitialStateLoading() {
                         showVODLoading()
                         isPaused = false
-                        Log.v("Hit View", "hit view initial loading isPaused ${isPaused}")
+                        isVODViewFrozen = false
+                        layoutLihatProdukParent.visible()
 
                     }
 
                     override fun onVideoReadyToPlay() {
                         hideVODLoading()
                         vod_timer_view.visible()
+                        vod_volumeIcon?.visible()
+                        vod_full_screen_icon?.visible()
                         vod_lanjut_menonton_btn?.gone()
                         vod_frozen_view?.gone()
-                        Log.v("Hit View", "hit view on ready isPaused ${isPaused}")
 
                         if(!isPaused) {
                             if (secondCountDownTimer != null) {
@@ -1454,7 +1454,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             } else {
                                 secondCountDownTimer = object : CountDownTimer(TIME_THIRTY_SEC, TIME_SECOND) {
                                     override fun onTick(millisUntilFinished: Long) {
-                                        Log.v("Hit View", "hit view ${count1++}")
 
                                     }
 
@@ -1475,7 +1474,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         addViewTimer?.schedule(object : TimerTask() {
                             override fun run() {
                                 if (!isPaused) {
-                                    Log.v("Hit View", "track view ${feedXCard.views.count} c= ${feedXCard.playChannelID}")
+                                    val view = feedXCard.views
+                                    val count = view.count +1
+                                    if (view.count != 0) {
+
+                                        likedText.text =
+                                                MethodChecker.fromHtml(
+                                                        context.getString(
+                                                                R.string.feed_component_viewed_count_text,
+                                                                count.productThousandFormatted(1)
+                                                        )
+                                                )
+                                    }
                                     listener?.addVODView(feedXCard, feedXCard.playChannelID, positionInFeed, TIME_FIVE_SEC,true)
                                     shouldTrack = false
                                     isPaused = true
@@ -1731,7 +1741,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         if (videoPlayer != null) {
             if (model is DynamicPostUiModel)
-            Log.v("Hit View", "detach view ${model?.feedXCard?.views.count}")
 
             isPaused = true
             if (secondCountDownTimer != null) {
