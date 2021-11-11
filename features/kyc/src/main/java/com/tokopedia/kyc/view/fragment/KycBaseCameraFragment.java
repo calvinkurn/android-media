@@ -1,4 +1,4 @@
-package com.tokopedia.homecredit.view.fragment;
+package com.tokopedia.kyc.view.fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -34,8 +34,8 @@ import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.homecredit.R;
 import com.tokopedia.iconunify.IconUnify;
+import com.tokopedia.kyc.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
+public class KycBaseCameraFragment extends BaseDaggerFragment {
 
     private static final String FOLDER_NAME = "extras";
     private static final String FILE_EXTENSIONS = ".jpg";
@@ -183,7 +183,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         cameraView.addCameraListener(cameraListener);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
-        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setMessage(getString(R.string.kyc_title_loading));
     }
 
     private void generateImage(byte[] imageByte) {
