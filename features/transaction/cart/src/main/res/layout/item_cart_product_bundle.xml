@@ -312,7 +312,7 @@
             android:layout_marginTop="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:text="Tulis Catatan"
+            android:text="@string/cart_label_notes"
             android:textColor="@color/Unify_GN500"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
