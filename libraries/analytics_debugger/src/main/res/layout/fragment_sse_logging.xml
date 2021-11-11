@@ -8,11 +8,11 @@
         android:id="@+id/et_sse_log_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl3"
         android:autofillHints="Search..."
-        android:hint="Search..."
+        android:hint="@string/sse_log_search_hint"
         android:imeOptions="actionSearch"
         android:inputType="text"
-        android:layout_margin="@dimen/spacing_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,12 +38,11 @@
         android:id="@+id/tv_sse_log_no_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No Data"
+        android:text="@string/sse_log_no_data"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_sse_log_search"
-        />
+        app:layout_constraintTop_toBottomOf="@id/et_sse_log_search" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
