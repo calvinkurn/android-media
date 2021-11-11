@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordV2Response
 import javax.inject.Inject
@@ -38,4 +39,4 @@ data class AddPasswordV2Params(
     var passwordConfirmation: String? = "",
     @SerializedName("h")
     var hash: String? = ""
-)
+) : GqlParam
