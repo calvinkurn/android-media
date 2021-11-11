@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 /**
  * Created By : Jonathan Darwin on November 10, 2021
  */
-class SSELogViewHolder(private val v: View): RecyclerView.ViewHolder(v) {
+class SSELogViewHolder(v: View): RecyclerView.ViewHolder(v) {
 
     private var clickListener: ((SSELogUiModel) -> Unit)? = null
 
@@ -28,6 +28,9 @@ class SSELogViewHolder(private val v: View): RecyclerView.ViewHolder(v) {
         tvSSELogGcToken.text = data.generalInfo.gcToken
         tvSSELogData.text = data.message
         tvSSELogDateTime.text = data.dateTime
+
+        if(data.message.isEmpty()) tvSSELogData.hide()
+        else tvSSELogData.visible()
     }
 
     fun setOnClickListener(listener: (SSELogUiModel) -> Unit) {

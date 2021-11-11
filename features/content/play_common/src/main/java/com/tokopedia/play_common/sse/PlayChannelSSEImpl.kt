@@ -1,7 +1,6 @@
 package com.tokopedia.play_common.sse
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.analyticsdebugger.sse.domain.usecase.InsertSSELogUseCase
 import com.tokopedia.analyticsdebugger.sse.util.SSELogTools
 import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
