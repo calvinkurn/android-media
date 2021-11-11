@@ -525,10 +525,27 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (activity != null) {
-            activity?.let { AdultManager.handleActivityResult(it, requestCode, resultCode, data) }
+    private fun activityResultAdultManager(requestCode: Int, resultCode: Int, data: Intent?) {
+        activity?.let {
+            AdultManager.handleActivityResult(it, requestCode, resultCode, data,
+                object : AdultManager.Callback {
+                    override fun onFail() {
+                    }
+
+                    override fun onVerificationSuccess(message: String?) {
+                    }
+
+                    override fun onLoginPreverified() {
+                        if (doActivityResult) {
+                            onSwipeRefresh()
+                        }
+                    }
+                })
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        activityResultAdultManager(requestCode, resultCode, data)
 
         context?.let {
             AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {

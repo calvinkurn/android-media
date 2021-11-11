@@ -2,6 +2,7 @@ package com.tokopedia.age_restriction.viewcontroller
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.lifecycle.Observer
@@ -26,6 +27,12 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     private var notFilledDob = 33
     private var notLogin = 44
     private var selection = 0
+    private var isLogedIn = false
+
+    companion object {
+        private const val EXTRA_IS_LOGIN = "is_login"
+
+    }
 
     @Inject
     lateinit var viewModelProvider:  ViewModelProvider.Factory
@@ -179,10 +186,18 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         })
 
         arHomeViewModel.userAdult.observe(this, Observer {
-            setResult(Activity.RESULT_OK)
+            val intent = Intent()
+            val bundle = Bundle()
+            if (isLogedIn) {
+                bundle.putBoolean(EXTRA_IS_LOGIN, true)
+            }
+
+            intent.putExtras(bundle)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         })
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -229,6 +244,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         when (requestCode) {
             LOGIN_REQUEST -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    isLogedIn = true
                     arHomeViewModel.fetchUserDOB()
                 } else {
                     selection = notLogin
