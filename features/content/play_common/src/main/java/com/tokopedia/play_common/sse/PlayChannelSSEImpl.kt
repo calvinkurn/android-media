@@ -30,7 +30,8 @@ class PlayChannelSSEImpl @Inject constructor(
     private var sseFlow = MutableSharedFlow<SSEAction>(extraBufferCapacity = 100)
 
     override fun connect(channelId: String, pageSource: String, gcToken: String) {
-        sseLogTools.sendLog("SSE Connecting...", channelId, pageSource, gcToken)
+        sseLogTools.initLog(channelId, pageSource, gcToken)
+        sseLogTools.sendLog("SSE Connecting...")
 
         var url = "${TokopediaUrl.getInstance().SSE}${PLAY_SSE}?page=$pageSource&channel_id=$channelId"
         if(gcToken.isNotEmpty()) url += "&token=${gcToken}"
@@ -44,7 +45,7 @@ class PlayChannelSSEImpl @Inject constructor(
 
         sse = OkSse().newServerSentEvent(request, object: ServerSentEvent.Listener {
             override fun onOpen(sse: ServerSentEvent, response: Response) {
-                sseLogTools.sendLog("SSE Open", channelId, pageSource, gcToken)
+                sseLogTools.sendLog("SSE Open")
             }
 
             override fun onMessage(
@@ -72,7 +73,7 @@ class PlayChannelSSEImpl @Inject constructor(
             }
 
             override fun onClosed(sse: ServerSentEvent) {
-                sseLogTools.sendLog("SSE Closed", channelId, pageSource, gcToken)
+                sseLogTools.sendLog("SSE Closed")
                 sseFlow.tryEmit(SSEAction.Close(SSECloseReason.INTENDED))
             }
 
