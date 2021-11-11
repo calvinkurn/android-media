@@ -58,7 +58,7 @@ class HomeCreditUseCase @Inject constructor(
                         compressedByteArray.toList()
                     )
                 } else
-                   throw NullPointerException()
+                    throw NullPointerException()
             } else
                 throw NullPointerException()
         } catch (e: Exception) {
@@ -70,24 +70,21 @@ class HomeCreditUseCase @Inject constructor(
 
     private fun bitmapToByteArray(bitmap: Bitmap?): ByteArray {
         try {
-
-
             val stream = ByteArrayOutputStream()
             bitmap?.compress(
                 Bitmap.CompressFormat.JPEG,
-                95,
+                IMAGE_QUALITY,
                 stream
             )
 
             return stream.toByteArray()
+        } catch (e: Exception) {
+            throw e
         } finally {
             bitmap?.recycle()
         }
 
-//            val byteBuffer: ByteBuffer = ByteBuffer.allocate(bitmap?.byteCount ?:0)
-//            bitmap?.copyPixelsToBuffer(byteBuffer)
-//            byteBuffer.rewind()
-//            return byteBuffer.array()
+
 
     }
 
@@ -109,6 +106,10 @@ class HomeCreditUseCase @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        const val IMAGE_QUALITY = 95
     }
 
 
