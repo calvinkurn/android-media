@@ -1,13 +1,10 @@
 package com.tokopedia.analyticsdebugger.sse.domain.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELogEntity
 import com.tokopedia.analyticsdebugger.sse.domain.repository.SSELogRepository
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogGeneralInfoUiModel
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
