@@ -63,7 +63,10 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             tabsHolder.viewTreeObserver
                 .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                        if(selectedPosition>=0) {
+                            tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                            selectedPosition = -1
+                        }
                     }
                 })
         })
