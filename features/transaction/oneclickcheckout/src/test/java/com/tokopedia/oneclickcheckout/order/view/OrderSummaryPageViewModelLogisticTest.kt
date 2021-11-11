@@ -11,9 +11,9 @@ import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -901,6 +901,18 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Choose Duration With No Shipment Data`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+
+        // When
+        orderSummaryPageViewModel.chooseDuration(helper.secondDuration.serviceData.serviceId, helper.firstCourierSecondDuration, true)
+
+        // Then
+        assertEquals(OrderShipment(), orderSummaryPageViewModel.orderShipment.value)
+    }
+
+    @Test
     fun `Choose Logistic Promo Success`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -1200,6 +1212,20 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(helper.firstCourierFirstDuration.productData.shipperProductId, shipping.getRealShipperProductId())
         assertEquals(OrderPromo(state = OccButtonState.NORMAL), orderSummaryPageViewModel.orderPromo.value)
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Choose Logistic Promo With No Shipping Data`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+
+        // When
+        orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
+
+        // Then
+        verify(inverse = true) { validateUsePromoRevampUseCase.get().createObservable(any()) }
     }
 
     @Test

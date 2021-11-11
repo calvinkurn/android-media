@@ -13,6 +13,7 @@ object RepurchaseProductMapper {
             it.parentProductId,
             it.shop.id,
             it.categoryId,
+            it.category,
             it.isStockEmpty(),
             createProductCardModel(it)
         )

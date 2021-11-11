@@ -63,12 +63,16 @@
     <string name="pay_later_installment_used">Pakai cicilan yang mana, nih?</string>
     <string name="pay_later_duration_to_payoff">Mau dicicil berapa lama?</string>
     <string name="pay_later_something_went_wrong">Ada yang salah</string>
-    <string name="pay_later_payment_simulation">Simulasi pembayaran*</string>
+    <string name="pay_later_payment_simulation">Simulasi pembayaran</string>
     <string name="pay_later_service_fee_selected_partner">Biaya Layanan</string>
     <string name="pay_later_one_month">30 Hari</string>
     <string name="pay_later_partner_interest">Bunga</string>
     <string name="pay_later_shippingcost_and_insurance_text"><![CDATA[*Belum termasuk biaya asuransi & ongkir]]></string>
     <string name="pay_later_supervised_by">Semua mitra penyedia terdaftar dan diawasi oleh</string>
-
+    <string name="pay_later_its_not_final_price">Ini belum harga final, ya</string>
+    <string name="pay_later_cost_not_included">Simulasi pembayaran belum termasuk biaya saat pengiriman seperti Proteksi dan ongkir.</string>
+    <string name="pay_later_connect_gopay">Sambungin Gojek dulu, ya</string>
+    <string name="paylater_to_use_gopay">Buat pakai GoPayLater Cicil, kamu perlu sambungin akun Gojek ke Tokopedia dulu. Cuma sebentar, kok!</string>
+    <string name="paylater_gopay_connect_account">Sambungin Akun</string>
 
 </resources>

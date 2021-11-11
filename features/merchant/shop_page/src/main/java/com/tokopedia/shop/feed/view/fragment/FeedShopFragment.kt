@@ -72,6 +72,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
+import com.tokopedia.shop.databinding.FragmentFeedShopBinding
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
@@ -87,6 +88,7 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -143,6 +145,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     @Inject
     override lateinit var userSession: UserSessionInterface
+    private val viewBinding: FragmentFeedShopBinding? by viewBinding()
 
     companion object {
         private const val YOUTUBE_URL = "{youtube_url}"
@@ -184,8 +187,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         return inflater.inflate(R.layout.fragment_feed_shop, container, false)
     }
 
-    override fun getRecyclerView(view: View?): RecyclerView {
-        return requireView().findViewById(R.id.recyclerView)
+    override fun getRecyclerView(view: View?): RecyclerView? {
+        return viewBinding?.recyclerView
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -226,7 +229,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             shopId = it.getString(PARAM_SHOP_ID) ?: ""
             createPostUrl = it.getString(PARAM_CREATE_POST_URL) ?: ""
         }
-        getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        getRecyclerView(view)?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
@@ -350,7 +353,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.clearCache()
         isLoadingInitialData = true
         presenter.getFeedFirstPage(shopId, true,whitelistDomain.authors.isEmpty())
-        getRecyclerView(view).scrollToPosition(0)
+        getRecyclerView(view)?.scrollToPosition(0)
     }
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
