@@ -298,8 +298,7 @@ class ShopScoreMapper @Inject constructor(
         val shopLevel = shopScoreLevelResponse?.shopLevel ?: SHOP_SCORE_NULL
         with(headerShopPerformanceUiModel) {
             when {
-                //new seller before monday
-                shopScore < SHOP_SCORE_ZERO && shopAge < SHOP_AGE_NINETY -> {
+                isNewSellerBeforeFirstMonday(shopScore, shopAge) -> {
                     titleHeaderShopService =
                         context?.getString(R.string.title_new_seller_level_0)
                             ?: ""
@@ -308,8 +307,7 @@ class ShopScoreMapper @Inject constructor(
                         context?.getString(R.string.desc_new_seller_level_0)
                             ?: ""
                 }
-                //new seller after monday
-                shopScore > SHOP_SCORE_NULL && shopAge < SHOP_AGE_NINETY -> {
+                isNewSellerAfterFirstMonday(shopScore, shopAge) -> {
                     when {
                         shopScore < SHOP_SCORE_SIXTY -> {
                             titleHeaderShopService =
@@ -379,8 +377,12 @@ class ShopScoreMapper @Inject constructor(
                     it.identifier == PENALTY_IDENTIFIER
                 }?.rawValue?.roundToLong().orZero()
 
-            this.isShowPopupEndTenure =
-                getIsShowPopupEndTenure(dateShopCreated, shopScore)
+            this.isShowPopupEndTenure = getIsShowPopupEndTenure(
+                    dateShopCreated,
+                    shopScore,
+                    shopAge,
+                    shopScoreLevelResponse?.shopScoreDetail
+                )
         }
         return headerShopPerformanceUiModel
     }
@@ -901,12 +903,20 @@ class ShopScoreMapper @Inject constructor(
                         .orEmpty(),
                 )
             )
-            if (isNewSeller || shopScore < SHOP_SCORE_ZERO) {
+            if (isNewSeller) {
                 add(
                     ItemFaqUiModel(
                         title = context?.getString(R.string.title_calculate_shop_performance_for_new_seller)
                             .orEmpty(),
                         desc_first = context?.getString(R.string.desc_calculate_shop_performance_for_new_seller)
+                            .orEmpty(),
+                    )
+                )
+                add(
+                    ItemFaqUiModel(
+                        title = context?.getString(R.string.title_time_adjustment_what_relief_for_new_seller)
+                            .orEmpty(),
+                        desc_first = context?.getString(R.string.desc_time_adjustment_what_relief_for_new_seller)
                             .orEmpty(),
                     )
                 )
@@ -922,14 +932,16 @@ class ShopScoreMapper @Inject constructor(
                 )
             }
 
-            add(
-                ItemFaqUiModel(
-                    title = context?.getString(R.string.title_time_adjustment_what_relief_for_new_seller)
-                        .orEmpty(),
-                    desc_first = context?.getString(R.string.desc_time_adjustment_what_relief_for_new_seller)
-                        .orEmpty(),
+            if (isReactivatedBeforeMonday) {
+                add(
+                    ItemFaqUiModel(
+                        title = context?.getString(R.string.title_time_adjustment_what_relief_for_reactivated_seller)
+                            .orEmpty(),
+                        desc_first = context?.getString(R.string.desc_time_adjustment_what_relief_for_reactivated_seller)
+                            .orEmpty(),
+                    )
                 )
-            )
+            }
 
             if (isReactivatedBeforeMonday && isPowerMerchantOrProIdle(pmData)) {
                 add(
@@ -1057,9 +1069,13 @@ class ShopScoreMapper @Inject constructor(
 
     private fun getIsShowPopupEndTenure(
         dateShopCreated: String,
-        shopScore: Long
+        shopScore: Long,
+        shopAge: Long,
+        shopScoreDetail: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?
     ): Boolean {
-        return if (shopScorePrefManager.getIsShowPopupEndTenure() && shopScore > SHOP_SCORE_NULL
+        return if (shopScorePrefManager.getIsShowPopupEndTenure()
+            && !isReactivatedSellerBeforeFirstMonday(shopScore, shopAge)
+            && !isReactivatedSellerAfterComeback(shopScore, shopScoreDetail)
         ) {
             return getIsShowPopupCelebratoryEdgeCases(dateShopCreated)
         } else false
@@ -1112,6 +1128,14 @@ class ShopScoreMapper @Inject constructor(
     ): Boolean {
         return getSellerType(shopScoreDetail) == SellerTypeConstants.REACTIVATED_SELLER
                 && shopScore > SHOP_SCORE_NULL
+    }
+
+    private fun isNewSellerBeforeFirstMonday(shopScore: Long, shopAge: Long): Boolean {
+        return shopScore < SHOP_SCORE_ZERO && shopAge < SHOP_AGE_NINETY
+    }
+
+    private fun isNewSellerAfterFirstMonday(shopScore: Long, shopAge: Long): Boolean {
+        return shopScore > SHOP_SCORE_NULL && shopAge < SHOP_AGE_NINETY
     }
 
     private fun getSellerType(
