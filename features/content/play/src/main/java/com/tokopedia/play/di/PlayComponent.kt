@@ -1,6 +1,8 @@
 package com.tokopedia.play.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.analyticsdebugger.sse.di.SSELoggingBindModule
+import com.tokopedia.analyticsdebugger.sse.di.SSELoggingModule
 import com.tokopedia.play.view.activity.PlayActivity
 import dagger.Component
 
@@ -9,7 +11,9 @@ import dagger.Component
  */
 @PlayScope
 @Component(
-        modules = [PlayModule::class, PlayViewModelModule::class, PlayViewerFragmentModule::class, PlayBindModule::class],
+        modules = [PlayModule::class, PlayViewModelModule::class, PlayViewerFragmentModule::class, PlayBindModule::class,
+                   SSELoggingModule::class, SSELoggingBindModule::class,
+        ],
         dependencies = [BaseAppComponent::class]
 )
 interface PlayComponent {

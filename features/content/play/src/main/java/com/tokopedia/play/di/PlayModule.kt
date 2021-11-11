@@ -3,13 +3,10 @@ package com.tokopedia.play.di
 import android.content.Context
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.gms.cast.framework.CastContext
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.sse.data.local.database.SSELogDatabase
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -160,13 +157,4 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     fun provideCastAnalyticHelper(playAnalytic: PlayAnalytic): CastAnalyticHelper = CastAnalyticHelper(playAnalytic)
-
-    @PlayScope
-    @Provides
-    fun provideDatabase(@ApplicationContext context: Context): SSELogDatabase = SSELogDatabase.getInstance(context)
-
-    @Provides
-    @PlayScope
-    @Named("SSELogGsonPrettyPrinting")
-    fun provideGson(): Gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
 }

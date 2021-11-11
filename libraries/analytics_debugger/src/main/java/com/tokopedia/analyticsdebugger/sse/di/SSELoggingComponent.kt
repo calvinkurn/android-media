@@ -13,5 +13,6 @@ import dagger.Component
 )
 @SSELoggingScope
 interface SSELoggingComponent {
+
     fun inject(sseLoggingFragment: SSELoggingFragment)
 }

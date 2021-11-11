@@ -17,6 +17,9 @@ import javax.inject.Named
 class SSELoggingModule {
 
     @Provides
-    @SSELoggingScope
     fun provideDatabase(@ApplicationContext context: Context): SSELogDatabase = SSELogDatabase.getInstance(context)
+
+    @Provides
+    @Named("SSELogGsonPrettyPrinting")
+    fun provideGson(): Gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
 }

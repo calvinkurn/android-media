@@ -1,7 +1,5 @@
 package com.tokopedia.play.di
 
-import com.tokopedia.analyticsdebugger.sse.data.repository.SSELogRepositoryImpl
-import com.tokopedia.analyticsdebugger.sse.domain.repository.SSELogRepository
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalyticImpl
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
@@ -89,8 +87,4 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindPlaySSE(playChannelSSEImpl: PlayChannelSSEImpl): PlayChannelSSE
-
-    @Binds
-    @PlayScope
-    abstract fun bindSSELogRepository(sseLogRepositoryImpl: SSELogRepositoryImpl): SSELogRepository
 }

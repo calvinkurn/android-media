@@ -12,6 +12,5 @@ import dagger.Module
 abstract class SSELoggingBindModule {
 
     @Binds
-    @SSELoggingScope
     abstract fun bindSSERepository(sseLogRepositoryImpl: SSELogRepositoryImpl): SSELogRepository
 }
