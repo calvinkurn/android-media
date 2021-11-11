@@ -35,8 +35,6 @@
     <string name="courier_title">Kurir</string>
     <string name="title_buyer_review">Ulasan Pembeli</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
-    <string name="button_affiliate">Buat Post</string>
-    <string name="affiliate_get_commission">Raih Komisi</string>
     <string name="new_installment_template">Cicilan mulai dari %s</string>
     <string name="pdp_label_cart_count_max">99+</string>
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
@@ -129,10 +127,6 @@
 
     <!--Ticker-->
     <string name="ticker_href_builder">&lt;a href="#"&gt;%s&lt;/a&gt;</string>
-
-
-    <!--By Me-->
-    <string name="product_detail_by_me_subtitle">Dapatkan komisi langsung setiap kali teman beli barang dari rekomendasimu.</string>
 
     <!--New Shop Info-->
     <string name="shop_online_days_ago"><![CDATA[Online <b>%1d hari lalu</b>]]></string>
