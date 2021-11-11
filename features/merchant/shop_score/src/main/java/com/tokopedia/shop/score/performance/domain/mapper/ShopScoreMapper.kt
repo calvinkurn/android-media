@@ -215,7 +215,8 @@ class ShopScoreMapper @Inject constructor(
                                 isOfficialStore,
                                 powerMerchantResponse,
                                 shopScore,
-                                shopAge
+                                shopAge,
+                                shopScoreResult?.shopScoreDetail
                             )
                         )
                     )
@@ -378,11 +379,11 @@ class ShopScoreMapper @Inject constructor(
                 }?.rawValue?.roundToLong().orZero()
 
             this.isShowPopupEndTenure = getIsShowPopupEndTenure(
-                    dateShopCreated,
-                    shopScore,
-                    shopAge,
-                    shopScoreLevelResponse?.shopScoreDetail
-                )
+                dateShopCreated,
+                shopScore,
+                shopAge,
+                shopScoreLevelResponse?.shopScoreDetail
+            )
         }
         return headerShopPerformanceUiModel
     }
@@ -865,10 +866,13 @@ class ShopScoreMapper @Inject constructor(
         isOfficialStore: Boolean,
         pmData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data.PowerMerchant?,
         shopScore: Long,
-        shopAge: Long
+        shopAge: Long,
+        shopScoreDetail: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?
     ): List<ItemFaqUiModel> {
         val isReactivatedBeforeMonday =
             isReactivatedSellerBeforeFirstMonday(shopScore, shopAge)
+        val isReactivatedAfterMonday =
+            isReactivatedSellerAfterComeback(shopScore, shopScoreDetail)
         return mutableListOf<ItemFaqUiModel>().apply {
             add(
                 ItemFaqUiModel(
@@ -932,7 +936,7 @@ class ShopScoreMapper @Inject constructor(
                 )
             }
 
-            if (isReactivatedBeforeMonday) {
+            if (isReactivatedBeforeMonday || isReactivatedAfterMonday) {
                 add(
                     ItemFaqUiModel(
                         title = context?.getString(R.string.title_time_adjustment_what_relief_for_reactivated_seller)
