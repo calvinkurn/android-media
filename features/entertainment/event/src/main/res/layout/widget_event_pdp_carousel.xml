@@ -8,7 +8,7 @@
         android:visibility="invisible"
         android:id="@+id/viewpager_event_pdp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_dp_320"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
@@ -20,7 +20,7 @@
         android:id="@+id/event_pdp_indicator_banner_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="8dp"
         android:layout_weight="1"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"

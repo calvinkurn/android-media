@@ -32,6 +32,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
 import kotlinx.android.synthetic.main.fragment_saldo_history.*
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -185,11 +186,19 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     fun showSaleTabCoachMark() {
         getPenjualanTabView()?.also {
             it.postDelayed({
+                showCoachMark(it)
+            }, DELAY_COACHMARK)
+        }
+    }
+
+    private fun showCoachMark(view: View) {
+        try {
+            if (context != null && activity?.isFinishing == false) {
                 coachMark2 = CoachMark2(requireContext())
                 val list = arrayListOf<CoachMark2Item>().apply {
                     add(
                         CoachMark2Item(
-                            it,
+                            view,
                             getString(R.string.saldo_penjualan_coachmark_title),
                             getString(R.string.saldo_penjualan_coachmark_desc),
                             CoachMarkContentPosition.BOTTOM.position
@@ -201,7 +210,8 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
                     coachMark2 = null
                     updatePenjualanCoachMarkDisplayed()
                 }
-            }, DELAY_COACHMARK)
+            }
+        } catch (e: Exception) {
 
         }
     }

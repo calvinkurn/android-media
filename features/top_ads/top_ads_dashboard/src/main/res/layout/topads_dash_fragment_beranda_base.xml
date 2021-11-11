@@ -31,10 +31,10 @@
                     android:id="@+id/credit_history"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="16dp"
                     app:card_type="shadow"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -43,8 +43,8 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/dp_10"
-                        android:paddingBottom="@dimen/dp_10">
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp">
 
                         <com.tokopedia.unifycomponents.ImageUnify
                             android:id="@+id/image"
@@ -87,9 +87,9 @@
 
                         <com.tokopedia.unifycomponents.ImageUnify
                             android:id="@+id/img_auto_debit"
-                            android:layout_width="@dimen/dp_12"
-                            android:layout_height="@dimen/dp_12"
-                            android:layout_marginEnd="@dimen/dp_2"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_marginEnd="2dp"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="@id/autoTopUp"
                             app:layout_constraintEnd_toStartOf="@id/autoTopUp"
@@ -100,7 +100,7 @@
                             android:id="@+id/autoTopUp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/dp_8"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/topads_dash_auto_topup_on"
                             android:textColor="@color/black"
                             android:visibility="gone"
@@ -116,7 +116,7 @@
                             android:id="@+id/addCredit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/dp_8"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/label_add_credit"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -131,8 +131,8 @@
                     android:id="@+id/statistic_graph"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_8"
-                    android:padding="@dimen/dp_8"
+                    android:layout_margin="8dp"
+                    android:padding="8dp"
                     app:layout_constraintBottom_toTopOf="@id/insightCard"
                     app:layout_constraintTop_toBottomOf="@id/credit_history">
 
@@ -151,8 +151,8 @@
                     android:id="@+id/insightCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:visibility="gone"
                     app:cardPreventCornerOverlap="false"
                     app:layout_constraintBottom_toTopOf="@id/help_section"
@@ -162,7 +162,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:padding="@dimen/dp_16">
+                        android:padding="16dp">
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/txtTitle"
@@ -176,7 +176,7 @@
                             android:id="@+id/txtDesc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_4"
+                            android:layout_marginTop="4dp"
                             android:text="@string/topads_dash_insight_desc_beranda"
                             app:layout_constraintTop_toBottomOf="@id/txtTitle"
                             app:typographyType="body_3" />
@@ -185,7 +185,7 @@
                             android:id="@+id/rvTabInsight"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_16"
+                            android:layout_marginTop="16dp"
                             android:background="@color/white"
                             android:orientation="horizontal"
                             app:layout_constraintTop_toBottomOf="@id/txtDesc" />
@@ -194,7 +194,7 @@
                             android:id="@+id/goToInsights"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_12"
+                            android:layout_marginTop="12dp"
                             android:text="@string/topads_dash_go_to_insights"
                             android:textColor="@color/tkpd_main_green"
                             app:layout_constraintStart_toStartOf="parent"
@@ -223,9 +223,9 @@
                     android:id="@+id/help_section"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:layout_marginBottom="@dimen/dp_20"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="20dp"
                     app:card_type="shadow"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -235,13 +235,13 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/dp_16">
+                        android:padding="16dp">
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/help_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/dp_16"
+                            android:layout_marginBottom="16dp"
                             android:text="@string/topads_dash_topads_help"
                             android:textColor="@android:color/black"
                             app:layout_constraintBottom_toTopOf="@id/ques1"
@@ -265,7 +265,7 @@
                             android:id="@+id/div1"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_1"
-                            android:layout_marginTop="@dimen/dp_8"
+                            android:layout_marginTop="8dp"
                             android:background="@color/divider_notif_big"
                             app:layout_constraintBottom_toTopOf="@id/ques2"
                             app:layout_constraintTop_toBottomOf="@id/ques1" />
@@ -274,7 +274,7 @@
                             android:id="@+id/ques2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_10"
+                            android:layout_marginTop="10dp"
                             android:text="@string/topads_dash_help_ques_2"
                             android:textColor="@color/text_color"
                             app:layout_constraintBottom_toTopOf="@id/div2"
@@ -286,7 +286,7 @@
                             android:id="@+id/div2"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_1"
-                            android:layout_marginTop="@dimen/dp_8"
+                            android:layout_marginTop="8dp"
                             android:background="@color/divider_notif_big"
                             app:layout_constraintBottom_toTopOf="@id/ques3"
                             app:layout_constraintTop_toBottomOf="@id/ques2" />
@@ -295,7 +295,7 @@
                             android:id="@+id/ques3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_10"
+                            android:layout_marginTop="10dp"
                             android:text="@string/topads_dash_help_ques_3"
                             android:textColor="@color/text_color"
                             app:layout_constraintBottom_toTopOf="@id/div3"
@@ -307,7 +307,7 @@
                             android:id="@+id/div3"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_1"
-                            android:layout_marginTop="@dimen/dp_8"
+                            android:layout_marginTop="8dp"
                             android:background="@color/divider_notif_big"
                             app:layout_constraintBottom_toTopOf="@id/ques4"
                             app:layout_constraintTop_toBottomOf="@id/ques3" />
@@ -316,7 +316,7 @@
                             android:id="@+id/ques4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_10"
+                            android:layout_marginTop="10dp"
                             android:text="@string/topads_dash_help_ques_4"
                             android:textColor="@color/text_color"
                             app:layout_constraintBottom_toTopOf="@id/div4"
@@ -328,7 +328,7 @@
                             android:id="@+id/div4"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_1"
-                            android:layout_marginTop="@dimen/dp_8"
+                            android:layout_marginTop="8dp"
                             android:background="@color/divider_notif_big"
                             app:layout_constraintBottom_toTopOf="@id/ques5"
                             app:layout_constraintTop_toBottomOf="@id/ques4" />
@@ -338,7 +338,7 @@
                             android:id="@+id/ques5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_10"
+                            android:layout_marginTop="10dp"
                             android:text="@string/topads_dash_help_ques_5"
                             android:textColor="@color/text_color"
                             app:layout_constraintStart_toStartOf="parent"
@@ -349,7 +349,7 @@
                             android:id="@+id/div5"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_1"
-                            android:layout_marginTop="@dimen/dp_8"
+                            android:layout_marginTop="8dp"
                             android:background="@color/divider_notif_big"
                             app:layout_constraintTop_toBottomOf="@id/ques5" />
 

@@ -1,14 +1,22 @@
 package com.tokopedia.shop.product.view.viewmodel
 
+import androidx.lifecycle.Observer
+import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.shop.common.data.model.RestrictionEngineRequestParams
 import com.tokopedia.shop.common.data.response.Actions
 import com.tokopedia.shop.common.data.response.RestrictValidateRestriction
 import com.tokopedia.shop.common.data.response.RestrictionEngineDataResponse
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowButton
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
+import com.tokopedia.shop.common.data.source.cloud.model.followstatus.Status
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopStickySortFilter
 import com.tokopedia.shop.sort.data.source.cloud.model.ShopProductSort
@@ -18,14 +26,21 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import rx.Observable
 import rx.Subscriber
+import com.tokopedia.usecase.coroutines.Result
 
 @ExperimentalCoroutinesApi
 class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestFixture() {
+
+    @After
+    fun afterTest(){
+        unmockkAll()
+    }
 
     @Test
     fun `check userSession isLoggedIn return same value with mock value`() {
@@ -120,7 +135,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     @Test
     fun `check getShopRestrictionInfo is Success`() {
         runBlocking {
-
+            val mockButtonLabel = "Button"
             coEvery {
                 restrictionEngineNplUseCase.executeOnBackground()
             } returns RestrictValidateRestriction(
@@ -128,7 +143,13 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                             actions = listOf(Actions())
                     ))
             )
-
+            coEvery {
+                getFollowStatusUseCase.executeOnBackground()
+            } returns FollowStatusResponse(FollowStatus(
+                    status = Status(userIsFollowing = false, userNeverFollow = false, userFirstFollow = false),
+                    followButton = FollowButton(buttonLabel = mockButtonLabel, voucherIconURL = "", coachmarkText = ""),
+                    error = null
+            ))
             shopPageProductListResultViewModel.getShopRestrictionInfo(
                     input = RestrictionEngineRequestParams(),
                     shopId = "12131"
@@ -137,7 +158,58 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             verifyGetShopRestrictionInfoUseCaseCalled()
             assertNotNull(shopPageProductListResultViewModel.restrictionEngineData.value)
             assertTrue(shopPageProductListResultViewModel.restrictionEngineData.value is Success)
+            assertTrue((shopPageProductListResultViewModel.restrictionEngineData.value as Success).data.buttonLabel == mockButtonLabel)
+        }
+    }
 
+    @Test
+    fun `check getShopRestrictionInfo is Success if followButton is null`() {
+        runBlocking {
+
+            coEvery {
+                restrictionEngineNplUseCase.executeOnBackground()
+            } returns RestrictValidateRestriction(
+                    dataResponse = listOf(RestrictionEngineDataResponse(
+                            actions = listOf(Actions())
+                    ))
+            )
+            coEvery {
+                getFollowStatusUseCase.executeOnBackground()
+            } returns FollowStatusResponse(FollowStatus(
+                    status = Status(userIsFollowing = false, userNeverFollow = false, userFirstFollow = false),
+                    followButton = null,
+                    error = null
+            ))
+            shopPageProductListResultViewModel.getShopRestrictionInfo(
+                    input = RestrictionEngineRequestParams(),
+                    shopId = "12131"
+            )
+
+            verifyGetShopRestrictionInfoUseCaseCalled()
+            assertNotNull(shopPageProductListResultViewModel.restrictionEngineData.value)
+            assertTrue(shopPageProductListResultViewModel.restrictionEngineData.value is Success)
+        }
+    }
+
+    @Test
+    fun `check getShopRestrictionInfo is Success if followStatus is null`() {
+        runBlocking {
+
+            coEvery {
+                restrictionEngineNplUseCase.executeOnBackground()
+            } returns RestrictValidateRestriction(
+                    dataResponse = listOf(RestrictionEngineDataResponse(
+                            actions = listOf(Actions())
+                    ))
+            )
+            shopPageProductListResultViewModel.getShopRestrictionInfo(
+                    input = RestrictionEngineRequestParams(),
+                    shopId = "12131"
+            )
+
+            verifyGetShopRestrictionInfoUseCaseCalled()
+            assertNotNull(shopPageProductListResultViewModel.restrictionEngineData.value)
+            assertTrue(shopPageProductListResultViewModel.restrictionEngineData.value is Success)
         }
     }
 
@@ -162,10 +234,36 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     }
 
     @Test
+    fun `check restrictionEngineData value is fail if mapper throw an exception`() {
+        runBlocking {
+
+            coEvery {
+                restrictionEngineNplUseCase.executeOnBackground()
+            } returns RestrictValidateRestriction(
+                    dataResponse = listOf(RestrictionEngineDataResponse(
+                            actions = listOf(Actions())
+                    ))
+            )
+            mockkObject(ShopPageProductListMapper)
+            every { ShopPageProductListMapper.mapRestrictionEngineResponseToModel(any()) } throws Exception()
+            shopPageProductListResultViewModel.getShopRestrictionInfo(
+                    input = RestrictionEngineRequestParams(),
+                    shopId = "12131"
+            )
+
+            verifyGetShopRestrictionInfoUseCaseCalled()
+            assertNotNull(shopPageProductListResultViewModel.restrictionEngineData.value)
+            assertTrue(shopPageProductListResultViewModel.restrictionEngineData.value is Fail)
+
+        }
+    }
+
+    @Test
     fun `check toggleFavorite is Success`() {
         val onSuccess: (Boolean) -> Unit = mockk(relaxed = true)
         every { userSessionInterface.isLoggedIn } returns true
         every { toggleFavouriteShopUseCase.get().execute(any(), any()) } answers {
+            (secondArg() as Subscriber<Boolean>).onCompleted()
             (secondArg() as Subscriber<Boolean>).onNext(true)
         }
         shopPageProductListResultViewModel.toggleFavorite(shopId = "123", onSuccess = onSuccess, onError = {})
@@ -319,7 +417,9 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         runBlocking {
             coEvery {
                 getShopProductUseCase.executeOnBackground()
-            } returns ShopProduct.GetShopProduct()
+            } returns ShopProduct.GetShopProduct(
+                    data = listOf(ShopProduct(), ShopProduct())
+            )
 
             shopPageProductListResultViewModel.getShopProductEmptyState(
                     shopId = "123",
@@ -330,6 +430,25 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
 
             assertNotNull(shopPageProductListResultViewModel.productDataEmpty.value)
             assertTrue(shopPageProductListResultViewModel.productDataEmpty.value is Success<List<ShopProductUiModel>>)
+        }
+    }
+
+    @Test
+    fun `check getShopProductEmptyState is Fail`() {
+        runBlocking {
+            coEvery {
+                getShopProductUseCase.executeOnBackground()
+            } throws Exception()
+
+            shopPageProductListResultViewModel.getShopProductEmptyState(
+                    shopId = "123",
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetShopProductUseCaseCalled()
+
+            assertNotNull(shopPageProductListResultViewModel.productDataEmpty.value)
+            assertTrue(shopPageProductListResultViewModel.productDataEmpty.value is Fail)
         }
     }
 
@@ -413,12 +532,95 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     }
 
     @Test
+    fun `check getShopFilterData is Fail when mapper throw exception`() {
+        runBlocking {
+
+            coEvery {
+                getShopEtalaseByShopUseCase.createObservable(any())
+            } returns Observable.just(arrayListOf(ShopEtalaseModel()))
+
+            coEvery {
+                gqlGetShopSortUseCase.executeOnBackground()
+            } returns listOf(ShopProductSort())
+            val observer = mockk<Observer<Result<ShopStickySortFilter>>>(relaxed = true)
+            shopPageProductListResultViewModel.shopSortFilterData.observeForever(observer)
+            every { observer.onChanged(any<Success<ShopStickySortFilter>>()) } throws Exception()
+            shopPageProductListResultViewModel.getShopFilterData(
+                    shopInfo = ShopInfo(),
+                    isOwner = false,
+                    isForceRefresh = true
+            )
+
+            verifyGetShopEtalaseByShopUseCaseCalled()
+            verifyGetShopSortUseCaseCalled()
+
+            assertNotNull(shopPageProductListResultViewModel.shopSortFilterData.value)
+            assertTrue(shopPageProductListResultViewModel.shopSortFilterData.value is Fail)
+
+        }
+    }
+
+    @Test
+    fun `check getShopFilterData shopSortFilterData value is fail if both shopEtalaseData response is error`() {
+        runBlocking {
+
+            coEvery {
+                getShopEtalaseByShopUseCase.createObservable(any())
+            } throws Exception()
+
+            coEvery {
+                gqlGetShopSortUseCase.executeOnBackground()
+            } returns listOf()
+            shopPageProductListResultViewModel.getShopFilterData(
+                    shopInfo = ShopInfo(),
+                    isOwner = false,
+                    isForceRefresh = true
+            )
+
+            verifyGetShopEtalaseByShopUseCaseCalled()
+            verifyGetShopSortUseCaseCalled()
+
+            assertNotNull(shopPageProductListResultViewModel.shopSortFilterData.value)
+            assertTrue(shopPageProductListResultViewModel.shopSortFilterData.value is Fail)
+        }
+    }
+
+    @Test
+    fun `check getShopFilterData shopSortFilterData value is fail if both shopSortData response is error`() {
+        runBlocking {
+
+            coEvery {
+                getShopEtalaseByShopUseCase.createObservable(any())
+            } returns Observable.just(arrayListOf(ShopEtalaseModel()))
+
+            coEvery {
+                gqlGetShopSortUseCase.executeOnBackground()
+            } throws Exception()
+            shopPageProductListResultViewModel.getShopFilterData(
+                    shopInfo = ShopInfo(),
+                    isOwner = false,
+                    isForceRefresh = true
+            )
+
+            verifyGetShopEtalaseByShopUseCaseCalled()
+            verifyGetShopSortUseCaseCalled()
+
+            assertNotNull(shopPageProductListResultViewModel.shopSortFilterData.value)
+            assertTrue(shopPageProductListResultViewModel.shopSortFilterData.value is Fail)
+        }
+    }
+
+    @Test
     fun `check getBottomSheetFilterData is Success`() {
         runBlocking {
 
             coEvery {
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
-            } returns DynamicFilterModel()
+            } returns DynamicFilterModel(
+                    data = DataValue(
+                            listOf(Filter(title = "pengiriman"),Filter(title = "Rating"))
+                    )
+            )
 
             shopPageProductListResultViewModel.getBottomSheetFilterData()
 
@@ -426,6 +628,23 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
 
             assertNotNull(shopPageProductListResultViewModel.bottomSheetFilterLiveData.value)
             assertTrue(shopPageProductListResultViewModel.bottomSheetFilterLiveData.value is Success<DynamicFilterModel>)
+
+        }
+    }
+
+    @Test
+    fun `check getBottomSheetFilterData bottomSheetFilterLiveData value is null if response error`() {
+        runBlocking {
+
+            coEvery {
+                getShopFilterBottomSheetDataUseCase.executeOnBackground()
+            } throws Exception()
+
+            shopPageProductListResultViewModel.getBottomSheetFilterData()
+
+            verifyGetShopFilterBottomSheetDataUseCaseCalled()
+
+            assertNull(shopPageProductListResultViewModel.bottomSheetFilterLiveData.value)
 
         }
     }
@@ -440,6 +659,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
 
             shopPageProductListResultViewModel.getFilterResultCount(
                     shopId = anyString(),
+                    productPerPage = mockProductPerPage,
                     searchKeyword = anyString(),
                     etalaseId = anyString(),
                     tempShopProductFilterParameter = ShopProductFilterParameter(),
@@ -450,6 +670,31 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
 
             assertNotNull(shopPageProductListResultViewModel.shopProductFilterCountLiveData.value)
             assertTrue(shopPageProductListResultViewModel.shopProductFilterCountLiveData.value is Success<Int>)
+
+        }
+    }
+
+    @Test
+    fun `check getFilterResultCount is Fail`() {
+        runBlocking {
+
+            coEvery {
+                getShopFilterProductCountUseCase.executeOnBackground()
+            } throws Exception()
+
+            shopPageProductListResultViewModel.getFilterResultCount(
+                    shopId = anyString(),
+                    productPerPage = mockProductPerPage,
+                    searchKeyword = anyString(),
+                    etalaseId = anyString(),
+                    tempShopProductFilterParameter = ShopProductFilterParameter(),
+                    widgetUserAddressLocalData = addressWidgetData
+            )
+
+            verifyGetShopFilterProductCountUseCaseCalled()
+
+            assertNotNull(shopPageProductListResultViewModel.shopProductFilterCountLiveData.value)
+            assertTrue(shopPageProductListResultViewModel.shopProductFilterCountLiveData.value is Fail)
 
         }
     }

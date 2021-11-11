@@ -25,6 +25,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gopay.kyc.R
 import com.tokopedia.gopay.kyc.analytics.GoPayKycAnalytics
+import com.tokopedia.gopay.kyc.analytics.GoPayKycConstants
 import com.tokopedia.gopay.kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay.kyc.di.GoPayKycComponent
 import com.tokopedia.gopay.kyc.domain.data.CameraImageResult
@@ -59,7 +60,6 @@ abstract class GoPayKycBaseCameraFragment : GoPayKycBaseFragment() {
     protected var shutterImageView: ImageUnify? = null
     protected var reverseCamera: IconUnify? = null
     protected var retakeButton: UnifyButton? = null
-    protected var cameraControlLayout: Group? = null
     protected var reviewPhotoLayout: Group? = null
     protected var ktpInstructionText: Typography? = null
     protected var cameraLayout: FrameLayout? = null
@@ -135,14 +135,21 @@ abstract class GoPayKycBaseCameraFragment : GoPayKycBaseFragment() {
     }
 
     private fun reInitCamera() {
-        sendAnalytics(GoPayKycEvent.Click.ReTakePhotoEvent(getKycType(), getPageSource()))
+        val kycType = getKycType()
+        sendAnalytics(GoPayKycEvent.Click.ReTakePhotoEvent(kycType, getPageSource()))
         viewModel.canGoBack = true
         cameraView?.open()
         cameraLayout?.visible()
         capturedImageView?.gone()
-        cameraControlLayout?.visible()
         reviewPhotoLayout?.gone()
+        showCameraControlLayout(kycType)
         setCaptureInstruction()
+    }
+
+    private fun showCameraControlLayout(kycType: String) {
+        shutterImageView?.visible()
+        if (kycType == GoPayKycConstants.Label.KTP)
+            reverseCamera?.visible()
     }
 
     // open review screen to either proceed with captured photo or retake again
@@ -151,7 +158,8 @@ abstract class GoPayKycBaseCameraFragment : GoPayKycBaseFragment() {
         viewModel.canGoBack = false
         cameraView?.close()
         capturedImageView?.visible()
-        cameraControlLayout?.gone()
+        reverseCamera?.gone()
+        shutterImageView?.gone()
         reviewPhotoLayout?.visible()
         setVerificationInstruction()
         changeHeaderTitle()

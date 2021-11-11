@@ -28,5 +28,4 @@
     <string name="move_the_item">Move The Item</string>
     <string name="settings_of_the_item">Settings Of The Item</string>
     <string name="show_bottomsheet">Show BottomSheet</string>
-    <string name="close_icon">Close BottomSheet</string>
 </resources>
