@@ -1,5 +1,7 @@
 package com.tokopedia.play.di
 
+import com.tokopedia.analyticsdebugger.sse.data.repository.SSELogRepositoryImpl
+import com.tokopedia.analyticsdebugger.sse.domain.repository.SSELogRepository
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalyticImpl
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
@@ -16,6 +18,8 @@ import com.tokopedia.play.util.timer.PlayTimerFactory
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorageImpl
+import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.sse.PlayChannelSSEImpl
 import dagger.Binds
 import dagger.Module
 
@@ -78,4 +82,15 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindTimerFactory(timerFactory: PlayTimerFactory): TimerFactory
+
+    /**
+     * SSE
+     */
+    @Binds
+    @PlayScope
+    abstract fun bindPlaySSE(playChannelSSEImpl: PlayChannelSSEImpl): PlayChannelSSE
+
+    @Binds
+    @PlayScope
+    abstract fun bindSSELogRepository(sseLogRepositoryImpl: SSELogRepositoryImpl): SSELogRepository
 }

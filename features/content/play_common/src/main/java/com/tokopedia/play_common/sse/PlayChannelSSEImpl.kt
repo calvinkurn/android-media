@@ -1,6 +1,8 @@
 package com.tokopedia.play_common.sse
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analyticsdebugger.sse.domain.usecase.InsertSSELogUseCase
+import com.tokopedia.analyticsdebugger.sse.util.SSELogTools
 import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play_common.sse.base.OkSse
@@ -21,12 +23,15 @@ import javax.inject.Inject
 class PlayChannelSSEImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
+    private val sseLogTools: SSELogTools,
 ): PlayChannelSSE {
 
     private var sse: ServerSentEvent? = null
     private var sseFlow = MutableSharedFlow<SSEAction>(extraBufferCapacity = 100)
 
     override fun connect(channelId: String, pageSource: String, gcToken: String) {
+        sseLogTools.sendLog("SSE Connecting...", channelId, pageSource, gcToken)
+
         var url = "${TokopediaUrl.getInstance().SSE}${PLAY_SSE}?page=$pageSource&channel_id=$channelId"
         if(gcToken.isNotEmpty()) url += "&token=${gcToken}"
 
@@ -38,7 +43,9 @@ class PlayChannelSSEImpl @Inject constructor(
             .build()
 
         sse = OkSse().newServerSentEvent(request, object: ServerSentEvent.Listener {
-            override fun onOpen(sse: ServerSentEvent, response: Response) { }
+            override fun onOpen(sse: ServerSentEvent, response: Response) {
+                sseLogTools.sendLog("SSE Open", channelId, pageSource, gcToken)
+            }
 
             override fun onMessage(
                 sse: ServerSentEvent,
@@ -47,6 +54,7 @@ class PlayChannelSSEImpl @Inject constructor(
                 message: String
             ) {
                 sseFlow.tryEmit(SSEAction.Message(SSEResponse(event = event, message = message)))
+                sseLogTools.sendLog(event, message)
             }
 
             override fun onComment(sse: ServerSentEvent, comment: String) { }
@@ -64,6 +72,7 @@ class PlayChannelSSEImpl @Inject constructor(
             }
 
             override fun onClosed(sse: ServerSentEvent) {
+                sseLogTools.sendLog("SSE Closed", channelId, pageSource, gcToken)
                 sseFlow.tryEmit(SSEAction.Close(SSECloseReason.INTENDED))
             }
 

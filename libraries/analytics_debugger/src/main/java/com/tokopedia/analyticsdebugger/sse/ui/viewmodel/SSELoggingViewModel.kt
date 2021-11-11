@@ -23,7 +23,6 @@ class SSELoggingViewModel @Inject constructor(
 
     fun getLog(query: String) {
         viewModelScope.launch {
-            delay(2000)
             getSSELogUseCase.setParam(query)
             _observableSSELog.value = getSSELogUseCase.executeOnBackground()
         }

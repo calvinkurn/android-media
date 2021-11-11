@@ -17,7 +17,7 @@ class GetSSELogUseCase @Inject constructor(
     private var query: String = ""
 
     fun setParam(query: String) {
-        this.query = query;
+        this.query = query
     }
 
     override suspend fun executeOnBackground(): List<SSELogUiModel> {

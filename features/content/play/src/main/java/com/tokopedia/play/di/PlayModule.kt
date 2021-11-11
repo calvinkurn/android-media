@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.analyticsdebugger.sse.data.local.database.SSELogDatabase
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -16,8 +17,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play_common.sse.PlayChannelSSE
-import com.tokopedia.play_common.sse.PlayChannelSSEImpl
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
@@ -151,10 +150,6 @@ class PlayModule(val mContext: Context) {
     }
 
     @Provides
-    fun providePlayChannelSSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
-        PlayChannelSSEImpl(userSession, dispatchers)
-
-    @Provides
     fun provideCastContext(@ApplicationContext context: Context): CastContext = CastContext.getSharedInstance(context)
 
     @Provides
@@ -163,4 +158,8 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     fun provideCastAnalyticHelper(playAnalytic: PlayAnalytic): CastAnalyticHelper = CastAnalyticHelper(playAnalytic)
+
+    @PlayScope
+    @Provides
+    fun provideDatabase(@ApplicationContext context: Context): SSELogDatabase = SSELogDatabase.getInstance(context)
 }

@@ -1,15 +1,18 @@
 package com.tokopedia.analyticsdebugger.sse.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELogEntity
 import com.tokopedia.analyticsdebugger.sse.domain.repository.SSELogRepository
 import com.tokopedia.usecase.coroutines.UseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on November 11, 2021
  */
 class InsertSSELogUseCase @Inject constructor(
-    private val sseLogRepository: SSELogRepository
+    private val sseLogRepository: SSELogRepository,
 ): UseCase<Unit>() {
 
     private var event: String = ""

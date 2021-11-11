@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.sse.helper
+package com.tokopedia.analyticsdebugger.sse.util
 
 import java.lang.Exception
 import java.text.SimpleDateFormat
@@ -7,7 +7,7 @@ import java.util.*
 /**
  * Created By : Jonathan Darwin on November 10, 2021
  */
-object DateTimeHelper {
+object DateTimeUtil {
     fun formatDate(timestamp: Long, outputPattern: String = "yyyy-MM-dd HH:mm:ss"): String {
         return try {
             val output = SimpleDateFormat(outputPattern, Locale.getDefault())
