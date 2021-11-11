@@ -808,7 +808,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun intendingAttachProduct(totalProductAttached: Int) {
-        Intents.intending(
+        intending(
             IntentMatchers.hasExtra(
                 ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY,
                 TopChatInternalRouter.Companion.SOURCE_TOPCHAT
@@ -885,6 +885,27 @@ abstract class TopchatRoomTest {
     protected fun preventOpenOtherActivity() {
         intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+    }
+
+    protected fun getDefaultProductPreview(): ProductPreview {
+        return ProductPreview(
+            "1111",
+            ProductPreviewAttribute.productThumbnail,
+            ProductPreviewAttribute.productName,
+            "Rp 23.000.000",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "tokopedia://product/1111",
+            false,
+            "",
+            "Rp 50.000.000",
+            500000.0,
+            "50%",
+            false
         )
     }
 }

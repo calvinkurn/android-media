@@ -1,8 +1,11 @@
 package com.tokopedia.topchat.chatroom.view.activity.cassava
 
+import android.content.Intent
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductRobot
@@ -89,5 +92,29 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         // Then
         // TODO: validate later when success get query Id from thanos
 //        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
+    }
+
+    @Test
+    fun chat_srw() {
+        // Given
+        val journeyId = "114"
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwUseCase.defaultResponse
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // When
+        clickSrwPreviewItemAt(0)
+
+        // Then
+        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
+    }
+
+    private fun putProductAttachmentIntent(intent: Intent) {
+        val productPreviews = listOf(getDefaultProductPreview())
+        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 }
