@@ -17,7 +17,7 @@ internal class PragmaSource : Sources.Pragma {
                     true -> cursor.getString(0)
                     false -> ""
                 }
-                QueryResult(
+                return QueryResult(
                     rows = listOf(
                         Row(
                             position = 0,

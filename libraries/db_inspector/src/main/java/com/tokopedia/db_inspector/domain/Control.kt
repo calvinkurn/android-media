@@ -8,4 +8,6 @@ internal interface Control {
 
     interface Connection : BaseControl<Mappers.Connection, Converters.Connection>
 
+    interface Pragma: BaseControl<Mappers.Pragma, Converters.Pragma>
+
 }
