@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.ui.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -40,6 +42,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
@@ -47,7 +51,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     private var totalDataItemsCount: Int = 0
     private var isSwipeRefresh = false
-
+    private var listSize = 0
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
@@ -58,6 +62,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     private lateinit var affiliateHomeViewModel: AffiliateHomeViewModel
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this))
+
+    private var isUserBlackListed = false
 
     companion object {
         fun getFragmentInstance(affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
@@ -95,6 +101,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         swipe_refresh_layout.setOnRefreshListener {
             isSwipeRefresh = true
             loadMoreTriggerListener?.resetState()
+            listSize = 0
+            adapter.resetList()
             affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
         }
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
@@ -129,6 +137,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     private fun showNoAffiliate() {
+        product_list_group.hide()
         affiliate_no_product_iv.show()
         home_global_error.run {
             show()
@@ -157,9 +166,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         affiliateHomeViewModel.getShimmerVisibility().observe(this, { visibility ->
             if (visibility != null) {
                 if (visibility)
-                    adapter.startShimmer()
+                    adapter.addShimmer()
                 else
-                    adapter.stopShimmer()
+                    adapter.removeShimmer(listSize)
             }
         })
         affiliateHomeViewModel.progressBar().observe(this, { visibility ->
@@ -173,9 +182,20 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
         affiliateHomeViewModel.getErrorMessage().observe(this, { error ->
             home_global_error.run {
+                when(error) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        setType(GlobalError.NO_CONNECTION)
+                    }
+                    is IllegalStateException -> {
+                        setType(GlobalError.PAGE_FULL)
+                    }
+                    else -> {
+                        setType(GlobalError.SERVER_ERROR)
+                    }
+                }
                 show()
-                errorTitle.text = error
                 setActionClickListener {
+                    hide()
                     affiliateHomeViewModel.getAnnouncementInformation()
                 }
             }
@@ -187,11 +207,13 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
 
         affiliateHomeViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
+            adapter.removeShimmer(listSize)
             if(isSwipeRefresh){
                 swipe_refresh_layout.isRefreshing = false
                 isSwipeRefresh = !isSwipeRefresh
             }
             if (dataList.isNotEmpty()) {
+                listSize += dataList.size
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
             } else {
@@ -208,9 +230,27 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             onGetAnnouncementData(announcementData)
         })
 
-        affiliateHomeViewModel.getAffiliateErrorMessage().observe(this,{
+        affiliateHomeViewModel.getAffiliateErrorMessage().observe(this,{ error ->
             affiliate_progress_bar?.gone()
-            onGetAnnouncementError()
+            home_global_error.run {
+                setActionClickListener {
+                    hide()
+                    affiliateHomeViewModel.getAnnouncementInformation()
+                }
+                when(error) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        setType(GlobalError.NO_CONNECTION)
+                        show()
+                    }
+                    is IllegalStateException -> {
+                        setType(GlobalError.PAGE_FULL)
+                        show()
+                    }
+                    else -> {
+                        onGetAnnouncementError()
+                    }
+                }
+            }
         })
     }
 
@@ -237,6 +277,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 }
                 ANNOUNCEMENT__TYPE_USER_BLACKLIST -> {
                     affiliateHomeViewModel.getAffiliateValidateUser()
+                    isUserBlackListed = true
+                    (activity as? AffiliateActivity)?.setBlackListedStatus(isUserBlackListed)
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data.announcementTitle,
                         announcementData.getAffiliateAnnouncement.data.announcementDescription,
@@ -322,7 +364,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     override fun onProductClick(productId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {
         if(status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE){
-            AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION, null, productId , productName , productImage, productUrl,productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_HOME).show(childFragmentManager, "")
+            AffiliatePromotionBottomSheet.newInstance(productId , productName , productImage, productUrl,productIdentifier,
+                    AffiliatePromotionBottomSheet.ORIGIN_HOME,!isUserBlackListed).show(childFragmentManager, "")
         }else {
             AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE).show(childFragmentManager, "")
         }

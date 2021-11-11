@@ -50,6 +50,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private var affiliateBottomNavigation: AffiliateBottomNavbar? = null
     private var userActionRequiredForRegister = false
 
+    private var isUserBlackListed = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         afterViewCreated()
@@ -240,6 +242,14 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
                 HELP_MENU
             )
         }
+    }
+
+    fun setBlackListedStatus(blackListed : Boolean) {
+        isUserBlackListed = blackListed
+    }
+
+    fun getBlackListedStatus() : Boolean{
+        return  isUserBlackListed
     }
 
     override fun navigateToTermsFragment() {

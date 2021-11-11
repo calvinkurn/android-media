@@ -14,6 +14,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.affiliate_share_item.view.*
 
 class AffiliateShareItemViewHolder(itemView: View, private val shareButtonInterface: ShareButtonInterface?,
@@ -35,15 +36,23 @@ class AffiliateShareItemViewHolder(itemView: View, private val shareButtonInterf
                 addSocialInterface?.onSocialChecked(adapterPosition,isChecked)
             }
         }else {
-            val iconCopyGreen = getIconUnifyDrawable(itemView.context, IconUnify.COPY, MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             itemView.share_button.run {
-                show()
-                itemView.checkbox.hide()
-                setDrawable(iconCopyGreen)
                 isLoading = element?.buttonLoad == true
-                setOnClickListener {
-                    isLoading = true
-                    shareButtonInterface?.onShareButtonClick(element?.name,element?.id, element?.serviceFormat)
+                if (element?.isLinkGenerationEnabled == true){
+                    val iconCopyGreen = getIconUnifyDrawable(itemView.context, IconUnify.COPY, MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                    setDrawable(iconCopyGreen)
+                    buttonType = UnifyButton.Type.MAIN
+                    buttonVariant = UnifyButton.Variant.GHOST
+                    setOnClickListener {
+                        isLoading = true
+                        shareButtonInterface?.onShareButtonClick(element.name, element.id, element.serviceFormat)
+                    }
+                }else {
+                    val iconCopyGray = getIconUnifyDrawable(itemView.context, IconUnify.COPY, MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN300))
+                    setDrawable(iconCopyGray)
+                    buttonType = UnifyButton.Type.ALTERNATE
+                    buttonVariant = UnifyButton.Variant.GHOST
+                    setOnClickListener(null)
                 }
             }
         }

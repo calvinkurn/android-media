@@ -18,6 +18,7 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.AffiliateSearchData
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
 import com.tokopedia.affiliate_toko.R
@@ -36,6 +37,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     private var totalDataItemsCount: Int = 0
     private var isSwipeRefresh = false
+    private var listSize = 0
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -79,6 +81,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         setUpRecyclerView()
         setUpEmptyState()
         sendScreenEvent()
+        affiliateRecommendedProductViewModel.isUserBlackListed = (activity as? AffiliateActivity)?.getBlackListedStatus() ?: false
         affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
     }
 
@@ -124,6 +127,8 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             recyclerView.layoutManager = layoutManager
             swipe_refresh_layout.setOnRefreshListener {
                 isSwipeRefresh = true
+                listSize = 0
+                adapter.resetList()
                 loadMoreTriggerListener?.resetState()
                 affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
             }
@@ -146,26 +151,27 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         affiliateRecommendedProductViewModel.getShimmerVisibility().observe(this, { visibility ->
             if (visibility != null) {
                 if (visibility)
-                    adapter.startShimmer(true)
+                    adapter.addShimmer(true)
                 else {
-                    adapter.stopShimmer()
-                    adapter.notifyItemRangeChanged(0,4)
+                    adapter.removeShimmer(listSize)
                 }
             }
         })
 
         affiliateRecommendedProductViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
+            adapter.removeShimmer(listSize)
             if(isSwipeRefresh){
                 swipe_refresh_layout.isRefreshing = false
                 isSwipeRefresh = !isSwipeRefresh
             }
             if (dataList.isNotEmpty()) {
-                error_group.hide()
+                listSize += dataList.size
+                hideErrorGroup()
                 swipe_refresh_layout.show()
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
             } else {
-                error_group.show()
+                showErrorGroup()
                 showEmptyState()
                 swipe_refresh_layout.hide()
             }
@@ -177,9 +183,21 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
         affiliateRecommendedProductViewModel.getErrorMessage().observe(this, { errorMessage ->
             swipe_refresh_layout.hide()
-            error_group.show()
+            showErrorGroup()
             showEmptyState()
         })
+    }
+
+    private fun showErrorGroup() {
+        recommended_global_error.show()
+        affiliate_no_product_bought_iv.show()
+        affiliate_no_product_seen_iv.show()
+    }
+
+    private fun hideErrorGroup() {
+        recommended_global_error.hide()
+        affiliate_no_product_bought_iv.hide()
+        affiliate_no_product_seen_iv.hide()
     }
 
     override fun getVMFactory(): ViewModelProvider.Factory {

@@ -21,20 +21,19 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
     private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<String>()
     private val pageLimit = 20
+    var isUserBlackListed : Boolean = false
 
     fun getAffiliateRecommendedProduct(identifier : String,page : Int) {
-        if(page == PAGE_ZERO)
-            shimmerVisibility.value = true
+        shimmerVisibility.value = true
         launchCatchError(block = {
-            if(page == PAGE_ZERO)
-                shimmerVisibility.value = false
             affiliateRecommendedProductUseCase.affiliateGetRecommendedProduct(identifier,page,pageLimit).recommendedAffiliateProduct?.data?.let {
                 totalItemsCount.value = it.pageInfo?.totalCount
                 val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
                 it.cards?.firstOrNull()?.items?.let { items ->
                     for (product in items){
                         product?.let {
-                           tempList.add(AffiliateStaggeredPromotionCardModel(product))
+                            product.isLinkGenerationAllowed = !isUserBlackListed
+                            tempList.add(AffiliateStaggeredPromotionCardModel(product))
                         }
                     }
                     affiliateDataList.value = tempList

@@ -44,7 +44,8 @@ data class AffiliateRecommendedProductData(
                         @SerializedName("rating")
                         val rating: Int?,
                         @SerializedName("title")
-                        val title: String?
+                        val title: String?,
+                        var isLinkGenerationAllowed : Boolean = true
                 ) {
                     data class AdditionalInformation(
                             @SerializedName("color")

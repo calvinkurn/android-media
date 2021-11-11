@@ -38,11 +38,10 @@ class AffiliateStaggeredPromotionCardItemVH(itemView: View, private val promotio
                         element?.product?.cardUrl?.androidURL ?: "",
                         "")
             }
-            // TODO
-//            if(element?.product?.status?.isLinkGenerationAllowed == false){
-//                buttonType = UnifyButton.Type.ALTERNATE
-//                setOnClickListener(null)
-//            }
+            if(element?.product?.isLinkGenerationAllowed == false){
+                buttonType = UnifyButton.Type.ALTERNATE
+                setOnClickListener(null)
+            }
         }
     }
 }
