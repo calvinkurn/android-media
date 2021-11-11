@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -17,7 +16,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity
@@ -72,11 +71,11 @@ class RechargeHomepageInstrumentTest {
         check_trustmark_section()
         check_dual_banners_section()
         check_lego_banners_section()
+        check_swipe_banner_section()
         check_product_cards_section()
         check_single_banner_section()
         check_product_banner_section()
         check_reminder_section()
-        check_swipe_banner_section()
 
         assertThat(
                 getAnalyticsWithQuery(gtmLogDBSource, context, SUBHOME_ANALYTIC_VALIDATOR_QUERY),
@@ -217,16 +216,9 @@ class RechargeHomepageInstrumentTest {
         onView(withId(R.id.recycler_view)).perform(
             RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(12)
         )
-        Thread.sleep(1000)
-        if (getBannerItemCount() > 0) {
-            onView(withId(R.id.recharge_home_swipe_banner)).perform(ViewActions.swipeRight())
-            onView(withId(R.id.recharge_home_swipe_banner)).perform(click())
-        }
-    }
-
-    private fun getBannerItemCount(): Int {
-        val carousel = activityRule.activity.findViewById(R.id.recharge_home_swipe_banner) as CarouselUnify
-        return carousel.indicatorCount.toInt()
+        onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
+        onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
+            .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
     }
 
     companion object {
