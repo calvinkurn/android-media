@@ -42,7 +42,6 @@ class QuestWidgetView @JvmOverloads constructor(
     private var rvQuestWidget: RecyclerView
     private var shimmerQuestWidget: ConstraintLayout
     private var constraintLayoutQuestWidget: ConstraintLayout
-    private var questWidgetError: LinearLayout
     private var questWidgetLogin: ImageUnify
     private var rvError: RecyclerView
     var userSession: UserSessionInterface
@@ -59,10 +58,9 @@ class QuestWidgetView @JvmOverloads constructor(
         rvQuestWidget = findViewById(R.id.rv_quest_widget)
         shimmerQuestWidget = findViewById(R.id.quest_widget_shimmer)
         constraintLayoutQuestWidget = findViewById(R.id.constraintLayoutQuestWidget)
-        questWidgetError = findViewById(R.id.quest_widget_error)
-        questWidgetLogin = findViewById(R.id.quest_widget_login)
+        questWidgetLogin = findViewById(R.id.iv_login)
 
-        rvError = questWidgetError.findViewById(R.id.rv_error)
+        rvError = findViewById(R.id.rv_error)
 
         DaggerQuestComponent.builder()
             .build().inject(this)
@@ -84,11 +82,21 @@ class QuestWidgetView @JvmOverloads constructor(
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     shimmerQuestWidget.hide()
-                    questWidgetError.show()
+                    rvQuestWidget.hide()
+                    constraintLayoutQuestWidget.show()
+                    rvError.show()
+                    rvError.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    rvError.adapter = QuestWidgetErrorAdapter()
+                    tvLihat.text = context.getString(R.string.lihat_semua)
+                    tvLabel.text = context.getString(R.string.quest_label)
                 }
                 LiveDataResult.STATUS.NON_LOGIN -> {
-                    questWidgetLogin.show()
                     shimmerQuestWidget.hide()
+                    constraintLayoutQuestWidget.show()
+                    rvQuestWidget.hide()
+                    questWidgetLogin.show()
+                    tvLihat.text = context.getString(R.string.lihat_semua)
+                    tvLabel.text = context.getString(R.string.quest_label)
                 }
             }
         })
@@ -96,8 +104,8 @@ class QuestWidgetView @JvmOverloads constructor(
 
     private fun setData(data: QuestData?) {
 
-        tvLabel.text = data?.widgetData?.pageDetail?.title
-        tvLihat.text = data?.widgetData?.pageDetail?.cta?.text
+        tvLabel.text = data?.widgetData?.questWidgetList?.pageDetail?.title
+        tvLihat.text = data?.widgetData?.questWidgetList?.pageDetail?.cta?.text
 
         val list = data?.widgetData?.questWidgetList
 
@@ -111,7 +119,7 @@ class QuestWidgetView @JvmOverloads constructor(
         }
 
         tvLihat.setOnClickListener {
-            RouteManager.route(context, data?.widgetData?.pageDetail?.cta?.url)
+            RouteManager.route(context, data?.widgetData?.questWidgetList?.pageDetail?.cta?.url)
         }
 
         questWidgetLogin.setOnClickListener {

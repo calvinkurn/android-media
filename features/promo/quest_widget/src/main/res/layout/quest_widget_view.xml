@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/quest_widget_view_flipper"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
@@ -19,7 +19,6 @@
         android:id="@+id/tv_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hadiah misi menantimu"
         android:layout_marginTop="@dimen/dim_12dp"
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,7 +30,6 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lihat Semua"
         android:id="@+id/tv_lihat"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,12 +50,40 @@
         android:paddingStart="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="@id/tv_lihat"
         app:layout_constraintTop_toBottomOf="@id/tv_label"
-        app:layout_constraintStart_toStartOf="@id/tv_label"
-        />
+        app:layout_constraintStart_toStartOf="@id/tv_label" />
 
-        <include layout="@layout/quest_widget_error" android:visibility="gone" android:id="@+id/quest_widget_error"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rv_error"
+            android:paddingStart="@dimen/spacing_lvl4"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4"
+            android:paddingTop="@dimen/dim_12dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            tools:itemCount="2"
+            tools:listitem="@layout/quest_widget_error_card"
+            android:src="@drawable/ic_quest_non_login"
+            app:layout_constraintStart_toStartOf="@id/tv_label"
+            app:layout_constraintEnd_toEndOf="@id/tv_lihat"
+            app:layout_constraintTop_toBottomOf="@id/tv_label"/>
 
-        <include layout="@layout/quest_widget_login" android:visibility="gone" android:id="@+id/quest_widget_login"/>
+        <com.tokopedia.unifycomponents.ImageUnify
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/iv_login"
+            android:layout_marginTop="@dimen/dim_12dp"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:src="@drawable/ic_quest_non_login"
+            app:layout_constraintStart_toStartOf="@id/tv_label"
+            app:layout_constraintEnd_toEndOf="@id/tv_lihat"
+            app:layout_constraintTop_toBottomOf="@id/tv_label"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

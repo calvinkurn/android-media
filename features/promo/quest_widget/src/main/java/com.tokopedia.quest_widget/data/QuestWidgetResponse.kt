@@ -13,12 +13,7 @@ data class WidgetData(
     @SerializedName("questWidgetList")
     val questWidgetList: QuestWidgetList,
 
-    @SerializedName("isEligible")
-    val isEligible: Boolean? = null,
-
-    @SerializedName("widgetPageDetail")
-    val pageDetail: PageDetail? = null
-)
+    )
 
 data class QuestWidgetList(
 
@@ -26,7 +21,13 @@ data class QuestWidgetList(
     val resultStatus: ResultStatus? = null,
 
     @SerializedName("questWidgetList")
-    val questWidgetList: List<QuestWidgetListItem>
+    val questWidgetList: List<QuestWidgetListItem>,
+
+    @SerializedName("isEligible")
+    val isEligible: Boolean? = null,
+
+    @SerializedName("widgetPageDetail")
+    val pageDetail: PageDetail? = null
 )
 
 data class QuestWidgetListItem(

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="str_dot">•</string>
+    <string name="lihat_semua">Lihat Semua</string>
+    <string name="quest_label">Hadiah misi menantimu</string>
 </resources>
