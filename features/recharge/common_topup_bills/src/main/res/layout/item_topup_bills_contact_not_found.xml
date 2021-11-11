@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/common_topupbills_contact_not_found_state_image"
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="@dimen/layout_lvl8"
-        android:src="@drawable/common_topup_ic_illustration_not_found"
+        tools:src="@drawable/iconunify_placeholder_filled"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
