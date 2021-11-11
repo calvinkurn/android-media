@@ -38,4 +38,20 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         // TODO: validate later when eventLabel value fixed from DA
 //        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
     }
+
+    @Test
+    fun chat_report_user() {
+        // Given
+        val journeyId = "125"
+        getChatUseCase.response = getChatUseCase.defaultChatWithBuyerResponse
+        launchChatRoomActivity()
+        preventOpenOtherActivity()
+
+        // When
+        HeaderRobot.clickThreeDotsMenu()
+        HeaderRobot.clickReportUserMenu()
+
+        // Then
+        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
+    }
 }
