@@ -6,4 +6,6 @@ internal interface Control {
 
     interface Database : BaseControl<Mappers.Database, Converters.Database>
 
+    interface Connection : BaseControl<Mappers.Connection, Converters.Connection>
+
 }
