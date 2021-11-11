@@ -61,7 +61,7 @@ import com.tokopedia.unifyprinciples.Typography
 open class TopChatViewStateImpl constructor(
         @NonNull override val view: View,
         private val typingListener: TypingListener,
-        private val sendListener: SendButtonListener,
+        protected val sendListener: SendButtonListener,
         private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
         private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
@@ -361,7 +361,7 @@ open class TopChatViewStateImpl constructor(
         }
     }
 
-    private fun showHeaderMenuBottomSheet(
+    protected open fun showHeaderMenuBottomSheet(
             chatroomViewModel: ChatroomViewModel,
             headerMenuListener: HeaderMenuListener
     ) {
