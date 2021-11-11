@@ -818,7 +818,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             CoachMark2Item(
                                     tokonowIcon,
                                     getString(R.string.home_tokonow_coachmark_title),
-                                    getString(R.string.home_tokonow_coachmark_description)
+                                    getString(R.string.home_tokonow_coachmark_description),
+                                    position = CoachMark2.POSITION_TOP
                             )
                     )
                 }
