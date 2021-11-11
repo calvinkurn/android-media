@@ -268,6 +268,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val TYPE = "text/plain"
         private const val START_TIME = "start_time"
         private const val SHOULD_TRACK = "should_track"
+        private const val SOURCE_TYPE = "source_type"
+        private const val VOD_POST = "VOD_POST"
 
 
         private val TAG = FeedPlusFragment::class.java.simpleName
@@ -1723,7 +1725,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, isVideo: Boolean, shopId: String, playChannelId: String, isClickIcon: Boolean) {
         if (isClickIcon)
         feedAnalytics.eventClickOpenComment(if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else id.toString(), type, isFollowed, authorType, isVideo)
-        else if (type == TYPE_FEED_X_CARD_PLAY && isClickIcon)
+        else if (type == TYPE_FEED_X_CARD_PLAY && !isClickIcon)
         feedAnalytics.eventClickLihatSemuaComment(playChannelId, type, isFollowed, authorType, isVideo)
 
         gotToKolComment(positionInFeed, id, authorType, isVideo, isFollowed, type)
@@ -1853,11 +1855,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventClickFullScreenIconVOD(feedXCard.playChannelID, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id)
         else
         feedAnalytics.eventClicklanjutMenontonVOD(feedXCard.playChannelID, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id)
-        val finalApplink = Uri.parse(redirectUrl)
-                .buildUpon()
-                .appendQueryParameter(START_TIME, currentTime.toString())
-                .appendQueryParameter(SHOULD_TRACK, shouldTrack.toString())
-                .build().toString()
+        val finalApplink = if (!shouldTrack) {
+             Uri.parse(redirectUrl)
+                    .buildUpon()
+                    .appendQueryParameter(START_TIME, currentTime.toString())
+                    .appendQueryParameter(SHOULD_TRACK, shouldTrack.toString())
+                    .build().toString()
+        }
+        else{
+            Uri.parse(redirectUrl)
+                    .buildUpon()
+                    .appendQueryParameter(START_TIME, currentTime.toString())
+                    .appendQueryParameter(SOURCE_TYPE, VOD_POST)
+                    .build().toString()
+        }
+
         onGoToLink(finalApplink)
     }
 
@@ -2043,13 +2055,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onTagSheetItemBuy(
-        activityId: String ,
+        activityId: String,
         positionInFeed: Int,
         postTagItem: FeedXProduct,
         shopId: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        playChannelId: String
     ) {
+        if (type == TYPE_FEED_X_CARD_PLAY)
+            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1,shopId,postTagItem.authorName, type, isFollowed)
+        else
         feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
         if (userSession.isLoggedIn) {
             if (::productTagBS.isInitialized) {
@@ -2153,7 +2169,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             isFollowed: Boolean,
             isVideo: Boolean,
             positionInFeed: Int,
-            playChannelId: String
+            playChannelId: String,
+            shopName: String
     ) {
         val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString()
         productTagBS = ProductItemInfoBottomSheet()
@@ -2167,7 +2184,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             type,
             isFollowed,
             positionInFeed,
-            playChannelId
+            playChannelId,
+            shopName = shopName
         )
         productTagBS.closeClicked = {
             feedAnalytics.eventClickCloseProductInfoSheet(finalId, type, isFollowed, id)
@@ -2324,7 +2342,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.product,
                 item.shopId,
                 item.postType,
-                item.isFollowed
+                item.isFollowed,
+                item.playChannelId
             )
         }
         sheet.addToWIshListCB = {
@@ -2678,7 +2697,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
 
                 view.count = view.count + 1
-            Log.v("Hit View", "onSuccessAddViewVODPost view ${item.feedXCard.views.count}")
 
             adapter.notifyItemChanged(rowNumber, PAYLOAD_ANIMATE_LIKE)
         }
@@ -2745,10 +2763,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
 
                 feedAnalytics.eventClickFollowitem(
-                    item.feedXCard.id,
+                    if (item.feedXCard.typename == TYPE_FEED_X_CARD_PLAY) item.feedXCard.playChannelID else item.feedXCard.id,
                     adapterPosition,
                     item.feedXCard.typename,
-                    !item.feedXCard.followers.isFollowed,
+                    item.feedXCard.followers.isFollowed,
                     item.feedXCard.author.id
                 )
 

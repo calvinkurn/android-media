@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.analytics.tracker
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK_ADD_TO_CART
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK_FULL_SCREEN
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK_LANJUT_MENONTON
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK_SEK_SEKARANG
@@ -11,8 +12,8 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Categor
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_BOTTOMSHEET
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_COMMENT
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_MENU
-import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CONTENT_FEED_CREATION
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CONTENT_FEED_TIMELINE
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.ADD_TO_CART
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CLICK_FEED
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CONTENT
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.OPEN_SCREEN
@@ -25,6 +26,7 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.kotlin.extensions.view.getDigits
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
@@ -143,6 +145,7 @@ class FeedAnalyticTracker
         const val CLICK_SEK_SEKARANG = "cek sekarang"
         const val CLICK_LANJUT_MENONTON = "lanjut menonton"
         const val CLICK_FULL_SCREEN = "full screen"
+        const val CLICK_ADD_TO_CART = "add to cart"
 
         const val IMPRESSION_PRODUCT_RECOM = "impression product recommendation"
         const val IMPRESSION_CONTENT_RECOM = "impression content recommendation"
@@ -556,6 +559,52 @@ class FeedAnalyticTracker
     )
 
     }
+
+ fun eventAddToCartFeedVOD(
+        channelId: String,
+        productId: String,
+        productName: String,
+        price: String,
+        quantity: Int,
+        shopId: String,
+        shopName: String,
+        type: String,
+        isFollowed: Boolean
+) {
+    trackEnhancedEcommerceEvent(
+            ADD_TO_CART,
+            CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            String.format(
+                    FORMAT_THREE_PARAM,
+                    CLICK,
+                    CLICK_ADD_TO_CART,
+                    getPostType(type, isFollowed)
+            ),
+            String.format(
+                    FORMAT_THREE_PARAM,
+                    channelId,
+                    shopId,
+                    productId
+            ),
+            eCommerceData = getCurrencyData() +
+                    getAddData(
+                            getActionFieldData(getListData("/feed - ${getPostType(type, isFollowed)}")) +
+                                    getProductsData(
+                                            listOf(
+                                                    getProductData(
+                                                            productId,
+                                                            productName,
+                                                            price.getDigits().toZeroIfNull(),
+                                                            quantity,
+                                                            shopId.toIntOrZero(),
+                                                            shopName
+                                                    )
+                                            )
+                                    )
+                    )
+    )
+}
+
     fun eventGridMoreProductCLicked(
         activityId: String, type: String,
         isFollowed: Boolean, shopId: String,
@@ -954,7 +1003,7 @@ class FeedAnalyticTracker
                                 FORMAT_THREE_PARAM,
                                 "watch",
                                 "video",
-                                getPostType("", isFollowed = isFollowed, isVideo = true)
+                                getPostType(type, isFollowed = isFollowed, isVideo = true)
                         ),
                         KEY_EVENT_LABEL to String.format(
                                 FORMAT_THREE_PARAM,
@@ -1058,14 +1107,7 @@ class FeedAnalyticTracker
         isFollowed: Boolean,
         shopId: String
     ) {
-        val finalLabel = if (type == TYPE_FEED_X_CARD_PLAY)
-            String.format(
-                    FORMAT_TWO_PARAM,
-                    activityId,
-                    shopId
-            )
-        else
-            String.format(
+        val finalLabel = String.format(
                     FORMAT_THREE_PARAM,
                     activityId,
                     shopId,
@@ -1593,7 +1635,7 @@ class FeedAnalyticTracker
                                 FORMAT_THREE_PARAM,
                                 CLICK,
                                 "sound",
-                                getPostType("", isFollowed )
+                                getPostType(type = TYPE_FEED_X_CARD_PLAY , isFollowed )
                         ),
                         KEY_EVENT_LABEL to String.format(
                                 FORMAT_TWO_PARAM,

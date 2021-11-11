@@ -60,10 +60,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.PageControl
-import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_post_image_new.view.*
@@ -1040,7 +1037,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         feedXCard.typename,
                                         feedXCard.followers.isFollowed,
                                         false,
-                                        positionInFeed
+                                        positionInFeed,
+                                        feedXCard.author.name
                                     )
                                 }
                             }
@@ -1060,7 +1058,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             tagProducts,
                             feedXCard.author.id,
                             feedXCard.typename,
-                            feedXCard.followers.isFollowed
+                            feedXCard.followers.isFollowed,
+                            feedXCard.author.name
                         )?.let {
                             addItem(
                                 it
@@ -1146,7 +1145,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 tagProducts,
                                 feedXCard.author.id,
                                 feedXCard.typename,
-                                feedXCard.followers.isFollowed
+                                feedXCard.followers.isFollowed,
+                                feedXCard.author.name
                         )?.let {
                             addItem(
                                     it
@@ -1164,7 +1164,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         products: List<FeedXProduct>,
         id: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        shopName: String
     ): View? {
         val videoItem = getVideoItem()
         feedMedia.canPlay = false
@@ -1181,7 +1182,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             type,
                             isFollowed,
                             true,
-                            positionInFeed
+                            positionInFeed,
+                            shopName = shopName
                     )
                 }
             }
@@ -1287,7 +1289,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             products: List<FeedXProduct>,
             id: String,
             type: String,
-            isFollowed: Boolean
+            isFollowed: Boolean,
+            shopName: String
     ): View? {
         val postId = feedXCard.id
         val vodItem = getVODItem()
@@ -1306,7 +1309,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             isFollowed,
                             true,
                             positionInFeed,
-                            playChannelId =   feedXCard.playChannelID
+                            playChannelId =   feedXCard.playChannelID,
+                            shopName = shopName
                     )
                 }
             }
@@ -1314,8 +1318,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 playVOD(feedXCard =  feedXCard)
             }
             vod_full_screen_icon?.setOnClickListener {
-                 isPaused = true
-                 listener?.onFullScreenCLick(feedXCard,positionInFeed, feedXCard.appLink, 0L, shouldTrack = true, true)
+                isPaused = true
+                vod_lanjut_menonton_btn?.gone()
+                vod_frozen_view?.gone()
+                listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink, 0L, shouldTrack = true, true)
             }
 
             vod_volumeIcon?.setOnClickListener {
@@ -1410,10 +1416,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
                 vod_full_screen_icon?.setOnClickListener {
                     isPaused = true
+                    vod_lanjut_menonton_btn?.gone()
+                    vod_frozen_view?.gone()
                     videoPlayer?.getExoPlayer()?.currentPosition?.let {
                         it1 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink, it1,shouldTrack, true) }
                 }
                 vod_lanjut_menonton_btn?.setOnClickListener {
+                    vod_lanjut_menonton_btn?.gone()
+                    vod_frozen_view?.gone()
                     videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink,it2,false, false)}
                 }
 
@@ -1720,6 +1730,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 secondCountDownTimer = null
             }
             if (addViewTimer != null) {
+                addViewTimer?.cancel()
                 addViewTimer = null
             }
             videoPlayer?.pause()

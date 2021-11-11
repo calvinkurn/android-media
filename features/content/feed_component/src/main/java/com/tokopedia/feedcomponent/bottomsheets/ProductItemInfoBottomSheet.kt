@@ -28,6 +28,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var postId: Int = 0
     private var positionInFeed: Int = 0
     private var shopId: String = "0"
+    private var shopName: String = ""
     private var playChannelId: String = "0"
     private var postType: String = ""
     private var isFollowed: Boolean = false
@@ -111,6 +112,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 postTagItem.star,
                 postTagItem.mods,
                 shopId,
+                shopName = shopName,
                 description = postDescription,
                 isTopads = postTagItem.isTopads,
                 adClickUrl = adClickUrl,
@@ -135,7 +137,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         type: String,
         isFollowed: Boolean,
         positionInFeed: Int,
-        playChannelId: String
+        playChannelId: String,
+        shopName:String
     ) {
         this.listProducts = products
         this.listener = dynamicPostListener
@@ -145,6 +148,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.isFollowed = isFollowed
         this.positionInFeed = positionInFeed
         this.playChannelId = playChannelId
+        this.shopName = shopName
         show(fragmentManager, "")
     }
 }

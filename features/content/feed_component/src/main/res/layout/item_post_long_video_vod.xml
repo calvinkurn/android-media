@@ -57,13 +57,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/vod_frame_video"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -71,14 +68,19 @@
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/vod_layout_video"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:resize_mode="fill"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:resize_mode="zoom"
             app:show_timeout="3000"
+            app:layout_constraintDimensionRatio="H,4:5"
             app:shutter_background_color="@android:color/transparent"
             app:surface_type="texture_view"
-            app:use_controller="false" />
-    </FrameLayout>
+            app:use_controller="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/vod_timer_view"
@@ -104,11 +106,10 @@
         android:drawablePadding="@dimen/unify_space_4"
         android:drawableTint="@color/Unify_N0"
         android:ellipsize="end"
-        android:gravity="center_vertical|left"
+        android:gravity="center_vertical|start"
         android:minWidth="@dimen/dp_24"
         android:paddingStart="@dimen/feed_component_dp_6"
         android:paddingTop="@dimen/unify_space_2"
-        android:paddingEnd="@dimen/unify_space_2"
         android:paddingBottom="@dimen/unify_space_2"
         android:singleLine="true"
         android:text="@string/feed_post_tag_text"
@@ -176,7 +177,6 @@
         android:alpha="0.7"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="4:5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"

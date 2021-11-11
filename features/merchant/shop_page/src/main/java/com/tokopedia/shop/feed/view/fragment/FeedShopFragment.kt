@@ -953,7 +953,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isFollowed: Boolean,
         isVideo: Boolean,
         positionInFeed: Int,
-        playChannelId: String
+        playChannelId: String,
+        shopName: String
     ) {
     }
 

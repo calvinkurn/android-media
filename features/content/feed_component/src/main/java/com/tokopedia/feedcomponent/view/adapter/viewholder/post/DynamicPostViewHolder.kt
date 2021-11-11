@@ -738,7 +738,8 @@ open class DynamicPostViewHolder(v: View,
                 isFollowed: Boolean,
                 isVideo: Boolean = false,
                 positionInFeed: Int,
-                playChannelId: String = ""
+                playChannelId: String = "",
+                shopName: String = ""
         )
 
         fun onReadMoreClicked(

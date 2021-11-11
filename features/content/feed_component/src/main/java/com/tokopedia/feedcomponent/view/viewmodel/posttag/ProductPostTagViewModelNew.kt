@@ -25,6 +25,7 @@ data class ProductPostTagViewModelNew(
     val rating: Int = 0,
     var mods: List<Any>,
     var shopId: String = "0",
+    var shopName: String = "",
     override var feedType: String = "",
     override var positionInFeed: Int = 0,
     override var postId: Int = 0,

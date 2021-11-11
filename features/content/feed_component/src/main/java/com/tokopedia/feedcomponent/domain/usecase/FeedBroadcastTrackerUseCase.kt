@@ -45,17 +45,18 @@ class FeedBroadcastTrackerUseCase @Inject constructor(
 
         const val QUERY_NAME = "FeedBroadcastTrackerUseCaseQuery"
         const val QUERY = """
-            mutation trackVisitChannelBroadcaster(${'$'}channelId: String!) {
-              broadcasterReportVisitChannel(channelID: ${'$'}channelId) {
+            mutation trackVisitChannelBroadcaster(${'$'}channelId: String!, ${'$'}entryPoint: String) {
+               broadcasterReportVisitChannel(channelID: ${'$'}channelId, entryPoint: ${'$'}entryPoint) {
                 success
               }
             }
         """
 
         fun createParams(
-                channelId: String,
+                channelId: String
         ): Map<String, Any> = mapOf(
-                PARAMS_CHANNEL_ID to channelId
+                PARAMS_CHANNEL_ID to channelId,
+                PARAMS_ENTRY_POINT to FEED_ENTRY_POINT_VALUE
         )
     }
 }
