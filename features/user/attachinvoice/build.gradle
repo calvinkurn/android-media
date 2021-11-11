@@ -81,8 +81,8 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 
-    // spek
     testImplementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
@@ -91,7 +91,8 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitJupiterEngine
 }
 
 project.ext {
