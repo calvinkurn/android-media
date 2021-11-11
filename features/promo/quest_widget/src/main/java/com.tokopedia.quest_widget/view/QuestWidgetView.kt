@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 class QuestWidgetView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FrameLayout(context, attrs) {
+) : FrameLayout(context, attrs), HandleError {
 
     companion object{
         const val LOADING = 0
@@ -45,6 +45,7 @@ class QuestWidgetView @JvmOverloads constructor(
     private var questWidgetLogin: ImageUnify
     private var rvError: RecyclerView
     var userSession: UserSessionInterface
+    private lateinit var page: String
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -86,7 +87,7 @@ class QuestWidgetView @JvmOverloads constructor(
                     constraintLayoutQuestWidget.show()
                     rvError.show()
                     rvError.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                    rvError.adapter = QuestWidgetErrorAdapter()
+                    rvError.adapter = QuestWidgetErrorAdapter(this)
                     tvLihat.text = context.getString(R.string.lihat_semua)
                     tvLabel.text = context.getString(R.string.quest_label)
                 }
@@ -126,15 +127,19 @@ class QuestWidgetView @JvmOverloads constructor(
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
 
-        rvError.setOnClickListener {
-            //TODO HANDLE ERROR
-        }
     }
 
     // the only call required to setup this widget
     fun getQuestList(channel: Int = 0, channelSlug: String = "", page: String) {
 
+        this.page = page
         val userSession = UserSession(context)
         viewModel.getWidgetList(channel, channelSlug, page, userSession)
+    }
+
+    override fun retry() {
+        constraintLayoutQuestWidget.hide()
+        shimmerQuestWidget.show()
+        getQuestList(0, "", this.page)
     }
 }
