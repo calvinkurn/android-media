@@ -43,8 +43,8 @@ class TopChatViewModel @Inject constructor(
     val followUnfollowShop: LiveData<Pair<BroadcastSpamHandlerUiModel?, Result<Boolean>>>
         get() = _followUnfollowShop
 
-    private val _occProduct = MutableLiveData<Result<String>>()
-    val occProduct: LiveData<Result<String>>
+    private val _occProduct = MutableLiveData<Result<ProductAttachmentUiModel>>()
+    val occProduct: LiveData<Result<ProductAttachmentUiModel>>
         get() = _occProduct
 
     fun getMessageId(
@@ -108,7 +108,10 @@ class TopChatViewModel @Inject constructor(
             if(result.isStatusError()) {
                 _occProduct.value = Fail(MessageErrorException(result.getAtcErrorMessage()))
             } else {
-                _occProduct.value = Success(product.productId)
+                if(!result.data.cart.isNullOrEmpty()) {
+                    product.cartId = result.data.cart.first().cartId
+                }
+                _occProduct.value = Success(product)
             }
         }, onError = {
             _occProduct.value = Fail(it)

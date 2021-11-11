@@ -150,6 +150,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
 
 /**
@@ -582,6 +583,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun setupAnalytic() {
         analytics.setSourcePage(sourcePage)
+        TopChatAnalyticsKt.sourcePage = sourcePage
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
@@ -644,7 +646,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun isOCCActive(): Boolean {
-//        return abTestPlatform.getBoolean(ROLLENCE_OCC)
+//        return abTestPlatform.getString(AB_TEST_OCC, AB_TEST_NON_OCC) == AB_TEST_OCC
         return true
     }
 
@@ -1526,7 +1528,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun doOCC(element: ProductAttachmentUiModel) {
         viewModel.occProduct(getUserSession().userId, element)
-        //TODO: Track OCC
     }
 
     private fun doBuyAndAtc(
@@ -2411,7 +2412,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.occProduct.observe(viewLifecycleOwner, {
             when(it) {
-                is Success -> goToOCC(it.data)
+                is Success -> {
+                    topchatViewState?.chatRoomViewModel?.let { chatData ->
+                        TopChatAnalyticsKt.eventClickOCCButton(
+                            it.data, chatData, getUserSession().userId)
+                    }
+                    goToOCC(it.data.productId)
+                }
                 is Fail -> onError(it.throwable)
             }
         })
@@ -2530,7 +2537,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val SECOND_DIVIDER = 1000
 
-        private const val ROLLENCE_OCC = "topchat_occ"
+        private const val AB_TEST_OCC = "chat_occ_exp"
+        private const val AB_TEST_NON_OCC = "chat_occ_control"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

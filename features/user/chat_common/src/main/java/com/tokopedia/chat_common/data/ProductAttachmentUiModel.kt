@@ -77,6 +77,7 @@ open class ProductAttachmentUiModel protected constructor(
     var colorHexVariant: String = ""
     var sizeVariantId: String = ""
     var sizeVariant: String = ""
+    var cartId: String = ""
 
     init {
         if (variants.isNotEmpty()) {
