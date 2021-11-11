@@ -324,15 +324,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
         }
     }
 
-    private fun createBestSellingWidget(channel: DynamicHomeChannel.Channels) {
-        if (!isCache) {
-            visitableList.add(
-                BestSellerDataModel(
-                    id = channel.id,
-                    pageName = channel.pageName,
-                    widgetParam = channel.widgetParam,
-                    dividerType = channel.dividerType
-                )
+    private fun createBestSellingWidget(channel: DynamicHomeChannel.Channels){
+        //best seller widget limited to only 1 widget per list
+        if(!isCache && !visitableList.any { it is BestSellerDataModel }) {
+            visitableList.add(BestSellerDataModel(id = channel.id, pageName = channel.pageName, widgetParam = channel.widgetParam, dividerType = channel.dividerType)
             )
         }
     }
@@ -344,9 +339,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
     ) {
         if (!isCache) {
             visitableList.add(
-                mappingCampaignWidgetComponent(
-                    channel, isCache, verticalPosition
-                )
+               mappingCampaignWidgetComponent(
+                       channel, isCache, verticalPosition
+               )
             )
         }
     }
