@@ -50,7 +50,6 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     private static final String FOLDER_NAME = "extras";
     private static final String FILE_EXTENSIONS = ".jpg";
-    private static final int IMAGE_QUALITY = 95;
     public CameraView cameraView;
     public View reverseCamera;
     public CameraListener cameraListener;

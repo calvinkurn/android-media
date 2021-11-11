@@ -17,19 +17,19 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.homecredit.di.component.DaggerHomeCreditComponent;
 import com.tokopedia.homecredit.di.component.HomeCreditComponent;
 import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment;
+import com.tokopedia.homecredit.view.fragment.HomeCreditSelfieFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeCreditRegisterActivity extends BaseSimpleActivity implements HasComponent<HomeCreditComponent> {
 
-    private final static String SHOW_KTP = "show_ktp";
     public static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
+    protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
+    private final static String SHOW_KTP = "show_ktp";
     private List<String> permissionsToRequest;
     private boolean isPermissionGotDenied;
     private boolean showKtp = false;
-    protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
-
     private HomeCreditComponent homeCreditComponent = null;
 
 
@@ -92,7 +92,7 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity implements Ha
         if (showKtp) {
             return HomeCreditKTPFragment.createInstance();
         } else {
-            return HomeCreditKTPFragment.createInstance();
+            return HomeCreditSelfieFragment.createInstance();
         }
     }
 

@@ -16,5 +16,6 @@ import dagger.Component;
 public interface HomeCreditComponent {
 
     void inject(HomeCreditRegisterActivity homeCreditRegisterActivity);
+
     void inject(HomeCreditBaseCameraFragment homeCreditBaseCameraFragment);
 }
