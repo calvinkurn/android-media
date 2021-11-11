@@ -1413,7 +1413,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
                 }
                 vod_full_screen_icon?.setOnClickListener {
-                    addViewTimer?.cancel()
                     isPaused = true
                     vod_lanjut_menonton_btn?.gone()
                     vod_frozen_view?.gone()
@@ -1421,7 +1420,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         it1 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink, it1,shouldTrack, true) }
                 }
                 vod_lanjut_menonton_btn?.setOnClickListener {
-                    addViewTimer?.cancel()
                     vod_lanjut_menonton_btn?.gone()
                     vod_frozen_view?.gone()
                     videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink,it2,false, false)}
