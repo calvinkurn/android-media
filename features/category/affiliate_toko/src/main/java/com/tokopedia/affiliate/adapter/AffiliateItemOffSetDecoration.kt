@@ -30,35 +30,20 @@ class AffiliateItemOffSetDecoration : RecyclerView.ItemDecoration() {
         if(position < 0)
             return
         val spanIndex = (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).spanIndex
-        when (parent.adapter?.getItemViewType(position)) {
-            AffiliateStaggeredPromotionCardItemVH.LAYOUT -> {
-                if (spanIndex.isZero()) {
-                    //settings for left column
-                    var top = 0
-                    if (position < 2) top = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-                    val left = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-                    setMargins(view, left = left, top = top)
-                } else {
-                    //settings for right column
-                    var top = 0
-                    if (position < 2) top = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-                    val right = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
-                    setMargins(view, right = right, top = top)
-                }
-            }
-        }
-    }
-
-    private fun setMargins(view: View?, left: Int = 0, right: Int = 0, top: Int = 0, bottom: Int = 0) {
-        val cardView: CardView? = view?.findViewById(R.id.cardViewProductCard)
-        val params = cardView?.layoutParams as? FrameLayout.LayoutParams
-
-        params?.let {
-            it.rightMargin = right
-            it.leftMargin = left
-            it.bottomMargin = bottom
-            it.topMargin = top
-            cardView.layoutParams = it
+        if (spanIndex.isZero()) {
+            //settings for left column
+            var top = 0
+            if (position < 2) top = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
+            val left = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
+            (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).leftMargin = left
+            (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin = top
+        } else {
+            //settings for right column
+            var top = 0
+            if (position < 2) top = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
+            val right = parent.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2).toPx().toInt()
+            (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).rightMargin = right
+            (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin = top
         }
     }
 }

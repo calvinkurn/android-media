@@ -5,6 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.cardview.widget.CardView
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:id="@+id/affiliate_announcement_ticker_cv"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="0dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            app:tickerType="announcement"
+            app:descriptionText="Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!"
+            app:titleText="Saat ini lagi ada pemeliharaan sistem"
+            app:closeButtonVisibility="gone"
+            android:id="@+id/affiliate_announcement_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.cardview.widget.CardView>
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/affiliate_no_product_bought_iv"
@@ -16,7 +38,7 @@
         android:visibility="gone"
         app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"
         app:imageDpiSupportType="singleDpi"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker_cv"
         tools:visibility="visible" />
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
@@ -49,7 +71,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker_cv"
         tools:visibility="gone"
         >
 
