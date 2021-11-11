@@ -27,6 +27,8 @@ class OneLinersViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_one_liners
+
+        private const val BOTTOM_PADDING = 12f
     }
 
     private val container: View? = view.findViewById(R.id.one_liners_container)
@@ -80,7 +82,7 @@ class OneLinersViewHolder(
 
         if (element.name == ProductDetailConstant.BEST_SELLER) {
             container?.apply {
-                val dp12 = convertDpToPixel(12f, context)
+                val dp12 = convertDpToPixel(BOTTOM_PADDING, context)
                 setPadding(paddingLeft, 0, paddingRight, dp12)
             }
             if (applink.isNotBlank()) {
