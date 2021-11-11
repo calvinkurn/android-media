@@ -1,6 +1,5 @@
 package com.tokopedia.shop.pageheader.util
 
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
