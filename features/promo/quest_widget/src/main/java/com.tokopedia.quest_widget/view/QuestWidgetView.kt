@@ -132,7 +132,7 @@ class QuestWidgetView @JvmOverloads constructor(
     }
 
     // the only call required to setup this widget
-    fun getQuestList(channel: Int, channelSlug: String, page: String) {
+    fun getQuestList(channel: Int = 0, channelSlug: String = "", page: String) {
 
         val userSession = UserSession(context)
         viewModel.getWidgetList(channel, channelSlug, page, userSession)

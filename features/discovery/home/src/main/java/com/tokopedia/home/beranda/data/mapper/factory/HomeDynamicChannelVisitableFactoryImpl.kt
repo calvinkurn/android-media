@@ -183,6 +183,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_QUESTWIDGET -> {
+                    createQuestChannel(channel, position , isCache)
+                }
             }
         }
         if (addLoadingMore) {
@@ -459,6 +462,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
         return viewModel
     }
 
+    private fun mappingQuestWidgetComponent(channel: DynamicHomeChannel.Channels,
+                                                 isCache: Boolean,
+                                                 verticalPosition: Int): Visitable<*> {
+        return QuestWidgetModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+            isCache = isCache)
+    }
+
     private fun mappingMixLeftComponent(channel: DynamicHomeChannel.Channels,
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
@@ -514,6 +525,18 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
                 isDataCache = isCache
         ))
+    }
+
+    private fun createQuestChannel(
+        channel: DynamicHomeChannel.Channels,
+        position: Int,
+        isCache: Boolean
+    ) {
+        visitableList.add(mappingQuestWidgetComponent(
+            channel,
+            isCache,
+            position
+            ))
     }
 
     override fun build(): List<Visitable<*>> = visitableList

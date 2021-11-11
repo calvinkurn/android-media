@@ -6,5 +6,6 @@ object QuestUserStatus {
     const val ON_PROGRESS = "On Progress"
     const val COMPLETED = "Completed"
     const val CLAIMED = "Claimed"
+    const val ANIMATED = "animated"
 
 }
