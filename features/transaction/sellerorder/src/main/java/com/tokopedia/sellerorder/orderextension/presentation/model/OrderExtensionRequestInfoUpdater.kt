@@ -82,9 +82,9 @@ interface OrderExtensionRequestInfoUpdater {
         }
     }
 
-    class OnFailedSendingOrderExtensionRequest(private val shouldDismiss: Boolean) : OrderExtensionRequestInfoUpdater {
+    class OnFailedSendingOrderExtensionRequest : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = false, completed = shouldDismiss)
+            return oldData.copy(processing = false)
         }
     }
 

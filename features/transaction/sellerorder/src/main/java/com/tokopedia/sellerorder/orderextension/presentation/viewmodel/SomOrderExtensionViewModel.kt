@@ -71,10 +71,10 @@ class SomOrderExtensionViewModel @Inject constructor(
             OrderExtensionRequestInfoUpdater.OnStartSendingOrderExtensionRequest(action)
     }
 
-    private suspend fun onFailedSendingOrderExtensionRequest(shouldDismiss: Boolean) {
+    private suspend fun onFailedSendingOrderExtensionRequest() {
         withContext(dispatcher.main) {
             orderExtensionRequestInfoUpdates.value =
-                OrderExtensionRequestInfoUpdater.OnFailedSendingOrderExtensionRequest(shouldDismiss)
+                OrderExtensionRequestInfoUpdater.OnFailedSendingOrderExtensionRequest()
         }
     }
 
@@ -116,16 +116,16 @@ class SomOrderExtensionViewModel @Inject constructor(
                         somOrderExtensionRequestResultMapper.mapResponseToUiModel(result)
                     _requestExtensionResult.postValue(Success(mappedResult))
                     if (!mappedResult.success) {
-                        onFailedSendingOrderExtensionRequest(true)
+                        onFailedSendingOrderExtensionRequest()
                     } else {
                         onOrderExtensionRequestCompleted()
                     }
                 } else {
-                    onFailedSendingOrderExtensionRequest(false)
+                    onFailedSendingOrderExtensionRequest()
                 }
             }, onError = {
                 _requestExtensionResult.postValue(Fail(it))
-                onFailedSendingOrderExtensionRequest(false)
+                onFailedSendingOrderExtensionRequest()
             })
         }
     }
