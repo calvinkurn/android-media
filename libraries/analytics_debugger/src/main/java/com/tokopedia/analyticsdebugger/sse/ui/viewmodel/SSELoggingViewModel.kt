@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.analyticsdebugger.sse.domain.usecase.DeleteAllSSELogUseCase
 import com.tokopedia.analyticsdebugger.sse.domain.usecase.GetSSELogUseCase
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
 import kotlinx.coroutines.delay
@@ -14,7 +15,8 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on November 10, 2021
  */
 class SSELoggingViewModel @Inject constructor(
-    private val getSSELogUseCase: GetSSELogUseCase
+    private val getSSELogUseCase: GetSSELogUseCase,
+    private val deleteAllSSELogUseCase: DeleteAllSSELogUseCase,
 ): ViewModel() {
 
     private val _observableSSELog = MutableLiveData<List<SSELogUiModel>>()
@@ -25,6 +27,12 @@ class SSELoggingViewModel @Inject constructor(
         viewModelScope.launch {
             getSSELogUseCase.setParam(query)
             _observableSSELog.value = getSSELogUseCase.executeOnBackground()
+        }
+    }
+
+    fun deleteAllLog() {
+        viewModelScope.launch {
+            deleteAllSSELogUseCase.executeOnBackground()
         }
     }
 }

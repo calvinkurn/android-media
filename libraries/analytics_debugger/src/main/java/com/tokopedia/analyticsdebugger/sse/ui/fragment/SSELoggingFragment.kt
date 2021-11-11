@@ -3,9 +3,7 @@ package com.tokopedia.analyticsdebugger.sse.ui.fragment
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -46,6 +44,7 @@ class SSELoggingFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjection()
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -121,6 +120,20 @@ class SSELoggingFragment: Fragment() {
             val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(it.windowToken, 0)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_sse_log, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_menu_delete) {
+            viewModel.deleteAllLog()
+            loadData()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {
