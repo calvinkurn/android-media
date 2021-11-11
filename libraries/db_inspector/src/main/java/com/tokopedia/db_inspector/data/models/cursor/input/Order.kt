@@ -1,4 +1,4 @@
-package com.tokopedia.db_inspector.data.models.input
+package com.tokopedia.db_inspector.data.models.cursor.input
 
 import androidx.annotation.DrawableRes
 

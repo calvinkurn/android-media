@@ -1,6 +1,8 @@
 package com.tokopedia.db_inspector.data
 
 import android.database.sqlite.SQLiteDatabase
+import com.tokopedia.db_inspector.data.models.cursor.input.Query
+import com.tokopedia.db_inspector.data.models.cursor.output.QueryResult
 import com.tokopedia.db_inspector.domain.databases.models.Operation
 import java.io.File
 
@@ -21,6 +23,11 @@ internal interface Sources {
         interface Schema {
 
         }
+    }
+
+    interface Pragma {
+        suspend fun getUserVersion(query: Query): QueryResult
+
     }
 
 }

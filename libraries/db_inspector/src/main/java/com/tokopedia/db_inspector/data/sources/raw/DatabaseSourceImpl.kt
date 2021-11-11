@@ -1,7 +1,8 @@
-package com.tokopedia.db_inspector.data
+package com.tokopedia.db_inspector.data.sources.raw
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.db_inspector.data.Sources
 import com.tokopedia.db_inspector.domain.databases.models.Operation
 import java.io.File
 import java.util.*

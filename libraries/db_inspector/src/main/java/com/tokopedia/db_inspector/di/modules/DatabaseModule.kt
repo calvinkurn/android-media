@@ -2,8 +2,8 @@ package com.tokopedia.db_inspector.di.modules
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.db_inspector.data.DatabaseSourceImpl
 import com.tokopedia.db_inspector.data.Sources
+import com.tokopedia.db_inspector.data.sources.raw.DatabaseSourceImpl
 import com.tokopedia.db_inspector.domain.Control
 import com.tokopedia.db_inspector.domain.Converters
 import com.tokopedia.db_inspector.domain.Interactors

@@ -32,7 +32,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/databaseName"
             android:text="VERSION: "
-            app:typographyType="body_2"
+            app:typographyType="heading_5"
             android:textColor="@color/Unify_G500"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -55,7 +55,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleDatabaseVersion"
             android:text="PATH: "
-            app:typographyType="body_2"
+            app:typographyType="heading_5"
             android:textColor="@color/Unify_G500"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -74,8 +74,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/databaseAction"
-            android:layout_width="@dimen/unify_space_32"
-            android:layout_height="@dimen/unify_space_32"
+            android:layout_width="@dimen/unify_space_24"
+            android:layout_height="@dimen/unify_space_24"
             app:icon_name="MENU_KEBAB_VERTICAL"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>

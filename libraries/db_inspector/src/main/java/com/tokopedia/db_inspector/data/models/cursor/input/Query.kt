@@ -1,4 +1,4 @@
-package com.tokopedia.db_inspector.data.models.input
+package com.tokopedia.db_inspector.data.models.cursor.input
 
 import android.database.sqlite.SQLiteDatabase
 import com.tokopedia.db_inspector.data.Data
