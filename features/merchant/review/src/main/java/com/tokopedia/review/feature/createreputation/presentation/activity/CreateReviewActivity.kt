@@ -1,7 +1,5 @@
 package com.tokopedia.review.feature.createreputation.presentation.activity
 
-import android.app.NotificationManager
-import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -14,11 +12,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
-import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -30,14 +25,10 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     companion object {
         const val PARAM_RATING = "rating"
         const val DEFAULT_PRODUCT_RATING = 5
-        const val WRITE_FORM_EXPERIMENT_NAME = "ReviewForm_AB"
-        const val WRITE_FORM_BOTTOM_SHEET_VARIANT = "variant_bottomsheet"
-        const val WRITE_FORM_CONTROL_VARIANT = "control_page"
         const val CREATE_REVIEW_BOTTOM_SHEET_TAG = "CreateReviewBottomSheetTag"
     }
 
     private var productId: String = ""
-    private var createReviewFragment: CreateReviewFragment? = null
     private var rating = DEFAULT_PRODUCT_RATING
     private var feedbackId = ""
     private var reputationId: String = ""
@@ -48,18 +39,10 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
-        if (!isNewFormVariant()) {
-            setWhiteTheme()
-            setToolbar()
-        }
         adjustOrientation()
-        if (isNewFormVariant()) {
-            handleDimming()
-            hideToolbar()
-            showWriteFormBottomSheet()
-            return
-        }
-        setupOldFragment()
+        handleDimming()
+        hideToolbar()
+        showWriteFormBottomSheet()
     }
 
 
@@ -69,28 +52,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     override fun getNewFragment(): Fragment? {
         getDataFromApplinkOrIntent()
-        if (isNewFormVariant()) {
-            return null
-        }
-        setToolbar()
-        createReviewFragment = CreateReviewFragment.createInstance(
-                productId,
-                reputationId,
-                rating,
-                false,
-                feedbackId,
-                utmSource
-        )
-        return createReviewFragment
-    }
-
-    override fun onBackPressed() {
-        if (!isNewFormVariant()) {
-            createReviewFragment?.let {
-                CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId, it.createReviewViewModel.isUserEligible())
-                it.showCancelDialog()
-            }
-        }
+        return null
     }
 
     override fun startPerformanceMonitoring() {
@@ -155,20 +117,12 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         }
     }
 
-    private fun setToolbar() {
-        this.supportActionBar?.title = getString(R.string.review_create_activity_title)
-    }
-
     private fun handleDimming() {
         try {
             window.setDimAmount(0f)
         } catch (th: Throwable) {
             Timber.e(th)
         }
-    }
-
-    private fun setWhiteTheme() {
-        setTheme(com.tokopedia.abstraction.R.style.Theme_WhiteUnify)
     }
 
     private fun hideToolbar() {
@@ -180,25 +134,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         createReviewBottomSheet?.apply {
             clearContentPadding = true
             show(supportFragmentManager, CREATE_REVIEW_BOTTOM_SHEET_TAG)
-        }
-    }
-
-    private fun setupOldFragment() {
-        intent.extras?.run {
-            (applicationContext
-                    .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                    .cancel(getInt(CreateReviewFragment.REVIEW_NOTIFICATION_ID))
-        }
-        supportActionBar?.elevation = 0f
-    }
-
-    private fun isNewFormVariant(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    WRITE_FORM_EXPERIMENT_NAME, WRITE_FORM_CONTROL_VARIANT
-            ) == WRITE_FORM_BOTTOM_SHEET_VARIANT
-        } catch (t: Throwable) {
-            false
         }
     }
 
