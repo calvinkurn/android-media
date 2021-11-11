@@ -21,8 +21,6 @@ fun List<RecommendationWidget>.mappingRecommendationToWishlist(
     list.add(recommendationPositionInThisPage,
         WishlistV2RecommendationDataModel(this, isCarousel = true))
 
-    list
-
     return list
 }
 
@@ -48,7 +46,6 @@ fun List<WishlistV2Data>.mappingTopadsBannerToWishlist(
     val list = mutableListOf<WishlistV2Data>()
     list.addAll(this)
     list.add(recommendationPositionInThisPage, WishlistV2TopAdsDataModel(topAdsData = topadsBanner))
-    list
     return list
 }
 

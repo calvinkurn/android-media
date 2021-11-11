@@ -48,10 +48,6 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
     val wishlistData: LiveData<WishlistV2Response.Data.WishlistV2>
         get() = _wishlistData
 
-    private val _wishlistV2Data = MutableLiveData<Result<List<WishlistV2TypeLayoutData>>>()
-    val wishlistV2Data: LiveData<Result<List<WishlistV2TypeLayoutData>>>
-        get() = _wishlistV2Data
-
     private val _deleteWishlistV2Result =
         MutableLiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>()
     val deleteWishlistV2Result: LiveData<Result<DeleteWishlistV2Response.Data.WishlistRemoveV2>>
@@ -86,7 +82,7 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
                     _wishlistData.value = wishlistData
                     val visitableWishlist = wishlistData.items.mappingWishlistToVisitable()
                     when {
-                        wishlistData.items.size < maxItemInPage -> {
+                        wishlistData.totalData < maxItemInPage -> {
                             _wishlistV2Result.value = Success(
                                 getRecommendationWishlist(
                                     visitableWishlist,
@@ -98,7 +94,7 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
                         }
 
                         // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
-                        wishlistData.items.size == maxItemInPage -> {
+                        wishlistData.totalData == maxItemInPage -> {
                             _wishlistV2Result.value = Success(
                                 getTopadsAndRecommendationWishlist(
                                     visitableWishlist,
@@ -110,7 +106,7 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
                         }
 
                         // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
-                        wishlistData.items.size > maxItemInPage -> {
+                        wishlistData.totalData > maxItemInPage -> {
                             if (wishlistData.totalData > newMinItemRegularRule) {
                                 _wishlistV2Result.value = Success(
                                     getTopAdsBannerData(
