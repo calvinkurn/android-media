@@ -29,8 +29,8 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:layout_gravity="end"
-            android:layout_margin="4dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="6dp"
             app:srcCompat="@drawable/ic_enlarge_icon" />
 
     </FrameLayout>
