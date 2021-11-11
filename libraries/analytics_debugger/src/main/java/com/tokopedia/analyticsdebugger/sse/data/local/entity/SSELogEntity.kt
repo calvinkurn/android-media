@@ -15,6 +15,15 @@ data class SSELogEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
 
+    @ColumnInfo(name = "channel_id")
+    val channelId: String,
+
+    @ColumnInfo(name = "page_source")
+    val pageSource: String,
+
+    @ColumnInfo(name = "gc_token")
+    val gcToken: String,
+
     @ColumnInfo(name = "event")
     val event: String,
 

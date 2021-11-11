@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
  */
 data class SSELogUiModel(
     val id: Long = 0,
+    val generalInfo: SSELogGeneralInfoUiModel,
     val event: String,
     val message: String,
     val dateTime: String,

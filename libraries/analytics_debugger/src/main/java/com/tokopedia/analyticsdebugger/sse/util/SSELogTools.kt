@@ -2,6 +2,7 @@ package com.tokopedia.analyticsdebugger.sse.util
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.sse.domain.usecase.InsertSSELogUseCase
+import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogGeneralInfoUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,20 +15,22 @@ class SSELogTools @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
 ) {
 
-    fun sendLog(event: String, channelId: String, pageSource: String, gcToken: String) {
-        sendLog(event, convertToJson(channelId, pageSource, gcToken))
+    private var generalInfo: SSELogGeneralInfoUiModel? = null
+
+    fun initLog(channelId: String, pageSource: String, gcToken: String) {
+        generalInfo = SSELogGeneralInfoUiModel(
+            channelId = channelId,
+            pageSource = pageSource,
+            gcToken = gcToken
+        )
     }
 
-    fun sendLog(event: String, message: String) {
+    fun sendLog(event: String, message: String = "") {
         CoroutineScope(dispatchers.io).launch {
-            insertSSELogUseCase.setParam(event, message)
-            insertSSELogUseCase.executeOnBackground()
+            generalInfo?.let {
+                insertSSELogUseCase.setParam(event, message, it)
+                insertSSELogUseCase.executeOnBackground()
+            }
         }
     }
-
-    private fun convertToJson(channelId: String, pageSource: String, gcToken: String) = mapOf(
-        "channelId" to channelId,
-        "pageSource" to pageSource,
-        "gcToken" to gcToken
-    ).toString()
 }

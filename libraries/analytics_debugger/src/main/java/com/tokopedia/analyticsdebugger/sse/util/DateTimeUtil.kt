@@ -8,7 +8,7 @@ import java.util.*
  * Created By : Jonathan Darwin on November 10, 2021
  */
 object DateTimeUtil {
-    fun formatDate(timestamp: Long, outputPattern: String = "yyyy-MM-dd HH:mm:ss"): String {
+    fun formatDate(timestamp: Long, outputPattern: String = "dd MMM yyyy HH:mm:ss.SSS"): String {
         return try {
             val output = SimpleDateFormat(outputPattern, Locale.getDefault())
             output.format(Date(timestamp))
