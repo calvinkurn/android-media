@@ -17,7 +17,7 @@ class Constants {
 
         const val EVENT_TYPE_NEW_RELIC = "eventType"
         const val EVENT_ANDROID_NEW_RELIC = "android"
-        const val EVENT_ANDROID_SF_NEW_RELIC = "androidSF"
+        const val EVENT_ANDROID_SF_NEW_RELIC = "androidsf"
 
         const val SEVERITY_HIGH = 1
         const val SEVERITY_MEDIUM = 2
