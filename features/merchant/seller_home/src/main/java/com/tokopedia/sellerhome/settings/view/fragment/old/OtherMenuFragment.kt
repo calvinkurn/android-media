@@ -91,6 +91,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         const val TOPADS_AUTO_TOPUP = "topads auto topup"
         const val FREE_SHIPPING = "free shipping"
 
+        const val SHOW_FULL_SCREEN_BOTTOM_SHEET = "FullScreenBottomSheet"
+
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
     }
@@ -149,6 +151,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private val otherMenuAdapter by lazy {
         adapter as? OtherMenuAdapter
+    }
+
+    private val kreditTopadsClickedBundle by lazy {
+        Bundle().also {
+            it.putBoolean(SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+        }
     }
 
     private var statusHeaderImage: AppCompatImageView? = null
@@ -236,7 +244,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 bottomSheet.dismiss()
                 RouteManager.route(it, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
             } else {
-                RouteManager.route(it, ApplinkConst.SellerApp.TOPADS_CREDIT)
+                RouteManager.route(
+                    it,
+                    kreditTopadsClickedBundle,
+                    ApplinkConst.SellerApp.TOPADS_CREDIT
+                )
             }
         }
     }
