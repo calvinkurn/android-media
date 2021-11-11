@@ -258,6 +258,7 @@
 
 /features/payment/payment_setting/              		@tokopedia/android-minionyoda-dev
 /features/payment/pms/                          		@tokopedia/android-minionyoda-dev
+/features/payment/gopay.kyc/                          	@tokopedia/android-minionyoda-dev
 
 /libraries/adapter_delegate/							@tokopedia/android-core-dev
 /libraries/akamai_bot_lib/							    @tokopedia/android-core-dev
