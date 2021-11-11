@@ -176,8 +176,12 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         const val SPAN_WIDTH_LAST_ITEM = 1
         const val MAX_SPAN_COUNT = 5
 
-        fun newInstance(): ShopPenaltyDetailFragment {
-            return ShopPenaltyDetailFragment()
+        fun newInstance(keyCacheManagerId: String): ShopPenaltyDetailFragment {
+            return ShopPenaltyDetailFragment().apply {
+                val bundle = Bundle()
+                bundle.putString(KEY_CACHE_MANAGE_ID, keyCacheManagerId)
+                arguments = bundle
+            }
         }
     }
 }

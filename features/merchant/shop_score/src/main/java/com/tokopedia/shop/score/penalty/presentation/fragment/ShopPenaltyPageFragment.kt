@@ -303,7 +303,7 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
         }
     }
 
-    private fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasNext: Boolean) {
+    protected open fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasNext: Boolean) {
         val penaltyList = penaltyPageAdapter.list.filterIsInstance<ItemPenaltyUiModel>()
         if (penaltyList.isEmpty() && data.isEmpty()) {
             penaltyPageAdapter.setEmptyStatePenalty()
