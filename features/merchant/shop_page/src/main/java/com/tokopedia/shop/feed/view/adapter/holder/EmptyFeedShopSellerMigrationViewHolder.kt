@@ -6,6 +6,8 @@ import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.WidgetShopPageTabFeedNoPostSellerMigrationBinding
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
@@ -19,9 +21,10 @@ class EmptyFeedShopSellerMigrationViewHolder(view: View,
         val LAYOUT = R.layout.widget_shop_page_tab_feed_no_post_seller_migration
     }
 
-    private val ivTabFeedNoPost: ShopCarouselBannerImageUnify? = view.findViewById(R.id.ivTabFeedNoPost)
-    private val tvSellerMigrationLearnMoreLink: Typography? = view.findViewById(R.id.tvSellerMigrationLearnMoreLink)
-    private val btnPlayStoreTabFeedNoPost: View? = view.findViewById(R.id.btnPlayStoreTabFeedNoPost)
+    private val viewBinding : WidgetShopPageTabFeedNoPostSellerMigrationBinding? by viewBinding()
+    private val ivTabFeedNoPost: ShopCarouselBannerImageUnify? = viewBinding?.ivTabFeedNoPost
+    private val tvSellerMigrationLearnMoreLink: Typography? = viewBinding?.tvSellerMigrationLearnMoreLink
+    private val btnPlayStoreTabFeedNoPost: View? = viewBinding?.btnPlayStoreTabFeedNoPost
 
     override fun bind(element: EmptyFeedShopSellerMigrationUiModel?) {
         with(itemView) {
