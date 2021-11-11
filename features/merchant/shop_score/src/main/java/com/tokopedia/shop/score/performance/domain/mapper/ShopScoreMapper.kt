@@ -907,7 +907,7 @@ class ShopScoreMapper @Inject constructor(
                         .orEmpty(),
                 )
             )
-            
+
             if (isNewSeller) {
                 add(
                     ItemFaqUiModel(
@@ -917,16 +917,15 @@ class ShopScoreMapper @Inject constructor(
                             .orEmpty(),
                     )
                 )
-            }
-
-            add(
-                ItemFaqUiModel(
-                    title = context?.getString(R.string.title_time_adjustment_what_relief_for_new_seller)
-                        .orEmpty(),
-                    desc_first = context?.getString(R.string.desc_time_adjustment_what_relief_for_new_seller)
-                        .orEmpty(),
+                add(
+                    ItemFaqUiModel(
+                        title = context?.getString(R.string.title_time_adjustment_what_relief_for_new_seller)
+                            .orEmpty(),
+                        desc_first = context?.getString(R.string.desc_time_adjustment_what_relief_for_new_seller)
+                            .orEmpty(),
+                    )
                 )
-            )
+            }
 
             if (isOfficialStore) {
                 add(
