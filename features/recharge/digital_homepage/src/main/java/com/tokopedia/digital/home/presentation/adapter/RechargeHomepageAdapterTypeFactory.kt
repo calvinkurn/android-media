@@ -74,6 +74,10 @@ class RechargeHomepageAdapterTypeFactory(
         return RechargeHomepageTickerViewHolder.LAYOUT
     }
 
+    override fun type(questWidgetModel: QuestWidgetModel): Int {
+        return QuestWidgetViewHolder.LAYOUT
+    }
+
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
