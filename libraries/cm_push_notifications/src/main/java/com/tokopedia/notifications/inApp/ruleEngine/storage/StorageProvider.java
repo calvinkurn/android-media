@@ -21,7 +21,6 @@ public class StorageProvider implements InterfaceDataStore {
     private final InAppDataDao inAppDataDao;
     private final ElapsedTimeDao elapsedTimeDao;
     private StorageProviderListener storageProviderListener;
-    String TAG = "GratifTag";
 
     public StorageProvider(InAppDataDao inAppDataDao, ElapsedTimeDao elapsedTimeDao, StorageProviderListener storageProviderListener) {
         this.inAppDataDao = inAppDataDao;
@@ -95,23 +94,6 @@ public class StorageProvider implements InterfaceDataStore {
         }
     }
 
-    @Override
-    public Completable putDataToStore(final List<CMInApp> inAppDataRecords) {
-        return Completable.fromAction(new Action0() {
-            @Override
-            public void call() {
-                for (CMInApp inApp : inAppDataRecords) {
-                    CMInApp oldData = inAppDataDao.getInAppData(inApp.id);
-                    if (oldData != null) {
-                        Timber.d(TAG + " in-app LIST NotificationId - " + inApp.id + " insert fail - it is already present");
-                    } else {
-                        Timber.d(TAG + " in-app LIST NotificationId - " + inApp.id + " insert success");
-                    }
-                }
-                inAppDataDao.insert(inAppDataRecords);
-            }
-        }).subscribeOn(Schedulers.io());
-    }
 
     @Override
     public List<CMInApp> getDataFromStore(String key, boolean isActivity) {
@@ -164,11 +146,6 @@ public class StorageProvider implements InterfaceDataStore {
                 inAppDataDao.deleteRecord(id);
             }
         }).subscribeOn(Schedulers.io());
-    }
-
-    @Override
-    public CMInApp getInAppData(long id) {
-        return inAppDataDao.getInAppData(id);
     }
 
     @Override

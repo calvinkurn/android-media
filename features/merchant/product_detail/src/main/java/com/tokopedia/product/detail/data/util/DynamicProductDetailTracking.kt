@@ -750,7 +750,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                             ProductTrackingConstant.Tracking.KEY_ACTION, topAdsAction,
                             ProductTrackingConstant.Tracking.KEY_LABEL, "$pageTitle-$chipValue",
-                            ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.productId.toString(),
+                            ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.productID ?: "",
                             ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
                             ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};",
                             ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
@@ -1658,7 +1658,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Tracking.KEY_ACTION, topAdsAction,
                     ProductTrackingConstant.Tracking.KEY_LABEL, "$pageTitle-$chipValue",
-                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.productId.toString(),
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.productID ?: "",
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
                     ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};",
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(

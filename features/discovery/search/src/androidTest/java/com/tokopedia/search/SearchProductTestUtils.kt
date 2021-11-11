@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.platform.app.InstrumentationRegistry
@@ -15,12 +16,29 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
+import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
+import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
-import com.tokopedia.search.result.presentation.view.listener.*
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
+import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
+import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
+import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
+import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import org.hamcrest.Matcher
+import org.hamcrest.core.Is.`is`
 
 internal const val QUERY_PARAMS_WITH_KEYWORD = "?q=samsung"
 
@@ -46,6 +64,12 @@ internal fun RecyclerView?.getProductListAdapter(): ProductListAdapter {
     }
 
     return productListAdapter
+}
+
+internal fun View?.perform(vararg viewActions: ViewAction) {
+    if (this == null) throw AssertionError("View is null")
+
+    onView(`is`(this)).perform(*viewActions)
 }
 
 internal fun createProductItemListener(): ProductListener {

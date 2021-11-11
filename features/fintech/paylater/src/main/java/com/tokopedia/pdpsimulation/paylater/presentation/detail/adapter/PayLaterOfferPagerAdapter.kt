@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterPaymentOptionsFragment
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterPaymentOptionsFragment.Companion.PAYLATER_PARTNER_POSITION
 
 class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) :
     FragmentStatePagerAdapter(fm, behaviour) {
@@ -24,7 +25,7 @@ class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) :
         val paymentOption = paymentProductList[position]
         return Bundle().apply {
             putParcelable(PayLaterPaymentOptionsFragment.PAY_LATER_PARTNER_DATA, paymentOption)
-
+            putInt(PAYLATER_PARTNER_POSITION, position)
         }
     }
 
