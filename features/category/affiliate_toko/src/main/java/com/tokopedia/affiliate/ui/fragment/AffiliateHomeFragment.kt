@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.ui.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -40,6 +42,8 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
@@ -178,9 +182,20 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
         affiliateHomeViewModel.getErrorMessage().observe(this, { error ->
             home_global_error.run {
+                when(error) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        setType(GlobalError.NO_CONNECTION)
+                    }
+                    is IllegalStateException -> {
+                        setType(GlobalError.PAGE_FULL)
+                    }
+                    else -> {
+                        setType(GlobalError.SERVER_ERROR)
+                    }
+                }
                 show()
-                errorTitle.text = error
                 setActionClickListener {
+                    hide()
                     affiliateHomeViewModel.getAnnouncementInformation()
                 }
             }
@@ -215,9 +230,27 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             onGetAnnouncementData(announcementData)
         })
 
-        affiliateHomeViewModel.getAffiliateErrorMessage().observe(this,{
+        affiliateHomeViewModel.getAffiliateErrorMessage().observe(this,{ error ->
             affiliate_progress_bar?.gone()
-            onGetAnnouncementError()
+            home_global_error.run {
+                setActionClickListener {
+                    hide()
+                    affiliateHomeViewModel.getAnnouncementInformation()
+                }
+                when(error) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        setType(GlobalError.NO_CONNECTION)
+                        show()
+                    }
+                    is IllegalStateException -> {
+                        setType(GlobalError.PAGE_FULL)
+                        show()
+                    }
+                    else -> {
+                        onGetAnnouncementError()
+                    }
+                }
+            }
         })
     }
 
