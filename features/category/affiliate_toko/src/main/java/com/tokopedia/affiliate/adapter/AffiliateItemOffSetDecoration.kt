@@ -22,6 +22,10 @@ class AffiliateItemOffSetDecoration : RecyclerView.ItemDecoration() {
                                 state: RecyclerView.State) {
 
         super.getItemOffsets(outRect, view, parent, state)
+        (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).leftMargin = 0
+        (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).rightMargin = 0
+        (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).topMargin = 0
+        (view.layoutParams as StaggeredGridLayoutManager.LayoutParams).bottomMargin = 0
         val position = parent.getChildAdapterPosition(view)
         if(position < 0)
             return
