@@ -162,19 +162,9 @@ class LoggerRepository(
             }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
                 if (priorityName == LoggerReporting.SF) {
-                    messageNewRelicList.add(
-                        addEventNewRelic(
-                            message,
-                            Constants.EVENT_ANDROID_SF_NEW_RELIC
-                        )
-                    )
+                    messageNewRelicList.add(addEventNewRelicSF(message))
                 } else {
-                    messageNewRelicList.add(
-                        addEventNewRelic(
-                            message,
-                            Constants.EVENT_ANDROID_NEW_RELIC
-                        )
-                    )
+                    messageNewRelicList.add(addEventNewRelic(message))
                 }
             }
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
@@ -184,7 +174,7 @@ class LoggerRepository(
         return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicList, messageEmbraceList)
     }
 
-    suspend fun sendNewRelicLogToServer(
+    private suspend fun sendNewRelicLogToServer(
         config: NewRelicConfig,
         logs: List<Logger>,
         messageList: List<String>
@@ -196,7 +186,7 @@ class LoggerRepository(
         return loggerCloudNewRelicImpl.sendToLogServer(config, messageList)
     }
 
-    suspend fun sendEmbraceLogToServer(
+    private suspend fun sendEmbraceLogToServer(
         logs: List<Logger>,
         embraceBodyList: List<EmbraceBody>
     ): Boolean {
@@ -206,9 +196,16 @@ class LoggerRepository(
         return loggerCloudEmbraceImpl.sendToLogServer(embraceBodyList)
     }
 
-    private fun addEventNewRelic(message: String, eventType: String): String {
+    private fun addEventNewRelic(message: String): String {
         val gson = Gson().fromJson(message, JsonObject::class.java)
-        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, eventType)
+        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
+        return gson.toString()
+    }
+
+    private fun addEventNewRelicSF(message: String): String {
+        val gson = Gson().fromJson(message, JsonObject::class.java)
+        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_SF_NEW_RELIC)
+        gson.remove(Constants.PRIORITY_LOG)
         return gson.toString()
     }
 
