@@ -908,7 +908,7 @@ class ShopScoreMapper @Inject constructor(
                 )
             )
 
-            if (isNewSeller) {
+            if (!isOfficialStore) {
                 add(
                     ItemFaqUiModel(
                         title = context?.getString(R.string.title_calculate_shop_performance_for_new_seller)
@@ -917,6 +917,9 @@ class ShopScoreMapper @Inject constructor(
                             .orEmpty(),
                     )
                 )
+            }
+
+            if (isNewSeller) {
                 add(
                     ItemFaqUiModel(
                         title = context?.getString(R.string.title_time_adjustment_what_relief_for_new_seller)
