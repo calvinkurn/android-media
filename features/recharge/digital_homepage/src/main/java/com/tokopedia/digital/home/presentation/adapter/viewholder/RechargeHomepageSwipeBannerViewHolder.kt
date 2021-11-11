@@ -55,8 +55,8 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
                 bannerSeeAll.gone()
             }
 
-            customWidth = 328.toPx()
-            customHeight = 109.toPx()
+            customWidth = SWIPE_BANNER_WIDTH.toPx()
+            customHeight = SWIPE_BANNER_HEIGHT.toPx()
 
             buildView()
         }
@@ -65,5 +65,8 @@ class RechargeHomepageSwipeBannerViewHolder(itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_swipe_banner
+
+        private const val SWIPE_BANNER_WIDTH = 328
+        private const val SWIPE_BANNER_HEIGHT = 109
     }
 }
