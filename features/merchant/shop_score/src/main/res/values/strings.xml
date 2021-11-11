@@ -300,4 +300,10 @@
     <string name="title_warning_new_seller_shop_score_pm">Karena skormu di bawah 60, status Power Merchant kamu nonaktif</string>
     <string name="desc_warning_new_seller_shop_score_pm_pro">Tingkatkan kualitas toko untuk tetap jadi PM PRO, ya.</string>
     <string name="desc_warning_new_seller_shop_score_pm">Tingkatkan kualitas toko untuk tetap jadi PM, ya.</string>
+
+    <!-- Shop Penalty Tablet -->
+    <string name="title_welcome_shop_penalty_tablet">Selamat datang di halaman penalti</string>
+    <dimen name="detail_penalty_tablet_welcome_illustration_width">199.14dp</dimen>
+    <dimen name="detail_penalty_tablet_welcome_illustration_height">152.25dp</dimen>
+    <dimen name="detail_penalty_tablet_welcome_illustration_horizontal_margin">50dp</dimen>
 </resources>
