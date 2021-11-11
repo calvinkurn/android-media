@@ -2,12 +2,10 @@ package com.tokopedia.analyticsdebugger.sse.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,8 +18,6 @@ import com.tokopedia.analyticsdebugger.sse.di.DaggerSSELoggingComponent
 import com.tokopedia.analyticsdebugger.sse.ui.adapter.SSELogAdapter
 import com.tokopedia.analyticsdebugger.sse.ui.viewmodel.SSELoggingViewModel
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.hideLoading
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_sse_logging.*
@@ -108,10 +104,6 @@ class SSELoggingFragment: Fragment() {
 
         swipeRefresh.setOnRefreshListener {
             loadData()
-        }
-
-        adapter.setOnClickListener {
-            Toast.makeText(requireContext(), it.event, Toast.LENGTH_SHORT).show()
         }
     }
 

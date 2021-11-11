@@ -13,16 +13,11 @@ class SSELogAdapter: RecyclerView.Adapter<SSELogViewHolder>() {
 
     private val data = mutableListOf<SSELogUiModel>()
 
-    private var clickListener: ((SSELogUiModel) -> Unit)? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SSELogViewHolder =
         SSELogViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_sse_log_list, parent, false))
 
     override fun onBindViewHolder(holder: SSELogViewHolder, position: Int) {
         holder.bind(data[position])
-        holder.setOnClickListener {
-            clickListener?.invoke(it)
-        }
     }
 
     override fun getItemCount(): Int = data.size
@@ -31,9 +26,5 @@ class SSELogAdapter: RecyclerView.Adapter<SSELogViewHolder>() {
         data.clear()
         data.addAll(newList)
         notifyDataSetChanged()
-    }
-
-    fun setOnClickListener(listener: (SSELogUiModel) -> Unit) {
-        this.clickListener = listener
     }
 }

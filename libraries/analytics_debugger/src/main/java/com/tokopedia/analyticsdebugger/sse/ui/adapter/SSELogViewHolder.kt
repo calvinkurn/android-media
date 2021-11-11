@@ -12,8 +12,6 @@ import com.tokopedia.kotlin.extensions.view.visible
  */
 class SSELogViewHolder(v: View): RecyclerView.ViewHolder(v) {
 
-    private var clickListener: ((SSELogUiModel) -> Unit)? = null
-
     private val tvSSELogTitle = v.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_sse_log_title)
     private val tvSSELogDateTime = v.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_sse_log_date_time)
     private val tvSSELogChannelId = v.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_sse_log_channel_id)
@@ -31,9 +29,5 @@ class SSELogViewHolder(v: View): RecyclerView.ViewHolder(v) {
 
         if(data.message.isEmpty()) tvSSELogData.hide()
         else tvSSELogData.visible()
-    }
-
-    fun setOnClickListener(listener: (SSELogUiModel) -> Unit) {
-        this.clickListener = listener
     }
 }
