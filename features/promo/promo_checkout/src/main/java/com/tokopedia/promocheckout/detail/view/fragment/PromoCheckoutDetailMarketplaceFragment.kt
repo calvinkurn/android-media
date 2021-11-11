@@ -14,7 +14,7 @@ import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPres
 import javax.inject.Inject
 
 /**
- * For Marketplace Promo Detail
+ * For Marketplace Promo Detail, only for showing detail, cannot apply/remove promo from this page
  *
  * Used by: feature/transaction/promo_checkout_marketplace @minion-bob
  */

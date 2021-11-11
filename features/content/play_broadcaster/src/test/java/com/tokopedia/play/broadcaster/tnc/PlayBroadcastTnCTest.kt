@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.tnc
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.util.assertEqualTo
@@ -14,7 +14,7 @@ import org.junit.Test
 /**
  * Created by jegul on 06/10/21
  */
-class PlayBroadcastTnCViewModelTest {
+class PlayBroadcastTnCTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -27,7 +27,7 @@ class PlayBroadcastTnCViewModelTest {
 
     @Test
     fun `given seller is not allowed to stream, when get configuration, then seller cannot stream`() {
-        val mockRepo: PlayBroadcastChannelRepository = mockk(relaxed = true)
+        val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
         val mockTnCList = List(3) {
             uiModelBuilder.buildTermsAndConditionUiModel(it.toString())
         }
@@ -42,24 +42,24 @@ class PlayBroadcastTnCViewModelTest {
             channelRepo = mockRepo,
         )
 
-        val state = robot.recordState {
-            getConfig()
+        robot.use {
+            val state = robot.recordState {
+                getConfig()
+            }
+
+            state.channel
+                .canStream
+                .assertEqualTo(false)
+
+            state.channel
+                .tnc
+                .assertEqualTo(mockTnCList)
         }
-
-        state.channel
-            .canStream
-            .assertEqualTo(false)
-
-        state.channel
-            .tnc
-            .assertEqualTo(mockTnCList)
-
-        robot.cancelRemainingTasks()
     }
 
     @Test
     fun `given seller is allowed to stream, when get configuration, then seller can stream`() {
-        val mockRepo: PlayBroadcastChannelRepository = mockk(relaxed = true)
+        val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
 
         val mockConfig = uiModelBuilder.buildConfigurationUiModel(
             streamAllowed = true,
@@ -71,14 +71,14 @@ class PlayBroadcastTnCViewModelTest {
             channelRepo = mockRepo,
         )
 
-        val state = robot.recordState {
-            getConfig()
+        robot.use {
+            val state = robot.recordState {
+                getConfig()
+            }
+
+            state.channel
+                .canStream
+                .assertEqualTo(true)
         }
-
-        state.channel
-            .canStream
-            .assertEqualTo(true)
-
-        robot.cancelRemainingTasks()
     }
 }

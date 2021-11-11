@@ -30,6 +30,7 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
         /* no-op */
     }
 
+    @Deprecated("Marketplace promo detail page cannot apply promo")
     override fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean) {
         if (promo == null) return
 

@@ -16,7 +16,7 @@ import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailMarketplaceFragment
 
 /**
- * For Marketplace Promo Detail
+ * For Marketplace Promo Detail, only for showing detail, cannot apply/remove promo from this page
  *
  * Used by: feature/transaction/promo_checkout_marketplace @minion-bob
  */
