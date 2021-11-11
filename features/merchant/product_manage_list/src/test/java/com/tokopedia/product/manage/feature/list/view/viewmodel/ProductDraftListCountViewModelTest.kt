@@ -70,6 +70,13 @@ class ProductDraftListCountViewModelTest: ProductDraftListCountViewModelTestFixt
     }
 
     @Test
+    fun `when clearAllDraft error should do nothing`() {
+        onClearAllDraft_thenThrow(NullPointerException())
+
+        viewModel.clearAllDraft()
+    }
+
+    @Test
     fun `when detachView should unsubscribe all use cases`() {
         viewModel.detachView()
 

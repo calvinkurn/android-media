@@ -10,15 +10,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
+                <action android:name="com.tokopedia.internal.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
                 <data
-                    android:host="@string/host_order"
-                    android:path="@string/path_invoice"
-                    android:scheme="@string/internal_scheme" />
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_transaction"
+                    android:path="/wishlist"/>
             </intent-filter>
         </activity>
     </application>

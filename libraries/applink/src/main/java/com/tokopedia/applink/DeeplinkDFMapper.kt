@@ -140,6 +140,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTIN
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalSalam.SALAM_UMRAH_HOME_PAGE
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp.CREATE_VOUCHER
@@ -332,7 +333,14 @@ object DeeplinkDFMapper : CoroutineScope {
                         || it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.POWER_MERCHANT }))
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SHOP_SETTINGS }))
-            add(DFP({ it.startsWithPattern(SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID) }, DF_MERCHANT_SELLER, R.string.merchant_seller))
+            add(DFP({
+                val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
+                val cleanInternalAppLinkPattern = SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID.replace(regexPatternToReplace,".*")
+                val cleanExternalAppLinkPattern = SHOP_SETTINGS_CUSTOMER_APP.replace(regexPatternToReplace,".*")
+                val regexMatcherInternalAppLink = cleanInternalAppLinkPattern.toRegex()
+                val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
+                regexMatcherInternalAppLink.matches(it) || regexMatcherExternalAppLink.matches(it)
+            }, DF_MERCHANT_SELLER, R.string.merchant_seller))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.TOP_ADS_DASHBOARD }))
@@ -405,7 +413,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(ApplinkConstInternalGlobal.IMAGE_PICKER) ||
                         it.startsWith(ApplinkConstInternalGlobal.IMAGE_EDITOR) ||
                         it.startsWith(ApplinkConstInternalGlobal.VIDEO_PICKER)
-            }, DF_BASE, R.string.title_image_picker))
+            }, DF_IMAGE_PICKER_INSTA, R.string.title_image_picker))
 
             // Operational
             add(DFP({
@@ -533,6 +541,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.checkout_module_title_activity_shipping_address))
             add(DFP({ it.startsWith(ONE_CLICK_CHECKOUT) }, DF_BASE, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
+            add(DFP({ it.startsWith(WISHLIST_V2) }, DF_BASE, R.string.title_wishlist))
 
             // buyerorder
             add(DFP({
@@ -599,7 +608,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE_SELLER_APP, R.string.merchant_seller))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
                     || it.startsWith(SHOP_SCORE_DETAIL)
-                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
                     || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
                     || it.startsWith(SHOP_PENALTY)
                     || it.startsWith(SHOP_PENALTY_DETAIL)

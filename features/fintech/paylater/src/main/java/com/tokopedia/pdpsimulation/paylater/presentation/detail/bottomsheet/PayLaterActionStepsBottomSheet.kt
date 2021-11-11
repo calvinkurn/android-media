@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -22,30 +21,17 @@ import java.net.URLEncoder
 
 class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
-    init {
-        setShowListener {
-            bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(view: View, slideOffset: Float) {
-                }
 
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                        dismiss()
-                    }
-                }
-            })
-        }
-    }
 
     private var pdpSimulationCallback: PdpSimulationCallback? = null
     private val childLayoutRes = R.layout.paylater_action_steps_bottomsheet_widget
     private var actionUrl: String = ""
-    private var productUrl: String = ""
     private var partnerName: String? = ""
     private var listOfSteps: ArrayList<String>? = ArrayList()
     private var noteData: String = ""
     private var titleText: String = ""
     private var tenure = 0
+    private var isWebUrl = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +44,6 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private fun getArgumentData() {
         arguments?.let {
             val payLaterItemProductData: Detail? = it.getParcelable(STEPS_DATA)
-            productUrl = it.getString(PRODUCT_URL) ?: ""
             setDataFromArguments(payLaterItemProductData)
         } ?: dismiss()
     }
@@ -73,22 +58,26 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
             partnerName = it.gateway_detail?.name ?: ""
             actionUrl = it.cta?.android_url ?: ""
             tenure = payLaterItemProductData.tenure ?: 0
-            if (it.cta?.cta_type == HOWTOUSE) {
-                if (it.gateway_detail?.how_toUse?.notes?.size != 0)
-                    noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
-                it.gateway_detail?.how_toUse?.let { howToUseDetail ->
-                    listOfSteps = howToUseDetail.steps as ArrayList<String>
-                }
-                titleText =
-                    "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
+            if (it.cta?.cta_type == REDIRECT_TOKO_ENV) {
+                isWebUrl = false
             } else {
-                if (it.gateway_detail?.how_toApply?.notes?.size != 0)
-                    noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
-                it.gateway_detail?.how_toApply?.let { howToApplyDetail ->
-                    listOfSteps = howToApplyDetail.steps as ArrayList<String>
+                if (it.cta?.cta_type == HOWTOUSE) {
+                    if (it.gateway_detail?.how_toUse?.notes?.size != 0)
+                        noteData = it.gateway_detail?.how_toUse?.notes?.get(0) ?: ""
+                    it.gateway_detail?.how_toUse?.let { howToUseDetail ->
+                        listOfSteps = howToUseDetail.steps as ArrayList<String>
+                    }
+                    titleText =
+                        "${resources.getString(R.string.pay_later_how_to_use)} ${partnerName ?: ""}"
+                } else {
+                    if (it.gateway_detail?.how_toApply?.notes?.size != 0)
+                        noteData = it.gateway_detail?.how_toApply?.notes?.get(0) ?: ""
+                    it.gateway_detail?.how_toApply?.let { howToApplyDetail ->
+                        listOfSteps = howToApplyDetail.steps as ArrayList<String>
+                    }
+                    titleText =
+                        "${resources.getString(R.string.pay_later_how_to_register)} ${partnerName ?: ""}"
                 }
-                titleText =
-                    "${resources.getString(R.string.pay_later_how_to_register)} ${partnerName ?: ""}"
             }
 
 
@@ -128,7 +117,7 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         btnRegister.setOnClickListener {
             sendClickEventAnalytics()
             if (actionUrl.isNotEmpty())
-                openUrlWebView(actionUrl)
+                openUrlView(actionUrl)
         }
     }
 
@@ -164,11 +153,15 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
     }
 
-    private fun openUrlWebView(urlString: String) {
-        if (urlString.isNotEmpty()) {
-            val webViewAppLink =
-                ApplinkConst.WEBVIEW + "?url=" + URLEncoder.encode(urlString, "UTF-8")
-            RouteManager.route(context, webViewAppLink)
+    private fun openUrlView(urlString: String) {
+        if (isWebUrl) {
+            if (urlString.isNotEmpty()) {
+                val webViewAppLink =
+                    ApplinkConst.WEBVIEW + "?url=" + URLEncoder.encode(urlString, "UTF-8")
+                RouteManager.route(context, webViewAppLink)
+            }
+        } else {
+            RouteManager.route(context, urlString)
         }
     }
 
@@ -176,11 +169,11 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
 
         private const val TAG = "PayLaterActionStepsBottomSheet"
         const val STEPS_DATA = "stepsData"
-        const val PRODUCT_URL = "productUrl"
-        const val APPLICATION_STATUS_DATA = "applicationStatusData"
 
         // If CTA type is 4 the show How to Use list else show how to apply list
         const val HOWTOUSE = 4
+        const val REDIRECT_TOKO_ENV = 1
+
 
         fun show(
             bundle: Bundle,

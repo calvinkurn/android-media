@@ -2,9 +2,10 @@ package com.tokopedia.wishlist.view.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.data.model.WishlistV2Params
@@ -46,10 +47,10 @@ class WishlistV2FilterBottomSheet : BottomSheetUnify() {
 
             val selectionType = arguments?.getInt(SELECTION_TYPE)
             if (selectionType == 2) {
-                btnSave.visibility = View.VISIBLE
+                btnSave.visible()
                 btnSave.setOnClickListener { listener?.onSaveCheckboxSelection() }
             } else if (selectionType == 1) {
-                btnSave.visibility = View.GONE
+                btnSave.gone()
             }
         }
         showCloseIcon = true

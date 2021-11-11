@@ -198,8 +198,8 @@
         android:tint="@color/Unify_N400"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/buttonTambahKeranjang"
-        app:layout_constraintEnd_toStartOf="@id/buttonTambahKeranjang"
+        app:layout_constraintTop_toTopOf="@id/rlPrimaryButtonWishlist"
+        app:layout_constraintBottom_toBottomOf="@id/rlPrimaryButtonWishlist"
         app:layout_constraintVertical_bias="1.0"
         tools:visibility="visible">
 
@@ -213,9 +213,8 @@
 
     </FrameLayout>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/buttonTambahKeranjang"
-        android:contentDescription="@string/content_desc_buttonAddToCart"
+    <RelativeLayout
+        android:id="@+id/rlPrimaryButtonWishlist"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/product_card_button_add_to_cart_height"
         android:layout_marginLeft="@dimen/dp_8"
@@ -223,20 +222,46 @@
         android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
-        android:text="@string/product_card_text_add_to_cart_grid"
-        android:foreground="?attr/selectableItemBackground"
-        android:visibility="gone"
-        android:clickable="true"
-        android:focusable="true"
+        android:visibility="visible"
         app:layout_constraintStart_toEndOf="@id/buttonSecondary"
         app:layout_constraintTop_toBottomOf="@id/buttonAddVariant"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:typographyType="heading_6"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="ghost"
-        app:unifyButtonSize="small"
-        tools:visibility="visible" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonTambahKeranjang"
+            android:contentDescription="@string/content_desc_buttonAddToCart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/product_card_text_add_to_cart_grid"
+            android:foreground="?attr/selectableItemBackground"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintVertical_bias="1.0"
+            app:typographyType="heading_6"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="small"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonLihatBarangSerupa"
+            android:contentDescription="@string/content_desc_buttonSeeSimilarProduct"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/product_card_text_similar_product_grid"
+            android:foreground="?attr/selectableItemBackground"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintVertical_bias="1.0"
+            app:typographyType="heading_6"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="small"
+            tools:visibility="visible" />
+
+    </RelativeLayout>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonDeleteProduct"
@@ -249,7 +274,7 @@
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonTambahKeranjang"
+        app:layout_constraintTop_toBottomOf="@id/rlPrimaryButtonWishlist"
         app:layout_constraintEnd_toEndOf="parent"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"

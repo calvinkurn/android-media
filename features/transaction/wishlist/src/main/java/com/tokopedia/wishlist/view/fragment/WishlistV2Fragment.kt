@@ -9,22 +9,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.navigation_common.listener.MainParentStateListener
+import com.tokopedia.atc_common.AtcFromExternalSource
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -35,11 +44,16 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
@@ -59,16 +73,19 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2ThreeDotsMenuBottomSheetAda
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
+import java.io.File
 import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 14/10/21.
  */
 class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, WishlistV2Adapter.ActionListener {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private var binding by autoClearedNullable<FragmentWishlistV2Binding>()
     private lateinit var wishlistV2Adapter: WishlistV2Adapter
     private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var paramWishlistV2 = WishlistV2Params()
     private var refreshHandler: RefreshHandler? = null
     private var onLoadMore = false
@@ -79,13 +96,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private var searchQuery = ""
     private var activityWishlistV2 = ""
     private var isBulkDeleteShow = false
+    private val listBulkDelete: ArrayList<String> = arrayListOf()
     private var recommendationList: List<RecommendationWidget> = listOf()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private val wishlistViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[WishlistV2ViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[WishlistV2ViewModel::class.java]
     }
 
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
@@ -122,6 +138,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         const val PARAM_HOME = "home"
         const val SHARE_LINK_PRODUCT = "SHARE_LINK_PRODUCT"
         const val DELETE_WISHLIST = "DELETE_WISHLIST"
+        const val ATC_WISHLIST = "ADD_TO_CART"
+        const val CTA_ATC = "Lihat"
+        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,8 +156,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
+        observingData()
+    }
+
+    private fun observingData() {
         observingWishlistV2()
         observingDeleteWishlistV2()
+        observingBulkDeleteWishlistV2()
+        observingAtc()
         observingWishlistData()
     }
 
@@ -189,9 +214,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             var pageSource = ""
             if(activityWishlistV2 != PARAM_HOME) {
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                statusbar.visibility = View.GONE
+                statusbar.gone()
             } else {
-                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH
+                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
             }
             val icons = IconBuilder(
                     IconBuilderFlag(pageSource = pageSource)
@@ -200,9 +225,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 addIcon(IconList.ID_MESSAGE) {}
                 addIcon(IconList.ID_NOTIFICATION) {}
                 addIcon(IconList.ID_CART) {}
-                if (isNavRevamp()) {
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
-                }
+                addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             wishlistNavtoolbar.setIcon(icons)
 
@@ -280,8 +303,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private fun triggerSearch() {
         paramWishlistV2.query = searchQuery
         refreshHandler?.startRefresh()
+        scrollRecommendationListener.resetState()
         currRecommendationListPage = 0
-        // scrollRecommendationListener.resetState()
     }
 
     private fun observingWishlistV2() {
@@ -401,6 +424,69 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         })
     }
 
+    private fun observingBulkDeleteWishlistV2() {
+        wishlistViewModel.bulkDeleteWishlistV2Result.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    result.data.let { bulkDeleteWishlistV2 ->
+                        if (bulkDeleteWishlistV2.success) {
+                            val listId = bulkDeleteWishlistV2.id.replace("[","").replace("]","").split(",").toList()
+                            var msg = getString(R.string.wishlist_v2_bulk_delete_msg_toaster, listId.size)
+                            if (bulkDeleteWishlistV2.message.isNotEmpty()) {
+                                msg = bulkDeleteWishlistV2.message
+                            }
+
+                            var btnText = getString(R.string.wishlist_oke_label)
+                            if (bulkDeleteWishlistV2.button.text.isNotEmpty()) {
+                                btnText = bulkDeleteWishlistV2.button.text
+                            }
+
+                            showToaster(msg, btnText, Toaster.TYPE_NORMAL)
+                            refreshHandler?.startRefresh()
+                        }
+                    }
+                }
+                is Fail -> {
+                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
+    private fun observingAtc() {
+        wishlistViewModel.atcResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    if (it.data.isStatusError()) {
+                        val atcErrorMessage = it.data.getAtcErrorMessage()
+                        if (atcErrorMessage != null) {
+                            showToaster(atcErrorMessage, "", Toaster.TYPE_ERROR)
+                        } else {
+                            context?.getString(R.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
+                        }
+                    } else {
+                        val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
+                        showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
+                    }
+                }
+                is Fail -> {
+                    context?.also { ctx ->
+                        val throwable = it.throwable
+                        var errorMessage = if (throwable is ResponseErrorException) {
+                            throwable.message ?: ""
+                        } else {
+                            ErrorHandler.getErrorMessage(ctx, throwable, ErrorHandler.Builder().withErrorCode(false))
+                        }
+                        if (errorMessage.isBlank()) {
+                            errorMessage = ctx.getString(R.string.wishlist_v2_common_error_msg)
+                        }
+                        showToaster(errorMessage, "", Toaster.TYPE_ERROR)
+                    }
+                }
+            }
+        })
+    }
+
     @SuppressLint("SetTextI18n")
     private fun updateTotalLabel(totalData: Int) {
         binding?.run {
@@ -411,15 +497,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private fun showLoader() {
         wishlistV2Adapter.showLoader()
         binding?.run {
-            rlWishlistSort.visibility = View.GONE
-            rlWishlistSortLoader.visibility = View.VISIBLE
+            rlWishlistSort.gone()
+            rlWishlistSortLoader.visible()
         }
     }
 
     private fun hideLoader() {
         binding?.run {
-            rlWishlistSort.visibility = View.VISIBLE
-            rlWishlistSortLoader.visibility = View.GONE
+            rlWishlistSort.visible()
+            rlWishlistSortLoader.gone()
         }
     }
 
@@ -487,17 +573,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         if (bottomSheetThreeDotsMenu.isAdded || childFragmentManager.isStateSaved) return
 
         val threeDotsMenuBottomSheetAdapter = WishlistV2ThreeDotsMenuBottomSheetAdapter()
-        threeDotsMenuBottomSheetAdapter.listThreeDotsMenuItem = itemWishlist.buttons.additionalButtons
+        threeDotsMenuBottomSheetAdapter.wishlistItem = itemWishlist
 
         bottomSheetThreeDotsMenu.setAdapter(threeDotsMenuBottomSheetAdapter)
         bottomSheetThreeDotsMenu.setListener(object : WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener{
-            override fun onThreeDotsMenuItemSelected(additionalItem: WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem) {
+            override fun onThreeDotsMenuItemSelected(wishlistItem: WishlistV2Response.Data.WishlistV2.Item,
+                                                     additionalItem: WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem) {
                 bottomSheetThreeDotsMenu.dismiss()
                 if (additionalItem.url.isNotEmpty()) {
                     RouteManager.route(context, additionalItem.url)
                 } else {
                     if (additionalItem.action == SHARE_LINK_PRODUCT) {
-                        println("++ share link product")
+                        showShareBottomSheet(wishlistItem)
                     } else if (additionalItem.action == DELETE_WISHLIST) {
                         wishlistViewModel.deleteWishlistV2(itemWishlist.id, userSession.userId)
                     }
@@ -507,6 +594,124 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         bottomSheetThreeDotsMenu.show(childFragmentManager)
     }
 
+    private fun showShareBottomSheet(wishlistItem: WishlistV2Response.Data.WishlistV2.Item) {
+        val shareListener = object : ShareBottomsheetListener {
+
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                // openIntentShare(null, wishlistItem.name, "", wishlistItem.url)
+
+                val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+                    type = LinkerData.PRODUCT_TYPE
+                    uri = wishlistItem.url
+                    id = userSession.userId
+                    //set and share in the Linker Data
+                    feature = shareModel.feature
+                    channel = shareModel.channel
+                    campaign = shareModel.campaign
+                    ogTitle = "${wishlistItem.name} - ${wishlistItem.priceFmt}"
+                    ogDescription = wishlistItem.shop.name
+                    if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                        ogImageUrl = shareModel.ogImgUrl
+                    }
+                })
+                LinkerManager.getInstance().executeShareRequest(
+                        LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                                val shareString = getString(
+                                        R.string.wishlist_v2_share_text,
+                                        userSession.shopName,
+                                        linkerShareData?.shareContents
+                                )
+                                shareModel.subjectName = userSession.shopName
+                                SharingUtil.executeShareIntent(
+                                        shareModel,
+                                        linkerShareData,
+                                        activity,
+                                        view,
+                                        shareString
+                                )
+
+                                universalShareBottomSheet?.dismiss()
+                            }
+
+                            override fun onError(linkerError: LinkerError?) {}
+                        })
+                )
+            }
+
+            override fun onCloseOptionClicked() {
+                //no op
+            }
+        }
+
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(shareListener)
+            setMetaData(
+                    wishlistItem.name,
+                    wishlistItem.imageUrl
+            )
+        }
+        universalShareBottomSheet?.show(childFragmentManager, this@WishlistV2Fragment)
+    }
+
+    private fun openIntentShare(file: File?, title: String?, shareContent: String, shareUri: String) {
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = if (file == null) "text/plain" else "image/*"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            if (file != null) {
+                putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(activity, file))
+            }
+            putExtra(Intent.EXTRA_REFERRER, shareUri)
+            putExtra(Intent.EXTRA_HTML_TEXT, shareContent)
+            putExtra(Intent.EXTRA_TITLE, title)
+            putExtra(Intent.EXTRA_TEXT, shareContent)
+            putExtra(Intent.EXTRA_SUBJECT, title)
+        }
+
+        activity?.startActivity(Intent.createChooser(shareIntent, SHARE_PRODUCT_TITLE))
+    }
+
+    private fun renderWishlist(items: List<WishlistV2Response.Data.WishlistV2.Item>) {
+        val listItem = arrayListOf<WishlistV2TypeLayoutData>()
+        items.forEach { item ->
+            val listGroupLabel = arrayListOf<ProductCardModel.LabelGroup>()
+
+            item.labelGroup.forEach { labelGroupItem ->
+                val labelGroup = ProductCardModel.LabelGroup(
+                        position = labelGroupItem.position,
+                        title = labelGroupItem.title,
+                        type = labelGroupItem.type,
+                        imageUrl = labelGroupItem.url)
+                listGroupLabel.add(labelGroup)
+            }
+
+            val isButtonAtc = item.buttons.primaryButton.action == ATC_WISHLIST
+
+            val productModel = ProductCardModel(
+                    productImageUrl = item.imageUrl,
+                    isWishlistVisible = true,
+                    productName = item.name,
+                    shopName = item.shop.name,
+                    formattedPrice = item.priceFmt,
+                    shopLocation = item.shop.location,
+                    isShopRatingYellow = true,
+                    hasSecondaryButton = true,
+                    tambahKeranjangButton = isButtonAtc,
+                    lihatBarangSerupaButton = !isButtonAtc,
+                    labelGroupList = listGroupLabel)
+            listItem.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item))
+        }
+
+        if (!onLoadMore) {
+            wishlistV2Adapter.addList(listItem)
+            scrollRecommendationListener.resetState()
+        } else {
+            wishlistV2Adapter.appendList(listItem)
+            scrollRecommendationListener.updateStateAfterGetData()
+        }
+    }
+
     private fun showToaster(message: String, actionText: String, type: Int) {
         val toasterSuccess = Toaster
         view?.let { v ->
@@ -514,24 +719,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
-    }
-
-    private fun isNavRevamp(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp ?: (getAbTestPlatform().getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
-                    (getAbTestPlatform().getString(
-                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
+    private fun showToasterAtc(message: String, type: Int) {
+        val toasterSuccess = Toaster
+        view?.let { v ->
+            toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC, View.OnClickListener {
+                RouteManager.route(context, ApplinkConst.CART)
+            }).show()
         }
     }
 
@@ -552,6 +745,59 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
+    }
+
+    override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean) {
+        if (isChecked) {
+            listBulkDelete.add(productId)
+        } else {
+            listBulkDelete.remove(productId)
+        }
+        val showButton = listBulkDelete.isNotEmpty()
+        if (showButton) {
+            binding?.run {
+                containerDelete.visible()
+                deleteButton.apply {
+                    setText(getString(R.string.wishlist_v2_delete_text, listBulkDelete.size))
+                    setOnClickListener {
+                        showPopupBulkDeleteConfirmation(listBulkDelete)
+                    }
+                }
+            }
+        } else {
+            binding?.run {
+                containerDelete.gone()
+            }
+        }
+    }
+
+    override fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item) {
+        val atcParam = AddToCartRequestParams(
+                productId = wishlistItem.id.toLong(),
+                productName = wishlistItem.name,
+                price = wishlistItem.originalPriceFmt,
+                quantity = wishlistItem.minOrder.toInt(),
+                shopId = wishlistItem.shop.id.toInt(),
+                // category = wishlistItem.category.,
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST)
+        wishlistViewModel.doAtc(atcParam)
+    }
+
+    override fun onCheckSimilarProduct(url: String) {
+        RouteManager.route(context, url)
+    }
+
+    private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(getString(R.string.wishlist_v2_popup_delete_bulk_title, listBulkDelete.size))
+        dialog?.setPrimaryCTAText(getString(R.string.wishlist_delete_label))
+        dialog?.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            wishlistViewModel.bulkDeleteWishlistV2(listBulkDelete, userSession.userId)
+        }
+        dialog?.setSecondaryCTAText(getString(R.string.wishlist_cancel_manage_label))
+        dialog?.setSecondaryCTAClickListener { dialog.dismiss() }
+        dialog?.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

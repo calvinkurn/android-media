@@ -182,4 +182,30 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
+    <FrameLayout
+        android:id="@+id/container_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="@drawable/bg_delete_wishlist"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/delete_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/wishlist_v2_delete_text"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:enabled="true"
+            app:unifyButtonVariant="filled"
+            app:unifyButtonType="main"/>
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

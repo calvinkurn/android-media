@@ -41,7 +41,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onCariBarangClicked()
         fun onNotFoundButtonClicked(keyword: String)
         fun onProductRecommendationClicked(productId: String)
-        fun onThreeDotsMenuClicked(listThreeDotsMenu: WishlistV2Response.Data.WishlistV2.Item)
+        fun onThreeDotsMenuClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item)
+        fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean)
+        fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item)
+        fun onCheckSimilarProduct(url: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

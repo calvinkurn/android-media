@@ -1,6 +1,5 @@
 package com.tokopedia.play.ui.pinnedvoucher.viewholder
 
-import android.annotation.SuppressLint
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.adapterdelegate.BaseViewHolder

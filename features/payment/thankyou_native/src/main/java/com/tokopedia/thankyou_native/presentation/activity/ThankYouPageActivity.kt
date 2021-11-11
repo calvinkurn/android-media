@@ -231,17 +231,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         val isNewNavigationEnabled = FirebaseRemoteConfigImpl(this).getBoolean(KEY_CONFIG_NEW_NAVIGATION,
                 false)
         if(isNewNavigationEnabled) {
-            getAbTestPlatform()?.let {
-                return (it.getString(
-                    RollenceKey.NAVIGATION_EXP_TOP_NAV,
-                    RollenceKey.NAVIGATION_VARIANT_OLD
-                )
-                        == RollenceKey.NAVIGATION_VARIANT_REVAMP) || (it.getString(
-                    RollenceKey.NAVIGATION_EXP_TOP_NAV2,
-                    RollenceKey.NAVIGATION_VARIANT_OLD
-                )
-                        == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
-            }
+            return true
         }
         return false
     }

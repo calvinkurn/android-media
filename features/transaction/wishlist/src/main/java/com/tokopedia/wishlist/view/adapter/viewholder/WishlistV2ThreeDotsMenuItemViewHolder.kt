@@ -8,10 +8,10 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomShee
 
 class WishlistV2ThreeDotsMenuItemViewHolder (private val binding: BottomsheetWishlistV2ThreeDotsMenuItemBinding,
                                              private val listener: WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener?) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(additionalButtonsItem: WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem) {
+    fun bind(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, additionalButtonsItem: WishlistV2Response.Data.WishlistV2.Item.Buttons.AdditionalButtonsItem) {
         binding.menuItem.text = additionalButtonsItem.text
         binding.root.setOnClickListener {
-            listener?.onThreeDotsMenuItemSelected(additionalButtonsItem)
+            listener?.onThreeDotsMenuItemSelected(wishlistItem, additionalButtonsItem)
         }
     }
 }
