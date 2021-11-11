@@ -866,11 +866,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
                     coachmark
                 } else if (coachMarkItem.isEmpty()) {
-                    showBalanceWidgetCoachmark(
-                        ctx,
-                        containsNewGopayAndTokopoints,
-                        tokopointsBalanceCoachmark
-                    )
+                    if (getUserSession().isLoggedIn) {
+                        showBalanceWidgetCoachmark(
+                                ctx,
+                                containsNewGopayAndTokopoints,
+                                tokopointsBalanceCoachmark
+                        )
+                    } else {
+                        showTokonowCoachmark()
+                    }
                     return@let
                 }
             }
