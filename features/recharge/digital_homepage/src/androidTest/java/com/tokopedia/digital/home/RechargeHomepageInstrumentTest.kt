@@ -216,6 +216,7 @@ class RechargeHomepageInstrumentTest {
         onView(withId(R.id.recycler_view)).perform(
             RecyclerViewActions.scrollToPosition<RechargeHomepageSwipeBannerViewHolder>(12)
         )
+        Thread.sleep(2000)
         onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
         onView(withId(R.id.banner_recyclerview)).perform(RecyclerViewActions
             .actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
