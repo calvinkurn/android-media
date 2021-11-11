@@ -22,6 +22,8 @@ import com.tokopedia.analyticsdebugger.sse.ui.viewmodel.SSELoggingViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_sse_logging.*
 import javax.inject.Inject
 
@@ -40,6 +42,7 @@ class SSELoggingFragment: Fragment() {
     private lateinit var etSSELogSearch: EditText
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var rvSSELog: RecyclerView
+    private lateinit var tvNoData: Typography
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjection()
@@ -69,6 +72,7 @@ class SSELoggingFragment: Fragment() {
         etSSELogSearch = view.findViewById(R.id.et_sse_log_search)
         swipeRefresh = view.findViewById(R.id.swipe_refresh)
         rvSSELog = view.findViewById(R.id.rv_sse_log)
+        tvNoData = view.findViewById(R.id.tv_sse_log_no_data)
 
         rvSSELog.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -87,6 +91,9 @@ class SSELoggingFragment: Fragment() {
         viewModel.observableSSELog.observe(viewLifecycleOwner) {
             swipeRefresh.isRefreshing = false
             adapter.updateData(it)
+
+            if(it.isNullOrEmpty()) tvNoData.visible()
+            else tvNoData.hide()
         }
     }
 
