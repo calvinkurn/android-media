@@ -355,7 +355,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private fun generateDefaultDepartureDate(): Date {
         return if(isAvailableToday){
-            DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, DEFAULT_DATE_TODAY).removeTime()
+            DateUtil.getCurrentDate().removeTime()
         }else{
             DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, DEFAULT_MIN_DEPARTURE_DATE_FROM_TODAY).removeTime()
         }
@@ -456,7 +456,6 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     companion object {
         const val DEFAULT_MIN_DEPARTURE_DATE_FROM_TODAY = 2
-        const val DEFAULT_DATE_TODAY = 0
 
         private const val CLASS_ECONOMY = 1
         private const val CLASS_BUSINESS = 2
