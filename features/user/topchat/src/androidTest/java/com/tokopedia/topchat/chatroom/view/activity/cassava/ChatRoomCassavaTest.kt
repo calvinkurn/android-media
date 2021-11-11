@@ -54,4 +54,21 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         // Then
         assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
     }
+
+    @Test
+    fun chat_send_chat() {
+        // Given
+        val journeyId = "88"
+        getChatUseCase.response = getChatUseCase.defaultChatWithBuyerResponse
+        launchChatRoomActivity()
+
+        // When
+        clickComposeArea()
+        typeMessage("Hello")
+        clickSendBtn()
+
+        // Then
+        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
+    }
+
 }
