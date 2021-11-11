@@ -86,17 +86,19 @@ data class InitialMargin(val left: Int, val top: Int,
                          val right: Int, val bottom: Int)
 
 private fun View.recordInitialPadding() = InitialPadding(
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) paddingStart else paddingLeft,
+        paddingStart,
         paddingTop,
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) paddingEnd else paddingRight,
+        paddingEnd,
         paddingBottom)
 
 private fun View.recordInitialMargin(): InitialMargin {
-    val margin = layoutParams as ViewGroup.MarginLayoutParams
+    val margin = layoutParams as? ViewGroup.MarginLayoutParams
+        ?: return InitialMargin(0, 0, 0, 0)
+
     return InitialMargin(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) margin.marginStart else margin.leftMargin,
+            margin.marginStart,
             margin.topMargin,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) margin.marginEnd else margin.rightMargin,
+            margin.marginEnd,
             margin.bottomMargin
     )
 }

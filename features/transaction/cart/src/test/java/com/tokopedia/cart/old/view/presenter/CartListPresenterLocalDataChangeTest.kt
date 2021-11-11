@@ -7,7 +7,7 @@ import com.tokopedia.cart.old.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.old.domain.usecase.*
 import com.tokopedia.cart.old.view.CartListPresenter
 import com.tokopedia.cart.old.view.ICartListView
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
