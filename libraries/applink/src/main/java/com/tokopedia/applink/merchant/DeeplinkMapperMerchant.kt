@@ -3,8 +3,10 @@ package com.tokopedia.applink.merchant
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
@@ -25,6 +27,9 @@ object DeeplinkMapperMerchant {
     private const val ACTION_REVIEW = "review"
     private const val PRODUCT_SEGMENT = "product"
     private const val FEED_SEGMENT = "feed"
+    private const val PARAM_BUNDLE_ID = "bundleId"
+    private const val PARAM_SELECTED_PRODUCT_IDS = "selectedProductIds"
+    private const val PARAM_CART_IDS = "cartIds"
     private const val CREATE_SHOWCASE_SEGMENT = "showcase-create"
     private const val FOLLOWER_LIST_SEGMENT = "follower"
     private const val SHOP_PAGE_SETTING_SEGMENT = "settings"
@@ -245,7 +250,7 @@ object DeeplinkMapperMerchant {
                 if (GlobalConfig.isSellerApp()) {
                     ApplinkConst.SELLER_INFO
                 } else {
-                    ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
+                    DeeplinkMapperInbox.getRegisteredNavigationNotifcenter()
                 }
             } else {
                 UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
@@ -378,13 +383,7 @@ object DeeplinkMapperMerchant {
             val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                     RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
             ) == RollenceKey.VARIANT_NEW_INBOX
-            val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP ||
-                    RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2
-            useNewInbox && useNewNav
+            useNewInbox
         } catch (e: Exception) {
             false
         }

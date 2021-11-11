@@ -10,11 +10,11 @@ class DistrictRecommendationMapperTest {
     fun `transform Response return success model`() {
         val mapperUT = DistrictRecommendationMapper()
 
-        val t = DiscomDummyProvider.getSuccessResponse()
-        val actual = mapperUT.transform(t)
+        val mockResponse = DiscomDummyProvider.getSuccessResponse()
+        val actual = mapperUT.transform(mockResponse)
 
-        Assert.assertEquals(t.keroDistrictRecommendation.district.size, actual.addresses.size)
-        Assert.assertEquals(t.keroDistrictRecommendation.nextAvailable, actual.isNextAvailable)
+        Assert.assertEquals(mockResponse.keroDistrictRecommendation.district.size, actual.addresses.size)
+        Assert.assertEquals(mockResponse.keroDistrictRecommendation.nextAvailable, actual.isNextAvailable)
     }
 
     @Test

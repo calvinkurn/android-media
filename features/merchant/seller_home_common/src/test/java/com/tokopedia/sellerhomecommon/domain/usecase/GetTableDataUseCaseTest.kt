@@ -59,13 +59,13 @@ class GetTableDataUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetTableDataResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val result = getTableDataUseCase.executeOnBackground()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(!result.isNullOrEmpty())
@@ -77,14 +77,14 @@ class GetTableDataUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetTableDataResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(RuntimeException::class.java)
         val result = getTableDataUseCase.executeOnBackground()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(result.isNullOrEmpty())

@@ -50,7 +50,8 @@
           "dimension82": "\\d+",
           "dimension40": ".*",
           "dimension49": ".*",
-          "dimension48": "\\d+"
+          "dimension48": "\\d+",
+          "dimension90": ".*"
         }
       ],
       "eventLabel": "success",
@@ -93,7 +94,8 @@
           "dimension82": "\\d+",
           "dimension40": ".*",
           "dimension49": ".*",
-          "dimension48": "\\d+"
+          "dimension48": "\\d+",
+          "dimension90": ".*"
         }
       ],
       "eventLabel": "",
@@ -137,7 +139,8 @@
           "dimension82": "\\d+",
           "dimension40": ".*",
           "dimension49": ".*",
-          "dimension48": "\\d+"
+          "dimension48": "\\d+",
+          "dimension90": ".*"
         }
       ],
       "eventLabel": "success",

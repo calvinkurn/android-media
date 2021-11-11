@@ -3,7 +3,6 @@ package com.tokopedia.play.broadcaster.view.custom.interactive
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveInitBinding
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 

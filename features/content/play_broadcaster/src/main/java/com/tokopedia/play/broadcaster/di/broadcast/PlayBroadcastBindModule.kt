@@ -8,6 +8,8 @@ import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.play.broadcaster.util.logger.PlayLogger
+import com.tokopedia.play.broadcaster.util.logger.PlayLoggerImpl
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
 import dagger.Binds
@@ -97,5 +99,10 @@ abstract class PlayBroadcastBindModule {
 
     @Binds
     @PlayBroadcastScope
-    abstract fun bindnteractiveAnalytic(interactiveAnalytic: PlayBroadcastInteractiveAnalyticImpl): PlayBroadcastInteractiveAnalytic
+    abstract fun bindInteractiveAnalytic(interactiveAnalytic: PlayBroadcastInteractiveAnalyticImpl): PlayBroadcastInteractiveAnalytic
+
+
+    @PlayBroadcastScope
+    @Binds
+    abstract fun bindLogger(logger: PlayLoggerImpl): PlayLogger
 }

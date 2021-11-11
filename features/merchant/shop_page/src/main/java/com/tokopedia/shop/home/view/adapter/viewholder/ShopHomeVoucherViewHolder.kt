@@ -15,12 +15,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopHomeMerchantVoucherBinding
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -41,11 +43,7 @@ class ShopHomeVoucherViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_merchant_voucher
     }
-
-    init {
-        findView(itemView)
-    }
-
+    private val viewBinding: ItemShopHomeMerchantVoucherBinding? by viewBinding()
     private var merchantVoucherWidget: MvcView? = null
     private var merchantVoucherReload: CardView? = null
     private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null
@@ -54,13 +52,17 @@ class ShopHomeVoucherViewHolder(
     private var imageReload: ImageView? = null
     private var textReloadDesc: Typography? = null
 
-    private fun findView(itemView: View) {
-        merchantVoucherWidget = itemView.findViewById(R.id.merchantVoucherWidget)
-        merchantVoucherReload = itemView.findViewById(R.id.merchantVoucherReload)
-        merchantVoucherShimmering = itemView.findViewById(R.id.merchantVoucherShimmering)
-        textReload = itemView.findViewById(R.id.textReload)
-        imageReload = itemView.findViewById(R.id.imageReload)
-        textReloadDesc = itemView.findViewById(R.id.textReloadDesc)
+    init {
+        findView()
+    }
+
+    private fun findView() {
+        merchantVoucherWidget = viewBinding?.merchantVoucherWidget
+        merchantVoucherReload = viewBinding?.merchantVoucherReload?.root
+        merchantVoucherShimmering = viewBinding?.merchantVoucherShimmering?.root
+        textReload = viewBinding?.merchantVoucherReload?.textReload
+        imageReload = viewBinding?.merchantVoucherReload?.imageReload
+        textReloadDesc = viewBinding?.merchantVoucherReload?.textReloadDesc
     }
 
     override fun bind(model: ShopHomeVoucherUiModel) {

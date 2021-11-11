@@ -66,6 +66,9 @@ object ApplinkConstInternalMarketplace {
     // ReviewProductActivity, "x_prd_nm" = productName
     const val PRODUCT_REVIEW_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review-old"
 
+    // ReviewCredibilityActivity
+    const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
+
     // StockReminderActivity
     const val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"
 
@@ -178,21 +181,14 @@ object ApplinkConstInternalMarketplace {
     const val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
     const val REPORT_PRODUCT_URL = "$INTERNAL_MARKETPLACE/product-report/{id}/?url={url}"
 
-    // ShopScoreDetailActivity
-    const val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
-
     // ChatSearchActivity
     const val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
 
-    // NotificationActivity
-    const val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
-
-    const val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
-
-    const val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
-
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
+
+    // BenefitPackageActivity
+    const val PM_BENEFIT_PACKAGE = "$INTERNAL_MARKETPLACE/pm-benefit-package"
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
 

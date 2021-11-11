@@ -32,13 +32,13 @@ class ImageDualAnnouncementViewHolder(itemView: View, private val viewListener: 
         ImageHandler.loadImageWithListener(top, viewModel.imageUrlTop, DynamicSizeImageRequestListener())
         top!!.setOnClickListener { v: View ->
             viewListener.onDualAnnouncementClicked(viewModel.redirectUrlTop, viewModel
-                    .attachmentId, viewModel.blastId)
+                    .attachmentId, viewModel.broadcastBlastId)
         }
 
         ImageHandler.loadImageWithListener(bottom, viewModel.imageUrlBottom, DynamicSizeImageRequestListener())
         bottom!!.setOnClickListener { v: View ->
             viewListener.onDualAnnouncementClicked(viewModel.redirectUrlBottom, viewModel
-                    .attachmentId, viewModel.blastId)
+                    .attachmentId, viewModel.broadcastBlastId)
         }
     }
 

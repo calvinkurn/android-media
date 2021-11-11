@@ -41,11 +41,14 @@ https://phab.tokopedia.com/XXXXX
 - **/check review** - run auto mention code review system
 - **/check risk** - run risk analysis
 - **/check lint** - run linter checker
+- **/check macrobenchmark** - run macrobenchmark test
 - **/check instrument** - run TopAds Checker instrumentation test
 - **/check datatest** - run data tracking test (Cassava)
 - **/check performance** - run performance check
 - **/check katalon** - include this PR in katalon auto smoke test next batch (midnight same day)
 - **/check vector** - run vector drawable optimizer
+- **/check darkmode** - run dark mode checker
+- **/check rollence** - run expired rollence keys checker
 - **/create jira** - auto generate or update jira for this PR with fix versions of both MA and SA
 - **/create jira-ma** - auto generate or update jira for this PR with fix version of MA
 - **/create jira-sa** - auto generate or update jira for this PR with fix version of SA
@@ -69,4 +72,5 @@ https://phab.tokopedia.com/XXXXX
 
 - **approved for dark mode** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-dark-mode)*
+
 

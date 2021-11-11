@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/usr_saldo_badge_shimmer"
+        android:layout_width="114dp"
+        android:layout_height="12sp"
+        android:scaleType="fitCenter"
+        app:loader_type="line"
+        app:layout_constraintStart_toStartOf="@id/usr_saldo_badge"
+        app:layout_constraintTop_toTopOf="@+id/usr_saldo_badge"
+        app:layout_constraintBottom_toBottomOf="@id/usr_saldo_badge"
+        android:visibility="visible"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        tools:visibility="invisible"
+        android:id="@+id/usr_saldo_badge"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:scaleType="fitCenter"
+        app:icon_name="SALDO"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_saldo"
+        app:layout_constraintBottom_toBottomOf="@id/tv_saldo"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        tools:visibility="visible"
+        android:id="@+id/tv_saldo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_marginStart="6dp"
+        app:layout_goneMarginStart="10dp"
+        app:layout_constraintStart_toEndOf="@id/usr_saldo_badge"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_3"
+        tools:text="John Doe"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/section_icon_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:barrierDirection="end"
+        android:visibility="gone"
+        app:constraint_referenced_ids="usr_saldo_badge_shimmer,usr_saldo_badge" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

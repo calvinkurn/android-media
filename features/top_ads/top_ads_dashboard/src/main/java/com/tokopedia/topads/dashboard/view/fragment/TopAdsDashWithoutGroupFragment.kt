@@ -151,9 +151,9 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onEditProduct(groupId: Int, adPriceBid: Int) {
+    private fun onEditProduct(groupId: String, adPriceBid: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
-            putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
+            putExtra(TopAdsDashboardConstant.GROUPID, groupId)
             putExtra(TopAdsDashboardConstant.PRICEBID, adPriceBid)
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_WITHOUT_GROUP_REQUEST_CODE)

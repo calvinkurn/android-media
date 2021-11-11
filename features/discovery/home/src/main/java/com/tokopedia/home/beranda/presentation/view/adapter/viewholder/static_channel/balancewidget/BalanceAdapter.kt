@@ -10,8 +10,12 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
@@ -19,6 +23,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.OvoWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_LOADING
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_COUPON
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_FREE_ONGKIR
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_REWARDS
@@ -33,22 +38,48 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceTextAttribute
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.helper.isHexColor
+import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.home.util.HomeServerLogger.TYPE_ERROR_SUBMIT_WALLET
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.searchbar.helper.Ease
+import com.tokopedia.searchbar.helper.EasingInterpolator
+import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import kotlinx.android.synthetic.main.item_balance_widget.view.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by yfsx on 3/1/21.
  */
 
-class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<BalanceAdapter.Holder>() {
+class BalanceAdapter(
+    val listener: HomeCategoryListener?,
+    diffUtil: DiffUtil.ItemCallback<BalanceDrawerItemModel>
+): ListAdapter<BalanceDrawerItemModel, BalanceAdapter.Holder>(diffUtil) {
 
     var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
+    @Suppress("TooGenericExceptionCaught")
     fun setItemMap(itemMap: HomeBalanceModel) {
         this.itemMap = itemMap
-        notifyDataSetChanged()
+
+        val balanceModelList = mutableListOf<BalanceDrawerItemModel>()
+        try {
+            itemMap.balanceDrawerItemModels.mapValues {
+                balanceModelList.add(it.key, it.value)
+            }
+            submitList(balanceModelList.toMutableList())
+        } catch (e: Exception) {
+            HomeServerLogger.logWarning(
+                type = TYPE_ERROR_SUBMIT_WALLET,
+                throwable = e,
+                reason = e.message?:""
+            )
+            e.printStackTrace()
+        }
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -75,27 +106,59 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                 itemMap.balanceType != HomeBalanceModel.TYPE_STATE_3)
     }
 
-    class Holder(v: View): RecyclerView.ViewHolder(v) {
+    class Holder(v: View): RecyclerView.ViewHolder(v), CoroutineScope {
+        private var alternateDrawerItem: List<BalanceDrawerItemModel>? = null
+        private var element: BalanceDrawerItemModel? = null
+        override val coroutineContext: CoroutineContext
+            get() = Dispatchers.Main
+
+        var animationJob: Job? = null
 
         private val walletAnalytics: CommonWalletAnalytics = CommonWalletAnalytics()
         private var listener: HomeCategoryListener? = null
         private var isOvoAvailable: Boolean = false
-        fun bind(drawerItem: BalanceDrawerItemModel?, listener: HomeCategoryListener?, isOvoAvailable: Boolean) {
+
+        fun bind(drawerItem: BalanceDrawerItemModel?,
+                 listener: HomeCategoryListener?,
+                 isOvoAvailable: Boolean
+        ) {
             this.listener = listener
-            renderTokoPoint(drawerItem)
+            renderDrawerItem(drawerItem)
             this.itemView.tag = String.format(
                 itemView.context.getString(R.string.tag_balance_widget), drawerItem?.drawerItemType.toString()
             )
             this.isOvoAvailable = isOvoAvailable
         }
 
-        private fun renderTokoPoint(element: BalanceDrawerItemModel?) {
-            itemView.home_progress_bar_balance_layout.gone()
-            itemView.home_container_action_balance.gone()
+        private fun renderDrawerItem(element: BalanceDrawerItemModel?) {
+            /**
+             * Initial state
+             */
+            itemView.home_iv_logo_shimmering.show()
+            itemView.home_progress_bar_balance_layout.show()
+            itemView.home_tv_btn_action_balance.show()
+
+            animationJob?.cancel()
+
             when (element?.state) {
-                BalanceDrawerItemModel.STATE_LOADING -> itemView.home_progress_bar_balance_layout.show()
+                BalanceDrawerItemModel.STATE_LOADING -> {
+                    itemView.home_iv_logo_balance.invisible()
+
+                    itemView.home_tv_balance.invisible()
+                    itemView.home_tv_btn_action_balance.invisible()
+
+                    itemView.home_iv_logo_shimmering.show()
+                    itemView.home_progress_bar_balance_layout.show()
+                }
                 BalanceDrawerItemModel.STATE_SUCCESS -> {
+                    itemView.home_progress_bar_balance_layout.gone()
+
+                    itemView.home_iv_logo_balance.show()
                     itemView.home_container_action_balance.show()
+
+                    itemView.home_tv_balance.show()
+                    itemView.home_tv_btn_action_balance.show()
+
                     renderBalanceText(element?.balanceTitleTextAttribute, element?.balanceTitleTagAttribute, itemView.home_tv_balance)
                     renderBalanceText(element?.balanceSubTitleTextAttribute, element?.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
                     itemView.home_container_balance.handleItemCLickType(
@@ -177,10 +240,17 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
 
                             },
                             walletAppAction = {
-                                OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
-                                    isLinked = it,
-                                    userId = listener?.userId?:""
-                                )
+                                if (listener?.isEligibleForNewGopay() == true) {
+                                    OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
+                                        subtitle = element.balanceSubTitleTextAttribute?.text?:"",
+                                        userId = listener?.userId?:""
+                                    )
+                                } else {
+                                    OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
+                                        isLinked = it,
+                                        userId = listener?.userId?:""
+                                    )
+                                }
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
@@ -266,15 +336,30 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                                 itemView.context.startActivity(intentBalanceWallet)
                             },
                             walletAppAction = {
-                                OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
-                                    isLinked = it,
-                                    userId = listener?.userId?:""
-                                )
+                                if (listener?.isEligibleForNewGopay() == true) {
+                                    OvoWidgetTracking.sendClickOnNewWalletAppBalanceWidgetTracker(
+                                        subtitle = element.balanceSubTitleTextAttribute?.text?:"",
+                                        userId = listener?.userId?:""
+                                    )
+                                } else {
+                                    OvoWidgetTracking.sendClickOnWalletAppBalanceWidgetTracker(
+                                        isLinked = it,
+                                        userId = listener?.userId?:""
+                                    )
+                                }
                                 listener?.onSectionItemClicked(element.redirectUrl)
                             }
                     )
+
+                    //interpolator
+                    element?.alternateBalanceDrawerItem?.let {
+                        this.element = element
+                        this.alternateDrawerItem = it
+                        setDrawerItemWithAnimation()
+                    }
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
+                    itemView.home_progress_bar_balance_layout.gone()
                     itemView.home_container_action_balance.show()
                     renderBalanceText(element.balanceTitleTextAttribute, element.balanceTitleTagAttribute, itemView.home_tv_balance)
                     renderBalanceText(element.balanceSubTitleTextAttribute, element.balanceSubTitleTagAttribute, itemView.home_tv_btn_action_balance)
@@ -297,32 +382,119 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                 }
             }
 
+            if (element?.state != STATE_LOADING) {
+                //error state using shimmering
+                element?.defaultIconRes?.let {
+                    if (element.drawerItemType == TYPE_WALLET_OVO ||
+                        element.drawerItemType == TYPE_WALLET_PENDING_CASHBACK ||
+                        element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
+                        element.drawerItemType == TYPE_WALLET_OTHER
+                    ) {
+                        itemView.home_iv_logo_balance.visible()
+                        itemView.home_iv_logo_shimmering.invisible()
 
-            //error state using shimmering
-            element?.defaultIconRes?.let {
-                if (element.drawerItemType == TYPE_WALLET_OVO ||
-                    element.drawerItemType == TYPE_WALLET_PENDING_CASHBACK ||
-                    element.drawerItemType == TYPE_WALLET_WITH_TOPUP ||
-                    element.drawerItemType == TYPE_WALLET_OTHER
-                ) {
+                        itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
+                    } else {
+                        itemView.home_iv_logo_balance.invisible()
+                        itemView.home_iv_logo_shimmering.visible()
+                    }
+                }
+                element?.iconImageUrl?.let {
                     itemView.home_iv_logo_balance.visible()
                     itemView.home_iv_logo_shimmering.invisible()
 
-                    itemView.home_iv_logo_balance.setImageDrawable(itemView.context.getDrawable(it))
-                } else {
-                    itemView.home_iv_logo_balance.invisible()
-                    itemView.home_iv_logo_shimmering.visible()
+                    if (it.isNotEmpty()) itemView.home_iv_logo_balance.loadImage(it)
                 }
-            }
-            element?.iconImageUrl?.let {
-                itemView.home_iv_logo_balance.visible()
-                itemView.home_iv_logo_shimmering.invisible()
-
-                if (it.isNotEmpty()) itemView.home_iv_logo_balance.loadImage(it)
             }
         }
 
+        fun setDrawerItemWithAnimation() {
+            if (listener?.needToRotateTokopoints() == true) {
+                animationJob?.cancel()
+                if (animationJob == null || animationJob?.isActive == false) {
+                    animationJob = launch {
+                        alternateDrawerItem?.forEach { alternateItem ->
+                            delay(DRAWER_DELAY_ANIMATION)
+                            renderItemAnimation(alternateItem, slideDirection = DIRECTION_UP)
+                            delay(DRAWER_DELAY_ANIMATION)
+                        }
+                        delay(DRAWER_DELAY_ANIMATION)
+                        element?.let {
+                            element?.let { renderItemAnimation(it, slideDirection = DIRECTION_DOWN) }
+                        }
+                    }
+                }
+                listener?.setRotateTokopointsDone(true)
+            }
+        }
+
+        private suspend fun renderItemAnimation(item: BalanceDrawerItemModel, slideDirection: Int = DIRECTION_DOWN) {
+            var title: BalanceTextAttribute? = null
+            var subtitle: BalanceTextAttribute? = null
+            var titleTag: BalanceTagAttribute? = null
+            var subtitleTag: BalanceTagAttribute? = null
+            val slideIn =
+                if (slideDirection == DIRECTION_DOWN) AnimationUtils.loadAnimation(itemView.context, R.anim.search_bar_slide_down_in) else
+                    AnimationUtils.loadAnimation(itemView.context, R.anim.search_bar_slide_up_in)
+            slideIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
+            val slideOut =
+                if (slideDirection == DIRECTION_DOWN) AnimationUtils.loadAnimation(itemView.context, R.anim.slide_out_down) else
+                    AnimationUtils.loadAnimation(itemView.context, R.anim.slide_out_up)
+            slideOut.interpolator = EasingInterpolator(Ease.QUART_IN)
+            slideOut.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationRepeat(animation: Animation?) {}
+                override fun onAnimationEnd(animation: Animation?) {
+                    title = item.balanceTitleTextAttribute
+                    subtitle = item.balanceSubTitleTextAttribute
+                    titleTag = item.balanceTitleTagAttribute
+                    subtitleTag = item.balanceSubTitleTagAttribute
+                    setItemText(title, titleTag, subtitle, subtitleTag)
+                    itemView.home_container_action_balance?.startAnimation(slideIn)
+                }
+
+                override fun onAnimationStart(animation: Animation?) {}
+            })
+            itemView.home_container_action_balance?.startAnimation(slideOut)
+
+            itemView.home_container_action_balance?.addOnAttachStateChangeListener(object:
+                View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View?) {
+
+                }
+
+                override fun onViewDetachedFromWindow(v: View?) {
+                    animationJob?.cancel()
+                    title = element?.balanceTitleTextAttribute
+                    subtitle = element?.balanceSubTitleTextAttribute
+                    titleTag = element?.balanceTitleTagAttribute
+                    subtitleTag = element?.balanceSubTitleTagAttribute
+                    setItemText(title, titleTag, subtitle, subtitleTag)
+                    itemView.home_container_action_balance?.removeOnAttachStateChangeListener(this)
+                }
+            })
+        }
+
+        private fun setItemText(
+            title: BalanceTextAttribute?,
+            titleTag: BalanceTagAttribute?,
+            subtitle: BalanceTextAttribute?,
+            subtitleTag: BalanceTagAttribute?
+        ) {
+            renderBalanceText(
+                textAttr = title,
+                textView = itemView.home_tv_balance,
+                tagAttr = titleTag
+            )
+            renderBalanceText(
+                textAttr = subtitle,
+                textView = itemView.home_tv_btn_action_balance,
+                tagAttr = subtitleTag
+            )
+        }
+
         private fun renderBalanceText(textAttr: BalanceTextAttribute?, tagAttr: BalanceTagAttribute?, textView: TextView, textSize: Int = R.dimen.sp_10) {
+            textView.setTypeface(null, Typeface.NORMAL)
+
             textView.background = null
             textView.text = null
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemView.context.resources.getDimension(textSize))
@@ -330,6 +502,8 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
                 renderTagAttribute(tagAttr, textView)
             } else if (textAttr != null && textAttr.text.isNotEmpty()) {
                 renderTextAttribute(textAttr, textView)
+            } else if ((tagAttr == null && textAttr == null) || (tagAttr != null && tagAttr.text.isEmpty()) || (textAttr != null && textAttr.text.isEmpty())) {
+                textView.gone()
             }
         }
 
@@ -401,6 +575,9 @@ class BalanceAdapter(val listener: HomeCategoryListener?): RecyclerView.Adapter<
         companion object {
             private const val TITLE_HEADER_WEBSITE = "Tokopedia"
             private const val KUPON_SAYA_URL_PATH = "kupon-saya"
+            private const val DIRECTION_UP = 0
+            private const val DIRECTION_DOWN = 1
+            private const val DRAWER_DELAY_ANIMATION = 1000L
         }
     }
 }

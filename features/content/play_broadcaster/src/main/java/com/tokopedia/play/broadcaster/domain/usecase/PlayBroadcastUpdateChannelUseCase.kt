@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
-import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
 import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.UpdateChannelUseCase.Companion.PARAMS_CHANNEL_ID
@@ -32,9 +31,10 @@ class PlayBroadcastUpdateChannelUseCase @Inject constructor(private val updateCh
             try {
                 response = updateChannelUseCase.executeOnBackground()
             } catch (throwable: Throwable) {
-                if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw DefaultNetworkThrowable()
+                if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw throwable
                 else {
                     if (retryCount++ < DefaultUseCaseHandler.MAX_RETRY) withRetry()
+                    else throw throwable
                 }
             }
         }

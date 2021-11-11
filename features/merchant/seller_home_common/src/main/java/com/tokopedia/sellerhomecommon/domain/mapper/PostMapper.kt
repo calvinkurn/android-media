@@ -83,32 +83,35 @@ class PostMapper @Inject constructor() :
         postList: List<PostItemDataModel>,
         emphasizeType: Int?
     ): List<PostItemUiModel> {
-        return postList.mapIndexed { index, postItem ->
-            when (emphasizeType) {
-                PostListDataUiModel.TEXT_EMPHASIZED -> {
-                    PostItemUiModel.PostTextEmphasizedUiModel(
-                        title = postItem.title.orEmpty(),
-                        appLink = postItem.appLink.orEmpty(),
-                        url = postItem.url.orEmpty(),
-                        featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
-                        subtitle = postItem.subtitle.orEmpty(),
-                        textEmphasizeType = PostListDataUiModel.TEXT_EMPHASIZED,
-                        stateText = postItem.stateText.orEmpty(),
-                        stateMediaUrl = postItem.stateMediaUrl.orEmpty(),
-                        shouldShowUnderLine = index != postList.size.minus(1)
-                    )
-                }
-                else -> {
-                    PostItemUiModel.PostImageEmphasizedUiModel(
-                        title = postItem.title.orEmpty(),
-                        appLink = postItem.appLink.orEmpty(),
-                        url = postItem.url.orEmpty(),
-                        featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
-                        subtitle = postItem.subtitle.orEmpty(),
-                        textEmphasizeType = PostListDataUiModel.IMAGE_EMPHASIZED,
-                    )
+        return postList.sortedByDescending { it.isPinned }
+            .mapIndexed { index, postItem ->
+                when (emphasizeType) {
+                    PostListDataUiModel.TEXT_EMPHASIZED -> {
+                        PostItemUiModel.PostTextEmphasizedUiModel(
+                            title = postItem.title.orEmpty(),
+                            appLink = postItem.appLink.orEmpty(),
+                            url = postItem.url.orEmpty(),
+                            featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
+                            subtitle = postItem.subtitle.orEmpty(),
+                            textEmphasizeType = PostListDataUiModel.TEXT_EMPHASIZED,
+                            stateText = postItem.stateText.orEmpty(),
+                            stateMediaUrl = postItem.stateMediaUrl.orEmpty(),
+                            shouldShowUnderLine = index != postList.size.minus(1),
+                            isPinned = postItem.isPinned
+                        )
+                    }
+                    else -> {
+                        PostItemUiModel.PostImageEmphasizedUiModel(
+                            title = postItem.title.orEmpty(),
+                            appLink = postItem.appLink.orEmpty(),
+                            url = postItem.url.orEmpty(),
+                            featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
+                            subtitle = postItem.subtitle.orEmpty(),
+                            textEmphasizeType = PostListDataUiModel.IMAGE_EMPHASIZED,
+                            isPinned = postItem.isPinned
+                        )
+                    }
                 }
             }
-        }
     }
 }

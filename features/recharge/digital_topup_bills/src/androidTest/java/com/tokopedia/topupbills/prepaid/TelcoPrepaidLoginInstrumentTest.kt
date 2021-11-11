@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -26,12 +27,12 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
-import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
+import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment.Companion.PREFERENCES_NAME
+import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment.Companion.TELCO_COACH_MARK_HAS_SHOWN
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickClearBtn
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_clickTextField
-import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
 import com.tokopedia.topupbills.utils.CommonTelcoActions.clientNumberWidget_validateText
 import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_validateBuyWidgetDisplayed
 import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_validateBuyWidgetNotDisplayed
@@ -40,9 +41,8 @@ import com.tokopedia.topupbills.utils.CommonTelcoActions.pdp_validateViewPagerDi
 import com.tokopedia.topupbills.utils.CommonTelcoActions.productItemRv_scrollToPosition
 import com.tokopedia.topupbills.utils.CommonTelcoActions.productItem_click
 import com.tokopedia.topupbills.utils.CommonTelcoActions.productItem_clickSeeMore
+import com.tokopedia.topupbills.utils.CommonTelcoActions.stubSearchNumber
 import com.tokopedia.topupbills.utils.CommonTelcoActions.tabLayout_clickTabWithText
-import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment.Companion.PREFERENCES_NAME
-import com.tokopedia.topupbills.telco.prepaid.fragment.DigitalTelcoPrepaidFragment.Companion.TELCO_COACH_MARK_HAS_SHOWN
 import com.tokopedia.topupbills.utils.ResourceUtils
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot

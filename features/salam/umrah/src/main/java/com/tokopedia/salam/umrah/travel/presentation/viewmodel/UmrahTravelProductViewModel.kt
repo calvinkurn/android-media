@@ -36,7 +36,7 @@ class UmrahTravelProductViewModel @Inject constructor(private val graphqlReposit
             val graphqlRequest = GraphqlRequest(searchQuery, UmrahTravelAgentProductEntity::class.java, params)
 
             val response = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }
             privateSearchResult.value = Success(response.getSuccessData<UmrahTravelAgentProductEntity>().umrahSearchProducts)
         }) {

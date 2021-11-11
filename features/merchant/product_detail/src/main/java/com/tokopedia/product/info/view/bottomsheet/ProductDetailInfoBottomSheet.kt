@@ -17,11 +17,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
@@ -29,9 +27,11 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
+import com.tokopedia.product.detail.databinding.BottomSheetProductDetailInfoBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
+import com.tokopedia.product.detail.view.util.getIntentImagePreviewWithoutDownloadButton
 import com.tokopedia.product.info.model.productdetail.uidata.*
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
@@ -41,7 +41,7 @@ import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryIm
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.bottom_sheet_product_detail_info.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import java.util.concurrent.Executors
 import javax.inject.Inject
@@ -62,6 +62,8 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     private var rvBsProductDetail: RecyclerView? = null
     private var currentList: List<ProductDetailInfoVisitable>? = null
     private var listener: ProductDetailBottomSheetListener? = null
+
+    private var binding by autoClearedNullable<BottomSheetProductDetailInfoBinding>()
 
     companion object {
         const val PRODUCT_DETAIL_INFO_PARCEL_KEY = "parcelId"
@@ -113,13 +115,13 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             val height = displayMetrics.heightPixels
 
             if (isFullScreen) {
-                bs_product_info_container?.setPadding(0, 0, 0, 20.dpToPx(displayMetrics))
-                bs_product_info_container?.layoutParams?.height = height - bottomSheetHeader.height - (bottomSheetHeader.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin - bottomSheetWrapper.paddingTop
+                binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 20.dpToPx(displayMetrics))
+                binding?.bsProductInfoContainer?.layoutParams?.height = height - bottomSheetHeader.height - (bottomSheetHeader.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin - bottomSheetWrapper.paddingTop
             } else {
-                bs_product_info_container?.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
-                bs_product_info_container?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
+                binding?.bsProductInfoContainer?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
-        } catch (e: Throwable) {
+        } catch (_: Throwable) {
         }
     }
 
@@ -203,7 +205,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             } else {
                 try {
                     startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse("https://www.youtube.com/watch?v=" + url[index])));
+                            Uri.parse("https://www.youtube.com/watch?v=" + url[index])))
                 } catch (e: Throwable) {
                     Timber.d(e)
                 }
@@ -257,6 +259,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     private fun initView() {
         setTitle(getString(R.string.merchant_product_detail_label_product_detail))
         val childView = View.inflate(requireContext(), R.layout.bottom_sheet_product_detail_info, null)
+        binding = BottomSheetProductDetailInfoBinding.bind(childView)
         setupRecyclerView(childView)
         setChild(childView)
         clearContentPadding = true
@@ -285,7 +288,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         activity?.let {
             DynamicProductDetailTracking.ProductDetailSheet.onVariantGuideLineBottomSheetClicked(listener?.getPdpDataSource(), userSession.userId
                     ?: "")
-            startActivity(ImagePreviewActivity.getCallingIntent(it, arrayListOf(url)))
+            startActivity(getIntentImagePreviewWithoutDownloadButton(it, arrayListOf(url)))
         }
     }
 }

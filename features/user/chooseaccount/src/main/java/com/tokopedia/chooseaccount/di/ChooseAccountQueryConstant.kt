@@ -11,4 +11,5 @@ object ChooseAccountQueryConstant{
     const val PARAM_VALIDATE_TOKEN = "validate_token"
     const val PARAM_PHONE = "phone"
     const val PARAM_LOGIN_TYPE = "login_type"
+    const val PARAM_DEVICE_BIOMETRIC = "device_biometrics"
 }

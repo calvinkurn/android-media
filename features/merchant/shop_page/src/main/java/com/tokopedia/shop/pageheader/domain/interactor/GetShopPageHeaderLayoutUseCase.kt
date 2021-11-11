@@ -24,7 +24,7 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
                 else
                     CacheType.CLOUD_THEN_CACHE
         ).build()
-        val gqlResponse = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
         val error = gqlResponse.getError(ShopPageHeaderLayoutResponse::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData(ShopPageHeaderLayoutResponse::class.java)

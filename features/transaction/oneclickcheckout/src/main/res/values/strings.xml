@@ -51,6 +51,8 @@
     <string name="lbl_installment_payment_monthly">%1$s/bulan</string>
     <string name="lbl_choose_installment_type">Pilih Jenis Pembayaran</string>
 
+    <string name="lbl_installment_afpb_default">Pilih Bayar Penuh / Cicilan</string>
+
     <string name="lbl_activate_ovo_now">Aktivasi OVO Sekarang</string>
     <string name="message_ovo_activation_success">Yay, aktivasi OVO berhasil. Sekarang kamu bisa bayar pakai OVO.</string>
 
@@ -71,7 +73,10 @@
     <string name="occ_pinpoint_error_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
     <string name="occ_pinpoint_error_action">Atur</string>
 
-    <string name="occ_lbl_notes_placeholder">Tulis catatan</string>
-    <string name="occ_lbl_notes_label">Catatan untuk barang ini</string>
+    <string name="occ_lbl_notes_placeholder">Tulis Catatan</string>
+    <string name="occ_lbl_notes_label">Tulis Catatan untuk Barang Ini</string>
     <string name="occ_lbl_notes_edit">Ubah</string>
+
+    <!--AFPB-->
+    <string name="default_afpb_error">Maaf, ada kendala saat memproses pesananmu. Pilih jenis pembayaran lagi.</string>
 </resources>

@@ -380,6 +380,16 @@ class PlayBroadcastAnalytic(
     }
 
     /**
+     * Click 'Batalkan' on Count Down
+     */
+    fun clickCancelOnCountDown(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            action = "batalkan livestream",
+            label = "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
      * Click `Simpan` on Preparation Page Title Edit
      */
     fun clickSubmitOnEditTitleBottomSheet() {
@@ -450,6 +460,36 @@ class PlayBroadcastAnalytic(
         clickGeneralEvent(
                 "camera switch live",
                 "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Add Pin Chat Message
+     */
+    fun clickAddPinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "add pin chat message",
+            "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Edit Pin Chat Message
+     */
+    fun clickEditPinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "edit pin chat message",
+            "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Save Pin Chat Message
+     */
+    fun clickSavePinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "save pin chat message",
+            "- $channelId - $titleChannel"
         )
     }
 
@@ -714,7 +754,7 @@ class PlayBroadcastAnalytic(
                         KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY,
                         KEY_EVENT_ACTION to action,
                         KEY_EVENT_LABEL to eventLabel,
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_CURRENT_SITE to currentSite,
                         KEY_SHOP_ID to userSession.shopId,
                         KEY_USER_ID to userSession.userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
@@ -726,7 +766,7 @@ class PlayBroadcastAnalytic(
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
                 screenName,
                 hashMapOf(
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                        KEY_CURRENT_SITE to currentSite,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
                 )
         )

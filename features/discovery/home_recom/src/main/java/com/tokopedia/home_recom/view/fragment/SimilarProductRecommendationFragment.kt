@@ -31,6 +31,9 @@ import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.util.*
+import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_PRODUCT_ID
+import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_REF
+import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_SOURCE
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationTypeFactoryImpl
 import com.tokopedia.home_recom.view.viewholder.RecommendationEmptyViewHolder
@@ -44,7 +47,6 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 /**
@@ -76,9 +78,6 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         private const val SPAN_COUNT = 2
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
-        private const val SAVED_PRODUCT_ID = "saved_product_id"
-        private const val SAVED_REF = "saved_ref"
-        private const val SAVED_SOURCE = "saved_source"
         private const val REQUEST_FROM_PDP = 399
 
         @SuppressLint("SyntheticAccessor")
@@ -348,13 +347,17 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         activity?.finish()
     }
 
-    private fun setRecommendationFilterAndSort(filters: List<SortFilterItem>, dynamicFilterModel: DynamicFilterModel){
+    override fun onShowSnackbarError(throwable: Throwable) {
+        showToastError(throwable)
+    }
+
+    private fun setRecommendationFilterAndSort(filters: List<SortFilterItem>, dynamicFilterModel: DynamicFilterModel) {
         sortFilterView?.let { sortFilterView ->
-            if(dynamicFilterModel.data.filter.isEmpty() && dynamicFilterModel.data.sort.isEmpty()){
+            if (dynamicFilterModel.data.filter.isEmpty() && dynamicFilterModel.data.sort.isEmpty()) {
                 sortFilterView.sortFilterPrefix.hide()
                 sortFilterView.hide()
             } else {
-                if(!sortFilterView.isVisible){
+                if (!sortFilterView.isVisible) {
                     sortFilterView.resetAllFilters()
                     sortFilterView.show()
                     sortFilterView.sortFilterPrefix.show()

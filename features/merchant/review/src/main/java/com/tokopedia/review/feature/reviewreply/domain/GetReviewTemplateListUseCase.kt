@@ -43,7 +43,7 @@ class GetReviewTemplateListUseCase @Inject constructor(
     @GqlQuery(GET_REVIEW_RESPONSE_CLASS_NAME, GET_REVIEW_RESPONSE)
     override suspend fun executeOnBackground(): ReviewReplyTemplateListResponse.ReviewResponseTemplateList {
         val gqlRequest = GraphqlRequest(ReviewResponseQuery.GQL_QUERY, ReviewReplyTemplateListResponse::class.java, params)
-        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {
             return gqlResponse.getData<ReviewReplyTemplateListResponse>(ReviewReplyTemplateListResponse::class.java).reviewResponseTemplateList

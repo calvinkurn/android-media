@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.TopChatVoucherViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
@@ -52,6 +53,13 @@ class TopChatVoucherViewHolder constructor(
             com.tokopedia.unifyprinciples.R.color.Unify_G200,
             getStrokeWidthSenderDimenRes()
     )
+
+    override fun bind(element: TopChatVoucherUiModel, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) return
+        when (payloads.first()) {
+            Payload.REBIND -> bind(element)
+        }
+    }
 
     override fun bind(element: TopChatVoucherUiModel) {
         super.bind(element)

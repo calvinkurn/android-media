@@ -33,11 +33,12 @@ import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.Toaster.build
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import java.util.*
 import javax.inject.Inject
 
 class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.View {
-    private var switchTemplate: SwitchCompat? = null
+    private var switchTemplate: SwitchUnify? = null
     private var recyclerView: RecyclerView? = null
     private var templateContainer: View? = null
     private var info: View? = null

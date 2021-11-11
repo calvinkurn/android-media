@@ -88,6 +88,7 @@ class PlayLivePusherMediator(
 
     fun destroy() {
         mCountDownTimer.destroy()
+        release()
     }
 
     fun addListener(listener: PlayLivePusherMediatorListener) {
@@ -96,6 +97,10 @@ class PlayLivePusherMediator(
 
     fun removeListener(listener: PlayLivePusherMediatorListener) {
         mListeners.remove(listener)
+    }
+
+    fun clearListener() {
+        mListeners.clear()
     }
 
     fun onCameraChanged(surfaceView: SurfaceAspectRatioView) {
@@ -129,7 +134,7 @@ class PlayLivePusherMediator(
             PlayLivePusherState.Recovered -> PlayLivePusherMediatorState.Recovered
             PlayLivePusherState.Resumed -> PlayLivePusherMediatorState.Resume(true)
             PlayLivePusherState.Started -> PlayLivePusherMediatorState.Started
-            PlayLivePusherState.Idle,
+            PlayLivePusherState.Idle -> PlayLivePusherMediatorState.Idle
             PlayLivePusherState.Stopped -> PlayLivePusherMediatorState.Stopped
         }
     }

@@ -1,10 +1,9 @@
 package com.tokopedia.report.view.viewmodel
 
-import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.common.state.UploadResult
 import io.mockk.*
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.*
 import rx.observers.TestSubscriber
 
 class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture() {
@@ -27,7 +26,7 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
         val onSuccess: (Boolean) -> Unit = mockk()
         val onError: (Throwable?) -> Unit = mockk()
 
-        viewModel.submitReport(anyInt(), anyInt(), reportInput, onSuccess, onError)
+        viewModel.submitReport(anyLong(), anyInt(), reportInput, onSuccess, onError)
 
         verifySubmitReportUseCaseCalled()
 
@@ -43,7 +42,7 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
         val onSuccess: (Boolean) -> Unit = mockk()
         val onError: (Throwable?) -> Unit = mockk()
 
-        viewModel.submitReport(anyInt(), anyInt(), reportInput, onSuccess, onError)
+        viewModel.submitReport(anyLong(), anyInt(), reportInput, onSuccess, onError)
 
         verify { onError.invoke(any()) }
     }
@@ -66,7 +65,7 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
         val onSuccess: (Boolean) -> Unit = mockk()
         val onError: (Throwable?) -> Unit = mockk()
 
-        viewModel.submitReport(anyInt(), anyInt(), reportInput, onSuccess, onError)
+        viewModel.submitReport(anyLong(), anyInt(), reportInput, onSuccess, onError)
 
         verifySubmitReportUseCaseCalled()
 

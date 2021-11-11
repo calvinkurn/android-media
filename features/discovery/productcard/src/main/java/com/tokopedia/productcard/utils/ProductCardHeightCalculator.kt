@@ -34,6 +34,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
             val buttonQuantityEditorSectionHeight = productCardModel.getQuantityEditorSectionHeight(context)
             val buttonVariantSectionHeight = productCardModel.getVariantSectionHeight(context)
             val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
+            val buttonSimilarProductHeight = productCardModel.getButtonSimilarProductHeight(context)
 
             productCardHeightList.add(
                             imageHeight +
@@ -46,7 +47,8 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
                             buttonAddToCartSectionHeight +
                             buttonQuantityEditorSectionHeight +
                             buttonVariantSectionHeight +
-                            buttonNotifyMeSectionHeight
+                            buttonNotifyMeSectionHeight +
+                            buttonSimilarProductHeight
             )
         }
 
@@ -446,8 +448,8 @@ private fun ProductCardModel.getQuantityEditorSectionHeight(context: Context): I
 
 private fun ProductCardModel.getVariantSectionHeight(context: Context): Int {
     return if (hasVariant()) {
-        val addVariantButtonMarginTop = if (hasVariantWithQuantity()) context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_top)
-        else context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_top)
+        val addVariantButtonMarginTop =
+            context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_margin_top)
 
         val addVariantButtonHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_add_variant_height)
 
@@ -485,6 +487,16 @@ private fun ProductCardModel.getStockBarAndLabelSectionHeight(context: Context):
         val labelMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_label_margintop)
 
         return stockBarMarginTop + stockBarHeight +  labelHeight + labelMarginTop
+    }
+    else 0
+}
+
+private fun ProductCardModel.getButtonSimilarProductHeight(context: Context): Int {
+    return if (hasNotifyMeButton) {
+        val buttonSimilarProductMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_button_similar_product_margin_top)
+        val buttonSimilarProductHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_similar_product_height)
+
+        buttonSimilarProductMarginTop + buttonSimilarProductHeight
     }
     else 0
 }

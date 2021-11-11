@@ -21,6 +21,28 @@ data class ProductVariant(
         @SerializedName("children")
         val children: List<VariantChild> = listOf()
 ){
+        fun isOneOfTheChildBuyablePartial(optionId: String): Boolean {
+                var result = false
+                for (child in children) {
+                        if (optionId in child.optionIds && child.isBuyable) {
+                                result = true
+                                break
+                        }
+                }
+                return result
+        }
+
+        fun isOneOfTheChildBuyable(optionId: List<String>): Boolean {
+                var result = false
+                for (child in children) {
+                        if (optionId.containsAll(child.optionIds) && child.isBuyable) {
+                                result = true
+                                break
+                        }
+                }
+                return result
+        }
+
         //Hitam,M
         fun getVariantCombineIdentifier(): String {
                 val list = variants.mapIndexed { index, variant ->
@@ -40,16 +62,10 @@ data class ProductVariant(
                 return childResult
         }
 
-        /**
-         *  Pair(isParent, VariantChild)
-         *  if child is null means the product is parent, so we need to auto select
-         *  get first child buyable if parent, if all child not buyable, get te first child
-         */
-        fun autoSelectChildIfGivenIdIsParent(selectedVariantId: String?): Pair<Boolean, VariantChild?> {
+        fun autoSelectIfParent(selectedVariantId: String?): VariantChild? {
                 val child = getChildByProductId(selectedVariantId)
-                val isParent = child == null
 
-                return isParent to (child ?: children.firstOrNull{ it.isBuyable } ?: children.firstOrNull())
+                return child ?: children.firstOrNull{ it.isBuyable } ?: children.firstOrNull()
         }
 
         fun getChildByProductId(selectedVariantId: String?): VariantChild? {

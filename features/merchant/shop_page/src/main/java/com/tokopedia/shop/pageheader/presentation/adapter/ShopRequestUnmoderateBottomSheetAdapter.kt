@@ -7,8 +7,10 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopRequestUnmoderateBinding
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopRequestUnmoderateBottomSheetAdapter(
         context: Context?,
@@ -61,8 +63,9 @@ class ShopRequestUnmoderateBottomSheetAdapter(
     inner class ShopRequestUnmoderateBottomSheetViewHolder(
             itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
-        val btnRadioUnModerateOption: RadioButtonUnify? = itemView.findViewById(R.id.btn_radio_unmoderate_option)
-        private val tvOptionName: Typography? = itemView.findViewById(R.id.tv_option_name)
+        private val viewBinding: ItemShopRequestUnmoderateBinding? by viewBinding()
+        val btnRadioUnModerateOption: RadioButtonUnify? = viewBinding?.btnRadioUnmoderateOption
+        private val tvOptionName: Typography? = viewBinding?.tvOptionName
 
         fun bind(item: ShopUnmoderateOption) {
             tvOptionName?.text = item.optionText

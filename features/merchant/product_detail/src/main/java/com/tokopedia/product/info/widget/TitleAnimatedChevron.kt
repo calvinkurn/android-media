@@ -2,10 +2,11 @@ package com.tokopedia.product.info.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.product.detail.R
-import kotlinx.android.synthetic.main.layout_title_animated_chevron.view.*
+import com.tokopedia.product.detail.databinding.LayoutTitleAnimatedChevronBinding
 
 /**
  * Created by Yehezkiel on 13/10/20
@@ -14,8 +15,16 @@ class TitleAnimatedChevron @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    companion object {
+        private const val ANIMATE_ROTATE_TOP_DEGREE = 180f
+        private const val ANIMATE_ROTATE_TOP_DURATION = 300L
+        private const val ANIMATE_ROTATE_DOWN_DURATION = 300L
+    }
+
+    private val binding = LayoutTitleAnimatedChevronBinding.inflate(LayoutInflater.from(context))
+
     init {
-        View.inflate(context, R.layout.layout_title_animated_chevron, this)
+        addView(binding.root)
     }
 
     var isExpand: Boolean = false
@@ -24,7 +33,7 @@ class TitleAnimatedChevron @JvmOverloads constructor(
             if (value) {
                 rotateTop()
             } else {
-                if (product_detail_toggle?.rotation != 0F) {
+                if (binding.productDetailToggle.rotation != 0F) {
                     rotateDown()
                 }
             }
@@ -33,18 +42,18 @@ class TitleAnimatedChevron @JvmOverloads constructor(
     var titleText: String = ""
         set(value) {
             field = value
-            product_detail_title?.text = value
+            binding.productDetailTitle.text = value
         }
 
     private fun rotateTop() {
-        product_detail_toggle?.run {
-            animate().rotation(180F).duration = 300
+        binding.productDetailToggle.run {
+            animate().rotation(ANIMATE_ROTATE_TOP_DEGREE).duration = ANIMATE_ROTATE_TOP_DURATION
         }
     }
 
     private fun rotateDown() {
-        product_detail_toggle?.run {
-            animate().rotation(0F).duration = 300
+        binding.productDetailToggle.run {
+            animate().rotation(0F).duration = ANIMATE_ROTATE_DOWN_DURATION
         }
     }
 }

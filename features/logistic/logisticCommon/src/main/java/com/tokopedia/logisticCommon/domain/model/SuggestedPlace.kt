@@ -14,7 +14,7 @@ data class SuggestedPlace(
         val placeId: String = "") : AutoCompleteVisitable()
 
 data class SavedAddress(
-        var addrId: Int = 0,
+        var addrId: Long = 0,
         var addrName: String = "",
         var address1: String = "",
         var latitude: String = "",

@@ -9,7 +9,7 @@ import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingViewModel
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailViewModel
 import com.tokopedia.tokopoints.view.couponlisting.CouponLisitingStackedViewModel
 import com.tokopedia.tokopoints.view.couponlisting.StackedCouponActivtyViewModel
-import com.tokopedia.tokopoints.view.merchantcoupon.MerchantCouponViewModel
+import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponViewModel
 import com.tokopedia.tokopoints.view.sendgift.SendGiftViewModel
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
 import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinViewModel

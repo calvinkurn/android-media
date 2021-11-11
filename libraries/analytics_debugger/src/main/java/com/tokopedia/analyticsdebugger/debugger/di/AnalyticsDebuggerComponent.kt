@@ -5,7 +5,6 @@ import com.tokopedia.analytics.debugger.ui.fragment.ApplinkDebuggerFragment
 import com.tokopedia.analytics.debugger.ui.fragment.FpmDebuggerFragment
 import com.tokopedia.analytics.debugger.ui.fragment.TopAdsDebuggerFragment
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
-import com.tokopedia.analyticsdebugger.cassava.debugger.AnalyticsDebuggerFragment
 import com.tokopedia.analyticsdebugger.debugger.ui.presenter.ApplinkDebugger
 import com.tokopedia.analyticsdebugger.debugger.ui.presenter.FpmDebugger
 import com.tokopedia.analyticsdebugger.debugger.ui.presenter.TopAdsDebugger

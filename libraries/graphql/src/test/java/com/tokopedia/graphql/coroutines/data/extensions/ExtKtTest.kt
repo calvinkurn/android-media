@@ -20,7 +20,7 @@ class ExtKtTest {
 
     @Before
     fun setup() {
-        coEvery { repository.getReseponse(any(), any()) } returns
+        coEvery { repository.response(any(), any()) } returns
                 MockUtil.createSuccessResponse(case)
     }
 
@@ -50,6 +50,15 @@ class ExtKtTest {
     fun `given unit param should returns as expected`() {
         runBlockingTest {
             val actual = repository.request<Unit, FooModel>("", Unit)
+            assertEquals(case, actual)
+        }
+    }
+
+    @Test
+    fun `given data class param should returns as expected`() {
+        runBlockingTest {
+            val param = FooModel(1, "")
+            val actual = repository.request<FooModel, FooModel>("", param)
             assertEquals(case, actual)
         }
     }

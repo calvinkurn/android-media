@@ -6,7 +6,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.widget.ViewPager2
-import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PortraitVideoBoundsProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map

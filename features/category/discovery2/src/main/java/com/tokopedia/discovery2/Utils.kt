@@ -3,19 +3,20 @@ package com.tokopedia.discovery2
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
-import android.graphics.Color
-import android.graphics.PorterDuff
+import android.graphics.*
 import android.net.Uri
 import android.os.Build
+import android.text.Html
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.ViewOutlineProvider
+import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.user.session.UserSession
 import java.text.ParseException
@@ -190,10 +191,10 @@ class Utils {
             return addressQueryParameterMap
         }
 
-        fun isFutureSale(saleStartDate: String): Boolean {
+        fun isFutureSale(saleStartDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleStartDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
-            val parsedDate = parseData(saleStartDate)
+            val parsedDate = parseData(saleStartDate,timerFormat)
             return if (parsedDate != null) {
                 currentSystemTime.time < parsedDate.time
             } else {
@@ -316,5 +317,36 @@ class Utils {
             return context?.let { UserSession(it).userId } ?: ""
         }
 
+        fun extractFromHtml(couponName: String?):String? {
+             return try {
+               if(couponName?.isNotEmpty() == true) {
+                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                       Html.fromHtml(couponName, Html.FROM_HTML_MODE_LEGACY).toString()
+                   } else {
+                       Html.fromHtml(couponName).toString()
+                   }
+               } else {
+                    couponName
+                }
+            }catch (e:Exception){
+             couponName
+            }
+        }
+
+        fun corners(view:View,leftOffset:Int, topOffset:Int, rightOffset:Int, bottomOffset:Int, radius:Float){
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    view.outlineProvider = object : ViewOutlineProvider() {
+                        @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+                        override fun getOutline(view: View?, outline: Outline?) {
+                            outline?.setRoundRect(leftOffset, topOffset, (view?.width).toZeroIfNull()+rightOffset, (view?.height).toZeroIfNull()+ bottomOffset, radius)
+                        }
+                    }
+                    view.clipToOutline = true
+                }
+            }catch (e:Exception){
+
+            }
+        }
     }
 }

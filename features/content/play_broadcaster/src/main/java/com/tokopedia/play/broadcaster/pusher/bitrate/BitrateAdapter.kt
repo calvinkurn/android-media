@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.pusher.bitrate
 
 import android.content.Context
+import com.tokopedia.play.broadcaster.util.extension.safeExecute
 import com.wmspanel.libstream.Streamer
 import com.wmspanel.libstream.Streamer.FpsRange
 import java.util.*
@@ -70,7 +71,7 @@ abstract class BitrateAdapter(context: Context) {
         mBitrateHistory.clear()
         val currentMillis = System.currentTimeMillis()
         mLossHistory.add(LossHistory(currentMillis, 0, 0))
-        mBitrateHistory.add(BitrateHistory(currentMillis, bitrate.toLong()))
+        mBitrateHistory.add(BitrateHistory(currentMillis, bitrate))
         mCurrentBitrate = bitrate
         mCurrentFps = mMaxFps
         runTask()
@@ -78,7 +79,7 @@ abstract class BitrateAdapter(context: Context) {
 
     fun stop() {
         if (mFullBitrate > 0) {
-            updateFps(mFullBitrate.toLong())
+            updateFps(mFullBitrate)
         }
         mCurrentBitrate = 0
         mStreamer = null
@@ -94,11 +95,15 @@ abstract class BitrateAdapter(context: Context) {
         if (checkDelay() == 0L || checkInterval() == 0L) return
         val checkNetwork: TimerTask = object : TimerTask() {
             override fun run() {
-                if (mStreamer == null || mConnectionId == null) return
-                val audioLost: Long = mStreamer!!.getAudioPacketsLost(mConnectionId!!)
-                var videoLost: Long = mStreamer!!.getVideoPacketsLost(mConnectionId!!)
-                videoLost += mStreamer!!.getUdpPacketsLost(mConnectionId!!)
-                check(audioLost, videoLost)
+                val connectionId = mConnectionId ?: return
+                val streamer = mStreamer ?: return
+
+                streamer.safeExecute {
+                    val audioLost: Long = getAudioPacketsLost(connectionId)
+                    var videoLost: Long = getVideoPacketsLost(connectionId)
+                    videoLost += getUdpPacketsLost(connectionId)
+                    check(audioLost, videoLost)
+                }
             }
         }
         mCheckTimer = Timer()
@@ -114,7 +119,7 @@ abstract class BitrateAdapter(context: Context) {
         mCurrentRange = FpsRange(30, 30)
         mCurrentFps = mMaxFps
         runTask()
-        mStreamer?.changeBitRate(mFullBitrate.toInt())
+        mStreamer?.safeExecute { changeBitRate(mFullBitrate.toInt()) }
     }
 
     fun setConnection(connectionId: Int) {
@@ -141,13 +146,13 @@ abstract class BitrateAdapter(context: Context) {
         val curTime = System.currentTimeMillis()
         mBitrateHistory.add(BitrateHistory(curTime, newBitrate))
         updateFps(newBitrate)
-        mStreamer?.changeBitRate(newBitrate.toInt())
+        mStreamer?.safeExecute { changeBitRate(newBitrate.toInt()) }
         mCurrentBitrate = newBitrate
         mListener?.onChangeBitrate(mCurrentBitrate)
     }
 
     protected fun changeBitrateQuiet(newBitrate: Long) {
-        mStreamer?.changeBitRate(newBitrate.toInt())
+        mStreamer?.safeExecute { changeBitRate(newBitrate.toInt()) }
     }
 
     open fun checkInterval(): Long = 500
@@ -167,7 +172,7 @@ abstract class BitrateAdapter(context: Context) {
         if (newRange?.fpsMax == mCurrentRange.fpsMax && newRange.fpsMin == mCurrentRange.fpsMin) {
             return
         }
-        mStreamer?.changeFpsRange(newRange)
+        mStreamer?.safeExecute { changeFpsRange(newRange) }
         newRange?.let { mCurrentRange = it }
     }
 

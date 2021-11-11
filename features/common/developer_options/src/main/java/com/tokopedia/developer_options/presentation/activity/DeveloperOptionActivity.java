@@ -8,6 +8,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -48,12 +50,16 @@ import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
+import com.tokopedia.developer_options.sharedpref.SharedPrefActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.UnifyButton;
@@ -65,15 +71,18 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV;
-import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP;
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT;
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT;
 
 public class DeveloperOptionActivity extends BaseActivity {
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
     public static final String REMOTE_CONFIG_PREFIX = "remote_config_prefix";
+    public static final String SHARED_PREF_FILE = "shared_pref_file";
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String CHANGEURL = "changeurl";
@@ -98,9 +107,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
-    String EXP_TOP_NAV = NAVIGATION_EXP_TOP_NAV;
-    String VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP;
-
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
@@ -116,6 +122,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private Spinner spinnerEnvironmentChooser;
 
     private View sendTimberButton;
+    private View sharedPrefButton;
     private TextFieldUnify editTextTimberMessage;
 
     private UnifyButton sendFirebaseCrash;
@@ -248,8 +255,6 @@ public class DeveloperOptionActivity extends BaseActivity {
                 .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
 
         userSession.setFirstTimeUserOnboarding(false);
-
-        RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
     }
 
     /**
@@ -303,6 +308,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
+        sharedPrefButton = findViewById(R.id.btn_shared_pref_editor);
 
         editTextFirebaseCrash = findViewById(R.id.et_firebase_crash);
         sendFirebaseCrash = findViewById(R.id.btn_send_firebase_crash);
@@ -318,6 +324,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         accessTokenView = findViewById(R.id.access_token);
         appAuthSecretView = findViewById(R.id.app_auth_secret);
+        appAuthSecretView.setVisibility(View.GONE);
         requestFcmToken = findViewById(R.id.requestFcmToken);
 
         spinnerEnvironmentChooser = findViewById(R.id.spinner_env_chooser);
@@ -328,22 +335,19 @@ public class DeveloperOptionActivity extends BaseActivity {
         tvFakeResponse = findViewById(R.id.tv_fake_response);
 
         UnifyButton buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
-        UnifyButton alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
         UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
-        UnifyButton alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
-        UnifyButton alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
+        UnifyButton alwaysOsExperiment = findViewById(R.id.buttonAlwaysExpOsBottomNavigation);
         alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
         System.out.println("++ line 332");
         UnifyButton alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
 
         setupNewInboxAbButton();
-        setupNewNotifcenterAbButton();
 
         TextFieldUnify inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
         UnifyButton btnApplyRollence = findViewById(R.id.btn_apply_rollence);
 
-        findViewById(R.id.pdp_dev_btn).setOnClickListener(v->{
+        findViewById(R.id.pdp_dev_btn).setOnClickListener(v -> {
             Intent intent = new Intent(this, ProductDetailDevActivity.class);
             startActivity(intent);
         });
@@ -374,47 +378,23 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        String EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV;
-        String VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
-        String VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
-
-        String EXP_HOME = RollenceKey.HOME_EXP;
-        String HOME_VARIANT_OLD = RollenceKey.HOME_VARIANT_OLD;
-        String HOME_VARIANT_REVAMP = RollenceKey.HOME_VARIANT_REVAMP;
-
         String EXP_BALANCE_WIDGET = RollenceKey.BALANCE_EXP;
         String BALANCE_WIDGET_VARIANT_OLD = RollenceKey.BALANCE_VARIANT_OLD;
         String BALANCE_WIDGET_VARIANT_REVAMP = RollenceKey.BALANCE_VARIANT_NEW;
 
-        alwaysOldButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_OLD);
-                Toast.makeText(DeveloperOptionActivity.this, "Navigation: Old", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         alwaysNewNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
+                RemoteConfigInstance.getInstance().getABTestPlatform().deleteKeyLocally(NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT);
                 Toast.makeText(DeveloperOptionActivity.this, "Navigation: Revamped", Toast.LENGTH_SHORT).show();
             }
         });
 
-        alwaysOldHome.setOnClickListener(new View.OnClickListener() {
+        alwaysOsExperiment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_OLD);
-                Toast.makeText(DeveloperOptionActivity.this, "Home: Old", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alwaysNewHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_REVAMP);
-                Toast.makeText(DeveloperOptionActivity.this, "Home: Revamped", Toast.LENGTH_SHORT).show();
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT, NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT);
+                Toast.makeText(DeveloperOptionActivity.this, "Navigation: OS Removed", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -434,7 +414,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        btnApplyRollence.setOnClickListener(new View.OnClickListener(){
+        btnApplyRollence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (inputRollenceKey.getTextFieldInput().getText().length() < 1) {
@@ -446,6 +426,18 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+        findViewById(R.id.btn_always_old_cart_checkout).setOnClickListener(v -> {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+            remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "false");
+            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.btn_always_new_cart_checkout).setOnClickListener(v -> {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+            remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "true");
+            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -470,30 +462,6 @@ public class DeveloperOptionActivity extends BaseActivity {
                             RollenceKey.VARIANT_NEW_INBOX
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Inbox: New", Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private void setupNewNotifcenterAbButton() {
-        UnifyButton oldInboxBtn = findViewById(R.id.btn_always_old_notifcenter);
-        UnifyButton newInboxBtn = findViewById(R.id.btn_always_new_notifcenter);
-
-        oldInboxBtn.setOnClickListener(v -> {
-            RemoteConfigInstance.getInstance()
-                    .getABTestPlatform()
-                    .setString(
-                            RollenceKey.KEY_NEW_NOTFICENTER,
-                            RollenceKey.VARIANT_OLD_NOTFICENTER
-                    );
-            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: Old", Toast.LENGTH_SHORT).show();
-        });
-        newInboxBtn.setOnClickListener(v -> {
-            RemoteConfigInstance.getInstance()
-                    .getABTestPlatform()
-                    .setString(
-                            RollenceKey.KEY_NEW_NOTFICENTER,
-                            RollenceKey.VARIANT_NEW_NOTFICENTER
-                    );
-            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: New", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -568,6 +536,13 @@ public class DeveloperOptionActivity extends BaseActivity {
                                 timberMessage + " has been sent", Toast.LENGTH_LONG).show();
                     }
                 }
+            }
+        });
+
+        sharedPrefButton.setOnClickListener(new OneOnClick() {
+            @Override
+            public void oneOnClick(View view) {
+                startActivity(new Intent(DeveloperOptionActivity.this, SharedPrefActivity.class));
             }
         });
 
@@ -742,6 +717,43 @@ public class DeveloperOptionActivity extends BaseActivity {
             Toast.makeText(this, decoder, Toast.LENGTH_LONG).show();
         });
 
+        findViewById(R.id.get_system_apps).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                List<ApplicationInfo> apps = DeveloperOptionActivity.this.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+                StringBuilder systemApps = new StringBuilder();
+                for (ApplicationInfo applicationInfo : apps) {
+                    if ((applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
+                        if (!"".equals(systemApps)) {
+                            systemApps.append(",");
+                        }
+                        systemApps.append(applicationInfo.packageName);
+                    }
+                }
+                String text = systemApps.toString();
+                ClipData clip = ClipData.newPlainText("Copied Text", text);
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+                Toast.makeText(DeveloperOptionActivity.this, text, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        findViewById(R.id.get_system_apps).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showApps(true);
+            }
+        });
+
+        findViewById(R.id.get_non_system_apps).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showApps(false);
+            }
+        });
+
         requestFcmToken.setOnClickListener(v -> {
             Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
             startService(intent);
@@ -759,12 +771,38 @@ public class DeveloperOptionActivity extends BaseActivity {
         });
     }
 
+    private void showApps(boolean isSystemApps) {
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        List<ApplicationInfo> apps = DeveloperOptionActivity.this.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+        StringBuilder systemApps = new StringBuilder();
+        for (ApplicationInfo applicationInfo : apps) {
+            boolean check;
+            if (isSystemApps) {
+                check = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM;
+            } else {
+                check = (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM;
+            }
+            if (check) {
+                if (systemApps.length() != 0) {
+                    systemApps.append(",");
+                }
+                systemApps.append(applicationInfo.packageName);
+            }
+        }
+        String text = systemApps.toString();
+        ClipData clip = ClipData.newPlainText("Copied Text", text);
+        if (clipboard != null) {
+            clipboard.setPrimaryClip(clip);
+        }
+        Toast.makeText(DeveloperOptionActivity.this, text, Toast.LENGTH_LONG).show();
+    }
+
     private boolean getLeakCanaryToggleValue() {
         return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
     }
 
     public Object getOrNull(String[] list, int index) {
-        if (index >= 0 && index <= list.length - 1)  {
+        if (index >= 0 && index <= list.length - 1) {
             return list[index];
         } else {
             return null;

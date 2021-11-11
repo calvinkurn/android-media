@@ -10,14 +10,14 @@ import androidx.collection.ArrayMap;
 import com.tokopedia.abstraction.processor.ProductListClickBundler;
 import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
-import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.atc_common.domain.model.response.DataModel;
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
-import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel;
+import com.tokopedia.chat_common.data.BannedProductAttachmentUiModel;
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
+import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam;
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel;
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
@@ -27,8 +27,6 @@ import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import androidx.annotation.Nullable;
-
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -165,6 +163,7 @@ public class TopChatAnalytics {
         String VIEW_SRW = "view smart reply widget";
         String CLICK_SRW = "click smart reply widget";
         String CLICK_UPDATE_STOCK = "click on update stock";
+        String CLICK_THREE_BULLET_MENU = "click header - three bullet";
     }
 
     public interface Label {
@@ -176,6 +175,7 @@ public class TopChatAnalytics {
 
     interface BusinessUnit {
         String Communication = "communication";
+        String CommunicationMedia = "Communication & Media";
     }
 
     interface CurrentSite {
@@ -321,7 +321,7 @@ public class TopChatAnalytics {
     // #AP6
     public void eventClickProductThumbnailEE(
             Context context,
-            @NotNull ProductAttachmentViewModel product,
+            @NotNull ProductAttachmentUiModel product,
             @NotNull UserSessionInterface user
     ) {
 
@@ -358,7 +358,7 @@ public class TopChatAnalytics {
     // #AP5
     public void eventSeenProductAttachment(
             Context context,
-            @NotNull ProductAttachmentViewModel product,
+            @NotNull ProductAttachmentUiModel product,
             @NotNull UserSessionInterface user,
             Boolean amISeller
     ) {
@@ -399,7 +399,7 @@ public class TopChatAnalytics {
         );
     }
 
-    private String getFrom(ProductAttachmentViewModel product) {
+    private String getFrom(ProductAttachmentUiModel product) {
         String blastId = product.getStringBlastId();
         if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
             return "/chat - search chat";
@@ -426,7 +426,7 @@ public class TopChatAnalytics {
 
     // #AP7
     public void eventClickAddToCartProductAttachment(
-            @NotNull ProductAttachmentViewModel product,
+            @NotNull ProductAttachmentUiModel product,
             @NotNull UserSessionInterface user
     ) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
@@ -440,7 +440,7 @@ public class TopChatAnalytics {
 
     // #AP9
     public void eventClickBuyProductAttachment(
-            @NotNull ProductAttachmentViewModel product
+            @NotNull ProductAttachmentUiModel product
     ) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
                 EVENT_NAME, Name.CHAT_DETAIL,
@@ -505,7 +505,7 @@ public class TopChatAnalytics {
     }
 
 
-    public void trackClickInvoice(@NotNull AttachInvoiceSentViewModel invoice) {
+    public void trackClickInvoice(@NotNull AttachInvoiceSentUiModel invoice) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
@@ -525,7 +525,7 @@ public class TopChatAnalytics {
     }
 
     // #BP1
-    public void eventClickBannedProduct(@NotNull BannedProductAttachmentViewModel viewModel) {
+    public void eventClickBannedProduct(@NotNull BannedProductAttachmentUiModel viewModel) {
         String clientId = TrackApp.getInstance().getGTM().getCachedClientIDString();
         String eventLabel = viewModel.getProductId() + " - " + clientId;
         TrackApp.getInstance().getGTM().sendGeneralEvent(
@@ -537,7 +537,7 @@ public class TopChatAnalytics {
     }
 
     // #BP2
-    public void eventSeenBannedProductAttachment(@NotNull BannedProductAttachmentViewModel viewModel) {
+    public void eventSeenBannedProductAttachment(@NotNull BannedProductAttachmentUiModel viewModel) {
         String clientId = TrackApp.getInstance().getGTM().getCachedClientIDString();
         String eventLabel = viewModel.getProductId() + " - " + clientId;
         TrackApp.getInstance().getGTM().sendGeneralEvent(
@@ -591,7 +591,7 @@ public class TopChatAnalytics {
     }
 
     // #AP11
-    public void eventClickProductThumbnail(@NotNull ProductAttachmentViewModel product) {
+    public void eventClickProductThumbnail(@NotNull ProductAttachmentUiModel product) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
@@ -692,6 +692,21 @@ public class TopChatAnalytics {
         );
     }
 
+    // 23139
+    public void eventClickChatSetting(long shopId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.CHAT_DETAIL,
+                        Category.MESSAGE_ROOM,
+                        Action.CLICK_THREE_BULLET_MENU,
+                        "pengaturan chat - " + shopId,
+                        BusinessUnit.CommunicationMedia,
+                        CurrentSite.TokopediaMarketplace,
+                        null
+                )
+        );
+    }
+
     public void eventClickSrw(
             long shopId, String userId, String productIds, QuestionUiModel element
     ) {
@@ -713,7 +728,7 @@ public class TopChatAnalytics {
     }
 
 
-    public void trackClickUpdateStock(ProductAttachmentViewModel product) {
+    public void trackClickUpdateStock(ProductAttachmentUiModel product) {
         String eventLabel = "seller - " +
                 product.getProductId() + " - " + product.getProductSource() + " - " +
                 product.getRemainingStock() + " - " + product.getBlastId() + " - " +
@@ -732,13 +747,13 @@ public class TopChatAnalytics {
     }
 
     public void trackSuccessDoBuyAndAtc(
-            ProductAttachmentViewModel element,
+            AddToCartParam element,
             DataModel data,
             String shopName,
             String eventAction
     ) {
         String dimen83 = "";
-        if (element.hasFreeShipping()) {
+        if (element.getFreeShipping()) {
             dimen83 = EE_VALUE_BEBAS_ONGKIR;
         } else {
             dimen83 = EE_VALUE_NONE_OTHER;
@@ -759,7 +774,7 @@ public class TopChatAnalytics {
         itemBundle.putString(EE_PARAM_SHOP_TYPE, setValueOrDefault(""));
         itemBundle.putString(EE_PARAM_CATEGORY_ID, setValueOrDefault(""));
         itemBundle.putInt(EE_PARAM_QUANTITY, element.getMinOrder());
-        itemBundle.putDouble(EE_PARAM_PRICE, element.getPriceInt());
+        itemBundle.putDouble(EE_PARAM_PRICE, element.getPrice());
         itemBundle.putString(EE_PARAM_PICTURE, element.getProductImage());
         itemBundle.putString(EE_PARAM_URL, element.getProductUrl());
         itemBundle.putString(EE_PARAM_DIMENSION_38, setValueOrDefault(""));

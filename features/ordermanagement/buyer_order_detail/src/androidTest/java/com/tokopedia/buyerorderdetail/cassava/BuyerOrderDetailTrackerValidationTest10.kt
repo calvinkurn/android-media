@@ -10,6 +10,7 @@ class BuyerOrderDetailTrackerValidationTest10 : BuyerOrderDetailTrackerValidatio
         setupMock {
             mockOrderDetail(BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_10)
         } actionTest {
+            login()
             launchBuyerOrderDetailActivity(activityRule)
             blockAllIntent()
             testClickSeeDetail()

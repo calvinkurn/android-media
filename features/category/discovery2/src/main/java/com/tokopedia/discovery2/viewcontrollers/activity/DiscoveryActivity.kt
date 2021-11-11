@@ -204,6 +204,8 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     open fun getCampaignCode() = discoveryViewModel.campaignCode
 
+    open fun isFromCategory() = false
+
     fun getSourceIdentifier() = intent.getStringExtra(SOURCE) ?: ""
 
     open fun getAnalytics(): BaseDiscoveryAnalytics {

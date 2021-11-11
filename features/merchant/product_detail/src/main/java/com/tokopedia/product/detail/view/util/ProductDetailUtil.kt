@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.text.*
 import android.text.style.ClickableSpan
@@ -11,15 +12,18 @@ import android.view.animation.Animation
 import android.view.animation.Transformation
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -31,7 +35,17 @@ import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+
 object ProductDetailUtil {
+
+    const val HOURS_IN_A_DAY = 24
+    const val DAYS_IN_A_MONTH = 30
+    const val MONTHS_IN_A_YEAR = 12
+
+    const val LAST_ONLINE_MONTH_THRESHOLD = 3
+    const val LAST_ONLINE_DAYS_RANGE_START = 3
+    const val LAST_ONLINE_DAYS_RANGE_END = 6
+    const val LAST_ONLINE_MINUTES_RANGE_END = 5
 
     private const val MAX_CHAR = 140
     private const val ALLOW_CLICK = true
@@ -45,6 +59,10 @@ object ProductDetailUtil {
             Pair(formattedText, !ALLOW_CLICK)
         }
     }
+}
+
+fun getIntentImagePreviewWithoutDownloadButton(context: Context, imageUrl: ArrayList<String>): Intent {
+    return ImagePreviewActivity.getCallingIntent(context = context, imageUris = imageUrl, disableDownloadButton = true)
 }
 
 fun String.boldOrLinkText(isLink: Boolean, context: Context,
@@ -158,13 +176,13 @@ internal fun String.getRelativeDate(context: Context): String {
 
     val minuteDivider: Long = 60
     val hourDivider = minuteDivider * 60
-    val dayDivider = hourDivider * 24
-    val monthDivider = dayDivider * 30
-    val yearDivider = monthDivider * 12
+    val dayDivider = hourDivider * ProductDetailUtil.HOURS_IN_A_DAY
+    val monthDivider = dayDivider * ProductDetailUtil.DAYS_IN_A_MONTH
+    val yearDivider = monthDivider * ProductDetailUtil.MONTHS_IN_A_YEAR
 
     return if (diff / yearDivider > 0) {
         context.getString(R.string.shop_online_last_date, getYear)
-    } else if (diff / monthDivider >= 3) {
+    } else if (diff / monthDivider >= ProductDetailUtil.LAST_ONLINE_MONTH_THRESHOLD) {
         context.getString(R.string.shop_online_last_date, getMonthAndYear)
     } else if (diff / dayDivider > 0) {
         val days = diff / dayDivider
@@ -172,7 +190,10 @@ internal fun String.getRelativeDate(context: Context): String {
             days <= 1 -> {
                 context.getString(R.string.shop_online_yesterday)
             }
-            days in 3..6 -> {
+            days in IntRange(
+                ProductDetailUtil.LAST_ONLINE_DAYS_RANGE_START,
+                ProductDetailUtil.LAST_ONLINE_DAYS_RANGE_END
+            ) -> {
                 context.getString(R.string.shop_online_days_ago, diff / dayDivider)
             }
             else -> {
@@ -183,7 +204,7 @@ internal fun String.getRelativeDate(context: Context): String {
         context.getString(R.string.shop_online_hours_ago, diff / hourDivider)
     } else {
         val minutes = diff / minuteDivider
-        if (minutes in 0..5) context.getString(R.string.shop_online) else
+        if (minutes in 0..ProductDetailUtil.LAST_ONLINE_MINUTES_RANGE_END) context.getString(R.string.shop_online) else
             context.getString(R.string.shop_online_minute_ago, minutes)
     }
 }
@@ -299,6 +320,24 @@ internal fun View?.animateCollapse() = this?.run {
 
     animation.duration = resources.getInteger(com.tokopedia.unifyprinciples.R.integer.Unify_T2).toLong()
     startAnimation(animation)
+}
+
+internal fun String?.checkIfNumber(key: String): String {
+    if (this == null || this.isEmpty()) return ""
+
+    return try {
+        this.toLong()
+        this
+    } catch (t: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(Exception(t.localizedMessage, t))
+        } else {
+            t.printStackTrace()
+        }
+
+        ProductDetailLogger.logLocalization("error $key, value : $this , error: ${t.message}")
+        ""
+    }
 }
 
 internal fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {

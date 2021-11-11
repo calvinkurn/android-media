@@ -25,6 +25,7 @@ interface ProductListTypeFactory {
     fun type(searchProductTopAdsImageDataView: SearchProductTopAdsImageDataView): Int
     fun type(chooseAddressDataView: ChooseAddressDataView): Int
     fun type(bannerDataView: BannerDataView): Int
+    fun type(lastFilterDataView: LastFilterDataView): Int
     var recyclerViewItem: Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }
