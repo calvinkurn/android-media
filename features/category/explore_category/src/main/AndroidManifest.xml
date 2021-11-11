@@ -7,6 +7,7 @@
             android:label="@string/label_category_explore"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
