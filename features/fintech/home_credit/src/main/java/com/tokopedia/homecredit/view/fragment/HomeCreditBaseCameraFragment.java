@@ -1,13 +1,13 @@
 package com.tokopedia.homecredit.view.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,7 +19,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -29,20 +28,17 @@ import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
 import com.otaliastudios.cameraview.PictureResult;
-import com.otaliastudios.cameraview.controls.Facing;
 import com.otaliastudios.cameraview.controls.Flash;
 import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.homecredit.R;
 import com.tokopedia.homecredit.di.component.HomeCreditComponent;
+import com.tokopedia.homecredit.domain.model.ImageDetail;
 import com.tokopedia.homecredit.viewModel.HomeCreditViewModel;
 import com.tokopedia.iconunify.IconUnify;
-import com.tokopedia.usecase.coroutines.Result;
 import com.tokopedia.usecase.coroutines.Success;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,16 +67,14 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     protected ImageView cameraOverlayImage;
     protected TextView headerText;
     RelativeLayout cameraActionsRL;
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+    HomeCreditViewModel homeCreditViewModel = null;
     private boolean mCapturingPicture;
     private int flashIndex;
     private List<Flash> supportedFlashList;
     private Size mCaptureNativeSize;
     private ProgressDialog progressDialog;
-
-    @Inject
-    ViewModelProvider.Factory viewModelFactory;
-
-    HomeCreditViewModel homeCreditViewModel = null;
 
     @Override
     protected void initInjector() {
@@ -203,25 +197,18 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             mCaptureNativeSize = cameraView.getPictureSize();
         }
         homeCreditViewModel.computeImageArray(imageByte, mCaptureNativeSize, getFileLocationFromDirectory());
-        homeCreditViewModel.getImageDetailLiveData().observe(this, new Observer<Result<Bitmap>>() {
-            @Override
-            public void onChanged(Result<Bitmap> bitmapResult) {
-                Bitmap myBitmap = ((Success<Bitmap>) bitmapResult).getData();
-                if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()) {
-                    Bitmap flippedBitmap = ImageHandler.flip(myBitmap, true, false);
-                    loadImageFromBitmap(getContext(), imageCaptured, flippedBitmap);
-                } else {
-                    loadImageFromBitmap(getContext(), imageCaptured, myBitmap);
-                }
-                hideCameraProp();
-            }
+        homeCreditViewModel.getImageDetailLiveData().observe(this, imageDetail -> {
+            captureImage.setClickable(true);
+            if (imageDetail instanceof Success && ((Success<ImageDetail>) imageDetail).getData().component3() != null)
+                loadImageFromBitmap(getContext(), imageCaptured, ((Success<ImageDetail>) imageDetail).getData());
+            hideCameraProp();
         });
         reset();
     }
 
-    private void loadImageFromBitmap(Context context, final ImageView imageView, Bitmap bitmap) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
+    private void loadImageFromBitmap(Context context, final ImageView imageView, ImageDetail data) {
+        int width = data.getBitMapWidth();
+        int height = data.getBitmapHeight();
         int min, max;
         if (width > height) {
             min = height;
@@ -232,16 +219,9 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         }
         boolean loadFitCenter = min != 0 && (max / min) > 2;
         if (loadFitCenter)
-            Glide.with(context).load(bitmapToByte(bitmap)).fitCenter().into(imageView);
+            Glide.with(context).load(data.getImagePath()).fitCenter().into(imageView);
         else
-            Glide.with(context).load(bitmapToByte(bitmap)).into(imageView);
-    }
-
-
-    private byte[] bitmapToByte(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, stream);
-        return stream.toByteArray();
+            Glide.with(context).load(data.getImagePath()).into(imageView);
     }
 
 
@@ -259,6 +239,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         mCapturingPicture = true;
         mCaptureNativeSize = cameraView.getPictureSize();
         cameraView.takePicture();
+        captureImage.setClickable(false);
     }
 
     private void showLoading() {
@@ -289,13 +270,14 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         pictureActionLL.setVisibility(View.VISIBLE);
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     public void onVisible() {
-        if (getActivity().isFinishing()) {
+        if (requireActivity().isFinishing()) {
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             String permission = Manifest.permission.CAMERA;
-            if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
                 startCamera();
             }
         } else {

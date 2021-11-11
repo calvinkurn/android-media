@@ -1,13 +1,12 @@
 package com.tokopedia.homecredit.viewModel
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.homecredit.domain.HomeCreditUseCase
-import com.tokopedia.homecredit.domain.ImageDetail
+import com.tokopedia.homecredit.domain.model.ImageDetail
+import com.tokopedia.homecredit.domain.usecase.HomeCreditUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -19,8 +18,8 @@ class HomeCreditViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _imageDetailLiveData = MutableLiveData<Result<Bitmap>>()
-    var imageDetailLiveData: LiveData<Result<Bitmap>> = _imageDetailLiveData
+    private val _imageDetailLiveData = MutableLiveData<Result<ImageDetail>>()
+    var imageDetailLiveData: LiveData<Result<ImageDetail>> = _imageDetailLiveData
 
 
     fun computeImageArray(
@@ -40,9 +39,8 @@ class HomeCreditViewModel @Inject constructor(
     }
 
     private fun onSuccessSave(imageDetail: ImageDetail) {
-        imageDetail.imgBitmap?.let {
-            _imageDetailLiveData.value = Success(it)
-        }
+        _imageDetailLiveData.value = Success(imageDetail)
+
     }
 
     override fun onCleared() {

@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.homecredit.di.component.DaggerHomeCreditComponent;
 import com.tokopedia.homecredit.di.component.HomeCreditComponent;
 import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment;
-import com.tokopedia.homecredit.view.fragment.HomeCreditSelfieFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +92,7 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity implements Ha
         if (showKtp) {
             return HomeCreditKTPFragment.createInstance();
         } else {
-            return HomeCreditSelfieFragment.createInstance();
+            return HomeCreditKTPFragment.createInstance();
         }
     }
 

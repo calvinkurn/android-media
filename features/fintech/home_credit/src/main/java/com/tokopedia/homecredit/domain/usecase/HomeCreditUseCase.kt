@@ -1,12 +1,13 @@
-package com.tokopedia.homecredit.domain
+package com.tokopedia.homecredit.domain.usecase
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.homecredit.domain.model.ImageDetail
 import com.tokopedia.usecase.coroutines.UseCase
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -48,16 +49,37 @@ class HomeCreditUseCase @Inject constructor(
             )
             if (bitmap != null) {
                 val cameraResultFile: File? = saveToCacheDirectory(imgByteArray)
-                if (cameraResultFile != null)
-                    ImageDetail(BitmapFactory.decodeFile(File(cameraResultFile.absolutePath).absolutePath))
-                else
-                    ImageDetail(null)
+                if (cameraResultFile != null) {
+                    val compressedByteArray = bitmapToByteArray(bitmap)
+                    ImageDetail(
+                        bitmap.height,
+                        bitmap.width,
+                        cameraResultFile.absolutePath,
+                        compressedByteArray.toList()
+                    )
+                } else
+                    ImageDetail(0, 0, null, null)
             } else
-                ImageDetail(null)
+                ImageDetail(0, 0, null, null)
         } catch (e: Exception) {
-            ImageDetail(null)
+            ImageDetail(0, 0, null, null)
         }
 
+
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap?): ByteArray {
+        try {
+            val stream = ByteArrayOutputStream()
+            bitmap?.compress(
+                Bitmap.CompressFormat.JPEG,
+                95,
+                stream
+            )
+            return stream.toByteArray()
+        } finally {
+            bitmap?.recycle()
+        }
     }
 
 
@@ -83,8 +105,3 @@ class HomeCreditUseCase @Inject constructor(
 
 }
 
-
-data class ImageDetail(
-    var imgBitmap: Bitmap?
-
-)
