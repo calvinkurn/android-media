@@ -70,7 +70,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         initClickListener()
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         social_link_rv.layoutManager=layoutManager
-        social_link_rv.adapter=adapter
+        social_link_rv.adapter = adapter
         affiliatePortfolioViewModel.createDefaultListForSm()
     }
 

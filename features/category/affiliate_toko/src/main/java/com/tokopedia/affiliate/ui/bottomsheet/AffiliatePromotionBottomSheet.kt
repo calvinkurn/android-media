@@ -157,15 +157,19 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
 
     private fun addDataInRecyclerView() {
         listVisitable = arrayListOf<Visitable<AffiliateAdapterTypeFactory>>(
-            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",3,false, isLinkGenerationEnabled),
-            AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",9,false, isLinkGenerationEnabled),
-            AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",13,false, isLinkGenerationEnabled),
-            AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",1,false, isLinkGenerationEnabled),
-            AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10,false, isLinkGenerationEnabled),
-            AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11,false, isLinkGenerationEnabled),
-            AffiliateShareModel("WhatsApp", IconUnify.WHATSAPP,"whatsapp",12,false, isLinkGenerationEnabled),
-            AffiliateShareModel("Line", IconUnify.LINE,"line",4,false, isLinkGenerationEnabled),
-            AffiliateShareModel("Lainnya",null,"others", 0,false, isLinkGenerationEnabled))
+            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",3,sheetType,false,isChecked = true, isLinkGenerationEnabled),
+            AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",9,sheetType,false,isChecked = true, isLinkGenerationEnabled),
+            AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",13,sheetType,false,isChecked = true, isLinkGenerationEnabled),
+            AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",1,sheetType,false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10,sheetType,false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11,sheetType,false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("WhatsApp", IconUnify.WHATSAPP,"whatsapp",12,sheetType,false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("Line", IconUnify.LINE,"line",4,sheetType,false, isChecked = false,isLinkGenerationEnabled),
+            AffiliateShareModel("Lainnya",null,"others", 0,sheetType,false, isChecked = false,isLinkGenerationEnabled))
+
+        if(sheetType == SheetType.ADD_SOCIAL){
+            (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Simpan", UnifyButton.Type.MAIN, UnifyButton.Variant.FILLED,true)))
+        }
     }
 
     private fun initInject() {
