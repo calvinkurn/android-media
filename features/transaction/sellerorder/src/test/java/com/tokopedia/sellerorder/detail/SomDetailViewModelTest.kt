@@ -122,20 +122,6 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
-    fun getOrderDetail_ifThrowableThrown_shouldFail() {
-        //given
-        coEvery {
-            somGetOrderDetailUseCase.execute(any())
-        } throws Throwable()
-
-        //when
-        viewModel.loadDetailOrder("")
-
-        //then
-        assert(viewModel.orderDetailResult.value is Fail)
-    }
-
-    @Test
     fun getOrderDetail_ifThrowableThrown_shouldFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
@@ -193,20 +179,6 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
         coEvery {
             somReasonRejectUseCase.execute(any(), any())
         } returns Fail(Throwable())
-
-        //when
-        viewModel.getRejectReasons("")
-
-        //then
-        assert(viewModel.rejectReasonResult.value is Fail)
-    }
-
-    @Test
-    fun getReasonReject_ifThrowableThrown_shouldReturnFail() {
-        //given
-        coEvery {
-            somReasonRejectUseCase.execute(any(), any())
-        } throws Throwable()
 
         //when
         viewModel.getRejectReasons("")

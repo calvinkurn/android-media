@@ -136,14 +136,14 @@ class SomListViewModel @Inject constructor(
         }
     }
 
-    private var lastBulkAcceptOrderStatusSuccessResult: Success<SomListBulkAcceptOrderStatusUiModel>? = null
+    private var lastBulkAcceptOrderStatusSuccessResult: Result<SomListBulkAcceptOrderStatusUiModel>? = null
     val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
 
     private val _bulkAcceptOrderStatusResult = MediatorLiveData<Pair<Int, Result<SomListBulkAcceptOrderStatusUiModel>>>().apply {
-            addSource(_bulkAcceptOrderResult) {
-                if (it is Success) getBulkAcceptOrderStatus(Int.ZERO)
-            }
+        addSource(_bulkAcceptOrderResult) {
+            if (it is Success) getBulkAcceptOrderStatus(Int.ZERO)
         }
+    }
 
     val bulkRequestPickupFinalResultMediator = MediatorLiveData<BulkRequestPickupResultState>()
     val bulkRequestPickupFinalResult: LiveData<BulkRequestPickupResultState>
@@ -409,33 +409,6 @@ class SomListViewModel @Inject constructor(
 
     private fun getBulkRequestPickupStatus(): Int {
         return getSuccessBulkRequestPickupResultData()?.status.orZero()
-    }
-
-    private fun onReceiveBulkAcceptOrderStatusResult(result: Pair<Int, Result<SomListBulkAcceptOrderStatusUiModel>>) {
-        when (val resultData = result.second) {
-            is Success -> {
-                lastBulkAcceptOrderStatusSuccessResult = resultData.apply {
-                    data.data.shouldRecheck = false
-                }
-                if (resultData.data.data.success + resultData.data.data.fail == resultData.data.data.totalOrder) {
-                    bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
-                } else if (result.first < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
-                    getBulkAcceptOrderStatus(DELAY_GET_ACCEPT_ORDER_STATUS, result.first)
-                } else {
-                    bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
-                }
-            }
-            is Fail -> {
-                lastBulkAcceptOrderStatusSuccessResult?.run {
-                    data.data.shouldRecheck = true
-                }
-                if (result.first < MAX_RETRY_GET_ACCEPT_ORDER_STATUS) {
-                    getBulkAcceptOrderStatus(DELAY_GET_ACCEPT_ORDER_STATUS, result.first)
-                } else {
-                    bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
-                }
-            }
-        }
     }
 
     private fun getMultiShippingStatus(batchId: String, wait: Long) {

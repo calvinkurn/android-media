@@ -46,19 +46,23 @@ class SomOrderExtensionViewModel @Inject constructor(
             orderExtensionRequestInfoUpdates
                 .asFlow()
                 .flowOn(dispatcher.computation)
-                .collect { updater ->
-                    _requestExtensionInfo.value?.let { oldRequestExtensionInfo ->
-                        if (oldRequestExtensionInfo is Success) {
-                            updater.execute(oldRequestExtensionInfo.data)
-                                .also { newRequestExtensionInfo ->
-                                    withContext(dispatcher.main) {
-                                        _requestExtensionInfo.value =
-                                            Success(newRequestExtensionInfo)
-                                    }
-                                }
+                .collect { updateInfo ->
+                    onNeedToUpdateOrderExtensionRequestInfo(updateInfo)
+                }
+        }
+    }
+
+    private suspend fun onNeedToUpdateOrderExtensionRequestInfo(updateInfo: OrderExtensionRequestInfoUpdater) {
+        _requestExtensionInfo.value?.let { oldRequestExtensionInfo ->
+            if (oldRequestExtensionInfo is Success) {
+                updateInfo.execute(oldRequestExtensionInfo.data)
+                    .also { newRequestExtensionInfo ->
+                        withContext(dispatcher.main) {
+                            _requestExtensionInfo.value =
+                                Success(newRequestExtensionInfo)
                         }
                     }
-                }
+            }
         }
     }
 

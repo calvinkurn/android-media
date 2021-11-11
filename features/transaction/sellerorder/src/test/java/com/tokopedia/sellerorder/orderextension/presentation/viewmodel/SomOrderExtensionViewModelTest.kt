@@ -80,11 +80,7 @@ class SomOrderExtensionViewModelTest {
 
     @Test
     fun getSomRequestExtensionInfo_shouldFail() {
-        coEvery {
-            somGetOrderExtensionRequestInfoUseCase.execute(any(), any(), any())
-        } throws Throwable()
-
-        viewModel.getSomRequestExtensionInfo(orderId)
+        onGetOrderExtensionRequestInfoFail()
 
         coVerify {
             somGetOrderExtensionRequestInfoUseCase.execute(any(), any(), any())
@@ -229,6 +225,40 @@ class SomOrderExtensionViewModelTest {
         assert((viewModel.requestExtensionInfo.value as Success).data == initialOrderExtensionRequestInfo)
     }
 
+    @Test
+    fun requestDismissOrderExtensionRequestInfoBottomSheet_shouldUpdateProcessingToFalseAndCompletedToTrue() {
+        val initialOrderExtensionRequestInfo = createSampleOrderExtensionRequestInfo()
+        val expectedUpdatedOrderRequestExtensionInfo = createSampleOrderExtensionRequestInfo().apply {
+            processing = false
+            completed = true
+        }
+        onGetOrderExtensionRequestInfoSuccess_thenReturn(mockk(), initialOrderExtensionRequestInfo)
+
+        viewModel.getSomRequestExtensionInfo(orderId)
+        viewModel.requestDismissOrderExtensionRequestInfoBottomSheet()
+
+        assert((viewModel.requestExtensionInfo.value as Success).data == expectedUpdatedOrderRequestExtensionInfo)
+    }
+
+    @Test
+    fun onNeedToUpdateOrderExtensionRequestInfo_ifRequestExtensionInfoIsNull_shouldNotUpdateOrderRequestExtensionInfo() {
+        val initialOrderExtensionRequestInfo = viewModel.requestExtensionInfo.value
+
+        viewModel.updateOrderRequestExtensionInfoOnCommentChanged(mockk())
+
+        assert(viewModel.requestExtensionInfo.value == initialOrderExtensionRequestInfo)
+    }
+
+    @Test
+    fun onNeedToUpdateOrderExtensionRequestInfo_ifRequestExtensionInfoIsFail_shouldNotUpdateOrderRequestExtensionInfo() {
+        onGetOrderExtensionRequestInfoFail()
+        val initialOrderExtensionRequestInfo = viewModel.requestExtensionInfo.value
+
+        viewModel.updateOrderRequestExtensionInfoOnCommentChanged(mockk())
+
+        assert(viewModel.requestExtensionInfo.value == initialOrderExtensionRequestInfo)
+    }
+
     private fun onGetOrderExtensionRequestInfoSuccess_thenReturn(
         orderRequestInfoData: GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.OrderExtensionRequestInfoData = mockk(),
         orderRequestInfoUiModel: OrderExtensionRequestInfoUiModel = mockk()
@@ -239,6 +269,14 @@ class SomOrderExtensionViewModelTest {
         every {
             somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(any())
         } returns orderRequestInfoUiModel
+    }
+
+    private fun onGetOrderExtensionRequestInfoFail() {
+        coEvery {
+            somGetOrderExtensionRequestInfoUseCase.execute(any(), any(), any())
+        } throws Throwable()
+
+        viewModel.getSomRequestExtensionInfo(orderId)
     }
 
     private fun createSampleOrderExtensionRequestInfo(): OrderExtensionRequestInfoUiModel {
