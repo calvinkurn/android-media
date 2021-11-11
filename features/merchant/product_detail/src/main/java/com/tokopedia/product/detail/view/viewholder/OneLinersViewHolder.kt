@@ -44,7 +44,7 @@ class OneLinersViewHolder(
         if (content == null || !content.isVisible){
             itemView.layoutParams.height = 0
             return
-        }
+        } else itemView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
 
         val applink = content.applink
         view.apply {
