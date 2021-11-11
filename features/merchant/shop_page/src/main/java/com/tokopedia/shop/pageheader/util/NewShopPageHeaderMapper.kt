@@ -40,7 +40,7 @@ object NewShopPageHeaderMapper {
                 shopInfoOsData.data.isOfficial,
                 shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
                 shopPageHomeTypeData.shopHomeType,
-                MethodChecker.fromHtml(shopName).toString(),
+                shopName,
                 shopAvatar,
                 "",
                 feedWhitelistData.isWhitelist,
