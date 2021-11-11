@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.databinding.ItemShopCredibilityBinding
 import com.tokopedia.product.detail.databinding.ViewShopCredibilityBinding
 import com.tokopedia.product.detail.databinding.ViewShopCredibilityShimmeringBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -36,6 +37,8 @@ class ProductShopCredibilityViewHolder(
     private val itemBinding = ItemShopCredibilityBinding.bind(view)
     private var mainBinding: ViewShopCredibilityBinding? = null
     private var shimmeringBinding: ViewShopCredibilityShimmeringBinding? = null
+
+    private val context = view.context
 
     init {
         itemBinding.shopCredibilityMain.setOnInflateListener { _, view ->
@@ -61,7 +64,7 @@ class ProductShopCredibilityViewHolder(
             val componentTracker = getComponentTrackData(element)
             val shopLocation = element.shopLocation
 
-            shopCredibilityName.text = MethodChecker.fromHtml(shopName)
+            shopCredibilityName.text = HtmlLinkHelper(context, shopName).spannedString
             shopCredibilityLocation.shouldShowWithAction(shopLocation.isNotEmpty()) {
                 shopCredibilityLocation.text =
                     view.context.getString(R.string.location_dot_builder, shopLocation)
@@ -143,7 +146,7 @@ class ProductShopCredibilityViewHolder(
         binding: ViewShopCredibilityBinding
     ) = with(binding) {
         val context = root.context
-        shopCredibilityLastActive.text = MethodChecker.fromHtml(shopLastActiveData)
+        shopCredibilityLastActive.text = HtmlLinkHelper(context, shopLastActiveData).spannedString
         if (shopLastActiveData == context.getString(R.string.shop_online)) {
             shopCredibilityLastActive.setWeight(Typography.BOLD)
             shopCredibilityLastActive.setTextColor(
