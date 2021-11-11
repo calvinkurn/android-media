@@ -458,6 +458,7 @@ class ReviewPendingFragment :
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         with(it.data.emptyState) {
                             handleEmptyState(imageURL, labelTitle, labelSubtitle)
+                            renderList(listOf(), it.data.hasNext)
                         }
                     } else {
                         renderReviewData(

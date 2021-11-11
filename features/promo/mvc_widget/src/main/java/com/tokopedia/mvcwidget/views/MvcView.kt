@@ -121,9 +121,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     fun sendImpressionTrackerForPdp(){
         if(this.shopId.isNotEmpty()){
-            if(isTokomember){
-                mvcTracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId)
-            }
+            mvcTracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId, isTokomember)
         }
     }
 }

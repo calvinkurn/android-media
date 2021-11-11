@@ -4,14 +4,14 @@
       "walletappGetBalances": {
         "balances": [
           {
-            "activation_cta": "kuy?",
+            "activation_cta": "Aktifkan?",
             "balance": [
               {
-                "active": true,
+                "wallet_code": "PEMUDAPOINTS",
                 "amount": 8000000,
-                "amount_fmt": "Rp8.000.000",
-                "message": "",
-                "wallet_code": "PEMUDAPAYLATER"
+                "amount_fmt": "10.000.000 Points",
+                "active": true,
+                "message": ""
               },
               {
                 "active": true,
@@ -28,7 +28,10 @@
             "message": "Success",
             "redirect_url": "https://staging.tokopedia.com/gopay",
             "type": "PEMUDA",
-            "wallet_name": "GoPay"
+            "wallet_name": "GoPay & GoPayPoints Mock",
+            "global_menu_text": {
+              "id": "Activation CTA from BE"
+            }
           }
         ]
       }

@@ -17,9 +17,9 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.ui.preference.CoachMarkStateSharePref
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 
 object ChooseAddressUtils {
 
@@ -31,7 +31,17 @@ object ChooseAddressUtils {
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
         return if (hasLocalizingAddressOnCache(context)) {
             val chooseAddressPref = ChooseAddressSharePref(context)
-            chooseAddressPref.getLocalCacheData()
+            LocalCacheModel(
+                chooseAddressPref.getLocalCacheData()?.address_id.checkIfNumber("address_id"),
+                chooseAddressPref.getLocalCacheData()?.city_id ?: "",
+                chooseAddressPref.getLocalCacheData()?.district_id.checkIfNumber("district_id"),
+                chooseAddressPref.getLocalCacheData()?.lat ?: "",
+                chooseAddressPref.getLocalCacheData()?.long ?: "",
+                chooseAddressPref.getLocalCacheData()?.postal_code ?: "",
+                chooseAddressPref.getLocalCacheData()?.label ?: "",
+                chooseAddressPref.getLocalCacheData()?.shop_id ?: "",
+                chooseAddressPref.getLocalCacheData()?.warehouse_id ?: ""
+            )
         } else {
             if (isLoginUser(context)) {
                 ChooseAddressConstant.emptyAddress
@@ -39,6 +49,7 @@ object ChooseAddressUtils {
                 ChooseAddressConstant.defaultAddress
             }
         }
+
     }
 
     fun getLocalizingAddressDataDirectly(context: Context): LocalCacheModel? {
@@ -201,4 +212,18 @@ object ChooseAddressUtils {
             "${data.addressName} ${data.receiverName}"
         }
     }
+
+    internal fun String?.checkIfNumber(key: String): String {
+        if (this == null || this.isEmpty()) return ""
+
+        return try {
+            this.toLong()
+            this
+        } catch (t: Throwable) {
+            Timber.d(t)
+            ChooseAddressLogger.logOnLocalizing(t,key, this)
+            ""
+        }
+    }
+
 }

@@ -2,13 +2,11 @@ package com.tokopedia.sellerorder.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withTimeout
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 fun <T> LiveData<T>.observeAwaitValue(
-    time: Long = 5,
+    time: Long = 2,
     timeUnit: TimeUnit = TimeUnit.SECONDS
 ): T? {
     var value: T? = null
@@ -23,7 +21,7 @@ fun <T> LiveData<T>.observeAwaitValue(
 }
 
 fun <T> LiveData<T>.observeAwaitSpecificValue(
-    time: Long = 5,
+    time: Long = 2,
     timeUnit: TimeUnit = TimeUnit.SECONDS,
     expected: T
 ): T? {

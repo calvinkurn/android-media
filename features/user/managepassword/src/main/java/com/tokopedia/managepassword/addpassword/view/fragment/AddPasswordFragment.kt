@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.managepassword.R
 import com.tokopedia.managepassword.addpassword.analytics.AddPasswordAnalytics
@@ -20,8 +19,6 @@ import com.tokopedia.managepassword.addpassword.view.viewmodel.AddPasswordViewMo
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -38,8 +35,6 @@ import javax.inject.Inject
  */
 
 class AddPasswordFragment : BaseDaggerFragment() {
-
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private var isEnableEncryption = false
     @Inject
@@ -79,26 +74,8 @@ class AddPasswordFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
-    }
-
-    fun isEnableEncryptRollout(): Boolean {
-        val rolloutKey = if(GlobalConfig.isSellerApp()) {
-            SessionConstants.Rollout.ROLLOUT_ADD_PASS_ENCRYPTION_SELLER
-        } else {
-            SessionConstants.Rollout.ROLLOUT_ADD_PASS_ENCRYPTION
-        }
-
-        val variant = getAbTestPlatform().getString(rolloutKey)
-        return variant.isNotEmpty()
-    }
-
     private fun isUseEncryption(): Boolean {
-        return isEnableEncryptRollout() && isEnableEncryption
+        return isEnableEncryption
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

@@ -872,11 +872,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 feedMedia.tagging.forEachIndexed { index, feedXMediaTagging ->
                                     val productTagView = PostTagView(context, feedXMediaTagging)
                                     productTagView.postDelayed({
+                                        val bitmap = postImage?.drawable?.toBitmap()
                                         productTagView.bindData(listener,
-                                            globalCardProductList,
-                                            imageWidth,
-                                            imageHeight,
-                                            positionInFeed)
+                                                globalCardProductList,
+                                                imageWidth,
+                                                imageHeight,
+                                                positionInFeed,
+                                                bitmap)
 
                                     }, TIME_SECOND)
 
@@ -937,7 +939,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 like_anim.visibility = VISIBLE
                                                 listener?.onLikeClick(
                                                     positionInFeed, postId,
-                                                    !feedXCard.like.isLiked,
+                                                    feedXCard.like.isLiked,
                                                     feedXCard.typename,
                                                     feedXCard.followers.isFollowed,
                                                     type = true,

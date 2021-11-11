@@ -100,6 +100,7 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.androidxTest
