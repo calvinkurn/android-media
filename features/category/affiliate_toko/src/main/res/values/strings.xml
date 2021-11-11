@@ -49,4 +49,6 @@
     <string name="no_product_seen_on_tokopedia_yet_content">Kamu bisa cari produk affiliate di Tokopedia, lalu tempel link di sini untuk dapat link affiliate</string>
     <string name="system_down_title">Saat ini lagi ada pemeliharaan sistem</string>
     <string name="system_down_description">Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!</string>
+    <string name="affiliate_black_list_title">Oops, akun kamu bermasalah </string>
+    <string name="affiliate_black_list_description"><![CDATA[Untuk melanjutkan aktivitas di Tokopedia Affiliate, segera perbaiki akunmu. <a href="tokopedia://affiliate/help">Perbaiki Akun</a>]]></string>
 </resources>
