@@ -7,7 +7,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-
+/**
+ *@deprecated This MoengageAnalytics is deprecated, We are using this class as no-op
+ * */
+@Deprecated
 public class MoengageAnalytics extends ContextAnalytics {
 
     public MoengageAnalytics(Context context) {
