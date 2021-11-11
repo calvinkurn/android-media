@@ -118,7 +118,7 @@ class CustomVariantManageBottomSheet(
     }
 
     private fun showEditConfDialog(variantDetail: VariantDetail) {
-        val bottomSheet = CustomVariantInputBottomSheet()
+        val bottomSheet = CustomVariantInputBottomSheet(variantDetail.name)
         bottomSheet.setOnDataSubmitted { newVariantName ->
             onVariantTypeEditedListener?.invoke(
                 variantDetail.apply { name = newVariantName }

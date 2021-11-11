@@ -22,13 +22,15 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class CustomVariantInputBottomSheet : BottomSheetUnify() {
+class CustomVariantInputBottomSheet (
+    private val variantTypeName: String = ""
+) : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: AddEditProductVariantViewModel
-
     private var binding by autoClearedNullable<AddEditProductCustomVariantInputBottomSheetContentBinding>()
     private var onDataSubmitted: ((variantTypeName: String) -> Unit)? = null
+    private val variantTypeSuggestionAdapter = VariantTypeSuggestionAdapter()
 
     init {
         isKeyboardOverlap = false
@@ -53,7 +55,7 @@ class CustomVariantInputBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerViewSuggestion()
-        setupTextFieldVariantTypeInput()
+        setupTextFieldVariantTypeInput(variantTypeName)
         setupButtonSave()
 
         observeVariantTitleValidationStatus()
@@ -81,17 +83,18 @@ class CustomVariantInputBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setupTextFieldVariantTypeInput() {
+    private fun setupTextFieldVariantTypeInput(variantTypeName: String) {
+        binding?.textFieldVariantTypeInput?.setText(variantTypeName)
         binding?.textFieldVariantTypeInput?.editText?.afterTextChanged {
             binding?.textFieldVariantTypeInput?.setMessage("")
             binding?.textFieldVariantTypeInput?.isInputError = false
+            variantTypeSuggestionAdapter.setHighlightCharLength(it.length)
         }
     }
 
     private fun setupRecyclerViewSuggestion() {
-        val adapter = VariantTypeSuggestionAdapter()
-        adapter.setData(List(100) { "Warna$it" })
-        adapter.setOnItemClickedListener { position, variantTypeName ->
+        variantTypeSuggestionAdapter.setData(List(100) { "Warna$it" })
+        variantTypeSuggestionAdapter.setOnItemClickedListener { position, variantTypeName ->
             try {
                 binding?.textFieldVariantTypeInput?.setText(variantTypeName)
                 binding?.textFieldVariantTypeInput?.editText?.setSelection(variantTypeName.length)
@@ -100,11 +103,9 @@ class CustomVariantInputBottomSheet : BottomSheetUnify() {
             }
         }
         binding?.recyclerViewVariantSuggestion?.layoutManager = LinearLayoutManager(context)
-        binding?.recyclerViewVariantSuggestion?.adapter = adapter
-        binding?.recyclerViewVariantSuggestion?.minimumHeight = 0
+        binding?.recyclerViewVariantSuggestion?.adapter = variantTypeSuggestionAdapter
         binding?.recyclerViewVariantSuggestion?.layoutParams?.height = getScreenHeight()
         binding?.recyclerViewVariantSuggestion?.requestLayout()
-        adapter.setHighlightCharLength(3)
     }
 
     private fun observeVariantTitleValidationStatus() {
