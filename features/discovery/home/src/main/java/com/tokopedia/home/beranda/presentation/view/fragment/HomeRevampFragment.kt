@@ -853,8 +853,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                         containsNewGopayAndTokopoints,
                                         tokopointsBalanceCoachmark
                                 )
-                            } else {
-                                showTokonowCoachmark()
                             }
                         }
                         try {
@@ -872,8 +870,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 containsNewGopayAndTokopoints,
                                 tokopointsBalanceCoachmark
                         )
-                    } else {
-                        showTokonowCoachmark()
                     }
                     return@let
                 }
