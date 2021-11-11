@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/shop_credibility_shimmering"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -20,8 +19,8 @@
         android:layout_height="16dp"
         android:layout_marginStart="10dp"
         app:corners="@integer/corner_radius_shimmering"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/shimmer_shop_credibility_desc"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shimmer_avatar"
         app:layout_constraintTop_toTopOf="@+id/shimmer_avatar"
         app:width_weight="0.7" />
@@ -33,10 +32,10 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="8dp"
         app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintBottom_toBottomOf="@+id/shimmer_avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/shimmer_avatar"
         app:layout_constraintTop_toBottomOf="@+id/shimmer_shop_credibility_title"
-        app:layout_constraintBottom_toBottomOf="@+id/shimmer_avatar"
         app:width_weight="0.5" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -54,8 +53,8 @@
         android:id="@+id/shimmer_shop_item_title2"
         android:layout_width="0dp"
         android:layout_height="16dp"
-        app:corners="@integer/corner_radius_shimmering"
         android:layout_marginTop="8dp"
+        app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/shimmer_avatar"
         app:layout_constraintTop_toBottomOf="@+id/shimmer_shop_item_title1"
