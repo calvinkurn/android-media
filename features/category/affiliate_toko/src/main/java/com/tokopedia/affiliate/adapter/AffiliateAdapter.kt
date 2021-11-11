@@ -20,8 +20,8 @@ class AffiliateAdapter(affiliateAdapterFactory: AffiliateAdapterFactory)
     }
 
     fun removeShimmer(listSize: Int) {
-        if(itemCount >= (listSize + shimmerItemCount - 1)) {
-            for(i in shimmerItemCount - 1 downTo 0){
+        if(itemCount >= (listSize + (shimmerItemCount - 1))) {
+            for(i in (shimmerItemCount - 1) downTo 0){
                 this.visitables.removeAt(listSize + i)
             }
             notifyItemRangeRemoved(listSize,shimmerItemCount)

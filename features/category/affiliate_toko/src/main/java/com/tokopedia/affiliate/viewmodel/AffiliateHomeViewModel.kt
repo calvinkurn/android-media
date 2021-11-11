@@ -47,11 +47,11 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getAnnouncementInformation() {
         launchCatchError(block = {
             progressBar.value = true
-            affiliateAnnouncement.value=affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
+            affiliateAnnouncement.value = affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
         },onError = {
             progressBar.value = false
             it.printStackTrace()
-            affiliateErrorMessage.value=it.localizedMessage
+            affiliateErrorMessage.value = it.localizedMessage
         })
     }
     fun getAffiliatePerformance(page : Int) {
