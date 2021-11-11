@@ -519,6 +519,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
 
+        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
+            shipmentAdapter.updateEgold(false);
+            shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
+        }
+
         if (!shipmentCrossSellModelList.isEmpty()) {
             shipmentAdapter.addListShipmentCrossSellModel(shipmentCrossSellModelList);
             for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
@@ -531,11 +536,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 checkoutAnalyticsCourierSelection.eventViewAutoCheckCrossSell(userSessionInterface.getUserId(),
                         String.valueOf(i+1), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModelList));
             }
-        }
-
-        if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
-            shipmentAdapter.updateEgold(false);
-            shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
         }
 
         if (shipmentCartItemModelList.size() > 0) {
