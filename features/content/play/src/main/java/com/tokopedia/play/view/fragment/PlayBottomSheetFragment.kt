@@ -389,10 +389,11 @@ class PlayBottomSheetFragment @Inject constructor(
 
                     trackImpressedProduct()
                     trackImpressedVoucher()
-                } else {
-                    productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
+                    return@observe
                 }
             }
+
+            productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
         }
     }
 
