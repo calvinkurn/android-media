@@ -122,7 +122,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.miscDependencies.localBroadCastManager
+    implementation rootProject.ext.miscDependencies.localBroadcastManager
 
     implementation platform(rootProject.ext.firebase.bom)
 
