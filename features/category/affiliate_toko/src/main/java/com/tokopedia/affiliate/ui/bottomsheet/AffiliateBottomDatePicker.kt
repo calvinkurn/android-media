@@ -21,14 +21,24 @@ import java.util.ArrayList
 
 class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterface {
     private var contentView: View? = null
-    private var state = AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE
+
+    private var rangeSelected = TODAY
+
+
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         init()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
     companion object {
-        fun newInstance(): AffiliateBottomDatePicker {
-            return AffiliateBottomDatePicker()
+        const val TODAY = "Hari ini"
+        const val YESTERDAY = "Kemarin"
+        const val SEVEN_DAYS = "7 Hari Terakhir"
+        const val THIRTY_DAYS = "30 Hari Terakhir"
+        fun newInstance(selected: String): AffiliateBottomDatePicker {
+            return AffiliateBottomDatePicker().apply {
+                rangeSelected = selected
+            }
         }
     }
     private var dateRV:RecyclerView?=null
@@ -56,10 +66,10 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     }
     private val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
     private fun getData() {
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData("Hari ini")))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData("Kemarin")))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData("7 Hari Terakhir")))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData("30 Hari Terakhir")))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS)))
+        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS)))
     }
 
     override fun onDateRangeClicked(position: Int) {

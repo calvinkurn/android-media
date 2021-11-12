@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.*
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
+import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -19,7 +21,8 @@ class AffiliateHomeViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
         private val affiliatePerformanceUseCase: AffiliatePerformanceUseCase,
-        private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase
+        private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
+        private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
@@ -54,11 +57,13 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getAffiliatePerformance(page : Int) {
         shimmerVisibility.value = true
         launchCatchError(block = {
+           val performanceList = affiliateUserPerformanceUseCase.affiliateUserperformance("7")
             affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
                 totalItemsCount.value = it.itemTotalCount
-                convertDataToVisitables(it)?.let { visitables ->
+                convertDataToVisitables(it,performanceList)?.let { visitables ->
                     affiliateDataList.value = visitables
                 }
+
             }
         }, onError = {
             shimmerVisibility.value = false
@@ -79,13 +84,15 @@ class AffiliateHomeViewModel @Inject constructor(
         return userSessionInterface.isLoggedIn
     }
 
-    fun convertDataToVisitables(data : AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
+    fun convertDataToVisitables(
+        data: AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData,
+        performanceList: AffiliateUserPerformaListItemData
+    ) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
         val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        var itemCount :Int = data.itemTotalCount ?: 0
-        val affiliatePerfomanceResponse=createmockResponce()
-        tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData("7 Hari Terakhir")))
+        val itemCount :Int = data.itemTotalCount ?: 0
+        tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData(selectedDateRange)))
         tempList.add(AffiliateHomeHeaderModel(AffiliateHomeHeaderData("Performa Affiliate")))
-        tempList.add(AffiliateUserPerformanceModel(AffiliateUserPerformaData(getDataFromMock(affiliatePerfomanceResponse))))
+        tempList.add(AffiliateUserPerformanceModel(AffiliateUserPerformaData(getListFromData(performanceList))))
         tempList.add(AffiliateHomeHeaderModel(AffiliateHomeHeaderData("Produk yang dipromosikan","$itemCount Produk",true)))
         data.items?.let { items ->
             for (product in items) {
@@ -98,24 +105,18 @@ class AffiliateHomeViewModel @Inject constructor(
         return null
     }
 
-    private fun getDataFromMock(affiliatePerfomanceResponse: AffiliateUserPerformaListItemData): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
-        var performaTempList:ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+    private fun getListFromData(affiliatePerfomanceResponse: AffiliateUserPerformaListItemData): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
+        val performaTempList:ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         affiliatePerfomanceResponse?.getAffiliatePerformance.data?.userData?.metrics?.forEach {
-            performaTempList.add(AffiliateUserPerformanceListModel(it))
+            if(it?.metricType != "totalItems")
+                performaTempList.add(AffiliateUserPerformanceListModel(it))
         }
         return performaTempList
     }
-
-    private fun createmockResponce(): AffiliateUserPerformaListItemData {
-        val list= ArrayList<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics>()
-        list.add(AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics("commission","Pendapatan","1500000","Rp1.500.000","550000","-Rp550.000",10))
-        list.add(AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics("soldQty","Terjual","1500","1.500","18","18",20))
-        list.add(AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics("commission","Pendapatan","1500000","Rp1.500.000","550000","-Rp550.000",10))
-        list.add(AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics("soldQty","Terjual","1500","1.500","18","18",20))
-        return  AffiliateUserPerformaListItemData(AffiliateUserPerformaListItemData.GetAffiliatePerformance(AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data(null,
-            AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData("123456789","7","2021-08-07T23:59:59.000","2021-08-01T00:00:00.000Z",list),1)))
+    private var selectedDateRange = AffiliateBottomDatePicker.TODAY
+    fun getSelectedDate(): String {
+        return selectedDateRange
     }
-
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getAffiliateErrorMessage(): LiveData<Throwable> = affiliateErrorMessage

@@ -13,7 +13,8 @@ class AffiliateAdapterFactory(
         private var promotionClickInterface : PromotionClickInterface? = null,
         private var addSocialInterface  : AddSocialInterface? = null,
         private var portfolioClickInterface: PortfolioClickInterface? = null,
-        private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface?=null)
+        private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface?=null,
+        private var onDateRangeClickInterface: AffiliateHomeRvDateRangeInterface?=null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -32,7 +33,7 @@ class AffiliateAdapterFactory(
             AffiliateHomeHeaderVH.LAYOUT  -> AffiliateHomeHeaderVH(parent)
             AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent)
             AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent)
-            AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent)
+            AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent,onDateRangeClickInterface)
             else -> super.createViewHolder(parent, type)
         }
     }

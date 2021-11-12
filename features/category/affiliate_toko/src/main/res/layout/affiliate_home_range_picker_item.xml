@@ -7,7 +7,7 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_18"
-        android:layout_width="@dimen/dp_145"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_32"
         app:card_type="border"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
-                android:text="7 Hari Terakhir"
+                android:text="7 Hari "
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
