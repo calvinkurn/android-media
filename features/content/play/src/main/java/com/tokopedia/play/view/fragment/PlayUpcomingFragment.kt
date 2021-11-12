@@ -49,7 +49,7 @@ class PlayUpcomingFragment @Inject constructor(
 ): TkpdBaseV4Fragment(),
     ToolbarViewComponent.Listener,
     UpcomingActionButtonViewComponent.Listener,
-    UpcomingTimerViewComponent.Listener,
+    UpcomingTimerViewComponent.Listener
 {
 
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
