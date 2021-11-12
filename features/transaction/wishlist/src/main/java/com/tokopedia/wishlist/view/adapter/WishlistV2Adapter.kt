@@ -151,6 +151,11 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun addListOnBulk(list: List<WishlistV2TypeLayoutData>) {
+        listTypeData.clear()
+        listTypeData.addAll(list)
+    }
+
     fun appendList(list: List<WishlistV2TypeLayoutData>) {
         listTypeData.addAll(list)
         notifyDataSetChanged()

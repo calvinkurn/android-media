@@ -238,7 +238,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     wishlistV2Adapter.hideCheckbox()
                     binding?.containerDelete?.visibility = View.GONE
                 }
-                listBulkDelete.clear()
+//                listBulkDelete.clear()
                 isBulkDeleteShow = !isBulkDeleteShow
             }
         }
@@ -264,7 +264,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         scrollRecommendationListener = object : EndlessRecyclerViewScrollListener(glm) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 currentPage += 1
-                if (!isBulkDeleteShow) {
+//                if (!isBulkDeleteShow) {
                     if (isFetchRecommendation) {
                         onLoadMoreRecommendation = true
                         loadRecommendationList()
@@ -273,7 +273,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                         paramWishlistV2.page = currPage
                         wishlistViewModel.getNextPageWishlistData(paramWishlistV2)
                     }
-                }
+//                }
             }
         }
 
@@ -381,12 +381,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             currPage += 1
         }
 
-        if ((!isFetchRecommendation) || (!onLoadMoreRecommendation && isFetchRecommendation) ) {
-            wishlistV2Adapter.addList(adapterData)
-            scrollRecommendationListener.resetState()
+        if (isBulkDeleteShow) {
+            wishlistV2Adapter.addListOnBulk(adapterData)
+            binding?.rvWishlist?.post {
+                wishlistV2Adapter.notifyDataSetChanged()
+            }
         } else {
-            wishlistV2Adapter.appendList(adapterData)
-            scrollRecommendationListener.updateStateAfterGetData()
+            if ((!isFetchRecommendation) || (!onLoadMoreRecommendation && isFetchRecommendation) ) {
+                wishlistV2Adapter.addList(adapterData)
+                scrollRecommendationListener.resetState()
+            } else {
+                wishlistV2Adapter.appendList(adapterData)
+                scrollRecommendationListener.updateStateAfterGetData()
+            }
         }
     }
 
@@ -747,12 +754,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         } else {
             listBulkDelete.remove(productId)
         }
-//        wishlistViewModel.onCheckedBulkDeleteWishlist(productId, isChecked)
-        wishlistV2Adapter.selectWishlistToDelete(position, isChecked)
-        binding?.rvWishlist?.post {
-            wishlistV2Adapter.notifyItemChanged(position)
-            wishlistV2Adapter.notifyItemRangeChanged(position, 1)
-        }
+        wishlistViewModel.onCheckedBulkDeleteWishlist(productId, isChecked)
+//        wishlistV2Adapter.selectWishlistToDelete(position, isChecked)
+//        binding?.rvWishlist?.post {
+//            wishlistV2Adapter.notifyItemChanged(position)
+//            wishlistV2Adapter.notifyItemRangeChanged(position, 1)
+//        }
         val showButton = listBulkDelete.isNotEmpty()
         if (showButton) {
             binding?.run {
@@ -812,7 +819,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     override fun onRefresh(view: View?) {
-        if (!isBulkDeleteShow) {
+//        if (!isBulkDeleteShow) {
             onLoadMore = false
             isFetchRecommendation = false
             onLoadMoreRecommendation = false
@@ -820,8 +827,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             currRecommendationListPage = 1
             paramWishlistV2.page = 1
             loadWishlistV2()
-        } else {
-            refreshHandler?.finishRefresh()
-        }
+//        } else {
+//            refreshHandler?.finishRefresh()
+//        }
     }
 }
