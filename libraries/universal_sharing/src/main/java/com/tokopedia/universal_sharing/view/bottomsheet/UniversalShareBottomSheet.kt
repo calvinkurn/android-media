@@ -45,6 +45,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.io.File
@@ -227,7 +228,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
 
-    private var affiliateQueryData : Any? = null
+    private var affiliateQueryData : AffiliatePDPInput? = null
     private var showLoader: Boolean = false
 
     //observer flag
@@ -590,8 +591,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         requestDataMap = requestPayLoad
     }
 
-    fun setAffiliateRequestData(requestData:Any?){
-        affiliateQueryData = requestData
+    fun setAffiliateRequestHolder(affiliatePDPInput: AffiliatePDPInput){
+        this.affiliateQueryData = affiliatePDPInput
+    }
+
+    fun getAffiliateRequestHolder(): AffiliatePDPInput {
+        affiliateQueryData = AffiliatePDPInput()
+        return affiliateQueryData as AffiliatePDPInput
     }
 
     fun setBottomSheetTitle(title: String){

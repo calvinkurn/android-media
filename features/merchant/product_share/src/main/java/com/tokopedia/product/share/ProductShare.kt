@@ -367,7 +367,14 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                             "", productImgList)
         }
         onImpressShareWidget(UniversalShareBottomSheet.getShareBottomSheetType(), productData.userId, productData.productId)
+//        call this method here if the complete data needed for Affiliate request has not been received yet
+//        universalShareBottomSheet?.affiliateRequestDataAwaited()
         universalShareBottomSheet?.show(fragmentManager, fragment, screenshotDetector)
+
+//        get affiliate PDPInput and set the data into the affiliate PDP input once the data is received
+//        universalShareBottomSheet?.getAffiliateRequestHolder()
+//        once the data is received and set call the below method
+//        universalShareBottomSheet?.affiliateRequestDataReceived()
     }
     //endregion
 
