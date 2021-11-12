@@ -1,23 +1,27 @@
 package com.tokopedia.managepassword.viewmodel
 
+import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordData
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordResponseModel
+import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordV2Response
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordUseCase
 import com.tokopedia.managepassword.addpassword.domain.usecase.AddPasswordV2UseCase
 import com.tokopedia.managepassword.addpassword.view.viewmodel.AddPasswordViewModel
 import com.tokopedia.managepassword.haspassword.domain.data.ProfileDataModel
 import com.tokopedia.managepassword.haspassword.domain.usecase.GetProfileCompletionUseCase
+import com.tokopedia.network.refreshtoken.EncoderDecoder
+import com.tokopedia.sessioncommon.data.GenerateKeyPojo
+import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import junit.framework.Assert.assertEquals
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,7 +40,7 @@ class AddPasswordViewModelTestJunit {
     val getProfileCompletionUseCase = mockk<GetProfileCompletionUseCase>(relaxed = true)
     val generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
 
-    val dispatcher = TestCoroutineDispatcher()
+    private val dispatcherProviderTest = CoroutineTestDispatchersProvider
     private var observer = mockk<Observer<Result<AddPasswordData>>>(relaxed = true)
     private var validatePasswordObserver = mockk<Observer<Result<String>>>(relaxed = true)
     private var validateConfirmPasswordObserver = mockk<Observer<Result<String>>>(relaxed = true)
@@ -46,12 +50,16 @@ class AddPasswordViewModelTestJunit {
 
     @Before
     fun setUp() {
+        MockKAnnotations.init(this)
+        mockkObject(RsaUtils)
+        mockkObject(EncoderDecoder())
+
         viewModel = AddPasswordViewModel(
                 addPasswordUseCase,
                 addPasswordv2UseCase,
                 getProfileCompletionUseCase,
                 generatePublicKeyUseCase,
-                dispatcher
+                dispatcherProviderTest
         )
         viewModel.response.observeForever(observer)
         viewModel.validatePassword.observeForever(validatePasswordObserver)
@@ -62,26 +70,15 @@ class AddPasswordViewModelTestJunit {
 
     var password = "abc1234567"
     var confirmPassword = "abc1234567"
-    val mockThrowable = mockk<Throwable>(relaxed = true)
-
-    @Test
-    fun `Execute createPassword`() {
-        viewModel.createPassword(password, confirmPassword)
-        /* Then */
-        verify {
-            AddPasswordViewModel.createRequestParams(password, confirmPassword)
-            addPasswordUseCase.submit(any(), any())
-        }
-    }
+    val mockThrowable = Throwable("Opps!")
 
     @Test
     fun `createPassword Success`() {
         val mockAddPassword = AddPasswordData(isSuccess = true)
         val mockAddPasswordResponse = AddPasswordResponseModel(mockAddPassword)
 
-        every { addPasswordUseCase.submit(any(), any()) } answers {
-            firstArg<(AddPasswordResponseModel) -> Unit>().invoke(mockAddPasswordResponse)
-        }
+        coEvery { addPasswordUseCase(any()) } returns mockAddPasswordResponse
+
         viewModel.createPassword(password, confirmPassword)
 
         /* Then */
@@ -93,9 +90,7 @@ class AddPasswordViewModelTestJunit {
         val mockAddPassword = AddPasswordData(isSuccess = false, errorMessage = "Error")
         val mockAddPasswordResponse = AddPasswordResponseModel(mockAddPassword)
 
-        every { addPasswordUseCase.submit(any(), any()) } answers {
-            firstArg<(AddPasswordResponseModel) -> Unit>().invoke(mockAddPasswordResponse)
-        }
+        coEvery { addPasswordUseCase(any()) } returns mockAddPasswordResponse
         viewModel.createPassword(password, confirmPassword)
 
         /* Then */
@@ -103,15 +98,84 @@ class AddPasswordViewModelTestJunit {
     }
 
     @Test
-    fun `createPassword Error`() {
-        /* When */
-        every { addPasswordUseCase.submit(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+    fun `createPassword - fail`() {
+        coEvery { addPasswordUseCase(any()) }.throws(mockThrowable)
         viewModel.createPassword(password, confirmPassword)
 
+        coVerify { observer.onChanged(Fail(mockThrowable)) }
+    }
+
+    @Test
+    fun `createPassword v2 Success`() {
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+        val mockAddPasswordV2Response = AddPasswordV2Response(AddPasswordData(
+            isSuccess = true,
+            errorMessage = ""
+        ))
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "encrypted"
+
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { addPasswordv2UseCase(any()) } returns mockAddPasswordV2Response
+
+        viewModel.createPasswordV2(password, confirmPassword)
+
         /* Then */
-        verify { observer.onChanged(Fail(mockThrowable)) }
+        coEvery { observer.onChanged(Success(mockAddPasswordV2Response.addPassword)) }
+    }
+
+    @Test
+    fun `createPassword v2 isSuccess = false`() {
+        val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
+        val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
+        val mockAddPasswordV2Response = AddPasswordV2Response(AddPasswordData(
+            isSuccess = false,
+            errorMessage = "Opps!"
+        ))
+
+        mockkStatic("android.util.Base64")
+        mockkStatic(EncoderDecoder::class)
+
+        every { EncoderDecoder.Encrypt(any(), any()) } returns "ok"
+        every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
+        coEvery { RsaUtils.encrypt(any(), any(), true) } returns "encrypted"
+
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { addPasswordv2UseCase(any()) } returns mockAddPasswordV2Response
+
+        viewModel.createPasswordV2(password, confirmPassword)
+
+        /* Then */
+        coEvery {
+            observer.onChanged(Fail(Throwable(mockAddPasswordV2Response.addPassword.errorMessage)))
+        }
+    }
+
+    @Test
+    fun `createPassword v2 - hash empty`() {
+        val generateKeyPojo = GenerateKeyPojo()
+
+        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+
+        viewModel.createPasswordV2(password, confirmPassword)
+
+        observer.onChanged(Fail(Throwable("")))
+    }
+
+    @Test
+    fun `createPassword v2 - fail`() {
+        coEvery { generatePublicKeyUseCase.executeOnBackground() }.throws(mockThrowable)
+        coEvery { addPasswordv2UseCase(any()) }.throws(mockThrowable)
+
+        viewModel.createPasswordV2(password, confirmPassword)
+
+        coVerify { observer.onChanged(Fail(mockThrowable)) }
     }
 
     @Test
@@ -184,29 +248,23 @@ class AddPasswordViewModelTestJunit {
     }
 
     @Test
-    fun `checkPassword Success`() {
-        val profile = ProfileDataModel.Profile()
+    fun checkPassword() {
+        val profile = ProfileDataModel.Profile(isCreatedPassword = true)
         val mockResponse = ProfileDataModel(profile)
 
-        every { getProfileCompletionUseCase.getData(any(), any()) } answers {
-            firstArg<(ProfileDataModel) -> Unit>().invoke(mockResponse)
-        }
+        coEvery { getProfileCompletionUseCase(Unit) } returns mockResponse
         viewModel.checkPassword()
 
         /* Then */
-        verify { hasPasswordObserver.onChanged(Success(mockResponse)) }
+        coVerify { hasPasswordObserver.onChanged(Success(mockResponse)) }
     }
 
     @Test
-    fun `checkPassword Error`() {
-        val throwable = Throwable(message = "Error")
+    fun `checkPassword - fail`() {
+        coEvery { getProfileCompletionUseCase(Unit) }.throws(mockThrowable)
 
-        every { getProfileCompletionUseCase.getData(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
         viewModel.checkPassword()
 
-        /* Then */
-        verify { hasPasswordObserver.onChanged(Fail(throwable)) }
+        coVerify { hasPasswordObserver.onChanged(Fail(mockThrowable)) }
     }
  }
