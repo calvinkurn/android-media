@@ -14,7 +14,7 @@
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:padding="@dimen/spacing_lvl2"
-        app:icon_color_light_enable="@color/white"
+        app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -45,7 +45,7 @@
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:visibility="invisible"
-            app:icon_color_light_enable="@color/white"
+            app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_name="LINK"
             tools:visibility="visible" />
 
