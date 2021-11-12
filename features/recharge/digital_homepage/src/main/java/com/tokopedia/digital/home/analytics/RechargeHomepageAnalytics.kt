@@ -232,7 +232,7 @@ class RechargeHomepageAnalytics {
     fun clickSearchBox(tracker: Tracking, userId: String){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "click search box")
-            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", tracker.userType, tracker.keyword))
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s", tracker.userType))
         }
 
         eventDataLayer.addGeneralClickDigitalEvent(userId)
