@@ -98,18 +98,18 @@ class ShopSettingsInfoViewModel @Inject constructor (
             })
     }
 
-    private fun getShopOperationalHourStatusAsync(shopId: String): Deferred<ShopOperationalHourStatus> {
-        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
-            var operationalHourStatus = ShopOperationalHourStatus()
-            try {
-                getShopOperationalHourStatusUseCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopIds = shopId)
-                operationalHourStatus = getShopOperationalHourStatusUseCase.executeOnBackground()
-            } catch (t: Throwable) {
-                _shopOperationalHourStatus.postValue(Fail(t))
-            }
-            operationalHourStatus
-        }
-    }
+//    private fun getShopOperationalHourStatusAsync(shopId: String): Deferred<ShopOperationalHourStatus> {
+//        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
+//            var operationalHourStatus = ShopOperationalHourStatus()
+//            try {
+//                getShopOperationalHourStatusUseCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopIds = shopId)
+//                operationalHourStatus = getShopOperationalHourStatusUseCase.executeOnBackground()
+//            } catch (t: Throwable) {
+//                _shopOperationalHourStatus.postValue(Fail(t))
+//            }
+//            operationalHourStatus
+//        }
+//    }
 
     fun updateShopSchedule(
             @ShopScheduleActionDef action: Int,

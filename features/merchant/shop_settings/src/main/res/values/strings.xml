@@ -41,10 +41,10 @@
     <string name="hint_date">Day, dd/mm/yyyy</string>
     <string name="shop_operational_hour_seller_edu_production">https://seller.tokopedia.com/edu/atur-jadwal-toko/</string>
     <string name="shop_operational_hour_seller_edu_revamp">https://seller.tokopedia.com/edu/jadwal-toko/</string>
-    <string name="shop_operational_hour_title_set_hour">Atur jam buka-tutup toko</string>
-    <string name="shop_operational_hour_title_holiday">Atur jadwal toko libur</string>
-    <string name="shop_operational_hour_desc_holiday">Pembeli tidak dapat membeli produkmu selama tokomu libur. Pastikan pesanan yang sudah masuk tetap diproses, ya. Waktu mulai libur mengikuti zona WIB.</string>
-    <string name="shop_operational_hour_desc_set_hour">Beritahu pembeli jadwal buka, tutup, atau libur tokomu dalam seminggu.</string>
+    <string name="shop_operational_hour_title_set_hour">Atur jam operasional toko</string>
+    <string name="shop_operational_hour_title_holiday">Atur tanggal toko libur</string>
+    <string name="shop_operational_hour_desc_holiday">Kamu bisa atur tanggal toko libur jika ada tanggal merah atau keperluan mendesak. Selama menggunakan fitur ini, produk-produk di tokomu tidak bisa dibeli, ya.</string>
+    <string name="shop_operational_hour_desc_set_hour">Di sini kamu bisa mengatur jadwal tokomu beroperasi secara rutin setiap minggunya.</string>
     <string name="shop_operational_hour_desc_ticker_holiday">Saat toko libur, pembeli tidak bisa membeli produkmu. <![CDATA[<a href="%1$s">Baca Selengkapnya</a>]]></string>
     <string name="shop_operational_hour_desc_ticker_holiday_url">https://seller.tokopedia.com/edu/atur-jadwal-toko/</string>
     <string name="shop_operational_hour_copy_to_all_day_text_desc">Klik Simpan agar jam buka-tutup tokomu sama setiap hari, ya.</string>
@@ -65,7 +65,7 @@
     <string name="shop_operational_hour_delete_holiday_text">Hapus jadwal</string>
     <string name="shop_operational_hour_ticker_description_auto_chat">Balas chat pembeli secara otomatis ketika tokomu tidak beroperasi. <![CDATA[<a href="%1$s">Atur di Sini</a>]]></string>
     <string name="shop_operational_hour_ticker_description_auto_chat_dummy_url">https://tokopedia.com/#open-auto-reply-chat-settings</string>
-    <string name="shop_operational_hour_list_button_add_holiday_text">Tambah Jadwal Libur</string>
+    <string name="shop_operational_hour_list_button_add_holiday_text">Atur Tanggal Libur</string>
     <string name="shop_operational_hour_set_holiday_schedule_title">Jadwal Toko Libur</string>
     <string name="shop_operational_hour_set_holiday_schedule_success">Jadwal libur berhasil ditambahkan</string>
     <string name="shop_operational_hour_set_holiday_schedule_failed">Oops, jadwal tidak tersimpan. Cek koneksi dan ulangi lagi, ya.</string>

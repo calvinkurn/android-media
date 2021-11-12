@@ -298,7 +298,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         isShopActive -> getString(R.string.label_open)
                         else -> getString(R.string.label_close)
                     }
-                    tvShopStatus.text = status
+                    tvShopStatus?.text = status
                 }
             }
         })
