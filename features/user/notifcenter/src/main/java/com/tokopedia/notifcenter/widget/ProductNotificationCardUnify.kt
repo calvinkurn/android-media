@@ -143,6 +143,12 @@ class ProductNotificationCardUnify(
         bindDeleteReminder(product)
     }
 
+    fun updateWishlistState(product: ProductData?) {
+        product ?: return
+        bindAddToWishlist(product)
+        bindCheckWishlist(product)
+    }
+
     private fun bindThumbnailLabel(product: ProductData) {
         if (product.hasEmptyStock() ||
             product.isEmptyButton() ||
@@ -206,15 +212,20 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindAddToWishlist(product: ProductData) {
+        val notification = notification
+        val adapterPosition = adapterPosition
         if (product.isWishlistButton() && !product.isWishlist) {
             btnAddToWishlist?.show()
         } else {
             btnAddToWishlist?.hide()
         }
         btnAddToWishlist?.setOnClickListener {
-            listener?.addToWishlist(product)
-            btnAddToWishlist?.hide()
-            btnCheckWishlist?.show()
+            if(notification != null && adapterPosition != null) {
+                listener?.addToWishlist(notification, product, adapterPosition)
+                product.isWishlist = true
+                btnAddToWishlist?.hide()
+                btnCheckWishlist?.show()
+            }
         }
     }
 

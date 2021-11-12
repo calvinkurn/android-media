@@ -650,11 +650,16 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         viewModel.deleteReminder(product, notification)
     }
 
-    override fun addToWishlist(product: ProductData) {
+    override fun addToWishlist(
+        notification: NotificationUiModel,
+        product: ProductData,
+        position: Int
+    ) {
         viewModel.addWishListNormal(product.productId,
             object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                     showErrorMessage(errorMessage ?: "")
+                    rvAdapter?.updateFailedAddToWishlist(notification, product, position)
                 }
 
                 override fun onSuccessAddWishlist(productId: String?) {

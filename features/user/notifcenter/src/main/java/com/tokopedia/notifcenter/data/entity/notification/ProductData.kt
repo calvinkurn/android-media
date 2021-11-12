@@ -26,7 +26,7 @@ data class ProductData(
         @SerializedName("is_topads")
         val isTopads: Boolean = false,
         @SerializedName("is_wishlist")
-        val isWishlist: Boolean = false,
+        var isWishlist: Boolean = false,
         @SerializedName("labels")
         val labels: List<Any> = listOf(),
         @SerializedName("min_order")
