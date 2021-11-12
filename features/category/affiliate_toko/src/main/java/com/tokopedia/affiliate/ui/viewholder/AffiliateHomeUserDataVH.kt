@@ -27,5 +27,7 @@ class AffiliateHomeUserDataVH(itemView: View)
         var performRV = itemView.findViewById<RecyclerView>(R.id.performaItem_RV)
         performRV.layoutManager = GridLayoutManager(itemView.context,2)
         performRV.adapter = adapter
+        adapter.addMoreData(element?.data?.data)
+
     }
 }

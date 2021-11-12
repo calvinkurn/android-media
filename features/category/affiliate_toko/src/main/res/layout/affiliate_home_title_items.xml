@@ -5,8 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        android:id="@+id/hea"
+        android:id="@+id/head"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Products"
@@ -16,13 +17,13 @@
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography"
+        android:id="@+id/sub_header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="6 Product"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/head"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/head"
         app:typographyType="body_3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

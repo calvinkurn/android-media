@@ -86,7 +86,7 @@
         android:id="@+id/product_list_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="affiliate_promoted_products,affiliate_products_count,swipe_refresh_layout"/>
+        app:constraint_referenced_ids="swipe_refresh_layout"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/affiliate_promoted_products"
@@ -112,6 +112,7 @@
         android:layout_marginTop="@dimen/dp_28"
         android:layout_marginEnd="@dimen/dp_16"
         android:gravity="end"
+        android:visibility="gone"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintLeft_toRightOf="@id/affiliate_promoted_products"
         app:layout_constraintRight_toRightOf="parent"

@@ -3,23 +3,17 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.PAGE_ZERO
-import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.model.AffiliateAnnouncementData
-import com.tokopedia.affiliate.model.AffiliateValidateUserData
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
+import com.tokopedia.affiliate.model.*
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class AffiliateHomeViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
@@ -87,6 +81,12 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun convertDataToVisitables(data : AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
         val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+        var itemCount :Int = data.itemTotalCount ?: 0
+        val affiliatePerfomanceResponse=createmockResponce()
+        tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData("7 Hari Terakhir")))
+        tempList.add(AffiliateHomeHeaderModel(AffiliateHomeHeaderData("Performa Affiliate")))
+        tempList.add(AffiliateUserPerformanceModel(AffiliateUserPerformaData(getDataFromMock(affiliatePerfomanceResponse))))
+        tempList.add(AffiliateHomeHeaderModel(AffiliateHomeHeaderData("Produk yang dipromosikan","$itemCount Produk",true)))
         data.items?.let { items ->
             for (product in items) {
                 product?.let {
@@ -96,6 +96,24 @@ class AffiliateHomeViewModel @Inject constructor(
             return tempList
         }
         return null
+    }
+
+    private fun getDataFromMock(affiliatePerfomanceResponse: AffiliateUserPerformaListItemData): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
+        var performaTempList:ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+        affiliatePerfomanceResponse?.getAffiliatePerformance.data?.userData?.metrics?.forEach {
+            performaTempList.add(AffiliateUserPerformanceListModel(it))
+        }
+        return performaTempList
+    }
+
+    private fun createmockResponce(): AffiliateUserPerformaListItemData {
+        val list= ArrayList<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics>()
+        list.add(AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics("commission","Pendapatan","1500000","Rp1.500.000","550000","-Rp550.000",10))
+        list.add(AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics("soldQty","Terjual","1500","1.500","18","18",20))
+        list.add(AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics("commission","Pendapatan","1500000","Rp1.500.000","550000","-Rp550.000",10))
+        list.add(AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics("soldQty","Terjual","1500","1.500","18","18",20))
+        return  AffiliateUserPerformaListItemData(AffiliateUserPerformaListItemData.GetAffiliatePerformance(AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data(null,
+            AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData("123456789","7","2021-08-07T23:59:59.000","2021-08-01T00:00:00.000Z",list),1)))
     }
 
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility

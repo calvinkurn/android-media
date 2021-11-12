@@ -100,10 +100,11 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private fun afterViewCreated() {
         initBottomNavigationView()
         setObservers()
-        if(userSessionInterface.isLoggedIn)
-            affiliateVM.getAffiliateValidateUser()
-        else
-            showLoginPortal()
+//        if(userSessionInterface.isLoggedIn)
+//            affiliateVM.getAffiliateValidateUser()
+//        else
+//            showLoginPortal()
+        showAffiliatePortal()
     }
 
     private fun showLoginPortal() {

@@ -19,6 +19,6 @@ class AffiliateDateFilterVH(itemView: View)
     }
 
     override fun bind(element: AffiliateDateFilterModel?) {
-
+        itemView.findViewById<Typography>(R.id.text).text = element?.data?.title
     }
 }

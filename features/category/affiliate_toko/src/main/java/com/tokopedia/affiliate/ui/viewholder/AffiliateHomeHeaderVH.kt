@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHomeHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTermsAndConditionModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateHomeHeaderVH(itemView: View)
@@ -18,6 +19,9 @@ class AffiliateHomeHeaderVH(itemView: View)
     }
 
     override fun bind(element: AffiliateHomeHeaderModel?) {
-
+        val subheadView=itemView.findViewById<Typography>(R.id.sub_header)
+        itemView.findViewById<Typography>(R.id.head).text = element?.data?.title
+        subheadView.isVisible = element?.data?.showSubTitle == true
+        subheadView.text = element?.data?.subTitle
     }
 }

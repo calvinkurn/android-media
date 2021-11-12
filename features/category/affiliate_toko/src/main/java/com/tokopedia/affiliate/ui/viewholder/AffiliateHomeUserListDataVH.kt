@@ -24,5 +24,8 @@ class AffiliateHomeUserListDataVH(itemView: View)
     }
 
     override fun bind(element: AffiliateUserPerformanceListModel?) {
+        itemView.findViewById<Typography>(R.id.performa_type).text = element?.data?.metricTitle
+        itemView.findViewById<Typography>(R.id.value).text = element?.data?.metricValueFmt
+        itemView.findViewById<Typography>(R.id.value_change_value).text = element?.data?.metricDifferenceValueFmt
     }
 }

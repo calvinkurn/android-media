@@ -41,6 +41,13 @@ val GQL_Affiliate_Performance: String = """query getAffiliateItemsPerformanceLis
             FooterIcon
             FooterText
           }
+          Metrics {                    
+            MetricType                  
+            MetricTitle                 
+            MetricValue                 
+            MetricDifferenceValue       
+            Trend                       
+          }
         }
       }
     }
