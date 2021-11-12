@@ -340,14 +340,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     if (it.isCarousel) {
                         adapterData.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_CAROUSEL))
                     } else {
-                        if (currRecommendationListPage == 0) {
-                            adapterData.add(
-                                WishlistV2TypeLayoutData(
-                                    getString(R.string.recommendation_title),
-                                    TYPE_RECOMMENDATION_TITLE
-                                )
-                            )
-                        }
                         currRecommendationListPage += 1
                         it.recommendationData.firstOrNull()?.recommendationItemList?.forEach { recommendationItem ->
                             adapterData.add(
@@ -375,7 +367,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     } else {
                         adapterData.add(WishlistV2TypeLayoutData("", TYPE_EMPTY_STATE))
                     }
-
+                    adapterData.add(
+                        WishlistV2TypeLayoutData(
+                            getString(R.string.recommendation_title),
+                            TYPE_RECOMMENDATION_TITLE
+                        )
+                    )
                 }
             }
         }
