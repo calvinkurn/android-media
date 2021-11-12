@@ -7,10 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
+import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListener
 
 class DigitalHomePageSearchTypeFactory(
         val onSearchCategoryClickListener: DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener,
-        val onSearchDoubleLineClickListener: DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener
+        val onSearchDoubleLineClickListener: DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener,
+        val onSearchAutoCompleteListener: SearchAutoCompleteListener
 )
     : BaseAdapterTypeFactory() {
 
@@ -24,9 +26,9 @@ class DigitalHomePageSearchTypeFactory(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
-            DigitalHomePageSearchViewHolder.LAYOUT -> return DigitalHomePageSearchViewHolder(parent, onSearchCategoryClickListener)
+            DigitalHomePageSearchViewHolder.LAYOUT -> return DigitalHomePageSearchViewHolder(parent, onSearchCategoryClickListener, onSearchAutoCompleteListener)
             DigitalHomePageSearchHeaderViewHolder.LAYOUT -> return DigitalHomePageSearchHeaderViewHolder(parent)
-            DigitalHomePageSearchDoubleLineViewHolder.LAYOUT -> return DigitalHomePageSearchDoubleLineViewHolder(parent, onSearchDoubleLineClickListener)
+            DigitalHomePageSearchDoubleLineViewHolder.LAYOUT -> return DigitalHomePageSearchDoubleLineViewHolder(parent, onSearchDoubleLineClickListener, onSearchAutoCompleteListener)
             DigitalHomePageSearchEmptyStateViewHolder.LAYOUT -> return DigitalHomePageSearchEmptyStateViewHolder(parent)
         }
         return super.createViewHolder(parent, type)

@@ -32,7 +32,7 @@ class DigitalHomePageSearchViewModel @Inject constructor(
         get() = mutableSearchCategoryList
 
     fun searchCategoryList(rawQuery: String, searchQuery: String, isLoadFromCloud: Boolean = false) {
-        launchCatchError(block = {
+        job = launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 searchCategoryHomePageUseCase.searchCategoryList(rawQuery, isLoadFromCloud, searchQuery)
             }
@@ -43,7 +43,7 @@ class DigitalHomePageSearchViewModel @Inject constructor(
     }
 
     fun searchByDynamicIconsCategory(query: String, platformId: Int, sectionIDs: List<Int>, enablePersonalize: Boolean = false) {
-        launchCatchError(block = {
+        job = launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 searchByDynamicIconUseCase.searchCategoryList(
                         DigitalHomepageSearchByDynamicIconUseCase.createRechargeHomepageSectionsParams(platformId,

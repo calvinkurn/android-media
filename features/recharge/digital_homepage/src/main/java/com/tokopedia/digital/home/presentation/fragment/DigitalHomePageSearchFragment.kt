@@ -25,10 +25,12 @@ import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeSearchBinding
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
+import com.tokopedia.digital.home.model.Tracking
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchDoubleLineViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
+import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
 import com.tokopedia.digital.home.util.DigitalHomepageGqlQuery
 import com.tokopedia.network.utils.ErrorHandler
@@ -46,6 +48,7 @@ import kotlin.coroutines.CoroutineContext
 open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
         DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener,
         DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener,
+        SearchAutoCompleteListener,
         CoroutineScope
 {
 
@@ -203,11 +206,27 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageSearchTypeFactory {
-        return DigitalHomePageSearchTypeFactory(this, this)
+        return DigitalHomePageSearchTypeFactory(this, this, this)
     }
 
     override fun onItemClicked(t: DigitalHomePageSearchCategoryModel?) {
 
+    }
+
+    override fun clickCategoryListener(trackingUser: Tracking, trackingItem: Tracking) {
+        rechargeHomepageAnalytics.clickCateoryAutoComplete(trackingUser, trackingItem, userSession.userId)
+    }
+
+    override fun impressCategoryListener(trackingUser: Tracking, trackingItem: Tracking) {
+        rechargeHomepageAnalytics.impressionCategoryAutoComplete(trackingUser, trackingItem, userSession.userId)
+    }
+
+    override fun clickOperatorListener(trackingUser: Tracking, trackingItem: Tracking) {
+        rechargeHomepageAnalytics.clickOperatorAutoComplete(trackingUser, trackingItem, userSession.userId)
+    }
+
+    override fun impressOperatorListener(trackingUser: Tracking, trackingItem: Tracking) {
+        rechargeHomepageAnalytics.impressionOperatorAutoComplete(trackingUser, trackingItem, userSession.userId)
     }
 
     private val getSearchListener = object : TextView.OnEditorActionListener {
@@ -243,7 +262,11 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
     }
 
     open fun searchCategory(searchQuery: String) {
-        viewModel.searchCategoryList(DigitalHomepageGqlQuery.digitalHomeCategory, searchQuery)
+        if (!searchQuery.isNullOrEmpty()) {
+            viewModel.searchCategoryList(DigitalHomepageGqlQuery.digitalHomeCategory, searchQuery)
+        } else {
+            viewModel.cancelAutoComplete()
+        }
     }
 
     override val coroutineContext: CoroutineContext

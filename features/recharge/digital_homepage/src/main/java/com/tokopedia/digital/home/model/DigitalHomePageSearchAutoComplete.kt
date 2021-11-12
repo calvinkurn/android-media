@@ -34,7 +34,12 @@ data class Data (
 )
 
 data class Tracking (
-
+        @SerializedName("userType")
+        @Expose
+        val userType : String = "",
+        @SerializedName("keyword")
+        @Expose
+        val keyword : String = "",
         @SerializedName("categoryId")
         @Expose
         val categoryId : String = "",

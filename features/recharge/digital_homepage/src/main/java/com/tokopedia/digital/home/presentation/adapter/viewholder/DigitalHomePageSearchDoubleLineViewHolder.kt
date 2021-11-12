@@ -5,11 +5,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewDigitalHomeSearchDoubleLineItemBinding
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListener
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper.boldReverseSearchAutoComplete
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.ImageUnify
 
 
-class DigitalHomePageSearchDoubleLineViewHolder (itemView: View?, private val onSearchDoubleLineClickListener: OnSearchDoubleLineClickListener) :
+class DigitalHomePageSearchDoubleLineViewHolder (itemView: View?,
+                                                 private val onSearchDoubleLineClickListener: OnSearchDoubleLineClickListener,
+                                                 private val listener: SearchAutoCompleteListener
+) :
         AbstractViewHolder<DigitalHomePageSearchCategoryModel>(itemView) {
 
     override fun bind(element: DigitalHomePageSearchCategoryModel) {
@@ -22,7 +27,14 @@ class DigitalHomePageSearchDoubleLineViewHolder (itemView: View?, private val on
             tgMainTitleDoubleLine.text = boldReverseSearchAutoComplete(element.label, element.searchQuery)
             tgMainDescDoubleLine.text = element.subtitle
 
-            root.setOnClickListener { onSearchDoubleLineClickListener.onSearchDoubleLineClicked(element, adapterPosition) }
+            itemView.addOnImpressionListener(element, {
+                listener.impressOperatorListener(element.trackerUser, element.trackerItem)
+            })
+
+            root.setOnClickListener {
+                listener.clickOperatorListener(element.trackerUser, element.trackerItem)
+                onSearchDoubleLineClickListener.onSearchDoubleLineClicked(element, adapterPosition)
+            }
         }
     }
 

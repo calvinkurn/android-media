@@ -266,7 +266,9 @@ object RechargeHomepageSectionMapper {
                    applink = item.applink,
                    icon =  item.imageUrl,
                    searchQuery = searchQuery,
-                   typeLayout = getLayoutType(item.template)
+                   typeLayout = getLayoutType(item.template),
+                   trackerUser = autoComplete.digiPersoSearchSuggestion.data.tracking,
+                   trackerItem = item.tracking
            ))
         }
         return searchCategoryModels
