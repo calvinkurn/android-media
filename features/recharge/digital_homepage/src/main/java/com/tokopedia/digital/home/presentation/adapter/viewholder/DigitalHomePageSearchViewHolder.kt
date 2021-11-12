@@ -24,12 +24,17 @@ class DigitalHomePageSearchViewHolder(itemView: View?, private val onSearchCateg
             digitalHomepageSearchCategoryName.text = RechargeHomepageSectionMapper.boldReverseSearchAutoComplete(element.label, element.searchQuery)
 
             itemView.addOnImpressionListener(element, {
-                listener.impressCategoryListener(element.trackerUser, element.trackerItem)
+                if (!element.trackerUser.keyword.isNullOrEmpty()){
+                 listener.impressCategoryListener(element.trackerUser, element.trackerItem)
+                }
             })
 
             root.setOnClickListener {
-                listener.clickCategoryListener(element.trackerUser, element.trackerItem)
-                onSearchCategoryClickListener.onSearchCategoryClicked(element, adapterPosition)
+                if (!element.trackerUser.keyword.isNullOrEmpty()) {
+                    listener.clickCategoryListener(element, element.trackerUser, element.trackerItem)
+                } else {
+                    onSearchCategoryClickListener.onSearchCategoryClicked(element, adapterPosition)
+                }
             }
         }
     }

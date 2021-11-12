@@ -220,8 +220,9 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
 
     }
 
-    override fun clickCategoryListener(trackingUser: Tracking, trackingItem: Tracking) {
+    override fun clickCategoryListener(element: DigitalHomePageSearchCategoryModel, trackingUser: Tracking, trackingItem: Tracking) {
         rechargeHomepageAnalytics.clickCateoryAutoComplete(trackingUser, trackingItem, userSession.userId)
+        RouteManager.route(context, element.applink)
     }
 
     override fun impressCategoryListener(trackingUser: Tracking, trackingItem: Tracking) {
