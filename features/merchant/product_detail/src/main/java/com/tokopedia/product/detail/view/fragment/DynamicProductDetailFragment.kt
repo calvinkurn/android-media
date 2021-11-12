@@ -530,9 +530,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             AdultManager.handleActivityResult(it, requestCode, resultCode, data,
                 object : AdultManager.Callback {
                     override fun onFail() {
+                        it.finish()
                     }
 
                     override fun onVerificationSuccess(message: String?) {
+                        message?.let {
+                            view?.showToasterSuccess(it, ctaText = getString(R.string.label_oke_pdp),ctaListener = {})
+                        }
                     }
 
                     override fun onLoginPreverified() {
