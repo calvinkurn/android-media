@@ -14,14 +14,15 @@
         app:layout_constraintTop_toBottomOf="@id/ll_header"
         >
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_product_image"
             android:layout_width="@dimen/play_product_variant_image_size"
             android:layout_height="@dimen/play_product_variant_image_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            tools:src="@tools:sample/avatars"
+            />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_title"
@@ -97,7 +98,7 @@
             tools:text="Rp150.000"
             />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_free_shipping"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
