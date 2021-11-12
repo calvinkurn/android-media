@@ -198,7 +198,32 @@ class CentralizedPromoViewModelTest {
     fun `Success get layout data for promo creation with no broadcast chat quota`() = runBlocking {
         coEvery {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
-        } returns ChatBlastSellerMetadataUiModel(0, 0)
+        } returns ChatBlastSellerMetadataUiModel(200, 0)
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+
+        assert(result != null && result is Success &&
+                result.data is PromoCreationListUiModel &&
+                (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
+    }
+
+    @Test
+    fun `Success get layout data for promo creation with no broadcast chat quota and undefined promo type`() = runBlocking {
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
 
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
