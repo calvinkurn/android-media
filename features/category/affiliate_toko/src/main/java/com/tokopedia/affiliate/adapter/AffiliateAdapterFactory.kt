@@ -28,6 +28,10 @@ class AffiliateAdapterFactory(
             AffiliateHeaderItemVH.LAYOUT -> AffiliateHeaderItemVH(parent)
             AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent)
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
+            AffiliateHomeHeaderVH.LAYOUT  -> AffiliateHomeHeaderVH(parent)
+            AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent)
+            AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent)
+            AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -66,5 +70,21 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateTermsAndConditionModel): Int {
         return  AffiliateTermsAndConditionVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateUserPerformanceModel): Int {
+       return  AffiliateHomeUserDataVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateUserPerformanceListModel): Int {
+        return AffiliateHomeUserListDataVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateHomeHeaderModel): Int {
+        return  AffiliateHomeHeaderVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateDateFilterModel): Int {
+        return AffiliateDateFilterVH.LAYOUT
     }
 }

@@ -12,4 +12,8 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel:AffiliateHeaderModel): Int
     fun type(viewModel: AffiliatePortfolioButtonModel): Int
     fun type(viewModel: AffiliateTermsAndConditionModel): Int
+    fun type(viewModel: AffiliateUserPerformanceModel): Int
+    fun type(viewModel: AffiliateUserPerformanceListModel): Int
+    fun type(viewModel: AffiliateHomeHeaderModel): Int
+    fun type(viewModel: AffiliateDateFilterModel): Int
 }
