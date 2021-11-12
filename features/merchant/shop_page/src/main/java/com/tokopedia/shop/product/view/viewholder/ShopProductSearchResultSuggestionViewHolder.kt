@@ -12,9 +12,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopProductSearchSuggestionViewBinding
 import com.tokopedia.shop.product.view.datamodel.ShopProductSearchResultSuggestionUiModel
 import com.tokopedia.shop.product.view.listener.ShopProductSearchSuggestionListener
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 import java.net.URLDecoder
 
 /**
@@ -35,7 +37,8 @@ class ShopProductSearchResultSuggestionViewHolder(
         private const val DEFAULT_FIRST_INDEX = 0
     }
 
-    private val suggestionTextView: Typography? = itemView.findViewById(R.id.suggestion_text)
+    private val viewBinding : ItemShopProductSearchSuggestionViewBinding? by viewBinding()
+    private val suggestionTextView: Typography? = viewBinding?.suggestionText
 
     override fun bind(element: ShopProductSearchResultSuggestionUiModel) {
         suggestionTextView?.text = getClickableSpanText(element.suggestionText, element.queryString)

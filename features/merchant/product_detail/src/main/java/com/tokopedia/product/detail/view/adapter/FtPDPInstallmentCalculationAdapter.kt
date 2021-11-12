@@ -22,6 +22,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
 
     companion object {
         const val DURATION_ANIMATE_INSTALLMENT = 300L
+        private const val ROTATE_ANIMATE_INSTALLMENT = 180f
     }
 
 
@@ -107,7 +108,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
             }
 
             if (item.expandLayout) {
-                vHolder.ivInstallmentToggle.animate().rotation(180f).duration = DURATION_ANIMATE_INSTALLMENT
+                vHolder.ivInstallmentToggle.animate().rotation(ROTATE_ANIMATE_INSTALLMENT).duration = DURATION_ANIMATE_INSTALLMENT
                 vHolder.llInstallmentContainer.show()
             } else {
                 vHolder.ivInstallmentToggle.animate().rotation(0f).duration = DURATION_ANIMATE_INSTALLMENT
@@ -118,7 +119,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
                 item.expandLayout = !item.expandLayout
 
                 if (item.expandLayout) {
-                    vHolder.ivInstallmentToggle.animate().rotation(180f).duration = DURATION_ANIMATE_INSTALLMENT
+                    vHolder.ivInstallmentToggle.animate().rotation(ROTATE_ANIMATE_INSTALLMENT).duration = DURATION_ANIMATE_INSTALLMENT
                     vHolder.llInstallmentContainer.show()
                 } else {
                     vHolder.ivInstallmentToggle.animate().rotation(0f).duration = DURATION_ANIMATE_INSTALLMENT

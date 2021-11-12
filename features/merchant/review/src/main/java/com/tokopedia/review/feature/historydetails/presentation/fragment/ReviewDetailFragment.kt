@@ -497,16 +497,12 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     private fun goToEditForm() {
         with((viewModel.reviewDetails.value as Success).data) {
             val uri = UriUtil.buildUri(
-                ApplinkConstInternalMarketplace.CREATE_REVIEW,
+                ApplinkConstInternalMarketplace.EDIT_REVIEW,
                 reputation.reputationId,
                 product.productId
             )
             val intent = RouteManager.getIntent(
                 context, Uri.parse(uri).buildUpon()
-                    .appendQueryParameter(
-                        ReviewConstants.PARAM_IS_EDIT_MODE,
-                        ReviewConstants.EDIT_MODE.toString()
-                    )
                     .appendQueryParameter(ReviewConstants.PARAM_FEEDBACK_ID, viewModel.feedbackId)
                     .build().toString()
             )

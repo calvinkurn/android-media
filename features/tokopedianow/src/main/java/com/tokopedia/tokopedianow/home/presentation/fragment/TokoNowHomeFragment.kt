@@ -58,6 +58,7 @@ import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
@@ -92,11 +93,13 @@ import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_LAYOUT
 import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.LOAD_LAYOUT_ERROR
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
@@ -179,7 +182,8 @@ class TokoNowHomeFragment: Fragment(),
                 tokoNowProductCardListener = this,
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
-                serverErrorListener = this
+                serverErrorListener = this,
+                tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener()
             ),
             differ = HomeListDiffer()
         )
@@ -231,11 +235,6 @@ class TokoNowHomeFragment: Fragment(),
             isShowFirstInstallSearch = it.getBoolean(REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
             durationAutoTransition = it.getLong(REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
         }
-        TokoNowCommonAnalytics.onOpenScreen(
-            isLoggedInStatus = userSession.isLoggedIn,
-            screenName = HOMEPAGE_TOKONOW,
-            userId = userSession.userId
-        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -485,13 +484,14 @@ class TokoNowHomeFragment: Fragment(),
         isFirstImpressionOnBanner = if (!isFirstImpressionOnBanner) {
             true
         } else {
-            analytics.onImpressBannerPromo(userSession.userId, channelModel)
+            analytics.onImpressBannerPromo(userSession.userId, channelModel, localCacheModel?.warehouse_id.toLongOrZero().toString())
             false
         }
     }
 
     override fun onShareBtnSharingEducationClicked() {
         shareClicked(shareHomeTokonow())
+        analytics.onClickShareToOthers(userSession.userId)
     }
 
     override fun onCloseBtnSharingEducationClicked(id: String) {
@@ -549,6 +549,7 @@ class TokoNowHomeFragment: Fragment(),
                 }
                 else -> {
                     showLayout()
+                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
                 }
             }
         }
@@ -603,6 +604,7 @@ class TokoNowHomeFragment: Fragment(),
         if (localCacheModel?.city_id?.isBlank() == true && localCacheModel?.district_id?.isBlank() == true) {
             showEmptyState(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE)
         } else {
+            viewModelTokoNow.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
             showEmptyState(EMPTY_STATE_NO_ADDRESS)
         }
     }
@@ -734,6 +736,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun onClickShareButton() {
         shareClicked(shareHomeTokonow())
+        analytics.onClickShareButton()
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -904,6 +907,13 @@ class TokoNowHomeFragment: Fragment(),
                     it.data
                 )
             }
+        }
+
+        observe(viewModelTokoNow.openScreenTracker) { screenName ->
+            TokoNowCommonAnalytics.onOpenScreen(
+                isLoggedInStatus = userSession.isLoggedIn,
+                screenName = screenName
+            )
         }
     }
 
@@ -1348,6 +1358,18 @@ class TokoNowHomeFragment: Fragment(),
                 resources.getString(R.string.tokopedianow_home_share_title),
                 resources.getString(R.string.tokopedianow_home_share_desc),
         )
+    }
+
+    private fun createTokoNowEmptyStateOocListener(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+        return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+            override fun onRefreshLayoutPage() {
+                onRefreshLayout()
+            }
+
+            override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
+
+            override fun onGetEventCategory(): String = EVENT_CATEGORY_HOME_PAGE
+        }
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
