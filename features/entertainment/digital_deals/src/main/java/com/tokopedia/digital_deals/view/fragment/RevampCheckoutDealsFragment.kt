@@ -34,6 +34,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_checkout_deal.*
 import javax.inject.Inject
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 
 class RevampCheckoutDealsFragment : BaseDaggerFragment() {
 
@@ -41,6 +44,9 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
     private var verifyData: EventVerifyResponse = EventVerifyResponse()
     private var itemMap: ItemMapResponse = ItemMapResponse()
     private var quantity = 1
+    private var promoCode = ""
+    private var voucherCode = ""
+    private var couponCode = ""
     private var promoApplied = false
 
     private lateinit var fragmentCallbacks: DealFragmentCallbacks
@@ -100,6 +106,31 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == LOYALTY_ACTIVITY_REQUEST_CODE) {
+            hideProgressBar()
+            when (resultCode){
+                VOUCHER_RESULT_CODE -> {
+                    val code = data?.extras?.getString(VOUCHER_CODE) ?: ""
+                    val message = data?.extras?.getString(VOUCHER_MESSAGE) ?: ""
+                    val amount = data?.extras?.getInt(VOUCHER_DISCOUNT_AMOUNT) ?: 0
+                    val isCancel = data?.extras?.getBoolean(IS_CANCEL) ?: false
+                    voucherCode = code
+                    promoCode = code
+                    showPromoSuccess(code, message, amount.toLong(), isCancel)
+                }
+
+                COUPON_RESULT_CODE -> {
+                    val code = data?.extras?.getString(COUPON_CODE) ?: ""
+                    val message = data?.extras?.getString(COUPON_MESSAGE) ?: ""
+                    val amount = data?.extras?.getInt(COUPON_DISCOUNT_AMOUNT) ?: 0
+                    val isCancel = data?.extras?.getBoolean(IS_CANCEL) ?: false
+                    couponCode = code
+                    promoCode = code
+                    showPromoSuccess(code, message, amount.toLong(), isCancel)
+                }
+            }
+        }
     }
 
     private fun observeData() {
@@ -220,8 +251,34 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
             fragmentCallbacks.replaceFragment(dealsDetail.outlets, 0)
         }
 
-        ticker_promocode?.gone()
-        //TODO PROMO TRACKER
+        ticker_promocode?.apply {
+            enableView()
+            actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
+                override fun onClickUsePromo() {
+                    goToPromoListDealsActivity()
+                }
+
+                override fun onResetPromoDiscount() {
+                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    promoApplied = false
+                    promoCode = ""
+                }
+
+                override fun onClickDetailPromo() {
+                    if (!couponCode.isNullOrEmpty()) {
+                        goToPromoDetailDeals()
+                    } else if (!voucherCode.isNullOrEmpty()) {
+                        goToPromoListDealsWithVoucher()
+                    }
+                }
+
+                override fun onDisablePromoDiscount() {
+                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    promoApplied = false
+                    promoCode = ""
+                }
+            }
+        }
 
         ll_select_payment_method?.setOnClickListener {
             dealsAnalytics.sendEcommercePayment(dealsDetail.categoryId, dealsDetail.id, verifyData.metadata.quantity, dealsDetail.salesPrice,
@@ -235,10 +292,95 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupPromoTicker(state: TickerCheckoutView.State, title: String, desc: String){
+        if (state == TickerCheckoutView.State.EMPTY){
+            ticker_promocode.title = title
+            ticker_promocode.state = TickerPromoStackingCheckoutView.State.EMPTY
+        } else if (state == TickerCheckoutView.State.ACTIVE){
+            ticker_promocode.title = title
+            ticker_promocode.state = TickerPromoStackingCheckoutView.State.ACTIVE
+            ticker_promocode.desc = desc
+        }
+    }
+
+    private fun showPromoSuccess(title: String, message: String, discountAmount: Long, isCancel: Boolean){
+        if (isCancel){
+            promoCode = ""
+            ticker_promocode.state = TickerPromoStackingCheckoutView.State.EMPTY
+            promoApplied = false
+            ticker_promocode.title = ""
+            ticker_promocode.desc = ""
+        } else {
+            ticker_promocode.state = TickerPromoStackingCheckoutView.State.ACTIVE
+            ticker_promocode.title = title
+            ticker_promocode.desc = message
+            promoApplied = true
+        }
+
+        if (discountAmount != 0L){
+            cl_promo.show()
+            tv_promo_discount.text = Utils.convertToCurrencyString(discountAmount)
+        } else {
+            cl_promo.gone()
+        }
+
+        updateAmount(discountAmount)
+    }
+
+    private fun goToPromoListDealsActivity(){
+        //val requestBody = viewModel.verifytoCartItemMapper(itemMap, dealsDetail, promoCode)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS)
+        //intent.putExtra(EXTRA_CHECKOUTDATA, requestBody.toString())
+        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId)
+        intent.putExtra(EXTRA_PRODUCTID, itemMap.productId)
+        startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
+    }
+
+    private fun goToPromoListDealsWithVoucher(){
+        //val requestBody = viewModel.verifytoCartItemMapper(itemMap, dealsDetail, promoCode)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS)
+        //intent.putExtra(EXTRA_CHECKOUTDATA, requestBody.toString())
+        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId)
+        intent.putExtra(EXTRA_PRODUCTID, itemMap.productId)
+        intent.putExtra(EXTRA_PROMO_CODE, voucherCode)
+        startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
+    }
+
+    private fun goToPromoDetailDeals(){
+        //val requestBody = viewModel.verifytoCartItemMapper(itemMap, dealsDetail, promoCode)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_DETAIL_DEALS)
+        //intent.putExtra(EXTRA_CHECKOUTDATA, requestBody.toString())
+        intent.putExtra(COUPON_EXTRA_IS_USE, true)
+        intent.putExtra(EXTRA_KUPON_CODE, couponCode)
+        startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
+    }
+
+    private fun updateAmount(discountAmount: Long){
+        tv_total_amount?.text = Utils.convertToCurrencyString((itemMap.price * itemMap.quantity + itemMap.commission - discountAmount).toLong())
+    }
+
     companion object {
 
         const val ORDER_LIST_DEALS = "/order-list"
         const val SCREEN_NAME = "/digital/deals/checkout"
+
+        const val EXTRA_CHECKOUTDATA = "checkoutdata"
+        const val EXTRA_PRODUCTID = "EXTRA_PRODUCTID"
+        const val EXTRA_CATEGORYID = "EXTRA_CATEGORYID"
+        const val VOUCHER_CODE = "voucher_code"
+        const val COUPON_CODE = "coupon_code"
+        const val IS_CANCEL = "IS_CANCEL"
+        const val VOUCHER_DISCOUNT_AMOUNT = "VOUCHER_DISCOUNT_AMOUNT"
+        const val COUPON_DISCOUNT_AMOUNT = "COUPON_DISCOUNT_AMOUNT"
+        const val VOUCHER_MESSAGE = "voucher_message"
+        const val COUPON_MESSAGE = "coupon_message"
+        const val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
+        const val COUPON_EXTRA_IS_USE = "EXTRA_IS_USE"
+        const val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
+
+        const val LOYALTY_ACTIVITY_REQUEST_CODE = 12345
+        const val VOUCHER_RESULT_CODE = 12
+        const val COUPON_RESULT_CODE = 15
 
         fun createInstance(bundle: Bundle): RevampCheckoutDealsFragment {
             return RevampCheckoutDealsFragment().also {
