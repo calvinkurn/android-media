@@ -64,7 +64,6 @@ class OfficialStoreLegoBannerComponentCallback(private val dcEventHandler: Dynam
       }
 
     override fun onChannelImpressionTwoImage(channelModel: ChannelModel, parentPosition: Int) {
-        dcEventHandler.goToApplink(channelModel.channelHeader.applink)
         dcEventHandler.getTrackingObject()?.trackingQueueObj?.putEETracking(OSLegoBannerTracking.getLegoBannerTwoImageImpression(channel = channelModel, position = parentPosition, userId = dcEventHandler.getUserId()) as HashMap<String, Any>)
     }
 
@@ -84,7 +83,6 @@ class OfficialStoreLegoBannerComponentCallback(private val dcEventHandler: Dynam
     }
 
     override fun onChannelImpressionFourImage(channelModel: ChannelModel, parentPosition: Int) {
-        dcEventHandler.goToApplink(channelModel.channelHeader.applink)
         dcEventHandler.getTrackingObject()?.trackingQueueObj?.putEETracking(OSLegoBannerTracking.getLegoBannerFourImageImpression(channel = channelModel, position = parentPosition, userId = dcEventHandler.getUserId()) as HashMap<String, Any>)
     }
 
