@@ -286,8 +286,15 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
                         val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE) as Throwable
-                        if (!TextUtils.isEmpty(throwable.message)) {
-                            showErrorCartDigital(ErrorHandler.getErrorMessage(context, throwable))
+                        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                            requireContext(),
+                            throwable,
+                            ErrorHandler.Builder()
+                                .className(this::class.java.simpleName)
+                                .build()
+                        )
+                        if (!TextUtils.isEmpty(errorMessage)) {
+                            showErrorCartDigital(errorMessage.orEmpty())
                         }
                     }
                 } else if (requestCode == REQUEST_CODE_LOGIN) {
@@ -316,10 +323,18 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     private fun onErrorCustomData() {
         val errorData = (viewModel.catalogPrefixSelect.value as Fail).throwable
+        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+            requireContext(),
+            errorData,
+            ErrorHandler.Builder()
+                .className(this::class.java.simpleName)
+                .build()
+        )
+
         view?.run {
             Toaster.build(
                 this,
-                ErrorHandler.getErrorMessage(context, errorData),
+                errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR
             ).show()
@@ -432,9 +447,16 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
             Toaster.build(
                 v,
-                ErrorHandler.getErrorMessage(requireContext(), error),
+                errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 getString(com.tokopedia.resources.common.R.string.general_label_ok)
@@ -444,9 +466,16 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
             Toaster.build(
                 v,
-                ErrorHandler.getErrorMessage(requireContext(), error),
+                errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 getString(com.tokopedia.resources.common.R.string.general_label_ok)
@@ -456,8 +485,14 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     override fun showErrorMessage(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
-                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
