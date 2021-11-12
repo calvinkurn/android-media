@@ -10,6 +10,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageViolationBinding
 import com.tokopedia.product.manage.feature.violation.di.DaggerViolationReasonComponent
@@ -19,6 +22,7 @@ import com.tokopedia.product.manage.feature.violation.view.adapter.ViolationReas
 import com.tokopedia.product.manage.feature.violation.view.uimodel.ViolationReasonUiModel
 import com.tokopedia.product.manage.feature.violation.view.viewmodel.ViolationReasonViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -78,7 +82,7 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
     }
 
     private fun setupView() {
-        // TODO: Setup actual view, maybe add loading
+        setLoadingView()
     }
 
     private fun observeViolationReason() {
@@ -88,16 +92,23 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
                     setSuccessView(result.data)
                 }
                 is Fail -> {
-                    setErrorView()
+                    setErrorView(result.throwable)
                 }
             }
         }
         viewModel.getViolationReason()
     }
 
+    private fun setLoadingView() {
+        binding?.productManageViolationLoadingGroup?.show()
+        binding?.productManageViolationSuccessGroup?.gone()
+    }
+
     private fun setSuccessView(uiModel: ViolationReasonUiModel) {
         setTitle(uiModel.title)
         binding?.run {
+            productManageViolationLoadingGroup.gone()
+            productManageViolationSuccessGroup.show()
             tvProductManageViolationTitle.text = uiModel.descTitle
             tvProductManageViolationReason.text = uiModel.descReason
             tvProductManageViolationStepTitle.text = uiModel.stepTitle
@@ -122,8 +133,17 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
         }
     }
 
-    private fun setErrorView() {
-        // TODO: Log errors maybe
+    private fun setErrorView(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        binding?.root?.let {
+            Toaster.build(
+                    it,
+                    type = Toaster.TYPE_ERROR,
+                    text = errorMessage,
+                    duration = Toaster.LENGTH_LONG,
+            ).show()
+        }
+        dismiss()
     }
 
     private fun goToUrl(url: String) {
