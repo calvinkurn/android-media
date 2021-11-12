@@ -1292,7 +1292,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 return sendScreen()
             }
         }
-        executeWeaveCoRoutineWithFirebase(sendScrWeave, RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, context?.applicationContext)
+        executeWeaveCoRoutineWithFirebase(sendScrWeave, RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, context?.applicationContext, true)
     }
 
     override fun onPause() {
