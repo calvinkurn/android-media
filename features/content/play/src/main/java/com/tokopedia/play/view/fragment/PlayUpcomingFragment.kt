@@ -48,11 +48,12 @@ class PlayUpcomingFragment @Inject constructor(
     private val analytic: PlayAnalytic
 ): TkpdBaseV4Fragment(),
     ToolbarViewComponent.Listener,
-    UpcomingActionButtonViewComponent.Listener
+    UpcomingActionButtonViewComponent.Listener,
+    UpcomingTimerViewComponent.Listener,
 {
 
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
-    private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer) }
+    private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
 
     private lateinit var ivUpcomingCover: AppCompatImageView
@@ -246,6 +247,10 @@ class PlayUpcomingFragment @Inject constructor(
         toolbarView.setIsShareable(isShareable)
 
         toolbarView.showCart(cartState.shouldShow)
+    }
+
+    override fun onTimerFinish(view: UpcomingTimerViewComponent) {
+        playViewModel.submitAction(UpcomingTimerFinish)
     }
 
     override fun onClickActionButton() {

@@ -13,7 +13,8 @@ import java.util.*
  */
 class UpcomingTimerViewComponent(
     container: ViewGroup,
-    @IdRes idRes: Int
+    @IdRes idRes: Int,
+    private val listener: Listener,
 ): ViewComponent(container, idRes) {
 
     private val timerUpcoming = findViewById<TimerUnifyHighlight>(R.id.timer_upcoming)
@@ -24,10 +25,16 @@ class UpcomingTimerViewComponent(
             if(target.timeInMillis > Calendar.getInstance().timeInMillis)
                 timerUpcoming.targetDate = target
         } ?: hide()
+
+        timerUpcoming.onFinish = { listener.onTimerFinish(this) }
     }
 
     fun stopTimer() {
         timerUpcoming.pause()
         hide()
+    }
+
+    interface Listener {
+        fun onTimerFinish(view: UpcomingTimerViewComponent)
     }
 }

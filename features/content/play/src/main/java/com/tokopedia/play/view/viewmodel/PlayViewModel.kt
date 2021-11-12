@@ -397,6 +397,10 @@ class PlayViewModel @Inject constructor(
             return (castState.currentState != PlayCastState.NO_DEVICE_AVAILABLE && !videoPlayer.isYouTube
                     && remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_CAST, true)) || castState.currentState == PlayCastState.CONNECTED
         }
+    val refreshWaitingDuration: Long
+        get() {
+            return _observableStatusInfo.value?.waitingDuration ?: 5000
+        }
 
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
@@ -738,6 +742,7 @@ class PlayViewModel @Inject constructor(
             ImpressUpcomingChannel -> handleImpressUpcomingChannel()
             ClickRemindMeUpcomingChannel -> handleRemindMeUpcomingChannel(userClick = true)
             ClickWatchNowUpcomingChannel -> handleWatchNowUpcomingChannel()
+            UpcomingTimerFinish -> handleUpcomingTimerFinish()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
@@ -1792,6 +1797,17 @@ class PlayViewModel @Inject constructor(
     private fun handleWatchNowUpcomingChannel() {
         playAnalytic.clickWatchNow(channelId)
         stopSSE()
+    }
+
+    private fun handleUpcomingTimerFinish() {
+        CoroutineScope(dispatchers.computation).launch {
+            delay(refreshWaitingDuration)
+
+            val isAlreadyLive = _observableUpcomingInfo.value?.isAlreadyLive ?: false
+            if(!isAlreadyLive) {
+                // TODO: Send event to PlayUpcomingFragment
+            }
+        }
     }
 
     private fun handleOpenPageResult(isSuccess: Boolean, requestCode: Int) {
