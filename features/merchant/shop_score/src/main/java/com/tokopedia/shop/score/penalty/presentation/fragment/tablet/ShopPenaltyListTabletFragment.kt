@@ -10,10 +10,8 @@ class ShopPenaltyListTabletFragment : ShopPenaltyPageFragment() {
     private var penaltyListListener: PenaltyListListener? = null
 
     override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel, position: Int) {
-        context?.let {
-            penaltyPageAdapter.updateSelectedBackground(position)
-            penaltyListListener?.onItemPenaltyClicked(itemPenaltyUiModel)
-        } ?: super.onItemPenaltyClick(itemPenaltyUiModel, position)
+        penaltyPageAdapter.updateSelectedBackground(position)
+        penaltyListListener?.onItemPenaltyClicked(itemPenaltyUiModel)
     }
 
     override fun onSwipeRefresh() {
@@ -21,9 +19,12 @@ class ShopPenaltyListTabletFragment : ShopPenaltyPageFragment() {
         penaltyListListener?.closePenaltyDetail()
     }
 
-    override fun onDateClick() {
+    override fun onSaveCalendarClicked(
+        startDate: Pair<String, String>,
+        endDate: Pair<String, String>
+    ) {
         penaltyListListener?.closePenaltyDetail()
-        super.onDateClick()
+        super.onSaveCalendarClicked(startDate, endDate)
     }
 
     override fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>) {

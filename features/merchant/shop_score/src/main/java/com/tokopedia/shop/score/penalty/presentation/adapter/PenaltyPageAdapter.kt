@@ -78,7 +78,7 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
 
     fun updateSelectedBackground(position: Int) {
         val itemPenaltyIndex = visitables.indexOfFirst { it is ItemPenaltyUiModel }
-        visitables.filterIsInstance<ItemPenaltyUiModel>().forEachIndexed { index, item ->
+        visitables.filterIsInstance<ItemPenaltyUiModel>().mapIndexed { index, item ->
             if (position == index) {
                 item.isSelected = !item.isSelected
             } else {

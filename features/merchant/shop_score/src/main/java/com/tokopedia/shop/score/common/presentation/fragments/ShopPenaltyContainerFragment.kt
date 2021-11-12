@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
@@ -63,17 +65,13 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
 
     override fun closePenaltyDetail() {
         shopPenaltyDetailFragment?.dismissBottomSheet()
-        binding?.run {
-            fragmentPenaltyDetail.gone()
-            ivPenaltyDetailWelcomeIllustration.show()
-            tvPenaltyDetailWelcome.show()
-        }
+        showFirstStatePenaltyDetail()
     }
 
     private fun attachFragments() {
         initiateListFragment()
         attachPenaltyListFragment()
-        showPenaltyDetail()
+        showFirstStatePenaltyDetail()
     }
 
     private fun initiateListFragment() {
@@ -90,11 +88,7 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
     private fun initiateDetailFragment(
         keyCacheManagerId: String
     ): ShopPenaltyDetailFragment {
-        val penaltyDetailFragment = this.shopPenaltyDetailFragment
-            ?: childFragmentManager.findFragmentByTag(
-                ShopPenaltyDetailFragment::class.java.simpleName
-            ) as? ShopPenaltyDetailFragment
-            ?: ShopPenaltyDetailFragment.newInstance(keyCacheManagerId)
+        val penaltyDetailFragment = ShopPenaltyDetailFragment.newInstance(keyCacheManagerId)
         this.shopPenaltyDetailFragment = penaltyDetailFragment
         return penaltyDetailFragment
     }
@@ -110,22 +104,34 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
 
     private fun setupViews() {
         binding?.ivPenaltyDetailWelcomeIllustration?.loadImage(
-            ShopScoreConstant.EMPTY_STATE_PENALTY_URL)
+            ShopScoreConstant.EMPTY_STATE_PENALTY_URL
+        )
     }
 
     private fun attachPenaltyDetailFragment(keyCacheManagerId: String) {
         binding?.run {
-            if (shopPenaltyDetailFragment == null) {
-                if (!isAdded) return
-                val detailFragment = initiateDetailFragment(keyCacheManagerId)
-                detailFragment.showBackButton(false)
-                childFragmentManager.beginTransaction().replace(
-                    R.id.fragmentPenaltyDetail,
-                    detailFragment,
-                    detailFragment::class.java.simpleName
-                ).commitAllowingStateLoss()
-            }
+            val detailFragment = initiateDetailFragment(keyCacheManagerId)
+            childFragmentManager.beginTransaction().replace(
+                R.id.fragmentPenaltyDetail,
+                detailFragment,
+                detailFragment::class.java.simpleName)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commitAllowingStateLoss()
             showPenaltyDetail()
+        }
+    }
+
+    private fun showFirstStatePenaltyDetail() {
+        binding?.run {
+            context?.let {
+                fragmentPenaltyDetail.setBackgroundColor(
+                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+                )
+            }
+            fragmentPenaltyDetail.hide()
+            ivPenaltyDetailWelcomeIllustration.show()
+            tvPenaltyDetailWelcome.show()
         }
     }
 
@@ -133,7 +139,7 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
         binding?.run {
             context?.let {
                 fragmentPenaltyDetail.setBackgroundColor(
-                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
                 )
             }
             fragmentPenaltyDetail.show()

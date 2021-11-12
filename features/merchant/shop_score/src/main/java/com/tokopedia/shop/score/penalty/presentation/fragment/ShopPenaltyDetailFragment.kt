@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.transition.MaterialContainerTransform
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.score.R
@@ -48,9 +50,7 @@ open class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.intent?.let {
-            keyCacheManagerId = it.getStringExtra(KEY_CACHE_MANAGE_ID) ?: ""
-        }
+        keyCacheManagerId = arguments?.getString(KEY_CACHE_MANAGE_ID) ?: ""
     }
 
     override fun initInjector() {
@@ -163,17 +163,15 @@ open class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            binding?.penaltyDetailToolbar?.run {
-                setSupportActionBar(this)
-                isShowBackButton = showBackButton()
-            }
-            supportActionBar?.run {
+            binding?.penaltyDetailToolbar?.apply {
                 title = getString(R.string.title_penalty_detail_shop_score)
+                isShowBackButton = !DeviceScreenInfo.isTablet(this@run)
+                setNavigationOnClickListener {
+                    onBackPressed()
+                }
             }
         }
     }
-
-    fun showBackButton(isShowBackButton: Boolean = true) = isShowBackButton
 
     fun dismissBottomSheet() {
         childFragmentManager.fragments.forEach {
