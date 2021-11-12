@@ -400,11 +400,19 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 MessageErrorException(getString(com.tokopedia.common.topupbills.R.string.common_topup_enquiry_grpc_error_msg))
         }
 
+        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+            requireContext(),
+            error,
+            ErrorHandler.Builder()
+                .className(this::class.java.simpleName)
+                .build()
+        )
+
         postpaidClientNumberWidget.setLoadingButtonEnquiry(false)
         view?.run {
             Toaster.build(
                 this,
-                ErrorHandler.getErrorMessage(context, error),
+                errorMessage.orEmpty(),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR
             ).show()

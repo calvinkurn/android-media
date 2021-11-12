@@ -363,9 +363,16 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         emptyStateProductView.show()
         telcoTelcoProductView.hide()
         error?.let {
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
             if (!it.message.isNullOrEmpty()) {
-                Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), error),
-                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(requireView(), errorMessage.orEmpty(), Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR).show()
             }
         }
     }
