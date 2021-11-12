@@ -9,7 +9,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioButtonM
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifycomponents.UnifyButton
 
-class AffiliatePortfolioButtonItemVH(itemView: View, private val addSocialInterface: AddSocialInterface?,
+class AffiliatePortfolioButtonItemVH(itemView: View,
                                      private val portfolioClickInterface: PortfolioClickInterface?)
     : AbstractViewHolder<AffiliatePortfolioButtonModel>(itemView) {
 
@@ -22,19 +22,18 @@ class AffiliatePortfolioButtonItemVH(itemView: View, private val addSocialInterf
     override fun bind(element: AffiliatePortfolioButtonModel?) {
         itemView.findViewById<UnifyButton>(R.id.add_social_media_btn).apply {
             text = element?.buttonData?.text
-            buttonType = element?.buttonData?.buttonType ?: 1
-            buttonVariant = element?.buttonData?.buttonVariant ?: 1
+            buttonType = element?.buttonData?.buttonType ?: UnifyButton.Type.MAIN
+            buttonVariant = element?.buttonData?.buttonVariant ?: UnifyButton.Variant.FILLED
 
-            if (element?.buttonData?.isSaveSocial == true){
+            if(element?.buttonData?.isSaveSocial == true){
                 setOnClickListener {
-                    addSocialInterface?.onSaveSocialButtonClicked()
+                    portfolioClickInterface?.nextButtonClicked()
                 }
             }else {
                 setOnClickListener {
                     portfolioClickInterface?.addSocialMediaButtonClicked()
                 }
             }
-
         }
     }
 }

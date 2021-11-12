@@ -37,6 +37,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.affiliate_promotion_bottom_sheet.*
 import javax.inject.Inject
 
 class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface , AddSocialInterface{
@@ -57,6 +58,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
     private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf()
     private var sheetType = SheetType.LINK_GENERATION
     private var affiliatePromotionBottomSheetInterface : AffiliatePromotionBottomSheetInterface? = null
+    private var selectedIds = arrayListOf<Int>()
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -82,12 +84,15 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         const val ORIGIN_HOME = 2
         const val ORIGIN_PORTFOLIO = 3
 
-        fun newInstance(bottomSheetType : SheetType, bottomSheetInterface : AffiliatePromotionBottomSheetInterface?,   productId : String, productName: String, productImage: String,
+        fun newInstance(bottomSheetType : SheetType, bottomSheetInterface : AffiliatePromotionBottomSheetInterface?,
+                        idArray : ArrayList<Int>?,
+                        productId : String, productName: String, productImage: String,
                         productUrl: String, productIdentifier: String, origin : Int = ORIGIN_PROMOSIKAN,
                         isLinkGenerationEnabled :Boolean = true): AffiliatePromotionBottomSheet {
             return AffiliatePromotionBottomSheet().apply {
                 sheetType = bottomSheetType
                 affiliatePromotionBottomSheetInterface = bottomSheetInterface
+                selectedIds = idArray ?: arrayListOf()
                 arguments = Bundle().apply {
                     putString(KEY_PRODUCT_ID,productId)
                     putString(KEY_PRODUCT_NAME, productName)
@@ -157,18 +162,42 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
 
     private fun addDataInRecyclerView() {
         listVisitable = arrayListOf<Visitable<AffiliateAdapterTypeFactory>>(
-            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",3,sheetType,false,isChecked = true, isLinkGenerationEnabled),
-            AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",9,sheetType,false,isChecked = true, isLinkGenerationEnabled),
-            AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",13,sheetType,false,isChecked = true, isLinkGenerationEnabled),
-            AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",1,sheetType,false,isChecked = false, isLinkGenerationEnabled),
-            AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10,sheetType,false,isChecked = false, isLinkGenerationEnabled),
-            AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11,sheetType,false,isChecked = false, isLinkGenerationEnabled),
-            AffiliateShareModel("WhatsApp", IconUnify.WHATSAPP,"whatsapp",12,sheetType,false,isChecked = false, isLinkGenerationEnabled),
-            AffiliateShareModel("Line", IconUnify.LINE,"line",4,sheetType,false, isChecked = false,isLinkGenerationEnabled),
-            AffiliateShareModel("Lainnya",null,"others", 0,sheetType,false, isChecked = false,isLinkGenerationEnabled))
+            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",3,sheetType,
+                    "Contoh: instagram.com/tokopedia",false,isChecked = true, isLinkGenerationEnabled),
+            AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",9,sheetType,
+                    "Contoh: tiktok.com/tokopedia",false,isChecked = true, isLinkGenerationEnabled),
+            AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",13,sheetType,
+                    "Contoh: youtube.com/tokopedia",false,isChecked = true, isLinkGenerationEnabled),
+            AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",1,sheetType,
+                    "Contoh: facebook.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10,sheetType,
+                    "Contoh: twitter.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11,sheetType,
+                    "Contoh: tokopedia.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("Lainnya",null,"others", 0,sheetType,
+                    "Contoh: yourwebiste.com",false, isChecked = false,isLinkGenerationEnabled))
 
         if(sheetType == SheetType.ADD_SOCIAL){
-            (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Simpan", UnifyButton.Type.MAIN, UnifyButton.Variant.FILLED,true)))
+            contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {
+                show()
+                setOnClickListener {
+                    onSaveSocialButtonClicked()
+                }
+            }
+            setSelectedCheckBox()
+        }else {
+            (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(AffiliateShareModel("WhatsApp", IconUnify.WHATSAPP,"whatsapp",12,sheetType,
+                    "",false,isChecked = false, isLinkGenerationEnabled))
+            (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(AffiliateShareModel("Line", IconUnify.LINE,"line",4,sheetType,
+                    "",false, isChecked = false,isLinkGenerationEnabled))
+        }
+    }
+
+    private fun setSelectedCheckBox(){
+        listVisitable.forEach {
+            if(it is AffiliateShareModel && selectedIds.contains(it.id)){
+                it.isChecked = true
+            }
         }
     }
 
@@ -262,33 +291,45 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         affiliatePromotionBSViewModel.affiliateGenerateLink(id, url, identifier)
     }
 
-    override fun onSaveSocialButtonClicked() {
-        val selectedSocialList = arrayListOf<AffiliateShareModel>()
+    private fun onSaveSocialButtonClicked() {
+        val checkedSocialList = arrayListOf<AffiliateShareModel>()
         for (vistitable in listVisitable){
-            if(vistitable is AffiliateShareModel){
-                selectedSocialList.add(vistitable)
+            if(vistitable is AffiliateShareModel && vistitable.isChecked){
+                checkedSocialList.add(vistitable)
             }
         }
-        affiliatePromotionBottomSheetInterface?.onButtonClick(selectedSocialList)
+        affiliatePromotionBottomSheetInterface?.onButtonClick(checkedSocialList)
+        dismiss()
     }
 
 
     override fun onSocialChecked(position: Int, isChecked : Boolean) {
         (listVisitable[position] as AffiliateShareModel).isChecked = isChecked
-        checkForAtleastOneSelected()
+        checkForAtLeastOneSelected()
     }
 
-    private fun checkForAtleastOneSelected() {
+    private fun checkForAtLeastOneSelected() {
         var count = 0
         for (vistitable in listVisitable){
             if((vistitable is AffiliateShareModel) && vistitable.isChecked){ count += 1 }
         }
-        if(count == 0) contentView?.findViewById<Typography>(R.id.error_message)?.show()
-        else contentView?.findViewById<Typography>(R.id.error_message)?.hide()
+        if(count == 0) {
+            contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {
+                buttonVariant = UnifyButton.Variant.GHOST
+                buttonType = UnifyButton.Type.ALTERNATE
+            }
+            contentView?.findViewById<Typography>(R.id.error_message)?.show()
+        }
+        else {
+            contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {
+                buttonVariant = UnifyButton.Variant.FILLED
+                buttonType = UnifyButton.Type.MAIN
+            }
+            contentView?.findViewById<Typography>(R.id.error_message)?.hide()
+        }
     }
-
 }
 
 interface AffiliatePromotionBottomSheetInterface {
-    fun onButtonClick(arrayList: ArrayList<AffiliateShareModel>)
+    fun onButtonClick(checkedSocialList: List<AffiliateShareModel>)
 }

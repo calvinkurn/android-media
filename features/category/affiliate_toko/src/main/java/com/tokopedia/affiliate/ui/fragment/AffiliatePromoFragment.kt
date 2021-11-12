@@ -261,7 +261,7 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
 
     override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String) {
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
-                null,productId, productName, productImage, productUrl,
+                null,null,productId, productName, productImage, productUrl,
                 productIdentifier, AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")
     }
 

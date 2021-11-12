@@ -37,6 +37,7 @@ class AffiliateShareItemViewHolder(itemView: View, private val shareButtonInterf
             }
         }else {
             itemView.share_button.run {
+                show()
                 isLoading = element?.buttonLoad == true
                 if (element?.isLinkGenerationEnabled == true){
                     val iconCopyGreen = getIconUnifyDrawable(itemView.context, IconUnify.COPY, MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))

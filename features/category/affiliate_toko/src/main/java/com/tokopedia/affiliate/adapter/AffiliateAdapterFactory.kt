@@ -25,7 +25,7 @@ class AffiliateAdapterFactory(
             AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
             AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent,onFocusChangeInterface)
             AffiliateHeaderItemVH.LAYOUT -> AffiliateHeaderItemVH(parent)
-            AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent,addSocialInterface,portfolioClickInterface)
+            AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent,portfolioClickInterface)
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
             AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
             AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)

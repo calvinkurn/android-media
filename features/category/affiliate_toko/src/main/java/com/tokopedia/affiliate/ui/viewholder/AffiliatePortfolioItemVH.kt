@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.ui.viewholder
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import android.webkit.URLUtil.isValidUrl
 import androidx.annotation.LayoutRes
@@ -11,7 +12,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlMode
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifycomponents.TextFieldUnify2
 
-class AffiliatePortfolioItemVH(itemView: View,private val onFocusChangeInterface: PortfolioUrlTextUpdateInterface?)
+class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdateInterface: PortfolioUrlTextUpdateInterface?)
     : AbstractViewHolder<AffiliatePortfolioUrlModel>(itemView) {
 
     companion object {
@@ -29,7 +30,7 @@ class AffiliatePortfolioItemVH(itemView: View,private val onFocusChangeInterface
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                onFocusChangeInterface?.onUrlUpdate(adapterPosition,
+                portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
                     s.toString())
             }
 
@@ -37,22 +38,38 @@ class AffiliatePortfolioItemVH(itemView: View,private val onFocusChangeInterface
             }
 
         })
-        urlEtView.addOnFocusChangeListener={_, hasFocus->
-            if(!hasFocus){
-                if(isValidUrl(urlEtView.getEditableValue().toString())) {
-                    onFocusChangeInterface?.onUrlSuccess(adapterPosition)
+
+        urlEtView.isFocusable = element?.portfolioItm?.isFocus ?: false
+
+        urlEtView.setOnKeyListener(object  : View.OnKeyListener{
+            override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                if ((event?.action == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER))
+                {
+                    portfolioUrlTextUpdateInterface?.onNextKeyPressed(adapterPosition,true)
+                    return true
                 }
-                else if (urlEtView.getEditableValue().toString().isNotEmpty()){
-                    onFocusChangeInterface?.onError(adapterPosition)
-                }
+                return false
             }
-        }
+        })
+
+
+//        urlEtView.addOnFocusChangeListener={_, hasFocus->
+//            if(!hasFocus){
+//                if(isValidUrl(urlEtView.getEditableValue().toString())) {
+//                    portfolioUrlTextUpdateInterface?.onUrlSuccess(adapterPosition)
+//                }
+//                else if (urlEtView.getEditableValue().toString().isNotEmpty()){
+//                    portfolioUrlTextUpdateInterface?.onError(adapterPosition)
+//                }
+//            }
+//        }
     }
 
     private fun setState(element: AffiliatePortfolioUrlModel?) {
         urlEtView.isInputError = element?.portfolioItm?.isError==true
         if(element?.portfolioItm?.isError==true) {
-            element?.portfolioItm?.errorContent?.let { message ->
+            element.portfolioItm.errorContent?.let { message ->
                 urlEtView.setMessage(message)
             }
         }

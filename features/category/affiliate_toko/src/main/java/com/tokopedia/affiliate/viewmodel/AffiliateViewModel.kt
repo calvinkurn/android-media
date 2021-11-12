@@ -15,15 +15,18 @@ class AffiliateViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
+    private var errorMessage = MutableLiveData<Throwable>()
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
             validateUserdata.value = affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
         }, onError = {
             it.printStackTrace()
+            errorMessage.value = it
         })
     }
 
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
+    fun getErrorMessage(): LiveData<Throwable> = errorMessage
 
 }
