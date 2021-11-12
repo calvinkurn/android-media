@@ -275,26 +275,28 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun showToastSuccess(message: String) {
         activity?.run {
-            Toaster.make(findViewById(android.R.id.content), message)
+            view?.let { Toaster.make(it, message) }
         }
     }
 
     private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
         activity?.run {
-            ctaAction?.let { ctaClickListener ->
-                Toaster.build(findViewById(android.R.id.content),
+            view?.let {
+                ctaAction?.let { ctaClickListener ->
+                    Toaster.build(it,
+                            message,
+                            Snackbar.LENGTH_LONG,
+                            Toaster.TYPE_NORMAL,
+                            ctaText,
+                            ctaClickListener
+                    ).show()
+                } ?: Toaster.build(it,
                         message,
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_NORMAL,
-                        ctaText,
-                        ctaClickListener
+                        ctaText
                 ).show()
-            } ?: Toaster.build(findViewById(android.R.id.content),
-                    message,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    ctaText
-            ).show()
+            }
         }
     }
 
@@ -310,6 +312,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.getProductListData(
                 shopId,
                 START_PAGE,
+                ShopUtil.getProductPerPage(context),
                 selectedEtalaseId,
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
@@ -852,7 +855,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
         showLoading()
         initialProductListData?.let{
-            viewModel.setInitialProductList(shopId, it)
+            viewModel.setInitialProductList(shopId, ShopUtil.getProductPerPage(context), it)
         }
         viewModel.getShopFilterData(shopId)
         isOnViewCreated = false
@@ -894,11 +897,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun showSnackBarClose(stringToShow: String) {
         activity?.let {
-            val snackbar = Snackbar.make(it.findViewById(android.R.id.content), stringToShow,
-                    Snackbar.LENGTH_LONG)
-            snackbar.setAction(requireActivity().getString(R.string.label_close)) { snackbar.dismiss() }
-            snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
-            snackbar.show()
+            view?.let { view ->
+                val snackbar = Snackbar.make(view, stringToShow,
+                        Snackbar.LENGTH_LONG)
+                snackbar.setAction(requireActivity().getString(R.string.label_close)) { snackbar.dismiss() }
+                snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+                snackbar.show()
+            }
         }
     }
 
@@ -929,6 +934,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         viewModel.getProductListData(
                 shopId,
                 page,
+                ShopUtil.getProductPerPage(context),
                 selectedEtalaseId,
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
@@ -1389,6 +1395,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             viewModel.getProductListData(
                     shopId,
                     START_PAGE,
+                    ShopUtil.getProductPerPage(context),
                     etalaseItemDataModel.etalaseId,
                     shopProductFilterParameter ?: ShopProductFilterParameter(),
                     ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
@@ -1559,6 +1566,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel.getFilterResultCount(
                 shopId,
+                ShopUtil.getProductPerPage(context),
                 tempShopProductFilterParameter,
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         )

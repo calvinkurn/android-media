@@ -6,9 +6,8 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUi
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
-import com.tokopedia.shop.score.performance.presentation.model.*
 
-class ShopPerformanceDiffUtilCallback(
+class ShopPenaltyDiffUtilCallback(
     private val oldList: List<Visitable<*>>,
     private val newList: List<Visitable<*>>
 ) : DiffUtil.Callback() {
