@@ -22,7 +22,7 @@ class RechargeOrderDetailTopSectionViewHolder(
             tgRechargeOrderDetailStatus.text = element.textStatus
 
             if (element.tickerData.text.isNotEmpty() or element.tickerData.title.isNotEmpty()) {
-                tickerRechargeOrderDetail.setTextDescription(element.tickerData.text)
+                tickerRechargeOrderDetail.setHtmlDescription(element.tickerData.text)
                 tickerRechargeOrderDetail.show()
             } else {
                 tickerRechargeOrderDetail.hide()
