@@ -805,8 +805,8 @@ open class TopChatRoomPresenter @Inject constructor(
                 dropPercentage = resultProduct.dropPercentage,
                 productFsIsActive = resultProduct.isFreeOngkirActive,
                 productFsImageUrl = resultProduct.imgUrlFreeOngkir,
-                remainingStock = resultProduct.stock
-
+                remainingStock = resultProduct.stock,
+                campaignId = resultProduct.campaignId
             )
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)

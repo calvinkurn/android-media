@@ -568,7 +568,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                     //OCC AB, not a variant & not product campaign
                     if(listener?.isOCCActive() == true
                         && product.doesNotHaveVariant()
-                        && !product.hasDiscount
+                        && !product.isProductCampaign()
                     ) {
                         it.setText(com.tokopedia.chat_common.R.string.action_occ)
                     } else {

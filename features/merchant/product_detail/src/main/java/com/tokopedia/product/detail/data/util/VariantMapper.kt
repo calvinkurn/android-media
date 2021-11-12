@@ -4,6 +4,7 @@ import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -60,7 +61,8 @@ object VariantMapper {
             priceBeforeInt = priceBeforeDouble,
             dropPercentage = dropPercentage,
             isActive = isActive,
-            remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1
+            remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1,
+            campaignId = productInfo?.data?.campaign?.campaignID?.toLongOrNull() ?: 0
         )
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)

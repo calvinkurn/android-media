@@ -306,6 +306,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var isPreOrder: Boolean = false
         internal var images: List<String> = emptyList()
         internal var needSync: Boolean = true
+        internal var campaignId: Long = 0
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
             withProductId(product.productId)
@@ -329,6 +330,7 @@ open class ProductAttachmentUiModel protected constructor(
             withWishList(product.productProfile.wishList)
             withImages(product.productProfile.images)
             withRating(product.productProfile.rating)
+            withCampaignId(product.productProfile.campaignId)
             return self()
         }
 
@@ -449,6 +451,11 @@ open class ProductAttachmentUiModel protected constructor(
 
         fun withNeedSync(needSync: Boolean): Builder {
             this.needSync = needSync
+            return self()
+        }
+
+        fun withCampaignId(campaignId: Long): Builder {
+            this.campaignId = campaignId
             return self()
         }
 
