@@ -3,7 +3,6 @@ package com.tokopedia.officialstore.analytics
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.officialstore.analytics.OSMixLeftTracking.FORMAT_4_VALUE_UNDERSCORE
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -28,6 +27,7 @@ object OSLegoBannerTracking: BaseTrackerConst() {
     private const val LEGO_BANNER_6_IMAGE_NAME = "lego banner"
     private const val LEGO_BANNER_6_AUTO_IMAGE_NAME = "lego banner 6 auto"
     private const val PROMOTION_NAME_CLICK = "/ - p%s - dynamic channel mix - banner - %s"
+    private const val FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s"
 
     fun getLegoBannerTwoImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false, userId: String): Map<String, Any> {
         return getLegoBannerImageImpression(channel, position, isToIris, userId, LEGO_BANNER_2_IMAGE_NAME)

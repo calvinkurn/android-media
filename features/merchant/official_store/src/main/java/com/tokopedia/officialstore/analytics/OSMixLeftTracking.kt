@@ -10,7 +10,6 @@ import com.tokopedia.track.interfaces.ContextAnalytics
 
 object OSMixLeftTracking: BaseTrackerConst() {
 
-    const val FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s"
     private val OS_MICROSITE = "os microsite - "
     private val SLASH_OFFICIAL_STORE = "/official-store"
     private val IMPRESSION_BANNER_MIX_LEFT = "impression banner dynamic channel left carousel"
