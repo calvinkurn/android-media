@@ -36,6 +36,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
@@ -82,6 +83,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private var screenShotImagePath: String = ""
 
         private const val DELAY_TIME_MILLISECOND = 500L
+        private const val DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK = 5000L
         private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
         const val CUSTOM_SHARE_SHEET = 1
         const val SCREENSHOT_SHARE_SHEET = 2
@@ -208,6 +210,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var emailImage: ImageView? = null
     private var otherOptionsImage: ImageView? = null
 
+    //loader view
+    private var loaderUnify: LoaderUnify? = null
+
     private var thumbNailTitle = ""
     private var bottomSheetTitleRemoteConfKey = ""
     private var bottomSheetTitleStr = ""
@@ -223,6 +228,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var savedImagePath: String = ""
 
     private var affiliateQueryData : Any? = null
+    private var showLoader: Boolean = false
 
     //observer flag
     private var preserveImage: Boolean = false
@@ -258,6 +264,20 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 show(it, TAG)
                 setFragmentLifecycleObserverUniversalSharing(fragment)
             }
+    }
+
+    //call this method before show method if the request data is awaited
+    fun affiliateRequestDataAwaited(){
+       showLoader = true
+        Handler(Looper.getMainLooper()).postDelayed({
+            affiliateRequestDataReceived() },
+            DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
+    }
+
+    //call this method if the request data is received
+    fun affiliateRequestDataReceived(){
+        showLoader = false
+        loaderUnify?.visibility = View.GONE
     }
 
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
@@ -301,6 +321,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             smsTxtv = findViewById(R.id.sms_link_txtv)
             emailImage = findViewById(R.id.email_img)
             emailImage?.setBackgroundResource(R.drawable.universal_sharing_ic_ellipse_49)
+            loaderUnify = findViewById(R.id.loader)
             setFixedOptionsClickListeners()
 
             setUserVisualData()
@@ -616,6 +637,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             imageListViewGroup?.visibility = View.GONE
         }
 //        previewImage?.setImageUrl(previewImageUrl)
+        if(showLoader){
+            loaderUnify?.visibility = View.VISIBLE
+        }
     }
 
     fun updateThumbnailImage(imgUrl:String){
