@@ -39,8 +39,7 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         HeaderRobot.clickFollowMenu()
 
         // Then
-        // TODO: validate later when eventLabel value fixed from DA
-//        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
+        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
     }
 
     @Test
