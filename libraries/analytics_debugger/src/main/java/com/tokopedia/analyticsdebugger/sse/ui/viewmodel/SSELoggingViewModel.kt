@@ -34,7 +34,7 @@ class SSELoggingViewModel @Inject constructor(
             _observableSSELog.value = getSSELogUseCase.executeOnBackground()
         }) {
             _observableSSELog.value = emptyList()
-            _observableError.value = it.message ?: "Something went wrong"
+            onError(it)
         }
     }
 
@@ -42,7 +42,11 @@ class SSELoggingViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             deleteAllSSELogUseCase.executeOnBackground()
         }) {
-            _observableError.value = it.message ?: "Something went wrong"
+            onError(it)
         }
+    }
+
+    private fun onError(throwable: Throwable) {
+        _observableError.value = throwable.message ?: "Something went wrong"
     }
 }
