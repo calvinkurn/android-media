@@ -10,15 +10,28 @@ import javax.inject.Inject
 
 class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepository,
                                                  private val mapper: ViolationReasonMapper) :
-    GraphqlUseCase<ViolationReasonDetailResponse>(graphqlRepository) {
+        GraphqlUseCase<ViolationReasonDetailResponse>(graphqlRepository) {
 
     companion object {
-        // TODO: Update this query
         private val QUERY = """
             query {
               visionGetPendingReasonDetail {
-                product_id,
-                platform_id
+                product_id
+                title
+                content {
+                  description {
+                    info
+                    detail
+                  }
+                  resolution {
+                    info
+                    steps
+                  }
+                  cta {
+                    text
+                    link
+                  }
+                }
               }
             }
         """.trimIndent()
@@ -32,22 +45,29 @@ class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepos
     suspend fun execute(): ViolationReasonUiModel {
         // TODO: Remove Dummy
         val dummyResponse = ViolationReasonDetailResponse(
-            detail = VisionGetPendingReasonDetail(
-                productId = "123",
-                mainTitle = "Pelanggaran atribut",
-                description = PendingReasonDescription(
-                    descText = "Berupa organ tubuh manusia",
-                    preDescText = "Produk diduga melanggar hukum karena:"
-                ),
-                resolutionSteps = listOf(
-                    PendingReasonResolutionSteps("Pelajari tentang <a href=\"https://www.tokopedia.com/login\">produk yang dilarang</a>"),
-                    PendingReasonResolutionSteps("Tambah produk sesuai <a href=\"https://www.tokopedia.com/login\">Syarat & Ketentuan</a> yang berlaku di Tokopedia")
-                ),
-                callToActionInfo = CallToActionInfo(
-                    buttonText = "Bantuan",
-                    buttonLink = "sellerapp://home"
+                detail = VisionGetPendingReasonDetail(
+                        productId = "123",
+                        title = "Pelanggaran atribut",
+                        content = PendingReasonContent(
+                                description = PendingReasonDescription(
+                                        descDetail = "Berupa organ tubuh manusia",
+                                        descInfo = "Produk diduga melanggar hukum karena:"
+                                ),
+                                resolution = PendingReasonResolution(
+                                        resolutionInfo = "Lakukan langkah berikut untuk menyelesaikan:",
+                                        resolutionSteps = listOf(
+                                                "Pelajari tentang <a href=\"https://www.tokopedia.com/login\">produk yang dilarang</a>",
+                                                "Tambah produk sesuai <a href=\"https://www.tokopedia.com/login\">Syarat & Ketentuan</a> yang berlaku di Tokopedia"
+                                        )
+                                ),
+                                ctaList = listOf(
+                                        ViolationCTA(
+                                                buttonText = "Bantuan",
+                                                buttonLink = "sellerapp://home"
+                                        )
+                                )
+                        )
                 )
-            )
         )
         delay(1000)
         return mapper.mapViolationResponseToUiModel(dummyResponse)
