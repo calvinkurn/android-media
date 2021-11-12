@@ -237,6 +237,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
             passengerModel.passengerLastName = getLastName()
+            passengerModel.identificationNumber = getIdentificationNumber()
             if (isMandatoryDoB() || !isDomestic) passengerModel.passengerBirthdate = DateUtil
                     .formatDate(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.YYYY_MM_DD, getPassengerBirthDate())
             if (!isDomestic) {
