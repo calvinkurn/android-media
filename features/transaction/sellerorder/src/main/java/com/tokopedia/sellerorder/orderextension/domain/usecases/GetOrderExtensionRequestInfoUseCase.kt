@@ -14,33 +14,30 @@ class GetOrderExtensionRequestInfoUseCase @Inject constructor(
     suspend fun execute(
         orderId: String,
         shopId: String,
-        userId: String
     ): GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.OrderExtensionRequestInfoData {
-        val requests = createRequests(orderId, shopId, userId)
+        val requests = createRequests(orderId, shopId)
         val responses = graphQlRepository.response(requests)
         return responses.getSuccessData<GetOrderExtensionRequestInfoResponse.Data>().orderExtensionRequestInfo.data
     }
 
-    private fun createRequests(orderId: String, shopId: String, userId: String): List<GraphqlRequest> {
+    private fun createRequests(orderId: String, shopId: String): List<GraphqlRequest> {
         return listOf(
             GraphqlRequest(
                 QUERY,
                 GetOrderExtensionRequestInfoResponse.Data::class.java,
-                generateRequestParams(orderId, shopId, userId)
+                generateRequestParams(orderId, shopId)
             )
         )
     }
 
     private fun generateRequestParams(
         orderId: String,
-        shopId: String,
-        userId: String
+        shopId: String
     ): Map<String, Any> {
         return mapOf(
             PARAM_INPUT to GetOrderExtensionRequestInfoParam(
                 orderId.toLongOrZero(),
-                shopId.toLongOrZero(),
-                userId.toLongOrZero()
+                shopId.toLongOrZero()
             )
         )
     }

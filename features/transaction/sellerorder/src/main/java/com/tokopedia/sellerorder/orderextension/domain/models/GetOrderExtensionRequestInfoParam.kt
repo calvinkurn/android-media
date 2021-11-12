@@ -6,7 +6,5 @@ data class GetOrderExtensionRequestInfoParam(
     @SerializedName("order_id")
     val orderId: Long,
     @SerializedName("shop_id")
-    val shopId: Long,
-    @SerializedName("user_id")
-    val userId: Long
+    val shopId: Long
 )

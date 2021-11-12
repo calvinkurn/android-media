@@ -12,19 +12,17 @@ class SendOrderExtensionRequestUseCase @Inject constructor(
     private val graphQlRepository: GraphqlRepository
 ) {
     suspend fun execute(
-        userId: String,
         orderId: String,
         shopId: String,
         reasonCode: Int,
         reasonText: String
     ): SendOrderExtensionRequestResponse.Data.OrderExtensionRequest.OrderExtensionRequestData {
-        val requests = createRequests(userId, orderId, shopId, reasonCode, reasonText)
+        val requests = createRequests(orderId, shopId, reasonCode, reasonText)
         val responses = graphQlRepository.response(requests)
         return responses.getSuccessData<SendOrderExtensionRequestResponse.Data>().orderExtensionRequest.data
     }
 
     private fun createRequests(
-        userId: String,
         orderId: String,
         shopId: String,
         reasonCode: Int,
@@ -34,13 +32,12 @@ class SendOrderExtensionRequestUseCase @Inject constructor(
             GraphqlRequest(
                 QUERY,
                 SendOrderExtensionRequestResponse.Data::class.java,
-                generateRequestParams(userId, orderId, shopId, reasonCode, reasonText)
+                generateRequestParams(orderId, shopId, reasonCode, reasonText)
             )
         )
     }
 
     private fun generateRequestParams(
-        userId: String,
         orderId: String,
         shopId: String,
         reasonCode: Int,
@@ -48,7 +45,6 @@ class SendOrderExtensionRequestUseCase @Inject constructor(
     ): Map<String, Any> {
         return mapOf(
             PARAM_INPUT to SendOrderExtensionRequestParam(
-                userId.toLongOrZero(),
                 orderId.toLongOrZero(),
                 shopId.toLongOrZero(),
                 reasonCode,
