@@ -6,6 +6,7 @@ import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.sse.domain.usecase.InsertSSELogUseCase
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogGeneralInfoUiModel
+import com.tokopedia.config.GlobalConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,18 +24,22 @@ class SSELogTools @Inject constructor(
     private var generalInfo: SSELogGeneralInfoUiModel? = null
 
     fun initLog(channelId: String, pageSource: String, gcToken: String) {
-        generalInfo = SSELogGeneralInfoUiModel(
-            channelId = channelId,
-            pageSource = pageSource,
-            gcToken = gcToken
-        )
+        if(GlobalConfig.DEBUG) {
+            generalInfo = SSELogGeneralInfoUiModel(
+                channelId = channelId,
+                pageSource = pageSource,
+                gcToken = gcToken
+            )
+        }
     }
 
     fun sendLog(event: String, message: String = "") {
-        CoroutineScope(dispatchers.io).launch {
-            generalInfo?.let {
-                insertSSELogUseCase.setParam(event, beautifyMessage(message), it)
-                insertSSELogUseCase.executeOnBackground()
+        if(GlobalConfig.DEBUG) {
+            CoroutineScope(dispatchers.io).launch {
+                generalInfo?.let {
+                    insertSSELogUseCase.setParam(event, beautifyMessage(message), it)
+                    insertSSELogUseCase.executeOnBackground()
+                }
             }
         }
     }
