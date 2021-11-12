@@ -6,6 +6,7 @@
         <activity
             android:name=".view.activity.FindNavActivity"
             android:label="@string/title_find_native"
+            android:exported="false"
             android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

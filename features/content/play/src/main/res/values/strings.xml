@@ -23,10 +23,10 @@
     <string name="play_link_copied">Link berhasil disalin</string>
 
     <!--Floating Window / PiP-->
-    <string name="play_pip_permission_rationale_title">Aktifkan akses Draw over other apps</string>
-    <string name="play_pip_permission_rationale_desc">Akses ini dibutuhkan untuk dapat membuka Tokopedia Play dalam mode Picture-in-Picture</string>
+    <string name="play_pip_permission_rationale_title">Mau perkecil layar Live?</string>
+    <string name="play_pip_permission_rationale_desc">Dengan aktifkan akses mode ini, kamu tetap bisa nonton sambil jelajahi aplikasi Tokopedia, lho.</string>
     <string name="play_pip_activate">Aktifkan</string>
-    <string name="play_pip_cancel">Abaikan</string>
+    <string name="play_pip_cancel">Batal</string>
 
     <!--mock-->
     <string name="play_mock_pinned_message">Yoenik Apparel Visit my collections here!</string>

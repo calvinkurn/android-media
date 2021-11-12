@@ -43,11 +43,6 @@ import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -112,7 +107,6 @@ import org.json.JSONArray
 import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
-import rx.observers.Subscribers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -227,22 +221,11 @@ class ProductListPresenter @Inject constructor(
 
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
-            checkNavigationRollenceValue(
-                NAVIGATION_EXP_TOP_NAV,
-                NAVIGATION_VARIANT_REVAMP
-            )
-            || checkNavigationRollenceValue(
-                NAVIGATION_EXP_TOP_NAV2,
-                NAVIGATION_VARIANT_REVAMP2
-            )
+            true
         } catch (e: Exception) {
             e.printStackTrace()
             false
         }
-    }
-
-    private fun checkNavigationRollenceValue(rollenceKey: String, expectedValue: String): Boolean {
-        return view.abTestRemoteConfig?.getString(rollenceKey, NAVIGATION_VARIANT_OLD) == expectedValue
     }
 
     private fun getHasFullThreeDotsOptions(): Boolean {
@@ -804,7 +787,7 @@ class ProductListPresenter @Inject constructor(
             getViewToShowBroadMatchToReplaceEmptySearch()
         } else {
             if (!productDataView.errorMessage.isNullOrEmpty()) {
-                getViewToHandleEmptySearchWithErrorMessage(searchProduct)
+                getViewToHandleEmptySearchWithErrorMessage(searchProduct, productDataView)
             } else {
                 getViewToShowEmptySearch(productDataView)
 
@@ -848,15 +831,29 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun getViewToHandleEmptySearchWithErrorMessage(searchProduct: SearchProductModel.SearchProduct) {
+    private fun getViewToHandleEmptySearchWithErrorMessage(
+        searchProduct: SearchProductModel.SearchProduct,
+        productDataView: ProductDataView,
+    ) {
+        val bannedProductsVisitableList =
+            createBannedProductsVisitableList(searchProduct, productDataView)
+
         view.removeLoading()
-        view.setBannedProductsErrorMessage(createBannedProductsErrorMessageAsList(searchProduct))
+        view.setBannedProductsErrorMessage(bannedProductsVisitableList)
         view.trackEventImpressionBannedProducts(true)
     }
 
-    private fun createBannedProductsErrorMessageAsList(searchProduct: SearchProductModel.SearchProduct): List<Visitable<*>> {
-        return listOf(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
-    }
+    private fun createBannedProductsVisitableList(
+        searchProduct: SearchProductModel.SearchProduct,
+        productDataView: ProductDataView,
+    ): List<Visitable<*>> =
+        mutableListOf<Visitable<*>>().apply {
+            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
+                add(globalNavDataView)
+            }
+
+            add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
+        }
 
     private fun getViewToShowEmptySearch(productDataView: ProductDataView) {
         val globalNavDataView = getGlobalNavViewModel(productDataView)

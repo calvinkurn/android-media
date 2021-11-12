@@ -20,6 +20,7 @@
 /features/discovery/image_search/                   	@tokopedia/android-miniondave-dev
 /features/discovery/similarsearch/                  	@tokopedia/android-miniondave-dev
 /features/discovery/autocomplete/                   	@tokopedia/android-miniondave-dev
+/features/discovery/autocomplete_component/             @tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget/              	@tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget_samples/      	@tokopedia/android-miniondave-dev
 /features/home/dynamicbanner/                          	@tokopedia/android-miniondave-dev
@@ -173,6 +174,7 @@
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
 /features/media/media-common/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
+/features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
@@ -256,6 +258,7 @@
 
 /features/payment/payment_setting/              		@tokopedia/android-minionyoda-dev
 /features/payment/pms/                          		@tokopedia/android-minionyoda-dev
+/features/payment/gopay.kyc/                          	@tokopedia/android-minionyoda-dev
 
 /libraries/adapter_delegate/							@tokopedia/android-core-dev
 /libraries/akamai_bot_lib/							    @tokopedia/android-core-dev
@@ -356,6 +359,7 @@
 /testapp/                                               @tokopedia/android-core-dev
 
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
+/testing/joint/dg_transaction/                          @tokopedia/android-minionmark-dev @tokopedia/android-minionbob-dev
 
 /features/transaction/buyerorder/                      @tokopedia/android-minionstuart-dev @tokopedia/android-minionmark-dev
 
