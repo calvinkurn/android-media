@@ -603,6 +603,15 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void eventViewAutoCheckCrossSell(String userId, String position, String eventLabel, String digitalProductName, ArrayList<Long> childCategoryIds) {
+        List<Object> listPromotions = new ArrayList<>();
+        for (Long childCategoryId : childCategoryIds) {
+            listPromotions.add(DataLayer.mapOf(
+                    ConstantTransactionAnalytics.Key.CREATIVE, digitalProductName,
+                    ID, "",
+                    NAME, childCategoryId.toString(),
+                    ConstantTransactionAnalytics.Key.POSITION, position));
+        }
+
         sendEnhancedEcommerce(DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.PROMO_VIEW,
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.IMPRESSION_CROSS_SELL_ICON,
@@ -612,16 +621,19 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE,
                 ExtraKey.USER_ID, userId,
                 ConstantTransactionAnalytics.Key.E_COMMERCE, DataLayer.mapOf(
-                        EventName.PROMO_VIEW, DataLayer.mapOf(ConstantTransactionAnalytics.Key.PROMOTIONS, DataLayer.listOf(
-                                DataLayer.mapOf(
-                                        ConstantTransactionAnalytics.Key.CREATIVE, digitalProductName,
-                                        ID, "",
-                                        NAME, childCategoryIds.toString(),
-                                        ConstantTransactionAnalytics.Key.POSITION, position)
-                        )))));
+                        EventName.PROMO_VIEW, DataLayer.mapOf(ConstantTransactionAnalytics.Key.PROMOTIONS, listPromotions))));
     }
 
     public void eventClickCheckboxCrossSell(boolean check, String userId, String position, String eventLabel, String digitalProductName, ArrayList<Long> childCategoryIds) {
+        List<Object> listPromotions = new ArrayList<>();
+        for (Long childCategoryId : childCategoryIds) {
+            listPromotions.add(DataLayer.mapOf(
+                    ConstantTransactionAnalytics.Key.CREATIVE, digitalProductName,
+                    ID, "",
+                    NAME, childCategoryId.toString(),
+                    ConstantTransactionAnalytics.Key.POSITION, position));
+        }
+
         sendEnhancedEcommerce(DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.PROMO_CLICK,
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, check ? CHECK_CROSS_SELL_ICON : UNCHECK_CROSS_SELL_ICON,
@@ -631,13 +643,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE,
                 ExtraKey.USER_ID, userId,
                 ConstantTransactionAnalytics.Key.E_COMMERCE, DataLayer.mapOf(
-                        EventName.PROMO_CLICK, DataLayer.mapOf(ConstantTransactionAnalytics.Key.PROMOTIONS, DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                ConstantTransactionAnalytics.Key.CREATIVE, digitalProductName,
-                                                ID, "",
-                                                NAME, childCategoryIds.toString(),
-                                                ConstantTransactionAnalytics.Key.POSITION, position)
-                                )))));
+                        EventName.PROMO_CLICK, DataLayer.mapOf(ConstantTransactionAnalytics.Key.PROMOTIONS, listPromotions))));
     }
 
     public void sendCrossSellClickPilihPembayaran(String eventLabel, String userId, List<Object> listProducts) {
