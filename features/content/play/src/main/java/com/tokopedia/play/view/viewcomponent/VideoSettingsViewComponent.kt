@@ -71,8 +71,8 @@ class VideoSettingsViewComponent(
 
     internal fun setFullscreen(isFullscreen: Boolean) {
         ivFullscreenControl.setImageResource(
-                if (isFullscreen) R.drawable.ic_play_exit_fullscreen
-                else R.drawable.ic_play_enter_fullscreen
+                if (isFullscreen) com.tokopedia.iconunify.R.drawable.iconunify_screen_normal
+                else com.tokopedia.iconunify.R.drawable.iconunify_screen_full
         )
 
         rootView.setOnClickListener {
