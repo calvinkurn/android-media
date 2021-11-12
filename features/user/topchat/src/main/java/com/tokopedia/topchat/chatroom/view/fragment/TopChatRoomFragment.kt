@@ -63,6 +63,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
@@ -147,6 +148,7 @@ import android.content.ClipData
 import android.widget.LinearLayout
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
@@ -208,6 +210,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var delaySendMessage: String = ""
     private var delaySendSticker: Sticker? = null
     private var delaySendSrw: QuestionUiModel? = null
+    private var interlocutorShopType: String = ""
 
     //This used only for set extra in finish activity
     private var isFavoriteShop: Boolean? = null
@@ -329,7 +332,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun showTemplateChatIfReady() {
-        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+        if (chatRoomFlexModeListener?.isFlexMode() == true) {
             topchatViewState?.hideTemplateChat()
         } else {
             topchatViewState?.showTemplateChatIfReady(
@@ -340,7 +343,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun hasProductPreviewShown(): Boolean {
-        return topchatViewState?.hasProductPreviewShown()?: false
+        return topchatViewState?.hasProductPreviewShown() ?: false
     }
 
     override fun hasNoSrw(): Boolean {
@@ -689,7 +692,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun onSuccessGetMessageId(messageId: String) {
         this.messageId = messageId
         loadInitialData()
-        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+        if (chatRoomFlexModeListener?.isFlexMode() == true) {
             chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = messageId)
         }
     }
@@ -736,6 +739,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             !isSeller() -> presenter.getSmartReplyWidget(messageId)
             isSeller() -> presenter.adjustInterlocutorWarehouseId(messageId)
         }
+        interlocutorShopType = chatRoom.shopType
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -1220,7 +1224,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val isLastMessageBroadcast = adapter.isLastMessageBroadcast()
         val amIBuyer = !isSeller()
         chatRoomFlexModeListener?.getSeparatedTemplateChat()?.updateTemplate(list)
-        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+        if (chatRoomFlexModeListener?.isFlexMode() == true) {
             hideSeparatedChatTemplate()
         } else {
             topchatViewState?.setTemplate(list, isLastMessageBroadcast, amIBuyer)
@@ -1486,41 +1490,47 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickBuyProductAttachment(element)
-        if(isOCCActive() && element.doesNotHaveVariant()) {
+        if (element.isSupportVariant) {
+            showAtcVariantHelper(element.productId, element.shopId.toString())
+        } else if (isOCCActive() && element.doesNotHaveVariant()) {
             doOCC(element)
         } else {
-             doBuyAndAtc(element) {
+            doBuyAndAtc(element) {
                 analytics.trackSuccessDoBuyAndAtc(
                     element, it,
                     topchatViewState?.chatRoomViewModel?.shopName ?: "",
                     element.getBuyEventAction()
                 )
-                RouteManager.route(context, ApplinkConst.CART)
+                val intent = RouteManager.getIntent(context, ApplinkConst.CART)
+                startActivity(intent)
             }
         }
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        doBuyAndAtc(element) {
-            analytics.trackSuccessDoBuyAndAtc(
-                element, it,
-                topchatViewState?.chatRoomViewModel?.shopName ?: "",
-                element.getAtcEventAction()
-            )
-            val msg = it.message.getOrNull(0) ?: ""
-            rvContainer?.let { view ->
-                Toaster.build(
-                    view,
-                    msg,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    view.context.getString(R.string.title_topchat_see_cart),
-                    View.OnClickListener {
+        if (element.isSupportVariant) {
+            showAtcVariantHelper(element.productId, element.shopId.toString())
+        } else {
+            doBuyAndAtc(element) {
+                analytics.trackSuccessDoBuyAndAtc(
+                    element, it,
+                    topchatViewState?.chatRoomViewModel?.shopName ?: "",
+                    element.getAtcEventAction()
+                )
+                val msg = it.message.getOrNull(0) ?: ""
+                rvContainer?.let { view ->
+                    Toaster.build(
+                        view,
+                        msg,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        view.context.getString(R.string.title_topchat_see_cart)
+                    ) {
                         analytics.eventClickSeeButtonOnAtcSuccessToaster()
                         RouteManager.route(context, ApplinkConst.CART)
-                    }
-                ).show()
+                    }.show()
+                }
             }
         }
     }
@@ -1539,6 +1549,24 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }, { msg ->
             showToasterError(msg)
         })
+    }
+
+    private fun showAtcVariantHelper(
+        productId: String,
+        shopId: String
+    ) {
+        context?.let { ctx ->
+            AtcVariantHelper.goToAtcVariant(
+                context = ctx,
+                productId = productId,
+                pageSource = AtcVariantHelper.TOPCHAT_PAGESOURCE,
+                isTokoNow = interlocutorShopType == SHOP_TYPE_TOKONOW,
+                shopId = shopId,
+                startActivitResult = { intent, requestCode ->
+                    startActivityForResult(intent, requestCode)
+                }
+            )
+        }
     }
 
     private fun getAtcBuyParam(element: ProductAttachmentUiModel): RequestParams {
@@ -1867,11 +1895,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAddToWishList(product: ProductAttachmentUiModel, success: () -> Unit) {
-        val productId = product.productId.toString()
-        analytics.eventClickAddToWishList(productId)
+        val productId = product.productId
         if (product.isWishListed()) {
-            showSuccessToastWishListCta(R.string.title_topchat_already_success_atw)
+            goToWishList()
         } else {
+            analytics.eventClickAddToWishList(productId)
             requestNetworkAddToWishList(productId, success)
         }
     }
@@ -1882,7 +1910,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             override fun onSuccessRemoveWishlist(productId: String?) {}
             override fun onSuccessAddWishlist(productId: String?) {
                 success()
-                showSuccessToastWishListCta(R.string.title_topchat_success_atw)
+                showSuccessToastWishList(R.string.title_topchat_success_atw)
             }
 
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
@@ -1894,23 +1922,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
-    private fun showSuccessToastWishListCta(@StringRes successMessageRes: Int) {
+    private fun showSuccessToastWishList(@StringRes successMessageRes: Int) {
         view?.let {
             val successMessage = it.context.getString(successMessageRes)
-            val ctaText = it.context.getString(R.string.cta_topchat_success_atw)
-            Toaster.make(
+            Toaster.build(
                 it,
                 successMessage,
                 Toaster.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
-                ctaText,
-                View.OnClickListener { goToWishList() }
-            )
+                Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 
     private fun goToWishList() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+        val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
+        startActivity(intent)
     }
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
@@ -2021,7 +2047,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun requestAllowPromo() {
         presenter.requestAllowPromo(messageId, {
             topchatViewState?.setChatPromoBlockStatus(false)
-            addBroadCastSpamHandler(topchatViewState?.isShopFollowed?: false)
+            addBroadCastSpamHandler(topchatViewState?.isShopFollowed ?: false)
             onSuccessAllowPromoFromBcHandler()
         }, {
             onErrorAllowPromoFromBcHandler(it)
@@ -2135,7 +2161,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun getInvoicePreviewId(savedInstanceState: Bundle?): String {
         val id = getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
-        return if(id.toLongOrNull() == null) {
+        return if (id.toLongOrNull() == null) {
             InvoicePreviewUiModel.INVALID_ID
         } else {
             id
@@ -2318,10 +2344,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun initKeyboardListener(view: View) { TopChatKeyboardHandler(view, object :
+    private fun initKeyboardListener(view: View) {
+        TopChatKeyboardHandler(view, object :
             TopChatKeyboardHandler.OnKeyBoardVisibilityChangeListener {
             override fun onKeyboardShow() {
-                if(chatRoomFlexModeListener?.isFlexMode() == true) {
+                if (chatRoomFlexModeListener?.isFlexMode() == true) {
                     chatBoxPadding?.show()
                     showSeparatedChatTemplateIfFlex()
                 }
@@ -2367,7 +2394,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun removeAttachmentIfNecessary(savedInstance: Bundle?) {
         val isNecessary = getBooleanArgument(Constant.CHAT_REMOVE_ATTACHMENT, savedInstance)
-        if(isNecessary) {
+        if (isNecessary) {
             topchatViewState?.clearAttachmentPreview()
         }
     }

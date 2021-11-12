@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
@@ -16,6 +17,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -96,6 +98,16 @@ class TopChatRoomPresenterStub @Inject constructor(
             ImageUploadMapper.mapToImageUploadServer(image),
             thisMessageId
         )
+    }
+
+    //Need to add this because error: calling this from your main thread can lead to deadlock in instrument test
+    override fun addProductToCart(
+        requestParams: RequestParams,
+        onSuccessAddToCart: (data: DataModel) -> Unit,
+        onError: (msg: String) -> Unit
+    ) {
+        onSuccessAddToCart.invoke(DataModel())
+        //TODO: remove this when TopChat ViewModel is ready
     }
 
     companion object {

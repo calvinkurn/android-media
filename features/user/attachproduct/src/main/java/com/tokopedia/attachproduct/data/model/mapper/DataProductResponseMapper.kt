@@ -9,6 +9,6 @@ fun DataProductResponse.mapToAttachUiModel(): AttachProductItemUiModel {
         , this.productImageFull, this.productImage
         , this.productPrice, this.shop.shopName, this.originalPrice
         , this.discountPercentage, this.freeOngkir.isActive
-        , this.freeOngkir.imageUrl, this.stock
+        , this.freeOngkir.imageUrl, this.stock, this.childs.isNotEmpty()
     )
 }

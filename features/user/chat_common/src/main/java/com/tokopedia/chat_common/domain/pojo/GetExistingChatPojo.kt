@@ -86,6 +86,9 @@ data class Contact(
         @SerializedName("isGold")
         val isGold: Boolean = false,
         @Expose
+        @SerializedName("shopType")
+        val shopType: Int = 0,
+        @Expose
         @SerializedName("badge")
         val badge: String = "",
         @Expose

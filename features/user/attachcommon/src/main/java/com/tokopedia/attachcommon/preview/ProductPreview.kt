@@ -21,6 +21,7 @@ open class ProductPreview constructor(
         val dropPercentage: String = "",
         val isActive: Boolean = true,
         val remainingStock: Int = 1,
+        val isSupportVariant: Boolean = false,
         val campaignId: Long = 0
 ) {
 
@@ -31,10 +32,10 @@ open class ProductPreview constructor(
     }
 
     fun doesNotHaveVariant(): Boolean {
-        return colorVariant.isEmpty() && sizeVariant.isEmpty()
+        return !isSupportVariant
     }
 
-    fun hasColorVariant(): Boolean = colorVariant.isNotEmpty() && colorHexVariant.isNotEmpty()
+    fun hasColorVariant(): Boolean = colorVariant.isNotEmpty()
 
     fun hasSizeVariant(): Boolean = sizeVariant.isNotEmpty()
 

@@ -66,6 +66,7 @@ import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub.Compani
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.websocket.WebSocketResponse
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
@@ -131,6 +132,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
+
+    @Inject
+    protected lateinit var addWishListUseCase: AddWishListUseCaseStub
 
     @Inject
     protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub

@@ -337,6 +337,7 @@ object AtcCommonMapper {
         val productSizeVariant = variants?.get(KEY_SIZE_VARIANT)?.get(KEY_VALUE_VARIANT) ?: ""
         val productColorVariantId = variants?.get(KEY_COLOUR_VARIANT)?.get(KEY_ID_VARIANT) ?: ""
         val productSizeVariantId = variants?.get(KEY_SIZE_VARIANT)?.get(KEY_ID_VARIANT) ?: ""
+        val isSupportVariant = variants != null
         val productPreview = ProductPreview(
                 id = productId,
                 imageUrl = productImageUrl,
@@ -354,7 +355,8 @@ object AtcCommonMapper {
                 priceBeforeInt = priceBeforeDouble,
                 dropPercentage = dropPercentage,
                 isActive = isActive,
-                remainingStock = productInfo?.getVariantFinalStock() ?: DEFAULT_MIN_ORDER
+                remainingStock = productInfo?.getVariantFinalStock() ?: DEFAULT_MIN_ORDER,
+                isSupportVariant = isSupportVariant
         )
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)

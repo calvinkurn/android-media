@@ -77,6 +77,7 @@ open class ProductAttachmentUiModel protected constructor(
     var colorHexVariant: String = ""
     var sizeVariantId: String = ""
     var sizeVariant: String = ""
+    var isSupportVariant: Boolean = builder.isSupportVariant
     var cartId: String = ""
 
     init {
@@ -190,7 +191,7 @@ open class ProductAttachmentUiModel protected constructor(
     }
 
     fun hasEmptyStock(): Boolean {
-        return status != statusActive
+        return status != statusActive || remainingStock == 0
     }
 
     fun isWishListed(): Boolean {
@@ -306,6 +307,7 @@ open class ProductAttachmentUiModel protected constructor(
         internal var isPreOrder: Boolean = false
         internal var images: List<String> = emptyList()
         internal var needSync: Boolean = true
+        internal var isSupportVariant: Boolean = false
         internal var campaignId: Long = 0
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
@@ -330,6 +332,7 @@ open class ProductAttachmentUiModel protected constructor(
             withWishList(product.productProfile.wishList)
             withImages(product.productProfile.images)
             withRating(product.productProfile.rating)
+            withIsSupportVariant(product.productProfile.isSupportVariant)
             withCampaignId(product.productProfile.campaignId)
             return self()
         }
@@ -451,6 +454,11 @@ open class ProductAttachmentUiModel protected constructor(
 
         fun withNeedSync(needSync: Boolean): Builder {
             this.needSync = needSync
+            return self()
+        }
+
+        fun withIsSupportVariant(isSupportVariant: Boolean): Builder {
+            this.isSupportVariant = isSupportVariant
             return self()
         }
 

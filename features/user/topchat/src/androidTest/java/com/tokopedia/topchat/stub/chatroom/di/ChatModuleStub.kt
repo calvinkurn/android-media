@@ -30,6 +30,7 @@ import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
+import com.tokopedia.topchat.stub.chatroom.usecase.AddWishListUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -189,12 +190,6 @@ class ChatModuleStub {
     fun provideChatRoomSettingUseCase(graphqlRepository: GraphqlRepository)
             : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<RoomSettingResponse> {
         return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
-    }
-
-    @ChatScope
-    @Provides
-    internal fun provideAddWishListUseCase(@TopchatContext context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
     }
 
     @ChatScope

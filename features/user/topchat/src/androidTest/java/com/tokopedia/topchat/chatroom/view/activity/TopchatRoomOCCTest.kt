@@ -35,7 +35,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         scrollChatToPosition(0)
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(1, R.id.tv_buy)
+                .atPositionOnView(4, R.id.tv_buy)
         ).perform(ViewActions.click())
 
         //Then
@@ -63,7 +63,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         scrollChatToPosition(0)
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(1, R.id.tv_buy)
+                .atPositionOnView(4, R.id.tv_buy)
         ).perform(ViewActions.click())
 
         //Then
@@ -86,7 +86,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         scrollChatToPosition(0)
         onView(
             withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(1, R.id.tv_buy)
+                .atPositionOnView(4, R.id.tv_buy)
         ).perform(ViewActions.click())
 
         //Then

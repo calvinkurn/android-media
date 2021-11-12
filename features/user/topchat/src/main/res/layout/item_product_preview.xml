@@ -64,15 +64,6 @@
             android:paddingStart="@dimen/spacing_lvl3"
             android:paddingEnd="@dimen/spacing_lvl3">
 
-            <ImageView
-                android:id="@+id/iv_variant_color"
-                android:layout_width="@dimen/dp_topchat_6"
-                android:layout_height="@dimen/dp_topchat_6"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/spacing_lvl2"
-                android:contentDescription="@null"
-                tools:background="@color/Unify_N700" />
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_variant_color"
                 android:layout_width="wrap_content"
