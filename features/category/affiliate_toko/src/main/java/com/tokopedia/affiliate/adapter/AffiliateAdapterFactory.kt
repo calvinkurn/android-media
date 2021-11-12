@@ -3,10 +3,7 @@ package com.tokopedia.affiliate.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
-import com.tokopedia.affiliate.interfaces.ProductClickInterface
-import com.tokopedia.affiliate.interfaces.PromotionClickInterface
-import com.tokopedia.affiliate.interfaces.ShareButtonInterface
+import com.tokopedia.affiliate.interfaces.*
 import com.tokopedia.affiliate.ui.viewholder.*
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 
@@ -14,20 +11,24 @@ class AffiliateAdapterFactory(
         private var shareButtonInterface: ShareButtonInterface? = null,
         var productClickInterface : ProductClickInterface? = null,
         private var promotionClickInterface : PromotionClickInterface? = null,
-        private var onFoucusChangeInterface: PortfolioUrlTextUpdateInterface?=null)
+        private var addSocialInterface  : AddSocialInterface? = null,
+        private var portfolioClickInterface: PortfolioClickInterface? = null,
+        private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface?=null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             AffiliateSharedProductCardsItemVH.LAYOUT -> AffiliateSharedProductCardsItemVH(parent, productClickInterface)
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
-            AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface)
+            AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface,addSocialInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
             AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
-            AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent,onFoucusChangeInterface)
+            AffiliatePortfolioItemVH.LAYOUT -> AffiliatePortfolioItemVH(parent,onFocusChangeInterface)
             AffiliateHeaderItemVH.LAYOUT -> AffiliateHeaderItemVH(parent)
-            AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent)
+            AffiliatePortfolioButtonItemVH.LAYOUT -> AffiliatePortfolioButtonItemVH(parent,portfolioClickInterface)
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
+            AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
+            AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)
             AffiliateHomeHeaderVH.LAYOUT  -> AffiliateHomeHeaderVH(parent)
             AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent)
             AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent)
@@ -86,5 +87,13 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateDateFilterModel): Int {
         return AffiliateDateFilterVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateStaggeredShimmerModel): Int {
+        return AffiliateStaggeredShimmerCardItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateStaggeredPromotionCardModel): Int {
+        return AffiliateStaggeredPromotionCardItemVH.LAYOUT
     }
 }

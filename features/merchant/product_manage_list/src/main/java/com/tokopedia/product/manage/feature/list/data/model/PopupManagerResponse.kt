@@ -6,16 +6,16 @@ import com.google.gson.annotations.SerializedName
 data class PopupManagerResponse(
     @SerializedName("getShopManagerPopups")
     @Expose
-    val shopManagerPopups: ShopManagerPopups = ShopManagerPopups()
+    val getShopManagerPopups: GetShopManagerPopups = GetShopManagerPopups()
 )
 
-data class ShopManagerPopups(
+data class GetShopManagerPopups(
     @SerializedName("data")
     @Expose
-    val popupsData: PopupsData = PopupsData()
+    val shopManagerPopupsData: ShopManagerPopupsData = ShopManagerPopupsData()
 )
 
-data class PopupsData(
+data class ShopManagerPopupsData(
     @SerializedName("showPopup")
     @Expose
     val isShowPopup: Boolean = false

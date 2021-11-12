@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.gms.cast.framework.CastStateListener
+import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -74,6 +75,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
+import kotlin.math.max
 
 /**
  * Created by jegul on 29/11/19
@@ -135,6 +137,12 @@ class PlayViewModel @Inject constructor(
         get() = _observableUpcomingInfo
     val observableCastState: LiveData<PlayCastUiModel>
         get() = _observableCastState
+
+    /**
+     * Remote Config for bubble like
+     */
+    private val isLikeBubbleEnabled: Boolean
+        get() = remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE, true)
 
     /**
      * Interactive Remote Config defaults to true, because it should be enabled by default,
@@ -518,6 +526,8 @@ class PlayViewModel @Inject constructor(
 
     private var likeReminderTimer: Job? = null
 
+    private val gson by lazy { Gson() }
+
     init {
         videoStateProcessor.addStateListener(videoStateListener)
         videoStateProcessor.addStateListener(videoPerformanceListener)
@@ -797,10 +807,11 @@ class PlayViewModel @Inject constructor(
             addCastStateListener()
 
             setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext.castState))
+
+            trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack, channelData.channelReportInfo.sourceType)
         }
 
         updateChannelInfo(channelData)
-        trackVisitChannel(channelData.id)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -835,7 +846,7 @@ class PlayViewModel @Inject constructor(
                     videoUrl = if(channelData.videoMetaInfo.videoPlayer.isGeneral())
                                     channelData.videoMetaInfo.videoPlayer.params.videoUrl
                                 else "",
-                    currentPosition = playVideoPlayer.getCurrentPosition()
+                    currentPosition = max(playVideoPlayer.getCurrentPosition(), 0)
                 )
             }
 
@@ -1132,7 +1143,13 @@ class PlayViewModel @Inject constructor(
 
                 try {
                     val report = deferredReportSummaries.await().data.first().channel.metrics
-                    _channelReport.value = PlayChannelReportUiModel(report.totalViewFmt, report.totalLike.toLongOrZero(), report.totalLikeFmt)
+                    _channelReport.setValue {
+                        copy(
+                            totalViewFmt = report.totalViewFmt,
+                            totalLike = report.totalLike.toLongOrZero(),
+                            totalLikeFmt = report.totalLikeFmt
+                        )
+                    }
                 } catch (e: Throwable) {
 
                 }
@@ -1239,12 +1256,14 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun trackVisitChannel(channelId: String) {
-        viewModelScope.launchCatchError(dispatchers.io, block = {
-            trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
-            trackVisitChannelBroadcasterUseCase.executeOnBackground()
-        }) {
+    private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
+        if(shouldTrack) {
+            viewModelScope.launchCatchError(dispatchers.io, block = {
+                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId, sourceType))
+                trackVisitChannelBroadcasterUseCase.executeOnBackground()
+            }) { }
         }
+        _channelReport.setValue { copy(shouldTrack = true) }
     }
 
     private fun checkLeaderboard(channelId: String) {
@@ -1368,24 +1387,27 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleWebSocketMessage(message: WebSocketResponse, channelId: String) = withContext(dispatchers.main) {
+    private suspend fun handleWebSocketMessage(
+        message: WebSocketResponse,
+        channelId: String
+    ) = withContext(dispatchers.main) {
         val result = withContext(dispatchers.computation) {
-            val socketMapper = PlaySocketMapper(message)
+            val socketMapper = PlaySocketMapper(message, gson)
             socketMapper.mapping()
         }
 
         when (result) {
-            is TotalLike -> withContext(dispatchers.computation) {
+            is TotalLike -> withContext(dispatchers.computation) likeContext@ {
                 val (totalLike, totalLikeFmt) = playSocketToModelMapper.mapTotalLike(result)
                 val prevLike = _channelReport.value.totalLike
 
-                if (channelType.isLive && totalLike < prevLike) return@withContext
+                if (channelType.isLive && totalLike < prevLike) return@likeContext
 
                 _channelReport.setValue {
                     copy(totalLike = totalLike, totalLikeFmt = totalLikeFmt)
                 }
 
-                if (!channelType.isLive) return@withContext
+                if (!channelType.isLive || !isLikeBubbleEnabled) return@likeContext
 
                 val diffLike = totalLike - prevLike
 
@@ -1812,11 +1834,13 @@ class PlayViewModel @Inject constructor(
 
             viewModelScope.launch {
                 _uiEvent.emit(AnimateLikeEvent(fromIsLiked = true))
-                _uiEvent.emit(ShowLikeBubbleEvent.Single(
-                    count = 1,
-                    reduceOpacity = false,
-                    config = _likeInfo.value.likeBubbleConfig,
-                ))
+                if (isLikeBubbleEnabled) {
+                    _uiEvent.emit(ShowLikeBubbleEvent.Single(
+                        count = 1,
+                        reduceOpacity = false,
+                        config = _likeInfo.value.likeBubbleConfig,
+                    ))
+                }
             }
 
             val (newTotalLike, newTotalLikeFmt) = getNewTotalLikes(newStatus)
@@ -1972,6 +1996,7 @@ class PlayViewModel @Inject constructor(
         private const val FIREBASE_REMOTE_CONFIG_KEY_PIP = "android_mainapp_enable_pip"
         private const val FIREBASE_REMOTE_CONFIG_KEY_INTERACTIVE = "android_main_app_enable_play_interactive"
         private const val FIREBASE_REMOTE_CONFIG_KEY_CAST = "android_main_app_enable_play_cast"
+        private const val FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE = "android_main_app_enable_play_bubbles"
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 

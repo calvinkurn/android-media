@@ -82,7 +82,6 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -105,6 +104,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -138,6 +138,7 @@ import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
+import java.lang.IndexOutOfBoundsException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -510,7 +511,17 @@ open class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     }
 
     private fun initRecyclerView() {
-        val gridLayoutManager = GridLayoutManager(context, 2)
+        val gridLayoutManager = object: GridLayoutManager(context, 2) {
+            override fun supportsPredictiveItemAnimations() = false
+
+            override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+                try {
+                    super.onLayoutChildren(recycler, state)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
         binding?.rvCart?.apply {
             layoutManager = gridLayoutManager
             adapter = cartAdapter

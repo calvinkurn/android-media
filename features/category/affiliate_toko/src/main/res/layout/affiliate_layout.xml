@@ -6,6 +6,7 @@
     android:fitsSystemWindows="true">
 
     <include
+        android:id="@+id/affiliate_background_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         layout="@layout/affiliate_background_layout"/>
