@@ -1,7 +1,6 @@
 package com.tokopedia.officialstore.common
 
 import com.tokopedia.home_component.model.DynamicChannelLayout
-import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 
 interface OfficialStoreConstant {

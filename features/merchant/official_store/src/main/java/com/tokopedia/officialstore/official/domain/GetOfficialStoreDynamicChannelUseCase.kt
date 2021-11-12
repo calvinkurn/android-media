@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home_component.model.DynamicChannelLayout
-import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.GQLQueryConstant
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
