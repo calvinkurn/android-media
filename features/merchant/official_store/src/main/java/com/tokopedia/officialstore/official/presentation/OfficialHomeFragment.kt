@@ -47,6 +47,7 @@ import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressDat
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
@@ -96,6 +97,7 @@ class OfficialHomeFragment :
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
+    private var currentBannerData: OfficialStoreBanners? = null
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
@@ -774,10 +776,12 @@ class OfficialHomeFragment :
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, {
             val resultValue = it.second
+
             val shouldShowErrorMessage = it.first
             when (resultValue) {
                 is Success -> {
-                    if (resultValue.data.banners.isNotEmpty()) {
+                    if (resultValue.data.banners.isNotEmpty() && (this.currentBannerData == null || this.currentBannerData != resultValue.data)) {
+                        this.currentBannerData = resultValue.data
                         removeLoading(resultValue.data.isCache)
                         swipeRefreshLayout?.isRefreshing = false
                         officialHomeMapper.mappingBanners(resultValue.data, adapter, category?.title)

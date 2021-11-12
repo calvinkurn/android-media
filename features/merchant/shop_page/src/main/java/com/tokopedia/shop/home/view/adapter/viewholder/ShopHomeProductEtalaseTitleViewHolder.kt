@@ -9,7 +9,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopPageHomeProductEtalaseTitleViewBinding
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -21,12 +23,12 @@ class ShopHomeProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder
         @LayoutRes
         val LAYOUT = R.layout.item_shop_page_home_product_etalase_title_view
     }
-
+    private val viewBinding: ItemShopPageHomeProductEtalaseTitleViewBinding? by viewBinding()
     private var textView: TextView? = null
     private var ivBadge: ImageView? = null
 
     init {
-        findViews(itemView)
+        findViews()
     }
 
     override fun bind(uiModel: ShopHomeProductEtalaseTitleUiModel) {
@@ -41,8 +43,8 @@ class ShopHomeProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder
         }
     }
 
-    private fun findViews(view: View) {
-        textView = view.findViewById(R.id.text)
-        ivBadge = view.findViewById(R.id.image_view_etalase_badge)
+    private fun findViews() {
+        textView = viewBinding?.text
+        ivBadge = viewBinding?.imageViewEtalaseBadge
     }
 }

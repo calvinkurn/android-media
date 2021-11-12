@@ -9,9 +9,7 @@ import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
-import com.tokopedia.applink.penalty.DeepLinkMapperPenalty
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
-import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
 import io.mockk.mockkClass
@@ -20,7 +18,6 @@ import io.mockk.unmockkAll
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import kotlin.system.measureTimeMillis
 
 open class DeepLinkMapperTestFixture {
 
@@ -35,8 +32,6 @@ open class DeepLinkMapperTestFixture {
         mockkObject(DeeplinkMapperHome)
         mockkObject(DeeplinkMapperAccount)
         mockkObject(DeeplinkMapper)
-        mockkObject(DeepLinkMapperShopScore)
-        mockkObject(DeepLinkMapperPenalty)
         mockkObject(PowerMerchantDeepLinkMapper)
         mockkClass(GlobalConfig::class)
         reversedList = DeeplinkMapper.deeplinkPatternTokopediaSchemeList.reversed().toMutableList()
