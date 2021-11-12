@@ -4,7 +4,6 @@ import com.tokopedia.buyerorder.recharge.data.RechargeOrderDetailGQL
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.data.response.RechargeOrderDetail
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailModel
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -29,14 +28,7 @@ class RechargeOrderDetailUseCase @Inject constructor(
                 ACTION to DEFAULT_ACTION,
                 UPSTREAM to (requestParams.upstream ?: "")
         )
-
-        usecase.setCacheStrategy(
-                GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                        .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
-                        .setSessionIncluded(true)
-                        .build()
-        )
-
+        usecase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         usecase.clearRequest()
 
         return try {
