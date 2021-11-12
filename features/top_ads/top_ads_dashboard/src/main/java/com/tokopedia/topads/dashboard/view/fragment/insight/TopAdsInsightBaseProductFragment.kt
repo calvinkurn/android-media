@@ -16,6 +16,7 @@ import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_ADD_OPTION
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_SOURCE_RECOM
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
@@ -71,6 +72,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     }
     private var currentGroupName = ""
     private var currentGroupId = ""
+    private var currentGroupType = ""
 
     companion object {
         fun createInstance(bundle: Bundle): TopAdsInsightBaseProductFragment {
@@ -218,9 +220,10 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
                 }
             }
         }
-        sheet.onItemClick = { groupId ->
+        sheet.onItemClick = { groupIdAndType ->
             getBidInfo()
-            currentGroupId = groupId
+            currentGroupId = groupIdAndType.first
+            currentGroupType = groupIdAndType.second
             adapter.items?.forEach {
                 if(it.isChecked) {
                     val eventLabel = "${it.productId} - ${it.searchCount} - ${it.searchPercentage} - ${it.recomBid} - ${it.setCurrentBid}"
@@ -261,6 +264,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
             val productList: MutableList<GroupEditInput.Group.AdOperationsItem>? = getAds()
             val map = HashMap<String, Any?>()
             map[PARAM_GROUP_Id] = currentGroupId
+            map[PARAM_GROUP_TYPE] = currentGroupType
             map[PARAM_PRICE_BID] = data.firstOrNull()?.minBid ?: 0
             topAdsDashboardPresenter.editBudgetThroughInsight(productList, map, ::onResultEdit, ::onError)
             currentGroupId = ""
