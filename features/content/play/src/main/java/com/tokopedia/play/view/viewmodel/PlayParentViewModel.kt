@@ -82,8 +82,11 @@ class PlayParentViewModel constructor(
     val startingChannelId: String?
         get() = handle[PLAY_KEY_CHANNEL_ID]
 
-    private val mVideoStartMillis: Long?
-        get() = handle[KEY_START_MILLIS]
+    private val mVideoStartMillis: String?
+        get() = handle[KEY_START_TIME]
+
+    private val shouldTrack: String?
+        get() = handle[KEY_SHOULD_TRACK]
 
     private var mNextKey: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey = getNextChannelIdKey(
             channelId = startingChannelId ?: error("Channel ID must be provided"),
@@ -142,7 +145,13 @@ class PlayParentViewModel constructor(
 
                 mNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor(response.channelDetails.meta.cursor)
 
-                playChannelMapper.map(response, PlayChannelDetailsWithRecomMapper.ExtraParams(channelId = startingChannelId, videoStartMillis = mVideoStartMillis)).forEach {
+                playChannelMapper.map(response, PlayChannelDetailsWithRecomMapper.ExtraParams(
+                        channelId = startingChannelId,
+                        videoStartMillis = mVideoStartMillis?.toLong() ?: 0,
+                        shouldTrack = shouldTrack?.toBoolean() ?: true,
+                        sourceType = source.key
+                    )
+                ).forEach {
                     playChannelStateStorage.setData(it.id, it)
                 }
             }
@@ -172,8 +181,8 @@ class PlayParentViewModel constructor(
     }
 
     companion object {
-
-        private const val KEY_START_MILLIS = "start_vod_millis"
+        private const val KEY_START_TIME = "start_time"
         private const val IS_FROM_PIP = "is_from_pip"
+        private const val KEY_SHOULD_TRACK = "should_track"
     }
 }

@@ -22,47 +22,53 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.AddSocialInterface
 import com.tokopedia.affiliate.interfaces.ShareButtonInterface
+import com.tokopedia.affiliate.model.AffiliatePortfolioButtonData
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioButtonModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromotionBSViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
+class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface , AddSocialInterface{
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
     private var contentView: View? = null
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(this))
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(shareButtonInterface = this, addSocialInterface = this))
     private var productId : String = ""
     private var currentName: String? = null
     private var currentServiceFormat = ""
     private var originScreen = ORIGIN_PROMOSIKAN
     private var url: String? = null
     private var identifier: String? = null
-    private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf(
-            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",3),
-            AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",9),
-            AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",13),
-            AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",1),
-            AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10),
-            AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11),
-            AffiliateShareModel("WhatsApp", IconUnify.WHATSAPP,"whatsapp",12),
-            AffiliateShareModel("Line", IconUnify.LINE,"line",4),
-            AffiliateShareModel("Lainnya",null,"others", 0)
-    )
+    private var isLinkGenerationEnabled = true
+
+    private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf()
+    private var sheetType = SheetType.LINK_GENERATION
+    private var affiliatePromotionBottomSheetInterface : AffiliatePromotionBottomSheetInterface? = null
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
     private lateinit var affiliatePromotionBSViewModel: AffiliatePromotionBSViewModel
 
     companion object {
+
+        enum class SheetType(type : Int) {
+            LINK_GENERATION(1),
+            ADD_SOCIAL(2)
+        }
+
         private const val COPY_LABEL = "Tokopedia"
         private const val KEY_PRODUCT_ID = "KEY_PRODUCT_ID"
         private const val KEY_PRODUCT_NAME = "KEY_PRODUCT_NAME"
@@ -70,13 +76,18 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
         private const val KEY_PRODUCT_URL = "KEY_PRODUCT_URL"
         private const val KEY_PRODUCT_IDENTIFIER = "KEY_PRODUCT_IDENTIFIER"
         private const val KEY_ORIGIN = "KEY_ORIGIN"
+        private const val KEY_LINK_GEN_ENABLED = "KEY_LINK_GEN_ENABLED"
 
         const val ORIGIN_PROMOSIKAN = 1
         const val ORIGIN_HOME = 2
+        const val ORIGIN_PORTFOLIO = 3
 
-        fun newInstance(productId : String, productName: String, productImage: String,
-                        productUrl: String, productIdentifier: String, origin : Int = ORIGIN_PROMOSIKAN): AffiliatePromotionBottomSheet {
+        fun newInstance(bottomSheetType : SheetType, bottomSheetInterface : AffiliatePromotionBottomSheetInterface?,   productId : String, productName: String, productImage: String,
+                        productUrl: String, productIdentifier: String, origin : Int = ORIGIN_PROMOSIKAN,
+                        isLinkGenerationEnabled :Boolean = true): AffiliatePromotionBottomSheet {
             return AffiliatePromotionBottomSheet().apply {
+                sheetType = bottomSheetType
+                affiliatePromotionBottomSheetInterface = bottomSheetInterface
                 arguments = Bundle().apply {
                     putString(KEY_PRODUCT_ID,productId)
                     putString(KEY_PRODUCT_NAME, productName)
@@ -84,6 +95,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
                     putString(KEY_PRODUCT_URL, productUrl)
                     putString(KEY_PRODUCT_IDENTIFIER, productIdentifier)
                     putInt(KEY_ORIGIN,origin)
+                    putBoolean(KEY_LINK_GEN_ENABLED,isLinkGenerationEnabled)
                 }
             }
         }
@@ -103,16 +115,19 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
     private fun init() {
         showCloseIcon = true
         showKnob = false
-        setTitle(getString(R.string.affiliate_where_to_promote))
+        if (sheetType == SheetType.ADD_SOCIAL)
+            setTitle(getString(R.string.affiliate_add_social_media))
+        else
+            setTitle(getString(R.string.affiliate_where_to_promote))
         contentView = View.inflate(context,
                 R.layout.affiliate_promotion_bottom_sheet, null)
 
-        contentView?.findViewById<RecyclerView>(R.id.share_rv)?.let {
-            val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter.setVisitables(listVisitable)
-            it.layoutManager = layoutManager
-            it.adapter = adapter
-        }
+        afterViewSet()
+        setChild(contentView)
+        sendScreenEvent()
+    }
+
+    private fun afterViewSet() {
         contentView?.run {
             arguments?.let { bundle ->
                 findViewById<Typography>(R.id.product_name).text = bundle.getString(KEY_PRODUCT_NAME)
@@ -121,11 +136,40 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
                 url = bundle.getString(KEY_PRODUCT_URL, "")
                 identifier = bundle.getString(KEY_PRODUCT_IDENTIFIER)
                 originScreen = bundle.getInt(KEY_ORIGIN, ORIGIN_PROMOSIKAN)
+                isLinkGenerationEnabled = bundle.getBoolean(KEY_LINK_GEN_ENABLED)
             }
+
+            if(sheetType == SheetType.ADD_SOCIAL){
+                findViewById<IconUnify>(R.id.product_image).hide()
+                findViewById<Typography>(R.id.product_name).hide()
+            }
+
             setObservers(this)
         }
-        setChild(contentView)
-        sendScreenEvent()
+        contentView?.findViewById<RecyclerView>(R.id.share_rv)?.let {
+            addDataInRecyclerView()
+            val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter.setVisitables(listVisitable)
+            it.layoutManager = layoutManager
+            it.adapter = adapter
+        }
+    }
+
+    private fun addDataInRecyclerView() {
+        listVisitable = arrayListOf<Visitable<AffiliateAdapterTypeFactory>>(
+            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",3,sheetType,false,isChecked = true, isLinkGenerationEnabled),
+            AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",9,sheetType,false,isChecked = true, isLinkGenerationEnabled),
+            AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",13,sheetType,false,isChecked = true, isLinkGenerationEnabled),
+            AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",1,sheetType,false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10,sheetType,false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11,sheetType,false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("WhatsApp", IconUnify.WHATSAPP,"whatsapp",12,sheetType,false,isChecked = false, isLinkGenerationEnabled),
+            AffiliateShareModel("Line", IconUnify.LINE,"line",4,sheetType,false, isChecked = false,isLinkGenerationEnabled),
+            AffiliateShareModel("Lainnya",null,"others", 0,sheetType,false, isChecked = false,isLinkGenerationEnabled))
+
+        if(sheetType == SheetType.ADD_SOCIAL){
+            (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Simpan", UnifyButton.Type.MAIN, UnifyButton.Variant.FILLED,true)))
+        }
     }
 
     private fun initInject() {
@@ -161,7 +205,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
                             AffiliateAnalytics.ActionKeys.IMPRESSION_LINK_GEN_ERROR,
                             eventCategory,
                             "$productId-$currentServiceFormat",userSessionInterface.userId)
-                }else {
+                }else if(originScreen == ORIGIN_PROMOSIKAN) {
                     AffiliateAnalytics.sendEvent(
                             AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
                             AffiliateAnalytics.ActionKeys.IMPRESSION_LINK_GEN_ERROR,
@@ -203,7 +247,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
                     AffiliateAnalytics.ActionKeys.IMPRESSION_HOME_PORTAL_B_S,
                     AffiliateAnalytics.CategoryKeys.HOME_PORTAL_B_S,
                     "",userSessionInterface.userId)
-        }else {
+        }else if(originScreen == ORIGIN_PROMOSIKAN){
             AffiliateAnalytics.sendEvent(
                     AffiliateAnalytics.EventKeys.EVENT_VALUE_VIEW,
                     AffiliateAnalytics.ActionKeys.IMPRESSION_PROMOSIKAN_SRP_B_S,
@@ -218,4 +262,33 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
         affiliatePromotionBSViewModel.affiliateGenerateLink(id, url, identifier)
     }
 
+    override fun onSaveSocialButtonClicked() {
+        val selectedSocialList = arrayListOf<AffiliateShareModel>()
+        for (vistitable in listVisitable){
+            if(vistitable is AffiliateShareModel){
+                selectedSocialList.add(vistitable)
+            }
+        }
+        affiliatePromotionBottomSheetInterface?.onButtonClick(selectedSocialList)
+    }
+
+
+    override fun onSocialChecked(position: Int, isChecked : Boolean) {
+        (listVisitable[position] as AffiliateShareModel).isChecked = isChecked
+        checkForAtleastOneSelected()
+    }
+
+    private fun checkForAtleastOneSelected() {
+        var count = 0
+        for (vistitable in listVisitable){
+            if((vistitable is AffiliateShareModel) && vistitable.isChecked){ count += 1 }
+        }
+        if(count == 0) contentView?.findViewById<Typography>(R.id.error_message)?.show()
+        else contentView?.findViewById<Typography>(R.id.error_message)?.hide()
+    }
+
+}
+
+interface AffiliatePromotionBottomSheetInterface {
+    fun onButtonClick(arrayList: ArrayList<AffiliateShareModel>)
 }

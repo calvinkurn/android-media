@@ -57,4 +57,46 @@ class SavedOptionTest {
         assertThat(savedOption.name, `is`(sort.name))
         assertThat(savedOption.title, `is`(SORT_SAVED_OPTION_TITLE))
     }
+
+    @Test
+    fun `create saved option from level 2 category option will have title from category filter`() {
+        val dynamicFilterModel =
+            "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val filterList = dynamicFilterModel.data.filter
+        val categoryFilter = filterList.find { it.isCategoryFilter }!!
+        val categoryOptionLevel2 = findCategoryFilterLevel2(categoryFilter)
+
+        val savedOption = SavedOption.create(categoryOptionLevel2, filterList)
+
+        assertThat(savedOption.title, `is`(categoryFilter.title))
+    }
+
+    private fun findCategoryFilterLevel2(categoryFilter: Filter) =
+        categoryFilter
+            .options.first()
+            .levelTwoCategoryList.first()
+            .asOption()
+
+    @Test
+    fun `create saved option from level 3 category option will have title from category filter`() {
+        val dynamicFilterModel =
+            "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val filterList = dynamicFilterModel.data.filter
+        val categoryFilter = filterList.find { it.isCategoryFilter }!!
+        val categoryOptionLevel3 = findCategoryFilterLevel3(categoryFilter)
+
+        val savedOption = SavedOption.create(categoryOptionLevel3, filterList)
+
+        assertThat(savedOption.title, `is`(categoryFilter.title))
+    }
+
+    private fun findCategoryFilterLevel3(categoryFilter: Filter): Option {
+        val categoryOptionLevel2 = categoryFilter
+            .options.first()
+            .levelTwoCategoryList.find { it.levelThreeCategoryList.isNotEmpty() }!!
+
+        return categoryOptionLevel2
+            .levelThreeCategoryList.find { it.value != categoryOptionLevel2.value }!!
+            .asOption()
+    }
 }

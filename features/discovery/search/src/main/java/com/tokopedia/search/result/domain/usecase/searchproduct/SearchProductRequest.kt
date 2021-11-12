@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.search.result.domain.model.AceSearchProductModel
 import com.tokopedia.search.result.domain.model.HeadlineAdsModel
@@ -19,9 +20,10 @@ internal fun MutableList<GraphqlRequest>.addAceSearchProductRequest(params: Stri
         add(createAceSearchProductRequest(params))
 }
 
+@GqlQuery("AceSearchProduct", ACE_SEARCH_PRODUCT_QUERY)
 internal fun createAceSearchProductRequest(params: String) =
         GraphqlRequest(
-                ACE_SEARCH_PRODUCT_QUERY,
+                AceSearchProduct.GQL_QUERY,
                 AceSearchProductModel::class.java,
                 mapOf(SearchConstant.GQL.KEY_PARAMS to params)
         )
@@ -32,9 +34,10 @@ internal fun MutableList<GraphqlRequest>.addProductAdsRequest(requestParams: Req
         }
 }
 
+@GqlQuery("TopAdsProduct", TOPADS_PRODUCT_QUERY)
 internal fun createTopAdsProductRequest(params: String) =
         GraphqlRequest(
-                TOPADS_PRODUCT_QUERY,
+                TopAdsProduct.GQL_QUERY,
                 ProductTopAdsModel::class.java,
                 mapOf(SearchConstant.GQL.KEY_PARAMS to params)
         )
@@ -63,9 +66,10 @@ internal fun createHeadlineParams(
     return UrlParamUtils.generateUrlParamString(headlineParams)
 }
 
+@GqlQuery("HeadlineAds", HEADLINE_ADS_QUERY)
 internal fun createHeadlineAdsRequest(headlineParams: String) =
     GraphqlRequest(
-        HEADLINE_ADS_QUERY,
+        HeadlineAds.GQL_QUERY,
         HeadlineAdsModel::class.java,
         mapOf(SearchConstant.GQL.KEY_HEADLINE_PARAMS to headlineParams)
     )
