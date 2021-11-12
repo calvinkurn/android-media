@@ -4,6 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 buildscript {
     repositories {
@@ -70,6 +71,12 @@ android {
 dependencies {
     implementation platform(rootProject.ext.firebase.bom)
 
+    implementation rootProject.ext.firebase.config
+   implementation rootProject.ext.firebase.messaging
+    implementation rootProject.ext.firebase.auth
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.firebase.fireStore
+
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
@@ -121,7 +128,18 @@ dependencies {
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
     //developer_options should not appear in compile-testapp-plugin.gradle if it is successfully excluded
     implementation projectOrAar(rootProject.ext.features.developerOptions)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+    implementation project(rootProject.ext.libraries.remoteConfig)
+	implementation project(rootProject.ext.features.navigation)
+	implementation project(rootProject.ext.features.homeComponent)
+	implementation project(rootProject.ext.features.feed)
+	implementation project(rootProject.ext.features.unifyorderhistory)
+	implementation project(rootProject.ext.features.homeNav)
+	implementation project(rootProject.ext.features.navigationCommon)
+	implementation project(rootProject.ext.features.homeRecom)
+	implementation project(rootProject.ext.features.feedComponent)
+	implementation project(rootProject.ext.features.home)
 }

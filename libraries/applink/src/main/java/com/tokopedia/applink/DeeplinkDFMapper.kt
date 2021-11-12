@@ -402,7 +402,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
@@ -606,7 +605,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE_SELLER_APP, R.string.merchant_seller))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
                     || it.startsWith(SHOP_SCORE_DETAIL)
-                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
                     || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
                     || it.startsWith(SHOP_PENALTY)
                     || it.startsWith(SHOP_PENALTY_DETAIL)
@@ -673,7 +671,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
