@@ -50,8 +50,8 @@ class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepos
                         title = "Pelanggaran atribut",
                         content = PendingReasonContent(
                                 description = PendingReasonDescription(
-                                        descDetail = "Berupa organ tubuh manusia",
-                                        descInfo = "Produk diduga melanggar hukum karena:"
+                                        descInfo = "Berupa organ tubuh manusia",
+                                        descDetail = "Produk diduga melanggar hukum karena:"
                                 ),
                                 resolution = PendingReasonResolution(
                                         resolutionInfo = "Lakukan langkah berikut untuk menyelesaikan:",

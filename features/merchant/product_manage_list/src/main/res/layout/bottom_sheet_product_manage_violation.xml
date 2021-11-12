@@ -72,6 +72,7 @@
         android:id="@+id/shimmer_product_manage_violation_1"
         android:layout_width="match_parent"
         android:layout_height="24dp"
+        app:corners="8"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
@@ -79,6 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_marginTop="14dp"
+        app:corners="8"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_1" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -86,6 +88,7 @@
         android:layout_width="match_parent"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
+        app:corners="8"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -93,46 +96,53 @@
         android:layout_width="32dp"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
+        app:corners="8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_3" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_product_manage_violation_4_right"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="14dp"
+        app:corners="8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/shimmer_product_manage_violation_4_left"
-        app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_3" />
+        app:layout_constraintTop_toTopOf="@id/shimmer_product_manage_violation_4_left"
+        app:layout_constraintBottom_toBottomOf="@id/shimmer_product_manage_violation_4_left"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_product_manage_violation_5_left"
         android:layout_width="32dp"
         android:layout_height="24dp"
         android:layout_marginTop="14dp"
+        app:corners="8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_4_left" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_product_manage_violation_5_right"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="24dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="14dp"
+        app:corners="8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/shimmer_product_manage_violation_5_left"
-        app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_4_right" />
+        app:layout_constraintTop_toTopOf="@id/shimmer_product_manage_violation_5_left"
+        app:layout_constraintBottom_toBottomOf="@id/shimmer_product_manage_violation_5_left"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/shimmer_product_manage_violation_6"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="16dp"
+        app:corners="8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_product_manage_violation_5_right" />
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/product_manage_violation_success_group"
+        android:id="@+id/product_manage_violation_loading_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="shimmer_product_manage_violation_1,
@@ -142,11 +152,11 @@
         shimmer_product_manage_violation_5_right, shimmer_product_manage_violation_6" />
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/product_manage_violation_loading_group"
+        android:id="@+id/product_manage_violation_success_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="layout_product_manage_violation_reason,
-        layout_product_manage_violation_reason, tv_product_manage_violation_step_title,
-        rv_product_manage_violation_step, btn_product_manage_violation_action" />
+        tv_product_manage_violation_step_title, rv_product_manage_violation_step,
+        btn_product_manage_violation_action" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
