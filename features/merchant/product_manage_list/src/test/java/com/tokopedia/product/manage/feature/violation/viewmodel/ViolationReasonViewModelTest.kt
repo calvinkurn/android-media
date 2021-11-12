@@ -40,12 +40,12 @@ class ViolationReasonViewModelTest {
                 "", "", "", "", listOf(), "", ""
         )
         coEvery {
-            violationReasonUseCase.execute()
+            violationReasonUseCase.execute(any())
         } returns successResponse
 
-        viewModel.getViolationReason()
+        viewModel.getViolationReason("")
 
-        coVerify { violationReasonUseCase.execute() }
+        coVerify { violationReasonUseCase.execute(any()) }
         assert(viewModel.violationReasonUiModelLiveData.value == Success(successResponse))
     }
 
@@ -53,12 +53,12 @@ class ViolationReasonViewModelTest {
     fun `when getViolationReason error, should set live data fail`() {
         val throwable = NullPointerException()
         coEvery {
-            violationReasonUseCase.execute()
+            violationReasonUseCase.execute(any())
         } throws throwable
 
-        viewModel.getViolationReason()
+        viewModel.getViolationReason("")
 
-        coVerify { violationReasonUseCase.execute() }
+        coVerify { violationReasonUseCase.execute(any()) }
         assert(viewModel.violationReasonUiModelLiveData.value is Fail)
     }
 

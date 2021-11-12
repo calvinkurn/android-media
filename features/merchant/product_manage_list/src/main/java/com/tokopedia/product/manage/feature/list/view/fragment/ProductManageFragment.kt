@@ -1614,7 +1614,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 goToProductViolationHelpPage()
             }
             product.isPending() -> {
-                showViolationReasonBottomSheet()
+                showViolationReasonBottomSheet(product.id)
             }
         }
         ProductManageTracking.eventContactCs(product.id)
@@ -2607,8 +2607,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
     }
 
-    private fun showViolationReasonBottomSheet() {
-        ViolationReasonBottomSheet.createInstance(this).show(childFragmentManager)
+    private fun showViolationReasonBottomSheet(productId: String) {
+        ViolationReasonBottomSheet.createInstance(productId, this).show(childFragmentManager)
     }
 
     private fun showToaster(message: String) {

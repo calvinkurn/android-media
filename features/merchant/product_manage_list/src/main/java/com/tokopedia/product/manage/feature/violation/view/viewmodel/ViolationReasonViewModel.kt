@@ -22,11 +22,11 @@ class ViolationReasonViewModel @Inject constructor(
         get() = _violationReasonUiModelLiveData
     private val _violationReasonUiModelLiveData = MutableLiveData<Result<ViolationReasonUiModel>>()
 
-    fun getViolationReason() {
+    fun getViolationReason(productId: String) {
         launchCatchError(block = {
             _violationReasonUiModelLiveData.value = Success(
                 withContext(dispatcher.io) {
-                    violationReasonUseCase.execute()
+                    violationReasonUseCase.execute(productId)
                 }
             )
         }, onError = {

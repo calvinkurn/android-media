@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.feature.violation.data.*
 import com.tokopedia.product.manage.feature.violation.domain.mapper.ViolationReasonMapper
 import com.tokopedia.product.manage.feature.violation.view.uimodel.ViolationReasonUiModel
-import kotlinx.coroutines.delay
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepository,
@@ -14,8 +14,8 @@ class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepos
 
     companion object {
         private val QUERY = """
-            query {
-              visionGetPendingReasonDetail {
+            query getPendingReasonDetail(${'$'}productId: [String]!){
+              visionGetPendingReasonDetail(product_id: ${"$"}filter) {
                 product_id
                 title
                 content {
@@ -35,6 +35,14 @@ class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepos
               }
             }
         """.trimIndent()
+
+        private const val PRODUCT_ID_KEY = "productId"
+
+        private fun createRequestParam(productId: String): RequestParams {
+            return RequestParams.create().apply {
+                putObject(PRODUCT_ID_KEY, listOf(productId))
+            }
+        }
     }
 
     init {
@@ -42,36 +50,10 @@ class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepos
         setGraphqlQuery(QUERY)
     }
 
-    suspend fun execute(): ViolationReasonUiModel {
-        // TODO: Remove Dummy
-        val dummyResponse = ViolationReasonDetailResponse(
-                detail = VisionGetPendingReasonDetail(
-                        productId = "123",
-                        title = "Pelanggaran atribut",
-                        content = PendingReasonContent(
-                                description = PendingReasonDescription(
-                                        descInfo = "Berupa organ tubuh manusia",
-                                        descDetail = "Produk diduga melanggar hukum karena:"
-                                ),
-                                resolution = PendingReasonResolution(
-                                        resolutionInfo = "Lakukan langkah berikut untuk menyelesaikan:",
-                                        resolutionSteps = listOf(
-                                                "Pelajari tentang <a href=\"https://seller.tokopedia.com/edu/produk-yang-dilarang\">produk yang dilarang</a>",
-                                                "Tambah produk <a href=\"https://www.tokopedia.com/terms#sell\">sesuai Syarat dan Ketentuan</a>"
-                                        )
-                                ),
-                                ctaList = listOf(
-                                        ViolationCTA(
-                                                buttonText = "Bantuan",
-                                                buttonLink = "sellerapp://home"
-                                        )
-                                )
-                        )
-                )
-        )
-        delay(1000)
-//        return mapper.mapViolationResponseToUiModel(dummyResponse)
-        throw NullPointerException()
+    suspend fun execute(productId: String): ViolationReasonUiModel {
+        setRequestParams(createRequestParam(productId).parameters)
+        val response = executeOnBackground()
+        return mapper.mapViolationResponseToUiModel(response)
     }
 
 }

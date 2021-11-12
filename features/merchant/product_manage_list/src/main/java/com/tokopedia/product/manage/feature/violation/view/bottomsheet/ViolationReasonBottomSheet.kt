@@ -36,13 +36,19 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
         ViolationReasonItemViewHolder.Listener {
 
     companion object {
-        fun createInstance(violationListener: Listener): ViolationReasonBottomSheet {
+        fun createInstance(productId: String,
+                           violationListener: Listener): ViolationReasonBottomSheet {
             return ViolationReasonBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(PRODUCT_ID_KEY, productId)
+                }
                 listener = violationListener
             }
         }
 
         private const val TAG = "ViolationReasonBottomSheet"
+
+        private const val PRODUCT_ID_KEY = "product_id"
 
         private const val SCHEME_EXTERNAL = "tokopedia"
         private const val SCHEME_SELLERAPP = "sellerapp"
@@ -52,6 +58,10 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
 
     @Inject
     lateinit var viewModel: ViolationReasonViewModel
+
+    private val productId by lazy {
+        arguments?.getString(PRODUCT_ID_KEY).orEmpty()
+    }
 
     private var binding by autoClearedNullable<BottomSheetProductManageViolationBinding>()
 
@@ -128,7 +138,7 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
                 }
             }
         }
-        viewModel.getViolationReason()
+        viewModel.getViolationReason(productId)
     }
 
     private fun setLoadingView() {
