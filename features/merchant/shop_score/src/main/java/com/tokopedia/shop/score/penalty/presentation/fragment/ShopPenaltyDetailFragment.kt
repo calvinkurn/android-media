@@ -28,7 +28,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class ShopPenaltyDetailFragment : BaseDaggerFragment() {
+open class ShopPenaltyDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var shopPenaltyDetailViewModel: ShopPenaltyDetailViewModel
@@ -163,13 +163,17 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            setSupportActionBar(binding?.penaltyDetailToolbar)
+            binding?.penaltyDetailToolbar?.run {
+                setSupportActionBar(this)
+                isShowBackButton = showBackButton()
+            }
             supportActionBar?.run {
                 title = getString(R.string.title_penalty_detail_shop_score)
             }
         }
-
     }
+
+    fun showBackButton(isShowBackButton: Boolean = true) = isShowBackButton
 
     fun dismissBottomSheet() {
         childFragmentManager.fragments.forEach {

@@ -316,12 +316,17 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            setSupportActionBar(binding?.penaltyPageToolbar)
+            binding?.penaltyPageToolbar?.run {
+                setSupportActionBar(this)
+                isShowBackButton = showBackButton()
+            }
             supportActionBar?.run {
                 title = getString(R.string.title_penalty_shop_score)
             }
         }
     }
+
+    protected open fun showBackButton() = true
 
     override fun onDateClick() {
         val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(

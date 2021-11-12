@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -108,7 +109,8 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
     }
 
     private fun setupViews() {
-        binding?.ivPenaltyDetailWelcomeIllustration?.loadImage(ShopScoreConstant.EMPTY_STATE_PENALTY_URL)
+        binding?.ivPenaltyDetailWelcomeIllustration?.loadImage(
+            ShopScoreConstant.EMPTY_STATE_PENALTY_URL)
     }
 
     private fun attachPenaltyDetailFragment(keyCacheManagerId: String) {
@@ -116,6 +118,7 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
             if (shopPenaltyDetailFragment == null) {
                 if (!isAdded) return
                 val detailFragment = initiateDetailFragment(keyCacheManagerId)
+                detailFragment.showBackButton(false)
                 childFragmentManager.beginTransaction().replace(
                     R.id.fragmentPenaltyDetail,
                     detailFragment,
@@ -128,6 +131,11 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
 
     private fun showPenaltyDetail() {
         binding?.run {
+            context?.let {
+                fragmentPenaltyDetail.setBackgroundColor(
+                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+                )
+            }
             fragmentPenaltyDetail.show()
             ivPenaltyDetailWelcomeIllustration.gone()
             tvPenaltyDetailWelcome.gone()
