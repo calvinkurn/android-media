@@ -43,7 +43,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     ),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
-                    channelReportInfo = mapChannelReportInfo(),
+                    channelReportInfo = mapChannelReportInfo(it.id, extraParams),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
@@ -89,7 +89,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         likeBubbleConfig = mapMultipleLikeConfig(configs),
     )
 
-    private fun mapChannelReportInfo() = PlayChannelReportUiModel()
+    private fun mapChannelReportInfo(
+        channelId: String,
+        extraParams: ExtraParams
+    ) = PlayChannelReportUiModel(
+        shouldTrack = if(channelId == extraParams.channelId) extraParams.shouldTrack else true,
+        sourceType = extraParams.sourceType
+    )
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share): PlayShareInfoUiModel {
         val fullShareContent = try {
@@ -271,6 +277,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     data class ExtraParams(
             val channelId: String?,
-            val videoStartMillis: Long?
+            val videoStartMillis: Long?,
+            val shouldTrack: Boolean,
+            val sourceType: String,
     )
 }

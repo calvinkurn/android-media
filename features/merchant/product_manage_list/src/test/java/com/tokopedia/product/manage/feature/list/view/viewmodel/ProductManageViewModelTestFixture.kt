@@ -7,7 +7,7 @@ import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProduc
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
 import com.tokopedia.product.manage.common.feature.variant.domain.GetProductVariantUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
+import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
@@ -52,7 +52,7 @@ open class ProductManageViewModelTestFixture {
     lateinit var topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase
 
     @RelaxedMockK
-    lateinit var popupManagerAddProductUseCase: PopupManagerAddProductUseCase
+    lateinit var getShopManagerPopupsUseCase: GetShopManagerPopupsUseCase
 
     @RelaxedMockK
     lateinit var getProductListUseCase: GQLGetProductListUseCase
@@ -93,7 +93,7 @@ open class ProductManageViewModelTestFixture {
                 getShopInfoTopAdsUseCase,
                 userSessionInterface,
                 topAdsGetShopDepositGraphQLUseCase,
-                popupManagerAddProductUseCase,
+                getShopManagerPopupsUseCase,
                 getProductListUseCase,
                 setFeaturedProductUseCase,
                 editStatusUseCase,

@@ -84,8 +84,8 @@ class MvcTracker{
         trackerImpl.userClickBottomSheetCTA(widgetType,label,userId)
     }
 
-    fun tokomemberImpressionOnPdp(shopId: String,userId: String?){
-        trackerImpl.tokomemberImpressionOnPdp(shopId,userId)
+    fun tokomemberImpressionOnPdp(shopId: String,userId: String?, isTokomember: Boolean){
+        trackerImpl.tokomemberImpressionOnPdp(shopId,userId, isTokomember)
     }
 
     //Multishop
