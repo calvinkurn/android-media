@@ -49,7 +49,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int = HomeEducationalInformationWidgetViewHolder.LAYOUT
 
     // Quest Widget ViewHolder
-
+    override fun type(questWidgetModel: QuestWidgetModel): Int = QuestWidgetViewHolder.LAYOUT
 
     // endregion
 
