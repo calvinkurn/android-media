@@ -3,7 +3,6 @@ package com.tokopedia.officialstore.official.data.mapper
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.visitable.*
