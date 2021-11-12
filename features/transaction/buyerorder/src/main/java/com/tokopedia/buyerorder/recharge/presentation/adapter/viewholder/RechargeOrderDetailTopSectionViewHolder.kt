@@ -8,6 +8,7 @@ import com.tokopedia.buyerorder.recharge.presentation.customview.RechargeOrderDe
 import com.tokopedia.buyerorder.recharge.presentation.model.RechargeOrderDetailTopSectionModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 /**
  * @author by furqan on 01/11/2021
@@ -21,8 +22,21 @@ class RechargeOrderDetailTopSectionViewHolder(
         with(binding) {
             tgRechargeOrderDetailStatus.text = element.textStatus
 
-            if (element.tickerData.text.isNotEmpty() or element.tickerData.title.isNotEmpty()) {
+            if (element.tickerData.text.isNotEmpty()) {
                 tickerRechargeOrderDetail.setHtmlDescription(element.tickerData.text)
+                tickerRechargeOrderDetail.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        if (linkUrl.isNotEmpty()) {
+                            RouteManager.route(root.context, linkUrl.toString())
+                        } else {
+                            RouteManager.route(root.context, element.tickerData.urlDetail)
+                        }
+                    }
+
+                    override fun onDismiss() {
+                        // no op
+                    }
+                })
                 tickerRechargeOrderDetail.show()
             } else {
                 tickerRechargeOrderDetail.hide()
