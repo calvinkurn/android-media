@@ -6,8 +6,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.AffiliateHomeRvDateRangeInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHomeHeaderModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTermsAndConditionModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifyprinciples.Typography
 

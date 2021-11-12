@@ -7,5 +7,6 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import java.util.ArrayList
 
 class AffiliateUserPerformaData(
-      var data : ArrayList<Visitable<AffiliateAdapterTypeFactory>>? = null
+      var data : ArrayList<Visitable<AffiliateAdapterTypeFactory>>? = null,
+      var itemCount : String? = "0"
 )

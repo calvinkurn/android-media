@@ -30,7 +30,6 @@ class AffiliateAdapterFactory(
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
             AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
             AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)
-            AffiliateHomeHeaderVH.LAYOUT  -> AffiliateHomeHeaderVH(parent)
             AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent)
             AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent)
             AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent,onDateRangeClickInterface)
@@ -80,10 +79,6 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateUserPerformanceListModel): Int {
         return AffiliateHomeUserListDataVH.LAYOUT
-    }
-
-    override fun type(viewModel: AffiliateHomeHeaderModel): Int {
-        return  AffiliateHomeHeaderVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateDateFilterModel): Int {

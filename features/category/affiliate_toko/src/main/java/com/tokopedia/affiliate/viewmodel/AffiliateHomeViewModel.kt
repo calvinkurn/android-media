@@ -30,6 +30,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private var affiliateAnnouncement=MutableLiveData<AffiliateAnnouncementData>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
+    private var rangeItemCount :String? = "0"
     private var errorMessage = MutableLiveData<Throwable>()
     private var affiliateErrorMessage = MutableLiveData<Throwable>()
     private var rangeChanged = MutableLiveData<Boolean>()
@@ -92,9 +93,7 @@ class AffiliateHomeViewModel @Inject constructor(
         val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         val itemCount :Int = data.itemTotalCount ?: 0
         tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData(selectedDateRange)))
-        tempList.add(AffiliateHomeHeaderModel(AffiliateHomeHeaderData("Performa Affiliate")))
-        tempList.add(AffiliateUserPerformanceModel(AffiliateUserPerformaData(getListFromData(performanceList))))
-        tempList.add(AffiliateHomeHeaderModel(AffiliateHomeHeaderData("Produk yang dipromosikan","$itemCount Produk",true)))
+        tempList.add(AffiliateUserPerformanceModel(AffiliateUserPerformaData(getListFromData(performanceList),rangeItemCount)))
         data.items?.let { items ->
             for (product in items) {
                 product?.let {
@@ -111,6 +110,8 @@ class AffiliateHomeViewModel @Inject constructor(
         affiliatePerfomanceResponse?.getAffiliatePerformance.data?.userData?.metrics?.forEach {
             if(it?.metricType != "totalItems")
                 performaTempList.add(AffiliateUserPerformanceListModel(it))
+            else if(it.metricType == "totalItems")
+                rangeItemCount = it.metricValue
         }
         return performaTempList
     }

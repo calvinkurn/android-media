@@ -16,6 +16,5 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliateStaggeredPromotionCardModel): Int
     fun type(viewModel: AffiliateUserPerformanceModel): Int
     fun type(viewModel: AffiliateUserPerformanceListModel): Int
-    fun type(viewModel: AffiliateHomeHeaderModel): Int
     fun type(viewModel: AffiliateDateFilterModel): Int
 }
