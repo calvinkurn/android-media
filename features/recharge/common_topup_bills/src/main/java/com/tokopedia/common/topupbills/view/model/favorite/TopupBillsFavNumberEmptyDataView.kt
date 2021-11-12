@@ -1,9 +1,9 @@
-package com.tokopedia.common.topupbills.view.model
+package com.tokopedia.common.topupbills.view.model.favorite
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactory
 
-class TopupBillsFavNumberNotFoundDataView: Visitable<FavoriteNumberTypeFactory> {
+class TopupBillsFavNumberEmptyDataView: Visitable<FavoriteNumberTypeFactory> {
     override fun type(typeFactory: FavoriteNumberTypeFactory): Int {
         return typeFactory.type(this)
     }
