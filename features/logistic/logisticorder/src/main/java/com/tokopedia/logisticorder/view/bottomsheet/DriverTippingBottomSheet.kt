@@ -17,6 +17,8 @@ import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.EXTRA_ORDER_ID
+import com.tokopedia.logisticorder.utils.TrackingPageUtil.EXTRA_TRACKING_DATA_MODEL
 import com.tokopedia.logisticorder.view.TrackingPageViewModel
 import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -37,7 +39,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     }
 
     private var orderId: String? = ""
-    private var trackingDataModel: TrackingDataModel? = TrackingDataModel()
+    private var trackingDataModel: TrackingDataModel? = null
     private lateinit var tippingValueAdapter: TippingValueAdapter
 
     init {
@@ -52,6 +54,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            orderId = it.getString(EXTRA_ORDER_ID)
+            trackingDataModel = it.getParcelable(EXTRA_TRACKING_DATA_MODEL)
+        }
         iniInjector()
     }
 
@@ -91,25 +97,17 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
             .build()
     }
 
-    fun show(manager: FragmentManager?) {
-        manager?.run {
-            super.show(this, "")
-        }
-    }
-
-    fun setTrackingValue(orderId: String?, data: TrackingDataModel) {
-        this.orderId = orderId
-        this.trackingDataModel = data
-    }
 
     private fun initObserver() {
         viewModel.driverTipData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    binding.progressBar.visibility = View.VISIBLE
                     setDriverTipLayout(it.data)
                 }
 
                 is Fail -> {
+                    binding.progressBar.visibility = View.VISIBLE
                 }
             }
         })
@@ -165,6 +163,18 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     chipsPayment.chipText = String.format(getString(R.string.payment_value), driverData.payment.method, driverData.payment.amountFormatted)
                 }
 
+            }
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(orderId: String?, data: TrackingDataModel): DriverTippingBottomSheet {
+            return DriverTippingBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(EXTRA_ORDER_ID, orderId)
+                    putParcelable(EXTRA_TRACKING_DATA_MODEL, data)
+                }
             }
         }
     }

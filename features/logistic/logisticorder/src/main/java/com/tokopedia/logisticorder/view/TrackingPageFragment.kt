@@ -186,11 +186,11 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun populateTipping(data: TrackingDataModel) {
         val tippingData = data.tipping
-        if (tippingData.status != 100 || tippingData.status != 150 || tippingData.status != 200 || tippingData.status !=  210 || tippingData.status != 300) {
-            binding?.tippingGojekLayout?.root?.visibility = View.GONE
-        } else {
+        if (tippingData.status == 100 || tippingData.status == 150 || tippingData.status == 200 || tippingData.status ==  210 || tippingData.status == 300) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
+        } else {
+            binding?.tippingGojekLayout?.root?.visibility = View.GONE
         }
     }
 
@@ -223,8 +223,8 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             }
 
             btnTipping.setOnClickListener {
-                DriverTippingBottomSheet().setTrackingValue(mOrderId, data)
-                DriverTippingBottomSheet().show(parentFragmentManager)
+                DriverTippingBottomSheet.newInstance(mOrderId, data)
+                DriverTippingBottomSheet().show(parentFragmentManager, "")
             }
         }
     }
