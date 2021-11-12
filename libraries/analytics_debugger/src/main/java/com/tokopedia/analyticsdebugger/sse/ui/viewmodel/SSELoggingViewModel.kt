@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.analyticsdebugger.sse.domain.usecase.DeleteAllSSELogUseCase
 import com.tokopedia.analyticsdebugger.sse.domain.usecase.GetSSELogUseCase
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,20 +20,29 @@ class SSELoggingViewModel @Inject constructor(
     private val deleteAllSSELogUseCase: DeleteAllSSELogUseCase,
 ): ViewModel() {
 
+    private val _observableError = MutableLiveData<String>()
+    val observableError: LiveData<String>
+        get() = _observableError
+
     private val _observableSSELog = MutableLiveData<List<SSELogUiModel>>()
     val observableSSELog: LiveData<List<SSELogUiModel>>
         get() = _observableSSELog
 
     fun getLog(query: String) {
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(block = {
             getSSELogUseCase.setParam(query)
             _observableSSELog.value = getSSELogUseCase.executeOnBackground()
+        }) {
+            _observableSSELog.value = emptyList()
+            _observableError.value = it.message ?: "Something went wrong"
         }
     }
 
     fun deleteAllLog() {
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(block = {
             deleteAllSSELogUseCase.executeOnBackground()
+        }) {
+            _observableError.value = it.message ?: "Something went wrong"
         }
     }
 }

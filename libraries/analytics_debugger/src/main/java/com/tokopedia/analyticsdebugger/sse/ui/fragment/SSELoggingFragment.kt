@@ -2,6 +2,7 @@ package com.tokopedia.analyticsdebugger.sse.ui.fragment
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -87,6 +88,10 @@ class SSELoggingFragment: Fragment() {
 
             if(it.isNullOrEmpty()) tvNoData.visible()
             else tvNoData.hide()
+        }
+
+        viewModel.observableError.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -15,7 +15,6 @@
     <string name="cassava_network_label">Network</string>
     <string name="cassava_local_label">Local</string>
 
-    <string name="sse_log_search_hint">Search...</string>
     <string name="sse_log_no_data">No Data</string>
     <string name="sse_log_channel_id_label">Channel ID</string>
     <string name="sse_log_page_source_label">Page Source</string>

@@ -1,11 +1,9 @@
 package com.tokopedia.analyticsdebugger.sse.data.repository
 
-import android.util.Log
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.sse.data.local.database.SSELogDatabase
 import com.tokopedia.analyticsdebugger.sse.data.local.entity.SSELogEntity
 import com.tokopedia.analyticsdebugger.sse.domain.repository.SSELogRepository
-import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -17,21 +15,7 @@ class SSELogRepositoryImpl @Inject constructor(
     private val database: SSELogDatabase
 ): SSELogRepository {
     override suspend fun get(query: String): List<SSELogEntity> = withContext(dispatchers.io) {
-//        List(5) {
-//            SSELogEntity(
-//                1,
-//                "event $it",
-//                "test $it",
-//                1
-//            )
-//        }.filter {
-//            it.event.contains(query) || it.message.contains(query)
-//        }
-        Log.d("<LOG>", "masuk repo")
-        val response = database.sseLogDao().get(query)
-        Log.d("<LOG>", "response : $response")
-        response
-//        database.sseLogDao().get(query)
+        database.sseLogDao().get(query)
     }
 
     override suspend fun insert(sseLogEntity: SSELogEntity) {

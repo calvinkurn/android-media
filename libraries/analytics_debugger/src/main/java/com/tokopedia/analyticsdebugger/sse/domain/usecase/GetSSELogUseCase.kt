@@ -1,6 +1,5 @@
 package com.tokopedia.analyticsdebugger.sse.domain.usecase
 
-import android.util.Log
 import com.tokopedia.analyticsdebugger.sse.domain.repository.SSELogRepository
 import com.tokopedia.analyticsdebugger.sse.ui.mapper.SSELogMapper
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
@@ -22,13 +21,7 @@ class GetSSELogUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): List<SSELogUiModel> {
-        return try {
-            val response = sseLogRepository.get(query)
-            sseLogMapper.mapEntityToUiModel(response)
-        }
-        catch(e: Exception) {
-            Log.d("<LOG>", "error use case : ${e.message}")
-            return emptyList()
-        }
+        val response = sseLogRepository.get(query)
+        return sseLogMapper.mapEntityToUiModel(response)
     }
 }
