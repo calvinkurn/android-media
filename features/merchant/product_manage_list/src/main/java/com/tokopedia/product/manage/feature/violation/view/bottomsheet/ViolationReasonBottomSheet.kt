@@ -1,14 +1,18 @@
 package com.tokopedia.product.manage.feature.violation.view.bottomsheet
 
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -29,7 +33,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationReasonComponent>,
-    ViolationReasonItemViewHolder.Listener {
+        ViolationReasonItemViewHolder.Listener {
 
     companion object {
         fun createInstance(): ViolationReasonBottomSheet {
@@ -37,6 +41,11 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
         }
 
         private const val TAG = "ViolationReasonBottomSheet"
+
+        private const val SCHEME_EXTERNAL = "tokopedia"
+        private const val SCHEME_SELLERAPP = "sellerapp"
+
+        private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
     }
 
     @Inject
@@ -50,9 +59,9 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         binding = BottomSheetProductManageViolationBinding.inflate(inflater, container, false)
         setChild(binding?.root)
@@ -68,13 +77,32 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
     override fun getComponent(): ViolationReasonComponent? {
         return activity?.run {
             DaggerViolationReasonComponent.builder()
-                .productManageComponent(ProductManageInstance.getComponent(application))
-                .build()
+                    .productManageComponent(ProductManageInstance.getComponent(application))
+                    .build()
         }
     }
 
-    override fun onUrlClicked(url: String) {
-        goToUrl(url)
+    override fun onLinkClicked(link: String) {
+        Uri.parse(link).let { uri ->
+            when {
+                URLUtil.isValidUrl(link) -> {
+                    val appLink =
+                            String.format(
+                                    APPLINK_FORMAT_ALLOW_OVERRIDE,
+                                    ApplinkConst.WEBVIEW,
+                                    false,
+                                    link
+                            )
+                    RouteManager.route(context, appLink)
+                }
+                isAppLink(uri) -> {
+                    RouteManager.route(context, link)
+                }
+                else -> {
+                    goToDefaultIntent(context, uri)
+                }
+            }
+        }
     }
 
     fun show(fm: FragmentManager) {
@@ -87,7 +115,7 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
 
     private fun observeViolationReason() {
         viewModel.violationReasonUiModelLiveData.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     setSuccessView(result.data)
                 }
@@ -123,9 +151,9 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
 
             context?.let {
                 val adapter = ViolationReasonAdapter(
-                    it,
-                    uiModel.stepList,
-                    this@ViolationReasonBottomSheet
+                        it,
+                        uiModel.stepList,
+                        this@ViolationReasonBottomSheet
                 )
                 rvProductManageViolationStep.layoutManager = LinearLayoutManager(it)
                 rvProductManageViolationStep.adapter = adapter
@@ -146,10 +174,17 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
         dismiss()
     }
 
-    private fun goToUrl(url: String) {
-        Uri.parse(url).let { uri ->
+    private fun isAppLink(uri: Uri): Boolean {
+        return uri.scheme == SCHEME_EXTERNAL || uri.scheme == SCHEME_SELLERAPP
+    }
+
+
+    private fun goToDefaultIntent(context: Context?, uri: Uri) {
+        try {
             val myIntent = Intent(Intent.ACTION_VIEW, uri)
             context?.startActivity(myIntent)
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
         }
     }
 

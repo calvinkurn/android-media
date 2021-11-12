@@ -56,8 +56,8 @@ class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepos
                                 resolution = PendingReasonResolution(
                                         resolutionInfo = "Lakukan langkah berikut untuk menyelesaikan:",
                                         resolutionSteps = listOf(
-                                                "Pelajari tentang <a href=\"https://www.tokopedia.com/login\">produk yang dilarang</a>",
-                                                "Tambah produk sesuai <a href=\"https://www.tokopedia.com/login\">Syarat & Ketentuan</a> yang berlaku di Tokopedia"
+                                                "Pelajari tentang <a href=\"https://seller.tokopedia.com/edu/produk-yang-dilarang\">produk yang dilarang</a>",
+                                                "Tambah produk <a href=\"https://www.tokopedia.com/terms#sell\">sesuai Syarat dan Ketentuan</a>"
                                         )
                                 ),
                                 ctaList = listOf(
