@@ -1,7 +1,7 @@
 package com.tokopedia.review.feature.createreputation.presentation.fragment
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm

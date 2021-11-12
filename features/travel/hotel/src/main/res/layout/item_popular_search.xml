@@ -25,6 +25,7 @@
             android:id="@+id/popular_search_image"
             android:layout_width="72dp"
             android:layout_height="62dp"
+            android:scaleType="centerCrop"
             android:background="@drawable/bg_popular_search_image" />
 
         <LinearLayout

@@ -15,8 +15,6 @@ public class SearchBarConstant {
 
     public static final String WISHLIST = "wishlist";
 
-    public static final String INBOX = "inbox";
-
     public static final String NOTIFICATION = "notification";
 
     public static final String SCAN_QR = "scan qr";
@@ -40,6 +38,4 @@ public class SearchBarConstant {
     public static final String NOTIF_CENTER = "notif center";
 
     public static final String NOTIF_CENTER_ACTION = "click on bell on global nav";
-
-    public static final String HOME_SCREEN_NAME = "/";
 }

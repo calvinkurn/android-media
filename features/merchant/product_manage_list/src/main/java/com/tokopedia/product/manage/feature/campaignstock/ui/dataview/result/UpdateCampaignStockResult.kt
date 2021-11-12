@@ -8,6 +8,8 @@ data class UpdateCampaignStockResult(
         val productName: String,
         val stock: Int,
         val status: ProductStatus,
+        val isStockChanged: Boolean,
+        val isStatusChanged: Boolean,
         val isSuccess: Boolean,
         val message: String? = null,
         val variantsMap: HashMap<String, UpdateCampaignVariantResult>? = null

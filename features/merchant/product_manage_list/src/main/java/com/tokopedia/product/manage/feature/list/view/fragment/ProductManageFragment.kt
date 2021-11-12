@@ -69,6 +69,8 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATED_STATUS
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATED_STOCK
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_IS_STATUS_CHANGED
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_IS_STOCK_CHANGED
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.REQUEST_CODE_CAMPAIGN_STOCK
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
@@ -1968,6 +1970,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                             val productName = intent.getStringExtra(EXTRA_PRODUCT_NAME)
                             val stock = intent.getIntExtra(EXTRA_UPDATED_STOCK, 0)
                             val status = valueOf(intent.getStringExtra(EXTRA_UPDATED_STATUS).orEmpty())
+                            val isStockChanged =
+                                intent.getBooleanExtra(EXTRA_UPDATE_IS_STOCK_CHANGED, false)
+                            val isStatusChanged =
+                                intent.getBooleanExtra(EXTRA_UPDATE_IS_STATUS_CHANGED, false)
 
                             recyclerView?.post {
                                 productManageListAdapter.updateStock(productId, stock, status)
@@ -1980,7 +1986,14 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
                             getFiltersTab(withDelay = true)
 
-                            val successMessage = getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_stock_success_toast, productName)
+                            val successMessageRes =
+                                when {
+                                    isStockChanged && isStatusChanged -> com.tokopedia.product.manage.common.R.string.product_manage_campaign_stock_status_success_toast
+                                    isStatusChanged -> com.tokopedia.product.manage.common.R.string.product_manage_campaign_status_success_toast
+                                    else -> com.tokopedia.product.manage.common.R.string.product_manage_campaign_stock_success_toast
+                                }
+
+                            val successMessage = getString(successMessageRes, productName)
                             constraintLayout?.let { view ->
                                 Toaster.build(
                                     view,
