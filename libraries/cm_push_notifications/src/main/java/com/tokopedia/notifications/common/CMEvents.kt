@@ -100,7 +100,7 @@ object IrisAnalyticsEvents {
         if (baseNotificationModel.isAmplification) {
             values[LABEL] = AMPLIFICATION
         }
-        addShopIdForPushEvent(eventName,values,baseNotificationModel.shopId)
+        checkEventAndAddShopId(eventName,values,baseNotificationModel.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
@@ -112,7 +112,7 @@ object IrisAnalyticsEvents {
         if (elementID != null) {
             values[CLICKED_ELEMENT_ID] = elementID
         }
-        addShopIdForPushEvent(eventName,values,baseNotificationModel.shopId)
+        checkEventAndAddShopId(eventName,values,baseNotificationModel.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
@@ -136,27 +136,12 @@ object IrisAnalyticsEvents {
 
     }
 
-    private fun addShopIdForPushEvent(
-        eventName: String,
-        values: HashMap<String, Any>,
-        shopId: String?
-    ) {
-
-        if (!shopId.isNullOrBlank()
-            && (eventName == PUSH_RECEIVED
-                    || eventName == PUSH_CLICKED
-                    || eventName == PUSH_DISMISSED)
-        ) {
-            values[SHOP_ID] = shopId
-        }
-    }
-
     fun sendInAppEvent(context: Context, eventName: String, cmInApp: CMInApp) {
         if (cmInApp.isTest)
             return
         val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
         val values = addBaseValues(context, eventName, cmInApp)
-        addShopIdForInAppEvent(eventName, values, cmInApp.shopId)
+        checkEventAndAddShopId(eventName, values, cmInApp.shopId)
         trackEvent(context, irisAnalytics, values)
 
     }
@@ -169,7 +154,7 @@ object IrisAnalyticsEvents {
         elementID?.let {
             values[CLICKED_ELEMENT_ID] = elementID
         }
-        addShopIdForInAppEvent(eventName, values, cmInApp.shopId)
+        checkEventAndAddShopId(eventName, values, cmInApp.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
@@ -240,17 +225,22 @@ object IrisAnalyticsEvents {
 
     }
 
-    private fun addShopIdForInAppEvent(
+    private fun checkEventAndAddShopId(
         eventName: String,
         values: HashMap<String, Any>,
         shopId: String?
     ) {
 
-        if (!shopId.isNullOrBlank()
-            && (eventName == INAPP_RECEIVED
-                    || eventName == INAPP_CLICKED
-                    || eventName == INAPP_DISMISSED)
-        ) {
+        val allowedEvents = listOf(
+            INAPP_RECEIVED,
+            INAPP_CLICKED,
+            INAPP_DISMISSED,
+            PUSH_RECEIVED,
+            PUSH_CLICKED,
+            PUSH_DISMISSED
+        )
+
+        if (!shopId.isNullOrBlank() && (eventName in allowedEvents)) {
             values[SHOP_ID] = shopId
         }
     }
