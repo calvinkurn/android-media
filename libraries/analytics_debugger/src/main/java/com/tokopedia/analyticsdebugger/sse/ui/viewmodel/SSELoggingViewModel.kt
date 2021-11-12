@@ -8,8 +8,6 @@ import com.tokopedia.analyticsdebugger.sse.domain.usecase.DeleteAllSSELogUseCase
 import com.tokopedia.analyticsdebugger.sse.domain.usecase.GetSSELogUseCase
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
