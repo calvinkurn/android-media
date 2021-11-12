@@ -16,5 +16,12 @@ class PlayChannelStatusMapper @Inject constructor() {
             channelStatus.playGetChannelsStatus.data.firstOrNull()?.status.orEmpty()
     )
 
+    fun mapWaitingDurationResponse(channelStatus: ChannelStatusResponse) =
+        channelStatus.playGetChannelsStatus.data.firstOrNull()?.waitingDuration ?: DEFAULT_WAITING_DURATION
+
     fun mapStatusBanned(isBanned: Boolean) = if (isBanned) PlayStatusType.Banned else PlayStatusType.Active
+
+    companion object {
+        private const val DEFAULT_WAITING_DURATION = 5000L
+    }
 }

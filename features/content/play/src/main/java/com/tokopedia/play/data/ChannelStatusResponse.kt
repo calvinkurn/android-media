@@ -21,5 +21,7 @@ data class ChannelStatusResponse(
             val channelId: String = "",
             @SerializedName("status")
             val status: String = "",
+            @SerializedName("waitingDuration")
+            val waitingDuration: Long = 0,
     )
 }

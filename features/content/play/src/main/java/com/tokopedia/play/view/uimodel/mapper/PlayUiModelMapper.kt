@@ -45,6 +45,10 @@ class PlayUiModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusFromResponse(input)
     }
 
+    fun mapWaitingDuration(input: ChannelStatusResponse): Long {
+        return channelStatusMapper.mapWaitingDurationResponse(input)
+    }
+
     fun mapPartnerInfo(input: ShopInfo): Boolean {
         return input.favoriteData.alreadyFavorited == 1
     }

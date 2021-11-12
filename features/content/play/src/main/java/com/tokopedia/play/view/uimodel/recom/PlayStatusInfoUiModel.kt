@@ -10,6 +10,7 @@ data class PlayStatusInfoUiModel(
         val bannedModel: PlayBannedUiModel,
         val freezeModel: PlayFreezeUiModel,
         val shouldAutoSwipeOnFreeze: Boolean,
+        val waitingDuration: Long,
 )
 
 data class PlayBannedUiModel(
