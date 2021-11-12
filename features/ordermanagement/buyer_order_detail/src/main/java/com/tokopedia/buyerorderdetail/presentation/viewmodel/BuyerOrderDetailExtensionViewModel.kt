@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 class BuyerOrderDetailExtensionViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
-    private val userSession: UserSessionInterface,
     private val insertOrderExtensionRespondUseCase: Lazy<InsertOrderExtensionRespondUseCase>,
     private val getOrderExtensionRespondInfoUseCase: Lazy<GetOrderExtensionRespondInfoUseCase>
 ) : BaseViewModel(dispatcher.main) {
@@ -51,7 +50,7 @@ class BuyerOrderDetailExtensionViewModel @Inject constructor(
         launchCatchError(block = {
             val respondInfo = withContext(dispatcher.io) {
                 insertOrderExtensionRespondUseCase.get()
-                    .setParams(orderId.toLongOrZero(), action, userSession.userId.toLongOrZero())
+                    .setParams(orderId.toLongOrZero(), action)
                 insertOrderExtensionRespondUseCase.get().executeOnBackground()
             }
             _orderExtensionRespond.value = Success(respondInfo)

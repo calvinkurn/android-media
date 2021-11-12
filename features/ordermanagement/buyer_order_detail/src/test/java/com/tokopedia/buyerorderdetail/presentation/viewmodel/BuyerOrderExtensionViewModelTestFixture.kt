@@ -31,9 +31,6 @@ abstract class BuyerOrderExtensionViewModelTestFixture {
     @RelaxedMockK
     lateinit var getOrderExtensionRespondInfoUseCase: Lazy<GetOrderExtensionRespondInfoUseCase>
 
-    @RelaxedMockK
-    lateinit var userSession: UserSessionInterface
-
     lateinit var viewModel: BuyerOrderDetailExtensionViewModel
 
     protected val orderId = "123456"
@@ -43,7 +40,6 @@ abstract class BuyerOrderExtensionViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = BuyerOrderDetailExtensionViewModel(
             coroutineDispatchers,
-            userSession,
             insertOrderExtensionRespondUseCase,
             getOrderExtensionRespondInfoUseCase
         )

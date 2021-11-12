@@ -45,27 +45,22 @@ class InsertOrderExtensionRespondUseCase @Inject constructor(
     fun setParams(
         orderId: Long,
         action: Int,
-        userId: Long
     ) {
         params = RequestParams.create().apply {
             putLong(ORDER_ID_KEY, orderId)
             putInt(ACTION_KEY, action)
-            putLong(USER_ID_KEY, userId)
         }
     }
 
     companion object {
         private const val ORDER_ID_KEY = "order_id"
         private const val ACTION_KEY = "action"
-        private const val USER_ID_KEY = "user_id"
 
         private val QUERY = """
-            mutation OrderExtensionRespond(${'$'}order_id: Int!, ${'$'}action: Int!, 
-                    ${'$'}user_id: Int!) {
+            mutation OrderExtensionRespond(${'$'}order_id: Int!, ${'$'}action: Int!) {
               order_extension_respond(input: {
                 order_id: ${'$'}order_id
                 action: ${'$'}action
-                user_id: ${'$'}user_id
               }) {
                 message
                 message_code
