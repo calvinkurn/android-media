@@ -11,13 +11,12 @@ import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.mediauploader.di.MediaUploaderModule
-import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
-import com.tokopedia.mediauploader.di.NetworkModule
+import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.topchat.FakeTopchatCacheManager
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
@@ -47,9 +46,7 @@ import java.util.concurrent.TimeUnit
 @Module(
         includes = arrayOf(
                 ChatNetworkModuleStub::class,
-                MediaUploaderModule::class,
-                MediaUploaderNetworkModule::class,
-                NetworkModule::class
+                MediaUploaderModule::class
         )
 )
 class ChatModuleStub {
@@ -202,9 +199,8 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    internal fun provideTopchatCacheManager(@TopchatContext context: Context): TopchatCacheManager {
-        val topchatCachePref = context.getSharedPreferences("topchatCache", Context.MODE_PRIVATE)
-        return TopchatCacheManagerImpl(topchatCachePref)
+    internal fun provideTopchatCacheManager(): TopchatCacheManager {
+        return FakeTopchatCacheManager()
     }
 
     @ChatScope

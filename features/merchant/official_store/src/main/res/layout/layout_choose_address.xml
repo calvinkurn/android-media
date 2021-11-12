@@ -19,7 +19,7 @@
             android:id="@+id/widget_choose_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dp_8"/>
+            android:paddingBottom="8dp"/>
     </androidx.constraintlayout.motion.widget.MotionLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

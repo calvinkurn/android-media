@@ -8,8 +8,6 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryData
-import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cart.bundle.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.bundle.domain.usecase.*
@@ -30,9 +28,9 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -146,6 +144,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 return
             }
 
+            CartIdlingResource.increment()
             if (initialLoad) {
                 it.renderLoadGetCartData()
             } else if (!isLoadingTypeRefresh) {
@@ -174,6 +173,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             it.renderErrorInitialGetCartListData(throwable)
             it.stopCartPerformanceTrace()
             CartLogger.logOnErrorLoadCartPage(throwable)
+            CartIdlingResource.decrement()
         }
     }
 
@@ -193,6 +193,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartData)
             it.stopCartPerformanceTrace()
+            CartIdlingResource.decrement()
         }
     }
 
@@ -292,6 +293,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
 
                 it.showProgressLoading()
+                CartIdlingResource.increment()
             }
 
             val cartItemDataList: List<CartItemHolderData> = if (fireAndForget) {
@@ -353,6 +355,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
                 CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(updateCartV2Data.data.error), cartItemDataList)
             }
+            CartIdlingResource.decrement()
         }
     }
 
@@ -641,8 +644,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                             cartItemHolderData.parentId == cartItemHolderDataTmp.parentId &&
                             cartItemHolderData.productPrice == cartItemHolderDataTmp.productPrice) {
                         val tmpQty =
-                                if (cartItemHolderData.isBundlingItem) cartItemHolderData.bundleQuantity * cartItemHolderData.quantity
-                                else cartItemHolderData.quantity
+                                if (cartItemHolderDataTmp.isBundlingItem) cartItemHolderDataTmp.bundleQuantity * cartItemHolderDataTmp.quantity
+                                else cartItemHolderDataTmp.quantity
                         itemQty += tmpQty
                     }
                 }

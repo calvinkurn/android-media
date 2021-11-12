@@ -8,6 +8,8 @@ object ShopPageConstant {
     const val MAXIMUM_SELECTED_ETALASE_LIST = 4
     const val START_PAGE = 1
     const val DEFAULT_PER_PAGE = 10
+    const val DEFAULT_PER_PAGE_NON_TABLET = 10
+    const val DEFAULT_PER_PAGE_TABLET = 20
     const val SHOP_PRODUCT_EMPTY_STATE_LIMIT = 20
     const val ETALASE_HIGHLIGHT_COUNT = 5
     const val SHOP_SHARE_DEFAULT_CHANNEL = "default"

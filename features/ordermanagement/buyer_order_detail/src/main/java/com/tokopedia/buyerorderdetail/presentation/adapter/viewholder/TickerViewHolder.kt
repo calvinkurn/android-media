@@ -18,6 +18,10 @@ class TickerViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_ticker
+
+        private val refreshableTickerKey = listOf(
+            BuyerOrderDetailMiscConstant.TICKER_KEY_SELLER_ORDER_EXTENSION
+        )
     }
 
     private var element: TickerUiModel? = null
@@ -34,7 +38,7 @@ class TickerViewHolder(
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-        navigator.openAppLink(linkUrl.toString(), false)
+        navigator.openAppLink(linkUrl.toString(), shouldRefreshWhenBack())
         if (element?.actionKey == BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO) {
             listener.onClickShipmentInfoTnC()
         }
@@ -44,15 +48,31 @@ class TickerViewHolder(
 
     private fun setupTicker(element: TickerUiModel) {
         (itemView as? Ticker)?.apply {
-            val tickerDescription = composeActionText(element.description, element.actionText, element.actionUrl)
+            val tickerDescription = composeDescriptionText(element.description, element.actionText, element.actionUrl)
             setHtmlDescription(tickerDescription)
             setDescriptionClickEvent(this@TickerViewHolder)
             tickerType = Utils.mapTickerType(element.type)
         }
     }
 
-    private fun composeActionText(description: String, actionText: String, actionUrl: String): String {
-        return itemView.context.getString(R.string.html_link, description, actionUrl, actionText)
+    private fun composeDescriptionText(description: String, actionText: String, actionUrl: String): String {
+        return if (actionText.isNotBlank() && actionUrl.isNotBlank()) {
+            itemView.context.getString(R.string.html_link, description, actionUrl, actionText).trim()
+        } else {
+            StringBuilder().apply {
+                if (description.isNotBlank()) {
+                    append(description)
+                }
+                if (actionText.isNotBlank()) {
+                    if (isNotBlank()) append(" ")
+                    append(actionText)
+                }
+            }.toString()
+        }
+    }
+
+    private fun shouldRefreshWhenBack(): Boolean {
+        return refreshableTickerKey.contains(element?.actionKey.orEmpty())
     }
 
     interface TickerViewHolderListener {

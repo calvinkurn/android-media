@@ -9,7 +9,7 @@
         android:id="@+id/recom_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/dp_8"
+        android:layout_marginBottom="8dp"
         />
     <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
         android:id="@+id/tab_layout_home_feeds"
@@ -19,7 +19,10 @@
         app:tabPaddingStart="0dp"
         app:tabPaddingEnd="0dp"
         app:tabMode="scrollable"
-        android:layout_marginBottom="@dimen/dp_8"
+        app:tabMaxWidth="@dimen/tab_home_feed_width"
+        android:paddingHorizontal="16dp"
+        android:clipToPadding="false"
+        android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:tabIndicatorHeight="0dp"
         />
@@ -36,7 +39,7 @@
             android:visibility="invisible"
             android:layout_gravity="top"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_10"
+            android:layout_height="10dp"
             android:background="@drawable/feed_bg_shadow_bottom"/>
     </FrameLayout>
 

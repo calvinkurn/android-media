@@ -18,8 +18,8 @@
             android:id="@+id/backBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             app:srcCompat="?attr/homeAsUpIndicator"
             tools:ignore="ContentDescription" />
@@ -28,16 +28,16 @@
             android:id="@+id/avatar"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             tools:ignore="ContentDescription"
             tools:src="@tools:sample/avatars" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
@@ -49,10 +49,10 @@
 
                 <ImageView
                     android:id="@+id/badge"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_4"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginRight="4dp"
                     android:visibility="gone"
                     tools:ignore="ContentDescription"
                     tools:visibility="visible" />
@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:textColor="@color/Neutral_N700_96"
-                    android:textSize="@dimen/sp_14"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     tools:text="Electragon" />
 
@@ -86,8 +86,8 @@
             android:id="@+id/action_post"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:text="@string/cp_label_post"
             app:typographyType="heading_5" />
 

@@ -47,7 +47,7 @@ data class DataItem(
         @SerializedName("isSelected")
         var isSelected: Boolean = false,
 
-        @SerializedName("end_date")
+        @SerializedName("end_date",alternate = ["end_time"])
         val endDate: String? = "",
 
         @SerializedName("button_applink")
@@ -71,7 +71,7 @@ data class DataItem(
         @SerializedName("notification_id")
         val notificationId: String? = "",
 
-        @SerializedName("image_title")
+        @SerializedName("image_title",alternate = ["title_image_url"])
         val imageTitle: String? = "",
 
         @SerializedName("registered_image_app")
@@ -113,7 +113,7 @@ data class DataItem(
         @SerializedName("description")
         val description: String? = "",
 
-        @SerializedName("start_date")
+        @SerializedName("start_date",alternate = ["start_time"])
         val startDate: String? = "",
 
         @SerializedName("left_margin_mobile")
@@ -139,6 +139,12 @@ data class DataItem(
 
         @SerializedName("font_color", alternate = ["text_color"])
         val  fontColor: String? = "",
+
+        @SerializedName("variant")
+        val variant: String? = "",
+
+        @SerializedName("color")
+        val color:String? = "",
 
         @SerializedName("button_text")
         var buttonText: String? = "",
@@ -238,6 +244,9 @@ data class DataItem(
 
         @SerializedName("subtitle")
         val subtitle: String? = "",
+
+        @SerializedName("subtitle_1")
+        val subtitle_1: String? = "",
 
         @SerializedName("thumbnail_url")
         val thumbnailUrl: String? = "",
@@ -396,6 +405,9 @@ data class DataItem(
         var minQuantity: Int = 0,
 
         var quantity: Int = 0,
+
+        @SerializedName("backgroud_image_url")
+        var backgroundImageUrl : String? = "",
 
         var shopAdsClickURL: String? = "",
 

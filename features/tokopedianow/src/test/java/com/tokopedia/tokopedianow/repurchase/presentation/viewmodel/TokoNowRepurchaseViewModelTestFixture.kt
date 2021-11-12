@@ -17,15 +17,19 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.model.*
-import com.tokopedia.tokopedianow.recentpurchase.domain.model.TokoNowRepurchasePageResponse.*
-import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam
-import com.tokopedia.tokopedianow.recentpurchase.domain.usecase.GetRepurchaseProductListUseCase
-import com.tokopedia.tokopedianow.recentpurchase.presentation.fragment.TokoNowRecentPurchaseFragment
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLayoutUiModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.viewmodel.TokoNowRecentPurchaseViewModel
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
+import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.*
+import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
+import com.tokopedia.tokopedianow.repurchase.domain.usecase.GetRepurchaseProductListUseCase
+import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateMethod
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -59,8 +63,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     @RelaxedMockK
     lateinit var deleteCartUseCase: DeleteCartUseCase
     @RelaxedMockK
-    lateinit var getRecommendationUseCase: GetRecommendationUseCase
-    @RelaxedMockK
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -68,21 +70,20 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    protected lateinit var viewModel : TokoNowRecentPurchaseViewModel
+    protected lateinit var viewModel : TokoNowRepurchaseViewModel
 
     protected lateinit var privateLocalCacheModel: Field
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TokoNowRecentPurchaseViewModel(
+        viewModel = TokoNowRepurchaseViewModel(
                 getRepurchaseProductListUseCase,
                 getMiniCartUseCase,
                 getCategoryListUseCase,
                 addToCartUseCase,
                 updateCartUseCase,
                 deleteCartUseCase,
-                getRecommendationUseCase,
                 getChooseAddressWarehouseLocUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
@@ -149,15 +150,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         Assert.assertTrue(actualObject == null)
     }
 
-    protected fun verifyGetProductRecommendationWidgetLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
-        val actualResponse = viewModel.getLayout.value
-        val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowRecommendationCarouselUiModel } as TokoNowRecommendationCarouselUiModel)
-        val actualObject = ((actualResponse as Success).data.layoutList.firstOrNull { it is TokoNowRecommendationCarouselUiModel } as TokoNowRecommendationCarouselUiModel)
-
-        Assert.assertEquals(expectedObject.pageName, actualObject.pageName)
-        Assert.assertEquals(expectedObject.carouselData, actualObject.carouselData)
-    }
-
     protected fun verifyGetCategoryGridLayoutSuccess(expectedResponse: RepurchaseLayoutUiModel) {
         val actualResponse = viewModel.getLayout.value
         val expectedObject = (expectedResponse.layoutList.firstOrNull { it is TokoNowCategoryGridUiModel } as TokoNowCategoryGridUiModel)
@@ -172,6 +164,11 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
 
     protected fun verifyGetChooseAddress() {
         coVerify { getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any()) }
+    }
+
+    protected fun verifyTrackOpeningScreen() {
+        val actualResponse = viewModel.openScreenTracker.value
+        Assert.assertEquals(REPURCHASE_TOKONOW, actualResponse)
     }
 
     protected fun verifyGetChooseAddressFail() {
@@ -195,12 +192,8 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         }
     }
 
-    protected fun onGetProductRecommendation_thenReturn(response: List<RecommendationWidget>) {
-        coEvery { getRecommendationUseCase.getData(any()) } returns response
-    }
-
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
-        coEvery { getCategoryListUseCase.execute("1", TokoNowRecentPurchaseFragment.CATEGORY_LEVEL_DEPTH) } returns categoryListResponse
+        coEvery { getCategoryListUseCase.execute("1", TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) } returns categoryListResponse
     }
 
     protected fun onGetRepurchaseProductList_thenReturn(response: GetRepurchaseProductListResponse) {
@@ -288,11 +281,7 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun verifyGetCategoryListUseCaseCalled(){
-        coVerify(exactly = 1) { getCategoryListUseCase.execute("1", TokoNowRecentPurchaseFragment.CATEGORY_LEVEL_DEPTH) }
-    }
-
-    protected fun verifyGetProductRecommendatioUseCaseCalled(){
-        coVerify { getRecommendationUseCase.getData(any()) }
+        coVerify(exactly = 1) { getCategoryListUseCase.execute("1", TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) }
     }
 
     protected fun onGetLayoutList_thenReturnNull() {

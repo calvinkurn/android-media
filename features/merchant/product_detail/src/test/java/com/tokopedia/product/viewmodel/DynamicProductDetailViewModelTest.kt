@@ -11,6 +11,7 @@ import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -912,9 +913,9 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
                 ?: "", productParams.shopDomain ?: "", productParams.productName
-                ?: "", productParams.warehouseId ?: "", "", userLocation)
+                ?: "", productParams.warehouseId ?: "", "", userLocation, "")
 
-        viewModel.getProductP1(productParams, true, false, "", userLocationLocal = getUserLocationCache())
+        viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "") == productId)
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty())
@@ -935,14 +936,33 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
                 ?: "", productParams.shopDomain ?: "", productParams.productName
-                ?: "", productParams.warehouseId ?: "", "", userLocation)
+                ?: "", productParams.warehouseId ?: "", "", userLocation, "")
 
-        viewModel.getProductP1(productParams, true, false, " ", userLocationLocal = getUserLocationCache())
+        viewModel.getProductP1(productParams, true, " ", userLocationLocal = getUserLocationCache())
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty())
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "") == productKey)
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_SHOP_DOMAIN, "") == shopDomain)
         Assert.assertTrue((getPdpLayoutUseCase.requestParams.getObject(PARAM_USER_LOCATION) as? UserLocationRequest)?.districtID == "123")
+    }
+
+    @Test
+    fun `test extParam key parameter pdplayout`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val productParams = ProductParams("", "", "", "", "", "")
+        val userLocation = UserLocationRequest("")
+        val extParam = anyString()
+
+        `co every p1 success`(dataP1)
+        coEvery {
+            getPdpLayoutUseCase.requestParams
+        } returns GetPdpLayoutUseCase.createParams(productParams.productId
+            ?: "", productParams.shopDomain ?: "", productParams.productName
+            ?: "", productParams.warehouseId ?: "", "", userLocation, extParam.encodeToUtf8())
+
+        viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache(), extParam = extParam)
+
+        Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_EXT_PARAM, "") == extParam.encodeToUtf8())
     }
 
     @Test
@@ -971,7 +991,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         `co every p1 success`(dataP1, true)
 
-        viewModel.getProductP1(productParams, true, false, "", false, userLocationLocal = getUserLocationCache())
+        viewModel.getProductP1(productParams, true, "", false, userLocationLocal = getUserLocationCache())
 
         `co verify p1 success`()
 
@@ -989,7 +1009,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
     }
@@ -1135,7 +1154,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, refreshPage = true, isAffiliate = true, isUseOldNav = true, userLocationLocal = getUserLocationCache())
+        viewModel.getProductP1(productParams, refreshPage = true, isUseOldNav = true, userLocationLocal = getUserLocationCache())
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 0)
@@ -1143,7 +1162,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VALUE_PROP } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VARIANT_OPTIONS } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
     }
@@ -1713,5 +1731,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         const val PARAM_SHOP_DOMAIN = "shopDomain"
         const val PARAM_PRODUCT_KEY = "productKey"
         const val PARAM_USER_LOCATION = "userLocation"
+        const val PARAM_EXT_PARAM = "extParam"
     }
 }

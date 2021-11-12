@@ -11,10 +11,10 @@ import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDoma
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.adapter.IncentiveOvoAdapter
 import com.tokopedia.review.inbox.R
+import com.tokopedia.review.inbox.databinding.IncentiveOvoTncBottomSheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.incentive_ovo_tnc_bottom_sheet.view.*
 
 object IncentiveOvoBottomSheetBuilder {
 
@@ -55,9 +55,10 @@ object IncentiveOvoBottomSheetBuilder {
 
     private fun setupTermsAndConditionView(view: View, productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain, bottomSheet: BottomSheetUnify, incentiveOvoListener: IncentiveOvoListener, category: String, trackerData: TncBottomSheetTrackerData?) {
         bottomSheet.apply {
-            view.apply {
+            val binding = IncentiveOvoTncBottomSheetBinding.bind(view)
+            binding.apply {
                 tgIncentiveOvoTitle.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.title
-                tgIncentiveOvoSubtitle.text = HtmlLinkHelper(context, productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle
+                tgIncentiveOvoSubtitle.text = HtmlLinkHelper(root.context, productRevIncentiveOvoDomain.productrevIncentiveOvo?.subtitle
                         ?: "").spannedString
                 incentiveOvoBtnContinueReview.apply {
                     setOnClickListener {
@@ -70,16 +71,16 @@ object IncentiveOvoBottomSheetBuilder {
                     }
                     text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.ctaText
                 }
-                incentive_ovo_add_rating.loadImage(ADD_RATING_URL)
-                incentive_ovo_add_image.loadImage(ADD_IMAGE_URL)
-                incentive_ovo_add_review.loadImage(ADD_REVIEW_URL)
-            }
-            view.tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
-            val adapterIncentiveOvo = IncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList
+                incentiveOvoAddRating.loadImage(ADD_RATING_URL)
+                incentiveOvoAddImage.loadImage(ADD_IMAGE_URL)
+                incentiveOvoAddReview.loadImage(ADD_REVIEW_URL)
+                tgIncentiveOvoDescription.text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.description
+                val adapterIncentiveOvo = IncentiveOvoAdapter(productRevIncentiveOvoDomain.productrevIncentiveOvo?.numberedList
                     ?: emptyList(), incentiveOvoListener)
-            view.rvIncentiveOvoExplain.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = adapterIncentiveOvo
+                rvIncentiveOvoExplain.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = adapterIncentiveOvo
+                }
             }
             showKnob = true
             showCloseIcon = false
