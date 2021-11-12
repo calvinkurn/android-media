@@ -93,8 +93,6 @@
     <string name="notify_me_inactive">Ingatkan Saya</string>
     <string name="notify_me_subtitle_main">Dimulai dalam</string>
     <string name="notify_me_title">Kejar Diskon</string>
-    <string name="notify_me_success_registered_message">Kamu berhasil menambah produk ke Diskon Yang Dikejar.</string>
-    <string name="notify_me_success_unregistered_message">Kamu berhasil menghapus produk ini dari daftar Diskon Yang Dikejar</string>
 
     <!--Social Proof-->
     <string name="bracket_formated">(%1s)</string>

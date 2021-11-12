@@ -107,6 +107,7 @@ import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBu
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
+import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
@@ -3510,15 +3511,19 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun observeToggleNotifyMe() {
         viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) { data ->
             data.doSuccessOrFail({
-                viewModel.clearCacheP2Data()
-                val messageSuccess = if (viewModel.notifyMeAction == ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER) getString(R.string.notify_me_success_registered_message) else getString(R.string.notify_me_success_unregistered_message)
-                view?.showToasterSuccess(messageSuccess)
-                viewModel.updateNotifyMeData()
+                onSuccessToggleNotifyMe(it.data)
             }, {
                 onFailNotifyMe(it)
                 logException(it)
             })
         }
+    }
+
+    private fun onSuccessToggleNotifyMe(data: NotifyMeUiData) {
+        viewModel.clearCacheP2Data()
+        view?.showToasterSuccess(data.successMessage, ctaText = getString(R.string.label_oke_pdp), ctaListener = {
+
+        })
     }
 
     private fun onFailNotifyMe(t: Throwable) {
@@ -3531,23 +3536,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onNotifyMeClicked(data: ProductNotifyMeDataModel, componentTrackDataModel: ComponentTrackDataModel) {
-        try {
-            activity?.let {
-                if (viewModel.isUserSessionActive) {
-                    viewModel.notifyMeAction = if (data.notifyMe) ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER else
-                        ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
-                    pdpUiUpdater?.notifyMeMap?.notifyMe?.let { notifyMe -> trackToggleNotifyMe(componentTrackDataModel, notifyMe) }
-                    pdpUiUpdater?.updateNotifyMeButton(data.notifyMe)
-                    updateUi()
-                    viewModel.toggleTeaserNotifyMe(data.campaignID.toLongOrZero(), productId?.toLongOrZero()
-                            ?: 0, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
-                } else {
-                    goToLogin()
-                }
+        doActionOrLogin({
+            pdpUiUpdater?.notifyMeMap?.notifyMe?.let { notifyMe ->
+                trackToggleNotifyMe(componentTrackDataModel, notifyMe)
             }
-        } catch (_: Exception) {
-
-        }
+            pdpUiUpdater?.updateNotifyMeButton(data.notifyMe)
+            updateUi()
+            viewModel.toggleTeaserNotifyMe(data.notifyMe,
+                    data.campaignID.toLongOrZero(),
+                    productId?.toLongOrZero() ?: 0)
+        })
     }
 
     private fun trackToggleNotifyMe(componentTrackDataModel: ComponentTrackDataModel?, notifyMe: Boolean) {
