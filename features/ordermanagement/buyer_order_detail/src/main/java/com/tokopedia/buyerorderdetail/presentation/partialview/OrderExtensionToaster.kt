@@ -39,9 +39,14 @@ class OrderExtensionToaster(
     }
 
     fun setToasterInternalError(view: View?, throwable: Throwable) {
+        val messageError = if (throwable is IOException) {
+            context?.getString(R.string.order_extension_message_error_connection).orEmpty()
+        } else {
+            context?.let { ErrorHandler.getErrorMessage(it, throwable) }.orEmpty()
+        }
         showToasterCommon(
             view,
-            context?.let { ErrorHandler.getErrorMessage(it, throwable) }.orEmpty(),
+            messageError,
             Toaster.TYPE_ERROR,
             null,
         )

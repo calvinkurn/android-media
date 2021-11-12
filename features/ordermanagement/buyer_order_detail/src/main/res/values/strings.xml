@@ -56,7 +56,7 @@
     <string name="order_extension_reason_submission_extends">Alasan perpanjangan pesanan:</string>
     <string name="order_extension_reason_submission_extends_value">" Kendala operasional "</string>
     <string name="order_extension_title_submission_extends_bottom_sheet">Bersediakah kamu untuk memperpanjang waktu pesanan?</string>
-
+    <string name="order_extension_message_error_connection">Oops, koneksi internetmu terganggu. Silakan cek koneksi internet dan coba lagi, ya.</string>
     <string name="buyer_order_extension_label">Buyer Order Extension</string>
 
 </resources>
