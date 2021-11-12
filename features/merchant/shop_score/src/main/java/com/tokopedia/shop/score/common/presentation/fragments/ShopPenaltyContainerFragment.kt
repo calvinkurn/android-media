@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.databinding.FragmentShopPenaltyContainerBinding
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyDetailFragment
 import com.tokopedia.shop.score.penalty.presentation.fragment.tablet.ShopPenaltyListTabletFragment
@@ -60,6 +61,7 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
     }
 
     override fun closePenaltyDetail() {
+        shopPenaltyDetailFragment?.dismissBottomSheet()
         binding?.run {
             fragmentPenaltyDetail.gone()
             ivPenaltyDetailWelcomeIllustration.show()
@@ -106,7 +108,7 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
     }
 
     private fun setupViews() {
-        binding?.ivPenaltyDetailWelcomeIllustration?.loadImage(URL_WELCOME_ILLUSTRATION)
+        binding?.ivPenaltyDetailWelcomeIllustration?.loadImage(ShopScoreConstant.EMPTY_STATE_PENALTY_URL)
     }
 
     private fun attachPenaltyDetailFragment(keyCacheManagerId: String) {
@@ -115,10 +117,10 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
                 if (!isAdded) return
                 val detailFragment = initiateDetailFragment(keyCacheManagerId)
                 childFragmentManager.beginTransaction().replace(
-                        R.id.fragmentPenaltyDetail,
-                        detailFragment,
-                        detailFragment::class.java.simpleName
-                    ).commitAllowingStateLoss()
+                    R.id.fragmentPenaltyDetail,
+                    detailFragment,
+                    detailFragment::class.java.simpleName
+                ).commitAllowingStateLoss()
             }
             showPenaltyDetail()
         }
@@ -133,9 +135,6 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
     }
 
     companion object {
-        private const val URL_WELCOME_ILLUSTRATION =
-            "https://images.tokopedia.net/img/android/sellerorder/ic_som_welcome_page_illustration.png"
-
         fun newInstance(): ShopPenaltyContainerFragment {
             return ShopPenaltyContainerFragment()
         }

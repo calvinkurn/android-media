@@ -138,13 +138,24 @@ class ShopPenaltyPageActivity : BaseSimpleActivity(), HasComponent<PenaltyCompon
         }
     }
 
+    private fun clearFragments() {
+        val transaction = supportFragmentManager.beginTransaction()
+        for (fragment in supportFragmentManager.fragments) {
+            transaction.remove(fragment)
+        }
+        transaction.commitNowAllowingStateLoss()
+    }
 
     override fun inflateFragment() {
-        clearFragments()
-        supportFragmentManager.beginTransaction().replace(
+        if (DeviceScreenInfo.isTablet(this)) {
+            clearFragments()
+            supportFragmentManager.beginTransaction().replace(
                 com.tokopedia.abstraction.R.id.parent_view,
                 newFragment,
                 newFragment::class.java.simpleName
-        ).commitNowAllowingStateLoss()
+            ).commitNowAllowingStateLoss()
+        } else {
+            super.inflateFragment()
+        }
     }
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.shop.score.penalty.presentation.fragment.tablet
 
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageFragment
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
@@ -10,14 +9,16 @@ class ShopPenaltyListTabletFragment : ShopPenaltyPageFragment() {
 
     private var penaltyListListener: PenaltyListListener? = null
 
-    override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel) {
+    override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel, position: Int) {
         context?.let {
-            if (DeviceScreenInfo.isTablet(it)) {
-                penaltyListListener?.onItemPenaltyClicked(itemPenaltyUiModel)
-            } else {
-                super.onItemPenaltyClick(itemPenaltyUiModel)
-            }
-        } ?: super.onItemPenaltyClick(itemPenaltyUiModel)
+            penaltyPageAdapter.updateSelectedBackground(position)
+            penaltyListListener?.onItemPenaltyClicked(itemPenaltyUiModel)
+        } ?: super.onItemPenaltyClick(itemPenaltyUiModel, position)
+    }
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        penaltyListListener?.closePenaltyDetail()
     }
 
     override fun onDateClick() {
@@ -33,10 +34,6 @@ class ShopPenaltyListTabletFragment : ShopPenaltyPageFragment() {
     override fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem) {
         penaltyListListener?.closePenaltyDetail()
         super.onChildSortFilterItemClick(sortFilterItem)
-    }
-
-    override fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasNext: Boolean) {
-        super.onSuccessGetPenaltyListData(data, hasNext)
     }
 
     fun setPenaltyListListener(listener: PenaltyListListener) {

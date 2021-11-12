@@ -14,7 +14,8 @@ data class ItemPenaltyUiModel(
     val prefixDatePenalty: String = "",
     val reasonPenalty: String = "",
     val deductionPoint: String = "",
-    @ColorRes val colorPenalty: Int? = null
+    @ColorRes val colorPenalty: Int? = null,
+    var isSelected: Boolean = false
 ) : BasePenaltyPage {
     override fun type(typeFactory: PenaltyPageAdapterFactory): Int {
         return typeFactory.type(this)

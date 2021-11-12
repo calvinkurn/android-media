@@ -4,7 +4,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 
 interface ItemDetailPenaltyListener {
-    fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel)
+    fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel, position: Int)
 }
 
 interface FilterPenaltyBottomSheetListener {

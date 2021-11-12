@@ -61,7 +61,7 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         val updateIndex = visitables.indexOfFirst { it is ItemSortFilterPenaltyUiModel }
         visitables.filterIsInstance<ItemSortFilterPenaltyUiModel>()
             .firstOrNull()?.itemSortFilterWrapperList = chipsList
-        if (updateIndex != -1) {
+        if (updateIndex != RecyclerView.NO_POSITION) {
             notifyItemChanged(updateIndex)
         }
     }
@@ -71,8 +71,22 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         visitables.find { it is ItemPeriodDetailPenaltyUiModel }?.also {
             (it as ItemPeriodDetailPenaltyUiModel).periodDetail = date
         }
-        if (dateIndex != -1) {
+        if (dateIndex != RecyclerView.NO_POSITION) {
             notifyItemChanged(dateIndex, PAYLOAD_DATE_FILTER)
+        }
+    }
+
+    fun updateSelectedBackground(position: Int) {
+        val itemPenaltyIndex = visitables.indexOfFirst { it is ItemPenaltyUiModel }
+        visitables.filterIsInstance<ItemPenaltyUiModel>().forEachIndexed { index, item ->
+            if (position == index) {
+                item.isSelected = !item.isSelected
+            } else {
+                item.isSelected = false
+            }
+        }
+        if (itemPenaltyIndex != RecyclerView.NO_POSITION) {
+            notifyItemChanged(itemPenaltyIndex, PAYLOAD_SELECTED_FILTER)
         }
     }
 
@@ -157,5 +171,6 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
 
     companion object {
         const val PAYLOAD_DATE_FILTER = 408
+        const val PAYLOAD_SELECTED_FILTER = 508
     }
 }

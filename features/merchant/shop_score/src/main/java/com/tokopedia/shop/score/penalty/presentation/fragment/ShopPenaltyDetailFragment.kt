@@ -24,6 +24,7 @@ import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBo
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -166,6 +167,14 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
             supportActionBar?.run {
                 title = getString(R.string.title_penalty_detail_shop_score)
             }
+        }
+
+    }
+
+    fun dismissBottomSheet() {
+        childFragmentManager.fragments.forEach {
+            if (it is BottomSheetUnify)
+                if (it.isVisible) it.dismissAllowingStateLoss()
         }
     }
 
