@@ -1,11 +1,7 @@
-package com.tokopedia.homecredit.di.scope;
+package com.tokopedia.homecredit.di.scope
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import javax.inject.Scope;
+import javax.inject.Scope
 
 @Scope
-@Retention(RetentionPolicy.CLASS)
-public @interface HomeCreditScope {
-}
+@kotlin.annotation.Retention(AnnotationRetention.BINARY)
+annotation class HomeCreditScope 

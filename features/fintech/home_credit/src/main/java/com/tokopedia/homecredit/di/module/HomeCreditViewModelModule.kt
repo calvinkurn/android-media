@@ -1,26 +1,21 @@
-package com.tokopedia.homecredit.di.module;
+package com.tokopedia.homecredit.di.module
 
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory;
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey;
-import com.tokopedia.homecredit.viewModel.HomeCreditViewModel;
-
-import dagger.Binds;
-import dagger.Module;
-import dagger.multibindings.IntoMap;
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.homecredit.viewModel.HomeCreditViewModel
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
 
 @Module
-public abstract class HomeCreditViewModelModule {
-
+abstract class HomeCreditViewModelModule {
     @Binds
-    abstract ViewModelProvider.Factory bindViewModelFactory(ViewModelFactory viewModelFactory);
+    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory?): ViewModelProvider.Factory?
 
     @Binds
     @IntoMap
-    @ViewModelKey(HomeCreditViewModel.class)
-    abstract ViewModel bindsPayLaterViewModel(HomeCreditViewModel homeCreditViewModel);
-
-
+    @ViewModelKey(HomeCreditViewModel::class)
+    abstract fun bindsPayLaterViewModel(homeCreditViewModel: HomeCreditViewModel?): ViewModel?
 }

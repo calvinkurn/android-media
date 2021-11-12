@@ -1,7 +1,6 @@
-package com.tokopedia.homecredit.di.module;
+package com.tokopedia.homecredit.di.module
 
-import dagger.Module;
+import dagger.Module
 
 @Module
-public class HomeCreditModule {
-}
+class HomeCreditModule 
