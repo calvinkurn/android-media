@@ -10,12 +10,17 @@ object SearchComponentTrackingConst {
     const val PAGESOURCE = "pageSource"
     const val SEARCH = "search"
     const val TOKOPEDIAMARKETPLACE = "tokopediamarketplace"
+    const val KEYWORD_ID_NAME = "keyword:%s | value_id:%s | value_name:%s"
+    const val KEYWORD = "keyword:{keyword}"
 
     object Event {
+        const val VIEWSEARCHIRIS = "viewSearchIris"
         const val CLICKSEARCH = "clickSearch"
     }
 
     object Action {
+        const val IMPRESSION = "impression"
+        const val CLICK = "click"
         const val CLICK_OTHER_ACTION = "click other action"
     }
 
@@ -26,5 +31,12 @@ object SearchComponentTrackingConst {
     object Component {
         const val INITIAL_STATE_CANCEL_SEARCH = "01.09.00.00"
         const val AUTO_COMPLETE_CANCEL_SEARCH = "02.12.00.00"
+    }
+
+    object Options {
+        const val NO_TRACKING = 0
+        const val IMPRESSION_ONLY = 1
+        const val CLICK_ONLY = 2
+        const val IMPRESSION_AND_CLICK = 3
     }
 }
