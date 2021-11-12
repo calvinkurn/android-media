@@ -726,7 +726,7 @@
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/websocket_and_sse_logging_title"/>
+            android:text="@string/play_websocket_and_sse_logging_title"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_view_sse_log"
