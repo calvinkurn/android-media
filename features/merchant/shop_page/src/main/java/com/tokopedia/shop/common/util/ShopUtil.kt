@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.util
 
 import android.content.Context
+import android.content.Intent
 import android.text.TextUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -113,8 +114,9 @@ object ShopUtil {
         return shopReviewAbTestKey.equals(NEW_REVIEW_SHOP, true)
     }
 
-    fun isUsingNewShopHomeTab(isBypass: Boolean = false): Boolean {
-        return if (isBypass)
+    fun isUsingNewShopHomeTab(intentData: Intent? = null): Boolean {
+        val isBypassNewShopHome = intentData?.extras?.getString(ShopPageConstant.HOME_V2_EXTRA).toBoolean()
+        return if (isBypassNewShopHome)
             true
         else {
             val newShopHomeTabAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(

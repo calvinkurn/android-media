@@ -162,8 +162,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
     }
 
     private fun isUsingNewShopHomeTab(): Boolean {
-        val isBypassNewHome = intent?.extras?.getString(HOME_V2_EXTRA).toBoolean()
-        return ShopUtil.isUsingNewShopHomeTab(isBypassNewHome)
+        return ShopUtil.isUsingNewShopHomeTab(intent)
     }
 
     override fun getShopPageLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {

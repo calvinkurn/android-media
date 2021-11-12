@@ -1675,8 +1675,7 @@ class NewShopPageFragment :
     }
 
     private fun isUsingNewShopHomeTab(): Boolean {
-        val isBypassNewHome = activity?.intent?.extras?.getString(HOME_V2_EXTRA).toBoolean()
-        return ShopUtil.isUsingNewShopHomeTab(isBypassNewHome)
+        return ShopUtil.isUsingNewShopHomeTab(activity?.intent)
     }
 
     private fun onErrorGetShopPageTabData(e: Throwable?) {
