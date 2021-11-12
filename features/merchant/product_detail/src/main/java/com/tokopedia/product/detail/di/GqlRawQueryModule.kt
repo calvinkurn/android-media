@@ -31,13 +31,6 @@ class GqlRawQueryModule {
     @ProductDetailScope
     @Provides
     @IntoMap
-    @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE)
-    fun provideGetProductAffiliate(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, com.tokopedia.affiliatecommon.R.raw.query_product_affiliate_data)
-
-    @ProductDetailScope
-    @Provides
-    @IntoMap
     @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
     fun provideRecommendationProduct(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget)
