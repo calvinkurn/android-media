@@ -27,6 +27,7 @@ object OSLegoBannerTracking: BaseTrackerConst() {
     private const val LEGO_BANNER_2_IMAGE_NAME = "lego banner 2 image"
     private const val LEGO_BANNER_6_IMAGE_NAME = "lego banner"
     private const val LEGO_BANNER_6_AUTO_IMAGE_NAME = "lego banner 6 auto"
+    private const val PROMOTION_NAME_CLICK = "/ - p%s - dynamic channel mix - banner - %s"
 
     fun getLegoBannerTwoImageImpression(channel: ChannelModel, position: Int, isToIris: Boolean = false, userId: String): Map<String, Any> {
         return getLegoBannerImageImpression(channel, position, isToIris, userId, LEGO_BANNER_2_IMAGE_NAME)
@@ -69,7 +70,7 @@ object OSLegoBannerTracking: BaseTrackerConst() {
                     creative = grid.attribution,
                     name = Ecommerce.PROMOTION_NAME.format(
                         position,
-                        LEGO_BANNER_6_IMAGE_NAME,
+                        componentName,
                         channel.channelHeader.name
                     ),
                     position = (index + 1).toString()
@@ -125,7 +126,7 @@ object OSLegoBannerTracking: BaseTrackerConst() {
 
     private fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: Int) = Promotion(
         id = channelModel.id + "_" + id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
-        name = channelModel.trackingAttributionModel.promoName,
+        name = String.format(PROMOTION_NAME_CLICK, channelModel.channelHeader.name),
         creative = attribution,
         position = (position + 1).toString()
     )
