@@ -147,6 +147,7 @@ import android.content.*
 import android.content.ClipData
 import android.widget.LinearLayout
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
 import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
 import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
@@ -204,6 +205,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var delaySendMessage: String = ""
     private var delaySendSticker: Sticker? = null
     private var delaySendSrw: QuestionUiModel? = null
+    private var interlocutorShopType: String = ""
 
     //This used only for set extra in finish activity
     private var isFavoriteShop: Boolean? = null
@@ -727,6 +729,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             !isSeller() -> presenter.getSmartReplyWidget(messageId)
             isSeller() -> presenter.adjustInterlocutorWarehouseId(messageId)
         }
+        interlocutorShopType = chatRoom.shopType
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -1477,7 +1480,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickBuyProductAttachment(element)
-        if (element.variants.isNullOrEmpty()) {
+        if (element.isSupportVariant) {
+            showAtcVariantHelper(element.productId, element.shopId.toString())
+        } else {
             doBuyAndAtc(element) {
                 analytics.trackSuccessDoBuyAndAtc(
                     element, it,
@@ -1487,14 +1492,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 val intent = RouteManager.getIntent(context, ApplinkConst.CART)
                 startActivity(intent)
             }
-        } else {
-            showAtcVariantHelper(element.productId, element.shopId.toString())
         }
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        if (element.variants.isNullOrEmpty()) {
+        if (element.isSupportVariant) {
+            showAtcVariantHelper(element.productId, element.shopId.toString())
+        } else {
             doBuyAndAtc(element) {
                 analytics.trackSuccessDoBuyAndAtc(
                     element, it,
@@ -1515,8 +1520,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     }.show()
                 }
             }
-        } else {
-            showAtcVariantHelper(element.productId, element.shopId.toString())
         }
     }
 
@@ -1541,7 +1544,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 context = ctx,
                 productId = productId,
                 pageSource = AtcVariantHelper.TOPCHAT_PAGESOURCE,
-                isTokoNow = false,
+                isTokoNow = interlocutorShopType == SHOP_TYPE_TOKONOW,
                 shopId = shopId,
                 startActivitResult = { intent, requestCode ->
                     startActivityForResult(intent, requestCode)

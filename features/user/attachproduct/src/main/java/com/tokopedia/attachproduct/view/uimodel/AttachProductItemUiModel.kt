@@ -21,7 +21,8 @@ data class AttachProductItemUiModel(
     val discountPercentage: String,
     val isFreeOngkirActive: Boolean,
     val imgUrlFreeOngkir: String,
-    val stock: Int
+    val stock: Int,
+    val isSupportVariant: Boolean
 ) : Visitable<AttachProductListAdapterTypeFactory>, Parcelable {
 
     override fun type(typeFactory: AttachProductListAdapterTypeFactory): Int {

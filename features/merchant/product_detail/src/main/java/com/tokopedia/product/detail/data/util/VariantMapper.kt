@@ -43,6 +43,7 @@ object VariantMapper {
         val productSizeVariant = variants?.get("size")?.get("value") ?: ""
         val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
         val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
+        val isSupportVariant = variants != null
         val productPreview = ProductPreview(
             id = productId,
             imageUrl = productImageUrl,
@@ -60,7 +61,8 @@ object VariantMapper {
             priceBeforeInt = priceBeforeDouble,
             dropPercentage = dropPercentage,
             isActive = isActive,
-            remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1
+            remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1,
+            isSupportVariant = isSupportVariant
         )
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
