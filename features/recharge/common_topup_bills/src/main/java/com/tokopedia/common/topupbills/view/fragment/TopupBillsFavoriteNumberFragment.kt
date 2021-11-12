@@ -301,14 +301,18 @@ class TopupBillsFavoriteNumberFragment :
         clickListener: View.OnClickListener = View.OnClickListener {}
     ) {
         view?.let {
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                throwable,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
             if (actionText.isNullOrEmpty()) {
-                Toaster.build(it, ErrorHandler.getErrorMessage(requireContext(), throwable),
-                    length, Toaster.TYPE_ERROR).show()
+                Toaster.build(it, errorMessage.orEmpty(), length, Toaster.TYPE_ERROR).show()
             } else {
-                Toaster.build(
-                    it, ErrorHandler.getErrorMessage(requireContext(), throwable),
-                    length, Toaster.TYPE_ERROR, actionText, clickListener
-                ).show()
+                Toaster.build(it, errorMessage.orEmpty(), length, Toaster.TYPE_ERROR,
+                    actionText, clickListener).show()
             }
         }
     }
