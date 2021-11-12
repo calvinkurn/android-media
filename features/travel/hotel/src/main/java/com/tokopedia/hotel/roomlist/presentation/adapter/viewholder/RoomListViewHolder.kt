@@ -146,7 +146,10 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
 
     init {
         itemView.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
-            override fun onViewDetachedFromWindow(p0: View?){
+            override fun onViewDetachedFromWindow(view: View?){
+                view?.let {
+                    itemView.removeOnAttachStateChangeListener(this)
+                }
                 imagePreviewViewer = null
             }
 
