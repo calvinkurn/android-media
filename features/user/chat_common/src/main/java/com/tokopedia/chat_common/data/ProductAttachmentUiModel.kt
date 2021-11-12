@@ -120,6 +120,7 @@ open class ProductAttachmentUiModel protected constructor(
             }
             this.isLoading = false
             parentId = attribute.productProfile.parentId
+            isSupportVariant = attribute.productProfile.isSupportVariant
         }
     }
 
