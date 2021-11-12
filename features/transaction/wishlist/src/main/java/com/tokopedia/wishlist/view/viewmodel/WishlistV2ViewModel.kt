@@ -390,6 +390,19 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
         }
     }
 
+    fun onCheckedBulkDeleteWishlist(productId: String, isChecked: Boolean) {
+        val previousData = if (_wishlistV2Result.value is Success) {
+            (_wishlistV2Result.value as Success<List<WishlistV2Data>>).data.toMutableList()
+        } else {
+            mutableListOf()
+        }
+        val selectedProductIndex = previousData.indexOfFirst { element -> element is WishlistV2DataModel && element.item.id == productId }
+        if (selectedProductIndex != -1) {
+            (previousData[selectedProductIndex] as WishlistV2DataModel).isChecked = isChecked
+            _wishlistV2Result.value = Success(previousData)
+        }
+    }
+
     fun doAtc(atcParams: AddToCartRequestParams) {
         launch {
             try {

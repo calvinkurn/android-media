@@ -236,7 +236,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 } else {
                     wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
                     wishlistV2Adapter.hideCheckbox()
+                    binding?.containerDelete?.visibility = View.GONE
                 }
+                listBulkDelete.clear()
                 isBulkDeleteShow = !isBulkDeleteShow
             }
         }
@@ -262,13 +264,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         scrollRecommendationListener = object : EndlessRecyclerViewScrollListener(glm) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 currentPage += 1
-                if (isFetchRecommendation) {
-                    onLoadMoreRecommendation = true
-                    loadRecommendationList()
-                } else {
-                    onLoadMore = true
-                    paramWishlistV2.page = currPage
-                    wishlistViewModel.getNextPageWishlistData(paramWishlistV2)
+                if (!isBulkDeleteShow) {
+                    if (isFetchRecommendation) {
+                        onLoadMoreRecommendation = true
+                        loadRecommendationList()
+                    } else {
+                        onLoadMore = true
+                        paramWishlistV2.page = currPage
+                        wishlistViewModel.getNextPageWishlistData(paramWishlistV2)
+                    }
                 }
             }
         }
@@ -356,40 +360,20 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     }
                 }
                 is WishlistV2DataModel -> {
-                    val listGroupLabel = arrayListOf<ProductCardModel.LabelGroup>()
-
-                    it.item.labelGroup.forEach { labelGroupItem ->
-                        val labelGroup = ProductCardModel.LabelGroup(
-                                position = labelGroupItem.position,
-                                title = labelGroupItem.title,
-                                type = labelGroupItem.type,
-                                imageUrl = labelGroupItem.url)
-                        listGroupLabel.add(labelGroup)
-                    }
-
-                    val isButtonAtc = it.item.buttons.primaryButton.action == ATC_WISHLIST
-                    it.item.also { item ->
-                        val productModel = ProductCardModel(
-                            productImageUrl = item.imageUrl,
-                            isWishlistVisible = true,
-                            productName = item.name,
-                            shopName = item.shop.name,
-                            formattedPrice = item.priceFmt,
-                            shopLocation = item.shop.location,
-                            isShopRatingYellow = true,
-                            hasSecondaryButton = true,
-                            tambahKeranjangButton = isButtonAtc,
-                            lihatBarangSerupaButton = !isButtonAtc,
-                            labelGroupList = listGroupLabel)
-                        adapterData.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item))
-                    }
+                    adapterData.add(
+                        WishlistV2TypeLayoutData(
+                            it.isChecked,
+                            wishlistPref?.getTypeLayout(),
+                            it.item
+                        )
+                    )
                 }
                 is WishlistV2EmptyDataModel -> {
                     isFetchRecommendation = true
                     if (it.query.isNotEmpty()) {
                         adapterData.add(WishlistV2TypeLayoutData(it.query, TYPE_EMPTY_NOT_FOUND))
                     } else {
-                        adapterData.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
+                        adapterData.add(WishlistV2TypeLayoutData("", TYPE_EMPTY_STATE))
                     }
 
                 }
@@ -760,11 +744,17 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         showBottomSheetThreeDotsMenu(itemWishlist)
     }
 
-    override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean) {
+    override fun onCheckBulkDeleteOption(productId: String, position: Int, isChecked: Boolean) {
         if (isChecked) {
             listBulkDelete.add(productId)
         } else {
             listBulkDelete.remove(productId)
+        }
+//        wishlistViewModel.onCheckedBulkDeleteWishlist(productId, isChecked)
+        wishlistV2Adapter.selectWishlistToDelete(position, isChecked)
+        binding?.rvWishlist?.post {
+            wishlistV2Adapter.notifyItemChanged(position)
+            wishlistV2Adapter.notifyItemRangeChanged(position, 1)
         }
         val showButton = listBulkDelete.isNotEmpty()
         if (showButton) {
@@ -825,12 +815,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     override fun onRefresh(view: View?) {
-        onLoadMore = false
-        isFetchRecommendation = false
-        onLoadMoreRecommendation = false
-        currPage = 1
-        currRecommendationListPage = 1
-        paramWishlistV2.page = 1
-        loadWishlistV2()
+        if (!isBulkDeleteShow) {
+            onLoadMore = false
+            isFetchRecommendation = false
+            onLoadMoreRecommendation = false
+            currPage = 1
+            currRecommendationListPage = 1
+            paramWishlistV2.page = 1
+            loadWishlistV2()
+        } else {
+            refreshHandler?.finishRefresh()
+        }
     }
 }
