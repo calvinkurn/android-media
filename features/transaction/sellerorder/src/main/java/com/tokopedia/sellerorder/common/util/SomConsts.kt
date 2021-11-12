@@ -122,10 +122,6 @@ object SomConsts {
     const val TOPADS_MANUAL_ADS = 3
     const val TOPADS_AUTO_ADS = 4
 
-    const val KEY_WAITING_PAYMENT_ORDER_LIST_RESULT = "waiting_payment_order_list_result"
-    const val KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT = "waiting_payment_order_list_paging_result"
-
-
     //SOM FILTER LABEL
     const val FILTER_SORT = "Urutkan"
     const val FILTER_STATUS_ORDER = "Status Pesanan"

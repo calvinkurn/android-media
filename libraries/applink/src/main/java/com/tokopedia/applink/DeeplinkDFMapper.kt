@@ -58,7 +58,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.BIOMETRIC_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_GENDER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_NAME
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
@@ -67,6 +66,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BAS
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.EDIT_BCA_ONE_KLICK_ENTRY_PATTERN
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.FORGOT_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.INBOX_TALK
@@ -402,7 +402,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
@@ -501,7 +500,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.PROFILE_COMPLETION) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title))
 
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
-            add(DFP({ it.startsWith(CHANGE_PASSWORD) }, DF_BASE, R.string.applink_change_password))
+            add(DFP({ it.startsWith(HAS_PASSWORD) }, DF_BASE, R.string.applink_change_password))
+            add(DFP({ it.startsWith(FORGOT_PASSWORD) }, DF_BASE, R.string.applink_change_password))
             add(DFP({ it.startsWith(SETTING_BANK) }, DF_USER_SETTINGS, R.string.applink_setting_bank_title, { DFWebviewFallbackUrl.USER_SETTING_BANK }))
             add(DFP({ it.startsWith(USER_NOTIFICATION_SETTING) }, DF_BASE, R.string.notif_settings_title))
             add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_INFO) }, DF_USER_SETTINGS, R.string.user_identification_common_title))
@@ -606,7 +606,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE_SELLER_APP, R.string.merchant_seller))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
                     || it.startsWith(SHOP_SCORE_DETAIL)
-                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
                     || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
                     || it.startsWith(SHOP_PENALTY)
                     || it.startsWith(SHOP_PENALTY_DETAIL)
@@ -673,7 +672,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
