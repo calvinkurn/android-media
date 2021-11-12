@@ -364,7 +364,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     override fun onProductClick(productId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {
         if(status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE){
-            AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,null,productId , productName , productImage, productUrl,productIdentifier,
+            AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+                    null,null,productId , productName , productImage, productUrl,productIdentifier,
                     AffiliatePromotionBottomSheet.ORIGIN_HOME,!isUserBlackListed).show(childFragmentManager, "")
         }else {
             AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE).show(childFragmentManager, "")

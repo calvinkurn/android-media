@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/spacing_lvl4"
+    >
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/product_image"
@@ -53,5 +55,22 @@
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/affiliate_share_item"
         tools:orientation="vertical" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        android:id="@+id/simpan_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/share_rv"
+        app:unifyButtonSize="medium"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonType="main"
+        android:text="@string/affiliate_simpan"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

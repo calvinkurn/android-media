@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.affiliate.AFFILIATE_LIHAT_KATEGORI
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -22,11 +23,14 @@ import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_recommended_product_fragment_layout.*
 import java.util.*
@@ -81,6 +85,8 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         setUpRecyclerView()
         setUpEmptyState()
         sendScreenEvent()
+        setupTickerView(getString(R.string.affiliate_black_list_title),
+                getString(R.string.affiliate_black_list_description))
         affiliateRecommendedProductViewModel.isUserBlackListed = (activity as? AffiliateActivity)?.getBlackListedStatus() ?: false
         affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,PAGE_ZERO)
     }
@@ -200,6 +206,32 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         affiliate_no_product_seen_iv.hide()
     }
 
+    private fun setupTickerView(title: String?,desc :String?)
+    {
+        if((activity as AffiliateActivity).getBlackListedStatus()){
+            affiliate_announcement_ticker_cv.show()
+            affiliate_announcement_ticker.tickerTitle = title
+            desc?.let {
+                affiliate_announcement_ticker.setHtmlDescription(
+                        it
+                )
+            }
+            affiliate_announcement_ticker.tickerType = Ticker.TYPE_ERROR
+            affiliate_announcement_ticker.setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    RouteManager.routeNoFallbackCheck(context, AFFILIATE_LIHAT_KATEGORI, AFFILIATE_LIHAT_KATEGORI)
+                }
+
+                override fun onDismiss() {
+
+                }
+
+            })
+        }else {
+            affiliate_announcement_ticker_cv.hide()
+        }
+    }
+
     override fun getVMFactory(): ViewModelProvider.Factory {
         return viewModelProvider
     }
@@ -228,7 +260,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String) {
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
-                null,
+                null,null,
                 productId, productName, productImage, productUrl,
                 productIdentifier,AffiliatePromotionBottomSheet.ORIGIN_PROMOSIKAN).show(childFragmentManager, "")
     }

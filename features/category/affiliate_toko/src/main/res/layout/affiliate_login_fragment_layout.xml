@@ -51,7 +51,7 @@
         android:id="@+id/affiliate_login_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/affiliate_login_ticker"
+        app:layout_constraintBottom_toTopOf="@id/affiliate_login_ticker_cv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -62,9 +62,12 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         />
 
-
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/affiliate_login_ticker"
+    <androidx.cardview.widget.CardView
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:id="@+id/affiliate_login_ticker_cv"
+        app:cardCornerRadius="@dimen/spacing_lvl3"
+        app:cardElevation="0dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@id/affiliate_login_card"
@@ -73,12 +76,18 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:tickerType="error"
-        app:closeButtonVisibility="gone"
-        app:titleText="Akunmu sedang bermasalah. Selengkapnya"
-        android:visibility="gone"
-        tools:visibility="visible"
-        />
+        >
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/affiliate_login_ticker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tickerType="error"
+            app:closeButtonVisibility="gone"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/affiliate_login_card"

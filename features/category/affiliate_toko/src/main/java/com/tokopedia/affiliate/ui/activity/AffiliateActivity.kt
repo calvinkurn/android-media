@@ -28,10 +28,13 @@ import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import kotlinx.android.synthetic.main.affiliate_background_layout.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
@@ -143,13 +146,37 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun setObservers() {
         affiliateVM.getValidateUserdata().observe(this, { validateUserdata ->
-            if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
+            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true) {
                 showAffiliatePortal()
+            }else if(validateUserdata.validateAffiliateUserStatus.data?.isEligible == false &&
+                    validateUserdata.validateAffiliateUserStatus.data?.isRegistered == false){
+                showFraudTicker()
             }else {
                 if(!userActionRequiredForRegister)
                     navigateToPortfolioFragment()
             }
         })
+
+        affiliateVM.getErrorMessage().observe(this , { error ->
+            when(error) {
+                is UnknownHostException, is SocketTimeoutException -> {
+
+                }
+                is IllegalStateException -> {
+
+                }
+                else -> {
+                    showLoginPortal()
+                }
+            }
+        })
+    }
+
+    private fun showFraudTicker() {
+        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+        if(currentFragment != null && currentFragment.isVisible){
+            (currentFragment as? AffiliateLoginFragment)?.showFraudTicker()
+        }
     }
 
     private fun openFragment(fragment: Fragment) {

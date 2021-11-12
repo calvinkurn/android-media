@@ -13,6 +13,7 @@ import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.affiliate.AFFILIATE_LIHAT_KATEGORI
 import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
 import com.tokopedia.affiliate.AFFILIATE_REGISTER_REQUEST_CODE
 import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
@@ -29,6 +30,8 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_login_fragment_layout.*
 import javax.inject.Inject
@@ -179,7 +182,8 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     private fun doLogout() {
         activity?.let {
-            startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT))
+            RouteManager.route(it, ApplinkConstInternalGlobal.LOGOUT)
+            it.finish()
         }
     }
 
@@ -214,5 +218,19 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     override fun setViewModel(viewModel: BaseViewModel) {
         affiliateLoginViewModel = viewModel as AffiliateLoginViewModel
+    }
+
+    fun showFraudTicker() {
+        affiliate_login_ticker.run {
+            show()
+            setHtmlDescription(getString(R.string.affiliate_login_ticker_text))
+            tickerType = Ticker.TYPE_ERROR
+            setDescriptionClickEvent(object: TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    //RouteManager.routeNoFallbackCheck(context, AFFILIATE_LIHAT_KATEGORI, AFFILIATE_LIHAT_KATEGORI)
+                }
+                override fun onDismiss() {}
+            })
+        }
     }
 }
