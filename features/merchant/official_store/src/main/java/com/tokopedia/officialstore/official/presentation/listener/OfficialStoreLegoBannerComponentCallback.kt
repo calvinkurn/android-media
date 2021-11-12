@@ -56,7 +56,7 @@ class OfficialStoreLegoBannerComponentCallback(private val dcEventHandler: Dynam
     }
 
     override fun onClickGridTwoImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        dcEventHandler.goToApplink(channelModel.channelHeader.applink)
+        dcEventHandler.goToApplink(channelGrid.applink)
         dcEventHandler.getTrackingObject()?.trackerObj?.sendEnhanceEcommerceEvent(OSLegoBannerTracking.getLegoBannerTwoClick(channelModel, channelGrid, position, dcEventHandler.getUserId()))
     }
 
@@ -69,7 +69,7 @@ class OfficialStoreLegoBannerComponentCallback(private val dcEventHandler: Dynam
 
 
     override fun onClickGridFourImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        dcEventHandler.goToApplink(channelModel.channelHeader.applink)
+        dcEventHandler.goToApplink(channelGrid.applink)
         dcEventHandler.getTrackingObject()?.trackerObj?.sendEnhanceEcommerceEvent(OSLegoBannerTracking.getLegoBannerFourClick(channelModel, channelGrid, position, dcEventHandler.getUserId()))
     }
 
