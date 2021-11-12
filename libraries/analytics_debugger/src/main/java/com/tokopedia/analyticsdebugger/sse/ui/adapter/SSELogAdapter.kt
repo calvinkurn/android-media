@@ -2,6 +2,7 @@ package com.tokopedia.analyticsdebugger.sse.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.sse.ui.uimodel.SSELogUiModel
@@ -23,8 +24,11 @@ class SSELogAdapter: RecyclerView.Adapter<SSELogViewHolder>() {
     override fun getItemCount(): Int = data.size
 
     fun updateData(newList: List<SSELogUiModel>) {
+        val diffCallback = SSELogDiffCallback(data, newList)
+        val dispatch = DiffUtil.calculateDiff(diffCallback)
+        dispatch.dispatchUpdatesTo(this)
+
         data.clear()
         data.addAll(newList)
-        notifyDataSetChanged()
     }
 }
