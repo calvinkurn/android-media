@@ -238,7 +238,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     wishlistV2Adapter.hideCheckbox()
                     binding?.containerDelete?.visibility = View.GONE
                 }
-//                listBulkDelete.clear()
                 isBulkDeleteShow = !isBulkDeleteShow
             }
         }
@@ -264,16 +263,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         scrollRecommendationListener = object : EndlessRecyclerViewScrollListener(glm) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 currentPage += 1
-//                if (!isBulkDeleteShow) {
-                    if (isFetchRecommendation) {
-                        onLoadMoreRecommendation = true
-                        loadRecommendationList()
-                    } else {
-                        onLoadMore = true
-                        paramWishlistV2.page = currPage
-                        wishlistViewModel.getNextPageWishlistData(paramWishlistV2)
-                    }
-//                }
+                if (isFetchRecommendation) {
+                    onLoadMoreRecommendation = true
+                    loadRecommendationList()
+                } else {
+                    onLoadMore = true
+                    paramWishlistV2.page = currPage
+                    wishlistViewModel.getNextPageWishlistData(paramWishlistV2)
+                }
             }
         }
 
@@ -755,11 +752,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             listBulkDelete.remove(productId)
         }
         wishlistViewModel.onCheckedBulkDeleteWishlist(productId, isChecked)
-//        wishlistV2Adapter.selectWishlistToDelete(position, isChecked)
-//        binding?.rvWishlist?.post {
-//            wishlistV2Adapter.notifyItemChanged(position)
-//            wishlistV2Adapter.notifyItemRangeChanged(position, 1)
-//        }
         val showButton = listBulkDelete.isNotEmpty()
         if (showButton) {
             binding?.run {
@@ -819,7 +811,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     override fun onRefresh(view: View?) {
-//        if (!isBulkDeleteShow) {
             onLoadMore = false
             isFetchRecommendation = false
             onLoadMoreRecommendation = false
@@ -827,8 +818,5 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             currRecommendationListPage = 1
             paramWishlistV2.page = 1
             loadWishlistV2()
-//        } else {
-//            refreshHandler?.finishRefresh()
-//        }
     }
 }

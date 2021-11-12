@@ -182,11 +182,4 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         isShowCheckbox = false
         notifyDataSetChanged()
     }
-
-    fun selectWishlistToDelete(position: Int, isChecked: Boolean) {
-        val layoutData = listTypeData[position]
-        if (layoutData.dataObject is Boolean) {
-            listTypeData[position] = WishlistV2TypeLayoutData(isChecked, layoutData.typeLayout, layoutData.wishlistItem)
-        }
-    }
 }
