@@ -32,6 +32,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private var totalItemsCount = MutableLiveData<Int>()
     private var errorMessage = MutableLiveData<Throwable>()
     private var affiliateErrorMessage = MutableLiveData<Throwable>()
+    private var rangeChanged = MutableLiveData<Boolean>()
     private val pageLimit = 6
 
     fun getAffiliateValidateUser() {
@@ -57,7 +58,7 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getAffiliatePerformance(page : Int) {
         shimmerVisibility.value = true
         launchCatchError(block = {
-           val performanceList = affiliateUserPerformanceUseCase.affiliateUserperformance("7")
+           val performanceList = affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateRange)
             affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
                 totalItemsCount.value = it.itemTotalCount
                 convertDataToVisitables(it,performanceList)?.let { visitables ->
@@ -114,10 +115,19 @@ class AffiliateHomeViewModel @Inject constructor(
         return performaTempList
     }
     private var selectedDateRange = AffiliateBottomDatePicker.TODAY
+    private var selectedDateValue = "0"
     fun getSelectedDate(): String {
         return selectedDateRange
     }
+    fun onRangeChanged(range: AffiliateDatePickerData) {
+        if(selectedDateRange != range.text) {
+            selectedDateRange = range.text
+            selectedDateValue = range.value
+            rangeChanged.value = true
+        }
+    }
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
+    fun getRangeChanged(): LiveData<Boolean> = rangeChanged
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getAffiliateErrorMessage(): LiveData<Throwable> = affiliateErrorMessage
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata

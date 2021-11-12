@@ -18,9 +18,11 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
 import com.tokopedia.affiliate.interfaces.AffiliateHomeRvDateRangeInterface
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.AffiliateAnnouncementData
+import com.tokopedia.affiliate.model.AffiliateDatePickerData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
@@ -48,7 +50,8 @@ import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
-class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), ProductClickInterface,AffiliateHomeRvDateRangeInterface {
+class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), ProductClickInterface,AffiliateHomeRvDateRangeInterface,
+    AffiliateDatePickerRangeChangeInterface {
 
     private var totalDataItemsCount: Int = 0
     private var isSwipeRefresh = false
@@ -101,10 +104,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         products_rv.layoutManager = layoutManager
         swipe_refresh_layout.setOnRefreshListener {
             isSwipeRefresh = true
-            loadMoreTriggerListener?.resetState()
-            listSize = 0
-            adapter.resetList()
-            affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
+            resetItems()
         }
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
         products_rv.adapter = adapter
@@ -126,6 +126,13 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         }
         ImageHandler.loadImageCircle2(context, user_image, affiliateHomeViewModel.getUserProfilePicture())
         sendScreenEvent()
+    }
+
+    private fun resetItems() {
+        loadMoreTriggerListener?.resetState()
+        listSize = 0
+        adapter.resetList()
+        affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
     }
 
     private fun setAffiliateGreeting() {
@@ -171,6 +178,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 else
                     adapter.removeShimmer(listSize)
             }
+        })
+        affiliateHomeViewModel.getRangeChanged().observe(this,{changed ->
+            if(changed) resetItems()
         })
         affiliateHomeViewModel.progressBar().observe(this, { visibility ->
             if (visibility != null) {
@@ -374,6 +384,10 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     override fun buttonClicked() {
-        AffiliateBottomDatePicker.newInstance(affiliateHomeViewModel.getSelectedDate()).show(childFragmentManager, "")
+        AffiliateBottomDatePicker.newInstance(affiliateHomeViewModel.getSelectedDate(),this).show(childFragmentManager, "")
+    }
+
+    override fun rangeChanged(range: AffiliateDatePickerData) {
+        affiliateHomeViewModel.onRangeChanged(range)
     }
 }
