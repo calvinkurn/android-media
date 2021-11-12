@@ -126,7 +126,7 @@ object OSLegoBannerTracking: BaseTrackerConst() {
 
     private fun ChannelGrid.convertToHomePromotionModel(channelModel: ChannelModel, position: Int) = Promotion(
         id = channelModel.id + "_" + id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
-        name = PROMOTION_NAME_CLICK.format(PROMOTION_NAME_CLICK, position+1, channelModel.channelHeader.name),
+        name = PROMOTION_NAME_CLICK.format(position+1, channelModel.channelHeader.name),
         creative = attribution,
         position = (position + 1).toString()
     )
