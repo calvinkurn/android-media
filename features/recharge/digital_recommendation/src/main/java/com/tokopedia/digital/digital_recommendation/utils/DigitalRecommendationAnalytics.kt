@@ -47,12 +47,15 @@ class DigitalRecommendationAnalytics {
             putParcelableArrayList(DigitalRecommendationKeys.ITEMS, arrayListOf(
                     Bundle().also {
                         it.putInt(DigitalRecommendationKeys.INDEX, index + 1)
-                        it.putString(DigitalRecommendationKeys.ITEM_BRAND, digitalRecommendationModel.tracking.productId)
+                        it.putString(DigitalRecommendationKeys.ITEM_BRAND, if (digitalRecommendationModel.tracking.productId.isNotEmpty())
+                            digitalRecommendationModel.tracking.productId else "0")
                         it.putString(DigitalRecommendationKeys.ITEM_CATEGORY, "${digitalRecommendationModel.tracking.categoryId} - ${digitalRecommendationModel.tracking.categoryName}")
-                        it.putString(DigitalRecommendationKeys.ITEM_ID, digitalRecommendationModel.tracking.productId)
+                        it.putString(DigitalRecommendationKeys.ITEM_ID, if (digitalRecommendationModel.tracking.productId.isNotEmpty())
+                            digitalRecommendationModel.tracking.productId else "0")
                         it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.productName)
                         it.putString(DigitalRecommendationKeys.ITEM_VARIANT, digitalRecommendationModel.tracking.itemType)
-                        it.putString(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.price)
+                        it.putString(DigitalRecommendationKeys.PRICE, if (digitalRecommendationModel.price.isNotEmpty())
+                            digitalRecommendationModel.price else "0")
                     }
             ))
             putString(DigitalRecommendationKeys.USER_ID, userId)
