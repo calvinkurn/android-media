@@ -221,11 +221,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     RouteManager.routeNoFallbackCheck(context, AFFILIATE_LIHAT_KATEGORI, AFFILIATE_LIHAT_KATEGORI)
                 }
-
-                override fun onDismiss() {
-
-                }
-
+                override fun onDismiss() {}
             })
         }else {
             affiliate_announcement_ticker_cv.hide()
