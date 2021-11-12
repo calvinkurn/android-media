@@ -36,8 +36,10 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
         ViolationReasonItemViewHolder.Listener {
 
     companion object {
-        fun createInstance(): ViolationReasonBottomSheet {
-            return ViolationReasonBottomSheet()
+        fun createInstance(violationListener: Listener): ViolationReasonBottomSheet {
+            return ViolationReasonBottomSheet().apply {
+                listener = violationListener
+            }
         }
 
         private const val TAG = "ViolationReasonBottomSheet"
@@ -52,6 +54,8 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
     lateinit var viewModel: ViolationReasonViewModel
 
     private var binding by autoClearedNullable<BottomSheetProductManageViolationBinding>()
+
+    private var listener: Listener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component?.inject(this)
@@ -162,15 +166,7 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
     }
 
     private fun setErrorView(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        binding?.root?.let {
-            Toaster.build(
-                    it,
-                    type = Toaster.TYPE_ERROR,
-                    text = errorMessage,
-                    duration = Toaster.LENGTH_LONG,
-            ).show()
-        }
+        listener?.onViolationError(throwable)
         dismiss()
     }
 
@@ -186,6 +182,10 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
         }
+    }
+
+    interface Listener {
+        fun onViolationError(throwable: Throwable)
     }
 
 }

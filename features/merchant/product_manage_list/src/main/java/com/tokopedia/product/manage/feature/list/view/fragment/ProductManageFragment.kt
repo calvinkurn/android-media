@@ -194,7 +194,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageQuickEditStockFragment.OnFinishedListener,
         ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
         ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener,
-        ProductCampaignInfoListener, SellerHomeFragmentListener {
+        ProductCampaignInfoListener, SellerHomeFragmentListener,
+        ViolationReasonBottomSheet.Listener {
 
     private val defaultItemAnimator by lazy { DefaultItemAnimator() }
 
@@ -577,6 +578,18 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
         productManageAddEditMenuBottomSheet.dismiss()
+    }
+
+    override fun onViolationError(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        binding?.root?.let {
+            Toaster.build(
+                    it,
+                    type = Toaster.TYPE_ERROR,
+                    text = errorMessage,
+                    duration = Toaster.LENGTH_LONG,
+            ).show()
+        }
     }
 
     private fun observeProductVariantBroadcast() {
@@ -2595,7 +2608,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun showViolationReasonBottomSheet() {
-        ViolationReasonBottomSheet.createInstance().show(childFragmentManager)
+        ViolationReasonBottomSheet.createInstance(this).show(childFragmentManager)
     }
 
     private fun showToaster(message: String) {

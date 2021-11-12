@@ -70,7 +70,8 @@ class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepos
                 )
         )
         delay(1000)
-        return mapper.mapViolationResponseToUiModel(dummyResponse)
+//        return mapper.mapViolationResponseToUiModel(dummyResponse)
+        throw NullPointerException()
     }
 
 }
