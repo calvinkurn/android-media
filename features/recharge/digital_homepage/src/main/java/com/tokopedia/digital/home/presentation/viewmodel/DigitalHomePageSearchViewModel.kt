@@ -7,7 +7,9 @@ import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconU
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.digital.home.model.Tracking
 import com.tokopedia.digital.home.old.domain.SearchAutoCompleteHomePageUseCase
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchNewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -27,8 +29,8 @@ class DigitalHomePageSearchViewModel @Inject constructor(
 
     private lateinit var job: Job
 
-    private val mutableSearchCategoryList = MutableLiveData<Result<List<DigitalHomePageSearchCategoryModel>>>()
-    val searchCategoryList: LiveData<Result<List<DigitalHomePageSearchCategoryModel>>>
+    private val mutableSearchCategoryList = MutableLiveData<Result<DigitalHomePageSearchNewModel>>()
+    val searchCategoryList: LiveData<Result<DigitalHomePageSearchNewModel>>
         get() = mutableSearchCategoryList
 
     fun searchCategoryList(rawQuery: String, searchQuery: String, isLoadFromCloud: Boolean = false) {
@@ -71,7 +73,7 @@ class DigitalHomePageSearchViewModel @Inject constructor(
             if (::job.isInitialized && job.isActive){
                 job.cancelAndJoin()
             }
-            mutableSearchCategoryList.postValue(Success(emptyList()))
+            mutableSearchCategoryList.postValue(Success(DigitalHomePageSearchNewModel(false, Tracking(), emptyList())))
         }) {
             mutableSearchCategoryList.postValue(Fail(it))
         }

@@ -161,8 +161,15 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
             when (it) {
                 is Success -> {
                     clearAllData()
-                    renderList(it.data)
-                    trackSearchResultCategories(it.data)
+                    renderList(it.data.listSearchResult)
+                    if (!it.data.isFromAutoComplete){
+                        trackSearchResultCategories(it.data.listSearchResult)
+                    } else if (it.data.listSearchResult.isNullOrEmpty() && it.data.isFromAutoComplete) {
+                        rechargeHomepageAnalytics.impressNoResult(it.data.trackerUser, userSession.userId)
+                    } else if (!it.data.listSearchResult.isNullOrEmpty() && it.data.isFromAutoComplete) {
+                        rechargeHomepageAnalytics.impressionSearchAutoComplete(it.data.trackerUser, userSession.userId)
+                    }
+
                 }
                 is Fail -> {
                     showGetListError(it.throwable)

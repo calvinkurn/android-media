@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.old.domain
 
 import com.tokopedia.digital.home.model.DigitalHomePageSearchAutoComplete
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchNewModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper.mapSearchAutoCompletetoSearch
 import com.tokopedia.digital.home.util.DigitalHomepageGqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -11,14 +12,17 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 
 class SearchAutoCompleteHomePageUseCase (graphqlRepository: GraphqlRepository): GraphqlUseCase<DigitalHomePageSearchAutoComplete>(graphqlRepository) {
 
-    suspend fun searchAutoCompleteList(mapParams: Map<String, Any>, searchQuery: String): List<DigitalHomePageSearchCategoryModel> {
+    suspend fun searchAutoCompleteList(mapParams: Map<String, Any>, searchQuery: String): DigitalHomePageSearchNewModel {
         setGraphqlQuery(DigitalHomepageGqlQuery.searchAutoComplete)
         setTypeClass(DigitalHomePageSearchAutoComplete::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setRequestParams(mapParams)
 
-        val searchCategoryData = mapSearchAutoCompletetoSearch(executeOnBackground(), searchQuery)
-        return searchCategoryData
+        val searchAutoComplete = executeOnBackground()
+        val searchCategoryData = mapSearchAutoCompletetoSearch(searchAutoComplete, searchQuery)
+        return DigitalHomePageSearchNewModel(true,
+                searchAutoComplete.digiPersoSearchSuggestion.data.tracking,
+                searchCategoryData)
     }
 
 }
