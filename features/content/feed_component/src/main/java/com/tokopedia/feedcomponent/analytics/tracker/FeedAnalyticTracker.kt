@@ -571,7 +571,7 @@ class FeedAnalyticTracker
         type: String,
         isFollowed: Boolean
 ) {
-    trackEnhancedEcommerceEvent(
+    trackEnhancedEcommerceEventNew(
             ADD_TO_CART,
             CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
             String.format(
@@ -1164,9 +1164,9 @@ class FeedAnalyticTracker
         shopId: String,
     ) {
         val followtext = if (isFollowed) {
-            "follow"
-        } else {
             "unfollow"
+        } else {
+            "follow"
         }
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,

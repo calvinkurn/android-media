@@ -2765,7 +2765,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     if (item.feedXCard.typename == TYPE_FEED_X_CARD_PLAY) item.feedXCard.playChannelID else item.feedXCard.id,
                     adapterPosition,
                     item.feedXCard.typename,
-                    item.feedXCard.followers.isFollowed,
+                    !item.feedXCard.followers.isFollowed,
                     item.feedXCard.author.id
                 )
 
