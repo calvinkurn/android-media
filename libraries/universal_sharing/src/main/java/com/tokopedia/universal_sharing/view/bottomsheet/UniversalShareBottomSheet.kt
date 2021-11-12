@@ -595,9 +595,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         this.affiliateQueryData = affiliatePDPInput
     }
 
-    fun getAffiliateRequestHolder(): AffiliatePDPInput {
-        affiliateQueryData = AffiliatePDPInput()
-        return affiliateQueryData as AffiliatePDPInput
+    fun getAffiliateRequestHolder(): AffiliatePDPInput? {
+        return affiliateQueryData
     }
 
     fun setBottomSheetTitle(title: String){
