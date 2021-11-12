@@ -2,7 +2,7 @@
     <string name="no_reviews_yet">Tidak ada ulasan</string>
 
     <string name="title_activity_reputation_review">Ulasan</string>
-    <string name="review_create_success_toaster">Terima kasih %s sudah bantu pembeli lain lewat ulasanmu</string
+    <string name="review_create_success_toaster">Terima kasih %s sudah bantu pembeli lain lewat ulasanmu</string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>
