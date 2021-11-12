@@ -124,13 +124,7 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         setupViews()
         showLoading()
         observeData()
-
-        rechargeViewModel.fetchData(
-                RechargeOrderDetailRequest(
-                        orderCategory = orderCategory,
-                        orderId = orderId
-                )
-        )
+        fetchData()
 
         rechargeOrderDetailAnalytics.eventOpenScreen(RechargeOrderDetailAnalytics.DefaultValue.SCREEN_NAME_ORDER_DETAIL)
     }
@@ -206,8 +200,24 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         RouteManager.route(context, appLink)
     }
 
+    private fun fetchData() {
+        rechargeViewModel.fetchData(
+                RechargeOrderDetailRequest(
+                        orderCategory = orderCategory,
+                        orderId = orderId
+                )
+        )
+    }
+
     private fun setupViews() {
         setupRecyclerView()
+
+        binding.btnRechargeOrderDetailError.setOnClickListener {
+            hideError()
+            hideMainView()
+            showLoading()
+            fetchData()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -261,10 +271,11 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                     setupStickyButton(result.data.actionButtonList.actionButtons.firstOrNull {
                         it.buttonType.equals(PRIMARY_ACTION_BUTTON_TYPE, true)
                     })
-                    showRecyclerView()
+                    showMainView()
                 }
                 is Fail -> {
-
+                    showError()
+                    hideMainView()
                 }
             }
         })
@@ -303,12 +314,14 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun showRecyclerView() {
+    private fun showMainView() {
         binding.rvRechargeOrderDetail.show()
+        binding.containerRechargeOrderDetailStickyButton.show()
     }
 
-    private fun hideRecyclerView() {
+    private fun hideMainView() {
         binding.rvRechargeOrderDetail.hide()
+        binding.containerRechargeOrderDetailStickyButton.hide()
     }
 
     private fun showLoading() {
@@ -363,6 +376,14 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 },
                 (buttonType != PRIMARY_ACTION_BUTTON_TYPE && buttonType != SECONDARY_ACTION_BUTTON_TYPE)
         )
+    }
+
+    private fun showError() {
+        binding.containerRechargeOrderError.show()
+    }
+
+    private fun hideError() {
+        binding.containerRechargeOrderError.hide()
     }
 
     companion object {
