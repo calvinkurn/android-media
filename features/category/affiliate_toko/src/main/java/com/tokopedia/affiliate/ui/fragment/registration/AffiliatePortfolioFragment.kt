@@ -21,24 +21,29 @@ import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
 import com.tokopedia.affiliate.model.AffiliateHeaderItemData
 import com.tokopedia.affiliate.model.AffiliatePortfolioButtonData
 import com.tokopedia.affiliate.model.AffiliatePortfolioUrlInputData
+import com.tokopedia.affiliate.model.raw.request.OnBoardingRequest
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheetInterface
+import com.tokopedia.affiliate.ui.viewholder.AffiliatePortfolioItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioButtonModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
-import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.viewmodel.AffiliatePortfolioViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.affiliate_login_fragment_layout.*
 import kotlinx.android.synthetic.main.affiliate_portfolio_fragment_layout.*
 import javax.inject.Inject
 
 class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewModel>(),
         PortfolioUrlTextUpdateInterface, AffiliatePromotionBottomSheetInterface , PortfolioClickInterface {
+
     private lateinit var affiliatePortfolioViewModel: AffiliatePortfolioViewModel
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(onFocusChangeInterface=this, portfolioClickInterface = this))
 
@@ -80,10 +85,26 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
 
     private fun afterViewCreated() {
         initClickListener()
+        setUpNavBar()
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         social_link_rv.layoutManager=layoutManager
         social_link_rv.adapter = adapter
         affiliatePortfolioViewModel.createDefaultListForSm()
+    }
+
+    private fun setUpNavBar() {
+        val customView = layoutInflater.inflate(R.layout.affiliate_navbar_custom_content,null,false)
+        customView.findViewById<Typography>(R.id.navbar_sub_tittle).apply {
+            show()
+            text = getString(R.string.affiliate_subtitle_portfolio)
+        }
+        customView.findViewById<Typography>(R.id.navbar_tittle).text = getString(R.string.daftar_affiliate)
+        affiliate_portfolio_toolbar.apply {
+            customView(customView)
+            setNavigationOnClickListener {
+                affiliateNavigationInterface.handleBackButton()
+            }
+        }
     }
 
     private fun initClickListener() {
@@ -94,6 +115,7 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         affiliatePortfolioViewModel.getPortfolioUrlList().observe(this, { data ->
             setDataToRV(data)
         })
+
         affiliatePortfolioViewModel.getUpdateItemIndex().observe(this,{
             index->
             adapter.notifyItemChanged(index)
@@ -196,7 +218,14 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     }
 
     override fun nextButtonClicked() {
-        affiliatePortfolioViewModel.checkDataAndMakeApiCall()
-        affiliateNavigationInterface.navigateToTermsFragment()
+        if(affiliatePortfolioViewModel.checkData()){
+            val arrayListOfChannels = arrayListOf<OnBoardingRequest.Channel>()
+            affiliatePortfolioViewModel.affiliatePortfolioData.value?.forEach { channelItem ->
+                (channelItem as? AffiliatePortfolioUrlModel)?.let {
+                    arrayListOfChannels.add(OnBoardingRequest.Channel(channelItem.portfolioItm.id,channelItem.portfolioItm.text))
+                }
+            }
+            affiliateNavigationInterface.navigateToTermsFragment(arrayListOfChannels)
+        }
     }
 }

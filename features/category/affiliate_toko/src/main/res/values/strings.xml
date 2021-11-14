@@ -46,7 +46,7 @@
     <string name="affiliate_portfolio_confirm_btn">Selanjutnya</string>
     <string name="affiliate_header_text">Hai, {name}! Isi profil sosial media kamu di bawah ini, ya!</string>
     <string name="affiliate_subheader_text">Isi minimal 1 sosial media.</string>
-    <string name="affiliate_accept_terms">Daftar.</string>
+    <string name="affiliate_accept_terms">Daftar</string>
     <string name="affiliate_read_and_agree">Saya telah membaca dan setuju</string>
     <string name="affiliate_understand_terms">Pahami syarat dan ketentuan yang berlaku</string>
     <string name="affiliate_tutorial_title_1"><![CDATA[Komisi hingga jutaan cuma dengan klik & share!]]></string>
@@ -57,7 +57,7 @@
     <string name="affiliate_tutorial_subtitle_3"><![CDATA[Mudah cek performa Affiliate, hingga kembangin skill kamu dengan Content Creator Academy!]]></string>
     <string name="affiliate_pelajari">Pelajari</string>
     <string name="affiliate_daftar_sekarang">Daftar Sekarang</string>
-    <string name="affiliate_daftar_affiliate_dengan_akun_lain">Daftar Affiliate dengan akun lain? </string>
+    <string name="affiliate_daftar_affiliate_dengan_akun_lain"><![CDATA[Daftar Affiliate dengan akun lain?\u0020]]></string>
     <string name="affiliate_daftarkan_akun_ini">Daftarkan akun ini:</string>
     <string name="affiliate_keluar">Keluar</string>
     <string name="affiliate_produk_ditemukan">Produk ditemukan.</string>
@@ -74,11 +74,21 @@
     <string name="affiliate_pilih_minimal_1_sosial_media">Pilih minimal 1 sosial media.</string>
     <string name="affiliate_tambah_sosial_media">Tambah Sosial Media</string>
     <string name="affiliate_daftar_sekarang_dengan_akun_tokopedia_kamu">Daftar sekarang dengan akun Tokopedia kamu</string>
-    <string name="affiliate_belum_punya_akun_tokopedia">\"Belum punya akun Tokopedia? \"</string>
+    <string name="affiliate_belum_punya_akun_tokopedia"><![CDATA[Belum punya akun Tokopedia?\u0020]]></string>
     <string name="affiliate_daftar">Daftar</string>
     <string name="affiliate_masuk">Masuk</string>
     <string name="affiliate_black_list_title">Oops, akun kamu bermasalah </string>
     <string name="affiliate_black_list_description"><![CDATA[Untuk melanjutkan aktivitas di Tokopedia Affiliate, segera <a href="tokopedia://affiliate/help">Perbaiki Akunmu.</a>]]></string>
     <string name="affiliate_login_ticker_text"><![CDATA[Akunmu sedang bermasalah. <a href="">Selengkapnya</a>]]></string>
     <string name="affiliate_simpan">Simpan</string>
+    <string name="affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate">Hai Ana, selamat bergabung di Tokopedia Affiliate!</string>
+    <string name="affiliate_ayo_bagi_inspirasi_raih_komisi"><![CDATA[Ayo bagi inspirasi & raih komisi!]]></string>
+    <string name="affiliate_onboarding_terms_1">Akun Affiliate-mu harus terverifikasi untuk bisa tarik penghasilan</string>
+    <string name="affiliate_onboarding_terms_2"><![CDATA[Tidak boleh mempromosikan produk terlarang yang tertera di S&K]]></string>
+    <string name="affiliate_onboarding_terms_3">Tidak boleh mempromosikan produk dari toko sendiri</string>
+    <string name="affiliate_onboarding_terms_4"><![CDATA[Akun sosial media & blog yang kamu daftarkan tidak boleh di-private]]></string>
+    <string name="affiliate_onboarding_terms_5">Tidak terlibat dalam aktivitas penipuan yang terkait dengan akun Tokopedia</string>
+    <string name="affiliate_yakin_ingin_keluar">Yakin ingin keluar?</string>
+    <string name="affiliate_logout_description">Dengan kamu keluar akun disini, akun kamu di Tokopedia juga akan keluar</string>
+    <string name="affiliate_batal">Batal</string>
 </resources>

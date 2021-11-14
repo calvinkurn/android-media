@@ -13,9 +13,9 @@ import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.affiliate.AFFILIATE_LIHAT_KATEGORI
 import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
 import com.tokopedia.affiliate.AFFILIATE_REGISTER_REQUEST_CODE
+import com.tokopedia.affiliate.AFFILIATE_REQUEST_CODE_LOGOUT
 import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_login_fragment_layout.*
 import javax.inject.Inject
@@ -67,7 +68,6 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViewPager()
         afterViewCreated()
     }
 
@@ -109,8 +109,21 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     }
 
     private fun afterViewCreated() {
+        setupViewPager()
+        setUpNavBar()
         checkLoggedIn()
         setListeners()
+    }
+
+    private fun setUpNavBar() {
+        val customView = layoutInflater.inflate(R.layout.affiliate_navbar_custom_content,null,false)
+        affiliate_login_toolbar.apply {
+            customView(customView)
+            setNavigationOnClickListener {
+                affiliateNavigationInterface.handleBackButton()
+            }
+        }
+
     }
 
     private fun setListeners() {
@@ -165,14 +178,14 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     private fun showDialogLogout() {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle("Yakin ingin keluar?")
-            dialog.setDescription("Dengan kamu keluar akun disini, akun kamu di Tokopedia juga akan keluar")
-            dialog.setPrimaryCTAText("Keluar")
+            dialog.setTitle(getString(R.string.affiliate_yakin_ingin_keluar))
+            dialog.setDescription(getString(R.string.affiliate_logout_description))
+            dialog.setPrimaryCTAText(getString(R.string.affiliate_keluar))
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 doLogout()
             }
-            dialog.setSecondaryCTAText("Batal")
+            dialog.setSecondaryCTAText(getString(R.string.affiliate_batal))
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
             }
@@ -182,8 +195,9 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     private fun doLogout() {
         activity?.let {
-            RouteManager.route(it, ApplinkConstInternalGlobal.LOGOUT)
-            it.finish()
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, true)
+            startActivityForResult(intent, AFFILIATE_REQUEST_CODE_LOGOUT)
         }
     }
 
@@ -193,6 +207,9 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
                 if (resultCode == Activity.RESULT_OK) {
                     checkLoggedIn()
                 }
+            }
+            AFFILIATE_REQUEST_CODE_LOGOUT -> {
+                checkLoggedIn()
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }

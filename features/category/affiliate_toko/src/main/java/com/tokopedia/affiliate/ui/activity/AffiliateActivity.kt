@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.ui.activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -15,6 +16,7 @@ import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
+import com.tokopedia.affiliate.model.raw.request.OnBoardingRequest
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
@@ -29,14 +31,17 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import kotlinx.android.synthetic.main.affiliate_background_layout.*
+import kotlinx.android.synthetic.main.affiliate_layout.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomClickListener,
@@ -173,10 +178,22 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showFraudTicker() {
-        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
         if(currentFragment != null && currentFragment.isVisible){
             (currentFragment as? AffiliateLoginFragment)?.showFraudTicker()
         }
+    }
+
+    override fun onRegistrationSuccessful() {
+        showSplashScreen()
+    }
+
+    private fun showSplashScreen() {
+        splash_group.show()
+        Handler().postDelayed({
+            splash_group.hide()
+            showLoginPortal()
+        },3000)
     }
 
     private fun openFragment(fragment: Fragment) {
@@ -223,7 +240,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     override fun onBackPressed() {
-        val currentFragment=supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
         if(currentFragment != null && currentFragment.isVisible){
             (currentFragment as? AffiliatePromoFragment)?.handleBack()
         }
@@ -232,7 +249,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         }
     }
 
-    fun handleBackButton(){
+    override fun handleBackButton(){
         if(!fragmentStack.empty()) {
             fragmentStack.pop()
             if (!fragmentStack.empty()) {
@@ -279,8 +296,14 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         return  isUserBlackListed
     }
 
-    override fun navigateToTermsFragment() {
-        openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance())
+    override fun navigateToTermsFragment(channels : ArrayList<OnBoardingRequest.Channel>) {
+        openFragment(AffiliateTermsAndConditionFragment.getFragmentInstance(this).apply {
+            setChannels(channels)
+        })
+        val currentFragment = supportFragmentManager.findFragmentByTag(AffiliateTermsAndConditionFragment::class.java.simpleName)
+        if(currentFragment != null){
+            (currentFragment as? AffiliateTermsAndConditionFragment)?.setChannels(channels)
+        }
     }
 
     override fun navigateToPortfolioFragment() {
