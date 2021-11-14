@@ -39,7 +39,8 @@ import javax.inject.Inject
 class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecommendedProductViewModel>(),
          PromotionClickInterface{
 
-    private var totalDataItemsCount: Int = 0
+    private var currentPageNumber : Int = 0
+    private var recommendationHasNextPage = true
     private var isSwipeRefresh = false
     private var listSize = 0
 
@@ -147,8 +148,8 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if(totalItemsCount < totalDataItemsCount)
-                    affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,page - 1)
+                if(recommendationHasNextPage)
+                    affiliateRecommendedProductViewModel.getAffiliateRecommendedProduct(identifier,currentPageNumber + 1)
             }
         }
     }
@@ -183,8 +184,9 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             }
         })
 
-        affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(this, { itemCount ->
-            totalDataItemsCount = itemCount
+        affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(this, { pageInfo ->
+            currentPageNumber = pageInfo.currentPage ?: 0
+            recommendationHasNextPage = pageInfo.hasNext ?: false
         })
 
         affiliateRecommendedProductViewModel.getErrorMessage().observe(this, { errorMessage ->
