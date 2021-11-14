@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -203,7 +204,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         tf_choose_sub_reason?.setOnClickListener {}
 
         reasonBottomSheetAdapter = GetCancelReasonBottomSheetAdapter(this)
-        label_shop_name?.text = shopName
+        label_shop_name?.text = MethodChecker.fromHtml(shopName)
         label_invoice?.text = invoiceNum
 
         when {
@@ -464,7 +465,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
         // list product
         if (listProduct.isNotEmpty() && !isBundlingProduct) {
-            label_product_name?.text = listProduct.first().productName
+            label_product_name?.text = MethodChecker.fromHtml(listProduct.first().productName)
             label_price?.text = listProduct.first().productPrice
             iv_product?.loadImage(listProduct.first().picture)
 
@@ -666,7 +667,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             isBundlingProduct = normalProductList != null
             normalProductList?.let { products ->
                 if (products.isNotEmpty()) {
-                    label_product_name?.text = products.firstOrNull()?.productName.orEmpty()
+                    label_product_name?.text = MethodChecker.fromHtml(products.firstOrNull()?.productName.orEmpty())
                     label_price?.text = products.firstOrNull()?.productPrice.orEmpty()
                     iv_product?.loadImage(products.firstOrNull()?.productThumbnailUrl.orEmpty())
                 }
