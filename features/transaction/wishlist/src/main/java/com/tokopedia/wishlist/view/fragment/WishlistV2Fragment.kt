@@ -236,6 +236,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 } else {
                     wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
                     wishlistV2Adapter.hideCheckbox()
+                    binding?.containerDelete?.visibility = View.GONE
                 }
                 isBulkDeleteShow = !isBulkDeleteShow
             }
@@ -336,14 +337,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     if (it.isCarousel) {
                         adapterData.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_CAROUSEL))
                     } else {
-                        if (currRecommendationListPage == 0) {
-                            adapterData.add(
-                                WishlistV2TypeLayoutData(
-                                    getString(R.string.recommendation_title),
-                                    TYPE_RECOMMENDATION_TITLE
-                                )
-                            )
-                        }
                         currRecommendationListPage += 1
                         it.recommendationData.firstOrNull()?.recommendationItemList?.forEach { recommendationItem ->
                             adapterData.add(
@@ -356,42 +349,27 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     }
                 }
                 is WishlistV2DataModel -> {
-                    val listGroupLabel = arrayListOf<ProductCardModel.LabelGroup>()
-
-                    it.item.labelGroup.forEach { labelGroupItem ->
-                        val labelGroup = ProductCardModel.LabelGroup(
-                                position = labelGroupItem.position,
-                                title = labelGroupItem.title,
-                                type = labelGroupItem.type,
-                                imageUrl = labelGroupItem.url)
-                        listGroupLabel.add(labelGroup)
-                    }
-
-                    val isButtonAtc = it.item.buttons.primaryButton.action == ATC_WISHLIST
-                    it.item.also { item ->
-                        val productModel = ProductCardModel(
-                            productImageUrl = item.imageUrl,
-                            isWishlistVisible = true,
-                            productName = item.name,
-                            shopName = item.shop.name,
-                            formattedPrice = item.priceFmt,
-                            shopLocation = item.shop.location,
-                            isShopRatingYellow = true,
-                            hasSecondaryButton = true,
-                            tambahKeranjangButton = isButtonAtc,
-                            lihatBarangSerupaButton = !isButtonAtc,
-                            labelGroupList = listGroupLabel)
-                        adapterData.add(WishlistV2TypeLayoutData(productModel, wishlistPref?.getTypeLayout(), item))
-                    }
+                    adapterData.add(
+                        WishlistV2TypeLayoutData(
+                            it.isChecked,
+                            wishlistPref?.getTypeLayout(),
+                            it.item
+                        )
+                    )
                 }
                 is WishlistV2EmptyDataModel -> {
                     isFetchRecommendation = true
                     if (it.query.isNotEmpty()) {
                         adapterData.add(WishlistV2TypeLayoutData(it.query, TYPE_EMPTY_NOT_FOUND))
                     } else {
-                        adapterData.add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
+                        adapterData.add(WishlistV2TypeLayoutData("", TYPE_EMPTY_STATE))
                     }
-
+                    adapterData.add(
+                        WishlistV2TypeLayoutData(
+                            getString(R.string.recommendation_title),
+                            TYPE_RECOMMENDATION_TITLE
+                        )
+                    )
                 }
             }
         }
@@ -400,12 +378,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             currPage += 1
         }
 
-        if ((!isFetchRecommendation) || (!onLoadMoreRecommendation && isFetchRecommendation) ) {
-            wishlistV2Adapter.addList(adapterData)
-            scrollRecommendationListener.resetState()
+        if (isBulkDeleteShow) {
+            wishlistV2Adapter.addListOnBulk(adapterData)
+            binding?.rvWishlist?.post {
+                wishlistV2Adapter.notifyDataSetChanged()
+            }
         } else {
-            wishlistV2Adapter.appendList(adapterData)
-            scrollRecommendationListener.updateStateAfterGetData()
+            if ((!isFetchRecommendation) || (!onLoadMoreRecommendation && isFetchRecommendation) ) {
+                wishlistV2Adapter.addList(adapterData)
+                scrollRecommendationListener.resetState()
+            } else {
+                wishlistV2Adapter.appendList(adapterData)
+                scrollRecommendationListener.updateStateAfterGetData()
+            }
         }
     }
 
@@ -760,12 +745,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         showBottomSheetThreeDotsMenu(itemWishlist)
     }
 
-    override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean) {
+    override fun onCheckBulkDeleteOption(productId: String, position: Int, isChecked: Boolean) {
         if (isChecked) {
             listBulkDelete.add(productId)
         } else {
             listBulkDelete.remove(productId)
         }
+        wishlistViewModel.onCheckedBulkDeleteWishlist(productId, isChecked)
         val showButton = listBulkDelete.isNotEmpty()
         if (showButton) {
             binding?.run {
@@ -825,12 +811,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     override fun onRefresh(view: View?) {
-        onLoadMore = false
-        isFetchRecommendation = false
-        onLoadMoreRecommendation = false
-        currPage = 1
-        currRecommendationListPage = 1
-        paramWishlistV2.page = 1
-        loadWishlistV2()
+            onLoadMore = false
+            isFetchRecommendation = false
+            onLoadMoreRecommendation = false
+            currPage = 1
+            currRecommendationListPage = 1
+            paramWishlistV2.page = 1
+            loadWishlistV2()
     }
 }

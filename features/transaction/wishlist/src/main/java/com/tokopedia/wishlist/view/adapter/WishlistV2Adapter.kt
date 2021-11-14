@@ -3,6 +3,7 @@ package com.tokopedia.wishlist.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.wishlist.data.model.WishlistV2DataModel
 import com.tokopedia.wishlist.data.model.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.*
@@ -42,7 +43,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onNotFoundButtonClicked(keyword: String)
         fun onProductRecommendationClicked(productId: String)
         fun onThreeDotsMenuClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item)
-        fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean)
+        fun onCheckBulkDeleteOption(productId: String, position: Int, isChecked: Boolean)
         fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item)
         fun onCheckSimilarProduct(url: String)
     }
@@ -98,7 +99,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val element = listTypeData[position]
         when (holder) {
             is WishlistV2ListItemViewHolder-> {
-                holder.bind(element, holder.adapterPosition, isShowCheckbox)
+                holder.bind(element, position, isShowCheckbox)
             }
             is WishlistV2GridItemViewHolder -> {
                 holder.bind(element, holder.adapterPosition)
@@ -148,6 +149,11 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         listTypeData.clear()
         listTypeData.addAll(list)
         notifyDataSetChanged()
+    }
+
+    fun addListOnBulk(list: List<WishlistV2TypeLayoutData>) {
+        listTypeData.clear()
+        listTypeData.addAll(list)
     }
 
     fun appendList(list: List<WishlistV2TypeLayoutData>) {
