@@ -33,7 +33,8 @@ import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedPr
 import com.tokopedia.product.manage.feature.list.data.model.Header
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.Active
-import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.*
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
@@ -85,7 +86,6 @@ import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStoc
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocationResponse
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -100,8 +100,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
-import rx.Observable
-import rx.Subscriber
 import java.util.concurrent.TimeUnit
 
 class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
@@ -1599,34 +1597,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when get free claim success should set live data value success`() {
-        val dataDeposit = DataDeposit()
-
-        onGetFreeClaim_thenReturn(dataDeposit)
-
-        viewModel.getFreeClaim("query", "1")
-
-        val expectedResult = Success(dataDeposit)
-
-        viewModel.getFreeClaimResult
-            .verifySuccessEquals(expectedResult)
-    }
-
-    @Test
-    fun `when get free claim error should set live data value fail`() {
-        val error = NullPointerException()
-
-        onGetFreeClaim_thenReturn(error)
-
-        viewModel.getFreeClaim("query", "1")
-
-        val expectedResult = Fail(error)
-
-        viewModel.getFreeClaimResult
-            .verifyErrorEquals(expectedResult)
-    }
-
-    @Test
     fun `when get popups info success should set live data value success`() = runBlocking {
         val productId = "1"
         val showPopup = true
@@ -1784,8 +1754,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         verifyAll {
             gqlGetShopInfoUseCase.cancelJobs()
-            topAdsGetShopDepositGraphQLUseCase.unsubscribe()
-            popupManagerAddProductUseCase.cancelJobs()
+            getShopManagerPopupsUseCase.cancelJobs()
             getProductListUseCase.cancelJobs()
             setFeaturedProductUseCase.cancelJobs()
         }
@@ -2212,31 +2181,15 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         coEvery { editProductVariantUseCase.execute(any()) } throws error
     }
 
-    private fun onGetFreeClaim_thenReturn(deposit: DataDeposit) {
-        coEvery {
-            topAdsGetShopDepositGraphQLUseCase.createObservable(any())
-        } answers {
-            Observable.just(deposit)
-        }
-    }
-
-    private fun onGetFreeClaim_thenReturn(error: Throwable) {
-        coEvery {
-            topAdsGetShopDepositGraphQLUseCase.createObservable(any())
-        } answers {
-            Observable.error(error)
-        }
-    }
-
     private fun onGetPopupsInfo_thenReturn(showPopup: Boolean) {
         coEvery {
-            popupManagerAddProductUseCase.execute(any())
+            getShopManagerPopupsUseCase.execute(any())
         } returns showPopup
     }
 
     private fun onGetPopupsInfo_thenReturn(error: Throwable) {
         coEvery {
-            popupManagerAddProductUseCase.execute(any())
+            getShopManagerPopupsUseCase.execute(any())
         } throws error
     }
 

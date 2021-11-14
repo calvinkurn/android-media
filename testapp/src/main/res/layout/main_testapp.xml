@@ -75,6 +75,14 @@
             android:text="Developer Options"
             android:textColor="#FFFFFF" />
 
+        <EditText
+            android:id="@+id/etAppLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Input your applink here..."
+            />
+
         <Button
             android:id="@+id/goToButton"
             android:layout_width="match_parent"

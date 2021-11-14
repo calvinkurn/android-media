@@ -136,6 +136,9 @@ abstract class TopchatRoomTest {
     protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub
 
     @Inject
+    protected lateinit var toggleFavouriteShopUseCaseStub: ToggleFavouriteShopUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
 
     protected open lateinit var activity: TopChatRoomActivityStub
@@ -234,6 +237,7 @@ abstract class TopchatRoomTest {
         getShopFollowingUseCaseStub.response = getShopFollowingStatus
         getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
         getExistingMessageIdUseCaseNewStub.response = existingMessageIdResponse
+        toggleFavouriteShopUseCaseStub.response = true
     }
 
     private fun setupDummyImageChatService() {
@@ -870,6 +874,10 @@ abstract class TopchatRoomTest {
 
     protected fun waitForIt(timeMillis: Long) {
         Thread.sleep(timeMillis)
+    }
+
+    protected fun clickBroadcastHandlerFollowShop() {
+        onView(withId(R.id.btn_follow_shop)).perform(click())
     }
 }
 
