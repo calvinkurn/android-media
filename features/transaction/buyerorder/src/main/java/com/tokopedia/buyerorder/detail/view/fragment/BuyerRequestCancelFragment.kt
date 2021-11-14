@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -54,6 +55,7 @@ import com.tokopedia.buyerorder.detail.view.adapter.typefactory.BuyerProductBund
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -187,6 +189,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupHeader()
         activity?.let { BuyerAnalytics.sendScreenName(BUYER_CANCEL_REASON_SCREEN_NAME) }
         observingCancelReasons()
         observingInstantCancel()
@@ -215,6 +218,19 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             }
         }
 
+    }
+
+    private fun setupHeader() {
+        view?.findViewById<HeaderUnify>(R.id.header_buyer_request_cancel)?.let { header ->
+            activity.run {
+                if (this is AppCompatActivity) {
+                    supportActionBar?.hide()
+                    setSupportActionBar(header)
+                } else {
+                    header.gone()
+                }
+            }
+        }
     }
 
     private fun setLayoutCancelAlreadyRequested() {
