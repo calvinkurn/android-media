@@ -23,7 +23,7 @@ const val LOCATION_NOT_ALLOWED = "Location not allowed"
 class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: CoroutineDispatcher, val questWidgetUseCase: QuestWidgetUseCase): BaseViewModel(workerDispatcher) {
 
     val questWidgetListLiveData = SingleLiveEvent<LiveDataResult<QuestData>>()
-    lateinit var page: String
+    var page: String? = null
 
     fun getWidgetList(channel: Int, channelSlug: String, page: String, userSession: UserSession){
 
