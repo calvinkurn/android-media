@@ -15,6 +15,8 @@ import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.home_component.viewholders.QuestWidgetViewHolder
+
 
 class RechargeHomepageAdapterTypeFactory(
         val listener: RechargeHomepageItemListener,
