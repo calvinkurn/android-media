@@ -17,7 +17,8 @@ interface GraphqlApiSuspend {
     @Headers(ANDROID_FLAG)
     suspend fun getResponseSuspend(@Body requestObject: MutableList<GraphqlRequest>,
                                    @HeaderMap header: Map<String, String>,
-                                   @Header(GraphqlConstant.GqlApiKeys.CACHE) values: String?): Response<JsonArray>
+                                   @Header(GraphqlConstant.GqlApiKeys.CACHE,) values: String?,
+                                   @Header(GraphqlConstant.GqlApiKeys.QUERY_IDENTIFIER) queryIdentifier: String?): Response<JsonArray>
 
     @POST()
     @Headers(ANDROID_FLAG)
@@ -25,5 +26,6 @@ interface GraphqlApiSuspend {
                                    @Url url: String,
                                    @Body requestObject: MutableList<GraphqlRequest>,
                                    @HeaderMap header: Map<String, String>,
-                                   @Header(GraphqlConstant.GqlApiKeys.CACHE) values: String?): Response<JsonArray>
+                                   @Header(GraphqlConstant.GqlApiKeys.CACHE) values: String?,
+                                   @Header(GraphqlConstant.GqlApiKeys.QUERY_IDENTIFIER) queryIdentifier: String?): Response<JsonArray>
 }

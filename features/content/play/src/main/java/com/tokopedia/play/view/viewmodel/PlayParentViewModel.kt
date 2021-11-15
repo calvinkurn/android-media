@@ -150,7 +150,8 @@ class PlayParentViewModel constructor(
                 playChannelMapper.map(response, PlayChannelDetailsWithRecomMapper.ExtraParams(
                         channelId = startingChannelId,
                         videoStartMillis = mVideoStartMillis?.toLong() ?: 0,
-                        shouldTrack = shouldTrack?.toBoolean() ?: true
+                        shouldTrack = shouldTrack?.toBoolean() ?: true,
+                        sourceType = source.key
                     )
                 ).forEach {
                     playChannelStateStorage.setData(it.id, it)

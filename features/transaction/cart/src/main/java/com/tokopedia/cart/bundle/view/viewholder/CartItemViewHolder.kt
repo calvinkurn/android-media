@@ -20,6 +20,7 @@ import com.tokopedia.cart.bundle.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -519,14 +520,14 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
 
     private fun renderProductNotesEditable(element: CartItemHolderData) {
         with(binding) {
-            textFieldNotes.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            textFieldNotes.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-            textFieldNotes.textFieldInput.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            textFieldNotes.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            textFieldNotes.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+            textFieldNotes.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
             textFieldNotes.context?.let {
-                textFieldNotes.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
+                textFieldNotes.editText.setOnEditorActionListener { v, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         KeyboardHandler.DropKeyboard(it, v)
-                        textFieldNotes.textFieldInput.clearFocus()
+                        textFieldNotes.editText.clearFocus()
                         if (element.notes.isNotBlank()) {
                             renderProductNotesFilled(element)
                         } else {
@@ -537,16 +538,15 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
                 }
             }
 
-            textFieldNotes.requestFocus()
             textNotes.gone()
             textFieldNotes.show()
             textNotesChange.gone()
             textNotesFilled.gone()
             textNotesFilled.text = element.notes
             textFieldNotes.setCounter(element.maxNotesLength)
-            textFieldNotes.textFieldInput.setText(element.notes)
-            textFieldNotes.textFieldInput.setSelection(textFieldNotes.textFieldInput.length())
-            textFieldNotes.textFieldInput.addTextChangedListener(object : TextWatcher {
+            textFieldNotes.editText.setText(element.notes)
+            textFieldNotes.editText.setSelection(textFieldNotes.editText.length())
+            textFieldNotes.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
                 }
@@ -560,6 +560,13 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
 
                 }
             })
+            textFieldNotes.editText.setOnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    KeyboardHandler.DropKeyboard(v.context, v)
+                }
+            }
+            textFieldNotes.editText.requestFocus()
+            showSoftKeyboard(textFieldNotes.context, textFieldNotes.editText)
         }
     }
 

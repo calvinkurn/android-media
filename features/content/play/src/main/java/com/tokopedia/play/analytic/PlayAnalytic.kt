@@ -10,7 +10,6 @@ import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 
-
 /**
  * Created by mzennis on 15/02/21.
  */

@@ -138,7 +138,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this, true);
     }
 
     private boolean initLibraries(){
@@ -350,7 +350,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext(), true);
     }
 
     @Override
