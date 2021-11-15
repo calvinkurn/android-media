@@ -5,73 +5,84 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_upcoming_cover"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        android:scaleType="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <androidx.appcompat.widget.AppCompatImageView-->
+<!--        android:id="@+id/iv_upcoming_cover"-->
+<!--        android:layout_width="@dimen/layout_lvl0"-->
+<!--        android:layout_height="@dimen/layout_lvl0"-->
+<!--        android:scaleType="center"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <include
-        android:id="@+id/view_gradient_background"
-        layout="@layout/view_gradient_background"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintBottom_toBottomOf="parent"
+<!--    <include-->
+<!--        android:id="@+id/view_gradient_background"-->
+<!--        layout="@layout/view_gradient_background"-->
+<!--        android:layout_width="@dimen/layout_lvl0"-->
+<!--        android:layout_height="@dimen/layout_lvl0"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        />-->
+
+<!--    <include-->
+<!--        android:id="@+id/view_toolbar"-->
+<!--        layout="@layout/view_toolbar"-->
+<!--        android:layout_width="@dimen/layout_lvl0"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="@dimen/spacing_lvl4"-->
+<!--        android:layout_marginTop="@dimen/spacing_lvl4"-->
+<!--        android:layout_marginEnd="@dimen/spacing_lvl4"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <com.tokopedia.unifyprinciples.Typography-->
+<!--        android:id="@+id/tv_upcoming_title"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="@dimen/spacing_lvl4"-->
+<!--        android:ellipsize="end"-->
+<!--        android:gravity="center"-->
+<!--        android:maxLines="3"-->
+<!--        android:textColor="@color/Unify_Static_White"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/view_upcoming_timer"-->
+<!--        app:layout_constraintEnd_toEndOf="@id/btn_action"-->
+<!--        app:layout_constraintStart_toStartOf="@id/btn_action"-->
+<!--        app:typographyType="heading_2"-->
+<!--        app:typographyWeight="bold"-->
+<!--        tools:text="Dapatkan Promo menarik selama Live Streaming berlangsung" />-->
+
+<!--    <include-->
+<!--        android:id="@+id/view_upcoming_timer"-->
+<!--        layout="@layout/view_upcoming_timer"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="@dimen/spacing_lvl5"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/btn_action"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
+
+<!--    <com.tokopedia.unifycomponents.UnifyButton-->
+<!--        android:id="@+id/btn_action"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="@dimen/spacing_lvl4"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        tools:text="@string/play_remind_me" />-->
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_watch_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tonton Sekarang"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
-
-    <include
-        android:id="@+id/view_toolbar"
-        layout="@layout/view_toolbar"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_upcoming_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:ellipsize="end"
-        android:gravity="center"
-        android:maxLines="3"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toTopOf="@id/view_upcoming_timer"
-        app:layout_constraintEnd_toEndOf="@id/btn_action"
-        app:layout_constraintStart_toStartOf="@id/btn_action"
-        app:typographyType="heading_2"
-        app:typographyWeight="bold"
-        tools:text="Dapatkan Promo menarik selama Live Streaming berlangsung" />
-
-    <include
-        android:id="@+id/view_upcoming_timer"
-        layout="@layout/view_upcoming_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl5"
-        app:layout_constraintBottom_toTopOf="@id/btn_action"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_action"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="@string/play_remind_me" />
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

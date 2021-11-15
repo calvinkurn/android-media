@@ -31,6 +31,7 @@ import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
+import com.tokopedia.play.view.viewcomponent.FragmentUpcomingViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -100,6 +101,10 @@ class PlayActivity : BaseActivity(),
     private val ivLoading by viewComponent { LoadingViewComponent(it, R.id.iv_loading) }
     private val fragmentErrorView by viewComponent {
         FragmentErrorViewComponent(startChannelId, it, R.id.fl_global_error, supportFragmentManager)
+    }
+
+    private val fragmentUpcomingView by viewComponent {
+        FragmentUpcomingViewComponent(it, R.id.fl_upcoming, supportFragmentManager)
     }
 
     /**
@@ -261,8 +266,16 @@ class PlayActivity : BaseActivity(),
                     ivLoading.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                 }
+                is PageResultState.Upcoming -> {
+                    ivLoading.hide()
+                    fragmentUpcomingView.safeInit()
+                }
             }
-            swipeContainerView.setChannelIds(it.currentValue)
+
+            if(it.state !is PageResultState.Upcoming) {
+                fragmentUpcomingView.safeRelease()
+                swipeContainerView.setChannelIds(it.currentValue)
+            }
         }
     }
 

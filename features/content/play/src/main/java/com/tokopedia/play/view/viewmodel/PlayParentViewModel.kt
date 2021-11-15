@@ -156,10 +156,20 @@ class PlayParentViewModel constructor(
                 }
             }
 
-            _observableChannelIdsResult.value = PageResult(
+            startingChannelId?.let { channelId ->
+                _observableChannelIdsResult.value = PageResult(
+                    currentValue = playChannelStateStorage.getChannelList(),
+                    state = if(playChannelStateStorage.getData(channelId)?.upcomingInfo?.isUpcoming == true)
+                                PageResultState.Upcoming(pageInfo = PageInfo.Unknown)
+                            else PageResultState.Success(pageInfo = PageInfo.Unknown)
+                )
+            } ?: run {
+                _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),
                     state = PageResultState.Success(pageInfo = PageInfo.Unknown)
-            )
+                )
+            }
+
         }, onError = {
             _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),
@@ -175,7 +185,7 @@ class PlayParentViewModel constructor(
 
     fun refreshChannel() {
         startingChannelId?.let {
-            mNextKey = getNextChannelIdKey(it, source)
+            mNextKey = getNextChannelIdKey("13114", source)
             loadNextPage()
         }
     }
