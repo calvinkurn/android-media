@@ -8,17 +8,19 @@ import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
 /**
  * Created by Hendri on 18/07/18.
  */
-class ChatActionSelectionBubbleViewModel constructor(messageId: String = "",
-                                         fromUid: String = "",
-                                         from: String = "",
-                                         fromRole: String = "",
-                                         attachmentId: String = "",
-                                         attachmentType: String = "",
-                                         replyTime: String = "",
-                                         message: String = "",
-                                         var chatActionList: List<ChatActionBubbleViewModel> = ArrayList(),
-                                         var quickReplies: List<QuickReplyViewModel> = ArrayList(),
-                                                     source: String = "", var status:Int=1)
+class ChatActionSelectionBubbleViewModel constructor(
+    messageId: String = "",
+    fromUid: String = "",
+    from: String = "",
+    fromRole: String = "",
+    attachmentId: String = "",
+    attachmentType: String = "",
+    replyTime: String = "",
+    message: String = "",
+    var chatActionList: List<ChatActionBubbleViewModel> = ArrayList(),
+    var quickReplies: List<QuickReplyViewModel> = ArrayList(),
+    source: String = "", var status: Int = 0
+)
     : BaseChatUiModel(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source)
         , Visitable<ChatbotTypeFactory> {
 

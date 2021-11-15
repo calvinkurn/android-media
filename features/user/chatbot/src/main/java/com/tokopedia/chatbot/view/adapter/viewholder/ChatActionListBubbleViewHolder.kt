@@ -57,14 +57,18 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
 
     override fun bind(viewModel: ChatActionSelectionBubbleViewModel) {
 
-        if (viewModel.status==1){
+        if (viewModel.status == 1) {
             super.bind(viewModel)
             bindActionBubbleBackground()
-            ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
+            ChatbotMessageViewHolderBinder.bindChatMessage(
+                viewModel.message,
+                customChatLayout,
+                movementMethod
+            )
             model = viewModel
             adapter.setDataList(viewModel.chatActionList)
             chatActionListSelection.show()
-        }else{
+        } else {
             chatActionListSelection.hide()
         }
     }

@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
@@ -188,7 +189,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
                 list,
                 pojo.message.censoredReply,
                 pojo.source,
-                1
+                RENDER_INVOICE_LIST_AND_BUTTON_ACTION
         )
 
     }

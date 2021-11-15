@@ -9,12 +9,16 @@ import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
  * Created by Hendri on 27/03/18.
  */
 
-class AttachInvoiceSelectionViewModel (messageId: String, fromUid: String, from: String,
-                                      fromRole: String, attachmentId: String,
-                                      attachmentType: String, replyTime: String,
-                                      var list: List<AttachInvoiceSingleViewModel>?,
-                                      message: String, source: String, var status :Int) : BaseChatUiModel(messageId, fromUid,
-        from, fromRole, attachmentId, attachmentType, replyTime, message, source)
+class AttachInvoiceSelectionViewModel(
+    messageId: String, fromUid: String, from: String,
+    fromRole: String, attachmentId: String,
+    attachmentType: String, replyTime: String,
+    var list: List<AttachInvoiceSingleViewModel>?,
+    message: String, source: String, var status: Int
+) : BaseChatUiModel(
+    messageId, fromUid,
+    from, fromRole, attachmentId, attachmentType, replyTime, message, source
+)
         , Visitable<ChatbotTypeFactory> {
 
     override fun type(typeFactory: ChatbotTypeFactory): Int {

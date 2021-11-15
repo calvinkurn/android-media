@@ -40,11 +40,10 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
     }
 
     override fun bind(element: AttachInvoiceSelectionViewModel) {
-
-        if (element.status==1){
+        if (element.status == 1) {
             singleItemAdapter.setList(element.list)
             invoiceSelection.show()
-        }else{
+        } else {
             invoiceSelection.hide()
         }
     }
