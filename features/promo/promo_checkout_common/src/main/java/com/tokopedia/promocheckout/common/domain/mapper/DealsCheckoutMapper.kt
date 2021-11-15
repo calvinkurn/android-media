@@ -5,6 +5,9 @@ import com.tokopedia.promocheckout.common.view.uimodel.*
 
 object DealsCheckoutMapper {
 
+    const val CASHBACK = "cashback"
+    const val CASHBACK_VALUE = 0
+
     fun mapData(data: DealsVerifyResponse): DataUiModel {
         return DataUiModel(
                 success = true,
@@ -23,7 +26,9 @@ object DealsCheckoutMapper {
                 codes = listOf(data.usage_details.firstOrNull()?.code ?: ""),
                 promoCodeId = data.promo_code_id.toInt(),
                 titleDescription = data.benefit_summary_info.final_benefit_text,
-                discountAmount = data.benefit_summary_info.final_benefit_amount,
+                discountAmount = if (data.usage_details.firstOrNull()?.benefit_summary?.firstOrNull()?.
+                        benefit_details?.firstOrNull()?.benefit_type?.equals(CASHBACK, true) ?: false)
+                            CASHBACK_VALUE else data.benefit_summary_info.final_benefit_amount,
                 isCoupon = if (data.usage_details.firstOrNull()?.promo_detail?.is_coupon ?: false) 1 else 0,
                 gatewayId = data.gateway_id,
                 benefit = BenefitSummaryInfoUiModel(data.benefit_summary_info.final_benefit_text,
