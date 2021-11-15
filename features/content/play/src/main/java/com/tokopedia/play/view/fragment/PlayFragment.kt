@@ -239,7 +239,7 @@ class PlayFragment @Inject constructor(
                     fragmentUserInteractionView.safeRelease()
                     fragmentUserInteractionView.hide()
 
-                    fragmentUpcomingView.safeInit()
+                    fragmentUpcomingView.safeInit("")
                 }
                 playViewModel.videoPlayer.isYouTube -> {
                     fragmentYouTubeView.safeInit()

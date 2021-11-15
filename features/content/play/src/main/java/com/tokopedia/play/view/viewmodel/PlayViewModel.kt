@@ -1764,6 +1764,7 @@ class PlayViewModel @Inject constructor(
         checkInteractive(channelId = channelId)
     }
 
+    /** TODO: Should be removed **/
     private fun handleImpressUpcomingChannel() {
         playAnalytic.impressUpcomingPage(channelId)
     }

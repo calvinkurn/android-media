@@ -268,7 +268,7 @@ class PlayActivity : BaseActivity(),
                 }
                 is PageResultState.Upcoming -> {
                     ivLoading.hide()
-                    fragmentUpcomingView.safeInit()
+                    fragmentUpcomingView.safeInit((it.state as PageResultState.Upcoming).channelId)
                 }
             }
 

@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
@@ -58,24 +59,29 @@ class PlayUpcomingFragment @Inject constructor(
 //    private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
 //    private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
 //
-//    private lateinit var ivUpcomingCover: AppCompatImageView
+    private lateinit var ivUpcomingCover: AppCompatImageView
 //    private lateinit var tvUpcomingTitle: AppCompatTextView
 //
-    private lateinit var playViewModel: PlayUpcomingViewModel
+    private lateinit var playUpcomingViewModel: PlayUpcomingViewModel
     private lateinit var playParentViewModel: PlayParentViewModel
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
     override fun getScreenName(): String = "Play Upcoming"
 
+    private val channelId: String
+        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayUpcomingViewModel::class.java)
+        playUpcomingViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayUpcomingViewModel::class.java)
 
         val currentActivity = requireActivity()
         if (currentActivity is PlayActivity) {
             playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
         }
+
+        playUpcomingViewModel.initPage(channelId)
     }
 
     override fun onCreateView(
@@ -88,20 +94,20 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         view.findViewById<UnifyButton>(R.id.btn_watch_now).setOnClickListener {
             playParentViewModel.refreshChannel()
         }
-//        sendImpression()
-//        initView(view)
+        sendImpression()
+        initView(view)
 //        setupView(view)
 //        setupInsets()
 //        setupObserver()
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//
+    override fun onResume() {
+        super.onResume()
+        playUpcomingViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
+
 //        playViewModel.upcomingInfo?.let {
 //            actionButton.setButtonStatus(
 //                if(it.isAlreadyLive) UpcomingActionButtonViewComponent.Status.WATCH_NOW
@@ -109,16 +115,24 @@ class PlayUpcomingFragment @Inject constructor(
 //                else UpcomingActionButtonViewComponent.Status.HIDDEN
 //            )
 //        }
-//    }
-//
-//    private fun sendImpression() {
-//        playViewModel.submitAction(ImpressUpcomingChannel)
-//    }
-//
-//    private fun initView(view: View) {
-//        ivUpcomingCover = view.findViewById(R.id.iv_upcoming_cover)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        playParentViewModel.setLatestChannelStorageData(
+            channelId,
+            playUpcomingViewModel.latestCompleteChannelData
+        )
+    }
+
+    private fun sendImpression() {
+        playUpcomingViewModel.submitAction(ImpressUpcomingChannel)
+    }
+
+    private fun initView(view: View) {
+        ivUpcomingCover = view.findViewById(R.id.iv_upcoming_cover)
 //        tvUpcomingTitle = view.findViewById(R.id.tv_upcoming_title)
-//    }
+    }
 //
 //    private fun setupView(view: View) {
 //        playViewModel.upcomingInfo?.let {

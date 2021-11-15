@@ -160,7 +160,7 @@ class PlayParentViewModel constructor(
                 _observableChannelIdsResult.value = PageResult(
                     currentValue = playChannelStateStorage.getChannelList(),
                     state = if(playChannelStateStorage.getData(channelId)?.upcomingInfo?.isUpcoming == true)
-                                PageResultState.Upcoming(pageInfo = PageInfo.Unknown)
+                                PageResultState.Upcoming(channelId = channelId)
                             else PageResultState.Success(pageInfo = PageInfo.Unknown)
                 )
             } ?: run {
