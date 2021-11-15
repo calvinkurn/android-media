@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.*
+import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.*
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 
@@ -15,7 +16,9 @@ class AffiliateAdapterFactory(
         private var portfolioClickInterface: PortfolioClickInterface? = null,
         private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface? = null,
         private var onDateRangeClickInterface: AffiliateDatePickerRangeChangeInterface? = null,
-        private var onPerformaGridClick: AffiliatePerformaClickInterfaces? = null)
+        private var onPerformaGridClick: AffiliatePerformaClickInterfaces? = null,
+        private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
+)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -34,6 +37,7 @@ class AffiliateAdapterFactory(
             AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent, onPerformaGridClick)
             AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent, onPerformaGridClick)
             AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent,onDateRangeClickInterface)
+            AffiliateNoPromoItemFoundVH.LAYOUT -> AffiliateNoPromoItemFoundVH(parent,bottomNavBarClickListener)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -92,5 +96,9 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateStaggeredPromotionCardModel): Int {
         return AffiliateStaggeredPromotionCardItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateNoPromoItemFoundModel): Int {
+      return AffiliateNoPromoItemFoundVH.LAYOUT
     }
 }

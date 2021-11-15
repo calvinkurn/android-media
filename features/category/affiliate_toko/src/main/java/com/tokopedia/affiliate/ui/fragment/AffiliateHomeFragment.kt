@@ -66,8 +66,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     private lateinit var affiliateHomeViewModel: AffiliateHomeViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this,onDateRangeClickInterface = this,onPerformaGridClick = this))
-
+    lateinit var adapter: AffiliateAdapter
     private var isUserBlackListed = false
 
     companion object {
@@ -80,7 +79,12 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initAdapter()
         setObservers()
+    }
+
+    private fun initAdapter() {
+        adapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this,onDateRangeClickInterface = this,onPerformaGridClick = this,bottomNavBarClickListener = bottomNavBarClickListener))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
