@@ -489,7 +489,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     exitValue = 0f
                 }
                 ticker?.run {
-                    val marginTop = 8.toPx()
+                    val marginTop = TICKER_MARGIN_TOP.toPx()
                     val height = height.toFloat().orZero() + marginTop
                     translationY = enterValue * height
                     show()
@@ -2622,6 +2622,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         private const val START_SPAN_INDEX = 5
 
         private const val RV_TOP_POSITION = 0
+
+        private const val TICKER_MARGIN_TOP = 8
     }
 
 }
