@@ -79,8 +79,7 @@ class PlayUpcomingFragment @Inject constructor(
             playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
         }
 
-        playUpcomingViewModel.initPage(channelId)
-        playUpcomingViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
+        playUpcomingViewModel.initPage(channelId, playParentViewModel.getLatestChannelStorageData(channelId))
     }
 
     override fun onCreateView(
@@ -101,6 +100,7 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
+        playUpcomingViewModel.startSSE(channelId)
 
         playUpcomingViewModel.observableUpcomingInfo.value?.let {
             actionButton.setButtonStatus(

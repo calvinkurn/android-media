@@ -111,11 +111,8 @@ class PlayUpcomingViewModel @Inject constructor(
             )
         }
 
-    fun initPage(channelId: String) {
+    fun initPage(channelId: String, channelData: PlayChannelData) {
         this.mChannelId = channelId
-    }
-
-    fun focusPage(channelData: PlayChannelData) {
         this.mChannelData = channelData
 
         _observableUpcomingInfo.value = channelData.upcomingInfo
@@ -285,7 +282,7 @@ class PlayUpcomingViewModel @Inject constructor(
     /**
      * SSE
      */
-    private fun startSSE(channelId: String) {
+    fun startSSE(channelId: String) {
         sseJob?.cancel()
         sseJob = viewModelScope.launch {
             val socketCredential = getSocketCredential()
