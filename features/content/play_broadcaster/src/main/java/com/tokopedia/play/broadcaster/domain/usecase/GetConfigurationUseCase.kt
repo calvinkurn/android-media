@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.Config
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterShopConfigResponse
-import com.tokopedia.play.broadcaster.util.extension.sendCrashlyticsLog
 import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -59,7 +58,6 @@ class GetConfigurationUseCase @Inject constructor(
         return try {
             gson.fromJson(config, Config::class.java)
         } catch (e: Exception) {
-            sendCrashlyticsLog(e)
             Config()
         }
     }

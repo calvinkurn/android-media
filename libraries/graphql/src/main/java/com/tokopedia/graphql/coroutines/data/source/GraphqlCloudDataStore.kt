@@ -77,19 +77,9 @@ class GraphqlCloudDataStore @Inject constructor(
             }
             header[QUERY_HASHING_HEADER] = queryHashingHeaderValue.toString()
         }
-        val reqUrl = requests[0].url
-        return if (!reqUrl.isNullOrEmpty()) {
-            api.getResponseSuspendWithPath(
-                reqUrl,
-                requests.toMutableList(),
-                header,
-                FingerprintManager.getQueryDigest(requests)
-            )
-        } else api.getResponseSuspend(
-            requests.toMutableList(),
-            header,
-            FingerprintManager.getQueryDigest(requests)
-        )
+        return if(!requests[0].url.isNullOrEmpty()){
+            api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        } else api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
     }
 
     private fun putAkamaiHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
@@ -216,12 +206,14 @@ class GraphqlCloudDataStore @Inject constructor(
                                     reqUrl,
                                     requests.toMutableList(),
                                     header,
+                                    FingerprintManager.getQueryDigest(requests),
                                     FingerprintManager.getQueryDigest(requests)
                                 )
                             } else {
                                 api.getResponseSuspend(
                                     requests.toMutableList(),
                                     header,
+                                    FingerprintManager.getQueryDigest(requests),
                                     FingerprintManager.getQueryDigest(requests)
                                 )
                             }

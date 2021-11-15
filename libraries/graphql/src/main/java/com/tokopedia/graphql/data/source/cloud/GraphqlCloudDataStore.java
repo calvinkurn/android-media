@@ -186,7 +186,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         messageMap.put("key", requests.get(0).getMd5());
                         messageMap.put("hash", queryHashValues.toString());
                         ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
-                        mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
+                        mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
                     }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
                         LoggingUtils.logGqlResponseCode(httpResponse.code(), requests.toString(), httpResponse.body().toString());
