@@ -779,6 +779,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
             gradientBackgroundViewOnStateChanged(bottomInsets = map)
             toolbarViewOnStateChanged(bottomInsets = map)
+            partnerInfoViewOnStateChanged(bottomInsets = map)
             statsInfoViewOnStateChanged(bottomInsets = map)
             videoControlViewOnStateChanged(bottomInsets = map)
             sendChatViewOnStateChanged(bottomInsets = map)
@@ -1368,6 +1369,13 @@ class PlayUserInteractionFragment @Inject constructor(
         if (isFreezeOrBanned) toolbarView.show()
         else if (!bottomInsets.isAnyShown && orientation.isPortrait) toolbarView.show()
         else toolbarView.hide()
+    }
+
+    private fun partnerInfoViewOnStateChanged(
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+    ) {
+        if (!bottomInsets.isAnyShown && orientation.isPortrait) partnerInfoView?.show()
+        else partnerInfoView?.hide()
     }
 
     private fun statsInfoViewOnStateChanged(
