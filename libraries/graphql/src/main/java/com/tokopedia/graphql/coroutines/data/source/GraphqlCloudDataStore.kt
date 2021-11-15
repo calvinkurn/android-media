@@ -77,8 +77,9 @@ class GraphqlCloudDataStore @Inject constructor(
             }
             header[QUERY_HASHING_HEADER] = queryHashingHeaderValue.toString()
         }
-        return if(!requests[0].url.isNullOrEmpty()){
-            api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        val url = requests[0].url
+        return if(!url.isNullOrEmpty()){
+            api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
         } else api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
     }
 
