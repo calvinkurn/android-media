@@ -7,9 +7,6 @@ import javax.inject.Inject
 
 class AffiliateAnnouncementUseCase @Inject constructor(
     private val repository : AffiliateRepository) {
-    companion object {
-        private const val PARAM_USER_ID = "userID"
-    }
 
     private fun createRequestParams(): HashMap<String, Any> {
         return HashMap()
