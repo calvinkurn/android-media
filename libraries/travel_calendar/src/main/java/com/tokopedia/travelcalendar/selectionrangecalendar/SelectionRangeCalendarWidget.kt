@@ -212,7 +212,7 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
                         date_out.requestFocus()
                         minDate?.let { dateIn -> onDateInClicked(dateIn) }
                     } else if (minDate != null && maxDate == null && ((!canSelectSameDay && date.after(minDate)) || (canSelectSameDay && !date.before(minDate)))) {
-                        if(calendar.selectedDates.size > 1 && !canSelectSameDay){
+                        if((calendar.selectedDates.size > 1 && !canSelectSameDay) || canSelectSameDay){
                             date_out.setText(dateFormat.format(date))
                             maxDate = date
                             date_out.requestFocus()
@@ -221,18 +221,10 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
                                     minDate ?: Date(), maxDate
                                         ?: date
                                 )
-                                dismissCalendar()
-                            }
-                        }else if (canSelectSameDay){
-                            date_out.setText(dateFormat.format(date))
-                            maxDate = date
-                            date_out.requestFocus()
-                            if (listener != null) {
-                                listener?.onDateClick(
-                                    minDate ?: Date(), maxDate
-                                        ?: date
-                                )
-                                dismissCalendar()
+                                GlobalScope.launch {
+                                    delay(300)
+                                    dismissAllowingStateLoss()
+                                }
                             }
                         }else{
                             minDate = date
@@ -249,13 +241,6 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
     }
 
     open fun onDateInClicked(dateIn: Date) { }
-
-    private fun dismissCalendar(){
-        GlobalScope.launch {
-            delay(300)
-            dismissAllowingStateLoss()
-        }
-    }
 
     private fun mappingHolidayData(holidayData: TravelCalendarHoliday.HolidayData): ArrayList<Legend> {
         val legendList = arrayListOf<Legend>()
