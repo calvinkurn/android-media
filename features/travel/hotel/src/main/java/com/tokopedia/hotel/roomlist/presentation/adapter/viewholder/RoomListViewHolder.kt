@@ -10,18 +10,20 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
-import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.imagepreviewslider.presentation.view.ImagePreviewViewer
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import kotlin.math.min
+import com.tokopedia.media.loader.loadImage
 import kotlinx.android.synthetic.main.layout_hotel_image_slider.view.*
+import kotlin.math.min
 
 /**
  * @author by jessica on 25/03/19
  */
 
 class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: OnClickBookListener) : AbstractViewHolder<HotelRoom>(binding.root) {
+
+    private var imagePreviewViewer: ImagePreviewViewer? = null
 
     override fun bind(hotelRoom: HotelRoom) {
         with(binding) {
@@ -101,7 +103,7 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
             roomImageViewPager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
                     listener.onPhotoClickListener(room)
-                    ImagePreviewSlider.instance.start(itemView.context, room.roomInfo.name, imageUrls, imageUrls, position, itemView.image_banner)
+                    imagePreviewViewer?.startImagePreviewViewer(room.roomInfo.name, itemView.image_banner, imageUrls, itemView.context, position)
                 }
             }
             roomImageViewPager.buildView()
@@ -140,6 +142,21 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
         }
         roomListModel.images = images
         return roomListModel
+    }
+
+    init {
+        itemView.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
+            override fun onViewDetachedFromWindow(view: View?){
+                view?.let {
+                    itemView.removeOnAttachStateChangeListener(this)
+                }
+                imagePreviewViewer = null
+            }
+
+            override fun onViewAttachedToWindow(p0: View?) {
+                if (imagePreviewViewer == null) imagePreviewViewer = ImagePreviewViewer()
+            }
+        })
     }
 
     interface OnClickBookListener {

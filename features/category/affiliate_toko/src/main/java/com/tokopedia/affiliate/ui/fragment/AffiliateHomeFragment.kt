@@ -40,7 +40,10 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.webview.BaseSimpleWebViewActivity
+import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.affiliate_home_fragment_layout.*
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -103,11 +106,13 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         loadMoreTriggerListener?.let { products_rv.addOnScrollListener(it) }
         user_name.text = affiliateHomeViewModel.getUserName()
         home_navToolbar.run {
+            viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_INFORMATION) {
                                 AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_BETA_INFO).show(childFragmentManager, "")
                             }
+                            .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.label_affiliate)
         }
@@ -181,7 +186,11 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
             }else {
                 validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
-                    activity?.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                    try {
+                        activity?.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                    }catch (e : Exception){
+                        activity?.startActivity(Intent(Intent(activity, BaseSimpleWebViewActivity::class.java)).putExtra(KEY_URL,it))
+                    }
                 }
                 activity?.finish()
             }

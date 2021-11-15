@@ -17,7 +17,9 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.bottomsheet.adapter.ShopShareBottomSheetAdapter
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopShareModel
+import com.tokopedia.shop.databinding.ShopPageShareBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by Rafli Syam 20/07/2020
@@ -25,8 +27,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class ShopShareBottomSheet : BottomSheetUnify() {
 
     companion object {
-        @LayoutRes
-        private val LAYOUT = R.layout.shop_page_share_bottomsheet
         private val TAG = ShopShareBottomSheet::class.java.simpleName
         private const val TYPE_TEXT = "text/plain"
         private const val TYPE_IMAGE = "image/*"
@@ -47,9 +47,10 @@ class ShopShareBottomSheet : BottomSheetUnify() {
 
     private var bottomSheetListener: ShopShareBottomsheetListener? = null
     private var rvSocialMediaList: RecyclerView? = null
+    private var viewBinding by autoClearedNullable<ShopPageShareBottomsheetBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setupBottomSheetChildView(inflater, container)
+        setupBottomSheetChildView()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -68,11 +69,11 @@ class ShopShareBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
-        inflater.inflate(LAYOUT, container).apply {
-            rvSocialMediaList = findViewById(R.id.rv_social_media_list)
-            setTitle(context.getString(R.string.shop_page_share_to_social_media_text))
-            setChild(this)
+    private fun setupBottomSheetChildView() {
+        viewBinding = ShopPageShareBottomsheetBinding.inflate(LayoutInflater.from(context)).apply {
+            this@ShopShareBottomSheet.rvSocialMediaList = this.rvSocialMediaList
+            setTitle(context?.getString(R.string.shop_page_share_to_social_media_text).orEmpty())
+            setChild(this.root)
             setCloseClickListener {
                 bottomSheetListener?.onCloseBottomSheet()
                 dismiss()

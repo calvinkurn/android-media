@@ -1,15 +1,8 @@
 package com.tokopedia.tkpd;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Build;
-import android.content.Intent;
-
 
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.ProcessLifecycleOwner;
-import androidx.preference.PreferenceManager;
-import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
@@ -24,19 +17,15 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.utils.permission.SlicePermission;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import io.embrace.android.embracesdk.Embrace;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -102,6 +91,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void onCreate() {
         CheckAndTraceAppStartIfEnabled();
+        Embrace.getInstance().start(this);
         super.onCreate();
         setupAppScreenMode();
         setupAlphaObserver();

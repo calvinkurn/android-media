@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16"
+    android:padding="16dp"
     android:visibility="gone"
     tools:visibility="visible"
     android:id="@+id/loadingMainContainer"
@@ -13,8 +13,8 @@
     <include layout="@layout/partial_shimmering_label_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,9 +22,9 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
         <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_72"
-            android:layout_margin="@dimen/dp_8"/>
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_margin="8dp"/>
 
         <include layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
@@ -34,22 +34,22 @@
     <include layout="@layout/partial_shimmering_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"/>
+        android:layout_marginTop="24dp"/>
 
     <include layout="@layout/partial_shimmering_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"/>
+        android:layout_marginTop="24dp"/>
 
     <include layout="@layout/partial_shimmering_label_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_60"
-        android:layout_marginBottom="@dimen/dp_24"/>
+        android:layout_marginBottom="24dp"/>
 
     <include layout="@layout/partial_shimmering_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"/>
+        android:layout_marginTop="40dp"/>
 
 </LinearLayout>

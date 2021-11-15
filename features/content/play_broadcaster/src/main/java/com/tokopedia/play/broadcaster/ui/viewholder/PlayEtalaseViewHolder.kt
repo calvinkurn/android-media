@@ -29,8 +29,6 @@ class PlayEtalaseViewHolder(itemView: View, private val listener: Listener) : Ba
 
     private val productPreviewAdapter = PlayProductPreviewAdapter()
 
-    private val context: Context = itemView.context
-
     init {
         rvProductPreview.layoutManager = GridLayoutManager(rvProductPreview.context, 2, RecyclerView.HORIZONTAL, false).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {

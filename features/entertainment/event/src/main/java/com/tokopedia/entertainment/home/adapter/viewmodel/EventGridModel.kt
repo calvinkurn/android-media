@@ -25,7 +25,7 @@ class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout =
         layout.items.forEachIndexed { index, it ->
             if(index < 4) {
                 items.add(EventItemModel(
-                        it.id,
+                        it.id.toIntOrZero(),
                         it.rating,
                         it.imageApp,
                         it.title,

@@ -19,6 +19,16 @@ class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : 
     private val tvVoucherTitle = itemView.findViewById<Typography>(R.id.tv_pinned_voucher_title)
     private val tvVoucherDescription = itemView.findViewById<Typography>(R.id.tv_pinned_voucher_description)
 
+    private val childClickListener = View.OnClickListener {
+        itemView.performClick()
+    }
+
+    init {
+        tvVoucherTitle.setOnClickListener(childClickListener)
+        ivVoucherImage.setOnClickListener(childClickListener)
+        tvVoucherDescription.setOnClickListener(childClickListener)
+    }
+
     fun bind(item: MerchantVoucherUiModel) {
         itemView.addOnImpressionListener(item.impressHolder) {
             listener.onVoucherImpressed(item, adapterPosition)

@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation
 
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL.KEY_PARAMS
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -18,14 +19,8 @@ class GetLocalSearchRecommendationUseCase(
 ): UseCase<SearchProductModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
-        val params = UrlParamUtils.generateUrlParamString(requestParams.parameters)
-
         val graphqlRequestList = listOf(
-                GraphqlRequest(
-                        LOCAL_SEARCH_QUERY,
-                        AceSearchProductModel::class.java,
-                        mapOf(KEY_PARAMS to params)
-                )
+            createGraphqlRequest(requestParams)
         )
 
         graphqlUseCase.clearRequest()
@@ -35,6 +30,14 @@ class GetLocalSearchRecommendationUseCase(
                 .createObservable(RequestParams.EMPTY)
                 .map(searchProductModelMapper)
     }
+
+    @GqlQuery("LocalSearchRecommendation", LOCAL_SEARCH_QUERY)
+    private fun createGraphqlRequest(requestParams: RequestParams) =
+        GraphqlRequest(
+            LocalSearchRecommendation.GQL_QUERY,
+            AceSearchProductModel::class.java,
+            mapOf(KEY_PARAMS to UrlParamUtils.generateUrlParamString(requestParams.parameters))
+        )
 
     companion object {
         private const val LOCAL_SEARCH_QUERY = """

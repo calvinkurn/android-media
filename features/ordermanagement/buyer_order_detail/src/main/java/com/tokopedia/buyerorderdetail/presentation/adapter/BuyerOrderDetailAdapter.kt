@@ -136,11 +136,9 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addProductBundlingListSection(
-        productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>?
+        productBundlingList: List<ProductListUiModel.ProductBundlingUiModel>
     ) {
-        productBundlingList?.let {
-            addAll(it)
-        }
+        addAll(productBundlingList)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierDriverInfoSection(
@@ -216,6 +214,20 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         if (index != -1) {
             visitables[index] = newItem
             notifyItemChanged(index, oldItem to newItem)
+        }
+    }
+
+    fun removeDigitalRecommendation() {
+        val dividerIndex = visitables.indexOfLast { it is ThickDividerUiModel }
+        val index = visitables.indexOfLast { it is DigitalRecommendationUiModel }
+
+        if (dividerIndex != -1 && index != -1) {
+            visitables.removeAt(index)
+            visitables.removeAt(dividerIndex)
+            notifyItemRangeRemoved(dividerIndex, 2)
+        } else if (index != -1) {
+            visitables.removeAt(index)
+            notifyItemRemoved(index)
         }
     }
 }
