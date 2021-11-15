@@ -270,7 +270,11 @@ data class HotelCancellationModel(
 
             @SerializedName("meta")
             @Expose
-            val meta: CancellationMeta = CancellationMeta()
+            val meta: CancellationMeta = CancellationMeta(),
+
+            @Expose
+            @SerializedName("content")
+            val content: HotelCancellationError.Content = HotelCancellationError.Content()
     )
 
     data class CancellationMeta(

@@ -279,7 +279,7 @@ public class MainParentActivity extends BaseActivity implements
                 return sendOpenHomeEvent();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext(), true);
         installDFonBackground();
         runRiskWorker();
 
@@ -399,7 +399,7 @@ public class MainParentActivity extends BaseActivity implements
                 return executeFirstTimeEvent();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext(), true);
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
         showSelectedPage();

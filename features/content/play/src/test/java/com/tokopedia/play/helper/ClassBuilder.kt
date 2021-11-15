@@ -53,9 +53,11 @@ class ClassBuilder {
             channelId: String? = null,
             videoStartMillis: Long? = null,
             shouldTrack: Boolean = true,
+            sourceType: String = "",
     ) = PlayChannelDetailsWithRecomMapper.ExtraParams(
             channelId = channelId,
             videoStartMillis = videoStartMillis,
-            shouldTrack = shouldTrack
+            shouldTrack = shouldTrack,
+            sourceType = sourceType,
     )
 }

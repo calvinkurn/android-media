@@ -53,9 +53,11 @@ import com.tokopedia.checkout.bundle.view.di.DaggerCheckoutComponent;
 import com.tokopedia.checkout.bundle.view.dialog.ExpireTimeDialogListener;
 import com.tokopedia.checkout.bundle.view.dialog.ExpiredTimeDialog;
 import com.tokopedia.checkout.bundle.view.helper.CartProtectionInfoBottomSheetHelper;
+import com.tokopedia.checkout.bundle.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.common.payment.PaymentConstant;
@@ -86,7 +88,6 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
@@ -107,6 +108,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.promoli
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
@@ -232,6 +234,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     EgoldAttributeModel savedEgoldAttributeModel;
     RecipientAddressModel savedRecipientAddressModel;
     ShipmentDonationModel savedShipmentDonationModel;
+    ArrayList<ShipmentCrossSellModel> savedListShipmentCrossSellModel;
     BenefitSummaryInfoUiModel benefitSummaryInfoUiModel;
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
     LastApplyUiModel savedLastApplyData;
@@ -296,6 +299,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 savedShipmentCostModel = saveInstanceCacheManager.get(ShipmentCostModel.class.getSimpleName(), ShipmentCostModel.class);
                 savedEgoldAttributeModel = saveInstanceCacheManager.get(EgoldAttributeModel.class.getSimpleName(), EgoldAttributeModel.class);
                 savedShipmentDonationModel = saveInstanceCacheManager.get(ShipmentDonationModel.class.getSimpleName(), ShipmentDonationModel.class);
+                savedListShipmentCrossSellModel = saveInstanceCacheManager.get(ShipmentCrossSellModel.class.getSimpleName(), (new TypeToken<ArrayList<ShipmentCrossSellModel>>() {}).getType());
                 savedShipmentButtonPaymentModel = saveInstanceCacheManager.get(ShipmentButtonPaymentModel.class.getSimpleName(), ShipmentButtonPaymentModel.class);
                 savedLastApplyData = saveInstanceCacheManager.get(LastApplyUiModel.class.getSimpleName(), LastApplyUiModel.class);
             }
@@ -398,6 +402,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setRecipientAddressModel(savedRecipientAddressModel);
             shipmentPresenter.setShipmentCostModel(savedShipmentCostModel);
             shipmentPresenter.setShipmentDonationModel(savedShipmentDonationModel);
+            shipmentPresenter.setListShipmentCrossSellModel(savedListShipmentCrossSellModel);
             shipmentPresenter.setShipmentButtonPaymentModel(savedShipmentButtonPaymentModel);
             shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
             shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
@@ -471,6 +476,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                       RecipientAddressModel recipientAddressModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
+                                      List<ShipmentCrossSellModel> shipmentCrossSellModelList,
                                       LastApplyUiModel lastApplyUiModel,
                                       ShipmentCostModel shipmentCostModel,
                                       EgoldAttributeModel egoldAttributeModel,
@@ -505,15 +511,31 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
 
         if (shipmentDonationModel != null) {
-            shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
-            if (shipmentDonationModel.isChecked() && shipmentDonationModel.isEnabled()) {
-                checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(userSessionInterface.getUserId());
+            if (!shipmentDonationModel.getDonation().getTitle().isEmpty() && shipmentDonationModel.getDonation().getNominal() != 0) {
+                shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
+                if (shipmentDonationModel.isChecked() && shipmentDonationModel.isEnabled()) {
+                    checkoutAnalyticsCourierSelection.eventViewAutoCheckDonation(userSessionInterface.getUserId());
+                }
             }
         }
 
         if (egoldAttributeModel != null && egoldAttributeModel.isEligible()) {
             shipmentAdapter.updateEgold(false);
             shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
+        }
+
+        if (!shipmentCrossSellModelList.isEmpty()) {
+            shipmentAdapter.addListShipmentCrossSellModel(shipmentCrossSellModelList);
+            for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
+                CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
+                String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
+                String digitalProductId = crossSellModel.getId();
+                String eventLabel = digitalCategoryName + " " + digitalProductId;
+                String digitalProductName = crossSellModel.getInfo().getTitle();
+
+                checkoutAnalyticsCourierSelection.eventViewAutoCheckCrossSell(userSessionInterface.getUserId(),
+                        String.valueOf(i+1), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModelList));
+            }
         }
 
         if (shipmentCartItemModelList.size() > 0) {
@@ -554,6 +576,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (isReloadAfterPriceChangeHigher) {
             delayScrollToFirstShop();
         }
+    }
+
+    private ArrayList<Long> getCrossSellChildCategoryId(List<ShipmentCartItemModel> shipmentCartItemModelList) {
+        ArrayList<Long> childCategoryIds = new ArrayList<>();
+        for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
+            for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
+                childCategoryIds.add(cartItemModel.getProductId());
+            }
+        }
+        return childCategoryIds;
     }
 
     private void addShippingCompletionTicker(boolean isEligibleNewShippingExperience) {
@@ -764,6 +796,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel,
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
+                shipmentPresenter.getListShipmentCrossSellModel(),
                 shipmentPresenter.getLastApplyData(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
@@ -790,6 +823,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getRecipientAddressModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
+                shipmentPresenter.getListShipmentCrossSellModel(),
                 shipmentPresenter.getLastApplyData(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
@@ -1083,6 +1117,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 stringObjectMap, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
+    }
+
+    @Override
+    public void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(String eventLabel, String userId, List<Object> listProducts) {
+        checkoutAnalyticsCourierSelection.sendCrossSellClickPilihPembayaran(eventLabel, userId, listProducts);
     }
 
     @Override
@@ -1842,6 +1881,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (isTradeIn()) {
             checkoutTradeInAnalytics.eventTradeInClickDonationOption(isTradeInByDropOff(), checked);
         }
+    }
+
+    @Override
+    public void onCrossSellItemChecked(boolean checked, CrossSellModel crossSellModel, int index) {
+        if (rvShipment.isComputingLayout()) {
+            rvShipment.post(() -> shipmentAdapter.updateCrossSell(checked, crossSellModel));
+        } else {
+            shipmentAdapter.updateCrossSell(checked, crossSellModel);
+        }
+
+        String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
+        String digitalProductId = crossSellModel.getId();
+        String eventLabel = digitalCategoryName + " " + digitalProductId;
+        String digitalProductName = crossSellModel.getInfo().getTitle();
+
+        List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
+        checkoutAnalyticsCourierSelection.eventClickCheckboxCrossSell(checked, userSessionInterface.getUserId(), String.valueOf(index), eventLabel, digitalProductName, getCrossSellChildCategoryId(shipmentCartItemModels));
     }
 
     @Override
