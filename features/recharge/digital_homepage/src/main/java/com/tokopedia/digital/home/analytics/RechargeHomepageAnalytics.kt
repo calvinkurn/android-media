@@ -228,17 +228,6 @@ class RechargeHomepageAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
     }
 
-    //#5
-    fun clickSearchBox(tracker: Tracking, userId: String){
-        val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT_ACTION, "click search box")
-            putString(TrackAppUtils.EVENT_LABEL, String.format("%s", tracker.userType))
-        }
-
-        eventDataLayer.addGeneralClickDigitalEvent(userId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_DIGITAL_EVENT, eventDataLayer)
-    }
-
     //#6
     fun impressionCategoryAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
         val eventDataLayer = Bundle().apply {
