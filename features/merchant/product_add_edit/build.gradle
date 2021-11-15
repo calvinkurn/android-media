@@ -14,9 +14,6 @@ android {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
     }
-    androidExtensions {
-        experimental = true
-    }
     kotlinOptions {
         jvmTarget = '1.8'
     }
