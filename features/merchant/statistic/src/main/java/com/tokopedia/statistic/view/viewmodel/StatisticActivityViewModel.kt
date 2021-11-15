@@ -73,9 +73,7 @@ class StatisticActivityViewModel @Inject constructor(
             useCase.params = GetPMStatusUseCase.createParams(shopId)
             val pmStatusData = useCase.executeOnBackground()
             updateUserSession(pmStatusData)
-        }, onError = {
-            //no op
-        })
+        }, onError = {})
     }
 
     private fun updateUserSession(pmStatusData: PMStatusUiModel) {
