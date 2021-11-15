@@ -477,6 +477,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                         SellerHomeErrorHandler.SHOP_INFO,
                         SellerHomeErrorHandler.SHOP_INFO
                     )
+
+                    navigator?.run {
+                        if (isHomePageSelected()) {
+                            supportActionBar?.title = userSession.shopName
+                        }
+
+                        setHomeTitle(userSession.shopName)
+                    }
                 }
             }
         })
