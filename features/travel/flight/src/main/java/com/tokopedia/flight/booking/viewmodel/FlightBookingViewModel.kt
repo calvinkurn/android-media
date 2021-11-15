@@ -392,6 +392,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                         it.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                     } ?: ""
                 }
+                flightVerifyPassenger.identificationNumber = passenger.identificationNumber
 
                 for (mealMeta in passenger.flightBookingMealMetaViewModels) {
                     for (meal in mealMeta.amenities) {
