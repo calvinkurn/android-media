@@ -50,8 +50,6 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.*
-import com.tokopedia.topads.common.data.model.DataDeposit
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -62,7 +60,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import rx.Subscriber
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
@@ -70,7 +67,6 @@ class ProductManageViewModel @Inject constructor(
     private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
     private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
     private val userSessionInterface: UserSessionInterface,
-    private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
     private val getShopManagerPopupsUseCase: GetShopManagerPopupsUseCase,
     private val getProductListUseCase: GQLGetProductListUseCase,
     private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
@@ -119,8 +115,6 @@ class ProductManageViewModel @Inject constructor(
         get() = _editPriceResult
     val editStockResult: LiveData<Result<EditStockResult>>
         get() = _editStockResult
-    val getFreeClaimResult: LiveData<Result<DataDeposit>>
-        get() = _getFreeClaimResult
     val getPopUpResult: LiveData<Result<GetPopUpResult>>
         get() = _getPopUpResult
     val setFeaturedProductResult: LiveData<Result<SetFeaturedProductResult>>
@@ -159,7 +153,6 @@ class ProductManageViewModel @Inject constructor(
     private val _deleteProductResult = MutableLiveData<Result<DeleteProductResult>>()
     private val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
     private val _editStockResult = MutableLiveData<Result<EditStockResult>>()
-    private val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
     private val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
     private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
@@ -489,25 +482,6 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
-    fun getFreeClaim(graphqlQuery: String, shopId: String) {
-        val requestParams = TopAdsGetShopDepositGraphQLUseCase.createRequestParams(graphqlQuery, shopId)
-        topAdsGetShopDepositGraphQLUseCase
-            .createObservable(requestParams)
-            .subscribe(object : Subscriber<DataDeposit>() {
-                override fun onCompleted() {
-
-                }
-
-                override fun onError(e: Throwable) {
-                    _getFreeClaimResult.value = Fail(e)
-                }
-
-                override fun onNext(dataDeposit: DataDeposit) {
-                    _getFreeClaimResult.value = Success(dataDeposit)
-                }
-            })
-    }
-
     fun getPopupsInfo(productId: String) {
         launchCatchError(
             block = {
@@ -633,7 +607,6 @@ class ProductManageViewModel @Inject constructor(
 
     fun detachView() {
         gqlGetShopInfoUseCase.cancelJobs()
-        topAdsGetShopDepositGraphQLUseCase.unsubscribe()
         getShopManagerPopupsUseCase.cancelJobs()
         getProductListUseCase.cancelJobs()
         setFeaturedProductUseCase.cancelJobs()
