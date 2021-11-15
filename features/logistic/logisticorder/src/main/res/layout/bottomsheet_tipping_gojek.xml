@@ -9,7 +9,9 @@
         android:id="@+id/payment_tipping_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        app:layout_constraintBottom_toTopOf="@id/bottom_tipping_gojek"
+        android:layout_marginBottom="150dp"
+        android:visibility="visible">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_tipping_gojek"
@@ -41,12 +43,13 @@
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/et_nominal_tip"
-            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginTop="@dimen/unify_space_40"
+            android:layout_marginBottom="150dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rv_chips_tip"
+            app:layout_constraintEnd_toEndOf="parent"
             app:text_field_label="Tulis Nominal Tip" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -55,7 +58,7 @@
         android:id="@+id/result_tipping_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_tip_driver"
@@ -287,7 +290,8 @@
             android:textAlignment="center"
             android:textStyle="bold"
             app:unifyButtonType="main"
-            app:unifyButtonVariant="filled" />
+            app:unifyButtonVariant="filled"
+            android:enabled="false"/>
 
     </FrameLayout>
 
@@ -298,7 +302,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_tipping_gojek"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

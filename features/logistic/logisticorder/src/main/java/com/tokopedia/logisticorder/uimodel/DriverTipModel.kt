@@ -10,14 +10,7 @@ data class DriverTipModel(
 data class LogisticDriverModel(
     var messageError: String = "",
     var status: Int = 0,
-    var driverTipData: DriverTipDataModel = DriverTipDataModel()
-)
-
-data class DriverTipDataModel(
     var lastDriver: LastDriverModel = LastDriverModel(),
-    var status: Int = 0,
-    var statusTitle: String = "",
-    var statusSubtitle: String = "",
     var prepayment: PrepaymentModel = PrepaymentModel(),
     var payment: PaymentModel = PaymentModel()
 )

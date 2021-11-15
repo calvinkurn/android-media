@@ -189,8 +189,10 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         if (tippingData.status == 100 || tippingData.status == 150 || tippingData.status == 200 || tippingData.status ==  210 || tippingData.status == 300) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
+            binding?.dividerTippingGojek?.visibility = View.VISIBLE
         } else {
             binding?.tippingGojekLayout?.root?.visibility = View.GONE
+            binding?.dividerTippingGojek?.visibility = View.GONE
         }
     }
 

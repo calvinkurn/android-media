@@ -88,7 +88,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     private fun setInitialViewState() {
         setTitle("")
         binding.progressBar.visibility = View.VISIBLE
-        viewModel.getDriverTipsData(orderId)
+        binding.paymentTippingLayout.visibility = View.GONE
+        binding.resultTippingLayout.visibility = View.GONE
+        viewModel.getDriverTipsData("167021704")
     }
 
     override fun getComponent(): TrackingPageComponent {
@@ -102,7 +104,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         viewModel.driverTipData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    binding.progressBar.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
                     setDriverTipLayout(it.data)
                 }
 
@@ -114,7 +116,6 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     }
 
     private fun setDriverTipLayout(logisticDriverModel: LogisticDriverModel) {
-        val driverData = logisticDriverModel.driverTipData
         when (logisticDriverModel.status) {
             100 -> {
                 //driver found
@@ -129,7 +130,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
                 ViewCompat.setLayoutDirection(binding.rvChipsTip, ViewCompat.LAYOUT_DIRECTION_LTR)
                 tippingValueAdapter = TippingValueAdapter()
-                tippingValueAdapter.tippingValueList = driverData.prepayment.presetAmount.toMutableList()
+                tippingValueAdapter.tippingValueList = logisticDriverModel.prepayment.presetAmount.toMutableList()
 
                 binding.rvChipsTip.apply {
                     layoutManager = chipsLayoutManagerTipping
@@ -138,7 +139,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
 
                 binding.tickerTippingGojek.apply {
-                    setHtmlDescription(String.format(getString(R.string.driver_tipping_ticker_new), driverData.prepayment.info.first(), driverData.prepayment.info.last()))
+                    setHtmlDescription(String.format(getString(R.string.driver_tipping_ticker_new), logisticDriverModel.prepayment.info.first(), logisticDriverModel.prepayment.info.last()))
                 }
             }
             150 -> {
@@ -155,12 +156,12 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     tvTipResult.text = "Tip kamu sudah diberikan!"
                     tvTipResultDesc.text = "Tip 100% ditransfer ke driver setelah pesanan sampai. Tip akan dikembalikan ke kamu jika pesanan batal"
                     tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
-                    tvDriverNameValue.text = driverData.lastDriver.name
-                    tvPhoneNumberValue.text = driverData.lastDriver.phone
-                    tvLicenseValue.text = driverData.lastDriver.licenseNumber
+                    tvDriverNameValue.text = logisticDriverModel.lastDriver.name
+                    tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
+                    tvLicenseValue.text = logisticDriverModel.lastDriver.licenseNumber
 
-                    chipsPayment.chip_image_icon.setImageUrl(driverData.payment.methodIcon)
-                    chipsPayment.chipText = String.format(getString(R.string.payment_value), driverData.payment.method, driverData.payment.amountFormatted)
+                    chipsPayment.chip_image_icon.setImageUrl(logisticDriverModel.payment.methodIcon)
+                    chipsPayment.chipText = String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted)
                 }
 
             }

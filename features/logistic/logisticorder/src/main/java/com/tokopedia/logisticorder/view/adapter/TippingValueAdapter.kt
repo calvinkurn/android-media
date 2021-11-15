@@ -21,7 +21,7 @@ class TippingValueAdapter : RecyclerView.Adapter<TippingValueAdapter.ViewHolder>
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.chips_item.apply {
-            chipText = tippingValueList[position].toString()
+            chipText = "Rp" + tippingValueList[position].toString()
             chipType = ChipsUnify.TYPE_NORMAL
             chipSize = ChipsUnify.SIZE_MEDIUM
             setOnClickListener {

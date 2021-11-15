@@ -9,20 +9,10 @@ class DriverTipMapper @Inject constructor(){
     fun mapDriverTipData(response: GetDriverTipResponse): LogisticDriverModel {
         val data = response.response
         return LogisticDriverModel().apply {
-            messageError = data.messageError
             status = data.status
-            driverTipData = mapDriverTip(data.driverTipData)
-        }
-    }
-
-    private fun mapDriverTip(response: DriverTipData): DriverTipDataModel {
-        return DriverTipDataModel().apply {
-            lastDriver = mapLastDriverData(response.lastDriver)
-            status = response.status
-            statusTitle = response.statusTitle
-            statusSubtitle = response.statusSubtitle
-            prepayment = mapPrePaymentData(response.prepayment)
-            payment = mapPaymentData(response.payment)
+            lastDriver = mapLastDriverData(data.lastDriver)
+            prepayment = mapPrePaymentData(data.prepayment)
+            payment = mapPaymentData(data.payment)
         }
     }
 

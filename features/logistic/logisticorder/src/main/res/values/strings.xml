@@ -36,6 +36,6 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
 
     <!--TIPPING GOJEK-->
     <string name="driver_tipping_ticker">&lt;ul&gt; &lt;li&gt; %s </string>
-    <string name="driver_tipping_ticker_new">![CDATA[<ul> <li>%s</li> <li>%s</li></ul>]]</string>
-    <string name="payment_value">![CDATA[<b>%s %s</b>]]</string>
+    <string name="driver_tipping_ticker_new"><![CDATA[<ul> <li>%s</li> <li>%s</li></ul>]]></string>
+    <string name="payment_value"><![CDATA[<b>%s %s</b>]]></string>
 </resources>
