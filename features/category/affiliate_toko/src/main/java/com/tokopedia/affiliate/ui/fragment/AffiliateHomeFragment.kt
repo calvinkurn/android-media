@@ -19,13 +19,14 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
-import com.tokopedia.affiliate.interfaces.AffiliateHomeRvDateRangeInterface
+import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.AffiliateAnnouncementData
 import com.tokopedia.affiliate.model.AffiliateDatePickerData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet.Companion.STATE_PERFORMA_INFO
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.AffiliateSharedProductCardsItemVH
@@ -50,8 +51,8 @@ import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
-class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), ProductClickInterface,AffiliateHomeRvDateRangeInterface,
-    AffiliateDatePickerRangeChangeInterface {
+class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), ProductClickInterface,
+    AffiliatePerformaClickInterfaces, AffiliateDatePickerRangeChangeInterface {
 
     private var totalDataItemsCount: Int = 0
     private var isSwipeRefresh = false
@@ -65,7 +66,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     private lateinit var affiliateHomeViewModel: AffiliateHomeViewModel
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this,onDateRangeClickInterface = this))
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(productClickInterface = this,onDateRangeClickInterface = this,onPerformaGridClick = this))
 
     private var isUserBlackListed = false
 
@@ -383,11 +384,15 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         }
     }
 
-    override fun buttonClicked() {
+   override fun rangeChanged(range: AffiliateDatePickerData) {
+        affiliateHomeViewModel.onRangeChanged(range)
+    }
+
+    override fun onRangeSelectionButtonClicked() {
         AffiliateBottomDatePicker.newInstance(affiliateHomeViewModel.getSelectedDate(),this).show(childFragmentManager, "")
     }
 
-    override fun rangeChanged(range: AffiliateDatePickerData) {
-        affiliateHomeViewModel.onRangeChanged(range)
+    override fun onInfoClick(title: String?, desc: String?) {
+        AffiliateHowToPromoteBottomSheet.newInstance(STATE_PERFORMA_INFO,title,desc).show(childFragmentManager, "")
     }
 }

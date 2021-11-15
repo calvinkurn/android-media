@@ -13,8 +13,9 @@ class AffiliateAdapterFactory(
         private var promotionClickInterface : PromotionClickInterface? = null,
         private var addSocialInterface  : AddSocialInterface? = null,
         private var portfolioClickInterface: PortfolioClickInterface? = null,
-        private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface?=null,
-        private var onDateRangeClickInterface: AffiliateHomeRvDateRangeInterface?=null)
+        private var onFocusChangeInterface: PortfolioUrlTextUpdateInterface? = null,
+        private var onDateRangeClickInterface: AffiliateDatePickerRangeChangeInterface? = null,
+        private var onPerformaGridClick: AffiliatePerformaClickInterfaces? = null)
     : BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -30,8 +31,8 @@ class AffiliateAdapterFactory(
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
             AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
             AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)
-            AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent)
-            AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent)
+            AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent, onPerformaGridClick)
+            AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent, onPerformaGridClick)
             AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent,onDateRangeClickInterface)
             else -> super.createViewHolder(parent, type)
         }

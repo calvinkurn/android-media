@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.*
+import com.tokopedia.affiliate.PERFORMA_MAP
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
@@ -108,8 +109,10 @@ class AffiliateHomeViewModel @Inject constructor(
     private fun getListFromData(affiliatePerfomanceResponse: AffiliateUserPerformaListItemData): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
         val performaTempList:ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         affiliatePerfomanceResponse?.getAffiliatePerformance.data?.userData?.metrics?.forEach {
-            if(it?.metricType != "totalItems")
+            if(it?.metricType != "totalItems") {
+                it?.description = PERFORMA_MAP[it?.metricTitle]
                 performaTempList.add(AffiliateUserPerformanceListModel(it))
+            }
             else if(it.metricType == "totalItems")
                 rangeItemCount = it.metricValue
         }

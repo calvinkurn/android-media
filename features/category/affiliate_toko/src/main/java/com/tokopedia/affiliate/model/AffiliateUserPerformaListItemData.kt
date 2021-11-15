@@ -67,6 +67,8 @@ data class AffiliateUserPerformaListItemData(
                               var metricDifferenceValueFmt: String?,
                               @SerializedName("Order")
                               var order: Int?,
+
+                              var description :String? = ""
                         )
                   }
             }

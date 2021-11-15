@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
+import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifyprinciples.Typography
 
-class AffiliateHomeUserDataVH(itemView: View)
+class AffiliateHomeUserDataVH(itemView: View,private val onPerformaGridClick: AffiliatePerformaClickInterfaces?)
     : AbstractViewHolder<AffiliateUserPerformanceModel>(itemView) {
 
     companion object {
@@ -19,7 +20,7 @@ class AffiliateHomeUserDataVH(itemView: View)
         @LayoutRes
         var LAYOUT = R.layout.affiliate_performa_list_item
     }
-    private var adapter = AffiliateAdapter(AffiliateAdapterFactory())
+    private var adapter = AffiliateAdapter(AffiliateAdapterFactory(onPerformaGridClick = onPerformaGridClick))
     override fun bind(element: AffiliateUserPerformanceModel?) {
         val performRV = itemView.findViewById<RecyclerView>(R.id.performaItem_RV)
         performRV.layoutManager = GridLayoutManager(itemView.context,2)
