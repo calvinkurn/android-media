@@ -62,7 +62,7 @@ data class AffiliateUserPerformaListItemData(
                               @SerializedName("MetricValueFmt")
                               var metricValueFmt: String?,
                               @SerializedName("MetricDifferenceValue")
-                              var metricDifferenceValue: String,
+                              var metricDifferenceValue: String? = "0",
                               @SerializedName("MetricDifferenceValueFmt")
                               var metricDifferenceValueFmt: String?,
                               @SerializedName("Order")
