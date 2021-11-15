@@ -21,3 +21,5 @@ object ClickFollowUpcomingAction: PlayUpcomingAction()
 object ClickPartnerNameUpcomingAction: PlayUpcomingAction()
 object ClickShareUpcomingAction: PlayUpcomingAction()
 
+data class OpenUpcomingPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayUpcomingAction()
+

@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,10 +20,7 @@ import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.action.*
-import com.tokopedia.play.view.uimodel.event.OpenPageEvent
-import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
-import com.tokopedia.play.view.uimodel.event.RemindMeEvent
-import com.tokopedia.play.view.uimodel.event.UiString
+import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.PlayPinnedInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusInfoUiModel
@@ -35,8 +33,7 @@ import com.tokopedia.play_common.sse.model.SSECloseReason
 import com.tokopedia.play_common.sse.model.SSEResponse
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 /**
@@ -60,8 +57,14 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
+    val uiEvent: Flow<PlayViewerNewUiEvent>
+        get() = _uiEvent
+
     private val _observableUpcomingInfo = MutableLiveData<PlayUpcomingUiModel>()
     private val _observableStatusInfo = MutableLiveData<PlayStatusInfoUiModel>()
+
+    val observableUpcomingInfo: LiveData<PlayUpcomingUiModel>
+        get() = _observableUpcomingInfo
 
     private var sseJob: Job? = null
 
@@ -117,6 +120,7 @@ class PlayUpcomingViewModel @Inject constructor(
             ClickRemindMeUpcomingChannel -> handleRemindMeUpcomingChannel(userClick = true)
             ClickWatchNowUpcomingChannel -> handleWatchNowUpcomingChannel()
             UpcomingTimerFinish -> handleUpcomingTimerFinish()
+            is OpenUpcomingPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             else -> {}
         }
     }
