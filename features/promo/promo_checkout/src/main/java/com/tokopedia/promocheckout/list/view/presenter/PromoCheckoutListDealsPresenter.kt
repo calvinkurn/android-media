@@ -98,7 +98,7 @@ class PromoCheckoutListDealsPresenter(
                     if (checkDealsData.eventValidateUsePromo.data.global_success){
                         view.onSuccessCheckPromo(DealsCheckoutMapper.mapDataNew(checkDealsData.eventValidateUsePromo.data))
                     } else {
-                        view.onErrorCheckPromo(com.tokopedia.network.exception.MessageErrorException(checkDealsData.eventValidateUsePromo.data.additional_info.error_detail.message))
+                        view.onErrorCheckPromo(com.tokopedia.network.exception.MessageErrorException(checkDealsData.eventValidateUsePromo.data.usage_details.firstOrNull()?.message?.text))
                     }
                 }
 

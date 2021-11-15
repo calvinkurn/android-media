@@ -272,7 +272,7 @@ object PromoQuery {
     }"""
 
     fun promoDealsCheck()="""
-    query validate_use_promo(${'$'}params: ValidateUsePromoResponse!){
+    query validate_use_promo(${'$'}params: ValidateUsePromoParams!){
         event_validate_use_promo(params: ${'$'}params) {
             header {
                 process_time

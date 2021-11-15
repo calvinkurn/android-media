@@ -328,18 +328,20 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
     }
 
     private fun goToPromoListDealsActivity(){
-        //val requestBody = viewModel.verifytoCartItemMapper(itemMap, dealsDetail, promoCode)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS)
-        //intent.putExtra(EXTRA_CHECKOUTDATA, requestBody.toString())
+        intent.putExtra(EXTRA_META_DATA, viewModel.getMetaDataString(verifyData))
+        intent.putExtra(EXTRA_CATEGORY_NAME, verifyData.metadata.categoryName)
+        intent.putExtra(EXTRA_GRAND_TOTAL, verifyData.metadata.totalPrice)
         intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId)
         intent.putExtra(EXTRA_PRODUCTID, itemMap.productId)
         startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
     }
 
     private fun goToPromoListDealsWithVoucher(){
-        //val requestBody = viewModel.verifytoCartItemMapper(itemMap, dealsDetail, promoCode)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS)
-        //intent.putExtra(EXTRA_CHECKOUTDATA, requestBody.toString())
+        intent.putExtra(EXTRA_META_DATA, viewModel.getMetaDataString(verifyData))
+        intent.putExtra(EXTRA_CATEGORY_NAME, verifyData.metadata.categoryName)
+        intent.putExtra(EXTRA_GRAND_TOTAL, verifyData.metadata.totalPrice)
         intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId)
         intent.putExtra(EXTRA_PRODUCTID, itemMap.productId)
         intent.putExtra(EXTRA_PROMO_CODE, voucherCode)
@@ -364,9 +366,11 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         const val ORDER_LIST_DEALS = "/order-list"
         const val SCREEN_NAME = "/digital/deals/checkout"
 
-        const val EXTRA_CHECKOUTDATA = "checkoutdata"
         const val EXTRA_PRODUCTID = "EXTRA_PRODUCTID"
         const val EXTRA_CATEGORYID = "EXTRA_CATEGORYID"
+        const val EXTRA_GRAND_TOTAL = "EXTRA_GRAND_TOTAL"
+        const val EXTRA_CATEGORY_NAME = "EXTRA_CATEGORY_NAME"
+        val EXTRA_META_DATA = "EXTRA_META_DATA"
         const val VOUCHER_CODE = "voucher_code"
         const val COUPON_CODE = "coupon_code"
         const val IS_CANCEL = "IS_CANCEL"

@@ -81,6 +81,11 @@ class DealsCheckoutViewModel @Inject constructor(
             return checkoutGeneral
       }
 
+      fun getMetaDataString(verify: EventVerifyResponse): String {
+            val gson = Gson()
+            return gson.toJson(mapToIntMetaData(verify.metadata))
+      }
+
       private fun mapToIntMetaData(metaDataResponse: MetaDataResponse): DealsMetaDataCheckout {
             metaDataResponse.apply {
                   return DealsMetaDataCheckout(

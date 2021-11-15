@@ -15,8 +15,7 @@ class DealsCheckVoucherUseCase (
 ){
     val params = "params"
 
-    fun createRequestParams(code: List<String>, categoryName: String, metaData: String, grandTotal: Int): RequestParams {
-        val requestParams = RequestParams.create()
+    fun createRequestParams(code: List<String>, categoryName: String, metaData: String, grandTotal: Int): DealsRequestParams {
         val dealsRequest =  DealsRequestParams(
                 categoryName = categoryName,
                 data = DataRequest(
@@ -25,20 +24,19 @@ class DealsCheckVoucherUseCase (
                         grand_total = grandTotal
                 )
         )
-        requestParams.putObject(params, dealsRequest)
-        return requestParams
+        return dealsRequest
     }
 
-    fun execute(requestParams: RequestParams, subscriber: Subscriber<GraphqlResponse>?){
-        val mapParams = mapOf(params to requestParams.parameters)
+    fun execute(createRequestParams: DealsRequestParams, subscriber: Subscriber<GraphqlResponse>?){
+        val mapParams = mapOf(params to createRequestParams)
         val graphqlRequest = GraphqlRequest(
-                PromoQuery.promoDealsQuery(),
+                PromoQuery.promoDealsCheck(),
                 DealsPromoCheckResponse::class.java,
                 mapParams
         )
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(requestParams, subscriber)
+        graphqlUseCase.execute(subscriber)
     }
 
 }
