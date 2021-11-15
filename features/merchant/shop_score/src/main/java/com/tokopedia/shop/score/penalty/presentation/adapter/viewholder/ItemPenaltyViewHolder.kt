@@ -3,7 +3,7 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.getColoredIndicator
 import com.tokopedia.shop.score.databinding.ItemShopScorePenaltyBinding
@@ -33,8 +33,8 @@ class ItemPenaltyViewHolder(
         super.bind(element, payloads)
         if (payloads.isNullOrEmpty() || element == null) return
 
-        when (payloads.getOrNull(0) as? Int) {
-            PenaltyPageAdapter.PAYLOAD_SELECTED_FILTER -> {
+        payloads.forEachIndexed { index, _ ->
+            if (payloads.getOrNull(index) == PenaltyPageAdapter.PAYLOAD_SELECTED_FILTER) {
                 setSelectedTabletBackground(element.isSelected)
             }
         }
@@ -54,15 +54,15 @@ class ItemPenaltyViewHolder(
             tvInvoiceTransactionPenalty.text = element.invoicePenalty
 
             icTransactionPenaltyToDetail.setOnClickListener {
-                itemDetailPenaltyListener.onItemPenaltyClick(element, adapterPosition)
+                itemDetailPenaltyListener.onItemPenaltyClick(element)
             }
             root.setOnClickListener {
-                itemDetailPenaltyListener.onItemPenaltyClick(element, adapterPosition)
+                itemDetailPenaltyListener.onItemPenaltyClick(element)
             }
         }
     }
 
     private fun setSelectedTabletBackground(isSelected: Boolean) {
-        binding?.shopPenaltySelected?.isVisible = isSelected
+        binding?.shopPenaltySelected?.showWithCondition(isSelected)
     }
 }

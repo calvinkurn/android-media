@@ -76,17 +76,20 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         }
     }
 
-    fun updateSelectedBackground(position: Int) {
-        val itemPenaltyIndex = visitables.indexOfFirst { it is ItemPenaltyUiModel }
-        visitables.filterIsInstance<ItemPenaltyUiModel>().mapIndexed { index, item ->
-            if (position == index) {
-                item.isSelected = !item.isSelected
-            } else {
-                item.isSelected = false
+    fun updateSelectedBackground(
+        invoicePenaltyText: String
+    ) {
+        visitables.mapIndexed { index, item ->
+            val itemPenalty = item as? ItemPenaltyUiModel
+            if (itemPenalty != null) {
+                if (itemPenalty.invoicePenalty == invoicePenaltyText) {
+                    itemPenalty.isSelected = true
+                    notifyItemChanged(index, PAYLOAD_SELECTED_FILTER)
+                } else if (item.isSelected) {
+                    itemPenalty.isSelected = false
+                    notifyItemChanged(index, PAYLOAD_SELECTED_FILTER)
+                }
             }
-        }
-        if (itemPenaltyIndex != RecyclerView.NO_POSITION) {
-            notifyItemChanged(itemPenaltyIndex, PAYLOAD_SELECTED_FILTER)
         }
     }
 

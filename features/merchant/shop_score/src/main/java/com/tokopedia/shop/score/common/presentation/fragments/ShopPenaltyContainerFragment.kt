@@ -64,7 +64,6 @@ class ShopPenaltyContainerFragment : TkpdBaseV4Fragment(),
     }
 
     override fun closePenaltyDetail() {
-        shopPenaltyDetailFragment?.dismissBottomSheet()
         showFirstStatePenaltyDetail()
     }
 

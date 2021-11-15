@@ -228,7 +228,7 @@ open class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageA
         penaltyPageAdapter.updateDateFilterText(date)
     }
 
-    override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel, position: Int) {
+    override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel) {
         context?.let {
             val intent =
                 RouteManager.getIntent(it, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)

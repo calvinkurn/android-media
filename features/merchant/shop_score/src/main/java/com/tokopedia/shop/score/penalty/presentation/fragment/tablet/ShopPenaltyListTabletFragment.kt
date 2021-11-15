@@ -9,8 +9,8 @@ class ShopPenaltyListTabletFragment : ShopPenaltyPageFragment() {
 
     private var penaltyListListener: PenaltyListListener? = null
 
-    override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel, position: Int) {
-        penaltyPageAdapter.updateSelectedBackground(position)
+    override fun onItemPenaltyClick(itemPenaltyUiModel: ItemPenaltyUiModel) {
+        penaltyPageAdapter.updateSelectedBackground(itemPenaltyUiModel.invoicePenalty)
         penaltyListListener?.onItemPenaltyClicked(itemPenaltyUiModel)
     }
 

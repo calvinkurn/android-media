@@ -173,13 +173,6 @@ open class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    fun dismissBottomSheet() {
-        childFragmentManager.fragments.forEach {
-            if (it is BottomSheetUnify)
-                if (it.isVisible) it.dismissAllowingStateLoss()
-        }
-    }
-
     companion object {
         const val KEY_ITEM_PENALTY_DETAIL = "key_item_penalty_detail"
         const val KEY_CACHE_MANAGE_ID = "extra_cache_manager_id"
