@@ -83,7 +83,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     var isDomestic: Boolean = false
     var returnId: String? = null
     var autofillName: String = ""
-    var isMandatoryIdentificationNumber = false
+    var isMandatoryIdentificationNumber: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -237,7 +237,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
             passengerModel.passengerLastName = getLastName()
-            passengerModel.identificationNumber = getIdentificationNumber()
+            if(isMandatoryIdentificationNumber && isDomestic) passengerModel.identificationNumber = getIdentificationNumber()
             if (isMandatoryDoB() || !isDomestic) passengerModel.passengerBirthdate = DateUtil
                     .formatDate(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.YYYY_MM_DD, getPassengerBirthDate())
             if (!isDomestic) {
@@ -619,18 +619,18 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun validateIdenNumber(): Boolean =
         when {
-            flightPassengerInfoValidator.validateNameIsEmpty(getIdentificationNumber()) -> {
+            flightPassengerInfoValidator.validateNameIsEmpty(getIdentificationNumber()) && (isMandatoryIdentificationNumber && isDomestic) -> {
                 binding?.tilIdentificationNumber?.setMessage(getString(R.string.flight_booking_passenger_identification_number_empty))
                 binding?.tilIdentificationNumber?.setError(true)
                 false
             }
             /* max / min length */
-            flightPassengerInfoValidator.validateIdenNumLength(getIdentificationNumber()) -> {
+            flightPassengerInfoValidator.validateIdenNumLength(getIdentificationNumber()) && (isMandatoryIdentificationNumber && isDomestic) -> {
                 binding?.tilIdentificationNumber?.setMessage(getString(R.string.flight_booking_passenger_identification_number_min_length))
                 binding?.tilIdentificationNumber?.setError(true)
                 false
             }
-            flightPassengerInfoValidator.isNumberOnly(getIdentificationNumber()) -> {
+            flightPassengerInfoValidator.isNumberOnly(getIdentificationNumber()) && (isMandatoryIdentificationNumber && isDomestic) -> {
                 binding?.tilIdentificationNumber?.setMessage(getString(R.string.flight_booking_passenger_identification_number_only))
                 binding?.tilIdentificationNumber?.setError(true)
                 false
