@@ -7,9 +7,9 @@ import android.widget.ScrollView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
-import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -40,14 +40,14 @@ class PlayLivePusherDebugView : ScrollView {
         tvFullLog.text = "\nSTATUS HISTORY"
     }
 
-    fun setLiveInfo(liveInfo: PlayLiveInfoUiModel) {
+    fun setLiveInfo(liveInfo: PlayLiveLogState.Init) {
         val info = StringBuilder()
         info.append("\n\n")
         info.append("Initial Configuration\n")
         info.append("URL: ${liveInfo.ingestUrl}\n")
         info.append("Size: ${liveInfo.videoWidth}x${liveInfo.videoHeight}\n")
         info.append("FPS: ${liveInfo.fps}\n")
-        info.append("Bitrate: ${liveInfo.initialBitrate}\n")
+        info.append("Bitrate: ${liveInfo.bitrate}\n")
         tvPushInfo.text = info.toString()
     }
 
@@ -60,17 +60,8 @@ class PlayLivePusherDebugView : ScrollView {
         tvPushUpdatedInfo.text = info.toString()
     }
 
-    fun updateState(state: PlayLiveViewState) {
-        val status = when(state) {
-            PlayLiveViewState.Connecting -> "CONNECTING"
-            is PlayLiveViewState.Error -> "ERROR: \ntype:${state.error.type}\nreason:${state.error.reason}"
-            PlayLiveViewState.Paused -> "PAUSED"
-            PlayLiveViewState.Recovered -> "RECOVERED"
-            is PlayLiveViewState.Resume -> if (state.isResumed) "RESUMED" else "RESUME"
-            PlayLiveViewState.Started -> "STARTED"
-            is PlayLiveViewState.Stopped -> "STOPPED"
-        }
-        tvStatus.text = status
-        tvFullLog.append("\n$status")
+    fun updateState(state: PlayLivePusherMediatorState) {
+        tvStatus.text = state.tag
+        tvFullLog.append("\n${state.tag}")
     }
 }

@@ -37,10 +37,9 @@ class GetShopFollowingStatusViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_throwable_when_failed_get_shop_following() {
         //Given
-        val expectedResult = Throwable("Oops!")
         coEvery {
             getShopFollowingUseCase.invoke(any())
-        } throws expectedResult
+        } throws expectedThrowable
 
         //When
         viewModel.getShopFollowingStatus(testShopId.toLong())
@@ -48,7 +47,7 @@ class GetShopFollowingStatusViewModelTest: BaseTopChatViewModelTest() {
         //Then
         Assert.assertEquals(
             viewModel.shopFollowing.value,
-            Fail(expectedResult)
+            Fail(expectedThrowable)
         )
     }
 }

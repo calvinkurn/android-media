@@ -45,11 +45,13 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
 import org.junit.Test
 import java.lang.reflect.Type
 
+@ExperimentalCoroutinesApi
 class CommonTopupBillsViewModelTest {
 
     @get:Rule
@@ -289,7 +291,7 @@ class CommonTopupBillsViewModelTest {
         val resultData = (actualData as Success).data
         assertNotNull(resultData)
 
-        assertThat(resultData.favoriteNumbers[0].clientNumber == "081288888888")
+        assertThat(resultData.first.favoriteNumbers[0].clientNumber == "081288888888")
     }
 
     @Test

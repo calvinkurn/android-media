@@ -79,14 +79,14 @@ class LoaderFragment : BaseDaggerFragment() {
         globalError.gone()
         arguments?.let {
             if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
-                thanksPageDataViewModel.getThanksPageData(it.getLong(ARG_PAYMENT_ID),
+                thanksPageDataViewModel.getThanksPageData(it.getString(ARG_PAYMENT_ID, ""),
                         it.getString(ARG_MERCHANT, ""))
             }
         }
     }
 
     private fun observeViewModel() {
-        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(this, Observer {
+        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onThankYouPageDataLoaded(it.data)
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
