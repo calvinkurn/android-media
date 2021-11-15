@@ -100,7 +100,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
         //akamai query Logic
         putAkamaiHeader(header, requests);
 
-        return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
+        return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
     }
 
     public void putAkamaiHeader(Map<String, String> header, List<GraphqlRequest> requests) {
