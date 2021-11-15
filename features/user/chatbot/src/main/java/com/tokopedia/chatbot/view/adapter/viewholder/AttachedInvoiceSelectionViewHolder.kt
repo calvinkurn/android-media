@@ -40,7 +40,13 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
     }
 
     override fun bind(element: AttachInvoiceSelectionViewModel) {
-        singleItemAdapter.setList(element.list)
+
+        if (element.status==1){
+            singleItemAdapter.setList(element.list)
+            invoiceSelection.show()
+        }else{
+            invoiceSelection.hide()
+        }
     }
 
     private inner class AttachedInvoicesItemsAdapter : RecyclerView.Adapter<AttachedInvoiceSingleItemViewHolder>() {

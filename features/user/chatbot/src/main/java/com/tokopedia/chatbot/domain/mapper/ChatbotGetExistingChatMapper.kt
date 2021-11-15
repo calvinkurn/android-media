@@ -115,7 +115,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 pojo.attachment?.type.toString(),
                 pojo.replyTime,
                 pojo.msg,
-                convertToChatActionBubbleViewModelList(pojoAttribute)
+                convertToChatActionBubbleViewModelList(pojoAttribute),
+            status = 0
         )
     }
 
@@ -166,7 +167,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 pojo.replyTime,
                 list,
                 pojo.msg,
-                pojo.source
+                pojo.source,
+                pojo.status
         )
     }
 

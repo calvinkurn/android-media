@@ -529,7 +529,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun managePreviousStateOfBubble(visitable: Visitable<*>) {
-        if(visitable is MessageUiModel && visitable.isSender){
+        if(visitable is MessageUiModel){
             getViewState()?.hideInvoiceList()
             getViewState()?.hideHelpfullOptions()
         }
@@ -537,7 +537,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun manageActionBubble(visitable: Visitable<*>) {
         when {
-            visitable is MessageUiModel && visitable.isSender -> hideActionBubble()
+            visitable is MessageUiModel  -> hideActionBubble()
             visitable is AttachInvoiceSentUiModel && visitable.isSender -> hideActionBubble()
         }
     }

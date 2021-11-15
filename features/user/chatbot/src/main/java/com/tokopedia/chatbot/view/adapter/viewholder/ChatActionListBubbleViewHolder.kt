@@ -18,6 +18,8 @@ import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist.ChatActionBubbleAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * Created by Hendri on 18/07/18.
@@ -54,11 +56,17 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
     }
 
     override fun bind(viewModel: ChatActionSelectionBubbleViewModel) {
-        super.bind(viewModel)
-        bindActionBubbleBackground()
-        ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
-        model = viewModel
-        adapter.setDataList(viewModel.chatActionList)
+
+        if (viewModel.status==1){
+            super.bind(viewModel)
+            bindActionBubbleBackground()
+            ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
+            model = viewModel
+            adapter.setDataList(viewModel.chatActionList)
+            chatActionListSelection.show()
+        }else{
+            chatActionListSelection.hide()
+        }
     }
 
     private fun bindActionBubbleBackground() {

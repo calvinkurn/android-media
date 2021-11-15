@@ -13,7 +13,7 @@ class AttachInvoiceSelectionViewModel (messageId: String, fromUid: String, from:
                                       fromRole: String, attachmentId: String,
                                       attachmentType: String, replyTime: String,
                                       var list: List<AttachInvoiceSingleViewModel>?,
-                                      message: String, source: String) : BaseChatUiModel(messageId, fromUid,
+                                      message: String, source: String, var status :Int) : BaseChatUiModel(messageId, fromUid,
         from, fromRole, attachmentId, attachmentType, replyTime, message, source)
         , Visitable<ChatbotTypeFactory> {
 

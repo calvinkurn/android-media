@@ -18,7 +18,7 @@ class ChatActionSelectionBubbleViewModel constructor(messageId: String = "",
                                          message: String = "",
                                          var chatActionList: List<ChatActionBubbleViewModel> = ArrayList(),
                                          var quickReplies: List<QuickReplyViewModel> = ArrayList(),
-                                                     source: String = "")
+                                                     source: String = "", var status:Int=1)
     : BaseChatUiModel(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source)
         , Visitable<ChatbotTypeFactory> {
 
