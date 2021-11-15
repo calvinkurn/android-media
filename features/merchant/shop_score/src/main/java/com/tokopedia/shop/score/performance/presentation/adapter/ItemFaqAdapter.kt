@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
@@ -147,7 +148,12 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
             binding?.run {
                 itemParameterFaqAdapter = ItemParameterFaqAdapter()
                 rvShopScoreParameterFaq.run {
-                    layoutManager = LinearLayoutManager(context)
+                    layoutManager =
+                        if (DeviceScreenInfo.isTablet(context)) {
+                            GridLayoutManager(context, MAX_COLUMN_PARAMETER_TABLET)
+                        } else {
+                            LinearLayoutManager(context)
+                        }
                     adapter = itemParameterFaqAdapter
                     isNestedScrollingEnabled = false
                 }
@@ -160,5 +166,6 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
         const val NO_ROTATION = 0F
         const val REVERSE_ROTATION = 180F
         const val PAYLOAD_TOGGLE_FAQ = 805
+        const val MAX_COLUMN_PARAMETER_TABLET = 3
     }
 }
