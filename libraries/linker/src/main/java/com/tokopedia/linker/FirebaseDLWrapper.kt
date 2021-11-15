@@ -116,8 +116,13 @@ class FirebaseDLWrapper {
                 var deeplinkdata = "$firebaseBaseUrl/?$urlPath=$uri"
                 link = Uri.parse(deeplinkdata)
                 domainUriPrefix = firebaseBaseUrl
-                androidParameters { }
-                iosParameters("com.tokopedia.Tokopedia") { }
+                var fallbackUri: Uri = Uri.parse("https://www.tokopedia.com/p/mainan-hobi/figure/action-figure")
+                androidParameters {
+                    fallbackUrl = fallbackUri
+                }
+                iosParameters("com.tokopedia.Tokopedia") {
+                    setFallbackUrl(fallbackUri)
+                }
                 socialMetaTagParameters {
                     title = data.ogTitle
                     description = data.description
