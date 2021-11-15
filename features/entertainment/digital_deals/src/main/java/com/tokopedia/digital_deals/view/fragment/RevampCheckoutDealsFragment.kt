@@ -260,6 +260,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
 
                 override fun onResetPromoDiscount() {
                     setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    showPromoSuccess("", "", 0, true)
                     promoApplied = false
                     promoCode = ""
                 }
@@ -274,6 +275,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
 
                 override fun onDisablePromoDiscount() {
                     setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    showPromoSuccess("", "", 0, true)
                     promoApplied = false
                     promoCode = ""
                 }
@@ -284,9 +286,9 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
             dealsAnalytics.sendEcommercePayment(dealsDetail.categoryId, dealsDetail.id, verifyData.metadata.quantity, dealsDetail.salesPrice,
                     dealsDetail.displayName, dealsDetail.brand.title, promoApplied, userSession.userId)
             if (verifyData.gatewayCode.isNullOrEmpty()) {
-                viewModel.checkoutGeneral(viewModel.mapCheckoutDeals(dealsDetail, verifyData))
+                viewModel.checkoutGeneral(viewModel.mapCheckoutDeals(dealsDetail, verifyData, listOf(promoCode)))
             } else {
-                viewModel.checkoutGeneralInstant(viewModel.mapCheckoutDealsInstant(dealsDetail, verifyData))
+                viewModel.checkoutGeneralInstant(viewModel.mapCheckoutDealsInstant(dealsDetail, verifyData, listOf(promoCode)))
             }
             showProgressBar()
         }
@@ -349,9 +351,8 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
     }
 
     private fun goToPromoDetailDeals(){
-        //val requestBody = viewModel.verifytoCartItemMapper(itemMap, dealsDetail, promoCode)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_DETAIL_DEALS)
-        //intent.putExtra(EXTRA_CHECKOUTDATA, requestBody.toString())
+
         intent.putExtra(COUPON_EXTRA_IS_USE, true)
         intent.putExtra(EXTRA_KUPON_CODE, couponCode)
         startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)

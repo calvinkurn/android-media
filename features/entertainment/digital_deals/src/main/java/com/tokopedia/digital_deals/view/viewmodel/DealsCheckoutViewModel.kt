@@ -60,23 +60,25 @@ class DealsCheckoutViewModel @Inject constructor(
             }
       }
 
-      fun mapCheckoutDeals(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse):
+      fun mapCheckoutDeals(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse, promoCodes: List<String>):
               DealCheckoutGeneral {
             val gson = Gson()
             val checkoutGeneral = DealCheckoutGeneral()
             val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)), dealsDetail?.checkoutDataType ?: DEFAULT_CHECKOUT_DATA_TYPE)
             checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
             checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+            checkoutGeneral.carts.promoCodes = promoCodes
             return checkoutGeneral
       }
 
-      fun mapCheckoutDealsInstant(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse):
+      fun mapCheckoutDealsInstant(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse, promoCodes: List<String>):
               DealCheckoutGeneralInstant {
             val gson = Gson()
             val checkoutGeneral = DealCheckoutGeneralInstant()
             val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)), dealsDetail?.checkoutDataType ?: DEFAULT_CHECKOUT_DATA_TYPE)
             checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
             checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+            checkoutGeneral.carts.promoCodes = promoCodes
             checkoutGeneral.gatewayCode = verify.gatewayCode
             return checkoutGeneral
       }

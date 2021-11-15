@@ -25,6 +25,9 @@ data class Carts(
         @SerializedName("cart_info")
         @Expose
         var cartInfo: MutableList<CartInfo> = arrayListOf(),
+        @SerializedName("promo_codes")
+        @Expose
+        var promoCodes: List<String> = emptyList()
 )
 
 data class CartInfo(

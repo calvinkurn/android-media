@@ -1,10 +1,7 @@
 package com.tokopedia.promocheckout.common.domain.mapper
 
-import com.tokopedia.promocheckout.common.domain.model.deals.DataDeals
-import com.tokopedia.promocheckout.common.domain.model.deals.DealsPromoCheckResponse
-import com.tokopedia.promocheckout.common.domain.model.deals.DealsVerifyResponse
-import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
-import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel
+import com.tokopedia.promocheckout.common.domain.model.deals.*
+import com.tokopedia.promocheckout.common.view.uimodel.*
 
 object DealsCheckoutMapper {
 
@@ -25,9 +22,16 @@ object DealsCheckoutMapper {
                 message = mapMessageDeals(data.usage_details.firstOrNull()?.message?.text ?: ""),
                 codes = listOf(data.usage_details.firstOrNull()?.code ?: ""),
                 promoCodeId = data.promo_code_id.toInt(),
-                discountAmount = data.benefit_summary_info.final_benefit_amount,
                 titleDescription = data.benefit_summary_info.final_benefit_text,
+                discountAmount = data.benefit_summary_info.final_benefit_amount,
+                isCoupon = if (data.usage_details.firstOrNull()?.promo_detail?.is_coupon ?: false) 1 else 0,
                 gatewayId = data.gateway_id,
+                benefit = BenefitSummaryInfoUiModel(data.benefit_summary_info.final_benefit_text,
+                        data.benefit_summary_info.final_benefit_amount_str,
+                        data.benefit_summary_info.final_benefit_amount,
+                        mapSummaryBenefit(data.benefit_summary_info.summaries)
+                )
+
         )
     }
 
@@ -36,5 +40,29 @@ object DealsCheckoutMapper {
                 text = message,
                 state = "green"
         )
+    }
+
+    private fun mapSummaryBenefit(listSummaries: List<Summaries>): List<SummariesUiModel>{
+        return listSummaries.map {
+            SummariesUiModel(
+                    it.description,
+                    it.type,
+                    it.amount_str,
+                    it.amount,
+                    mapDetails(it.details)
+            )
+        }
+    }
+
+    private fun mapDetails(listDetail: List<Details>): ArrayList<DetailUiModel>{
+        val listDetailUi = listDetail.map {
+            DetailUiModel(
+                   it.description,
+                   it.type,
+                   it.amount_str,
+                   it.amount
+            )
+        }
+        return ArrayList(listDetailUi)
     }
 }
