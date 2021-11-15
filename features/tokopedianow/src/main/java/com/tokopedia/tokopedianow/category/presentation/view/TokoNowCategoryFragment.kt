@@ -354,10 +354,10 @@ class TokoNowCategoryFragment:
         val uri = Uri.parse(url)
         val categorySlug = uri.lastPathSegment ?: return
 
-        CategoryTracking.sendOpenScreenTracking(categorySlug)
+        CategoryTracking.sendOpenScreenTracking(categorySlug, userSession.isLoggedIn)
     }
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
-        CategoryTracking.sendOOCOpenScreenTracking()
+        CategoryTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)
     }
 }

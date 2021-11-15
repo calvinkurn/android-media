@@ -256,6 +256,12 @@ class HomeFragmentUiTest {
             descRes = null,
             isSingleCoachmark = true
         )
+
+        assertCoachmarkAndNext(
+            titleRes = R.string.home_tokonow_coachmark_title,
+            descRes = R.string.home_tokonow_coachmark_description,
+            isSingleCoachmark = true
+        )
     }
 
     private fun assertCoachmarkAndNext(

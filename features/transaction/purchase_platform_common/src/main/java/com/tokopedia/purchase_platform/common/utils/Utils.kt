@@ -8,12 +8,15 @@ import android.text.Spanned
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.CompoundButton
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.Toaster
 import rx.Emitter
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -60,6 +63,11 @@ object Utils {
             return false
         }
         return true
+    }
+
+    @JvmStatic
+    fun toIntOrZero(string: String): Int {
+        return string.toIntOrZero()
     }
 }
 
@@ -109,3 +117,13 @@ fun rxCompoundButtonCheckDebounce(compoundButton: CompoundButton, timeout: Long 
                 .debounce(timeout, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
+
+fun showSoftKeyboard(context: Context?, view: View) {
+    if (context == null) return
+    try {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+    } catch (t: Throwable) {
+        Timber.d(t)
+    }
+}

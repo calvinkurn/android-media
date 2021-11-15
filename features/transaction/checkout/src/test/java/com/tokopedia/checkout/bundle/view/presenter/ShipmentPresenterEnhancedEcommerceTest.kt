@@ -19,7 +19,6 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout.KEY_PRODUCT
@@ -27,6 +26,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData.Companion.VALUE_BEBAS_ONGKIR_EXTRA
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
@@ -126,7 +126,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
@@ -143,7 +143,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "3", "")
@@ -160,7 +160,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "4", "")
@@ -179,7 +179,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             cartItemModels = listOf(CartItemModel())
             this.shopId = shopId
         })
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
@@ -196,7 +196,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
@@ -224,7 +224,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
@@ -252,7 +252,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
         // When
         val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
@@ -279,6 +279,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             cartItemModels = listOf(CartItemModel())
         })
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
+        presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
         presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(listOf(dataCheckoutRequest), tradeInCustomDimension, step, eventCategory, eventAction, eventLabel, "", "")
