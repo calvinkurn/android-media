@@ -68,6 +68,7 @@
 
 
         <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:id="@+id/pendapatan"
             android:layout_width="0dp"
@@ -76,9 +77,10 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toStartOf="@+id/klik"
             app:layout_constraintStart_toEndOf="@+id/product_image"
-            app:layout_constraintTop_toBottomOf="@+id/product_image"
+            app:layout_constraintTop_toBottomOf="@+id/product_status"
             app:typographyType="body_3" />
         <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="@dimen/dp_8"
             android:id="@+id/klik"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -86,10 +88,11 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toStartOf="@+id/terjual"
             app:layout_constraintStart_toEndOf="@+id/pendapatan"
-            app:layout_constraintTop_toBottomOf="@+id/product_image"
+            app:layout_constraintTop_toBottomOf="@+id/product_status"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="@dimen/dp_8"
             android:id="@+id/terjual"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -97,7 +100,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/klik"
-            app:layout_constraintTop_toBottomOf="@+id/product_image"
+            app:layout_constraintTop_toBottomOf="@+id/product_status"
             app:typographyType="body_3" />
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/pendapatan_value"
