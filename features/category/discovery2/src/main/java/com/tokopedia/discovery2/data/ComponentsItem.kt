@@ -69,7 +69,7 @@ data class ComponentsItem(
         var position: Int = 0,
         var couponViewImpression: Boolean = false,
         var design: String = "v1",
-        val filterController: FilterController = FilterController(),
+        var filterController: FilterController = FilterController(),
         var searchParameter: SearchParameter = SearchParameter(),
         var filters: ArrayList<Filter> = ArrayList(),
         var selectedFilters: HashMap<String, String>? = null,
