@@ -3,7 +3,6 @@ package com.tokopedia.buyerorderdetail
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Context
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView

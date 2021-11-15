@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailScope
-import com.tokopedia.buyerorderdetail.stub.common.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCaseStub
 import com.tokopedia.buyerorderdetail.stub.common.user.UserSessionStub
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -34,5 +33,5 @@ class BuyerOrderDetailModuleStub {
     @BuyerOrderDetailScope
     @Provides
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
-        MultiRequestGraphqlUseCaseStub(graphqlRepository)
+        MultiRequestGraphqlUseCase(graphqlRepository)
 }

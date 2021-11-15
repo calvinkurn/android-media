@@ -15,7 +15,7 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 
-open class MultiRequestGraphqlUseCase constructor(private val graphqlRepository: GraphqlRepository) :
+class MultiRequestGraphqlUseCase constructor(private val graphqlRepository: GraphqlRepository) :
     UseCase<GraphqlResponse>() {
 
     private val requests = mutableListOf<GraphqlRequest>()
