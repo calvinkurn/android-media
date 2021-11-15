@@ -41,6 +41,10 @@ class CalendarWidgetItemViewModel(
         return UserSession(application).isLoggedIn
     }
 
+    fun getUserId(): String {
+        return UserSession(application).userId
+    }
+
     fun subscribeUserForPushNotification(campaignId: Int) {
         if (isUserLoggedIn()) {
             launchCatchError(block = {

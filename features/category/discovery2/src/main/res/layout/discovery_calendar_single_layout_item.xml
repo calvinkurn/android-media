@@ -113,6 +113,7 @@
         android:layout_height="@dimen/dp_24"
         android:layout_margin="@dimen/dp_4"
         app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="@dimen/dp_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/calendar_image"
         app:layout_constraintRight_toRightOf="parent"

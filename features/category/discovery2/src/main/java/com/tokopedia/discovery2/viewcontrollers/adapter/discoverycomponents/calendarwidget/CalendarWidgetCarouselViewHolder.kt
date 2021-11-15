@@ -52,9 +52,9 @@ class CalendarWidgetCarouselViewHolder(itemView: View, val fragment: Fragment) :
                 calendarCarouselRecyclerView.addItemDecoration(carouselRecyclerViewDecorator)
             } else {
                 calendarCarouselRecyclerView.setMargin(
+                    itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8),
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8),
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8),
+                    itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12),
                     itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
                 )
             }

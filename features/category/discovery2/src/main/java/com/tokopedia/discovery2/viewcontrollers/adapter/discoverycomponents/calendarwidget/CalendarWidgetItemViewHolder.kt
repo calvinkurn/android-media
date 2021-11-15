@@ -136,9 +136,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         val calendarImage: ImageUnify = itemView.findViewById(R.id.calendar_image)
         val calendarButton: UnifyButton = itemView.findViewById(R.id.calendar_button)
         dataItem.apply {
-            calendarCardUnify.setOnClickListener {
-                RouteManager.route(itemView.context, cta)
-            }
             calendarImage.loadImage(imageUrl)
             if (!titleLogoUrl.isNullOrEmpty()) {
                 calendarTitle.hide()
@@ -157,6 +154,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     itemView.context.getString(R.string.discovery_button_event_expired)
                 calendarButton.buttonType = UnifyButton.Type.ALTERNATE
             } else {
+                calendarCardUnify.setOnClickListener {
+                    RouteManager.route(itemView.context, cta)
+                    (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                        .trackEventClickCalendarWidget(calendarWidgetItemViewModel.components,
+                            calendarWidgetItemViewModel.getUserId())
+                }
                 calendarButton.show()
                 calendarExpiredAlpha.hide()
                 calendarButton.isEnabled = true
@@ -176,6 +179,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     calendarButton.buttonType = UnifyButton.Type.MAIN
                     calendarButton.setOnClickListener {
                         RouteManager.route(itemView.context, buttonApplink)
+                        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                            .trackEventClickCalendarCTA(calendarWidgetItemViewModel.components,
+                                calendarWidgetItemViewModel.getUserId())
                     }
 //                } else {
 //                    calendarButton.text = itemView.context.getString(R.string.discovery_button_event_reminder)
@@ -271,7 +277,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             setOnClick(isSubscribed)
         }
     }
-
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+            .viewCalendarsList(calendarWidgetItemViewModel.components,
+                calendarWidgetItemViewModel.getUserId())
+    }
     private fun setOnClick(subscribed: Boolean) {
         if (subscribed)
             calendarWidgetItemViewModel.unSubscribeUserForPushNotification(mNotifyCampaignId)

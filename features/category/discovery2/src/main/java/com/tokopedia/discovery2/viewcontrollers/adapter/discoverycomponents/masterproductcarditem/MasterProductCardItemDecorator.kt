@@ -4,7 +4,6 @@ import android.graphics.Rect
 import android.view.View
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.R
@@ -40,11 +39,11 @@ internal class MasterProductCardItemDecorator() : RecyclerView.ItemDecoration() 
             ComponentsList.CalendarWidgetItem.ordinal -> {
                 if (spanIndex.isZero()) {
                     //settings for left column
-                    val left = parent.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                    val left = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
                     setMarginsCalendar(view, left = left)
                 } else {
                     //settings for right column
-                    val right = parent.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                    val right = parent.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
                     setMarginsCalendar(view, right = right)
                 }
             }
