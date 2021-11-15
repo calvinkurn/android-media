@@ -154,7 +154,7 @@ fun <E> setExpire(
 
 fun getQueryListFromQueryString(input: String): MutableList<String> {
     val hash = input.hashCode()
-    if (map[hash]?.isEmpty() == true) {
+    if (map[hash]?.isNotEmpty() == true) {
         return map[hash]?.let { mutableListOf(it) } ?: mutableListOf()
     }
 
