@@ -1,6 +1,7 @@
 package com.tokopedia.topupbills.telco.prepaid.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -215,7 +216,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 return telcoTabViewModel.getAll()
             }
         })
-        viewPager.adapter = pagerAdapter
+        viewPager.adapter = pagerAdapter // [Misael] assignment
         viewPager.registerOnPageChangeCallback(viewPagerCallback)
         tabLayout.customTabMode = TabLayout.MODE_FIXED
         tabLayout.customTabGravity = TabLayout.GRAVITY_FILL
@@ -234,7 +235,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         override fun onTabSelected(p0: TabLayout.Tab) {
             if (!autoSelectTabProduct) {
-                viewPager.setCurrentItem(p0.position, true)
+                viewPager.setCurrentItem(p0.position, true) // [Misael] here
             }
         }
     }
@@ -520,7 +521,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 )
         )
         listProductTab.add(
-                TelcoTabItem(
+                TelcoTabItem( // [Misael]: here
                         generateBundleProduct(
                                 TelcoComponentName.PRODUCT_PAKET_DATA,
                                 operatorName, TelcoProductType.PRODUCT_LIST
@@ -571,7 +572,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCategoryType.CATEGORY_PAKET_DATA -> itemId = 1
             TelcoCategoryType.CATEGORY_ROAMING -> itemId = 2
         }
-        viewPager.setCurrentItem(itemId, true)
+
+        Handler().post(Runnable {
+            viewPager.setCurrentItem(itemId, true) // [Misael] here <<<<
+        })
 
         if (autoSelectTabProduct) {
             tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
