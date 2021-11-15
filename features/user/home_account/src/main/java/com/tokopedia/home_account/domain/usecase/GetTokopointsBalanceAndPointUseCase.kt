@@ -7,12 +7,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.data.model.TokopointsBalanceDataModel
 import com.tokopedia.home_account.domain.query.GetBalanceAndPointQuery
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 open class GetTokopointsBalanceAndPointUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Unit, TokopointsBalanceDataModel>(dispatcher.io) {
+    dispatcher: CoroutineDispatcher
+) : CoroutineUseCase<Unit, TokopointsBalanceDataModel>(dispatcher) {
 
     override fun graphqlQuery(): String {
         return GetBalanceAndPointQuery.tokopointsQuery

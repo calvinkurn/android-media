@@ -13,12 +13,13 @@ import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
 import com.tokopedia.home_account.data.model.CentralizedUserAssetDataModel
 import com.tokopedia.home_account.di.*
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
+import com.tokopedia.home_account.stub.data.TestState
 import com.tokopedia.home_account.stub.di.DaggerFakeBaseAppComponent
 import com.tokopedia.home_account.stub.di.FakeAppModule
-import com.tokopedia.home_account.stub.domain.usecase.*
 import com.tokopedia.home_account.stub.view.activity.HomeAccountUserActivityStub
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -33,7 +34,9 @@ abstract class HomeAccountTest {
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
-    private lateinit var repo: GraphqlRepositoryStub
+    lateinit var repo: GraphqlRepositoryStub
+
+    lateinit var userSession: UserSessionInterface
 
     protected open lateinit var activity: HomeAccountUserActivity
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
@@ -52,8 +55,8 @@ abstract class HomeAccountTest {
             .fakeHomeAccountUserModules(FakeHomeAccountUserModules(context))
             .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
             .homeAccountUserQueryModules(HomeAccountUserQueryModules())
-            .sessionModule(SessionModule())
             .build()
+        userSession = homeAccountUserComponents.userSession()
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(appComponent)
     }
 

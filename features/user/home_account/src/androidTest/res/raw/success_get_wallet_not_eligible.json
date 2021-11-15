@@ -4,9 +4,9 @@
     "message": "Success",
     "data": [
       {
-      "wallet_code": "PEMUDAPOINTS",
-      "is_eligible": true
-    }
+        "wallet_code": "PEMUDAPOINTS",
+        "is_eligible": false
+      }
     ]
   }
 }

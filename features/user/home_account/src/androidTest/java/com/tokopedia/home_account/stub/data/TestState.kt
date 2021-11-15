@@ -1,4 +1,6 @@
 package com.tokopedia.home_account.stub.data
 
-class TestState {
+enum class TestState {
+    WALLET_ELIGIBLE,
+    WALLET_NOT_ELIGIBLE
 }

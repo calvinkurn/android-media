@@ -124,10 +124,10 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getShortcutData() {
         launchCatchError(block = {
-            val shortcutResponse = getUserShortcutUseCase.executeOnBackground()
+            val shortcutResponse = getUserShortcutUseCase(Unit)
             _shortcutData.value = Success(shortcutResponse)
         }, onError = {
-            _shortcutData.postValue(Fail(it))
+            _shortcutData.value = Fail(it)
         })
     }
 
@@ -137,17 +137,14 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getBuyerData() {
         launchCatchError(block = {
-            val accountModel = getHomeAccountUserUseCase.executeOnBackground()
+            val accountModel = getHomeAccountUserUseCase(Unit)
             val linkStatus = getLinkStatus()
             accountModel.linkStatus = linkStatus.response
-
-            withContext(dispatcher.main) {
-                internalBuyerData = accountModel
-                saveLocallyAttributes(accountModel)
-                _buyerAccountData.value = Success(accountModel)
-            }
+            internalBuyerData = accountModel
+            saveLocallyAttributes(accountModel)
+            _buyerAccountData.value = Success(accountModel)
         }, onError = {
-            _buyerAccountData.postValue(Fail(it))
+            _buyerAccountData.value = Fail(it)
         })
     }
 

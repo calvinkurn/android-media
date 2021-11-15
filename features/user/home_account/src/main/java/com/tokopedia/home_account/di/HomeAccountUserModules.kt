@@ -18,6 +18,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * @author by nisie on 10/10/18.
@@ -78,5 +80,9 @@ class HomeAccountUserModules(val context: Context) {
     @HomeAccountUserScope
     @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
+
+    @Provides
+    @HomeAccountUserScope
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
 }

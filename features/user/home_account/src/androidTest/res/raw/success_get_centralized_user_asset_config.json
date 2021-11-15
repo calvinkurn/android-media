@@ -26,15 +26,6 @@
         "id":"ovo"
       },
       {
-        "title":"Tokopoints",
-        "subtitle_color":"#03AC0E",
-        "subtitle":"1.000.000 Points",
-        "applink":"tokopedia://webview?url=https://www.tokopedia.com/points-center",
-        "icon":"https://images.tokopedia.net/img/img/user/asset/icon/tokopoints.png",
-        "is_active":false,
-        "id":"tokopoints"
-      },
-      {
         "title":"Cek Saldo",
         "subtitle_color":"#03AC0E",
         "subtitle":"Saldo Tokopedia",
@@ -42,6 +33,15 @@
         "icon":"https://images.tokopedia.net/img/user/asset/icon/saldo.png",
         "is_active":true,
         "id":"saldo"
+      },
+      {
+        "title":"Tokopoints",
+        "subtitle_color":"#03AC0E",
+        "subtitle":"1.000.000 Points",
+        "applink":"tokopedia://webview?url=https://www.tokopedia.com/points-center",
+        "icon":"https://images.tokopedia.net/img/img/user/asset/icon/tokopoints.png",
+        "is_active":false,
+        "id":"tokopoints"
       }
     ]
   }

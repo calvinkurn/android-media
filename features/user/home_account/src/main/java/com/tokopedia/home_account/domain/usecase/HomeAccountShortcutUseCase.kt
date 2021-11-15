@@ -1,16 +1,19 @@
 package com.tokopedia.home_account.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountErrorHandler
 import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.ShortcutResponse
 import com.tokopedia.network.exception.MessageErrorException
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -20,22 +23,16 @@ import javax.inject.Inject
 
 open class HomeAccountShortcutUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    dispatcher: CoroutineDispatcher,
     private val rawQueries: Map<String, String>
-): GraphqlUseCase<ShortcutResponse>(graphqlRepository) {
+): CoroutineUseCase<Unit, ShortcutResponse>(dispatcher) {
 
-    fun executeUseCase(onSuccess: (ShortcutResponse) -> Unit, onError: (Throwable) -> Unit){
-        rawQueries[AccountConstants.Query.QUERY_USER_REWARDSHORCUT]?.let { query ->
-            setTypeClass(ShortcutResponse::class.java)
-            setGraphqlQuery(query)
-            execute({
-                onSuccess(it)
-            }, onError)
-        }
+    override fun graphqlQuery(): String {
+        return rawQueries[AccountConstants.Query.QUERY_USER_REWARDSHORCUT] ?: ""
     }
 
-    override suspend fun executeOnBackground(): ShortcutResponse {
-        val rawQuery = rawQueries[AccountConstants.Query.QUERY_USER_REWARDSHORCUT]
-        val gqlRequest = GraphqlRequest(rawQuery,
+    override suspend fun execute(params: Unit): ShortcutResponse {
+        val gqlRequest = GraphqlRequest(graphqlQuery(),
                 ShortcutResponse::class.java, mapOf<String, Any>())
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
@@ -53,5 +50,36 @@ open class HomeAccountShortcutUseCase @Inject constructor(
             return data
         }
     }
+
+//    fun executeUseCase(onSuccess: (ShortcutResponse) -> Unit, onError: (Throwable) -> Unit){
+//        rawQueries[AccountConstants.Query.QUERY_USER_REWARDSHORCUT]?.let { query ->
+//            setTypeClass(ShortcutResponse::class.java)
+//            setGraphqlQuery(query)
+//            execute({
+//                onSuccess(it)
+//            }, onError)
+//        }
+//    }
+
+//    override suspend fun executeOnBackground(): ShortcutResponse {
+//        val rawQuery = rawQueries[AccountConstants.Query.QUERY_USER_REWARDSHORCUT]
+//        val gqlRequest = GraphqlRequest(rawQuery,
+//                ShortcutResponse::class.java, mapOf<String, Any>())
+//        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
+//                .Builder(CacheType.ALWAYS_CLOUD).build())
+//        val errors = gqlResponse.getError(ShortcutResponse::class.java)
+//        if (!errors.isNullOrEmpty()) {
+//            throw MessageErrorException(errors[0].message)
+//        } else {
+//            var data: ShortcutResponse? = gqlResponse.getData(ShortcutResponse::class.java)
+//            if(data == null) {
+//                val mapResponse = Utils.convertResponseToJson(gqlResponse)
+//                data = ShortcutResponse()
+//                AccountErrorHandler.logDataNull("Account_GetShortcutDataUseCase",
+//                        Throwable("Results : ${mapResponse[Utils.M_RESULT]} - Errors : ${mapResponse[Utils.M_ERRORS]}"))
+//            }
+//            return data
+//        }
+//    }
 
 }

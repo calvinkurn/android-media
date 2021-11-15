@@ -8,12 +8,13 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
 import com.tokopedia.home_account.domain.query.GetBalanceAndPointQuery
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 open class GetBalanceAndPointUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
-    dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<String, BalanceAndPointDataModel>(dispatcher.io) {
+    dispatcher: CoroutineDispatcher
+) : CoroutineUseCase<String, BalanceAndPointDataModel>(dispatcher) {
 
     override fun graphqlQuery(): String {
         return GetBalanceAndPointQuery.query

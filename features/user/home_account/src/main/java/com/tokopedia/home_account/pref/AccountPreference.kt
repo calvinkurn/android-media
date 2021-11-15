@@ -10,7 +10,7 @@ import javax.inject.Inject
  * Created by Yoris Prayogo on 22/10/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-class AccountPreference @Inject constructor(val context: Context) {
+open class AccountPreference @Inject constructor(val context: Context) {
 
     var preference: SharedPreferences? = null
 
@@ -28,7 +28,7 @@ class AccountPreference @Inject constructor(val context: Context) {
         editor?.apply()
     }
 
-    fun isShowCoachmark(): Boolean {
+    open fun isShowCoachmark(): Boolean {
         return preference?.getBoolean(AccountConstants.KEY.KEY_SHOW_COACHMARK, true) ?: true
     }
 

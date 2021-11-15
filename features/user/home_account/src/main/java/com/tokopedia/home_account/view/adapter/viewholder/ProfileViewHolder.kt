@@ -46,6 +46,9 @@ class ProfileViewHolder(
 
     private val binding: HomeAccountItemProfileBinding? by viewBinding()
 
+    fun getMemberTitle(): String =
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text.toString()
+
     fun bind(profile: ProfileDataView) {
         binding?.homeAccountProfileSection?.accountUserItemProfileName?.text = profile.name
         if (profile.phone.isNotEmpty()) {

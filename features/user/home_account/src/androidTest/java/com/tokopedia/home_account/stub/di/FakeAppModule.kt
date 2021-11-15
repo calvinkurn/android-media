@@ -13,6 +13,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.domain.FakeUserSession
+import com.tokopedia.sessioncommon.di.SessionCommonScope
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSession
@@ -59,4 +60,6 @@ class FakeAppModule(private val context: Context) {
     fun provideGraphqlUsecase(): GraphqlUseCaseInterface {
         return GraphqlUseCase()
     }
+
+
 }

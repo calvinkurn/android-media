@@ -7,17 +7,19 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.pref.AccountPreference
+import com.tokopedia.home_account.stub.data.FakeAccountPreference
 import com.tokopedia.home_account.stub.domain.FakeUserSession
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * @author by nisie on 10/10/18.
@@ -62,7 +64,7 @@ class FakeHomeAccountUserModules(val context: Context) {
 
     @Provides
     fun provideAccountPreference(@HomeAccountUserContext context: Context): AccountPreference {
-        return AccountPreference(context)
+        return FakeAccountPreference(context)
     }
 
     @Provides
@@ -79,4 +81,7 @@ class FakeHomeAccountUserModules(val context: Context) {
     @Provides
     fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
+    @Provides
+    @HomeAccountUserScope
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 }
