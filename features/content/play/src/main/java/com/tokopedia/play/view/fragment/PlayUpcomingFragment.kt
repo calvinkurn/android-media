@@ -22,11 +22,10 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
-import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
-import com.tokopedia.play.view.uimodel.state.PlayCartUiState
 import com.tokopedia.play.view.uimodel.state.PlayPartnerUiState
+import com.tokopedia.play.view.uimodel.state.PlayUpcomingInfoUiState
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
@@ -38,7 +37,6 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -82,6 +80,7 @@ class PlayUpcomingFragment @Inject constructor(
         }
 
         playUpcomingViewModel.initPage(channelId)
+        playUpcomingViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
     }
 
     override fun onCreateView(
@@ -102,7 +101,6 @@ class PlayUpcomingFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-        playUpcomingViewModel.focusPage(playParentViewModel.getLatestChannelStorageData(channelId))
 
         playUpcomingViewModel.observableUpcomingInfo.value?.let {
             actionButton.setButtonStatus(
@@ -111,7 +109,6 @@ class PlayUpcomingFragment @Inject constructor(
                 else UpcomingActionButtonViewComponent.Status.HIDDEN
             )
         }
-        setupView()
     }
 
     override fun onPause() {
@@ -131,17 +128,6 @@ class PlayUpcomingFragment @Inject constructor(
         tvUpcomingTitle = view.findViewById(R.id.tv_upcoming_title)
     }
 
-    private fun setupView() {
-        playUpcomingViewModel.observableUpcomingInfo.value?.let {
-            if(it.coverUrl.isNotEmpty())
-                Glide.with(requireView()).load(it.coverUrl).into(ivUpcomingCover)
-
-            tvUpcomingTitle.text = it.title
-
-            upcomingTimer.setupTimer(it.startTime)
-        }
-    }
-
     private fun setupObserver() {
         playUpcomingViewModel.observableUpcomingInfo.observe(viewLifecycleOwner) {
             if(it.isAlreadyLive) {
@@ -150,12 +136,15 @@ class PlayUpcomingFragment @Inject constructor(
             }
         }
 
-//        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-//            playViewModel.uiState.withCache().collectLatest { cachedState ->
-//                val state = cachedState.value
-//                renderToolbarView(state.partner, state.share.shouldShow, state.cart)
-//            }
-//        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            playUpcomingViewModel.uiState.withCache().collectLatest { cachedState ->
+                val state = cachedState.value
+                val prevState = cachedState.prevValue
+
+                renderToolbarView(state.partner, state.share.shouldShow)
+                renderUpcomingInfo(prevState?.upcomingInfo, state.upcomingInfo)
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playUpcomingViewModel.uiEvent.collect { event ->
@@ -243,18 +232,28 @@ class PlayUpcomingFragment @Inject constructor(
         }
     }
 
-//    private fun renderToolbarView(
-//        partnerState: PlayPartnerUiState,
-//        isShareable: Boolean,
-//        cartState: PlayCartUiState,
-//    ) {
-//        toolbarView.setFollowStatus(partnerState.followStatus)
-//        toolbarView.setPartnerName(partnerState.name)
-//
-//        toolbarView.setIsShareable(isShareable)
-//
-//        toolbarView.showCart(cartState.shouldShow)
-//    }
+    private fun renderToolbarView(
+        partnerState: PlayPartnerUiState,
+        isShareable: Boolean,
+    ) {
+        toolbarView.setFollowStatus(partnerState.followStatus)
+        toolbarView.setPartnerName(partnerState.name)
+
+        toolbarView.setIsShareable(isShareable)
+
+        toolbarView.showCart(false)
+    }
+
+    private fun renderUpcomingInfo(prevState: PlayUpcomingInfoUiState?, state: PlayUpcomingInfoUiState) {
+        if(prevState != state) {
+            if(state.coverUrl.isNotEmpty())
+                Glide.with(requireView()).load(state.coverUrl).into(ivUpcomingCover)
+
+            tvUpcomingTitle.text = state.title
+
+            upcomingTimer.setupTimer(state.startTime)
+        }
+    }
 
     override fun onTimerFinish(view: UpcomingTimerViewComponent) {
         playUpcomingViewModel.submitAction(UpcomingTimerFinish)
