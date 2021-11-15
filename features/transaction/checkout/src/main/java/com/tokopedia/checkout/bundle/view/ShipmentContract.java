@@ -12,6 +12,7 @@ import com.tokopedia.checkout.bundle.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.bundle.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.bundle.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
@@ -174,6 +175,10 @@ public interface ShipmentContract {
                                                     String eventAction,
                                                     String eventLabel);
 
+        void sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(String eventLabel,
+                                               String userId,
+                                               List<Object> listProducts);
+
         void sendAnalyticsOnClickChooseOtherAddressShipment();
 
         void sendAnalyticsOnClickTopDonation();
@@ -296,6 +301,10 @@ public interface ShipmentContract {
 
         ShipmentDonationModel getShipmentDonationModel();
 
+        void setListShipmentCrossSellModel(ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel);
+
+        ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel();
+
         void setShipmentButtonPaymentModel(ShipmentButtonPaymentModel shipmentButtonPaymentModel);
 
         ShipmentButtonPaymentModel getShipmentButtonPaymentModel();
@@ -330,7 +339,8 @@ public interface ShipmentContract {
 
         boolean isIneligiblePromoDialogEnabled();
 
-        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, String leasingId);
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
+                                                int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
 
         ShipmentDataConverter getShipmentDataConverter();
 

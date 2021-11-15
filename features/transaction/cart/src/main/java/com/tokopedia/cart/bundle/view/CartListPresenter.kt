@@ -180,7 +180,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     private fun onSuccessGetCartList(cartData: CartData, initialLoad: Boolean) {
         view?.let {
             val lastApplyData = cartData.promo.lastApplyPromo.lastApplyPromoData
-            if (lastApplyData.codes.isNotEmpty() && lastApplyData.listVoucherOrders.isNotEmpty()) {
+            if (lastApplyData.codes.isNotEmpty() || lastApplyData.listVoucherOrders.isNotEmpty()) {
                 setLastApplyValid()
             }
             setValidateUseLastResponse(null)
