@@ -1335,7 +1335,7 @@ class NewShopPageFragment :
             isGoldMerchant = shopPageP1Data.isGoldMerchant
             shopHomeType = shopPageP1Data.shopHomeType.takeIf { !isForceNotShowingTab }
                     ?: ShopHomeType.NONE
-            shopName = shopPageP1Data.shopName
+            shopName = MethodChecker.fromHtml(shopPageP1Data.shopName).toString()
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }

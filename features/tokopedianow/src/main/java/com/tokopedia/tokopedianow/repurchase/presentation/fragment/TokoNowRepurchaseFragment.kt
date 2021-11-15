@@ -464,7 +464,10 @@ class TokoNowRepurchaseFragment:
     private fun setupTopNavigation() {
         navToolbar?.let { toolbar ->
             activity?.let {
-                toolbar.setupToolbarWithStatusBar(it)
+                toolbar.setupToolbarWithStatusBar(
+                    activity = it,
+                    applyPadding = false
+                )
             }
         }
     }
@@ -511,7 +514,7 @@ class TokoNowRepurchaseFragment:
         context?.let {
             val marginZero = context?.resources?.getDimensionPixelSize(
                 com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
-            val toolbarHeight = NavToolbarExt.getFullToolbarHeight(it)
+            val toolbarHeight = NavToolbarExt.getToolbarHeight(it)
             swipeRefreshLayout?.setMargin(marginZero, toolbarHeight, marginZero, marginZero)
             swipeRefreshLayout?.setOnRefreshListener {
                 refreshLayout()
@@ -810,7 +813,7 @@ class TokoNowRepurchaseFragment:
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
         miniCartWidget?.post {
             val paddingBottom = if (isShowMiniCartWidget) {
-                miniCartWidget?.height.orZero()
+                miniCartWidget?.height.orZero() - resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_font_16).toInt()
             } else {
                 activity?.resources?.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
