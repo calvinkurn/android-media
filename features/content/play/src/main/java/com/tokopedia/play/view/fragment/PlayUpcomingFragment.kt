@@ -30,6 +30,7 @@ import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
+import com.tokopedia.play.view.viewmodel.PlayUpcomingViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -60,17 +61,17 @@ class PlayUpcomingFragment @Inject constructor(
 //    private lateinit var ivUpcomingCover: AppCompatImageView
 //    private lateinit var tvUpcomingTitle: AppCompatTextView
 //
-//    private lateinit var playViewModel: PlayViewModel
+    private lateinit var playViewModel: PlayUpcomingViewModel
     private lateinit var playParentViewModel: PlayParentViewModel
-//
-//    private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
-//
+
+    private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
+
     override fun getScreenName(): String = "Play Upcoming"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
-//
+        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayUpcomingViewModel::class.java)
+
         val currentActivity = requireActivity()
         if (currentActivity is PlayActivity) {
             playParentViewModel = ViewModelProvider(currentActivity, currentActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
