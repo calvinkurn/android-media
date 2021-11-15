@@ -20,7 +20,8 @@ object SearchComponentTrackingRollence {
                 remoteConfig,
                 analytics,
                 searchComponentTracking,
-                experimentName
+                experimentName,
+                fallback,
             )
         } catch (throwable: Throwable) {
             fallback()
@@ -40,7 +41,8 @@ object SearchComponentTrackingRollence {
                 remoteConfig,
                 analytics,
                 searchComponentTracking,
-                experimentName
+                experimentName,
+                fallback,
             )
         } catch (throwable: Throwable) {
             fallback()
@@ -60,7 +62,8 @@ object SearchComponentTrackingRollence {
                 remoteConfig,
                 analytics,
                 searchComponentTracking,
-                experimentName
+                experimentName,
+                fallback,
             )
         } catch (throwable: Throwable) {
             fallback()
