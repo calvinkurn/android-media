@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd;
 
 import android.content.SharedPreferences;
-
+import android.net.Uri;
+import android.os.Build;
+import android.content.Intent;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
