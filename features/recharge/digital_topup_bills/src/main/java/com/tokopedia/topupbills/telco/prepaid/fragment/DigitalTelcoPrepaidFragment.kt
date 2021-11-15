@@ -10,6 +10,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
@@ -46,6 +47,7 @@ import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
+import kotlinx.coroutines.launch
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -573,9 +575,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCategoryType.CATEGORY_ROAMING -> itemId = 2
         }
 
-        Handler().post(Runnable {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewPager.setCurrentItem(itemId, true) // [Misael] here <<<<
-        })
+        }
 
         if (autoSelectTabProduct) {
             tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
