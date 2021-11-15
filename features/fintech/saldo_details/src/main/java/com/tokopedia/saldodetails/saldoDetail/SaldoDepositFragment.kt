@@ -160,6 +160,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var saldoDetailViewModel: SaldoDetailViewModel
 
+    private val saldoCoachMarkController: SaldoCoachMarkController by lazy {
+        SaldoCoachMarkController(requireContext())
+    }
+
+
     private val isSaldoNativeEnabled: Boolean
         get() = remoteConfig!!.getBoolean(
             RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
@@ -206,7 +211,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     fun startSaldoCoachMarkFlow(anchorView: View?) {
         if (activity is SaldoDepositActivity) {
-            val controller = SaldoCoachMarkController(requireContext())
             val anchorViewList = if (isSellerEnabled) arrayListOf(
                 saldo_buyer_deposit_text,
                 saldo_seller_deposit_text,
@@ -214,10 +218,10 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             )
             else arrayListOf(anchorView)
 
-            controller.anchorViewList = anchorViewList
-            controller.startCoachMark()
+            saldoCoachMarkController.anchorViewList = anchorViewList
+            saldoCoachMarkController.startCoachMark()
             sp_app_bar_layout.addOnOffsetChangedListener(AppBarLayout
-                .OnOffsetChangedListener { _, _ -> controller.updateSalesCoachMarkOnScroll() })
+                .OnOffsetChangedListener { _, _ -> saldoCoachMarkController.updateCoachMarkOnScroll() })
         }
     }
 
@@ -445,12 +449,13 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 saldoDepositExpandIV!!.animate().rotation(180f).duration = animationDuration
                 expandLayout = false
                 collapse(saldoTypeLL!!)
+                saldoCoachMarkController.handleCoachMarkVisibility(false)
             } else {
                 saldoDepositExpandIV!!.animate().rotation(0f).duration = animationDuration
                 expandLayout = true
                 expand(saldoTypeLL!!)
+                saldoCoachMarkController.handleCoachMarkVisibility(true)
             }
-
         }
 
         merchantDetailsExpandIV!!.setOnClickListener {
