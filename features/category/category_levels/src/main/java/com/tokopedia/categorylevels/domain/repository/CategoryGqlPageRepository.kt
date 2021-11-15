@@ -33,7 +33,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         componentMap["headline-ads"] = ComponentNames.TopadsHeadlineView.componentName
     }
 
-    override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {
+    override suspend fun getDiscoveryPageData(pageIdentifier: String,extraParams:Map<String,Any>?): DiscoveryResponse {
         val data = getGQLData(GQL_CATEGORY_GET_DETAIL_MODULAR, CategoryGetDetailModularData::class.java, createRequestParameterCategory(departmentId)).categoryGetDetailModular
         return data.basicInfo.let { basicInfo ->
             DiscoveryResponse(
