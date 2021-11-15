@@ -38,7 +38,6 @@ import com.tokopedia.kyc.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.kyc.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,9 +108,9 @@ public class KycUtil {
 
                 if (myBitmap != null) {
                     if (toBeFlipped) {
-                        loadImageFromBitmap(imageView, ImageHandler.flip(myBitmap, true, false));
+                        loadImageFromBitmap(imageView, ImageHandler.flip(myBitmap, true, false), file);
                     } else {
-                        loadImageFromBitmap(imageView, myBitmap);
+                        loadImageFromBitmap(imageView, myBitmap, file);
                     }
                 }
             }
@@ -120,7 +119,7 @@ public class KycUtil {
         }
     }
 
-    private static void loadImageFromBitmap(final ImageView imageView, Bitmap bitmap) {
+    private static void loadImageFromBitmap(final ImageView imageView, Bitmap bitmap, File file) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         int min, max;
@@ -133,16 +132,11 @@ public class KycUtil {
         }
         boolean loadFitCenter = min != 0 && (max / min) > 2;
         if (loadFitCenter)
-            Glide.with(imageView.getContext()).load(bitmapToByte(bitmap)).fitCenter().into(imageView);
+            Glide.with(imageView.getContext()).load(file.getAbsolutePath()).fitCenter().into(imageView);
         else
-            Glide.with(imageView.getContext()).load(bitmapToByte(bitmap)).into(imageView);
+            Glide.with(imageView.getContext()).load(file.getAbsolutePath()).into(imageView);
     }
 
-    private static byte[] bitmapToByte(Bitmap bitmap) {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, IMAGE_QUALITY, stream);
-        return stream.toByteArray();
-    }
 
     public static void sendEmail(Context context){
         Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
