@@ -11,6 +11,7 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreTabletConstant
 import com.tokopedia.shop.score.common.TooltipLevelItemDecoration
 import com.tokopedia.shop.score.databinding.ItemFaqShopScoreBinding
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
@@ -150,7 +151,7 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
                 rvShopScoreParameterFaq.run {
                     layoutManager =
                         if (DeviceScreenInfo.isTablet(context)) {
-                            GridLayoutManager(context, MAX_COLUMN_PARAMETER_TABLET)
+                            GridLayoutManager(context, ShopScoreTabletConstant.MAX_COLUMN_GRID)
                         } else {
                             LinearLayoutManager(context)
                         }
@@ -166,6 +167,5 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
         const val NO_ROTATION = 0F
         const val REVERSE_ROTATION = 180F
         const val PAYLOAD_TOGGLE_FAQ = 805
-        const val MAX_COLUMN_PARAMETER_TABLET = 3
     }
 }

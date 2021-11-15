@@ -9,7 +9,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_GREEN_TIMER
 import com.tokopedia.shop.score.common.ShopScoreConstant.BG_ORANGE_TIMER
-import com.tokopedia.shop.score.databinding.TimerNewSellerBeforeTransitionBinding
+import com.tokopedia.shop.score.databinding.ItemTimerNewSellerBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemTimerNewSellerListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -20,10 +20,10 @@ class ItemTimerNewSellerViewHolder(
 ) : AbstractViewHolder<ItemTimerNewSellerUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.timer_new_seller_before_transition
+        val LAYOUT = R.layout.item_timer_new_seller
     }
 
-    private val binding: TimerNewSellerBeforeTransitionBinding? by viewBinding()
+    private val binding: ItemTimerNewSellerBinding? by viewBinding()
 
     override fun bind(element: ItemTimerNewSellerUiModel?) {
         binding?.run {

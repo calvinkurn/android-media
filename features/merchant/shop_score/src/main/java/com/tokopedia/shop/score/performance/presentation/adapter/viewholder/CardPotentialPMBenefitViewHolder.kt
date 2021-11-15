@@ -1,9 +1,12 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreTabletConstant
 import com.tokopedia.shop.score.databinding.ItemNonEligibleStatusPowerMerchantBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPotentialPMBenefitAdapter
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemRegularMerchantListener
@@ -13,8 +16,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class CardPotentialPMBenefitViewHolder(
     view: View,
     private val itemRegularMerchantListener: ItemRegularMerchantListener
-) :
-    AbstractViewHolder<SectionRMPotentialPMBenefitUiModel>(view) {
+) : AbstractViewHolder<SectionRMPotentialPMBenefitUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_non_eligible_status_power_merchant
@@ -37,7 +39,11 @@ class CardPotentialPMBenefitViewHolder(
     private fun setPotentialPMBenefitAdapter(element: SectionRMPotentialPMBenefitUiModel?) {
         binding?.run {
             rvShopPmPotentialBenefit.run {
-                layoutManager = LinearLayoutManager(context)
+                layoutManager = if (DeviceScreenInfo.isTablet(context)) {
+                    GridLayoutManager(context, ShopScoreTabletConstant.MAX_COLUMN_GRID)
+                } else {
+                    LinearLayoutManager(context)
+                }
                 adapter = itemPotentialPMBenefitAdapter
             }
         }

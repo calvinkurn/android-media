@@ -681,8 +681,7 @@ class ShopScoreMapper @Inject constructor(
     private fun mapToItemRecommendationPMUiModel(
         recommendationTools: List<GetRecommendationToolsResponse
         .ValuePropositionGetRecommendationTools.RecommendationTool>?
-    )
-            : SectionShopRecommendationUiModel {
+    ): SectionShopRecommendationUiModel {
         return SectionShopRecommendationUiModel(
             recommendationTools?.map {
                 SectionShopRecommendationUiModel.ItemShopRecommendationUiModel(
