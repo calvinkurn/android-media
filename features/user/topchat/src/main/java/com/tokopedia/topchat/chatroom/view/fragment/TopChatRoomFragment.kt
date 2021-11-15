@@ -84,6 +84,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsR
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
@@ -813,7 +814,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun loadChatRoomSettings(chatRoom: ChatroomViewModel) {
         if (chatRoom.canLoadMore) return
-        presenter.loadChatRoomSettings(messageId, ::onSuccessLoadChatRoomSetting)
+        viewModel.loadChatRoomSettings(messageId)
     }
 
     private fun onSuccessLoadChatRoomSetting(widgets: List<Visitable<TopChatTypeFactory>>) {
@@ -2475,6 +2476,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
             loadInitialData()
         }
+    }
+
+    private fun filterSettingToBeShown(result: RoomSettingResponse): List<Visitable<TopChatTypeFactory>> {
+        val widgets = arrayListOf<Visitable<TopChatTypeFactory>>()
+
+        if (result.showBanner) {
+            widgets.add(result.roomBanner)
+        }
+
+        if (result.showFraudAlert) {
+            widgets.add(result.fraudAlert)
+        }
+
+        return widgets
     }
 
     companion object {

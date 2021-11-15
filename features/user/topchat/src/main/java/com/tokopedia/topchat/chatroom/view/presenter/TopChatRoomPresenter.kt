@@ -810,30 +810,6 @@ open class TopChatRoomPresenter @Inject constructor(
         initAttachmentPreview()
     }
 
-    override fun onClickBannedProduct(liteUrl: String) {
-        val seamlessLoginSubscriber = createSeamlessLoginSubscriber(liteUrl)
-        seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber)
-    }
-
-    private fun createSeamlessLoginSubscriber(liteUrl: String): SeamlessLoginSubscriber {
-        return object : SeamlessLoginSubscriber {
-            override fun onUrlGenerated(url: String) {
-                view?.redirectToBrowser(url)
-            }
-
-            override fun onError(msg: String) {
-                view?.redirectToBrowser(liteUrl)
-            }
-        }
-    }
-
-    override fun loadChatRoomSettings(
-        messageId: String,
-        onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit
-    ) {
-        getChatRoomSettingUseCase.execute(messageId, onSuccess)
-    }
-
     override fun addToWishList(
         productId: String,
         userId: String,
