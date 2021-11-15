@@ -119,6 +119,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         when (logisticDriverModel.status) {
             100 -> {
                 //driver found
+                setTitle("Beri Tip untuk Driver")
                 binding.paymentTippingLayout.visibility = View.VISIBLE
                 binding.resultTippingLayout.visibility = View.GONE
                 binding.btnTipping.text = "Pilih Pembayaran"
