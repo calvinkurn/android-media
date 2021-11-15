@@ -1,12 +1,12 @@
 package com.tokopedia.mediauploader.video
 
 import com.tokopedia.mediauploader.common.data.consts.CHUNK_UPLOAD
+import com.tokopedia.mediauploader.common.data.consts.POLICY_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.TRANSCODING_FAILED
 import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.common.util.slice
 import com.tokopedia.mediauploader.common.util.trimLastZero
 import com.tokopedia.mediauploader.video.data.params.ChunkCheckerParam
@@ -48,8 +48,10 @@ class LargeUploaderManager @Inject constructor(
     private var progressUploader: ProgressUploader? = null
 
     suspend operator fun invoke(file: File, sourceId: String, policy: SourcePolicy, withTranscode: Boolean): UploadResult {
+        if (policy.videoPolicy == null) return UploadResult.Error(POLICY_NOT_FOUND)
+
         // getting the upload size of chunk in MB for calculate the chunk size and as size of part numbers
-        val sizePerChunk = (policy.videoPolicy?.largeChunkSize?: 10).mbToBytes()
+        val sizePerChunk = policy.videoPolicy.chunkSizePerFileInBytes()
 
         // calculate the chunk total based on file size and upload size of chunk
         this.chunkTotal = ceil(file.length() / sizePerChunk.toDouble()).toInt()
@@ -92,18 +94,14 @@ class LargeUploaderManager @Inject constructor(
             while(true) {
                 if (maxRetryTranscoding >= MAX_RETRY_TRANSCODING) {
                     resetUpload()
-
                     return UploadResult.Error(TRANSCODING_FAILED)
                 }
 
                 val transcoding = transcodingUseCase(currentUploadId)
-
-                if (transcoding.isCompleted()) {
-                    break
-                }
+                if (transcoding.isCompleted()) break
 
                 maxRetryTranscoding++
-                delay(5000)
+                delay(policy.videoPolicy.retryIntervalInSec())
             }
         }
 
