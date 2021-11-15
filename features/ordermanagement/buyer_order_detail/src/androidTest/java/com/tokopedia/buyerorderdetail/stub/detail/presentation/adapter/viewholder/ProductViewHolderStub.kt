@@ -24,9 +24,5 @@ class ProductViewHolderStub(
     }
 
     // noop since image loading placeholder causing the main thread busy
-    override fun setupProductThumbnail(productThumbnailUrl: String) {
-//        ivBuyerOrderDetailProductThumbnail?.apply {
-//            setImageUrl(productThumbnailUrl)
-//        }
-    }
+    override fun setupProductThumbnail(productThumbnailUrl: String) {}
 }
