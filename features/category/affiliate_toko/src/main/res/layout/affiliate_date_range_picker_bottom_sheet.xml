@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"/>
     <com.tokopedia.unifycomponents.UnifyButton
         android:enabled="true"
-        android:id="@+id/portfolio_cnf_btn"
+        android:id="@+id/cnf_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
-        android:text="@string/affiliate_portfolio_confirm_btn"
+        android:text="@string/affiliate_terapkan"
         app:unifyButtonSize="medium"
         />
 </LinearLayout>
