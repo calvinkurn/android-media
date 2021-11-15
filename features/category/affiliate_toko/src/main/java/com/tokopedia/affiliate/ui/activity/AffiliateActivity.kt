@@ -115,7 +115,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         openFragment(AffiliateLoginFragment.getFragmentInstance(this))
     }
 
-    private fun showAffiliatePortal() {
+    fun showAffiliatePortal() {
         clearBackStack()
         affiliate_background_image.show()
         affiliateBottomNavigation?.showBottomNav()
