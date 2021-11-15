@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.logisticCommon.R
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 
@@ -32,7 +33,7 @@ object LogisticCommonUtil {
     fun displayUserConsent(context: Context, textView: TextView?, buttonText: String) {
         val onTermsAndConditionClicked: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${TNC_LINK}")
+                RouteManager.route(context, ApplinkConstInternalLogistic.TNC_WEBVIEW)
             }
 
             override fun updateDrawState(ds: TextPaint) {
