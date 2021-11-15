@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
+import java.io.IOException
 import java.lang.ref.WeakReference
 
 class OrderExtensionToaster(
