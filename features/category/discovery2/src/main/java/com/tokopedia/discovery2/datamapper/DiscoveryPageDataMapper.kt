@@ -14,6 +14,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -237,6 +238,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                     id = targetedComponentId
                     this.tabName = tabName
                     dynamicOriginalId = originalComponentId
+                    filterController = FilterController()
                     properties = component1.properties
                     properties?.dynamic = tabComponent.properties?.dynamic ?: false
                     setComponent(targetedComponentId, pageIdentity, this)

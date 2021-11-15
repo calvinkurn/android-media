@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.LayoutShopHeaderBasicInfoWidgetBinding
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.SHOP_LOGO
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.SHOP_NAME
@@ -15,6 +16,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBa
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHeaderBasicInfoWidgetViewHolder(
         itemView: View,
@@ -37,12 +39,13 @@ class ShopHeaderBasicInfoWidgetViewHolder(
         )
     }
 
-    private val shopLogoImageView: ImageView? = itemView.findViewById(R.id.image_shop_logo)
-    private val shopBadgeImageView: ImageView? = itemView.findViewById(R.id.image_shop_badge)
-    private val shopChevronImageView: ImageView? = itemView.findViewById(R.id.shop_page_chevron_shop_info)
-    private val shopNameTextView: Typography? = itemView.findViewById(R.id.text_shop_name)
-    private val shopOnlineImageView: ImageView? = itemView.findViewById(R.id.iv_online_icon)
-    private val shopBasicInfoAdditionalInfoTextView: Typography? = itemView.findViewById(R.id.text_shop_basic_info_additional_info)
+    private val viewBinding: LayoutShopHeaderBasicInfoWidgetBinding? by viewBinding()
+    private val shopLogoImageView: ImageView? = viewBinding?.imageShopLogo
+    private val shopBadgeImageView: ImageView? = viewBinding?.imageShopBadge
+    private val shopChevronImageView: ImageView? = viewBinding?.shopPageChevronShopInfo
+    private val shopNameTextView: Typography? = viewBinding?.textShopName
+    private val shopOnlineImageView: ImageView? = viewBinding?.ivOnlineIcon
+    private val shopBasicInfoAdditionalInfoTextView: Typography? = viewBinding?.textShopBasicInfoAdditionalInfo
     private var shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel? = null
 
     override fun bind(model: ShopHeaderWidgetUiModel) {
