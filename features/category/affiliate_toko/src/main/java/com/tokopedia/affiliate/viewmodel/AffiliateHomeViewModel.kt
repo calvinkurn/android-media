@@ -64,8 +64,7 @@ class AffiliateHomeViewModel @Inject constructor(
             var performanceList :AffiliateUserPerformaListItemData? = null
             if(page == PAGE_ZERO)
                 performanceList = affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateRange)
-            affiliatePerformanceUseCase.affiliateItemPerformanceList(DateRangeRequest(selectedDateValue.toInt()),page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
-                totalItemsCount.value = it.itemTotalCount
+            affiliatePerformanceUseCase.affiliateItemPerformanceList(selectedDateValue).getAffiliatePerformanceList?.data?.data.let {
                 convertDataToVisitables(it,performanceList,page)?.let { visitables ->
                     affiliateDataList.value = visitables
                 }
@@ -91,7 +90,7 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     fun convertDataToVisitables(
-        data: AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData,
+        data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data?,
         performanceList: AffiliateUserPerformaListItemData?,
         page: Int
     ) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
@@ -108,10 +107,10 @@ class AffiliateHomeViewModel @Inject constructor(
                 )
             )
         }
-        data.items?.let { items ->
+        data?.items?.let { items ->
             for (product in items) {
                 product?.let {
-                    tempList.add(AffiliateSharedProductCardsModel(product))
+                    tempList.add(AffiliatePerformaSharedProductCardsModel(product))
                 }
             }
             return tempList

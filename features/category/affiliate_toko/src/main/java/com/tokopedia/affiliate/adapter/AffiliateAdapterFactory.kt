@@ -24,6 +24,7 @@ class AffiliateAdapterFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             AffiliateSharedProductCardsItemVH.LAYOUT -> AffiliateSharedProductCardsItemVH(parent, productClickInterface)
+            AffiliatePerformaSharedProductCardsItemVH.LAYOUT -> AffiliatePerformaSharedProductCardsItemVH(parent, productClickInterface)
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
             AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface,addSocialInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
@@ -44,6 +45,10 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModelShared: AffiliateSharedProductCardsModel): Int {
         return AffiliateSharedProductCardsItemVH.LAYOUT
+    }
+
+    override fun type(viewModelShared: AffiliatePerformaSharedProductCardsModel): Int {
+        return AffiliatePerformaSharedProductCardsItemVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateShimmerModel): Int {

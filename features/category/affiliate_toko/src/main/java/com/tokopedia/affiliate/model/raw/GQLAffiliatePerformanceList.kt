@@ -1,7 +1,7 @@
 package com.tokopedia.affiliate.model.raw
 
-val GQL_Affiliate_Performance_List: String = """query getAffiliateItemsPerformanceList(${"$"}dateRange: DateRangeRequest,${"$"}page: Int,${"$"}limit: Int){
-  getAffiliateItemsPerformanceList(dateRange: ${"$"}dateRange,page: ${"$"}page,limit: ${"$"}limit) {
+val GQL_Affiliate_Performance_List: String = """query getAffiliatePerformanceList(${"$"}dayRange: String!) {
+  getAffiliatePerformanceList(dayRange: ${"$"}dayRange) {
     Data {
       Status
       Error {
@@ -10,25 +10,22 @@ val GQL_Affiliate_Performance_List: String = """query getAffiliateItemsPerforman
         CtaText
         CtaLink {
           DesktopURL
-          MobileURL
-          AndroidURL
           IosURL
+          AndroidURL
+          MobileURL
         }
       }
-      SectionData {
+      Data {
         AffiliateID
-        SectionTitle
         ItemTotalCount
         ItemTotalCountFmt
         StartTime
         EndTime
         DayRange
         Items {
-          LinkID
           ItemID
           ItemType
           ItemTitle
-          DefaultLinkURL
           Status
           Image {
             DesktopURL
@@ -36,17 +33,14 @@ val GQL_Affiliate_Performance_List: String = """query getAffiliateItemsPerforman
             AndroidURL
             IosURL
           }
-          Footer {
-            FooterType
-            FooterIcon
-            FooterText
-          }
-          Metrics {                    
-            MetricType                  
-            MetricTitle                 
-            MetricValue                 
-            MetricDifferenceValue       
-            Trend                       
+          Metrics {
+            MetricType
+            MetricTitle
+            MetricValue
+            MetricValueFmt
+            MetricDifferenceValue
+            MetricDifferenceValueFmt
+            Order
           }
         }
       }
