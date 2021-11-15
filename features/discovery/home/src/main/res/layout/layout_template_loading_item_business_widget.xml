@@ -90,6 +90,104 @@
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_52"
                 android:layout_gravity="center"
+                tools:ignore="ContentDescription"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/ic_squircle" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_32"
+                android:layout_height="@dimen/dp_32"
+                android:layout_margin="4dp"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                tools:ignore="VectorDrawableCompat" />
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="4dp"
+        android:layout_marginEnd="4dp">
+
+        <LinearLayout
+            android:layout_width="120dp"
+            android:layout_height="104dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_card_home_widget"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="right"
+                android:textSize="@dimen/sp_10"
+                android:textColor="@color/Unify_N700_68"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:letterSpacing="0.02"
+                android:layout_gravity="end"
+                android:visibility="invisible"
+                tools:text="PAKET DATA"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp">
+
+                <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    android:layout_width="72dp"
+                    android:layout_height="10dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="8dp"
+                    app:corners="@integer/corner_radius_shimmering"
+                    app:width_weight="0.8" />
+
+                <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    android:layout_width="72dp"
+                    android:layout_height="10dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginBottom="8dp"
+                    app:corners="@integer/corner_radius_shimmering"
+                    app:width_weight="0.8" />
+
+                <com.elyeproj.loaderviewlibrary.LoaderTextView
+                    android:layout_width="72dp"
+                    android:layout_height="10dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    app:corners="@integer/corner_radius_shimmering"
+                    app:width_weight="0.8" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp">
+
+            <ImageView
+                android:layout_width="@dimen/dp_52"
+                android:layout_height="@dimen/dp_52"
+                android:layout_gravity="center"
+                tools:ignore="ContentDescription"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_squircle" />
 
@@ -187,103 +285,8 @@
                 android:layout_height="@dimen/dp_52"
                 android:layout_gravity="center"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_squircle" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/dp_32"
-                android:layout_height="@dimen/dp_32"
-                android:layout_margin="4dp"
-                android:layout_gravity="center"
-                android:visibility="invisible"
-                tools:ignore="VectorDrawableCompat" />
-
-        </FrameLayout>
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="4dp"
-        android:layout_marginEnd="4dp">
-
-        <LinearLayout
-            android:layout_width="120dp"
-            android:layout_height="104dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_card_home_widget"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="@dimen/dp_60"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:gravity="right"
-                android:textSize="@dimen/sp_10"
-                android:textColor="@color/Unify_N700_68"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:letterSpacing="0.02"
-                android:layout_gravity="end"
-                android:visibility="invisible"
-                tools:text="PAKET DATA"
-                />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp">
-
-                <com.elyeproj.loaderviewlibrary.LoaderTextView
-                    android:layout_width="72dp"
-                    android:layout_height="10dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginBottom="8dp"
-                    app:corners="@integer/corner_radius_shimmering"
-                    app:width_weight="0.8" />
-
-                <com.elyeproj.loaderviewlibrary.LoaderTextView
-                    android:layout_width="72dp"
-                    android:layout_height="10dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginBottom="8dp"
-                    app:corners="@integer/corner_radius_shimmering"
-                    app:width_weight="0.8" />
-
-                <com.elyeproj.loaderviewlibrary.LoaderTextView
-                    android:layout_width="72dp"
-                    android:layout_height="10dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
-                    app:corners="@integer/corner_radius_shimmering"
-                    app:width_weight="0.8" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginLeft="2dp">
-
-            <ImageView
-                android:layout_width="@dimen/dp_52"
-                android:layout_height="@dimen/dp_52"
-                android:layout_gravity="center"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_squircle" />
+                app:srcCompat="@drawable/ic_squircle"
+                tools:ignore="ContentDescription" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_32"

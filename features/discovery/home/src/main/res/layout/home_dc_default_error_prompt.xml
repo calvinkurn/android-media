@@ -30,6 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="134dp"
             android:layout_margin="16dp"
+            tools:ignore="ContentDescription"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/default_home_title_copy"
             app:layout_constraintHorizontal_bias="0.5"

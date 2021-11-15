@@ -9,7 +9,8 @@
         android:layout_height="@dimen/dp_52"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_squircle" />
+        app:srcCompat="@drawable/ic_squircle"
+        tools:ignore="ContentDescription" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
