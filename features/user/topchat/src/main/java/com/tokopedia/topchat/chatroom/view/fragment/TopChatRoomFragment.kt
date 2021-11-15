@@ -607,7 +607,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 ::onSuccessGetExistingChatFirstTime
             )
             presenter.connectWebSocket(messageId)
-            presenter.getOrderProgress(messageId)
+            viewModel.getOrderProgress(messageId)
         } else {
             viewModel.getMessageId(toUserId, toShopId, source)
         }

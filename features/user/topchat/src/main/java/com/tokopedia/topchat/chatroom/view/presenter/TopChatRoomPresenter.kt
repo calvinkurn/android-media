@@ -35,15 +35,12 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
-import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
@@ -51,7 +48,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
@@ -106,7 +102,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var addWishListUseCase: AddWishListUseCase,
     private var removeWishListUseCase: RemoveWishListUseCase,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private var orderProgressUseCase: OrderProgressUseCase,
     private val groupStickerUseCase: ChatListGroupStickerUseCase,
     private val chatAttachmentUseCase: ChatAttachmentUseCase,
     private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
@@ -824,13 +819,6 @@ open class TopChatRoomPresenter @Inject constructor(
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
-    override fun getOrderProgress(messageId: String) {
-        orderProgressUseCase.getOrderProgress(
-            messageId,
-            ::onSuccessGetOrderProgress
-        ) {}
-    }
-
     override fun getStickerGroupList(chatRoom: ChatroomViewModel) {
         groupStickerUseCase.getStickerGroup(
             chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
@@ -956,10 +944,6 @@ open class TopChatRoomPresenter @Inject constructor(
     ) {
         view?.getChatMenuView()?.stickerMenu
             ?.updateStickers(response.chatListGroupSticker.list, needToUpdate)
-    }
-
-    private fun onSuccessGetOrderProgress(orderProgressResponse: OrderProgressResponse) {
-        view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
     protected open fun isEnableUploadImageService(): Boolean {
