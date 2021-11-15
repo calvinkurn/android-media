@@ -1221,13 +1221,13 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)
 
         // Then
-        verify(inverse = true) { validateUsePromoRevampUseCase.get().createObservable(any()) }
+        coVerify(inverse = true) { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() }
     }
 
     @Test
