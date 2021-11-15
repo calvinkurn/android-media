@@ -32,7 +32,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            app:loader_type="rect"/>
+            app:loader_type="rect"
+            tools:ignore="InefficientWeight" />
 
         <LinearLayout
             android:layout_width="wrap_content"
