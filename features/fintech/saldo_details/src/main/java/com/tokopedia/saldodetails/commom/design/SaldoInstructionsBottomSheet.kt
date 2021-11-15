@@ -138,6 +138,7 @@ class SaldoInstructionsBottomSheet : BottomSheetUnify() {
         isHideable = true
         showCloseIcon = false
         showHeader = true
+        showKnob = true
         customPeekHeight = (getScreenHeight() / 2).toDp()
         setTitle(sheetTitle.toString())
     }

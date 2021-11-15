@@ -148,24 +148,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/unify_space_4">
+                        android:layout_marginBottom="@dimen/unify_space_8">
 
                         <com.tokopedia.unifycomponents.DividerUnify
                             android:id="@+id/saldo_balance_separator"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/sd_dp_1"
-                            android:layout_marginStart="@dimen/sd_dp_10"
-                            android:layout_marginEnd="@dimen/sd_dp_10"
-                            android:layout_marginBottom="@dimen/sd_dp_10" />
+                            android:layout_marginBottom="@dimen/unify_space_12" />
 
                         <RelativeLayout
                             android:id="@+id/saldo_buyer_balance_rl"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingLeft="@dimen/unify_space_8"
-                            android:paddingTop="@dimen/unify_space_8"
                             android:paddingRight="@dimen/unify_space_8">
-
 
                             <com.tokopedia.unifyprinciples.Typography
                                 android:id="@+id/saldo_buyer_deposit_text"
@@ -173,7 +169,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
                                 android:layout_centerVertical="true"
-                                android:layout_marginStart="@dimen/unify_space_2"
+                                android:layout_marginStart="@dimen/unify_space_4"
                                 android:layout_marginTop="@dimen/sd_dp_10"
                                 android:text="@string/saldo_total_balance_buyer"
                                 android:textColor="@color/Unify_N700_68"
@@ -201,6 +197,7 @@
                                 android:layout_centerVertical="true"
                                 android:maxLines="1"
                                 android:textColor="@color/Unify_N700_68"
+                                android:layout_marginEnd="@dimen/unify_space_4"
                                 app:typographyType="body_3"
                                 tools:text="Rp 1.000.000" />
 
@@ -210,8 +207,8 @@
                             android:id="@+id/saldo_seller_balance_rl"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/unify_space_8"
-                            android:padding="@dimen/unify_space_8">
+                            android:paddingStart="@dimen/unify_space_8"
+                            android:paddingEnd="@dimen/unify_space_8">
 
                             <com.tokopedia.unifyprinciples.Typography
                                 android:id="@+id/saldo_seller_deposit_text"
@@ -220,7 +217,7 @@
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
                                 android:layout_centerVertical="true"
-                                android:layout_marginStart="@dimen/unify_space_2"
+                                android:layout_marginStart="@dimen/unify_space_4"
                                 android:text="@string/saldo_total_balance_seller"
                                 android:textColor="@color/Unify_N700_68"
                                 app:typographyType="body_3" />
@@ -245,6 +242,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:layout_centerVertical="true"
+                                android:layout_marginEnd="@dimen/unify_space_4"
                                 android:gravity="start"
                                 android:maxLines="1"
                                 android:textColor="@color/Unify_N700_68"
@@ -252,6 +250,24 @@
                                 tools:text="Rp 1.000.000" />
 
                         </RelativeLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/unify_space_8"
+                        android:paddingEnd="@dimen/unify_space_8"
+                        android:layout_marginBottom="@dimen/unify_space_8">
+
+                        <com.tokopedia.unifycomponents.ticker.Ticker
+                            android:id="@+id/hold_balance_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:closeButtonVisibility="gone"
+                            app:tickerShapeType="loose"
+                            app:tickerType="warning"
+                            tools:visibility="visible" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -262,20 +278,10 @@
                 android:id="@+id/localLoadSaldoBalance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </FrameLayout>
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/hold_balance_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/sd_dp_10"
-            app:tickerType="warning"
-            app:tickerShapeType="loose"
-            app:closeButtonVisibility="gone"
-            android:visibility="gone"
-            tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/withdraw_button"
@@ -297,11 +303,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/saldo_balance_layout"
+        android:background="@color/Unify_N0"
         android:orientation="vertical"
         android:padding="@dimen/unify_space_16"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:background="@color/Unify_N0">
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -318,7 +324,7 @@
                 android:layout_weight="0.9"
                 android:text="@string/financial_services"
                 android:textColor="@color/Unify_N700_96"
-                app:typographyType="heading_3"
+                app:typographyType="heading_4"
                 app:typographyWeight="bold" />
 
             <com.tokopedia.iconunify.IconUnify
