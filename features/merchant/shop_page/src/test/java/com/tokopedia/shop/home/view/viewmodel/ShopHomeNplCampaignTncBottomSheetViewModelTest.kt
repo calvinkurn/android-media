@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -12,10 +13,12 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
+import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.util.LiveDataUtil.observeAwaitValue
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -87,6 +90,45 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
 
         assert(viewModel.campaignTncLiveData.value is Success)
         assert(viewModel.campaignFollowStatusLiveData.value is Success)
+    }
+
+    @Test
+    fun `check whether campaignFollowStatusLiveData value is null if isOwner is true`() {
+        val sampleCampaignId = "1234"
+        val shopId = "12345"
+        coEvery { getCampaignNplTncUseCase.executeOnBackground() } returns ShopHomeCampaignNplTncModel()
+        coEvery { getFollowStatusUseCase.executeOnBackground().followStatus } returns FollowStatus(null, null, null)
+        viewModel.getTncBottomSheetData(sampleCampaignId, shopId, true)
+
+        viewModel.campaignTncLiveData.observeAwaitValue()
+        viewModel.campaignFollowStatusLiveData.observeAwaitValue()
+
+        coVerify { getCampaignNplTncUseCase.executeOnBackground() }
+        coVerify { getFollowStatusUseCase.executeOnBackground() }
+
+        assert(viewModel.campaignTncLiveData.value is Success)
+        assert(viewModel.campaignFollowStatusLiveData.value == null)
+    }
+
+    @Test
+    fun `check when calling getTncBottomSheetData throws an exception`() {
+        val sampleCampaignId = "1234"
+        val shopId = "12345"
+        val observer = mockk<Observer<Result<ShopHomeCampaignNplTncUiModel>>>()
+        viewModel.campaignTncLiveData.observeForever(observer)
+        coEvery { observer.onChanged(any<Success<ShopHomeCampaignNplTncUiModel>>()) } throws Exception()
+        coEvery { getCampaignNplTncUseCase.executeOnBackground() } returns ShopHomeCampaignNplTncModel()
+        coEvery { getFollowStatusUseCase.executeOnBackground().followStatus } returns FollowStatus(null, null, null)
+        viewModel.getTncBottomSheetData(sampleCampaignId, shopId, false)
+
+        viewModel.campaignTncLiveData.observeAwaitValue()
+        viewModel.campaignFollowStatusLiveData.observeAwaitValue()
+
+        coVerify { getCampaignNplTncUseCase.executeOnBackground() }
+        coVerify { getFollowStatusUseCase.executeOnBackground() }
+
+        assert(viewModel.campaignTncLiveData.value is Fail)
+        assert(viewModel.campaignFollowStatusLiveData.value == null)
     }
 
     @Test

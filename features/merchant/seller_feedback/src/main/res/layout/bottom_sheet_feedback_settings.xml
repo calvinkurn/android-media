@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGfSettingsTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/feedback_from_feedback_trigger"
+        app:layout_constraintEnd_toStartOf="@+id/switchGfScreenShootEnabled"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvGfSettingsDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/feedback_form_feedback_trigger_desc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/switchGfScreenShootEnabled"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvGfSettingsTitle"
+        app:layout_constraintVertical_bias="0"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+        android:id="@+id/switchGfScreenShootEnabled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvGfSettingsTitle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

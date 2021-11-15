@@ -2,9 +2,6 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import androidx.appcompat.widget.AppCompatTextView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.viewcomponent.ViewComponent

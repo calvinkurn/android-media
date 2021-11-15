@@ -64,7 +64,7 @@ class ProductDataStoreImpl @Inject constructor(
         return@withContext addProductTagUseCase.apply {
             params = AddProductTagUseCase.createParams(
                     channelId = channelId,
-                    productIds = mSelectedProductMap.keys.map { it.toString() }
+                    productIds = mSelectedProductMap.keys.map { it }
             )
         }.executeOnBackground()
     }

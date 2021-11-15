@@ -31,7 +31,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:paddingTop="@dimen/unify_space_2"
-        android:paddingEnd="@dimen/unify_space_4"
         android:paddingStart="@dimen/feed_component_dp_6"
         android:paddingBottom="@dimen/unify_space_2"
         app:layout_constraintBottom_toBottomOf="@id/post_image"
@@ -54,6 +53,7 @@
         android:text="@string/feed_post_tag_text"
         android:textColor="@color/Unify_N0"
         />
+  
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_ads_detail_card"
         android:layout_width="match_parent"
@@ -120,7 +120,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_label_discount_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:layout_goneMarginStart="@dimen/dp_8"
+            app:layout_goneMarginStart="8dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
@@ -128,7 +128,7 @@
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="@+id/top_ads_label_discount"
             app:layout_constraintStart_toEndOf="@id/top_ads_label_discount"
-            app:layout_goneMarginLeft="@dimen/dp_0"
+            app:layout_goneMarginLeft="0dp"
             app:typographyType="small"
             tools:text="Rp8.499.000"
             tools:visibility="visible" />
@@ -147,8 +147,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevron"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

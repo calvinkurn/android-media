@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.campaignstock
 
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccessResponse.*
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Data
+import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Header
 import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.data.createGetVariantResponse
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
@@ -46,7 +47,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
 
         viewModel.setShopId(shopId)
-        viewModel.getStockAllocation(listOf(productId))
+        viewModel.getStockAllocation(listOf(productId), true)
 
         verifyGetWarehouseIdCalled()
         verifyGetCampaignStockAllocationCalled()
@@ -79,7 +80,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
 
         viewModel.setShopId(shopId)
-        viewModel.getStockAllocation(listOf(productId))
+        viewModel.getStockAllocation(listOf(productId), false)
 
         verifyGetCampaignStockAllocationCalled()
         verifyGetProductVariantCalled()
@@ -107,7 +108,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onGetCampaignStock_thenReturn(error)
 
         viewModel.setShopId(shopId)
-        viewModel.getStockAllocation(listOf(productId))
+        viewModel.getStockAllocation(listOf(productId), false)
 
         verifyGetCampaignStockAllocationCalled()
 
@@ -135,7 +136,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.run {
             setShopId(shopId)
-            getStockAllocation(listOf(productId))
+            getStockAllocation(listOf(productId), false)
         }
 
         verifyGetCampaignStockAllocationCalled()
@@ -154,10 +155,12 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         val totalStock = 2
         val expectedResult = Success(UpdateCampaignStockResult(
             productId,
-                productName,
-                totalStock,
-                ProductStatus.ACTIVE,
-                true
+            productName,
+            totalStock,
+            ProductStatus.ACTIVE,
+            isStockChanged = true,
+            isStatusChanged = true,
+            true
         ))
 
         verifyProductUpdateResponseResult(expectedResult)
@@ -187,7 +190,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.run {
             setShopId(shopId)
-            getStockAllocation(listOf(productId))
+            getStockAllocation(listOf(productId), false)
         }
 
         verifyGetCampaignStockAllocationCalled()
@@ -208,6 +211,62 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             initialProductStatus,
+            isStockChanged = true,
+            isStatusChanged = true,
+            true
+        ))
+
+        verifyProductUpdateResponseResult(expectedResult)
+    }
+
+
+    @Test
+    fun `given initial non variant status is same as updated status, should not get status`() = runBlocking {
+        val isSuccess = false
+        val productStatusResponse = null
+        val initialProductStatus = ProductStatus.ACTIVE
+
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val stockAllocationSummary = GetStockAllocationSummary(productName = productName, isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response(ProductUpdateV3Data(isSuccess = isSuccess))
+        val editStockResponse = ProductStockWarehouse(status = productStatusResponse)
+        val otherCampaignStockData = OtherCampaignStockData(status = initialProductStatus)
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId), false)
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        viewModel.run {
+            updateNonVariantIsActive(true)
+            updateNonVariantStockCount(1)
+            updateStockData()
+        }
+
+        verifyEditStatusNotCalled()
+        verifyEditStockCalled()
+
+        val totalStock = 1
+        val expectedResult = Success(UpdateCampaignStockResult(
+            productId,
+            productName,
+            totalStock,
+            initialProductStatus,
+            isStockChanged = true,
+            isStatusChanged = false,
             true
         ))
 
@@ -238,7 +297,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.run {
             setShopId(shopId)
-            getStockAllocation(listOf(productId))
+            getStockAllocation(listOf(productId), false)
         }
 
         verifyGetCampaignStockAllocationCalled()
@@ -259,6 +318,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.ACTIVE,
+            isStockChanged = true,
+            isStatusChanged = true,
             true
         ))
 
@@ -288,7 +349,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.run {
             setShopId(shopId)
-            getStockAllocation(listOf(productId))
+            getStockAllocation(listOf(productId), false)
         }
 
         verifyGetCampaignStockAllocationCalled()
@@ -309,10 +370,152 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.INACTIVE,
+            isStockChanged = true,
+            isStatusChanged = true,
             true
         ))
 
         verifyProductUpdateResponseResult(expectedResult)
+    }
+
+    @Test
+    fun `given edit product status is NOT success with error message, when updateStockData should return result with error message`() = runBlocking {
+        val isSuccess = false
+        val productStatus = ProductStatus.INACTIVE //initial status
+
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val errorMessage = "This is error :("
+
+        val stockAllocationSummary = GetStockAllocationSummary(productName = productName, isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response(ProductUpdateV3Data(
+            header = ProductUpdateV3Header(
+                errorMessage = arrayListOf(errorMessage)
+            ),
+            isSuccess = isSuccess))
+        val editStockResponse = ProductStockWarehouse(status = null)
+        val otherCampaignStockData = OtherCampaignStockData(status = productStatus)
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId), false)
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        viewModel.run {
+            updateNonVariantIsActive(true)
+            updateNonVariantStockCount(1)
+            updateStockData()
+        }
+
+        verifyEditStatusCalled()
+        verifyEditStockCalled()
+
+        val totalStock = 1
+        val expectedResult = Success(UpdateCampaignStockResult(
+            productId,
+            productName,
+            totalStock,
+            ProductStatus.INACTIVE,
+            true,
+            true,
+            true
+        ))
+
+        verifyProductUpdateResponseResult(expectedResult)
+    }
+
+    @Test
+    fun `given non variant status and stock NOT changed, when updateStockData, should not set live data value`() = runBlocking {
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val stockAllocationSummary = GetStockAllocationSummary(
+            productName = productName,
+            sellableStock = "1",
+            isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response()
+        val editStockResponse = ProductStockWarehouse(status = STATUS_CODE_ACTIVE)
+        val otherCampaignStockData = OtherCampaignStockData(status = ProductStatus.INACTIVE)
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId), false)
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        viewModel.run {
+            updateNonVariantStockCount(1)
+            updateNonVariantReservedStockCount(1)
+            updateNonVariantIsActive(false)
+            updateStockData()
+        }
+
+        verifyEditStatusNotCalled()
+        verifyEditStockNotCalled()
+    }
+
+    @Test
+    fun `given update non variant status error, should set live data value fail`() = runBlocking {
+        val isSuccess = true
+        val productStatus = ProductStatus.INACTIVE //initial status
+
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val stockAllocationSummary = GetStockAllocationSummary(productName = productName, isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response(ProductUpdateV3Data(isSuccess = isSuccess))
+        val editStockResponse = ProductStockWarehouse(status = null)
+        val otherCampaignStockData = OtherCampaignStockData(status = productStatus)
+
+        val error = NullPointerException()
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+        onEditStatus_thenThrow(error)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId), false)
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetOtherCampaignStockDataCalled()
+
+        viewModel.run {
+            updateNonVariantIsActive(true)
+            updateNonVariantStockCount(1)
+            updateStockData()
+        }
+
+        verifyEditStatusCalled()
+        assert(viewModel.productUpdateResponseLiveData.value is Fail)
     }
 
     @Test
@@ -335,7 +538,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.run {
             setShopId(shopId)
-            getStockAllocation(listOf(productId))
+            getStockAllocation(listOf(productId), false)
         }
 
         verifyGetCampaignStockAllocationCalled()
@@ -357,6 +560,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.INACTIVE,
+            isStockChanged = true,
+            isStatusChanged = true,
             true
         ))
 
@@ -392,7 +597,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.run {
             setShopId(shopId)
-            getStockAllocation(listOf(productId))
+            getStockAllocation(listOf(productId), true)
         }
 
         verifyGetCampaignStockAllocationCalled()
@@ -412,6 +617,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
                 productName,
                 totalStock,
                 ProductStatus.INACTIVE,
+                isStockChanged = true,
+                isStatusChanged = true,
                 editVariantResponse.productUpdateV3Data.isSuccess,
                 editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
                 hashMapOf(
@@ -450,7 +657,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.run {
             setShopId(shopId)
-            getStockAllocation(listOf(productId))
+            getStockAllocation(listOf(productId), false)
         }
 
         verifyGetCampaignStockAllocationCalled()
@@ -471,6 +678,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.INACTIVE,
+            isStockChanged = false,
+            isStatusChanged = false,
             editVariantResponse.productUpdateV3Data.isSuccess,
             editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
             hashMapOf()
@@ -509,7 +718,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.run {
             setShopId(shopId)
-            getStockAllocation(listOf(productId))
+            getStockAllocation(listOf(productId), false)
         }
 
         verifyGetCampaignStockAllocationCalled()
@@ -531,6 +740,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.INACTIVE,
+            isStockChanged = true,
+            isStatusChanged = true,
             editVariantResponse.productUpdateV3Data.isSuccess,
             editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
             hashMapOf(
@@ -583,7 +794,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
 
         viewModel.run {
             setShopId(shopId)
-            getStockAllocation(listOf(productId))
+            getStockAllocation(listOf(productId), false)
         }
 
         verifyGetCampaignStockAllocationCalled()
@@ -607,6 +818,8 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             productName,
             totalStock,
             ProductStatus.ACTIVE,
+            isStockChanged = false,
+            isStatusChanged = false,
             editVariantResponse.productUpdateV3Data.isSuccess,
             editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
             hashMapOf(
@@ -615,6 +828,130 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
             )
         ))
         verifyProductUpdateResponseResult(expectedResult)
+    }
+
+    @Test
+    fun `given variant status not changed but stock changed when updateStockData should NOT call edit status`() = runBlocking {
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val getStockAllocationData = GetStockAllocationData(
+            summary = GetStockAllocationSummary(
+                productName = productName,
+                isVariant = true,
+                reserveStock = "1"
+            ),
+            detail = GetStockAllocationDetail(
+                sellable = listOf(
+                    GetStockAllocationDetailSellable(productId = "1", stock = "1"),
+                    GetStockAllocationDetailSellable(productId = "2", stock = "2")
+                )
+            )
+        )
+        val productUpdateV3Data = ProductUpdateV3Data(isSuccess = true)
+        val editVariantResponse = ProductUpdateV3Response(productUpdateV3Data)
+        val getProductVariantResponse = createGetVariantResponse(
+            productName = productName,
+            products = listOf(
+                createProductVariantResponse(productID = "1", stock = 3, status = ProductStatus.ACTIVE),
+                createProductVariantResponse(productID = "2", stock = 5, status = ProductStatus.INACTIVE)
+            )
+        )
+        val otherCampaignStockData = OtherCampaignStockData(status = ProductStatus.ACTIVE)
+        val locationList = listOf(
+            ShopLocationResponse("1", MAIN_LOCATION),
+            ShopLocationResponse("2", OTHER_LOCATION)
+        )
+
+        onGetWarehouseId_thenReturn(locationList)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+        onEditVariant_thenReturn(editVariantResponse)
+        onGetProductVariant_thenReturn(getProductVariantResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId), false)
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetProductVariantCalled()
+        verifyGetWarehouseIdCalled()
+
+        viewModel.run {
+            updateVariantStockCount("1", 1)
+            updateVariantStockCount("2", 3)
+            updateVariantIsActive("1", ProductStatus.ACTIVE)
+            updateVariantIsActive("2", ProductStatus.INACTIVE)
+            updateStockData()
+        }
+
+        verifyEditStatusNotCalled()
+        verifyEditStockCalled()
+
+        val totalStock = 5
+        val expectedResult = Success(UpdateCampaignStockResult(
+            productId,
+            productName,
+            totalStock,
+            ProductStatus.ACTIVE,
+            isStockChanged = true,
+            isStatusChanged = false,
+            editVariantResponse.productUpdateV3Data.isSuccess,
+            editVariantResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
+            hashMapOf(
+                Pair("1", UpdateCampaignVariantResult(ProductStatus.ACTIVE, 1, "")),
+                Pair("2", UpdateCampaignVariantResult(ProductStatus.INACTIVE, 3, ""))
+            )
+        ))
+        verifyProductUpdateResponseResult(expectedResult)
+    }
+
+    @Test
+    fun `given update variant stock data error, should set live data value to Fail`() = runBlocking {
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val getStockAllocationData =
+            GetStockAllocationData(
+                summary = GetStockAllocationSummary(
+                    productName = productName,
+                    isVariant = true,
+                    reserveStock = "1"
+                )
+            )
+        val getProductVariantResponse = createGetVariantResponse(
+            productName = productName,
+            products = listOf(createProductVariantResponse(productID = productId))
+        )
+        val otherCampaignStockData = OtherCampaignStockData(status = ProductStatus.INACTIVE)
+
+        val error = NullPointerException()
+
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+        onEditVariant_thenThrow(error)
+        onGetProductVariant_thenReturn(getProductVariantResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId), true)
+        }
+
+        verifyGetCampaignStockAllocationCalled()
+        verifyGetProductVariantCalled()
+
+        viewModel.run {
+            updateVariantStockCount(productId, 2)
+            updateVariantIsActive(productId, ProductStatus.INACTIVE)
+            updateStockData()
+        }
+
+        verifyEditProductVariantCalled()
+
+        assert(viewModel.productUpdateResponseLiveData.value is Fail)
     }
 
     @Test
@@ -644,13 +981,46 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onGetProductManageAccess_thenReturn(accessResponse)
 
         viewModel.setShopId("1")
-        viewModel.getStockAllocation(listOf("100"))
+        viewModel.getStockAllocation(listOf("100"), false)
         viewModel.toggleSaveButton(isMainTab)
 
         verifyGetProductVariantCalled()
 
         viewModel.showSaveBtn
             .verifyValueEquals(true)
+    }
+
+    @Test
+    fun `given is not shop owner, when getStockAllocation non variant, should get access`() {
+        val isShopOwner = false
+
+        val accessData = Data(listOf(Access(EDIT_STOCK), Access(EDIT_PRODUCT)))
+        val accessResponse = Response(data = accessData)
+
+        val shopId = "1"
+        val productId = "1"
+        val productName = "Name"
+
+        val stockAllocationSummary = GetStockAllocationSummary(productName = productName, isVariant = false)
+        val getStockAllocationData = GetStockAllocationData(summary = stockAllocationSummary)
+
+        val editStatusResponse = ProductUpdateV3Response()
+        val editStockResponse = ProductStockWarehouse(status = STATUS_CODE_ACTIVE)
+        val otherCampaignStockData = OtherCampaignStockData(status = ProductStatus.INACTIVE)
+
+        onEditStatus_thenReturn(editStatusResponse)
+        onEditStock_thenReturn(editStockResponse)
+        onGetOtherCampaignStock_thenReturn(otherCampaignStockData)
+        onGetCampaignStock_thenReturn(getStockAllocationData)
+        onGetIsShopOwner_thenReturn(isShopOwner)
+        onGetProductManageAccess_thenReturn(accessResponse)
+
+        viewModel.run {
+            setShopId(shopId)
+            getStockAllocation(listOf(productId), false)
+        }
+
+        verifyGetProductManageAccessCalled()
     }
 
     @Test
@@ -680,7 +1050,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onGetProductManageAccess_thenReturn(accessResponse)
 
         viewModel.setShopId("1")
-        viewModel.getStockAllocation(listOf("100"))
+        viewModel.getStockAllocation(listOf("100"), false)
         viewModel.toggleSaveButton(isMainTab)
 
         verifyGetProductVariantCalled()
@@ -718,7 +1088,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onGetProductManageAccess_thenReturn(accessResponse)
 
         viewModel.setShopId("1")
-        viewModel.getStockAllocation(listOf("100"))
+        viewModel.getStockAllocation(listOf("100"), false)
         viewModel.toggleSaveButton(isMainTab)
 
         verifyGetProductVariantCalled()
@@ -750,7 +1120,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onGetIsShopOwner_thenReturn(isShopOwner)
 
         viewModel.setShopId("1")
-        viewModel.getStockAllocation(listOf("100"))
+        viewModel.getStockAllocation(listOf("100"), false)
         viewModel.toggleSaveButton(isMainTab)
 
         verifyGetProductVariantCalled()
@@ -782,7 +1152,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         onGetIsShopOwner_thenReturn(isShopOwner)
 
         viewModel.setShopId("1")
-        viewModel.getStockAllocation(listOf("100"))
+        viewModel.getStockAllocation(listOf("100"), false)
         viewModel.toggleSaveButton(isMainTab)
 
         verifyGetProductVariantCalled()
@@ -805,7 +1175,7 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
     fun `when productIds is empty should NOT call campaignStockAllocationUseCase`() {
         val productIds = listOf<String>()
 
-        viewModel.getStockAllocation(productIds)
+        viewModel.getStockAllocation(productIds, false)
 
         verifyGetCampaignStockAllocationNotCalled()
     }
@@ -840,6 +1210,12 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         } returns response
     }
 
+    private fun onEditStatus_thenThrow(ex: Exception) {
+        coEvery {
+            editStatusUseCase.executeOnBackground()
+        } throws ex
+    }
+
     private fun onEditStock_thenReturn(response: ProductStockWarehouse) {
         coEvery {
             editStockUseCase.execute(any())
@@ -850,6 +1226,12 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
         coEvery {
             editProductVariantUseCase.execute(any())
         } returns productUpdateV3Response
+    }
+
+    private fun onEditVariant_thenThrow(ex: Exception) {
+        coEvery {
+            editProductVariantUseCase.execute(any())
+        } throws ex
     }
 
     private fun onGetProductManageAccess_thenReturn(response: Response) {
@@ -915,6 +1297,12 @@ class CampaignStockViewModelTest: CampaignStockViewModelTestFixture() {
     private fun verifyGetWarehouseIdCalled() {
         coVerify {
             getAdminInfoShopLocationUseCase.execute(any())
+        }
+    }
+
+    private fun verifyGetProductManageAccessCalled() {
+        coVerify {
+            getProductManageAccessUseCase.execute(any())
         }
     }
 

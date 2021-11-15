@@ -7,14 +7,14 @@
     android:layout_height="wrap_content"
     android:background="@color/grey_background"
     android:gravity="center_vertical"
-    android:padding="@dimen/dp_8">
+    android:padding="8dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_top_ads_announcement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_top_ads_announcement"
-        android:layout_marginEnd="@dimen/dp_8"/>
+        android:layout_marginEnd="8dp"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/content_text"

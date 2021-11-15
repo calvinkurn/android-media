@@ -79,7 +79,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var currentLat: Double = DEFAULT_LAT
     private var currentLong: Double = DEFAULT_LONG
     private var isPolygon: Boolean = false
-    private var distrcitId: Int? = null
+    private var distrcitId: Long? = null
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -106,7 +106,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
             saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON)
-            distrcitId = it.getInt(EXTRA_DISTRICT_ID)
+            distrcitId = it.getLong(EXTRA_DISTRICT_ID)
         }
         if (saveDataModel != null) {
             saveDataModel?.let {
@@ -471,7 +471,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
-        distrcitId?.let { bundle.putInt(EXTRA_DISTRICT_ID, it) }
+        distrcitId?.let { bundle.putLong(EXTRA_DISTRICT_ID, it) }
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
     }
 

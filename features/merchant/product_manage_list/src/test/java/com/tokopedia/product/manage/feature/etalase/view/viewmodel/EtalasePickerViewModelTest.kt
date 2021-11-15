@@ -4,6 +4,7 @@ import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.product.manage.feature.etalase.data.model.EtalaseViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -11,6 +12,7 @@ import io.mockk.coVerify
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 import rx.Observable
+import java.util.concurrent.TimeUnit
 
 class EtalasePickerViewModelTest: EtalasePickerViewModelTestFixture() {
 
@@ -29,6 +31,25 @@ class EtalasePickerViewModelTest: EtalasePickerViewModelTestFixture() {
 
         viewModel.getEtalaseResult
             .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun when_get_etalase_list_with_delay__should_set_result_after_delay() {
+        val index = 0
+        val etalaseId = "1"
+        val etalaseName = "Indomie Rebus"
+        val etalaseList = arrayListOf(ShopEtalaseModel(id = etalaseId, name = etalaseName))
+
+        onGetEtalaseList_thenReturn(etalaseList)
+
+        viewModel.getEtalaseList("1", true)
+
+        val expectedResult = Success(listOf(EtalaseViewModel(etalaseId, etalaseName, index)))
+
+        viewModel.getEtalaseResult
+            .getOrAwaitValue(1500L, TimeUnit.MILLISECONDS).let {
+                assert(it == expectedResult)
+            }
     }
 
     @Test

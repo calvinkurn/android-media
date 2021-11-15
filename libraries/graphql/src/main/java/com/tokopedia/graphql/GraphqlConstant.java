@@ -9,6 +9,7 @@ public interface GraphqlConstant {
     interface GqlApiKeys {
         String ANDROID_FLAG = "x-android: 1";
         String CACHE = "x-tkpd-clc";
+        String QUERY_IDENTIFIER = "x-tkpd-gql-query";
         String QUERYHASH = "queryhash";
         String QUERY = "query";
         String VARIABLES = "variables";

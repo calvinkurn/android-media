@@ -17,7 +17,7 @@ class EventCarouselModel(var layout: EventHomeDataResponse.Data.EventHome.Layout
     init {
         layout.items.forEach {
             items.add(EventItemModel(
-                    it.id,
+                    it.id.toIntOrZero(),
                     it.rating,
                     it.imageApp,
                     it.title,
