@@ -20,7 +20,7 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
         @LayoutRes
         var LAYOUT = R.layout.affiliate_input_portfolio_text_field_item
     }
-    private val urlEtView: TextFieldUnify2 =itemView.findViewById<TextFieldUnify2>(R.id.social_link_et)
+    private val urlEtView: TextFieldUnify2 = itemView.findViewById<TextFieldUnify2>(R.id.social_link_et)
     override fun bind(element: AffiliatePortfolioUrlModel?) {
         element?.portfolioItm?.title?.let { urlEtView.setLabel(it) }
         element?.portfolioItm?.text?.let { urlEtView.editText.setText(it) }
@@ -39,31 +39,27 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
 
         })
 
-        urlEtView.isFocusable = element?.portfolioItm?.isFocus ?: false
+        if(element?.portfolioItm?.isFocus == true){
+            urlEtView.editText.requestFocus()
+        }
 
-        urlEtView.setOnKeyListener(object  : View.OnKeyListener{
+        urlEtView.editText.setOnKeyListener(object  : View.OnKeyListener{
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
                 if ((event?.action == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER))
                 {
+                    if(isValidUrl(urlEtView.getEditableValue().toString())) {
+                        portfolioUrlTextUpdateInterface?.onUrlSuccess(adapterPosition)
+                    }
+                    else if (urlEtView.getEditableValue().toString().isNotEmpty()){
+                        portfolioUrlTextUpdateInterface?.onError(adapterPosition)
+                    }
                     portfolioUrlTextUpdateInterface?.onNextKeyPressed(adapterPosition,true)
                     return true
                 }
                 return false
             }
         })
-
-
-//        urlEtView.addOnFocusChangeListener={_, hasFocus->
-//            if(!hasFocus){
-//                if(isValidUrl(urlEtView.getEditableValue().toString())) {
-//                    portfolioUrlTextUpdateInterface?.onUrlSuccess(adapterPosition)
-//                }
-//                else if (urlEtView.getEditableValue().toString().isNotEmpty()){
-//                    portfolioUrlTextUpdateInterface?.onError(adapterPosition)
-//                }
-//            }
-//        }
     }
 
     private fun setState(element: AffiliatePortfolioUrlModel?) {

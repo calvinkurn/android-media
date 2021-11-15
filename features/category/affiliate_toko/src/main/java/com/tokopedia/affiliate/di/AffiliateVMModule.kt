@@ -49,6 +49,7 @@ abstract class AffiliateVMModule {
     @AffiliateScope
     @ViewModelKey(AffiliateRecommendedProductViewModel::class)
     internal abstract fun affiliateRecommendedProductViewModel(viewModel: AffiliateRecommendedProductViewModel): ViewModel
+
     @Binds
     @IntoMap
     @AffiliateScope

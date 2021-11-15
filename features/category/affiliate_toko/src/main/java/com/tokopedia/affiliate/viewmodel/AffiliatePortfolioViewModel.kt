@@ -34,31 +34,33 @@ class AffiliatePortfolioViewModel@Inject constructor(
         affiliatePortfolioData.value = itemList
     }
     fun updateList(position: Int, text: String) {
-        (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.text=text
+        (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.text = text
     }
-    fun checkDataAndMakeApiCall() {
+    fun checkData()  : Boolean{
         affiliatePortfolioData.value?.forEachIndexed {i,item->
             if(item is AffiliatePortfolioUrlModel)
             {
                 if(!item.portfolioItm.text.isNullOrEmpty() && !isValidUrl(item.portfolioItm.text)){
-                    item.portfolioItm.isError=true
+                    item.portfolioItm.isError = true
                     updateListItem.value = i
-                    return
+                    return false
                 }
 
             }
         }
+        return true
     }
 
     fun updateFocus(position: Int,focus : Boolean){
         (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isFocus = focus
+        updateListItem.value = position
     }
-
 
     fun updateListErrorState(position: Int) {
         (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = true
-        updateListItem.value=position
+        updateListItem.value = position
     }
+
     fun updateListSuccess(position: Int) {
         (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = false
         updateListItem.value = position
