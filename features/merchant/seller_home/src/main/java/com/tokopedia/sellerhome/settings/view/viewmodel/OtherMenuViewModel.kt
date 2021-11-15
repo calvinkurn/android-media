@@ -423,10 +423,10 @@ class OtherMenuViewModel @Inject constructor(
 
     private fun updateShopInfoUserSession(shopType: ShopType) {
         when (shopType) {
-            is RegularMerchant -> {
-                userSession.setIsGoldMerchant(false)
+            is ShopType.OfficialStore -> {
+                userSession.setIsGoldMerchant(true)
                 userSession.setIsPowerMerchantIdle(false)
-                userSession.setIsShopOfficialStore(false)
+                userSession.setIsShopOfficialStore(true)
             }
             // This means that the power merchant status is IDLE
             is PowerMerchantStatus.NotActive, is PowerMerchantProStatus.InActive -> {
@@ -439,10 +439,11 @@ class OtherMenuViewModel @Inject constructor(
                 userSession.setIsPowerMerchantIdle(false)
                 userSession.setIsShopOfficialStore(false)
             }
-            is ShopType.OfficialStore -> {
-                userSession.setIsGoldMerchant(true)
+            // This means that the status is Regular Merchant
+            else -> {
+                userSession.setIsGoldMerchant(false)
                 userSession.setIsPowerMerchantIdle(false)
-                userSession.setIsShopOfficialStore(true)
+                userSession.setIsShopOfficialStore(false)
             }
         }
     }
