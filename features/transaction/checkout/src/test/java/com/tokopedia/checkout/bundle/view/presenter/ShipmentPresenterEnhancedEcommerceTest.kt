@@ -279,6 +279,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             cartItemModels = listOf(CartItemModel())
         })
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
+        presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
         presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(listOf(dataCheckoutRequest), tradeInCustomDimension, step, eventCategory, eventAction, eventLabel, "", "")
