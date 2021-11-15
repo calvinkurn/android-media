@@ -95,4 +95,6 @@
     <string name="mainnav_general_error">Gagal Memuat</string>
 
     <string name="account_saldo_fmt">Saldo %s</string>
+
+    <string name="close_review">Tutup Review</string>
 </resources>
