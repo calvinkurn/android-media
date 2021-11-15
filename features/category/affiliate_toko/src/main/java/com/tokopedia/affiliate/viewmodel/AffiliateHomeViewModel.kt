@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.*
 import com.tokopedia.affiliate.PERFORMA_MAP
@@ -60,10 +61,12 @@ class AffiliateHomeViewModel @Inject constructor(
     fun getAffiliatePerformance(page : Int) {
         shimmerVisibility.value = true
         launchCatchError(block = {
-           val performanceList = affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateRange)
+            var performanceList :AffiliateUserPerformaListItemData? = null
+            if(page == PAGE_ZERO)
+                performanceList = affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateRange)
             affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
                 totalItemsCount.value = it.itemTotalCount
-                convertDataToVisitables(it,performanceList)?.let { visitables ->
+                convertDataToVisitables(it,performanceList,page)?.let { visitables ->
                     affiliateDataList.value = visitables
                 }
 
@@ -89,12 +92,22 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun convertDataToVisitables(
         data: AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData,
-        performanceList: AffiliateUserPerformaListItemData
+        performanceList: AffiliateUserPerformaListItemData?,
+        page: Int
     ) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
         val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        val itemCount :Int = data.itemTotalCount ?: 0
-        tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData(selectedDateRange)))
-        tempList.add(AffiliateUserPerformanceModel(AffiliateUserPerformaData(getListFromData(performanceList),rangeItemCount)))
+        if(page == PAGE_ZERO) {
+            tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData(selectedDateRange)))
+            tempList.add(
+                AffiliateUserPerformanceModel(
+                    AffiliateUserPerformaData(
+                        getListFromData(
+                            performanceList
+                        ), rangeItemCount
+                    )
+                )
+            )
+        }
         data.items?.let { items ->
             for (product in items) {
                 product?.let {
@@ -106,9 +119,9 @@ class AffiliateHomeViewModel @Inject constructor(
         return null
     }
 
-    private fun getListFromData(affiliatePerfomanceResponse: AffiliateUserPerformaListItemData): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
+    private fun getListFromData(affiliatePerfomanceResponse: AffiliateUserPerformaListItemData?): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
         val performaTempList:ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        affiliatePerfomanceResponse?.getAffiliatePerformance.data?.userData?.metrics?.forEach {
+        affiliatePerfomanceResponse?.getAffiliatePerformance?.data?.userData?.metrics?.forEach {
             if(it?.metricType != "totalItems") {
                 it?.description = PERFORMA_MAP[it?.metricTitle]
                 performaTempList.add(AffiliateUserPerformanceListModel(it))
