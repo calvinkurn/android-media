@@ -5,6 +5,10 @@
         android:title="Image" />
 
     <item
-        android:id="@+id/menu_video"
+        android:id="@+id/menu_video_notranscode"
         android:title="Video" />
+
+    <item
+        android:id="@+id/menu_video_transcode"
+        android:title="Video (with Transcode)" />
 </menu>

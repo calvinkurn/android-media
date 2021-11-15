@@ -52,6 +52,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
     private var mediaFilePath = ""
     private var isUploadImage = false
+    private var isVideoTranscodeSupported = true
 
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.IO
@@ -177,7 +178,8 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             } else {
                 "VsrJDL" // sourceId for video upload (simple and large)
             },
-            filePath = File(mediaFilePath)
+            filePath = File(mediaFilePath),
+            withTranscode = isVideoTranscodeSupported
         )
 
         uploaderUseCase.trackProgress { progress ->
@@ -252,10 +254,18 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         PopupMenu(applicationContext, btnPickUp).apply {
             menuInflater.inflate(R.menu.menu_pick_media, this.menu)
             setOnMenuItemClickListener { item ->
-                if (item.itemId == R.id.menu_image) {
-                    pickImageToUpload()
-                } else if (item.itemId == R.id.menu_video) {
-                    pickVideoToUpload()
+                when (item.itemId) {
+                    R.id.menu_image -> {
+                        pickImageToUpload()
+                    }
+                    R.id.menu_video_transcode -> {
+                        isVideoTranscodeSupported = true
+                        pickVideoToUpload()
+                    }
+                    R.id.menu_video_notranscode -> {
+                        isVideoTranscodeSupported = false
+                        pickVideoToUpload()
+                    }
                 }
                 true
             }
