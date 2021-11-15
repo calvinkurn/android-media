@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
@@ -215,7 +216,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun initViewPager() {
         val pagerAdapter = TelcoTabAdapter(this, object : TelcoTabAdapter.Listener {
             override fun getTabList(): List<TelcoTabItem> {
-                return telcoTabViewModel.getAll()
+                return telcoTabViewModel.getAll() // [Misael] delayed
             }
         })
         viewPager.adapter = pagerAdapter // [Misael] assignment
@@ -547,7 +548,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             tabLayout.addNewTab(listProductTab[i].title)
         }
 
-        changeDataSet { telcoTabViewModel.addAll(listProductTab) }
+        changeDataSet { telcoTabViewModel.addAll(listProductTab) } // [Misael]
 
         tabLayout.show()
         separator.show()
@@ -575,9 +576,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCategoryType.CATEGORY_ROAMING -> itemId = 2
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewPager.setCurrentItem(itemId, true) // [Misael] here <<<<
-        }
+        viewPager.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewPager.setCurrentItem(itemId, true) // [Misael] here <<<<
+                viewPager.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
 
         if (autoSelectTabProduct) {
             tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
