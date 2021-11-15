@@ -60,6 +60,7 @@ class ItemPenaltyViewHolder(
                 itemDetailPenaltyListener.onItemPenaltyClick(element)
             }
         }
+        setSelectedTabletBackground(element.isSelected)
     }
 
     private fun setSelectedTabletBackground(isSelected: Boolean) {

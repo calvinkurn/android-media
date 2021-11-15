@@ -85,7 +85,7 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
                 if (itemPenalty.invoicePenalty == invoicePenaltyText) {
                     itemPenalty.isSelected = true
                     notifyItemChanged(index, PAYLOAD_SELECTED_FILTER)
-                } else if (item.isSelected) {
+                } else if (itemPenalty.isSelected) {
                     itemPenalty.isSelected = false
                     notifyItemChanged(index, PAYLOAD_SELECTED_FILTER)
                 }
