@@ -64,7 +64,7 @@ class AffiliateHomeViewModel @Inject constructor(
             var performanceList :AffiliateUserPerformaListItemData? = null
             if(page == PAGE_ZERO)
                 performanceList = affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateRange)
-            affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
+            affiliatePerformanceUseCase.affiliateItemPerformanceList(DateRangeRequest(selectedDateValue.toInt()),page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
                 totalItemsCount.value = it.itemTotalCount
                 convertDataToVisitables(it,performanceList,page)?.let { visitables ->
                     affiliateDataList.value = visitables
