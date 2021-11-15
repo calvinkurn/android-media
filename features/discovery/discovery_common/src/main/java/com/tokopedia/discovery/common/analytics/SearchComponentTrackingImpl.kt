@@ -101,14 +101,14 @@ internal class SearchComponentTrackingImpl(
 }
 
 fun searchComponentTracking(
-    trackingOption: Int,
-    keyword: String,
-    valueId: String,
-    valueName: String,
-    campaignCode: String,
-    componentId: String,
-    applink: String,
-    dimension90: String,
+    trackingOption: Int = IMPRESSION_AND_CLICK,
+    keyword: String = "",
+    valueId: String = "",
+    valueName: String = "",
+    campaignCode: String = "",
+    componentId: String = "",
+    applink: String = "",
+    dimension90: String = "",
 ): SearchComponentTracking =
     SearchComponentTrackingImpl(
         trackingOption = trackingOption,
