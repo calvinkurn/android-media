@@ -49,7 +49,7 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
     fun mapFeatureToDestination(context: Context, @AdminFeature adminFeature: String): Intent? {
         return when (adminFeature) {
             AdminFeature.SHOP_SCORE -> {
-                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession.shopId)
+                RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
             }
             AdminFeature.NEW_ORDER -> {
                 RouteManager.getIntent(context, ApplinkConst.SELLER_NEW_ORDER)
@@ -129,11 +129,7 @@ class AdminPermissionMapper @Inject constructor(private val userSession: UserSes
         val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
         ) == RollenceKey.VARIANT_NEW_INBOX
-        val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP || RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2
+        val useNewNav = true
         return if (useNewInbox && useNewNav) {
             RouteManager.getIntent(context,
                     Uri.parse(ApplinkConst.INBOX).buildUpon().apply {

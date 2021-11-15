@@ -17,6 +17,7 @@ import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentUiModel;
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
+import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam;
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel;
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
@@ -162,6 +163,7 @@ public class TopChatAnalytics {
         String VIEW_SRW = "view smart reply widget";
         String CLICK_SRW = "click smart reply widget";
         String CLICK_UPDATE_STOCK = "click on update stock";
+        String CLICK_THREE_BULLET_MENU = "click header - three bullet";
     }
 
     public interface Label {
@@ -173,6 +175,7 @@ public class TopChatAnalytics {
 
     interface BusinessUnit {
         String Communication = "communication";
+        String CommunicationMedia = "Communication & Media";
     }
 
     interface CurrentSite {
@@ -689,6 +692,21 @@ public class TopChatAnalytics {
         );
     }
 
+    // 23139
+    public void eventClickChatSetting(long shopId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                createGeneralEvent(
+                        Name.CHAT_DETAIL,
+                        Category.MESSAGE_ROOM,
+                        Action.CLICK_THREE_BULLET_MENU,
+                        "pengaturan chat - " + shopId,
+                        BusinessUnit.CommunicationMedia,
+                        CurrentSite.TokopediaMarketplace,
+                        null
+                )
+        );
+    }
+
     public void eventClickSrw(
             long shopId, String userId, String productIds, QuestionUiModel element
     ) {
@@ -729,13 +747,13 @@ public class TopChatAnalytics {
     }
 
     public void trackSuccessDoBuyAndAtc(
-            ProductAttachmentUiModel element,
+            AddToCartParam element,
             DataModel data,
             String shopName,
             String eventAction
     ) {
         String dimen83 = "";
-        if (element.hasFreeShipping()) {
+        if (element.getFreeShipping()) {
             dimen83 = EE_VALUE_BEBAS_ONGKIR;
         } else {
             dimen83 = EE_VALUE_NONE_OTHER;
@@ -756,7 +774,7 @@ public class TopChatAnalytics {
         itemBundle.putString(EE_PARAM_SHOP_TYPE, setValueOrDefault(""));
         itemBundle.putString(EE_PARAM_CATEGORY_ID, setValueOrDefault(""));
         itemBundle.putInt(EE_PARAM_QUANTITY, element.getMinOrder());
-        itemBundle.putDouble(EE_PARAM_PRICE, element.getPriceInt());
+        itemBundle.putDouble(EE_PARAM_PRICE, element.getPrice());
         itemBundle.putString(EE_PARAM_PICTURE, element.getProductImage());
         itemBundle.putString(EE_PARAM_URL, element.getProductUrl());
         itemBundle.putString(EE_PARAM_DIMENSION_38, setValueOrDefault(""));

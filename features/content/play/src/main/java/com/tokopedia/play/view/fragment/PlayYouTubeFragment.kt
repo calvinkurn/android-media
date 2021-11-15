@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -173,9 +172,9 @@ class PlayYouTubeFragment @Inject constructor(
      * Observe
      */
     private fun observeVideoMeta() {
-        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner) {
             youtubeViewOnStateChanged(videoPlayer = it.videoPlayer)
-        })
+        }
     }
 
     private fun observeBottomInsetsState() {
@@ -194,9 +193,9 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner) {
             if (it.peekContent() == PiPState.Stop) removePiP()
-        })
+        }
     }
 
     private fun removePiP() {

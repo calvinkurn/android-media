@@ -173,7 +173,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `Given View already load data`(searchProductWithTopAdsResponseJSON, true)
 
         val productItemViewModel = findProductItemFromVisitableList(isTopAds = true, isOrganicAds = false)
-        val firstProductPosition = 0
+        val firstProductPosition = 1
 
         `When handle product impressed`(productItemViewModel, firstProductPosition)
 
@@ -203,7 +203,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `Given View already load data`(searchProductCommonResponseJSON, true)
 
         val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = false)
-        val firstProductPosition = 0
+        val firstProductPosition = 1
 
         `When handle product impressed`(productItemViewModel, firstProductPosition)
 

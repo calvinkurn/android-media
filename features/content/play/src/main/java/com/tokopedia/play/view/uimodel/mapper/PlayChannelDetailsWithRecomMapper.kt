@@ -14,7 +14,6 @@ import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import javax.inject.Inject
@@ -44,7 +43,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     ),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
-                    channelReportInfo = mapChannelReportInfo(),
+                    channelReportInfo = mapChannelReportInfo(it.id, extraParams),
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
@@ -89,7 +88,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         likeBubbleConfig = mapMultipleLikeConfig(configs),
     )
 
-    private fun mapChannelReportInfo() = PlayChannelReportUiModel()
+    private fun mapChannelReportInfo(
+        channelId: String,
+        extraParams: ExtraParams
+    ) = PlayChannelReportUiModel(
+        shouldTrack = if(channelId == extraParams.channelId) extraParams.shouldTrack else true,
+        sourceType = extraParams.sourceType
+    )
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share): PlayShareInfoUiModel {
         val fullShareContent = try {
@@ -276,6 +281,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     data class ExtraParams(
             val channelId: String?,
-            val videoStartMillis: Long?
+            val videoStartMillis: Long?,
+            val shouldTrack: Boolean,
+            val sourceType: String,
     )
 }
