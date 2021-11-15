@@ -14,6 +14,7 @@ data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: Str
 data class ShowCoachMarkWinnerEvent(val title: String, val subtitle: String) : PlayViewerNewUiEvent()
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
 data class RemindMeEvent(val message: UiString, val isSuccess: Boolean): PlayViewerNewUiEvent()
+object RefreshChannel: PlayViewerNewUiEvent()
 
 data class OpenPageEvent(val applink: String, val params: List<String> = emptyList(), val requestCode: Int? = null, val pipMode: Boolean = false) : PlayViewerNewUiEvent()
 

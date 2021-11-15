@@ -9,9 +9,7 @@ sealed class PlayUpcomingAction
  * Upcoming
  */
 object ImpressUpcomingChannel: PlayUpcomingAction()
-object ClickRemindMeUpcomingChannel: PlayUpcomingAction()
-object ClickWatchNowUpcomingChannel: PlayUpcomingAction()
-object ClickRefreshUpcomingChannel: PlayUpcomingAction()
+object ClickUpcomingButton: PlayUpcomingAction()
 object UpcomingTimerFinish: PlayUpcomingAction()
 
 /**

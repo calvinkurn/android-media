@@ -66,13 +66,23 @@ class PlayUpcomingViewModel @Inject constructor(
     private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _upcomingInfo = MutableStateFlow(PlayUpcomingUiModel())
+    private val _upcomingState = MutableStateFlow<PlayUpcomingState>(PlayUpcomingState.Unknown)
 
     private val _partnerUiState = _partnerInfo.map {
         PlayPartnerUiState(it.name, it.status)
     }.flowOn(dispatchers.computation)
 
-    private val _upcomingInfoUiState = _upcomingInfo.map {
-        PlayUpcomingInfoUiState(it.title, it.coverUrl, it.startTime)
+    private val _upcomingInfoUiState = combine(
+        _upcomingInfo, _upcomingState
+    ) { info, state ->
+        PlayUpcomingInfoUiState(
+            generalInfo = PlayUpcomingGeneralInfo(
+                title = info.title,
+                coverUrl = info.coverUrl,
+                startTime = info.startTime
+            ),
+            state = state
+        )
     }.flowOn(dispatchers.computation)
 
     private val _shareUiState = _channelDetail.map {
@@ -93,41 +103,38 @@ class PlayUpcomingViewModel @Inject constructor(
     val uiEvent: Flow<PlayViewerNewUiEvent>
         get() = _uiEvent
 
-    private val _observableUpcomingInfo = MutableLiveData<PlayUpcomingUiModel>()
     private val _observableStatusInfo = MutableLiveData<PlayStatusInfoUiModel>()
 
-    val observableUpcomingInfo: LiveData<PlayUpcomingUiModel>
-        get() = _observableUpcomingInfo
-
     private var sseJob: Job? = null
-
-    val latestCompleteChannelData: PlayChannelData
-        get() {
-            val channelData = mChannelData ?: error("Channel Data should not be null")
-
-            return channelData.copy(
-                partnerInfo = channelData.partnerInfo,
-                upcomingInfo = _observableUpcomingInfo.value ?: channelData.upcomingInfo
-            )
-        }
 
     fun initPage(channelId: String, channelData: PlayChannelData) {
         this.mChannelId = channelId
         this.mChannelData = channelData
 
-        _observableUpcomingInfo.value = channelData.upcomingInfo
         _partnerInfo.value = channelData.partnerInfo
         _channelDetail.value = channelData.channelDetail
         _upcomingInfo.value = channelData.upcomingInfo
 
+        updateUpcomingState(channelData.upcomingInfo)
         updateStatusInfo(mChannelId)
         updatePartnerInfo(channelData.partnerInfo)
-        startSSE(mChannelId)
     }
 
     override fun onCleared() {
         super.onCleared()
         stopSSE()
+    }
+
+    private fun updateUpcomingState(upcomingInfo: PlayUpcomingUiModel) {
+        viewModelScope.launch {
+            _upcomingState.emit(
+                when {
+                    upcomingInfo.isAlreadyLive -> PlayUpcomingState.WatchNow
+                    upcomingInfo.isReminderSet -> PlayUpcomingState.Reminded
+                    else -> PlayUpcomingState.RemindMe
+                }
+            )
+        }
     }
 
     private fun updateStatusInfo(channelId: String) {
@@ -165,19 +172,32 @@ class PlayUpcomingViewModel @Inject constructor(
     fun submitAction(action: PlayUpcomingAction) {
         when(action) {
             ImpressUpcomingChannel -> handleImpressUpcomingChannel()
-            ClickRemindMeUpcomingChannel -> handleRemindMeUpcomingChannel(userClick = true)
-            ClickWatchNowUpcomingChannel -> handleWatchNowUpcomingChannel()
+            ClickUpcomingButton -> handleClickUpcomingButton()
             UpcomingTimerFinish -> handleUpcomingTimerFinish()
             ClickFollowUpcomingAction -> handleClickFollow(isFromLogin = false)
             ClickPartnerNameUpcomingAction -> handleClickPartnerName()
             ClickShareUpcomingAction -> handleClickShare()
             is OpenUpcomingPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
-            else -> {}
         }
     }
 
     private fun handleImpressUpcomingChannel() {
         playAnalytic.impressUpcomingPage(mChannelId)
+    }
+
+    private fun handleClickUpcomingButton() {
+        when(_upcomingState.value) {
+            PlayUpcomingState.WatchNow -> {
+                handleWatchNowUpcomingChannel()
+                viewModelScope.launch {
+                    _uiEvent.emit(RefreshChannel)
+                }
+            }
+            PlayUpcomingState.RemindMe -> {
+                handleRemindMeUpcomingChannel(userClick = true)
+            }
+            else -> {}
+        }
     }
 
     private fun handleRemindMeUpcomingChannel(userClick: Boolean)  {
@@ -195,12 +215,16 @@ class PlayUpcomingViewModel @Inject constructor(
                         status = PlayChannelReminderUseCase.checkRequestSuccess(response)
                     }
 
-                    _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isReminderSet = status)
+                    _upcomingState.emit(PlayUpcomingState.Reminded)
 
                     _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
 
-                } ?: _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+                } ?: run {
+                    _upcomingState.emit(PlayUpcomingState.RemindMe)
+                    _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+                }
             }) {
+                _upcomingState.emit(PlayUpcomingState.RemindMe)
                 _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
             }
         }
@@ -215,7 +239,7 @@ class PlayUpcomingViewModel @Inject constructor(
         CoroutineScope(dispatchers.computation).launch {
 //            delay(refreshWaitingDuration)
 
-            val isAlreadyLive = _observableUpcomingInfo.value?.isAlreadyLive ?: false
+            val isAlreadyLive = _upcomingState.value == PlayUpcomingState.WatchNow
             if(!isAlreadyLive) {
                 // TODO: Send event to PlayUpcomingFragment
             }
@@ -320,9 +344,9 @@ class PlayUpcomingViewModel @Inject constructor(
         }
     }
 
-    private fun handleUpdateChannelStatus(changedChannelId: String, currentChannelId: String) {
+    private suspend fun handleUpdateChannelStatus(changedChannelId: String, currentChannelId: String) {
         if(changedChannelId == currentChannelId) {
-            _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isAlreadyLive = true)
+            _upcomingState.emit(PlayUpcomingState.WatchNow)
             stopSSE()
         }
     }

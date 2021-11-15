@@ -185,7 +185,7 @@ class PlayParentViewModel constructor(
 
     fun refreshChannel() {
         startingChannelId?.let {
-            mNextKey = getNextChannelIdKey("13114", source)
+            mNextKey = getNextChannelIdKey(it, source)
             loadNextPage()
         }
     }

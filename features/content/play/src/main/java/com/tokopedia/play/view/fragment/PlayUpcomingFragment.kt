@@ -26,6 +26,7 @@ import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.state.PlayPartnerUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingInfoUiState
+import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
@@ -101,22 +102,6 @@ class PlayUpcomingFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         playUpcomingViewModel.startSSE(channelId)
-
-        playUpcomingViewModel.observableUpcomingInfo.value?.let {
-            actionButton.setButtonStatus(
-                if(it.isAlreadyLive) UpcomingActionButtonViewComponent.Status.WATCH_NOW
-                else if(!it.isReminderSet) UpcomingActionButtonViewComponent.Status.REMIND_ME
-                else UpcomingActionButtonViewComponent.Status.HIDDEN
-            )
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        playParentViewModel.setLatestChannelStorageData(
-            channelId,
-            playUpcomingViewModel.latestCompleteChannelData
-        )
     }
 
     private fun sendImpression() {
@@ -129,13 +114,6 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun setupObserver() {
-        playUpcomingViewModel.observableUpcomingInfo.observe(viewLifecycleOwner) {
-            if(it.isAlreadyLive) {
-                upcomingTimer.stopTimer()
-                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.WATCH_NOW)
-            }
-        }
-
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playUpcomingViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
@@ -153,11 +131,9 @@ class PlayUpcomingFragment @Inject constructor(
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
                     is RemindMeEvent -> {
                         if(event.isSuccess) {
-                            actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
                             doShowToaster(message = getTextFromUiString(event.message))
                         }
                         else {
-                            actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REMIND_ME)
                             doShowToaster(
                                 message = getTextFromUiString(event.message),
                                 toasterType = Toaster.TYPE_ERROR,
@@ -195,6 +171,7 @@ class PlayUpcomingFragment @Inject constructor(
                             message = errMessage
                         )
                     }
+                    RefreshChannel -> playParentViewModel.refreshChannel()
                     else -> { }
                 }
             }
@@ -244,14 +221,30 @@ class PlayUpcomingFragment @Inject constructor(
         toolbarView.showCart(false)
     }
 
-    private fun renderUpcomingInfo(prevState: PlayUpcomingInfoUiState?, state: PlayUpcomingInfoUiState) {
-        if(prevState != state) {
-            if(state.coverUrl.isNotEmpty())
-                Glide.with(requireView()).load(state.coverUrl).into(ivUpcomingCover)
+    private fun renderUpcomingInfo(prevState: PlayUpcomingInfoUiState?, currState: PlayUpcomingInfoUiState) {
+        if(prevState?.generalInfo != currState.generalInfo) {
+            currState.generalInfo.let {
+                if(it.coverUrl.isNotEmpty())
+                    Glide.with(requireView()).load(it.coverUrl).into(ivUpcomingCover)
 
-            tvUpcomingTitle.text = state.title
+                tvUpcomingTitle.text = it.title
 
-            upcomingTimer.setupTimer(state.startTime)
+                upcomingTimer.setupTimer(it.startTime)
+            }
+        }
+
+        when(currState.state) {
+            PlayUpcomingState.RemindMe -> {
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REMIND_ME)
+            }
+            PlayUpcomingState.WatchNow -> {
+                upcomingTimer.stopTimer()
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.WATCH_NOW)
+            }
+            PlayUpcomingState.Reminded, PlayUpcomingState.Unknown -> {
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
+            }
+            else -> {}
         }
     }
 
@@ -260,15 +253,7 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     override fun onClickActionButton() {
-        playUpcomingViewModel.observableUpcomingInfo.value?.let {
-            if(it.isAlreadyLive)  {
-                playUpcomingViewModel.submitAction(ClickWatchNowUpcomingChannel)
-                playParentViewModel.refreshChannel()
-            }
-            else {
-                playUpcomingViewModel.submitAction(ClickRemindMeUpcomingChannel)
-            }
-        }
+        playUpcomingViewModel.submitAction(ClickUpcomingButton)
     }
 
     override fun onBackButtonClicked(view: ToolbarViewComponent) {

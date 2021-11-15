@@ -24,6 +24,7 @@ class UpcomingTimerViewComponent(
         targetCalendar?.let { target ->
             if(target.timeInMillis > Calendar.getInstance().timeInMillis)
                 timerUpcoming.targetDate = target
+            show()
         } ?: hide()
 
         timerUpcoming.onFinish = { listener.onTimerFinish(this) }

@@ -10,7 +10,20 @@ data class PlayUpcomingUiState(
 )
 
 data class PlayUpcomingInfoUiState(
+    val generalInfo: PlayUpcomingGeneralInfo,
+    val state: PlayUpcomingState
+)
+
+data class PlayUpcomingGeneralInfo(
     val title: String,
     val coverUrl: String,
-    val startTime: String
+    val startTime: String,
 )
+
+sealed class PlayUpcomingState {
+    object Unknown: PlayUpcomingState()
+    object RemindMe: PlayUpcomingState()
+    object Reminded: PlayUpcomingState()
+    object WatchNow: PlayUpcomingState()
+    object Refresh: PlayUpcomingState()
+}
