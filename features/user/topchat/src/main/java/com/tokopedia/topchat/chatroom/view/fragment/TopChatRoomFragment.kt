@@ -1816,7 +1816,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBannedProduct(uiModel: BannedProductAttachmentUiModel) {
         analytics.eventClickBannedProduct(uiModel)
-        presenter.onClickBannedProduct(uiModel.liteUrl)
+        viewModel.onClickBannedProduct(uiModel.liteUrl)
     }
 
     override fun redirectToBrowser(url: String) {
@@ -2390,6 +2390,31 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     it.throwable.message?.let { msg ->
                         showToasterError(msg)
                     }
+                }
+            }
+        })
+
+        viewModel.seamlessLogin.observe(viewLifecycleOwner, {
+            redirectToBrowser(it)
+        })
+
+        viewModel.chatRoomSetting.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    val widget = filterSettingToBeShown(it.data)
+                    onSuccessLoadChatRoomSetting(widget)
+                }
+                is Fail -> {
+                    //Do nothing
+                }
+            }
+        })
+
+        viewModel.orderProgress.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> renderOrderProgress(it.data.chatOrderProgress)
+                is Fail -> {
+                    //Do nothing
                 }
             }
         })

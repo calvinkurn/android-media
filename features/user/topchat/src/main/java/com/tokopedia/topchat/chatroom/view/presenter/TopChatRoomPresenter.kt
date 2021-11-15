@@ -97,8 +97,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
     private var compressImageUseCase: CompressImageUseCase,
-    private var seamlessLoginUsecase: SeamlessLoginUsecase,
-    private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
     private var addWishListUseCase: AddWishListUseCase,
     private var removeWishListUseCase: RemoveWishListUseCase,
     private var uploadImageUseCase: TopchatUploadImageUseCase,

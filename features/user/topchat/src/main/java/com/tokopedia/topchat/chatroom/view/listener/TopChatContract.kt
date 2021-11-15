@@ -140,13 +140,6 @@ interface TopChatContract {
 
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
 
-        fun onClickBannedProduct(liteUrl: String)
-
-        fun loadChatRoomSettings(
-            messageId: String,
-            onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit
-        )
-
         fun addToWishList(
             productId: String,
             userId: String,
