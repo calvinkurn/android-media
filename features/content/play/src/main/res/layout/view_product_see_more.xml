@@ -22,7 +22,7 @@
         android:paddingStart="@dimen/spacing_lvl3"
         android:paddingEnd="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl2"
-        android:text="0"
+        android:text="@string/play_zero"
         app:layout_constraintEnd_toEndOf="@id/ic_play_product_see_more"
         app:layout_constraintStart_toStartOf="@id/ic_play_product_see_more"
         app:layout_constraintTop_toTopOf="parent"

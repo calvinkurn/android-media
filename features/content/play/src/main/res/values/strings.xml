@@ -82,4 +82,8 @@
     <string name="play_connecting_chromecast">Connecting to Chromecast</string>
     <string name="play_casting_chromecast">Casting to Chromecast</string>
     <string name="play_disconnect_chromecast">Disconnected from Chromecast</string>
+
+    <!--Pinned Product-->
+    <string name="play_zero">0</string>
+
 </resources>

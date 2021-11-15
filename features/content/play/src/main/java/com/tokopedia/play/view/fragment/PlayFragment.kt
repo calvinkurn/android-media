@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
@@ -73,7 +72,7 @@ class PlayFragment @Inject constructor(
         FragmentYouTubeViewComponent.Listener,
         PlayVideoScalingManager.Listener {
 
-    private lateinit var ivClose: ImageView
+    private lateinit var ivClose: View
     private val fragmentVideoView by viewComponent {
         FragmentVideoViewComponent(channelId, it, R.id.fl_video, childFragmentManager, this)
     }

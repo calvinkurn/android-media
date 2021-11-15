@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:rcl_cornerRadius="@dimen/play_real_time_notif_radius"
-    tools:background="#AD009F92"
+    tools:background="@color/Unify_B300"
     >
     
     <com.tokopedia.unifycomponents.ImageUnify
