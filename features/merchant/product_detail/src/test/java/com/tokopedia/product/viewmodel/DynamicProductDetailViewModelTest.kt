@@ -39,7 +39,6 @@ import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
 import com.tokopedia.product.util.getOrAwaitValue
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
