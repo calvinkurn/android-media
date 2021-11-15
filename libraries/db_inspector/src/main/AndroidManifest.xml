@@ -24,6 +24,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".presentation.schema.SchemaActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_schema"
+            android:theme="@style/Theme.WhiteUnify"/>
 
     </application>
 </manifest>

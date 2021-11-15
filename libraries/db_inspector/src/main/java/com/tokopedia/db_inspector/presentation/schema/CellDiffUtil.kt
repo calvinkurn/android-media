@@ -1,0 +1,15 @@
+package com.tokopedia.db_inspector.presentation.schema
+
+import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.db_inspector.domain.shared.models.Cell
+
+internal class CellDiffUtil : DiffUtil.ItemCallback<Cell>() {
+
+    override fun areItemsTheSame(oldItem: Cell, newItem: Cell): Boolean {
+        return false
+    }
+
+    override fun areContentsTheSame(oldItem: Cell, newItem: Cell): Boolean {
+        return oldItem == newItem
+    }
+}

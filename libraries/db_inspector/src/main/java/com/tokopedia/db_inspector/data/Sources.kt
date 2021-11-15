@@ -21,7 +21,7 @@ internal interface Sources {
 
     interface Local {
         interface Schema {
-
+            suspend fun getTables(query: Query): QueryResult
         }
     }
 

@@ -11,4 +11,9 @@ internal object Statements {
                 name("user_version")
             }
     }
+
+    object Schema {
+        fun tables(query: String?) =
+            "SELECT name FROM sqlite_master WHERE type = 'table'"
+    }
 }

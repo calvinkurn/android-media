@@ -16,4 +16,6 @@ internal interface Mappers {
 
     interface Pragma: BaseMapper<QueryResult, PageModel>
 
+    interface Content: BaseMapper<QueryResult, PageModel>
+
 }

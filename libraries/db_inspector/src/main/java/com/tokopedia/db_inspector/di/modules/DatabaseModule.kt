@@ -6,14 +6,12 @@ import com.tokopedia.db_inspector.data.Sources
 import com.tokopedia.db_inspector.data.sources.raw.DatabaseSourceImpl
 import com.tokopedia.db_inspector.domain.Control
 import com.tokopedia.db_inspector.domain.Converters
-import com.tokopedia.db_inspector.domain.Interactors
 import com.tokopedia.db_inspector.domain.Mappers
 import com.tokopedia.db_inspector.domain.databases.DatabaseRepository
 import com.tokopedia.db_inspector.domain.databases.Repositories
 import com.tokopedia.db_inspector.domain.databases.control.DatabaseControl
 import com.tokopedia.db_inspector.domain.databases.control.converter.DatabaseConverter
 import com.tokopedia.db_inspector.domain.databases.control.mapper.DatabaseMapper
-import com.tokopedia.db_inspector.domain.databases.interactors.GetDatabaseInteractor
 import dagger.Module
 import dagger.Provides
 
@@ -34,13 +32,9 @@ internal class DatabaseModule {
 
     @Provides
     fun provideDatabaseRepository(
-        interactors: Interactors.GetDatabases,
+        source: Sources.Raw,
         control: Control.Database
-    ): Repositories.Database = DatabaseRepository(interactors, control)
-
-    @Provides
-    fun provideDatabaseInteractor(source: Sources.Raw): Interactors.GetDatabases =
-        GetDatabaseInteractor(source)
+    ): Repositories.Database = DatabaseRepository(source, control)
 
     @Provides
     fun provideDatabaseSource(@ApplicationContext context: Context): Sources.Raw =

@@ -1,6 +1,5 @@
-package com.tokopedia.db_inspector.presentation.databases
+package com.tokopedia.db_inspector.presentation.schema
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,38 +10,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.db_inspector.R
 import com.tokopedia.db_inspector.di.DbInspectorComponent
-import com.tokopedia.db_inspector.domain.databases.models.DatabaseDescriptor
 import com.tokopedia.db_inspector.presentation.Constants
-import com.tokopedia.db_inspector.presentation.schema.SchemaActivity
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_database_list_layout.*
 import javax.inject.Inject
 
-class DatabaseListFragment: BaseDaggerFragment() {
+class SchemaFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-
-    private val viewModel: DatabaseViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val viewModel: SchemaViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(DatabaseViewModel::class.java)
+        viewModelProvider.get(SchemaViewModel::class.java)
     }
 
-    private val databaseAdapter: DatabaseAdapter by lazy {
-        DatabaseAdapter(
-            onClick = { navigateToTableActivity(it) }
-        )
-    }
-
-    private fun navigateToTableActivity(databaseDescriptor: DatabaseDescriptor) {
-        Toaster.build(rvDatabaseList, databaseDescriptor.absolutePath, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-
-        context?.startActivity(
-            Intent(requireContext(), SchemaActivity::class.java).apply {
-                putExtra(Constants.Keys.DATABASE_NAME, databaseDescriptor.name)
-                putExtra(Constants.Keys.DATABASE_PATH, databaseDescriptor.absolutePath)
+    private val schemaAdapter: SchemaAdapter by lazy {
+        SchemaAdapter(
+            onClick = {
+                Toaster.build(rvDatabaseList, it, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
             }
         )
+    }
+
+    private val databaseName: String by lazy {
+        arguments?.getString(Constants.Keys.DATABASE_NAME).orEmpty()
+    }
+
+    private val databasePath: String by lazy {
+        arguments?.getString(Constants.Keys.DATABASE_PATH).orEmpty()
     }
 
     override fun onCreateView(
@@ -55,18 +50,18 @@ class DatabaseListFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.browseDatabases()
+        viewModel.getTables(databasePath)
         observeViewModels()
-        rvDatabaseList.adapter = databaseAdapter
+        rvDatabaseList.adapter = schemaAdapter
         rvDatabaseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun observeViewModels() {
-        viewModel.databaseListLiveData.observe(viewLifecycleOwner, { list ->
-            databaseAdapter.submitList(list)
+        viewModel.tableListLiveData.observe(viewLifecycleOwner, {
+            schemaAdapter.submitList(it)
         })
         viewModel.errorLiveData.observe(viewLifecycleOwner, {
-            databaseAdapter.submitList(arrayListOf())
+            schemaAdapter.submitList(emptyList())
         })
     }
 
@@ -75,6 +70,14 @@ class DatabaseListFragment: BaseDaggerFragment() {
     override fun initInjector() = getComponent(DbInspectorComponent::class.java).inject(this)
 
     companion object {
-        fun newInstance() = DatabaseListFragment()
+        fun newInstance(databaseName: String, databasePath: String) : SchemaFragment {
+            val fragment = SchemaFragment()
+            val bundle = Bundle().apply {
+                putString(Constants.Keys.DATABASE_NAME, databaseName)
+                putString(Constants.Keys.DATABASE_PATH, databasePath)
+            }
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
