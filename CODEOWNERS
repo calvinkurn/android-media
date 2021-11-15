@@ -27,7 +27,7 @@
 /features/home/navigation/                          	@tokopedia/android-miniondave-dev
 /features/home/navigation-common/                   	@tokopedia/android-miniondave-dev
 /features/home/searchbar/                           	@tokopedia/android-miniondave-dev
-/features/content/interest_pick_common                  @tokopedia/android-minionskywalker-dev
+/features/content/interest_pick_common                  @tokopedia/android-minionsolo-dev
 /features/discovery/discovery_common                    @tokopedia/android-miniondave-dev
 /features/discovery/recommendation_widget_common        @tokopedia/android-miniondave-dev
 /features/discovery/carousel_productcard                @tokopedia/android-miniondave-dev
@@ -82,17 +82,17 @@
 /features/tokopedianow/                                 @tokopedia/android-minionken-dev
 /features/merchant/product_bundle/                      @tokopedia/android-minionken-dev
 
-/features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_management/                   @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_management_common/            @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_autoads/                      @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_create/                       @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_detail_sheet/                 @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_widget/                       @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_headline/                     @tokopedia/android-minionskywalker-dev
-/features/top_ads/top_ads_edit/                         @tokopedia/android-minionskywalker-dev
+/features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_management/                   @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_autoads/                      @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_create/                       @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_detail_sheet/                 @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_widget/                       @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_headline/                     @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_edit/                         @tokopedia/android-minionsolo-dev
 
 /features/merchant/talk/                            	@tokopedia/android-minionstuart-dev
 /features/merchant/variant_common/                      @tokopedia/android-minionstuart-dev
@@ -176,7 +176,7 @@
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 /features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev
 
-/features/user/chatbot/                         		@tokopedia/android-minionskywalker-dev
+/features/user/chatbot/                         		@tokopedia/android-minionsolo-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/chat_common/                     		@tokopedia/android-minionkevin-dev
 /features/user/topchat/                         		@tokopedia/android-minionkevin-dev
@@ -221,8 +221,8 @@
 /features/user/home_account/                            @tokopedia/android-minionkevin-dev
 /features/user/telephony_masking/                       @tokopedia/android-minionkevin-dev
 
-/features/operational/contact_us        				@tokopedia/android-minionskywalker-dev
-/features/operational/csat_rating        				@tokopedia/android-minionskywalker-dev
+/features/operational/contact_us        				@tokopedia/android-minionsolo-dev
+/features/operational/csat_rating        				@tokopedia/android-minionsolo-dev
 
 /features/fintech/common_wallet         				@tokopedia/android-minionyoda-dev
 /features/fintech/instant_loan          				@tokopedia/android-minionyoda-dev
