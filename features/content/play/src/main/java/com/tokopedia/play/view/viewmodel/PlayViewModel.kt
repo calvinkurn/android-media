@@ -739,10 +739,6 @@ class PlayViewModel @Inject constructor(
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
-            ImpressUpcomingChannel -> handleImpressUpcomingChannel()
-            ClickRemindMeUpcomingChannel -> handleRemindMeUpcomingChannel(userClick = true)
-            ClickWatchNowUpcomingChannel -> handleWatchNowUpcomingChannel()
-            UpcomingTimerFinish -> handleUpcomingTimerFinish()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
@@ -1764,59 +1760,11 @@ class PlayViewModel @Inject constructor(
         checkInteractive(channelId = channelId)
     }
 
-    /** TODO: Should be removed **/
-    private fun handleImpressUpcomingChannel() {
-        playAnalytic.impressUpcomingPage(channelId)
-    }
-
-    private fun handleRemindMeUpcomingChannel(userClick: Boolean)  {
-        if(userClick) playAnalytic.clickRemindMe(channelId)
-
-        needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
-            viewModelScope.launchCatchError(block = {
-
-                mChannelData?.let {
-                    val status: Boolean
-
-                    withContext(dispatchers.io) {
-                        playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, true))
-                        val response = playChannelReminderUseCase.executeOnBackground()
-                        status = PlayChannelReminderUseCase.checkRequestSuccess(response)
-                    }
-
-                    _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isReminderSet = status)
-
-                    _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
-
-                } ?: _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
-            }) {
-                _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
-            }
-        }
-    }
-
-    private fun handleWatchNowUpcomingChannel() {
-        playAnalytic.clickWatchNow(channelId)
-        stopSSE()
-    }
-
-    private fun handleUpcomingTimerFinish() {
-        CoroutineScope(dispatchers.computation).launch {
-            delay(refreshWaitingDuration)
-
-            val isAlreadyLive = _observableUpcomingInfo.value?.isAlreadyLive ?: false
-            if(!isAlreadyLive) {
-                // TODO: Send event to PlayUpcomingFragment
-            }
-        }
-    }
-
     private fun handleOpenPageResult(isSuccess: Boolean, requestCode: Int) {
         if (!isSuccess) return
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
-            REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart(isFromLogin = true)
             else -> {}
