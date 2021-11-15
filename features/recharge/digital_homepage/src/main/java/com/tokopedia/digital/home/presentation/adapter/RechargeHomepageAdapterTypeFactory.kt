@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.presentation.adapter.viewholder.*
-import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicLegoBannerCallback
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
@@ -72,6 +72,10 @@ class RechargeHomepageAdapterTypeFactory(
 
     fun type(tickerModel: RechargeTickerHomepageModel): Int {
         return RechargeHomepageTickerViewHolder.LAYOUT
+    }
+
+    fun type(swipeBannerModel: RechargeHomepageSwipeBannerModel): Int {
+        return RechargeHomepageSwipeBannerViewHolder.LAYOUT
     }
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
@@ -150,6 +154,7 @@ class RechargeHomepageAdapterTypeFactory(
             RechargeHomepageProductCardCustomBannerViewHolder.LAYOUT -> RechargeHomepageProductCardCustomBannerViewHolder(parent, listener)
             RechargeHomepageCarousellViewHolder.LAYOUT -> RechargeHomepageCarousellViewHolder(parent, listener)
             RechargeHomepageTickerViewHolder.LAYOUT -> RechargeHomepageTickerViewHolder(parent, listener)
+            RechargeHomepageSwipeBannerViewHolder.LAYOUT -> RechargeHomepageSwipeBannerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -787,7 +787,7 @@ class ProductListPresenter @Inject constructor(
             getViewToShowBroadMatchToReplaceEmptySearch()
         } else {
             if (!productDataView.errorMessage.isNullOrEmpty()) {
-                getViewToHandleEmptySearchWithErrorMessage(searchProduct)
+                getViewToHandleEmptySearchWithErrorMessage(searchProduct, productDataView)
             } else {
                 getViewToShowEmptySearch(productDataView)
 
@@ -831,15 +831,29 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun getViewToHandleEmptySearchWithErrorMessage(searchProduct: SearchProductModel.SearchProduct) {
+    private fun getViewToHandleEmptySearchWithErrorMessage(
+        searchProduct: SearchProductModel.SearchProduct,
+        productDataView: ProductDataView,
+    ) {
+        val bannedProductsVisitableList =
+            createBannedProductsVisitableList(searchProduct, productDataView)
+
         view.removeLoading()
-        view.setBannedProductsErrorMessage(createBannedProductsErrorMessageAsList(searchProduct))
+        view.setBannedProductsErrorMessage(bannedProductsVisitableList)
         view.trackEventImpressionBannedProducts(true)
     }
 
-    private fun createBannedProductsErrorMessageAsList(searchProduct: SearchProductModel.SearchProduct): List<Visitable<*>> {
-        return listOf(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
-    }
+    private fun createBannedProductsVisitableList(
+        searchProduct: SearchProductModel.SearchProduct,
+        productDataView: ProductDataView,
+    ): List<Visitable<*>> =
+        mutableListOf<Visitable<*>>().apply {
+            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
+                add(globalNavDataView)
+            }
+
+            add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
+        }
 
     private fun getViewToShowEmptySearch(productDataView: ProductDataView) {
         val globalNavDataView = getGlobalNavViewModel(productDataView)

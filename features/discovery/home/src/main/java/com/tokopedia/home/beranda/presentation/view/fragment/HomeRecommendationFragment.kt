@@ -54,6 +54,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommen
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemViewHolder.Companion.LAYOUT
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
+import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
@@ -88,7 +89,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private val adapter by lazy { HomeRecommendationAdapter(appExecutors, adapterFactory, this) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
-    private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL) }
+    private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(DynamicChannelTabletConfiguration.getSpanCountForHomeRecommendationAdapter(requireContext()), StaggeredGridLayoutManager.VERTICAL) }
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 
     private var totalScrollY = 0
