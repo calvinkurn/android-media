@@ -532,7 +532,6 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        callbackManager?.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage()
             activity?.setResult(Activity.RESULT_OK)
