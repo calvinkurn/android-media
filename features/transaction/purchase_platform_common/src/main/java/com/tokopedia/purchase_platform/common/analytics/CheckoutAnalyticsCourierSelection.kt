@@ -532,8 +532,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         }
         val data = getGtmData(
                 ConstantTransactionAnalytics.EventName.PROMO_VIEW,
-                ConstantTransactionAnalytics.EventAction.IMPRESSION_CROSS_SELL_ICON,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.IMPRESSION_CROSS_SELL_ICON,
                 eventLabel)
         data[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.EventCategory.BU_RECHARGE
         data[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -558,8 +558,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         }
         val data = getGtmData(
                 ConstantTransactionAnalytics.EventName.PROMO_CLICK,
-                if (check) ConstantTransactionAnalytics.EventAction.CHECK_CROSS_SELL_ICON else ConstantTransactionAnalytics.EventAction.UNCHECK_CROSS_SELL_ICON,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                if (check) ConstantTransactionAnalytics.EventAction.CHECK_CROSS_SELL_ICON else ConstantTransactionAnalytics.EventAction.UNCHECK_CROSS_SELL_ICON,
                 eventLabel)
         data[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.EventCategory.BU_RECHARGE
         data[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -575,8 +575,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     fun sendCrossSellClickPilihPembayaran(eventLabel: String, userId: String, listProducts: List<Any?>?) {
         val data = getGtmData(
                 ConstantTransactionAnalytics.EventName.CHECKOUT,
-                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN_CROSS_SELL,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN_CROSS_SELL,
                 eventLabel)
         data[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.EventCategory.BU_RECHARGE
         data[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
