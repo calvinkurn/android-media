@@ -57,7 +57,11 @@ class QuestProgressBar
         canvas.drawArc(rect, startAngle, angle, false, paint)
     }
 
-    private fun calculateAngle(progress: Float) = maxAngle / maxProgress * progress
+    private fun calculateAngle(progress: Float):Float {
+        return if (progress == 0F) {
+            5F
+        } else maxAngle / maxProgress * progress
+    }
 
     fun setProgress(@FloatRange(from = 5.0, to = 100.0) progress: Float) {
         setAnimationProgress(progress)
