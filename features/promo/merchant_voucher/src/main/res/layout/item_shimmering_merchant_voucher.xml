@@ -4,7 +4,7 @@
     android:background="@color/Unify_N0"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/dp_8">
+    android:paddingTop="8dp">
 
     <include layout="@layout/partial_item_shimmer_merchant_voucher" />
 

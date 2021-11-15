@@ -140,9 +140,12 @@ class SingleProductBundleFragment(
                 .inject(this)
     }
 
-    override fun onVariantSpinnerClicked(selectedVariant: ProductVariant?) {
+    override fun onVariantSpinnerClicked(
+        selectedVariant: ProductVariant?,
+        selectedProductId: String?
+    ) {
         selectedVariant?.let {
-            AtcVariantNavigation.showVariantBottomSheet(this, it)
+            AtcVariantNavigation.showVariantBottomSheet(this, it, selectedProductId.orEmpty())
         }
     }
 
@@ -224,7 +227,7 @@ class SingleProductBundleFragment(
             }
             hideLoadingDialog()
             Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(R.string.action_oke)).show()
+                getString(R.string.action_oke)).setAnchorView(totalAmount?.bottomContentView).show()
         })
     }
 
@@ -271,7 +274,7 @@ class SingleProductBundleFragment(
                 ErrorHandler.getErrorMessage(context, it),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR
-            ).show()
+            ).setAnchorView(totalAmount?.bottomContentView).show()
             hideLoadingDialog()
             // TODO: log error
         })
@@ -369,7 +372,7 @@ class SingleProductBundleFragment(
 
     private fun updateTotalAmountAtcButtonText(preorderDurationWording: String?) {
         totalAmount?.amountCtaView?.text = if (preorderDurationWording.isNullOrEmpty()) {
-            getString(R.string.action_buy)
+            getString(R.string.action_buy_bundle)
         } else {
             getString(R.string.action_preorder)
         }

@@ -93,6 +93,7 @@ ext {
             filter                          : ":features:discovery:filter",
             similarSearch                   : ":features:discovery:similarsearch",
             autocomplete                    : ":features:discovery:autocomplete",
+            autocompleteComponent           : ":features:discovery:autocomplete_component",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             globalNavWidget                 : ":features:discovery:global_nav_widget",
             globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",
@@ -148,7 +149,6 @@ ext {
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
-            moengageWrapper                 : ":features:im:moengage_wrapper",
 
             tokopediaNow                    : ":features:tokopedianow",
 
@@ -231,6 +231,7 @@ ext {
             sellerorder                     : ":features:transaction:sellerorder",
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
+            unifyorderhistory               : ":features:transaction:unifyorderhistory",
             snapshot                        : ":features:ordermanagement:snapshot",
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",
@@ -263,7 +264,6 @@ ext {
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
-            profileCommon                   : ":features:user:profilecommon",
             seamlessLoginCommon             : ":features:user:seamless_login_common",
             sessioncommon                   : ":features:user:sessioncommon",
             settingbank                     : ":features:user:settingbank",

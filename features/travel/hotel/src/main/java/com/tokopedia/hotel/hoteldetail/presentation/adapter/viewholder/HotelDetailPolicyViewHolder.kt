@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.databinding.ItemHotelDetailPolicyBinding
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyPolicyData
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadIcon
 
 /**
  * @author by furqan on 06/05/19
@@ -13,7 +13,7 @@ class HotelDetailPolicyViewHolder(val binding: ItemHotelDetailPolicyBinding) : A
 
     override fun bind(element: PropertyPolicyData) {
         with(binding) {
-            ivPolicyIcon.loadImage(element.iconUrl)
+            ivPolicyIcon.loadIcon(element.iconUrl)
             tvPolicyName.text = element.name
             tvPolicyContent.text = element.content
         }

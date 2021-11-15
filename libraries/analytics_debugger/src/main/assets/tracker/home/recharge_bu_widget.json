@@ -41,25 +41,6 @@
       "eventLabel": ""
     },
     {
-      "promotions": [
-        {
-          "creative_name": ".+",
-          "creative_slot": ".+",
-          "item_id": ".+",
-          "item_name": ".+",
-          "creative_url": ""
-        }
-      ],
-      "businessUnit": "home & browse",
-      "eventCategory": "homepage",
-      "currentSite": "tokopediamarketplace",
-      "event": "select_content",
-      "userId": ".+",
-      "eventAction": "click on banner card dynamic channel bu carousel",
-      "sessionIris": ".+",
-      "eventLabel": ".+"
-    },
-    {
       "businessUnit": "home & browse",
       "eventCategory": "homepage",
       "currentSite": "tokopediamarketplace",
@@ -80,23 +61,47 @@
       "eventLabel": ".+"
     },
     {
-      "promotions": [
-        {
-          "creative_name": ".+",
-          "creative_slot": ".+",
-          "item_id": ".+",
-          "item_name": ".+",
-          "creative_url": ""
-        }
-      ],
       "businessUnit": "home & browse",
-      "eventCategory": "homepage",
+      "eventCategory": "homepage - new bu widget",
+      "currentSite": "tokopediamarketplace",
+      "event": "view_item_list",
+      "userId": ".+",
+      "eventAction": "impression on product card dynamic channel bu carousel",
+      "sessionIris": ".+",
+      "item_list": "",
+      "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
+      "items": [
+        {
+          "item_id": ".+",
+          "price": "\\d*.\\d",
+          "index": ".+",
+          "item_name": ".+",
+          "item_brand": "none / other",
+          "item_variant": ".*",
+          "item_category": ".+"
+        }
+      ]
+    },
+    {
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage - new bu widget",
       "currentSite": "tokopediamarketplace",
       "event": "select_content",
       "userId": ".+",
-      "eventAction": "click on banner dynamic channel bu carousel",
+      "eventAction": "click on product card dynamic channel bu carousel",
       "sessionIris": ".+",
-      "eventLabel": ".+"
+      "eventLabel": ".+ - .+ - .+ - .+ - .+ - .+ - .+ - .+",
+      "items": [
+        {
+          "item_id": ".+",
+          "price": "\\d*.\\d",
+          "index": ".+",
+          "item_name": ".+",
+          "item_brand": "none / other",
+          "item_variant": ".*",
+          "item_category": ".+"
+        }
+      ]
     }
   ]
 }
