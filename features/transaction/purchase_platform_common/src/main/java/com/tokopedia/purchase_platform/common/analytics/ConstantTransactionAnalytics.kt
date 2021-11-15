@@ -16,6 +16,14 @@ object ConstantTransactionAnalytics {
         const val POSITION = "position"
         const val PROMO_ID_ = "promo_id"
         const val PROMO_CODE = "promo_code"
+        const val BRAND = "brand"
+        const val CATEGORY = "category"
+        const val PRICE = "price"
+        const val QUANTITY = "quantity"
+        const val SHOP_ID = "shop_id"
+        const val SHOP_NAME = "shop_name"
+        const val SHOP_TYPE = "shop_type"
+        const val VARIANT = "variant"
     }
 
     object EventName {
@@ -73,6 +81,16 @@ object ConstantTransactionAnalytics {
         const val PURCHASE_SETTING = "purchase setting"
         const val PURCHASE_PROTECTION_OCC = "fin - order summary occ"
         const val ORDER_SUMMARY = "order summary"
+
+        //cross_sell
+        const val BU_RECHARGE = "recharge"
+        const val POSITION = "position"
+        const val DIGITAL_PRODUCT_NAME = "digital_product_name"
+        const val CREATIVE = "creative"
+        const val ACTION_FIELD = "actionField"
+        const val OPTION = "option"
+        const val STEP = "step"
+        const val PRODUCTS = "products"
     }
 
     object EventAction {
@@ -152,6 +170,12 @@ object ConstantTransactionAnalytics {
         const val CLICK_PRODUCT_LAST_SEEN_ON_CART_LIST = "click product last seen on cart list"
         const val CLICK_DONATION = "click donation"
         const val VIEW_AUTO_CHECK_ON_DONATION = "view autocheck on donation"
+        const val IMPRESSION_CROSS_SELL_ICON = "impression cross sell icon"
+        const val CHECK_CROSS_SELL_ICON = "check cross sell icon"
+        const val UNCHECK_CROSS_SELL_ICON = "uncheck cross sell icon"
+        const val CLICK_PILIH_METODE_PEMBAYARAN_CROSS_SELL = "click pilih metode pembayaran - cross sell"
+        const val CLICK_PAYMENT_OPTION_BUTTON = "click payment option button"
+
         const val VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address"
         const val VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address"
         const val VALIDATION_ERROR_TELEPON_PADA_TAMBAH_ADDRESS = "validation error telepon pada + address"
@@ -229,11 +253,6 @@ object ConstantTransactionAnalytics {
         const val VIEW_TUNGGU_CARI_DRIVER = "view tunggu cari driver"
         const val VIEW_BUTTON_CARI_DRIVER = "view button cari driver"
         const val CLICK_BUTTON_CARI_DRIVER = "click button cari driver"
-
-        //Error Popup
-        const val VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT = "view help pop up after error in checkout"
-        const val CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT = "click report on help pop up in checkout"
-        const val CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT = "click close on help pop up in checkout"
 
         //Wishlist
         const val ADD_WISHLIST_AVAILABLE_SECTION = "add wishlist - available section - login"

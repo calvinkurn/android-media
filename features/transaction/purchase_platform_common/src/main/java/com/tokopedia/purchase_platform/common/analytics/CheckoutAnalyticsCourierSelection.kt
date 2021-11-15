@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.common.analytics
 
-import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
 import com.tokopedia.track.TrackApp
@@ -145,8 +144,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         if (tradeInCustomDimension != null && tradeInCustomDimension.isNotEmpty()) {
             dataLayer.putAll(tradeInCustomDimension)
         }
-        if (!TextUtils.isEmpty(transactionId)) {
-            dataLayer[ConstantTransactionAnalytics.Key.PAYMENT_ID] = transactionId!!
+        if (transactionId?.isNotEmpty() == true) {
+            dataLayer[ConstantTransactionAnalytics.Key.PAYMENT_ID] = transactionId
         }
         sendEnhancedEcommerce(dataLayer)
     }
@@ -467,30 +466,6 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
-    fun eventViewHelpPopUpAfterErrorInCheckout() {
-        sendGeneralEvent(
-                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
-                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
-                ConstantTransactionAnalytics.EventAction.VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT
-        )
-    }
-
-    fun eventClickReportOnHelpPopUpInCheckout() {
-        sendGeneralEvent(
-                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
-                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
-                ConstantTransactionAnalytics.EventAction.CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT
-        )
-    }
-
-    fun eventClickCloseOnHelpPopUpInCheckout() {
-        sendGeneralEvent(
-                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
-                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
-                ConstantTransactionAnalytics.EventAction.CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT
-        )
-    }
-
     fun eventViewInformationAndWarningTickerInCheckout(tickerId: String) {
         sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
@@ -543,6 +518,79 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
         gtmMap[ExtraKey.USER_ID] = userId
         sendGeneralEvent(gtmMap)
+    }
+
+    fun eventViewAutoCheckCrossSell(userId: String, position: String, eventLabel: String, digitalProductName: String, childCategoryIds: ArrayList<Long>) {
+        val listPromotions: MutableList<Map<String, Any?>> = ArrayList()
+        for (childCategoryId in childCategoryIds) {
+            listPromotions.add(mapOf(
+                    ConstantTransactionAnalytics.Key.CREATIVE to digitalProductName,
+                    ConstantTransactionAnalytics.Key.ID to "",
+                    ConstantTransactionAnalytics.Key.NAME to childCategoryId.toString(),
+                    ConstantTransactionAnalytics.Key.POSITION to position)
+            )
+        }
+        val data = getGtmData(
+                ConstantTransactionAnalytics.EventName.PROMO_VIEW,
+                ConstantTransactionAnalytics.EventAction.IMPRESSION_CROSS_SELL_ICON,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                eventLabel)
+        data[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.EventCategory.BU_RECHARGE
+        data[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        data[ExtraKey.USER_ID] = userId
+        data[ConstantTransactionAnalytics.Key.E_COMMERCE] = mapOf(
+                ConstantTransactionAnalytics.EventName.PROMO_VIEW to mapOf<String, Any?>(
+                        ConstantTransactionAnalytics.Key.PROMOTIONS to listPromotions
+                )
+        )
+        sendEnhancedEcommerce(data)
+    }
+
+    fun eventClickCheckboxCrossSell(check: Boolean, userId: String, position: String, eventLabel: String, digitalProductName: String, childCategoryIds: ArrayList<Long>) {
+        val listPromotions: MutableList<Map<String, Any?>> = ArrayList()
+        for (childCategoryId in childCategoryIds) {
+            listPromotions.add(mapOf(
+                    ConstantTransactionAnalytics.Key.CREATIVE to digitalProductName,
+                    ConstantTransactionAnalytics.Key.ID to "",
+                    ConstantTransactionAnalytics.Key.NAME to childCategoryId.toString(),
+                    ConstantTransactionAnalytics.Key.POSITION to position)
+            )
+        }
+        val data = getGtmData(
+                ConstantTransactionAnalytics.EventName.PROMO_CLICK,
+                if (check) ConstantTransactionAnalytics.EventAction.CHECK_CROSS_SELL_ICON else ConstantTransactionAnalytics.EventAction.UNCHECK_CROSS_SELL_ICON,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                eventLabel)
+        data[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.EventCategory.BU_RECHARGE
+        data[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        data[ExtraKey.USER_ID] = userId
+        data[ConstantTransactionAnalytics.Key.E_COMMERCE] = mapOf(
+                ConstantTransactionAnalytics.EventName.PROMO_CLICK to mapOf<String, Any?>(
+                        ConstantTransactionAnalytics.Key.PROMOTIONS to listPromotions
+                )
+        )
+        sendEnhancedEcommerce(data)
+    }
+
+    fun sendCrossSellClickPilihPembayaran(eventLabel: String, userId: String, listProducts: List<Any?>?) {
+        val data = getGtmData(
+                ConstantTransactionAnalytics.EventName.CHECKOUT,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN_CROSS_SELL,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                eventLabel)
+        data[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.EventCategory.BU_RECHARGE
+        data[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        data[ExtraKey.USER_ID] = userId
+        data[ConstantTransactionAnalytics.Key.E_COMMERCE] = mapOf(
+                ConstantTransactionAnalytics.EventName.CHECKOUT to mapOf(
+                        ConstantTransactionAnalytics.EventCategory.ACTION_FIELD to mapOf<String, Any?>(
+                                ConstantTransactionAnalytics.EventCategory.OPTION to ConstantTransactionAnalytics.EventAction.CLICK_PAYMENT_OPTION_BUTTON,
+                                ConstantTransactionAnalytics.EventCategory.STEP to "4"
+                        ),
+                        ConstantTransactionAnalytics.EventCategory.PRODUCTS to listProducts
+                )
+        )
+        sendEnhancedEcommerce(data)
     }
 
     fun eventViewCampaignDialog(productId: Long, userId: String) {
