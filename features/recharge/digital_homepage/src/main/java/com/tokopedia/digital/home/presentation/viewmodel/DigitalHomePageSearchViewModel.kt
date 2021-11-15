@@ -79,15 +79,15 @@ class DigitalHomePageSearchViewModel @Inject constructor(
         }
     }
 
-    fun mapAutoCompleteParams(navSource: String, query: String): Map<String, Any>{
+    fun mapAutoCompleteParams(query: String): Map<String, Any>{
         return mapOf(
-            PARAM to String.format(PARAM_FORMAT, navSource, query)
+            PARAM to String.format(PARAM_FORMAT, query)
         )
     }
 
     companion object {
         const val PARAM = "param"
-        const val PARAM_FORMAT = "navsource=%s&q=%s&source=search&categoryid="
+        const val PARAM_FORMAT = "navsource=tnb&q=%s&source=search&categoryid="
     }
 
 }

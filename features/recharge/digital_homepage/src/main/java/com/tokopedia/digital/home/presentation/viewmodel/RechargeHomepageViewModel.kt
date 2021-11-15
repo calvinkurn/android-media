@@ -53,10 +53,9 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeHomepageQueries.SKELETON_QUERY,
                     RechargeHomepageSectionSkeleton.Response::class.java, mapParams
             )
-//            val data = withContext(dispatcher.io) {
-//                graphqlRepository.response(listOf(graphqlRequest))
-//            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response
-            val data = Gson().fromJson(DUMMY_SKELETON, RechargeHomepageSectionSkeleton.Response::class.java).response
+            val data = withContext(dispatcher.io) {
+                graphqlRepository.response(listOf(graphqlRequest))
+            }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response
 
             mutableRechargeHomepageSectionSkeleton.postValue(Success(data))
             // Add initial section data
@@ -229,48 +228,5 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_PRODUCT_CARD_CUSTOM_BANNER = "PRODUCT_CARD_CUSTOM_BANNER"
         const val SECTION_MINI_CAROUSELL = "MINI_CAROUSELL"
         const val SECTION_TICKER = "TICKER"
-        const val DUMMY_SKELETON = "{\n" +
-                "      \"rechargeGetDynamicPageSkeleton\": {\n" +
-                "        \"search_bar_placeholder\": \"Cari E-Money, Kartu Kredit dan lainnya\",\n" +
-                "        \"search_bar_app_link\": \"tokopedia://digital/order\",\n" +
-                "        \"search_bar_web_link\": \"https://www.tokopedia.com/order-list?tab\\u003d1\",\n" +
-                "        \"search_bar_screen_name\": \"/top-up-tagihan\",\n" +
-                "        \"search_bar_redirection\": \"tnb\",\n" +
-                "        \"sections\": [\n" +
-                "          {\n" +
-                "            \"id\": 1,\n" +
-                "            \"template\": \"TOP_BANNER\"\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"id\": 352,\n" +
-                "            \"template\": \"TOP_ICONS\"\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"id\": 132,\n" +
-                "            \"template\": \"COUNTDOWN_SINGLE_BANNER\"\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"id\": 3,\n" +
-                "            \"template\": \"DYNAMIC_ICONS\"\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"id\": 4,\n" +
-                "            \"template\": \"LEGO_BANNERS\"\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"id\": 5,\n" +
-                "            \"template\": \"LEGO_BANNERS\"\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"id\": 43,\n" +
-                "            \"template\": \"PRODUCT_CARD_CUSTOM_BANNER\"\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"id\": 127,\n" +
-                "            \"template\": \"MINI_CAROUSELL\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      }\n" +
-                "    }"
     }
 }
