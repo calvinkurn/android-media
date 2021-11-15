@@ -152,6 +152,8 @@ class OrderSummaryPageRobot {
                 view.findViewById<View>(R.id.btn_change_courier).performClick()
             }
         }))
+        // Wait for bottomsheet to fully open
+        Thread.sleep(1000)
         CourierBottomSheetRobot().apply(func)
     }
 
@@ -295,6 +297,7 @@ class OrderSummaryPageRobot {
                 view.findViewById<View>(R.id.tv_installment_detail).performClick()
             }
         }))
+        Thread.sleep(1000)
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
@@ -317,6 +320,7 @@ class OrderSummaryPageRobot {
                 view.findViewById<View>(R.id.tv_installment_error_action).performClick()
             }
         }))
+        Thread.sleep(1000)
         onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)).perform(swipeUpTop())
         InstallmentDetailBottomSheetRobot().apply(func)
     }
