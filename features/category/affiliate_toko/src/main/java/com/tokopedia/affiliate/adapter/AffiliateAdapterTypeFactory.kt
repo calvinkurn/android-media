@@ -19,4 +19,5 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliateUserPerformanceListModel): Int
     fun type(viewModel: AffiliateDateFilterModel): Int
     fun type(viewModel: AffiliateNoPromoItemFoundModel): Int
+    fun type(viewModel: AffiliateDataPlatformShimmerModel): Int
 }

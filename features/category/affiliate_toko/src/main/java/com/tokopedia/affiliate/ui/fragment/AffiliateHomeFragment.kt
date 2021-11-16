@@ -119,6 +119,9 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                     IconBuilder()
+                            .addIcon(IconList.ID_BILL){
+
+                            }
                             .addIcon(IconList.ID_INFORMATION) {
                                 AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_BETA_INFO).show(childFragmentManager, "")
                             }
@@ -182,6 +185,14 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     adapter.addShimmer()
                 else
                     adapter.removeShimmer(listSize)
+            }
+        })
+        affiliateHomeViewModel.getDataShimmerVisibility().observe(this, { visibility ->
+            if (visibility != null) {
+                if (visibility)
+                    adapter.addDataPlatformShimmer()
+                else
+                    adapter.resetList()
             }
         })
         affiliateHomeViewModel.getRangeChanged().observe(this,{changed ->

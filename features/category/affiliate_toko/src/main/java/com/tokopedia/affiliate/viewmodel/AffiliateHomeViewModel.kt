@@ -27,6 +27,7 @@ class AffiliateHomeViewModel @Inject constructor(
         private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
+    private var dataPlatformShimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private var affiliateAnnouncement=MutableLiveData<AffiliateAnnouncementData>()
@@ -59,11 +60,17 @@ class AffiliateHomeViewModel @Inject constructor(
         })
     }
     fun getAffiliatePerformance(page : Int) {
-        shimmerVisibility.value = true
         launchCatchError(block = {
             var performanceList :AffiliateUserPerformaListItemData? = null
-            if(page == PAGE_ZERO)
-                performanceList = affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateRange)
+            if(page == PAGE_ZERO) {
+                dataPlatformShimmerVisibility.value = true
+                performanceList =
+                    affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateRange)
+                dataPlatformShimmerVisibility.value = false
+            }
+            else{
+                shimmerVisibility.value = true
+            }
             affiliatePerformanceUseCase.affiliateItemPerformanceList(selectedDateValue).getAffiliatePerformanceList?.data?.data.let {
                 convertDataToVisitables(it,performanceList,page)?.let { visitables ->
                     affiliateDataList.value = visitables
@@ -71,7 +78,12 @@ class AffiliateHomeViewModel @Inject constructor(
 
             }
         }, onError = {
-            shimmerVisibility.value = false
+            if(page == PAGE_ZERO){
+                dataPlatformShimmerVisibility.value = false
+            }
+            else{
+                shimmerVisibility.value = false
+            }
             it.printStackTrace()
             errorMessage.value = it
         })
@@ -143,6 +155,7 @@ class AffiliateHomeViewModel @Inject constructor(
         }
     }
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
+    fun getDataShimmerVisibility(): LiveData<Boolean> = dataPlatformShimmerVisibility
     fun getRangeChanged(): LiveData<Boolean> = rangeChanged
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getAffiliateErrorMessage(): LiveData<Throwable> = affiliateErrorMessage

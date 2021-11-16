@@ -25,6 +25,7 @@ class AffiliateAdapterFactory(
         return when (type) {
             AffiliateSharedProductCardsItemVH.LAYOUT -> AffiliateSharedProductCardsItemVH(parent, productClickInterface)
             AffiliatePerformaSharedProductCardsItemVH.LAYOUT -> AffiliatePerformaSharedProductCardsItemVH(parent, productClickInterface)
+            AffiliateDataCardShimmerItemVH.LAYOUT -> AffiliateDataCardShimmerItemVH(parent)
             AffiliateProductShimmerCardItemVH.LAYOUT -> AffiliateProductShimmerCardItemVH(parent)
             AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface,addSocialInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
@@ -105,5 +106,9 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateNoPromoItemFoundModel): Int {
       return AffiliateNoPromoItemFoundVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateDataPlatformShimmerModel): Int {
+        return AffiliateDataCardShimmerItemVH.LAYOUT
     }
 }
