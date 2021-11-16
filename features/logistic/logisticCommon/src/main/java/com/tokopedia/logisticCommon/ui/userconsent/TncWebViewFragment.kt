@@ -25,7 +25,6 @@ class TncWebViewFragment : BaseWebViewFragment() {
     }
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
-//        if (url.isNotEmpty() && url.contains("tel:")) {
         webview?.loadUrl(tncUrl)
         webview?.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {
@@ -37,7 +36,6 @@ class TncWebViewFragment : BaseWebViewFragment() {
                 }
             }
         }
-//        }
         return super.shouldOverrideUrlLoading(webView, url)
     }
 
