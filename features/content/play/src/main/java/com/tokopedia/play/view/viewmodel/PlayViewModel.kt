@@ -397,10 +397,6 @@ class PlayViewModel @Inject constructor(
             return (castState.currentState != PlayCastState.NO_DEVICE_AVAILABLE && !videoPlayer.isYouTube
                     && remoteConfig.getBoolean(FIREBASE_REMOTE_CONFIG_KEY_CAST, true)) || castState.currentState == PlayCastState.CONNECTED
         }
-    val refreshWaitingDuration: Long
-        get() {
-            return _observableStatusInfo.value?.waitingDuration ?: 5000
-        }
 
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null

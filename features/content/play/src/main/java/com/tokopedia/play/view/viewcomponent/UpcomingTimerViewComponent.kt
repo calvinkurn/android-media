@@ -6,6 +6,10 @@ import com.tokopedia.play.R
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 /**
@@ -23,7 +27,7 @@ class UpcomingTimerViewComponent(
         val targetCalendar = PlayDateTimeFormatter.convertToCalendar(startTime)
         targetCalendar?.let { target ->
             if(target.timeInMillis > Calendar.getInstance().timeInMillis)
-                timerUpcoming.targetDate = target
+                timerUpcoming.targetDate = Calendar.getInstance()
             show()
         } ?: hide()
 

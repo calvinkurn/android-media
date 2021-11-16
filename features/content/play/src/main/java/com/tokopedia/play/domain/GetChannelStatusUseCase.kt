@@ -35,7 +35,7 @@ class GetChannelStatusUseCase @Inject constructor(
                 data {
                   id
                   status
-                  waitingDuration
+                  waiting_duration
                 }
               }
             }

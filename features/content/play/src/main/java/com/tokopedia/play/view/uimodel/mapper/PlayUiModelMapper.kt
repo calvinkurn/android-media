@@ -45,7 +45,7 @@ class PlayUiModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusFromResponse(input)
     }
 
-    fun mapWaitingDuration(input: ChannelStatusResponse): Long? {
+    fun mapWaitingDuration(input: ChannelStatusResponse): Int? {
         return channelStatusMapper.mapWaitingDurationResponse(input)
     }
 

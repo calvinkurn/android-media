@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -139,21 +140,23 @@ class PlayUpcomingViewModel @Inject constructor(
     private fun updateStatusInfo(channelId: String, withAction: Boolean = true) {
         viewModelScope.launchCatchError(block = {
             val channelStatus = getChannelStatus(channelId)
+            Log.d("<LOG>", "channel Status : $channelStatus")
             if(withAction) {
-                when(playUiModelMapper.mapStatus(channelStatus)) {
-                    PlayStatusType.Active -> {
-                        _upcomingState.emit(PlayUpcomingState.WatchNow)
-                    }
-                    else -> {
-                        performRefreshWaitingDuration()
+                Log.d("<LOG>", "status : ${playUiModelMapper.mapStatus(channelStatus).isActive}")
+                if(playUiModelMapper.mapStatus(channelStatus).isActive) {
+                    Log.d("<LOG>", "isActive")
+                    _upcomingState.emit(PlayUpcomingState.WatchNow)
+                }
+                else {
+                    Log.d("<LOG>", "no active")
+                    performRefreshWaitingDuration()
 
-                        _upcomingState.emit(PlayUpcomingState.Unknown)
-                        _uiEvent.emit(
-                            ShowInfoEvent(
-                                UiString.Resource(R.string.play_upcoming_channel_not_started)
-                            )
+                    _upcomingState.emit(PlayUpcomingState.Unknown)
+                    _uiEvent.emit(
+                        ShowInfoEvent(
+                            UiString.Resource(R.string.play_upcoming_channel_not_started)
                         )
-                    }
+                    )
                 }
             }
 
@@ -163,7 +166,10 @@ class PlayUpcomingViewModel @Inject constructor(
                 )
             }
         }, onError = {
-
+            _uiEvent.emit(
+                ShowErrorEvent(it)
+            )
+            Log.d("<LOG>", "error : ${it.message}")
         })
     }
 
@@ -269,7 +275,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun performRefreshWaitingDuration() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            delay(_upcomingInfo.value.refreshWaitingDuration)
+            delay(_upcomingInfo.value.refreshWaitingDuration.toLong())
 
             val isAlreadyLive = _upcomingState.value == PlayUpcomingState.WatchNow
             if(!isAlreadyLive) {

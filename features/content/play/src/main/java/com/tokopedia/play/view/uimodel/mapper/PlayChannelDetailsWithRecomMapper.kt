@@ -215,7 +215,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             bannedModel = mapBannedModel(configResponse.bannedData),
             freezeModel = mapFreezeModel(configResponse.freezeData, title),
             shouldAutoSwipeOnFreeze = true,
-            waitingDuration = 0L,
+            waitingDuration = 0,
     )
 
     private fun mapBannedModel(
