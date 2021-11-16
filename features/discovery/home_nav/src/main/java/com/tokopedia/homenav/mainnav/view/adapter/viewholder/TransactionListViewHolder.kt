@@ -30,8 +30,8 @@ class TransactionListViewHolder(itemView: View,
         val context = itemView.context
         val adapter = OrderListAdapter(OrderListTypeFactoryImpl(mainNavListener))
 
-        val edgeMargin = 16f.toDpInt(itemView.context)
-        val spacingBetween = 8f.toDpInt(itemView.context)
+        val edgeMargin = 16f.toDpInt()
+        val spacingBetween = 8f.toDpInt()
 
         itemView.transaction_rv.adapter = adapter
         itemView.transaction_rv.layoutManager = LinearLayoutManager(

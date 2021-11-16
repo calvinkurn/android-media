@@ -62,7 +62,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
 
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                10f.toDpInt(itemView.context),
+                10f.toDpInt(),
                 true))
 
         recyclerView.layoutManager = GridLayoutManager(

@@ -55,7 +55,7 @@ class DynamicIconSectionViewHolder(val view: View,
 
         if (recyclerView.itemDecorationCount == 0) {
             recyclerView.addItemDecoration(CarouselDecoration(
-                    16f.toDpInt(itemView.context),
+                    16f.toDpInt(),
                     width,
                     5,
                     itemView.context.resources.getDimensionPixelOffset(

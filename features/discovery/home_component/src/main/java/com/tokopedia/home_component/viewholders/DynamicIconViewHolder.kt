@@ -15,12 +15,11 @@ import com.tokopedia.home_component.decoration.CommonSpacingDecoration
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
 import com.tokopedia.home_component.util.loadImage
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.home_component_dynamic_icon.view.*
-import kotlinx.android.synthetic.main.home_component_dynamic_icon_item.view.*
 
 /**
  * Created by Lukas on 1/8/21.
@@ -52,7 +51,7 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
             if (iconRecyclerView?.itemDecorationCount == 0) {
                 iconRecyclerView?.addItemDecoration(
                         CommonSpacingDecoration(
-                                8f.toPx().toInt()
+                                8f.toDpInt()
                         )
                 )
             }

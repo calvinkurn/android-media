@@ -53,7 +53,7 @@ class DynamicChannelThematicViewHolder(
 
     private fun setupHeader(header: Header?) {
         if (header != null && header.name.isNotEmpty()) {
-            mainContainer.setMargin(0, 20f.toDpInt(itemView.context), 0, 0)
+            mainContainer.setMargin(0, 20f.toDpInt(), 0, 0)
             headerContainer.visibility = View.VISIBLE
             headerTitle.text = header.name
             headerCountDown.visibility = View.GONE
@@ -66,7 +66,7 @@ class DynamicChannelThematicViewHolder(
             }
 
         } else {
-            mainContainer.setMargin(0, 6f.toDpInt(itemView.context), 0, 0)
+            mainContainer.setMargin(0, 6f.toDpInt(), 0, 0)
             headerContainer.visibility = View.GONE
         }
     }

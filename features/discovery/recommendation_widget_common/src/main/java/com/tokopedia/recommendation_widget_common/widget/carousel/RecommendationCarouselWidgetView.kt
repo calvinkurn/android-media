@@ -395,7 +395,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         itemView.post {
             layoutManager.scrollToPositionWithOffset(
                     scrollToPosition,
-                    16f.toDpInt(itemContext)
+                    16f.toDpInt()
             )
         }
     }

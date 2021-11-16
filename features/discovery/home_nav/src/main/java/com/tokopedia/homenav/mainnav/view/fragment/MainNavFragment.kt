@@ -136,7 +136,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
         if (recyclerView.itemDecorationCount == 0)
-            recyclerView.addItemDecoration(MainNavSpacingDecoration(12f.toDpInt(requireContext())))
+            recyclerView.addItemDecoration(MainNavSpacingDecoration(12f.toDpInt()))
         recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)

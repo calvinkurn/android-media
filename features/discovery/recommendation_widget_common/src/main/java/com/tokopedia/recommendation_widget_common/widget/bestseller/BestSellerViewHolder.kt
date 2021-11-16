@@ -107,14 +107,14 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             if (itemView.best_seller_recommendation_recycler_view.itemDecorationCount == 0) {
                 itemView.best_seller_recommendation_recycler_view.addItemDecoration(
                         CommonMarginStartDecoration(
-                                marginStart = 12f.toDpInt(itemView.context)
+                                marginStart = 12f.toDpInt()
                         )
                 )
             }
             if (itemView.best_seller_chip_filter_recyclerview.itemDecorationCount == 0) {
                 itemView.best_seller_chip_filter_recyclerview.addItemDecoration(
                         CommonMarginStartDecoration(
-                                marginStart = 8f.toDpInt(itemView.context)
+                                marginStart = 8f.toDpInt()
                         )
                 )
             }

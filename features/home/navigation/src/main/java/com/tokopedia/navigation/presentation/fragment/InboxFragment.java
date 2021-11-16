@@ -235,7 +235,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new RecomItemDecoration(ViewUtilsKt.toDpInt(8f, requireContext())));
+        recyclerView.addItemDecoration(new RecomItemDecoration(ViewUtilsKt.toDpInt(8f)));
         layoutManager = new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener();
         recyclerView.setLayoutManager(layoutManager);

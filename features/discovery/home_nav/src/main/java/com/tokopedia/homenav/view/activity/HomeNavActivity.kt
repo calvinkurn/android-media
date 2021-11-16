@@ -83,7 +83,7 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
             val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
             layoutParams.setMargins(
                     layoutParams.leftMargin,
-                    16f.toDpInt(applicationContext) + mActionBarSize,
+                    16f.toDpInt() + mActionBarSize,
                     layoutParams.rightMargin,
                     layoutParams.bottomMargin
             )
@@ -91,7 +91,7 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
             val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
             layoutParams.setMargins(
                     layoutParams.leftMargin,
-                    200f.toDpInt(applicationContext),
+                    200f.toDpInt(),
                     layoutParams.rightMargin,
                     layoutParams.bottomMargin
             )
