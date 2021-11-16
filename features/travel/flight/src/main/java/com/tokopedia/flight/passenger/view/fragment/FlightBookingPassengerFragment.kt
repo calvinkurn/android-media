@@ -980,6 +980,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
         binding?.tilPassportExpirationDate?.setMessage(getString(R.string.flight_booking_passenger_passport_expiry_helper_text))
         binding?.tilPassportExpirationDate?.setError(false)
+
+        binding?.tilIdentificationNumber?.setMessage(getString(R.string.flight_booking_passenger_identification_number_message))
+        binding?.tilIdentificationNumber?.setError(false)
     }
 
     private fun showMessageErrorInSnackBar(resId: Int) {
