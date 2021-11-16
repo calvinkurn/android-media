@@ -1,111 +1,107 @@
-package com.tokopedia.homecredit.view.activity;
+package com.tokopedia.homecredit.view.activity
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Bundle;
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.os.Bundle
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.homecredit.di.component.DaggerHomeCreditComponent
+import com.tokopedia.homecredit.di.component.HomeCreditComponent
+import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment
+import com.tokopedia.homecredit.view.fragment.HomeCreditSelfieFragment
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.homecredit.di.component.DaggerHomeCreditComponent;
-import com.tokopedia.homecredit.di.component.HomeCreditComponent;
-import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment;
-import com.tokopedia.homecredit.view.fragment.HomeCreditSelfieFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class HomeCreditRegisterActivity extends BaseSimpleActivity implements HasComponent<HomeCreditComponent> {
-
-    public static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
-    protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
-    private final static String SHOW_KTP = "show_ktp";
-    private List<String> permissionsToRequest;
-    private boolean isPermissionGotDenied;
-    private boolean showKtp = false;
-    private HomeCreditComponent homeCreditComponent = null;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
+class HomeCreditRegisterActivity : BaseSimpleActivity(), HasComponent<HomeCreditComponent?> {
+    private var permissionsToRequest: MutableList<String>? = null
+    private var isPermissionGotDenied = false
+    private var showKtp = false
+    private var homeCreditComponent: HomeCreditComponent? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
         }
-
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (permissionsToRequest != null && grantResults.length == permissionsToRequest.size()) {
-            int grantCount = 0;
-            for (int result : grantResults) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (permissionsToRequest != null && grantResults.size == permissionsToRequest!!.size) {
+            var grantCount = 0
+            for (result in grantResults) {
                 if (result == PackageManager.PERMISSION_DENIED) {
-                    isPermissionGotDenied = true;
-                    break;
+                    isPermissionGotDenied = true
+                    break
                 }
-                grantCount++;
+                grantCount++
             }
-            if (grantCount == grantResults.length) {
-                isPermissionGotDenied = false;
+            if (grantCount == grantResults.size) {
+                isPermissionGotDenied = false
             }
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    override fun onResume() {
+        super.onResume()
         if (isPermissionGotDenied) {
-            finish();
-            return;
+            finish()
+            return
         }
-        String[] permissions;
-        permissions = new String[]{Manifest.permission.CAMERA};
-        permissionsToRequest = new ArrayList<>();
-        for (String permission : permissions) {
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                permissionsToRequest.add(permission);
+        val permissions: Array<String> = arrayOf(Manifest.permission.CAMERA)
+        permissionsToRequest = ArrayList()
+        for (permission in permissions) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    permission
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                (permissionsToRequest as ArrayList<String>).add(permission)
             }
         }
-        if (!permissionsToRequest.isEmpty()) {
-            ActivityCompat.requestPermissions(this,
-                    permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
+        if ((permissionsToRequest as ArrayList<String>).isNotEmpty()) {
+            ActivityCompat.requestPermissions(
+                this,
+                (permissionsToRequest as ArrayList<String>).toTypedArray(),
+                REQUEST_CAMERA_PERMISSIONS
+            )
         }
     }
 
     @SuppressLint("MissingPermission")
-    @Override
-    protected Fragment getNewFragment() {
-        Intent intent = getIntent();
+    override fun getNewFragment(): Fragment? {
+        val intent = intent
         if (intent != null) {
-            Uri uri = intent.getData();
-            showKtp = "true".equals(uri.getQueryParameter(SHOW_KTP));
+            val uri = intent.data
+            showKtp = "true" == uri!!.getQueryParameter(SHOW_KTP)
         }
-        if (showKtp) {
-            return HomeCreditKTPFragment.createInstance();
+        return if (showKtp) {
+            HomeCreditKTPFragment.createInstance()
         } else {
-            return HomeCreditSelfieFragment.createInstance();
+            HomeCreditSelfieFragment.createInstance()
         }
     }
 
-    @Override
-    public HomeCreditComponent getComponent() {
-        if (homeCreditComponent == null)
-            initInjector();
-        return homeCreditComponent;
-
+    override fun getComponent(): HomeCreditComponent {
+        if (homeCreditComponent == null) initInjector()
+        return homeCreditComponent!!
     }
 
-    private void initInjector() {
+    private fun initInjector() {
         homeCreditComponent = DaggerHomeCreditComponent.builder().baseAppComponent(
-                ((BaseMainApplication) getApplicationContext()).getBaseAppComponent()).build();
+            (applicationContext as BaseMainApplication).baseAppComponent
+        ).build()
+    }
+
+    companion object {
+        const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
+        protected const val REQUEST_CAMERA_PERMISSIONS = 932
+        private const val SHOW_KTP = "show_ktp"
     }
 }
