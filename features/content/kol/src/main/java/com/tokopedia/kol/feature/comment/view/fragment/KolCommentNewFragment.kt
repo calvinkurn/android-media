@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -32,6 +33,7 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
 import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_AUTHOR_TYPE
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_ID
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_VIDEO
@@ -318,11 +320,10 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         list.reverse()
         adapter?.addList(list)
 
-        if (adapter?.header != null) {
-            adapter?.header?.isCanLoadMore = kolComments?.isHasNextPage ?: false
-            adapter?.header?.isLoading = false
-            adapter?.notifyItemChanged(0)
-        }
+        header?.isCanLoadMore = kolComments?.isHasNextPage ?: false
+        header?.isLoading = false
+        adapter?.notifyItemChanged(0)
+
     }
 
     override fun openRedirectUrl(url: String) {
@@ -458,9 +459,19 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun loadMoreComments() {
+        header?.isLoading = true
+        adapter?.notifyItemChanged(0)
+
+        arguments?.getInt(KolCommentActivity.ARGS_ID)?.let { presenter.loadMoreComments(it)}
+
     }
 
     override fun onErrorLoadMoreComment(errorMessage: String?) {
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+            header?.isLoading = false
+            header?.isCanLoadMore = true
+            adapter?.notifyItemChanged(0)
+
     }
 
     override fun dismissProgressDialog() {
@@ -470,6 +481,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         globalError.gone()
         removeLoading()
         header = kolComments?.headerNewModel
+        header?.isCanLoadMore = kolComments?.isHasNextPage ?: false
+
         setHeader(header)
         val list = ArrayList<Visitable<*>?>()
         kolComments?.let { list.addAll(it.listNewComments) }
