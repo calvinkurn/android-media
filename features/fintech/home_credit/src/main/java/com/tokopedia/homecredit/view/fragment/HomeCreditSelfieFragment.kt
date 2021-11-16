@@ -47,14 +47,14 @@ class HomeCreditSelfieFragment : HomeCreditBaseCameraFragment() {
         reverseCamera = view.findViewById(R.id.iv_reverse_camera)
         cameraLayout = view.findViewById(R.id.hc_camera_layout)
         headerText = view.findViewById(R.id.desc_1)
-        cameraView.facing = Facing.FRONT
-        cameraView.zoom = 0f
+        cameraView?.facing = Facing.FRONT
+        cameraView?.zoom = 0f
         cameraOverlayImage = view.findViewById(R.id.selfieid_cutout)
         cameraOverlayImage = cameraOverlayImageSelfie
     }
 
     private fun initViewListeners() {
-        continueUpload.setOnClickListener {
+        continueUpload?.setOnClickListener {
             val intent = Intent()
             intent.putExtra(
                 HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH,
@@ -67,7 +67,7 @@ class HomeCreditSelfieFragment : HomeCreditBaseCameraFragment() {
         }
     }
 
-    private var cameraOverlayImageSelfie: ImageView
+    private var cameraOverlayImageSelfie: ImageView?
         get() = super.cameraOverlayImage
         private set(cameraOverlayImg) {
             val intent = requireActivity().intent
@@ -75,10 +75,10 @@ class HomeCreditSelfieFragment : HomeCreditBaseCameraFragment() {
             val cutOutImgUrl = intent.getStringExtra(Constants.CUST_OVERLAY_URL)
             val customHeader = intent.getStringExtra(Constants.CUST_HEADER)
             if (!TextUtils.isEmpty(customHeader)) {
-                headerText.text = customHeader
+                headerText?.text = customHeader
             }
             if (Constants.SLFE_NO_OVERLAY.equals(cameraType, ignoreCase = true)) {
-                cameraOverlayImg.visibility = View.GONE
+                cameraOverlayImg?.visibility = View.GONE
             } else if (!TextUtils.isEmpty(cutOutImgUrl)) {
                 ImageHandler.loadImageAndCache(cameraOverlayImg, cutOutImgUrl)
             }

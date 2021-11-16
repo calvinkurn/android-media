@@ -1,345 +1,337 @@
-package com.tokopedia.homecredit.view.fragment;
+package com.tokopedia.homecredit.view.fragment
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.Manifest
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.app.Activity
+import android.app.ProgressDialog
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.pm.PackageManager
+import android.os.Build
+import android.view.View
+import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
+import com.otaliastudios.cameraview.CameraListener
+import com.otaliastudios.cameraview.CameraOptions
+import com.otaliastudios.cameraview.CameraView
+import com.otaliastudios.cameraview.PictureResult
+import com.otaliastudios.cameraview.controls.Flash
+import com.otaliastudios.cameraview.size.Size
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.homecredit.di.component.HomeCreditComponent
+import com.tokopedia.homecredit.domain.model.ImageDetail
+import com.tokopedia.homecredit.viewModel.HomeCreditViewModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.unifyprinciples.R
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import java.io.File
+import java.util.*
+import javax.inject.Inject
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
+open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
+    var cameraView: CameraView? = null
+    var reverseCamera: View? = null
+    var cameraListener: CameraListener? = null
+    var isCameraOpen = false
+    var retakePhoto: TextView? = null
+    var continueUpload: TextView? = null
+    var captureImage: View? = null
+    var cameraLayout: FrameLayout? = null
+    var flashControl: IconUnify? = null
+    var buttonCancel: IconUnify? = null
+    var imageCaptured: ImageView? = null
+    var pictureActionLL: LinearLayout? = null
+    var finalCameraResultFilePath: String? = null
+    protected var cameraOverlayImage: ImageView? = null
+    protected var headerText: TextView? = null
+    var cameraActionsRL: RelativeLayout? = null
 
-import com.bumptech.glide.Glide;
-import com.otaliastudios.cameraview.CameraException;
-import com.otaliastudios.cameraview.CameraListener;
-import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraView;
-import com.otaliastudios.cameraview.PictureResult;
-import com.otaliastudios.cameraview.controls.Flash;
-import com.otaliastudios.cameraview.size.Size;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.homecredit.R;
-import com.tokopedia.homecredit.di.component.HomeCreditComponent;
-import com.tokopedia.homecredit.domain.model.ImageDetail;
-import com.tokopedia.homecredit.viewModel.HomeCreditViewModel;
-import com.tokopedia.iconunify.IconUnify;
-import com.tokopedia.usecase.coroutines.Success;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.inject.Inject;
-
-public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
-
-    private static final String FOLDER_NAME = "extras";
-    private static final String FILE_EXTENSIONS = ".jpg";
-    public CameraView cameraView;
-    public View reverseCamera;
-    public CameraListener cameraListener;
-    public boolean isCameraOpen;
-    public TextView retakePhoto;
-    public TextView continueUpload;
-    public View captureImage;
-    public FrameLayout cameraLayout;
-    public IconUnify flashControl;
-    public IconUnify buttonCancel;
-    public ImageView imageCaptured;
-    public LinearLayout pictureActionLL;
-    public String finalCameraResultFilePath;
-    protected ImageView cameraOverlayImage;
-    protected TextView headerText;
-    RelativeLayout cameraActionsRL;
+    @JvmField
     @Inject
-    ViewModelProvider.Factory viewModelFactory;
-    HomeCreditViewModel homeCreditViewModel = null;
-    private boolean mCapturingPicture;
-    private int flashIndex;
-    private List<Flash> supportedFlashList;
-    private Size mCaptureNativeSize;
-    private ProgressDialog progressDialog;
-
-    @Override
-    protected void initInjector() {
-        getComponent(HomeCreditComponent.class).inject(this);
+    var viewModelFactory: ViewModelProvider.Factory? = null
+    var homeCreditViewModel: HomeCreditViewModel? = null
+    private var mCapturingPicture = false
+    private var flashIndex = 0
+    private var supportedFlashList: MutableList<Flash>? = null
+    private var mCaptureNativeSize: Size? = null
+    private var progressDialog: ProgressDialog? = null
+    override fun initInjector() {
+        getComponent(HomeCreditComponent::class.java).inject(this)
     }
 
-    @Override
-    protected String getScreenName() {
-        return null;
+    override fun getScreenName(): String? {
+        return null
     }
 
-    public void initialFlash() {
-        supportedFlashList = new ArrayList<>();
-        if (cameraView == null || cameraView.getCameraOptions() == null) {
-            return;
+    fun initialFlash() {
+        supportedFlashList = ArrayList()
+        if (cameraView == null || cameraView!!.cameraOptions == null) {
+            return
         }
-        Collection<Flash> flashSet = cameraView.getCameraOptions().getSupportedFlash();
-        for (Flash flash : flashSet) {
+        val flashSet = cameraView!!.cameraOptions!!
+            .supportedFlash
+        for (flash in flashSet) {
             if (flash != Flash.TORCH) {
-                supportedFlashList.add(flash);
+                (supportedFlashList as ArrayList<Flash>).add(flash)
             }
         }
-        if (supportedFlashList != null && supportedFlashList.size() > 0) {
-            flashControl.setVisibility(View.VISIBLE);
-            setCameraFlash();
+        if (supportedFlashList != null && (supportedFlashList as ArrayList<Flash>).size > 0) {
+            flashControl!!.visibility = View.VISIBLE
+            setCameraFlash()
         } else {
-            flashControl.setVisibility(View.GONE);
+            flashControl!!.visibility = View.GONE
         }
     }
 
-    private void setCameraFlash() {
-        if (supportedFlashList == null || flashIndex < 0 || supportedFlashList.size() <= flashIndex) {
-            return;
+    private fun setCameraFlash() {
+        if (supportedFlashList == null || flashIndex < 0 || supportedFlashList!!.size <= flashIndex) {
+            return
         }
-        Flash flash = supportedFlashList.get(flashIndex);
-        if (flash.ordinal() == Flash.TORCH.ordinal()) {
-            flashIndex = (flashIndex + 1) % supportedFlashList.size();
-            flash = supportedFlashList.get(flashIndex);
+        var flash = supportedFlashList!![flashIndex]
+        if (flash.ordinal == Flash.TORCH.ordinal) {
+            flashIndex = (flashIndex + 1) % supportedFlashList!!.size
+            flash = supportedFlashList!![flashIndex]
         }
-        cameraView.set(flash);
-        setUIFlashCamera(flash.ordinal());
+        cameraView!!.set(flash)
+        setUIFlashCamera(flash.ordinal)
     }
 
-    private void setUIFlashCamera(int flashEnum) {
-        int colorWhite = ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Static_White);
-        if (flashEnum == Flash.AUTO.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash));
-        } else if (flashEnum == Flash.ON.ordinal()) {
-            flashControl.setImage(IconUnify.FLASH_ON, colorWhite, colorWhite, colorWhite, colorWhite);
-        } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashControl.setImage(IconUnify.FLASH_OFF, colorWhite, colorWhite, colorWhite, colorWhite);
+    @SuppressLint("ResourcePackage")
+    private fun setUIFlashCamera(flashEnum: Int) {
+        val colorWhite = ContextCompat.getColor(requireContext(), R.color.Unify_Static_White)
+        if (flashEnum == Flash.AUTO.ordinal) {
+            flashControl!!.setImageDrawable(
+                MethodChecker.getDrawable(
+                    activity, com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash
+                )
+            )
+        } else if (flashEnum == Flash.ON.ordinal) {
+            flashControl!!.setImage(
+                IconUnify.FLASH_ON,
+                colorWhite,
+                colorWhite,
+                colorWhite,
+                colorWhite
+            )
+        } else if (flashEnum == Flash.OFF.ordinal) {
+            flashControl!!.setImage(
+                IconUnify.FLASH_OFF,
+                colorWhite,
+                colorWhite,
+                colorWhite,
+                colorWhite
+            )
         }
     }
 
-    public void initCameraProp() {
-        cameraView.open();
-        cameraLayout.setVisibility(View.VISIBLE);
-        imageCaptured.setVisibility(View.GONE);
-        cameraActionsRL.setVisibility(View.VISIBLE);
-        pictureActionLL.setVisibility(View.GONE);
+    fun initCameraProp() {
+        cameraView!!.open()
+        cameraLayout!!.visibility = View.VISIBLE
+        imageCaptured!!.visibility = View.GONE
+        cameraActionsRL!!.visibility = View.VISIBLE
+        pictureActionLL!!.visibility = View.GONE
     }
 
-    public void initListeners() {
-        homeCreditViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(HomeCreditViewModel.class);
-        cameraListener = new CameraListener() {
-
-            @Override
-            public void onCameraOpened(CameraOptions options) {
-                initialFlash();
-                isCameraOpen = true;
+    fun initListeners() {
+        homeCreditViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(
+            HomeCreditViewModel::class.java
+        )
+        cameraListener = object : CameraListener() {
+            override fun onCameraOpened(options: CameraOptions) {
+                initialFlash()
+                isCameraOpen = true
             }
 
-            @Override
-            public void onCameraError(@NonNull CameraException exception) {
-                super.onCameraError(exception);
+            override fun onCameraClosed() {
+                super.onCameraClosed()
+                isCameraOpen = false
             }
 
-            @Override
-            public void onCameraClosed() {
-                super.onCameraClosed();
-                isCameraOpen = false;
-            }
-
-            @Override
-            public void onPictureTaken(@NonNull PictureResult result) {
+            override fun onPictureTaken(result: PictureResult) {
                 try {
-                    generateImage(result.getData());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    generateImage(result.data)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
-        };
-
-        captureImage.setOnClickListener(v -> capturePicture());
-
-        flashControl.setOnClickListener(v -> {
-            if (supportedFlashList != null && supportedFlashList.size() > 0) {
-                flashIndex = (flashIndex + 1) % supportedFlashList.size();
-                setCameraFlash();
+        }
+        captureImage!!.setOnClickListener { v: View? -> capturePicture() }
+        flashControl!!.setOnClickListener { v: View? ->
+            if (supportedFlashList != null && supportedFlashList!!.size > 0) {
+                flashIndex = (flashIndex + 1) % supportedFlashList!!.size
+                setCameraFlash()
             }
-        });
-
-        reverseCamera.setOnClickListener(v -> {
-            toggleCamera();
-        });
-
-        retakePhoto.setOnClickListener(v -> {
-            initCameraProp();
-        });
-        buttonCancel.setOnClickListener(v -> requireActivity().finish());
-        cameraView.addCameraListener(cameraListener);
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getString(R.string.title_loading));
+        }
+        reverseCamera!!.setOnClickListener { v: View? -> toggleCamera() }
+        retakePhoto!!.setOnClickListener { v: View? -> initCameraProp() }
+        buttonCancel!!.setOnClickListener { v: View? -> requireActivity().finish() }
+        cameraView!!.addCameraListener(cameraListener as CameraListener)
+        progressDialog = ProgressDialog(activity)
+        progressDialog!!.setCancelable(false)
+        progressDialog!!.setMessage(getString(com.tokopedia.homecredit.R.string.title_loading))
     }
 
-    private void generateImage(byte[] imageByte) {
-
+    private fun generateImage(imageByte: ByteArray) {
         if (mCaptureNativeSize == null) {
-            mCaptureNativeSize = cameraView.getPictureSize();
+            mCaptureNativeSize = cameraView!!.pictureSize
         }
-        homeCreditViewModel.computeImageArray(imageByte, mCaptureNativeSize, getFileLocationFromDirectory());
-        homeCreditViewModel.getImageDetailLiveData().observe(this, imageDetail -> {
-            captureImage.setClickable(true);
-            if (imageDetail instanceof Success && ((Success<ImageDetail>) imageDetail).getData().component3() != null)
-                loadImageFromBitmap(getContext(), imageCaptured, ((Success<ImageDetail>) imageDetail).getData());
-            hideCameraProp();
-        });
-        reset();
+        homeCreditViewModel!!.computeImageArray(
+            imageByte,
+            mCaptureNativeSize!!,
+            fileLocationFromDirectory
+        )
+        homeCreditViewModel!!.imageDetailLiveData.observe(
+            this,
+            { imageDetail: Result<ImageDetail>? ->
+                captureImage!!.isClickable = true
+                if (imageDetail is Success<*> && (imageDetail as Success<ImageDetail>).data.imagePath != null) loadImageFromBitmap(
+                    context, imageCaptured, imageDetail.data
+                )
+                hideCameraProp()
+            })
+        reset()
     }
 
-    private void loadImageFromBitmap(Context context, final ImageView imageView, ImageDetail data) {
-        int width = data.getBitMapWidth();
-        int height = data.getBitmapHeight();
-        int min, max;
+    private fun loadImageFromBitmap(context: Context?, imageView: ImageView?, data: ImageDetail) {
+        val width = data.bitMapWidth
+        val height = data.bitmapHeight
+        val min: Int
+        val max: Int
         if (width > height) {
-            min = height;
-            max = width;
+            min = height
+            max = width
         } else {
-            min = width;
-            max = height;
+            min = width
+            max = height
         }
-        boolean loadFitCenter = min != 0 && (max / min) > 2;
-        if (loadFitCenter)
-            Glide.with(context).load(data.getImagePath()).fitCenter().into(imageView);
-        else
-            Glide.with(context).load(data.getImagePath()).into(imageView);
+        val loadFitCenter = min != 0 && max / min > 2
+        if (loadFitCenter) Glide.with(requireContext()).load(data.imagePath).fitCenter()
+            .into(imageView!!) else Glide.with(
+            requireContext()
+        ).load(data.imagePath).into(imageView!!)
     }
 
-
-    private void reset() {
-        mCapturingPicture = false;
-        mCaptureNativeSize = null;
-        hideLoading();
+    private fun reset() {
+        mCapturingPicture = false
+        mCaptureNativeSize = null
+        hideLoading()
     }
 
-    private void capturePicture() {
+    private fun capturePicture() {
         if (mCapturingPicture || !isCameraOpen) {
-            return;
+            return
         }
-        showLoading();
-        mCapturingPicture = true;
-        mCaptureNativeSize = cameraView.getPictureSize();
-        cameraView.takePicture();
-        captureImage.setClickable(false);
+        showLoading()
+        mCapturingPicture = true
+        mCaptureNativeSize = cameraView!!.pictureSize
+        cameraView!!.takePicture()
+        captureImage!!.isClickable = false
     }
 
-    private void showLoading() {
-        if (isAdded()) {
-            progressDialog.show();
-        }
-    }
-
-    protected void hideLoading() {
-        if (isAdded()) {
-            progressDialog.dismiss();
+    private fun showLoading() {
+        if (isAdded) {
+            progressDialog!!.show()
         }
     }
 
-    private void toggleCamera() {
+    protected fun hideLoading() {
+        if (isAdded) {
+            progressDialog!!.dismiss()
+        }
+    }
+
+    private fun toggleCamera() {
         if (mCapturingPicture) {
-            return;
+            return
         }
-        cameraView.toggleFacing();
+        cameraView!!.toggleFacing()
     }
 
-
-    public void hideCameraProp() {
-        cameraView.close();
-        cameraLayout.setVisibility(View.GONE);
-        imageCaptured.setVisibility(View.VISIBLE);
-        cameraActionsRL.setVisibility(View.GONE);
-        pictureActionLL.setVisibility(View.VISIBLE);
+    fun hideCameraProp() {
+        cameraView!!.close()
+        cameraLayout!!.visibility = View.GONE
+        imageCaptured!!.visibility = View.VISIBLE
+        cameraActionsRL!!.visibility = View.GONE
+        pictureActionLL!!.visibility = View.VISIBLE
     }
 
     @SuppressLint("ObsoleteSdkInt")
-    public void onVisible() {
-        if (requireActivity().isFinishing()) {
-            return;
+    fun onVisible() {
+        if (requireActivity().isFinishing) {
+            return
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String permission = Manifest.permission.CAMERA;
-            if (ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-                startCamera();
+            val permission = Manifest.permission.CAMERA
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    permission
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                startCamera()
             }
         } else {
-            startCamera();
+            startCamera()
         }
     }
 
-    private void startCamera() {
+    private fun startCamera() {
         try {
-            cameraView.clearCameraListeners();
-            cameraView.addCameraListener(cameraListener);
-            cameraView.open();
-        } catch (Throwable e) {
-            e.printStackTrace();
+            cameraView!!.clearCameraListeners()
+            cameraView!!.addCameraListener(cameraListener!!)
+            cameraView!!.open()
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 
     @TargetApi(23)
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        onAttachActivity(context);
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        onAttachActivity(context)
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            onAttachActivity(activity);
+            onAttachActivity(activity)
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        onVisible();
+    override fun onResume() {
+        super.onResume()
+        onVisible()
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+    override fun onPause() {
+        super.onPause()
         if (isCameraOpen) {
-            cameraView.close();
+            cameraView!!.close()
         }
     }
 
-    @Override
-    public void onDestroy() {
-        hideLoading();
-        cameraView.close();
-        super.onDestroy();
+    override fun onDestroy() {
+        hideLoading()
+        cameraView!!.close()
+        super.onDestroy()
     }
 
-    private File getFileLocationFromDirectory() {
-        File directory = new ContextWrapper(getActivity()).getDir(FOLDER_NAME, Context.MODE_PRIVATE);
-        if (!directory.exists())
-            directory.mkdir();
+    private val fileLocationFromDirectory: File
+        private get() {
+            val directory = ContextWrapper(activity).getDir(FOLDER_NAME, Context.MODE_PRIVATE)
+            if (!directory.exists()) directory.mkdir()
+            val imageName = System.currentTimeMillis().toString() + FILE_EXTENSIONS
+            return File(directory.absolutePath, imageName)
+        }
 
-        String imageName = System.currentTimeMillis() + FILE_EXTENSIONS;
-        return new File(directory.getAbsolutePath(), imageName);
-
+    companion object {
+        private const val FOLDER_NAME = "extras"
+        private const val FILE_EXTENSIONS = ".jpg"
     }
-
-
 }

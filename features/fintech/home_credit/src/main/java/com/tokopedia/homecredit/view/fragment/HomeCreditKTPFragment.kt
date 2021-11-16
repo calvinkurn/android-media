@@ -35,7 +35,7 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
         initViewListeners()
     }
 
-    private var cameraOverlayImageKTP: ImageView
+    private var cameraOverlayImageKTP: ImageView?
         get() = super.cameraOverlayImage
         private set(cameraOverlayImg) {
             val intent = requireActivity().intent
@@ -43,14 +43,14 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
             val cutOutImgUrl = intent.getStringExtra(Constants.CUST_OVERLAY_URL)
             val customHeaderText = intent.getStringExtra(Constants.CUST_HEADER)
             if (!TextUtils.isEmpty(customHeaderText)) {
-                headerText.text = customHeaderText
+                headerText?.text = customHeaderText
             }
             if (!TextUtils.isEmpty(cameraType) && Constants.KTP_NO_OVERLAY.equals(
                     cameraType,
                     ignoreCase = true
                 )
             ) {
-                cameraOverlayImg.visibility = View.GONE
+                cameraOverlayImg?.visibility = View.GONE
             } else if (!TextUtils.isEmpty(cutOutImgUrl)) {
                 ImageHandler.loadImageAndCache(cameraOverlayImg, cutOutImgUrl)
             }
@@ -68,18 +68,18 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
         captureImage = view.findViewById(R.id.iv_capture_image)
         reverseCamera = view.findViewById(R.id.iv_reverse_camera)
         if (!isFrontCameraAvailable) {
-            reverseCamera.visibility = View.GONE
+            reverseCamera?.visibility = View.GONE
         }
         cameraLayout = view.findViewById(R.id.hc_camera_layout)
         headerText = view.findViewById(R.id.desc_1)
-        cameraView.facing = Facing.BACK
-        cameraView.zoom = 0f
+        cameraView?.facing = Facing.BACK
+        cameraView?.zoom = 0f
         cameraOverlayImage = view.findViewById(R.id.img_cutout)
         cameraOverlayImage = cameraOverlayImageKTP
     }
 
     private fun initViewListeners() {
-        continueUpload.setOnClickListener {
+        continueUpload?.setOnClickListener {
             val intent = Intent()
             intent.putExtra(
                 HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH,
