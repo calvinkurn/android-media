@@ -45,7 +45,7 @@ class ProductCustomMovementMethod(val listener: (String) -> Unit) : ArrowKeyMove
                         super.onTouchEvent(widget, buffer, event)
                     }
                 }
-            } catch (e: Throwable) {
+            } catch (_: Throwable) {
             }
 
         }
