@@ -33,6 +33,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ): CardUnify(context, attrs), ProgressCompletionListener {
 
+    private val durationScale: Long = 350
     private var showBox = false
     private var tvBannerTitle: Typography
     private var tvBannerDesc: Typography
@@ -66,7 +67,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
         tvBannerTitle.text = config.banner_title
         ivBannerIcon.loadImage(config.banner_icon_url)
         ivBannerIconSecond.loadImage(item.prize?.get(0)?.iconUrl)
-        var progress = calculateProgress((item.task?.get(0)?.progress))
+        val progress = calculateProgress((item.task?.get(0)?.progress))
 
         when(item.questUser?.status){
             QuestUserStatus.ON_PROGRESS ->{
@@ -139,12 +140,12 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
         val animatorContainerY = ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, 1F)
         val animatorContainerX = ObjectAnimator.ofFloat(iconContainer ,View.SCALE_X, this.scaleX, 1F)
-        animatorContainerY.duration = 350
-        animatorContainerX.duration = 350
+        animatorContainerY.duration = durationScale
+        animatorContainerX.duration = durationScale
         val animatorIconY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, this.scaleY, 1F)
         val animatorIconX = ObjectAnimator.ofFloat(icon ,View.SCALE_X, this.scaleX, 1F)
-        animatorIconY.duration = 350
-        animatorIconX.duration = 350
+        animatorIconY.duration = durationScale
+        animatorIconX.duration = durationScale
 
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.startDelay = 1000
@@ -176,12 +177,12 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
         val animatorContainerY = ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, .85F)
         val animatorContainerX = ObjectAnimator.ofFloat(iconContainer ,View.SCALE_X, this.scaleX, .85F)
-        animatorContainerY.duration = 350
-        animatorContainerX.duration = 350
+        animatorContainerY.duration = durationScale
+        animatorContainerX.duration = durationScale
         val animatorIconY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, this.scaleY, .85F)
         val animatorIconX = ObjectAnimator.ofFloat(icon ,View.SCALE_X, this.scaleX, .85F)
-        animatorIconY.duration = 350
-        animatorIconX.duration = 350
+        animatorIconY.duration = durationScale
+        animatorIconX.duration = durationScale
 
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.startDelay = 1000
@@ -214,12 +215,12 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
         val animatorContainerY = ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, 1.05F)
         val animatorContainerX = ObjectAnimator.ofFloat(iconContainer ,View.SCALE_X, this.scaleX, 1.05F)
-        animatorContainerY.duration = 350
-        animatorContainerX.duration = 350
+        animatorContainerY.duration = durationScale
+        animatorContainerX.duration = durationScale
         val animatorIconY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, this.scaleY, 1.05F)
         val animatorIconX = ObjectAnimator.ofFloat(icon ,View.SCALE_X, this.scaleX, 1.05F)
-        animatorIconY.duration = 350
-        animatorIconX.duration = 350
+        animatorIconY.duration = durationScale
+        animatorIconX.duration = durationScale
 
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.startDelay = 1000
@@ -249,12 +250,12 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
         val animatorContainerY = ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, .85F)
         val animatorContainerX = ObjectAnimator.ofFloat(iconContainer ,View.SCALE_X, this.scaleX, .85F)
-        animatorContainerY.duration = 350
-        animatorContainerX.duration = 350
+        animatorContainerY.duration = durationScale
+        animatorContainerX.duration = durationScale
         val animatorIconY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, this.scaleY, .85F)
         val animatorIconX = ObjectAnimator.ofFloat(icon ,View.SCALE_X, this.scaleX, .85F)
-        animatorIconY.duration = 350
-        animatorIconX.duration = 350
+        animatorIconY.duration = durationScale
+        animatorIconX.duration = durationScale
 
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.startDelay = 1000
@@ -279,6 +280,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
     private fun translationAnimation(viewOne: ImageUnify, viewTwo: ImageUnify){
 
+        val durationTranslation = 600L
         val animator = AnimatorSet()
         val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
         val alphaAnimObjOne: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(viewOne, alphaAnimPropOne)
@@ -289,8 +291,8 @@ class QuestWidgetItemView @JvmOverloads constructor(
         val alphaAnimObjTwo: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(viewTwo, alphaAnimPropTwo)
 
         val animationTopToCenter = ObjectAnimator.ofFloat(viewTwo, View.TRANSLATION_Y, -dpToPx(56), 0f)
-        animationCenterToBottom.duration = 600
-        animationTopToCenter.duration = 600
+        animationCenterToBottom.duration = durationTranslation
+        animationTopToCenter.duration = durationTranslation
         animator.playTogether(alphaAnimObjOne, animationCenterToBottom, alphaAnimObjTwo, animationTopToCenter)
         animator.addListener(object : Animator.AnimatorListener{
             override fun onAnimationStart(p0: Animator?) {
