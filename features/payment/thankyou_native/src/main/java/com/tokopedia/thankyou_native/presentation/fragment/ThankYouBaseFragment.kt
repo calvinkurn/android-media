@@ -549,7 +549,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.displayAds(cpmModel)
 
-        attachTopAdsView(cpmModel.data?.get(0)?.cpm?.layout == 0)
+        attachTopAdsView(cpmModel.data?.get(0)?.cpm?.position == 1)
     }
 
     private fun attachTopAdsView(above: Boolean) {
