@@ -160,7 +160,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
 
             OrderItemType.BUNDLE -> {
                 titleView.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-                totalPriceView.setWeight(Typography.REGULAR)
+                totalPriceView.setWeight(Typography.BOLD)
                 shopItemView.findViewById<ImageUnify>(R.id.ivProductBundle).visible()
                 shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameCountPrice).gone()
             }
