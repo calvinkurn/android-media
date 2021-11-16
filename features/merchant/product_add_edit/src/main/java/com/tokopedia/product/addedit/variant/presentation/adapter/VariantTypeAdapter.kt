@@ -81,6 +81,8 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         return items[position]
     }
 
+    fun getItems(): List<VariantDetail> = items
+
     fun deselectItem(adapterPosition: Int) {
         selectedItems[adapterPosition] = ViewHolderState.NORMAL
         manageUnselectedItems(getSelectedCount())

@@ -5,12 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.variant.data.model.AllVariant
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeSuggestionViewHolder
 
 class VariantTypeSuggestionAdapter : RecyclerView.Adapter<VariantTypeSuggestionViewHolder>() {
 
     private var highlightCharLength: Int = 0
-    private var items: MutableList<String> = mutableListOf()
+    private var items: MutableList<AllVariant> = mutableListOf()
     private var onItemClickedListener: ((position: Int, variantTypeName: String) -> Unit)? = null
 
     override fun getItemCount(): Int {
@@ -24,7 +25,7 @@ class VariantTypeSuggestionAdapter : RecyclerView.Adapter<VariantTypeSuggestionV
     }
 
     override fun onBindViewHolder(holder: VariantTypeSuggestionViewHolder, position: Int) {
-        val variantUnitValue = items[position]
+        val variantUnitValue = items[position].variantName
         holder.bindData(variantUnitValue, highlightCharLength)
     }
 
@@ -33,24 +34,19 @@ class VariantTypeSuggestionAdapter : RecyclerView.Adapter<VariantTypeSuggestionV
 
         viewHolder.binding?.root?.setOnClickListener {
             val position = viewHolder.adapterPosition
-            onItemClickedListener?.invoke(position, items[position])
+            onItemClickedListener?.invoke(position, items[position].variantName)
         }
 
         return viewHolder
     }
 
-    fun setData(items: List<String>) {
+    fun setData(items: List<AllVariant>) {
         this.items = items.toMutableList()
         notifyDataSetChanged()
     }
 
-    fun addData(item: String) {
-        this.items.add(item)
-        notifyDataSetChanged()
-    }
-
-    fun getItem(position: Int): String {
-        return items[position]
+    fun getItemFromVariantName(variantTypeName: String): AllVariant? {
+        return items.find { it.variantName.equals(variantTypeName, ignoreCase = true) }
     }
 
     fun setHighlightCharLength(length: Int) {

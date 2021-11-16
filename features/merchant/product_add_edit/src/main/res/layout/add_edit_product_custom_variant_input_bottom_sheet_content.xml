@@ -23,6 +23,7 @@
         android:paddingHorizontal="16dp"
         android:text="@string/label_variant_name_recommendation"
         android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
         app:typographyType="heading_6" />
 
     <androidx.recyclerview.widget.RecyclerView

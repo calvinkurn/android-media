@@ -9,27 +9,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.databinding.AddEditProductCustomVariantInputBottomSheetContentBinding
 import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
+import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.di.DaggerAddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeSuggestionAdapter
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class CustomVariantInputBottomSheet (
-    private val variantTypeName: String = ""
+    private val variantTypeName: String = "",
+    private val variantDetails: List<VariantDetail> = emptyList()
 ) : BottomSheetUnify() {
 
     @Inject
     lateinit var viewModel: AddEditProductVariantViewModel
     private var binding by autoClearedNullable<AddEditProductCustomVariantInputBottomSheetContentBinding>()
-    private var onDataSubmitted: ((variantTypeName: String) -> Unit)? = null
+    private var onCustomVariantTypeSubmitted: ((variantTypeName: String) -> Unit)? = null
+    private var onPredefinedVariantTypeSubmitted: ((variantDetail: VariantDetail) -> Unit)? = null
     private val variantTypeSuggestionAdapter = VariantTypeSuggestionAdapter()
 
     init {
@@ -59,6 +66,8 @@ class CustomVariantInputBottomSheet (
         setupButtonSave()
 
         observeVariantTitleValidationStatus()
+        observeVariantTypeSearchResult()
+        observeGetVariantDetailResult()
     }
 
     private fun initInjector() {
@@ -79,7 +88,7 @@ class CustomVariantInputBottomSheet (
     private fun setupButtonSave() {
         binding?.buttonSave?.setOnClickListener {
             val inputText = binding?.textFieldVariantTypeInput?.getText().orEmpty()
-            viewModel.validateVariantTitle(inputText)
+            viewModel.validateVariantTitle(inputText, variantDetails)
         }
     }
 
@@ -89,11 +98,11 @@ class CustomVariantInputBottomSheet (
             binding?.textFieldVariantTypeInput?.setMessage("")
             binding?.textFieldVariantTypeInput?.isInputError = false
             variantTypeSuggestionAdapter.setHighlightCharLength(it.length)
+            viewModel.getAllVariantFromKeyword(it)
         }
     }
 
     private fun setupRecyclerViewSuggestion() {
-        variantTypeSuggestionAdapter.setData(List(100) { "Warna$it" })
         variantTypeSuggestionAdapter.setOnItemClickedListener { position, variantTypeName ->
             try {
                 binding?.textFieldVariantTypeInput?.setText(variantTypeName)
@@ -102,10 +111,26 @@ class CustomVariantInputBottomSheet (
                 // no op
             }
         }
-        binding?.recyclerViewVariantSuggestion?.layoutManager = LinearLayoutManager(context)
-        binding?.recyclerViewVariantSuggestion?.adapter = variantTypeSuggestionAdapter
-        binding?.recyclerViewVariantSuggestion?.layoutParams?.height = getScreenHeight()
-        binding?.recyclerViewVariantSuggestion?.requestLayout()
+        binding?.recyclerViewVariantSuggestion?.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = variantTypeSuggestionAdapter
+            layoutParams?.height = getScreenHeight()
+            requestLayout()
+        }
+    }
+
+    private fun observeVariantTypeSearchResult() {
+        viewModel.variantTypeSearchResult.observe(viewLifecycleOwner) { searchResult ->
+            if (searchResult is Success) {
+                variantTypeSuggestionAdapter.setData(searchResult.data)
+                binding?.typographyRecommendationTitle?.isVisible = searchResult.data.isNotEmpty()
+            } else if (searchResult is Fail) {
+                val errorMessage = ErrorHandler.getErrorMessage(requireContext(),
+                    searchResult.throwable)
+                binding?.textFieldVariantTypeInput?.setMessage(errorMessage)
+                binding?.textFieldVariantTypeInput?.isInputError = true
+            }
+        }
     }
 
     private fun observeVariantTitleValidationStatus() {
@@ -134,13 +159,31 @@ class CustomVariantInputBottomSheet (
         }
     }
 
-    private fun submitData(variantTitle: String) {
-        dismiss()
-        onDataSubmitted?.invoke(variantTitle)
+    private fun observeGetVariantDetailResult() {
+        viewModel.getVariantDetailResult.observe(viewLifecycleOwner) {
+            if (it is Success) {
+                onPredefinedVariantTypeSubmitted?.invoke(it.data)
+            }
+            dismiss()
+        }
     }
 
-    fun setOnDataSubmitted(listener: (variantTypeName: String) -> Unit) {
-        onDataSubmitted = listener
+    private fun submitData(variantTitle: String) {
+        val newVariantType = variantTypeSuggestionAdapter.getItemFromVariantName(variantTitle)
+        if (newVariantType == null) {
+            dismiss()
+            onCustomVariantTypeSubmitted?.invoke(variantTitle)
+        } else {
+            viewModel.getVariantDetailFromVariantId(newVariantType.variantId)
+        }
+    }
+
+    fun setOnCustomVariantTypeSubmitted(listener: (variantTypeName: String) -> Unit) {
+        onCustomVariantTypeSubmitted = listener
+    }
+
+    fun setOnPredefinedVariantTypeSubmitted(listener: (variantDetail: VariantDetail) -> Unit) {
+        onPredefinedVariantTypeSubmitted = listener
     }
 
     fun show(manager: FragmentManager?) {

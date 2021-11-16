@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.dialog
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,8 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CustomVariantManageBottomSheet(
-    private val selectedVariantDetail: List<VariantDetail>? = null
+    private val selectedVariantDetails: List<VariantDetail>? = null,
+    private val variantDetails: List<VariantDetail>? = null
 ) : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<AddEditProductCustomVariantManageBottomSheetContentBinding>()
@@ -60,17 +62,17 @@ class CustomVariantManageBottomSheet(
         val adapter = VariantTypeSelectedAdapter()
         binding?.recyclerViewVariantSelected?.adapter = adapter
         binding?.recyclerViewVariantSelected?.layoutManager = LinearLayoutManager(context)
-        adapter.setData(selectedVariantDetail?.map {
+        adapter.setData(selectedVariantDetails?.map {
             Pair(it.name, it.variantID == CUSTOM_VARIANT_TYPE_ID)
         }.orEmpty())
         adapter.setOnEditButtonClickedListener {
-            selectedVariantDetail?.getOrNull(it)?.let { variantDetail ->
+            selectedVariantDetails?.getOrNull(it)?.let { variantDetail ->
                 showEditConfDialog(variantDetail)
             }
             dismiss()
         }
         adapter.setOnDeleteButtonClickedListener {
-            selectedVariantDetail?.getOrNull(it)?.let { variantDetail ->
+            selectedVariantDetails?.getOrNull(it)?.let { variantDetail ->
                 showDeleteConfDialog(variantDetail)
             }
             dismiss()
@@ -118,11 +120,14 @@ class CustomVariantManageBottomSheet(
     }
 
     private fun showEditConfDialog(variantDetail: VariantDetail) {
-        val bottomSheet = CustomVariantInputBottomSheet(variantDetail.name)
-        bottomSheet.setOnDataSubmitted { newVariantName ->
+        val bottomSheet = CustomVariantInputBottomSheet(variantDetail.name, variantDetails.orEmpty())
+        bottomSheet.setOnCustomVariantTypeSubmitted { newVariantName ->
             onVariantTypeEditedListener?.invoke(
                 variantDetail.apply { name = newVariantName }
             )
+        }
+        bottomSheet.setOnPredefinedVariantTypeSubmitted {
+            Log.e("okhttp", it.toString())
         }
         bottomSheet.show(requireActivity().supportFragmentManager)
     }

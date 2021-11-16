@@ -176,10 +176,14 @@ class AddEditProductVariantFragment :
         context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         buttonAddVariantType.setOnClickListener {
-            val bottomSheet = CustomVariantInputBottomSheet()
-            bottomSheet.setOnDataSubmitted {
+            val bottomSheet = CustomVariantInputBottomSheet(
+                variantDetails = variantTypeAdapter?.getItems().orEmpty())
+            bottomSheet.setOnCustomVariantTypeSubmitted {
                 val customVariantTypeDetail = viewModel.createCustomVariantTypeModel(it)
                 variantTypeAdapter?.addData(customVariantTypeDetail)
+            }
+            bottomSheet.setOnPredefinedVariantTypeSubmitted {
+                variantTypeAdapter?.addData(it)
             }
             bottomSheet.show(childFragmentManager)
         }

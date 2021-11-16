@@ -10,21 +10,22 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.isAllowedString
 import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValidationUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
-import com.tokopedia.product.addedit.variant.data.model.GetVariantCategoryCombinationResponse
+import com.tokopedia.product.addedit.variant.data.model.*
 import com.tokopedia.product.addedit.variant.data.model.Unit
-import com.tokopedia.product.addedit.variant.data.model.UnitValue
-import com.tokopedia.product.addedit.variant.data.model.VariantDetail
+import com.tokopedia.product.addedit.variant.domain.GetAllVariantUseCase
 import com.tokopedia.product.addedit.variant.domain.GetVariantCategoryCombinationUseCase
+import com.tokopedia.product.addedit.variant.domain.GetVariantDataByIdUseCase
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.ADD_MODE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.ALL_MODE
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.ALL_VARIANT_SEARCH_CATEGORY_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_CHAR_VARIANT_TYPE_NAME
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
@@ -34,7 +35,6 @@ import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -43,7 +43,9 @@ import kotlin.collections.HashMap
 class AddEditProductVariantViewModel @Inject constructor(
         private val coroutineDispatcher: CoroutineDispatchers,
         private val getVariantCategoryCombinationUseCase: GetVariantCategoryCombinationUseCase,
-        private val titleValidationUseCase: GetProductTitleValidationUseCase
+        private val titleValidationUseCase: GetProductTitleValidationUseCase,
+        private val getAllVariantUseCase: GetAllVariantUseCase,
+        private val getVariantDataByIdUseCase: GetVariantDataByIdUseCase
 ) : BaseViewModel(coroutineDispatcher.main) {
 
     var clickedVariantPhotoItemPosition: Int? = null
@@ -108,6 +110,12 @@ class AddEditProductVariantViewModel @Inject constructor(
     private var mIsRemovingVariant = MutableLiveData(false)
     val isRemovingVariant: LiveData<Boolean> get() = mIsRemovingVariant
 
+    private var mVariantTypeSearchResult = MutableLiveData<Result<List<AllVariant>>>()
+    val variantTypeSearchResult: LiveData<Result<List<AllVariant>>> get() = mVariantTypeSearchResult
+
+    private var mGetVariantDetailResult = MutableLiveData<Result<VariantDetail>>()
+    val getVariantDetailResult: LiveData<Result<VariantDetail>> get() = mGetVariantDetailResult
+
     private fun isInputValid(isVariantUnitValuesLevel1Empty: Boolean, isVariantUnitValuesLevel2Empty: Boolean, isSingleVariantTypeIsSelected: Boolean): Boolean {
         if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel1Empty) return true
         if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel2Empty) return true
@@ -137,13 +145,45 @@ class AddEditProductVariantViewModel @Inject constructor(
         })
     }
 
-    fun validateVariantTitle(productName: String) {
+    fun getAllVariantFromKeyword(keyword: String) {
+        if (keyword.length < MIN_CHAR_VARIANT_TYPE_NAME) {
+            // don't get data from server, return empty list
+            mVariantTypeSearchResult.value = Success(emptyList())
+        } else {
+            launchCatchError(block = {
+                val result = withContext(coroutineDispatcher.io) {
+                    getAllVariantUseCase.setParams(ALL_VARIANT_SEARCH_CATEGORY_ID, keyword)
+                    getAllVariantUseCase.getDataFiltered()
+                }
+                mVariantTypeSearchResult.value = Success(result)
+            }, onError = {
+                mVariantTypeSearchResult.value = Fail(it)
+            })
+        }
+    }
+
+    fun getVariantDetailFromVariantId(variantId: Int) {
+        launchCatchError(block = {
+            val result = withContext(coroutineDispatcher.io) {
+                getVariantDataByIdUseCase.setParams(variantId)
+                getVariantDataByIdUseCase.executeOnBackground()
+            }
+            mGetVariantDetailResult.value = Success(result.getVariantDataByID.variantDetail)
+        }, onError = {
+            mGetVariantDetailResult.value = Fail(it)
+        })
+    }
+
+    fun validateVariantTitle(productName: String, variantDetails: List<VariantDetail>) {
         when {
-            productName.length < 3 -> {
+            productName.length < MIN_CHAR_VARIANT_TYPE_NAME -> {
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.MINIMUM_CHAR
             }
             !isAllowedString(productName) -> {
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.SYMBOL_ERROR
+            }
+            variantDetails.any { it.name.equals(productName, ignoreCase = true) } -> {
+                mVariantTitleValidationStatus.value = VariantTitleValidationStatus.USED_NAME
             }
             else -> validateIllegalVariantTitle(productName)
         }
