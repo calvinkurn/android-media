@@ -78,4 +78,6 @@
     <string name="play_connecting_chromecast">Connecting to Chromecast</string>
     <string name="play_casting_chromecast">Casting to Chromecast</string>
     <string name="play_disconnect_chromecast">Disconnected from Chromecast</string>
+
+    <string name="play_upcoming_channel_not_started">Live-nya belum mulai, nih. Silakan tunggu atau refresh halaman ini.</string>
 </resources>

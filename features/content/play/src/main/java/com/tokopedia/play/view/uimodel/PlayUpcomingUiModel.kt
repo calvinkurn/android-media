@@ -10,8 +10,11 @@ data class PlayUpcomingUiModel(
     val coverUrl: String = "",
     val startTime: String = "",
     val isAlreadyLive: Boolean = false,
+    val refreshWaitingDuration: Long = REFRESH_WAITING_DURATION,
 ) {
     companion object {
         const val COMING_SOON = "COMING_SOON"
+
+        const val REFRESH_WAITING_DURATION = 5000L
     }
 }

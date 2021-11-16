@@ -244,7 +244,9 @@ class PlayUpcomingFragment @Inject constructor(
             PlayUpcomingState.Reminded, PlayUpcomingState.Unknown -> {
                 actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.HIDDEN)
             }
-            else -> {}
+            PlayUpcomingState.Refresh -> {
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REFRESH)
+            }
         }
     }
 

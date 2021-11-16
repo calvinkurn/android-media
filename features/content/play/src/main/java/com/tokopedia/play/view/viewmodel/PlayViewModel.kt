@@ -1198,8 +1198,7 @@ class PlayViewModel @Inject constructor(
             val channelStatus = getChannelStatus(channelId)
             _observableStatusInfo.value = _observableStatusInfo.value?.copy(
                     statusType = playUiModelMapper.mapStatus(channelStatus),
-                    shouldAutoSwipeOnFreeze = false,
-                    waitingDuration = playUiModelMapper.mapWaitingDuration(channelStatus)
+                    shouldAutoSwipeOnFreeze = false
             )
         }, onError = {
 

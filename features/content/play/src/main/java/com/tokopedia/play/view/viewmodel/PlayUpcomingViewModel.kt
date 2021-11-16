@@ -28,6 +28,7 @@ import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
@@ -79,7 +80,8 @@ class PlayUpcomingViewModel @Inject constructor(
             generalInfo = PlayUpcomingGeneralInfo(
                 title = info.title,
                 coverUrl = info.coverUrl,
-                startTime = info.startTime
+                startTime = info.startTime,
+                waitingDuration = info.refreshWaitingDuration,
             ),
             state = state
         )
@@ -88,6 +90,7 @@ class PlayUpcomingViewModel @Inject constructor(
     private val _shareUiState = _channelDetail.map {
         PlayShareUiState(shouldShow = it.shareInfo.shouldShow)
     }.flowOn(dispatchers.computation)
+
 
     val uiState: Flow<PlayUpcomingUiState> = combine(
         _partnerUiState.distinctUntilChanged(),
@@ -116,7 +119,7 @@ class PlayUpcomingViewModel @Inject constructor(
         _upcomingInfo.value = channelData.upcomingInfo
 
         updateUpcomingState(channelData.upcomingInfo)
-        updateStatusInfo(mChannelId)
+        updateStatusInfo(mChannelId, false)
         updatePartnerInfo(channelData.partnerInfo)
     }
 
@@ -137,14 +140,33 @@ class PlayUpcomingViewModel @Inject constructor(
         }
     }
 
-    private fun updateStatusInfo(channelId: String) {
+    private fun updateStatusInfo(channelId: String, withAction: Boolean = true) {
         viewModelScope.launchCatchError(block = {
             val channelStatus = getChannelStatus(channelId)
-            _observableStatusInfo.value = _observableStatusInfo.value?.copy(
-                statusType = playUiModelMapper.mapStatus(channelStatus),
-                shouldAutoSwipeOnFreeze = false,
-                waitingDuration = playUiModelMapper.mapWaitingDuration(channelStatus)
-            )
+            if(withAction) {
+                when(playUiModelMapper.mapStatus(channelStatus)) {
+                    PlayStatusType.Active -> {
+                        _upcomingState.emit(PlayUpcomingState.WatchNow)
+                    }
+                    else -> {
+                        //TODO: send uiEvent & wait again
+                        performRefreshWaitingDuration()
+
+                        _upcomingState.emit(PlayUpcomingState.Unknown)
+                        _uiEvent.emit(
+                            ShowInfoEvent(
+                                UiString.Resource(R.string.play_upcoming_channel_not_started)
+                            )
+                        )
+                    }
+                }
+            }
+
+            _upcomingInfo.setValue {
+                copy(
+                    refreshWaitingDuration = playUiModelMapper.mapWaitingDuration(channelStatus) ?: PlayUpcomingUiModel.REFRESH_WAITING_DURATION
+                )
+            }
         }, onError = {
 
         })
@@ -187,15 +209,9 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleClickUpcomingButton() {
         when(_upcomingState.value) {
-            PlayUpcomingState.WatchNow -> {
-                handleWatchNowUpcomingChannel()
-                viewModelScope.launch {
-                    _uiEvent.emit(RefreshChannel)
-                }
-            }
-            PlayUpcomingState.RemindMe -> {
-                handleRemindMeUpcomingChannel(userClick = true)
-            }
+            PlayUpcomingState.WatchNow -> handleWatchNowUpcomingChannel()
+            PlayUpcomingState.RemindMe -> handleRemindMeUpcomingChannel(userClick = true)
+            PlayUpcomingState.Refresh -> handleRefreshUpcomingChannel()
             else -> {}
         }
     }
@@ -233,16 +249,38 @@ class PlayUpcomingViewModel @Inject constructor(
     private fun handleWatchNowUpcomingChannel() {
         playAnalytic.clickWatchNow(mChannelId)
         stopSSE()
+
+        viewModelScope.launch {
+            _uiEvent.emit(RefreshChannel)
+        }
+    }
+
+    private fun handleRefreshUpcomingChannel() {
+        updateStatusInfo(mChannelId)
     }
 
     private fun handleUpcomingTimerFinish() {
-        CoroutineScope(dispatchers.computation).launch {
-//            delay(refreshWaitingDuration)
+        viewModelScope.launch {
+            _upcomingState.emit(PlayUpcomingState.Unknown)
+            _uiEvent.emit(
+                ShowInfoEvent(
+                    UiString.Resource(R.string.play_upcoming_channel_not_started)
+                )
+            )
+        }
+        performRefreshWaitingDuration()
+    }
+
+    private fun performRefreshWaitingDuration() {
+        viewModelScope.launchCatchError(dispatchers.computation, block = {
+            delay(_upcomingInfo.value.refreshWaitingDuration)
 
             val isAlreadyLive = _upcomingState.value == PlayUpcomingState.WatchNow
             if(!isAlreadyLive) {
-                // TODO: Send event to PlayUpcomingFragment
+                _upcomingState.emit(PlayUpcomingState.Refresh)
             }
+        }) {
+
         }
     }
 

@@ -18,6 +18,7 @@ data class PlayUpcomingGeneralInfo(
     val title: String,
     val coverUrl: String,
     val startTime: String,
+    val waitingDuration: Long,
 )
 
 sealed class PlayUpcomingState {
