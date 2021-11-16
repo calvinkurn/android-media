@@ -45,6 +45,7 @@ class UpcomingActionButtonViewComponent(
                 button.text = getString(R.string.play_remind_me)
                 button.buttonVariant = UnifyButton.Variant.FILLED
                 button.buttonType = UnifyButton.Type.MAIN
+                button.isInverse = false
                 show()
             }
             Status.WATCH_NOW -> {
@@ -52,6 +53,7 @@ class UpcomingActionButtonViewComponent(
                 button.text = getString(R.string.play_watch_now)
                 button.buttonVariant = UnifyButton.Variant.FILLED
                 button.buttonType = UnifyButton.Type.MAIN
+                button.isInverse = false
                 show()
             }
             Status.HIDDEN -> {
@@ -62,6 +64,7 @@ class UpcomingActionButtonViewComponent(
                 button.text = getString(R.string.play_upcoming_refresh)
                 button.buttonVariant = UnifyButton.Variant.GHOST
                 button.buttonType = UnifyButton.Type.ALTERNATE
+                button.isInverse = true
                 show()
             }
             Status.LOADING -> {
