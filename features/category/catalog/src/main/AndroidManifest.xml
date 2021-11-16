@@ -5,7 +5,6 @@
         <activity
             android:name="com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
             android:theme="@style/Theme.WhiteUnify"
-            android:exported="false"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

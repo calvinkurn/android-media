@@ -33,7 +33,8 @@ import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedPr
 import com.tokopedia.product.manage.feature.list.data.model.Header
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel.Active
-import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.*
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.UpdateFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
@@ -85,7 +86,7 @@ import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ProductStoc
 import com.tokopedia.shop.common.domain.interactor.model.adminrevamp.ShopLocationResponse
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.topads.common.data.model.DataDeposit
+import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -94,13 +95,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
 import io.mockk.verifyAll
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
-import rx.Observable
 import java.util.concurrent.TimeUnit
 
 class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
@@ -630,7 +632,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.productListResult
                 .verifySuccessEquals(expectedProductList)
 
-            viewModel.showStockTicker
+            viewModel.showTicker
                 .verifyValueEquals(null)
 
             verifyHideProgressBar()
@@ -659,7 +661,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.productListResult
                 .verifySuccessEquals(Success(listOf<ProductUiModel>()))
 
-            viewModel.showStockTicker
+            viewModel.showTicker
                 .verifyValueEquals(null)
 
             verifyHideProgressBar()
@@ -753,7 +755,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.productListResult
                 .verifySuccessEquals(expectedProductList)
 
-            viewModel.showStockTicker
+            viewModel.showTicker
                 .verifyValueEquals(null)
 
             verifyHideProgressBar()
@@ -761,7 +763,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `given multi location shop when getProductList more than once should set showStockTicker TRUE`() {
+    fun `given non-empty ticker data when getProductList more than once should set showStockTicker TRUE`() {
         runBlocking {
             val isMultiLocationShop = true
 
@@ -780,16 +782,18 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+            onGetTickerData_thenReturn(listOf(mockk()))
 
+            viewModel.getTickerData()
             viewModel.getProductList(shopId, paramsProductList)
 
-            viewModel.showStockTicker
+            viewModel.showTicker
                 .verifyValueEquals(true)
         }
     }
 
     @Test
-    fun `given multi location shop and hideStockTicker called when getProductList again should set showStockTicker TRUE`() {
+    fun `given non-empty ticker data and hideStockTicker called when getProductList again should set showStockTicker TRUE`() {
         runBlocking {
             val isMultiLocationShop = true
 
@@ -806,18 +810,93 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+            onGetTickerData_thenReturn(listOf(mockk()))
 
+            viewModel.getTickerData()
             viewModel.getProductList(shopId)
-            viewModel.hideStockTicker()
+            viewModel.hideTicker()
             viewModel.getProductList(shopId)
 
-            viewModel.showStockTicker
+            viewModel.showTicker
                 .verifyValueEquals(true)
         }
     }
 
     @Test
-    fun `given multi location shop true when get product list should show stock ticker`() {
+    fun `given empty ticker data when getProductList more than once should set showStockTicker TRUE`() {
+        runBlocking {
+            val isMultiLocationShop = true
+
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
+
+            val paramsProductList = createFilterOptions(1)
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+            onGetTickerData_thenReturn(emptyList())
+
+            viewModel.getTickerData()
+            viewModel.getProductList(shopId, paramsProductList)
+
+            viewModel.showTicker
+                .verifyValueEquals(null)
+        }
+    }
+
+    @Test
+    fun `given empty ticker data and hideStockTicker called when getProductList again should set showStockTicker TRUE`() {
+        runBlocking {
+            val isMultiLocationShop = true
+
+            val shopId = "1500"
+            val pictures = listOf(Picture("imageUrl"))
+
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
+            val productListData = ProductListData(ProductList(header = null, data = productList))
+
+            val locationList = listOf(
+                ShopLocationResponse("1", MAIN_LOCATION),
+                ShopLocationResponse("2", OTHER_LOCATION)
+            )
+            onGetWarehouseId_thenReturn(locationList)
+            onGetProductList_thenReturn(productListData)
+            onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
+            onGetTickerData_thenReturn(emptyList())
+
+            viewModel.getTickerData()
+            viewModel.getProductList(shopId)
+            viewModel.hideTicker()
+            viewModel.getProductList(shopId)
+
+            viewModel.showTicker
+                .verifyValueEquals(false)
+        }
+    }
+
+    @Test
+    fun `given non-empty ticker data and non success product list when showStockTicker should not set showStockTicker TRUE`() {
+        runBlocking {
+            onGetTickerData_thenReturn(listOf(mockk()))
+
+            viewModel.getTickerData()
+            viewModel.showTicker()
+
+            viewModel.showTicker
+                .verifyValueEquals(null)
+        }
+    }
+
+    @Test
+    fun `given non-empty ticker data when get product list should show stock ticker`() {
         runBlocking {
             val isMultiLocationShop = true
             val shopId = "1500"
@@ -834,7 +913,9 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetWarehouseId_thenReturn(locationList)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetProductList_thenReturn(productListData)
+            onGetTickerData_thenReturn(listOf(mockk()))
 
+            viewModel.getTickerData()
             viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
             verifyGetWarehouseIdCalled()
@@ -1598,34 +1679,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `when get free claim success should set live data value success`() {
-        val dataDeposit = DataDeposit()
-
-        onGetFreeClaim_thenReturn(dataDeposit)
-
-        viewModel.getFreeClaim("query", "1")
-
-        val expectedResult = Success(dataDeposit)
-
-        viewModel.getFreeClaimResult
-            .verifySuccessEquals(expectedResult)
-    }
-
-    @Test
-    fun `when get free claim error should set live data value fail`() {
-        val error = NullPointerException()
-
-        onGetFreeClaim_thenReturn(error)
-
-        viewModel.getFreeClaim("query", "1")
-
-        val expectedResult = Fail(error)
-
-        viewModel.getFreeClaimResult
-            .verifyErrorEquals(expectedResult)
-    }
-
-    @Test
     fun `when get popups info success should set live data value success`() = runBlocking {
         val productId = "1"
         val showPopup = true
@@ -1783,7 +1836,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
         verifyAll {
             gqlGetShopInfoUseCase.cancelJobs()
-            topAdsGetShopDepositGraphQLUseCase.unsubscribe()
             getShopManagerPopupsUseCase.cancelJobs()
             getProductListUseCase.cancelJobs()
             setFeaturedProductUseCase.cancelJobs()
@@ -2052,10 +2104,20 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     @Test
     fun `when hideStockTicker should set showStockTicker false`() {
-        viewModel.hideStockTicker()
+        viewModel.hideTicker()
 
-        viewModel.showStockTicker
+        viewModel.showTicker
             .verifyValueEquals(false)
+    }
+
+    @Test
+    fun `when getTickerData should set tickerData`() {
+        val tickerData = listOf<TickerData>(mockk())
+        onGetTickerData_thenReturn(tickerData)
+
+        viewModel.getTickerData()
+
+        verifyTickerDataEquals(tickerData)
     }
 
     private fun testGetProductManageAccess(
@@ -2211,22 +2273,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         coEvery { editProductVariantUseCase.execute(any()) } throws error
     }
 
-    private fun onGetFreeClaim_thenReturn(deposit: DataDeposit) {
-        coEvery {
-            topAdsGetShopDepositGraphQLUseCase.createObservable(any())
-        } answers {
-            Observable.just(deposit)
-        }
-    }
-
-    private fun onGetFreeClaim_thenReturn(error: Throwable) {
-        coEvery {
-            topAdsGetShopDepositGraphQLUseCase.createObservable(any())
-        } answers {
-            Observable.error(error)
-        }
-    }
-
     private fun onGetPopupsInfo_thenReturn(showPopup: Boolean) {
         coEvery {
             getShopManagerPopupsUseCase.execute(any())
@@ -2267,6 +2313,12 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         coEvery {
             getAdminInfoShopLocationUseCase.execute(any())
         } returns locationList
+    }
+
+    private fun onGetTickerData_thenReturn(tickerData: List<TickerData>) {
+        every {
+            tickerStaticDataProvider.getTickers(any())
+        } returns tickerData
     }
 
     private fun verifyEditPriceUseCaseCalled() {
@@ -2341,7 +2393,11 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     private fun verifyShowStockTicker() {
-        viewModel.showStockTicker.verifyValueEquals(true)
+        viewModel.showTicker.verifyValueEquals(true)
+    }
+
+    private fun verifyTickerDataEquals(expected: List<TickerData>) {
+        viewModel.tickerData.verifyValueEquals(expected)
     }
 
     private fun createProductManageAccess(
