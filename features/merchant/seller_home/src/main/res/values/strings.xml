@@ -14,9 +14,10 @@
     <string name="sah_home">Home</string>
     <string name="sah_product">Produk</string>
     <string name="sah_chat">Chat</string>
-    <string name="sah_sale">Penjualan</string>
+    <string name="sah_som_list">Daftar Pesanan</string>
     <string name="sah_others">Lainnya</string>
 
+    <string name="sah_order">Pesanan</string>
     <string name="sah_product_list">Daftar Produk</string>
 
     <!--toolbar menu-->
