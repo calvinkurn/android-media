@@ -4,19 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.homecredit.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.homecredit.domain.model.ImageDetail
 import com.tokopedia.homecredit.domain.usecase.HomeCreditUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineDispatcher
 import java.io.File
 import javax.inject.Inject
 
 class HomeCreditViewModel @Inject constructor(
     private val homeCreditUseCase: HomeCreditUseCase,
-    dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.main) {
+    @CoroutineMainDispatcher dispatcher: CoroutineDispatcher
+) : BaseViewModel(dispatcher) {
 
     private val _imageDetailLiveData = MutableLiveData<Result<ImageDetail>>()
     var imageDetailLiveData: LiveData<Result<ImageDetail>> = _imageDetailLiveData
@@ -28,9 +29,10 @@ class HomeCreditViewModel @Inject constructor(
         filePath: File
     ) {
         homeCreditUseCase.saveDetail(
-            imageByte, mCaptureNativeSize, filePath,
             ::onSuccessSave,
-            ::onFailSave
+            ::onFailSave,
+            imageByte, mCaptureNativeSize, filePath
+
         )
     }
 

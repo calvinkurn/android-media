@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 
 class HomeCreditUseCase @Inject constructor(
-    @ApplicationContext val context: Context
+        @ApplicationContext val context: Context
 ) : UseCase<ImageDetail>() {
 
     private lateinit var imgByteArray: ByteArray
@@ -23,11 +23,12 @@ class HomeCreditUseCase @Inject constructor(
     var file: File? = null
 
     fun saveDetail(
-        imageByte: ByteArray,
-        mCaptureNativeSize: Size,
-        filePath: File,
-        success: (ImageDetail) -> Unit,
-        onFail: (Throwable) -> Unit
+            success: (ImageDetail) -> Unit,
+            onFail: (Throwable) -> Unit,
+            imageByte: ByteArray,
+            mCaptureNativeSize: Size,
+            filePath: File
+
     ) {
         this.captureSize = mCaptureNativeSize
         this.imgByteArray = imageByte
@@ -43,19 +44,19 @@ class HomeCreditUseCase @Inject constructor(
     override suspend fun executeOnBackground(): ImageDetail {
         return try {
             val bitmap = CameraUtils.decodeBitmap(
-                imgByteArray,
-                captureSize?.width ?: 0,
-                captureSize?.height ?: 0
+                    imgByteArray,
+                    captureSize?.width ?: 0,
+                    captureSize?.height ?: 0
             )
             if (bitmap != null) {
                 val cameraResultFile: File? = saveToCacheDirectory(imgByteArray)
                 if (cameraResultFile != null) {
                     val compressedByteArray = bitmapToByteArray(bitmap)
                     ImageDetail(
-                        bitmap.height,
-                        bitmap.width,
-                        cameraResultFile.absolutePath,
-                        compressedByteArray.toList()
+                            bitmap.height,
+                            bitmap.width,
+                            cameraResultFile.absolutePath,
+                            compressedByteArray.toList()
                     )
                 } else
                     throw NullPointerException()
@@ -72,9 +73,9 @@ class HomeCreditUseCase @Inject constructor(
         try {
             val stream = ByteArrayOutputStream()
             bitmap?.compress(
-                Bitmap.CompressFormat.JPEG,
-                IMAGE_QUALITY,
-                stream
+                    Bitmap.CompressFormat.JPEG,
+                    IMAGE_QUALITY,
+                    stream
             )
 
             return stream.toByteArray()
@@ -83,7 +84,6 @@ class HomeCreditUseCase @Inject constructor(
         } finally {
             bitmap?.recycle()
         }
-
 
 
     }
