@@ -34,7 +34,6 @@ class UpcomingActionButtonViewComponent(
     }
 
     fun onButtonClick() {
-        setButtonStatus(Status.LOADING)
         listener.onClickActionButton()
     }
 

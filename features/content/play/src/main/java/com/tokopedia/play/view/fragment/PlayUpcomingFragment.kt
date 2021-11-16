@@ -247,6 +247,9 @@ class PlayUpcomingFragment @Inject constructor(
             PlayUpcomingState.Refresh -> {
                 actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.REFRESH)
             }
+            PlayUpcomingState.Loading -> {
+                actionButton.setButtonStatus(UpcomingActionButtonViewComponent.Status.LOADING)
+            }
         }
     }
 

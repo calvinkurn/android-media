@@ -1,7 +1,5 @@
 package com.tokopedia.play.view.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -17,7 +15,6 @@ import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.GetSocketCredentialUseCase
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.setValue
@@ -96,7 +93,8 @@ class PlayUpcomingViewModel @Inject constructor(
         _partnerUiState.distinctUntilChanged(),
         _upcomingInfoUiState.distinctUntilChanged(),
         _shareUiState.distinctUntilChanged(),
-    ) { partner, upcomingInfo, share -> PlayUpcomingUiState(
+    ) { partner, upcomingInfo, share ->
+        PlayUpcomingUiState(
             partner = partner,
             upcomingInfo = upcomingInfo,
             share = share
@@ -105,8 +103,6 @@ class PlayUpcomingViewModel @Inject constructor(
 
     val uiEvent: Flow<PlayViewerNewUiEvent>
         get() = _uiEvent
-
-    private val _observableStatusInfo = MutableLiveData<PlayStatusInfoUiModel>()
 
     private var sseJob: Job? = null
 
@@ -149,7 +145,6 @@ class PlayUpcomingViewModel @Inject constructor(
                         _upcomingState.emit(PlayUpcomingState.WatchNow)
                     }
                     else -> {
-                        //TODO: send uiEvent & wait again
                         performRefreshWaitingDuration()
 
                         _upcomingState.emit(PlayUpcomingState.Unknown)
@@ -214,6 +209,7 @@ class PlayUpcomingViewModel @Inject constructor(
             PlayUpcomingState.Refresh -> handleRefreshUpcomingChannel()
             else -> {}
         }
+        _upcomingState.value = PlayUpcomingState.Loading
     }
 
     private fun handleRemindMeUpcomingChannel(userClick: Boolean)  {
@@ -415,7 +411,15 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleOpenPageResult(isSuccess: Boolean, requestCode: Int) {
-        if (!isSuccess) return
+        if (!isSuccess) {
+            if(requestCode == REQUEST_CODE_LOGIN_REMIND_ME) {
+                viewModelScope.launch {
+                    _upcomingState.value = PlayUpcomingState.RemindMe
+                }
+            }
+            return
+        }
+
         when (requestCode) {
             REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)

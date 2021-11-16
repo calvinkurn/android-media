@@ -27,4 +27,5 @@ sealed class PlayUpcomingState {
     object Reminded: PlayUpcomingState()
     object WatchNow: PlayUpcomingState()
     object Refresh: PlayUpcomingState()
+    object Loading: PlayUpcomingState()
 }
