@@ -157,15 +157,11 @@ class PlayUpcomingViewModel @Inject constructor(
                 }
             }
 
-            _upcomingInfo.setValue {
-                copy(
-                    refreshWaitingDuration = playUiModelMapper.mapWaitingDuration(channelStatus) ?: PlayUpcomingUiModel.REFRESH_WAITING_DURATION
-                )
-            }
+            _upcomingInfo.setValue { copy(refreshWaitingDuration = playUiModelMapper.mapWaitingDuration(channelStatus)) }
         }, onError = {
-            performRefreshWaitingDuration()
+            if(withAction) _upcomingState.emit(PlayUpcomingState.Refresh)
 
-            _upcomingState.emit(PlayUpcomingState.Unknown)
+            _upcomingInfo.setValue { copy(refreshWaitingDuration = PlayUpcomingUiModel.REFRESH_WAITING_DURATION) }
 
             //TODO: ask PO when failed getting status
             _uiEvent.emit(ShowErrorEvent(it))

@@ -13,7 +13,10 @@ data class ChannelStatusResponse(
 
     data class Data(
             @SerializedName("data")
-            val data: List<ChannelStatus> = listOf()
+            val data: List<ChannelStatus> = listOf(),
+
+            @SerializedName("waiting_duration")
+            val waitingDuration: Int = 0,
     )
 
     data class ChannelStatus(
@@ -21,7 +24,5 @@ data class ChannelStatusResponse(
             val channelId: String = "",
             @SerializedName("status")
             val status: String = "",
-            @SerializedName("waiting_duration")
-            val waitingDuration: Int = 0,
     )
 }
