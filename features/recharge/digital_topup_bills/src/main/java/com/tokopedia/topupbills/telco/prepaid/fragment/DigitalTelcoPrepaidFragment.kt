@@ -244,10 +244,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun initViewPager() {
         val pagerAdapter = TelcoTabAdapter(this, object : TelcoTabAdapter.Listener {
             override fun getTabList(): List<TelcoTabItem> {
-                return telcoTabViewModel.getAll() // [Misael] delayed
+                return telcoTabViewModel.getAll()
             }
         })
-        viewPager.adapter = pagerAdapter // [Misael] assignment
+        viewPager.adapter = pagerAdapter
         viewPager.registerOnPageChangeCallback(viewPagerCallback)
         tabLayout.customTabMode = TabLayout.MODE_FIXED
         tabLayout.customTabGravity = TabLayout.GRAVITY_FILL
@@ -616,7 +616,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 )
         )
         listProductTab.add(
-                TelcoTabItem( // [Misael]: here
+                TelcoTabItem(
                         generateBundleProduct(
                                 TelcoComponentName.PRODUCT_PAKET_DATA,
                                 operatorName, TelcoProductType.PRODUCT_LIST
@@ -640,7 +640,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             tabLayout.addNewTab(listProductTab[i].title)
         }
 
-        changeDataSet { telcoTabViewModel.addAll(listProductTab) } // [Misael]
+        changeDataSet { telcoTabViewModel.addAll(listProductTab) }
 
         tabLayout.show()
         separator.show()
@@ -670,7 +670,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         viewPager.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                viewPager.setCurrentItem(itemId, true) // [Misael] here <<<<
+                viewPager.setCurrentItem(itemId, true)
                 viewPager.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
