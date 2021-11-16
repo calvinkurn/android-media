@@ -3,8 +3,8 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.model.AffiliateRecommendedProductData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
 import com.tokopedia.affiliate.usecase.AffiliateRecommendedProductUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -18,7 +18,7 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
-    private var totalItemsCount = MutableLiveData<Int>()
+    private var pageInfo = MutableLiveData<AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.PageInfo>()
     private var errorMessage = MutableLiveData<String>()
     private val pageLimit = 20
     var isUserBlackListed : Boolean = false
@@ -27,7 +27,7 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
         shimmerVisibility.value = true
         launchCatchError(block = {
             affiliateRecommendedProductUseCase.affiliateGetRecommendedProduct(identifier,page,pageLimit).recommendedAffiliateProduct?.data?.let {
-                totalItemsCount.value = it.pageInfo?.totalCount
+                pageInfo.value = it.pageInfo
                 val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
                 it.cards?.firstOrNull()?.items?.let { items ->
                     for (product in items){
@@ -48,6 +48,6 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
 
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getErrorMessage(): LiveData<String> = errorMessage
-    fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
+    fun getAffiliateItemCount(): LiveData<AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.PageInfo> = pageInfo
     fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
 }

@@ -78,7 +78,7 @@
     <string name="affiliate_daftar">Daftar</string>
     <string name="affiliate_masuk">Masuk</string>
     <string name="affiliate_black_list_title">Oops, akun kamu bermasalah </string>
-    <string name="affiliate_black_list_description"><![CDATA[Untuk melanjutkan aktivitas di Tokopedia Affiliate, segera <a href="tokopedia://affiliate/help">Perbaiki Akunmu.</a>]]></string>
+    <string name="affiliate_black_list_description"><![CDATA[Untuk melanjutkan aktivitas di Tokopedia Affiliate, segera Perbaiki Akunmu]]></string>
     <string name="affiliate_login_ticker_text"><![CDATA[Akunmu sedang bermasalah. <a href="">Selengkapnya</a>]]></string>
     <string name="affiliate_simpan">Simpan</string>
     <string name="affiliate_hai_ana_selamat_bergabung_di_tokopedia_affiliate">Hai Ana, selamat bergabung di Tokopedia Affiliate!</string>
