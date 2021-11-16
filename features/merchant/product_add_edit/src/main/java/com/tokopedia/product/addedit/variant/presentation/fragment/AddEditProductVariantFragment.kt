@@ -173,56 +173,32 @@ class AddEditProductVariantFragment :
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let { activity?.window?.decorView?.setBackgroundColor(
+            androidx.core.content.ContextCompat.getColor(it,
+                com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        buttonAddVariantType.setOnClickListener {
-            val bottomSheet = CustomVariantInputBottomSheet(
-                variantDetails = variantTypeAdapter?.getItems().orEmpty())
-            bottomSheet.setOnCustomVariantTypeSubmitted {
-                val customVariantTypeDetail = viewModel.createCustomVariantTypeModel(it)
-                variantTypeAdapter?.addData(customVariantTypeDetail)
-            }
-            bottomSheet.setOnPredefinedVariantTypeSubmitted {
-                variantTypeAdapter?.addData(it)
-            }
-            bottomSheet.show(childFragmentManager)
-        }
+        setupButtonAddVariantType()
+        setupTitleLayoutVariantType()
+        setupVariantRecyclerViews()
+        setupBaseCancelationDialog()
+        setupButtonSave()
+        setupToolbarActions()
+
         showCoachmarkCustomVariantType()
-        titleLayoutVariantType.setActionButtonOnClickListener {
-            val bottomSheet = CustomVariantManageBottomSheet(variantTypeAdapter?.getSelectedItems())
-            bottomSheet.setOnVariantTypeEditedListener {
-                variantTypeAdapter?.deleteItem(it)
-                variantTypeAdapter?.addData(it)
-            }
-            bottomSheet.setOnVariantTypeDeletedListener {
-                variantTypeAdapter?.deleteItem(it)
-            }
-            bottomSheet.show(childFragmentManager)
+
+        // sizechart onclick picture listener
+        cardSizechart.setOnClickListener {
+            onSizechartClicked()
         }
 
-        variantTypeAdapter = VariantTypeAdapter(this)
-        variantValueAdapterLevel1 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_ONE_POSITION)
-        variantValueAdapterLevel2 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_TWO_POSITION)
-        variantPhotoAdapter = VariantPhotoAdapter(this)
+        // button "tambah" variant values level 1 on click listener
+        linkAddVariantValueLevel1.setOnClickListener {
+            addVariantValueAtLevel(VARIANT_VALUE_LEVEL_ONE_POSITION)
+        }
 
-        recyclerViewVariantType.adapter = variantTypeAdapter
-        recyclerViewVariantValueLevel1.adapter = variantValueAdapterLevel1
-        recyclerViewVariantValueLevel2.adapter = variantValueAdapterLevel2
-        recyclerViewVariantPhoto.addItemDecoration(RecyclerViewItemDecoration(requireContext()))
-        recyclerViewVariantPhoto.adapter = variantPhotoAdapter
-        setRecyclerViewToFlex(recyclerViewVariantType)
-        setRecyclerViewToFlex(recyclerViewVariantValueLevel1)
-        setRecyclerViewToFlex(recyclerViewVariantValueLevel2)
-        setRecyclerViewToHorizontal(recyclerViewVariantPhoto)
-
-        // setup base cancellation dialog
-        context?.run {
-            cancellationDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            cancellationDialog?.setPrimaryCTAText(getString(R.string.action_cancel_cancellation))
-            cancellationDialog?.setSecondaryCTAText(getString(R.string.action_confirm_cancellation))
-            cancellationDialog?.setPrimaryCTAClickListener {
-                cancellationDialog?.dismiss()
-            }
+        // button "tambah" variant values level 2 on click listener
+        linkAddVariantValueLevel2.setOnClickListener {
+            addVariantValueAtLevel(VARIANT_VALUE_LEVEL_TWO_POSITION)
         }
 
         observeIsEditMode()
@@ -235,54 +211,6 @@ class AddEditProductVariantFragment :
         observeIsEditMode()
         observeIsRemovingVariant()
 
-        cardSizechart.setOnClickListener {
-            onSizechartClicked()
-        }
-
-        // button "tambah" variant values level 1 on click listener
-        linkAddVariantValueLevel1.setOnClickListener {
-            if (variantDataValuePicker?.isVisible == true) return@setOnClickListener
-            val variantData: VariantDetail = viewModel.getVariantData(VARIANT_VALUE_LEVEL_ONE_POSITION)
-            val selectedVariantUnitValues = mutableListOf<UnitValue>()
-            selectedVariantUnitValues.addAll((viewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_ONE_POSITION)))
-            showVariantDataValuePicker(variantData, VARIANT_VALUE_LEVEL_ONE_POSITION, viewModel.getSelectedVariantUnit(VARIANT_VALUE_LEVEL_ONE_POSITION), selectedVariantUnitValues)
-            viewModel.isEditMode.value?.let { isEditMode ->
-                val variantTypeName = variantData.name
-                trackAddingVariantDetailValueEvent(isEditMode, variantTypeName, shopId)
-            }
-        }
-
-        // button "tambah" variant values level 2 on click listener
-        linkAddVariantValueLevel2.setOnClickListener {
-            if (variantDataValuePicker?.isVisible == true) return@setOnClickListener
-            val variantData: VariantDetail = viewModel.getVariantData(VARIANT_VALUE_LEVEL_TWO_POSITION)
-            val selectedVariantUnitValues = mutableListOf<UnitValue>()
-            selectedVariantUnitValues.addAll((viewModel.getSelectedVariantUnitValues(VARIANT_VALUE_LEVEL_TWO_POSITION)))
-            showVariantDataValuePicker(variantData, VARIANT_VALUE_LEVEL_TWO_POSITION, viewModel.getSelectedVariantUnit(VARIANT_VALUE_LEVEL_TWO_POSITION), selectedVariantUnitValues)
-            viewModel.isEditMode.value?.let { isEditMode ->
-                val variantTypeName = variantData.name
-                trackAddingVariantDetailValueEvent(isEditMode, variantTypeName, shopId)
-            }
-        }
-
-        // button save on click listener
-        buttonSave.setOnClickListener {
-            // track click action on continue button
-            viewModel.isEditMode.value?.let { isEditMode ->
-                if (isEditMode) ProductEditVariantTracking.continueToVariantDetailPage(shopId)
-                else ProductAddVariantTracking.continueToVariantDetailPage(shopId)
-            }
-            // perform the save button function
-            if (viewModel.isRemovingVariant.value == true) {
-                submitVariantInput()
-            } else {
-                val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
-                viewModel.updateVariantInputModel(variantPhotos)
-                startAddEditProductVariantDetailActivity()
-            }
-        }
-
-        setupToolbarActions()
         // stop PLT prepare monitoring
         stopPreparePagePerformanceMonitoring()
     }
@@ -707,6 +635,93 @@ class AddEditProductVariantFragment :
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+    }
+
+    private fun setupButtonSave() {
+        buttonSave.setOnClickListener {
+            // track click action on continue button
+            viewModel.isEditMode.value?.let { isEditMode ->
+                if (isEditMode) ProductEditVariantTracking.continueToVariantDetailPage(shopId)
+                else ProductAddVariantTracking.continueToVariantDetailPage(shopId)
+            }
+            // perform the save button function
+            if (viewModel.isRemovingVariant.value == true) {
+                submitVariantInput()
+            } else {
+                val variantPhotos = variantPhotoAdapter?.getData().orEmpty()
+                viewModel.updateVariantInputModel(variantPhotos)
+                startAddEditProductVariantDetailActivity()
+            }
+        }
+    }
+
+    private fun setupBaseCancelationDialog() {
+        context?.run {
+            cancellationDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            cancellationDialog?.setPrimaryCTAText(getString(R.string.action_cancel_cancellation))
+            cancellationDialog?.setSecondaryCTAText(getString(R.string.action_confirm_cancellation))
+            cancellationDialog?.setPrimaryCTAClickListener {
+                cancellationDialog?.dismiss()
+            }
+        }
+    }
+
+    private fun setupVariantRecyclerViews() {
+        variantTypeAdapter = VariantTypeAdapter(this)
+        variantValueAdapterLevel1 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_ONE_POSITION)
+        variantValueAdapterLevel2 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_TWO_POSITION)
+        variantPhotoAdapter = VariantPhotoAdapter(this)
+
+        recyclerViewVariantType.adapter = variantTypeAdapter
+        recyclerViewVariantValueLevel1.adapter = variantValueAdapterLevel1
+        recyclerViewVariantValueLevel2.adapter = variantValueAdapterLevel2
+        recyclerViewVariantPhoto.addItemDecoration(RecyclerViewItemDecoration(requireContext()))
+        recyclerViewVariantPhoto.adapter = variantPhotoAdapter
+        setRecyclerViewToFlex(recyclerViewVariantType)
+        setRecyclerViewToFlex(recyclerViewVariantValueLevel1)
+        setRecyclerViewToFlex(recyclerViewVariantValueLevel2)
+        setRecyclerViewToHorizontal(recyclerViewVariantPhoto)
+    }
+
+    private fun setupTitleLayoutVariantType() {
+        titleLayoutVariantType.setActionButtonOnClickListener {
+            val bottomSheet = CustomVariantManageBottomSheet(variantTypeAdapter?.getSelectedItems())
+            bottomSheet.setOnVariantTypeEditedListener {
+                variantTypeAdapter?.deleteItem(it)
+                variantTypeAdapter?.addData(it)
+            }
+            bottomSheet.setOnVariantTypeDeletedListener {
+                variantTypeAdapter?.deleteItem(it)
+            }
+            bottomSheet.show(childFragmentManager)
+        }
+    }
+
+    private fun setupButtonAddVariantType() {
+        buttonAddVariantType.setOnClickListener {
+            val bottomSheet = CustomVariantInputBottomSheet(
+                variantDetails = variantTypeAdapter?.getItems().orEmpty())
+            bottomSheet.setOnCustomVariantTypeSubmitted {
+                val customVariantTypeDetail = viewModel.createCustomVariantTypeModel(it)
+                variantTypeAdapter?.addData(customVariantTypeDetail)
+            }
+            bottomSheet.setOnPredefinedVariantTypeSubmitted {
+                variantTypeAdapter?.addData(it)
+            }
+            bottomSheet.show(childFragmentManager)
+        }
+    }
+
+    private fun addVariantValueAtLevel(level: Int) {
+        if (variantDataValuePicker?.isVisible == true) return
+        val variantData: VariantDetail = viewModel.getVariantData(level)
+        val selectedVariantUnitValues = mutableListOf<UnitValue>()
+        selectedVariantUnitValues.addAll((viewModel.getSelectedVariantUnitValues(level)))
+        showVariantDataValuePicker(variantData, level, viewModel.getSelectedVariantUnit(level), selectedVariantUnitValues)
+        viewModel.isEditMode.value?.let { isEditMode ->
+            val variantTypeName = variantData.name
+            trackAddingVariantDetailValueEvent(isEditMode, variantTypeName, shopId)
+        }
     }
 
     private fun submitVariantInput() {

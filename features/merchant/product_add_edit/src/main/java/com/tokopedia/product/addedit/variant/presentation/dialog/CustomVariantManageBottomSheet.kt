@@ -122,12 +122,10 @@ class CustomVariantManageBottomSheet(
     private fun showEditConfDialog(variantDetail: VariantDetail) {
         val bottomSheet = CustomVariantInputBottomSheet(variantDetail.name, variantDetails.orEmpty())
         bottomSheet.setOnCustomVariantTypeSubmitted { newVariantName ->
-            onVariantTypeEditedListener?.invoke(
-                variantDetail.apply { name = newVariantName }
-            )
+            onVariantTypeEditedListener?.invoke(variantDetail.apply { name = newVariantName })
         }
         bottomSheet.setOnPredefinedVariantTypeSubmitted {
-            Log.e("okhttp", it.toString())
+            onVariantTypeEditedListener?.invoke(it)
         }
         bottomSheet.show(requireActivity().supportFragmentManager)
     }
