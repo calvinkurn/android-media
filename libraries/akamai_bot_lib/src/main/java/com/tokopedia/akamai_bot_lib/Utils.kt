@@ -154,8 +154,8 @@ fun <E> setExpire(
 
 fun getQueryListFromQueryString(input: String): MutableList<String> {
     val hash = input.hashCode()
-    if (map[hash]?.isNotEmpty() == true) {
-        return map[hash]?.let { mutableListOf(it) } ?: mutableListOf()
+    map[hash]?.let {
+        return mutableListOf(it)
     }
 
     val m = getAnyPattern.matcher(input.replace("\n", " "))
