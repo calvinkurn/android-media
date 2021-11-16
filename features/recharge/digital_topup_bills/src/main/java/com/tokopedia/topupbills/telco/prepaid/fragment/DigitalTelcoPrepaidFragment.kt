@@ -668,24 +668,18 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCategoryType.CATEGORY_ROAMING -> itemId = 2
         }
 
-        viewPager.post {
-            if (viewPager != null) {
+        viewPager.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
                 viewPager.setCurrentItem(itemId, true)
+                if (autoSelectTabProduct) {
+                    tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
+                        it.select()
+                    }
+                    autoSelectTabProduct = false
+                }
+                viewPager.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
-        }
-//        viewPager.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
-//            override fun onGlobalLayout() {
-//                viewPager.setCurrentItem(itemId, true)
-//                viewPager.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//            }
-//        })
-
-        if (autoSelectTabProduct) {
-            tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
-                it.select()
-            }
-            autoSelectTabProduct = false
-        }
+        })
     }
 
     private fun getLabelActiveCategory(): String {
