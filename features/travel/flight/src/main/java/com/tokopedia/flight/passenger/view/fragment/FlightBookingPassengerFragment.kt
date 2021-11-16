@@ -940,7 +940,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
 
     private fun resetEditTextErrorText() {
-        binding?.etFirstName?.error = ""
+        binding?.etFirstName?.error = null
 
         binding?.tilLastName?.setMessage("")
         binding?.tilLastName?.setError(false)
