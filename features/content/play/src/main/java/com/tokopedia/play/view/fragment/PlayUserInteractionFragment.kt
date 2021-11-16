@@ -1583,24 +1583,12 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Change constraint
      */
-    private fun changePinnedMessageConstraint(
-            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
-            channelType: PlayChannelType = playViewModel.channelType
-    ) {
+    private fun changePinnedMessageConstraint() {
         val pinnedMessageId = pinnedView?.id ?: return
-        if (videoPlayer.isYouTube && channelType.isVod) {
-            view?.changeConstraint {
-                connect(pinnedMessageId, ConstraintSet.BOTTOM, likeView.id, ConstraintSet.TOP, offset8)
-            }
-        } else if (channelType.isLive || pinnedVoucherView?.isShown() == true || productFeaturedView?.isShown() == true) {
-            val pinnedVoucherId = pinnedVoucherView?.id ?: return
-            view?.changeConstraint {
-                connect(pinnedMessageId, ConstraintSet.BOTTOM, pinnedVoucherId, ConstraintSet.TOP, offset8)
-            }
-        } else {
-            view?.changeConstraint {
-                connect(pinnedMessageId, ConstraintSet.BOTTOM, videoControlView.id, ConstraintSet.TOP, offset8)
-            }
+        val pinnedVoucherId = pinnedVoucherView?.id ?: return
+        view?.changeConstraint {
+            connect(pinnedMessageId, ConstraintSet.BOTTOM, pinnedVoucherId, ConstraintSet.TOP, offset8)
+            setGoneMargin(pinnedMessageId, ConstraintSet.BOTTOM, offset8)
         }
     }
 
@@ -1615,37 +1603,13 @@ class PlayUserInteractionFragment @Inject constructor(
          */
         val quickReplyViewId = quickReplyView?.id ?: return
         val topmostLikeView = this.topmostLikeView ?: return
-        if (videoPlayer.isYouTube && channelType.isVod) {
-            viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
-                val pinnedView = this@PlayUserInteractionFragment.pinnedView
-                val anchorId = if (pinnedView == null) topmostLikeView.id
-                else {
-                    val measurePinnedView = asyncCatchError(block = { measureWithTimeout { pinnedView.rootView.awaitLayout() } }) {}
-                    val measureTopmostLikeView = asyncCatchError(block = { measureWithTimeout { topmostLikeView.rootView.awaitLayout() } }) {}
-                    awaitAll(measurePinnedView, measureTopmostLikeView)
-
-                    if (pinnedMessage?.shouldShow == true && pinnedView.rootView.y < topmostLikeView.rootView.y) pinnedView.id
-                    else topmostLikeView.id
+        view?.changeConstraint {
+            if(quickReplyView?.isShown() == true) {
+                sendChatView?.let {
+                    connect(quickReplyViewId, ConstraintSet.BOTTOM, it.id, ConstraintSet.TOP, offset8)
                 }
-
-                view?.changeConstraint {
-                    connect(
-                            quickReplyViewId,
-                            ConstraintSet.BOTTOM,
-                            anchorId,
-                            ConstraintSet.TOP
-                    )
-                }
-            }
-        } else {
-            view?.changeConstraint {
-                if(quickReplyView?.isShown() == true) {
-                    sendChatView?.let {
-                        connect(quickReplyViewId, ConstraintSet.BOTTOM, it.id, ConstraintSet.TOP, offset8)
-                    }
-                } else {
-                    connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
-                }
+            } else {
+                connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
             }
         }
     }
