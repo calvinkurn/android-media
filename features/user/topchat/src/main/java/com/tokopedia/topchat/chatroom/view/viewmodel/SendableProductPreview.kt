@@ -99,6 +99,8 @@ class SendableProductPreview(
             .withImages(listOf(productPreview.imageUrl))
             .withNeedSync(false)
             .withIsSupportVariant(productPreview.isSupportVariant)
+            .withCampaignId(productPreview.campaignId)
+            .withIsPreOrder(productPreview.isPreorder)
             .build()
     }
 

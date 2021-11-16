@@ -22,7 +22,8 @@ open class ProductPreview constructor(
         val isActive: Boolean = true,
         val remainingStock: Int = 1,
         val isSupportVariant: Boolean = false,
-        val campaignId: Long = 0
+        val campaignId: Long = 0,
+        val isPreorder: Boolean = false
 ) {
 
     val status: Int get() = if (isActive) 1 else 0

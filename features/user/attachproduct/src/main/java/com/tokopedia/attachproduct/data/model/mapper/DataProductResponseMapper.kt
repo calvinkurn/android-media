@@ -10,5 +10,6 @@ fun DataProductResponse.mapToAttachUiModel(): AttachProductItemUiModel {
         , this.productPrice, this.shop.shopName, this.originalPrice
         , this.discountPercentage, this.freeOngkir.isActive
         , this.freeOngkir.imageUrl, this.stock, this.childs.isNotEmpty()
+        , this.isPreorder
     )
 }

@@ -335,6 +335,7 @@ open class ProductAttachmentUiModel protected constructor(
             withRating(product.productProfile.rating)
             withIsSupportVariant(product.productProfile.isSupportVariant)
             withCampaignId(product.productProfile.campaignId)
+            withIsPreOrder(product.productProfile.isPreOrder)
             return self()
         }
 

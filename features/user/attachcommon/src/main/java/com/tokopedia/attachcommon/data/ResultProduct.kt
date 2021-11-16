@@ -19,5 +19,6 @@ class ResultProduct constructor(
     val imgUrlFreeOngkir: String = "",
     val stock: Int = 1,
     val isSupportVariant: Boolean = false,
-    val campaignId: Long = 0
+    val campaignId: Long = 0,
+    val isPreorder: Boolean = false
 ) : Parcelable

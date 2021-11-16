@@ -44,6 +44,9 @@ data class DataProductResponse (
     val stock: Int = 1,
 
     @SerializedName("childs")
-    val childs: List<Int> = listOf()
+    val childs: List<Int> = listOf(),
+
+    @SerializedName("isPreorder")
+    val isPreorder: Boolean = false
 
 )

@@ -807,7 +807,8 @@ open class TopChatRoomPresenter @Inject constructor(
                 productFsImageUrl = resultProduct.imgUrlFreeOngkir,
                 remainingStock = resultProduct.stock,
                 isSupportVariant = resultProduct.isSupportVariant,
-                campaignId = resultProduct.campaignId
+                campaignId = resultProduct.campaignId,
+                isPreorder = resultProduct.isPreorder
             )
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)

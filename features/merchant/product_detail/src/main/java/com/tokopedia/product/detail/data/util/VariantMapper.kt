@@ -45,6 +45,7 @@ object VariantMapper {
         val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
         val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
         val isSupportVariant = variants != null
+        val isPreorder = productInfo?.data?.preOrder?.isPreOrderActive() == true
         val productPreview = ProductPreview(
             id = productId,
             imageUrl = productImageUrl,
@@ -64,7 +65,8 @@ object VariantMapper {
             isActive = isActive,
             remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1,
             isSupportVariant = isSupportVariant,
-            campaignId = productInfo?.data?.campaign?.campaignID?.toLongOrNull() ?: 0
+            campaignId = productInfo?.data?.campaign?.campaignID?.toLongOrNull() ?: 0,
+            isPreorder = isPreorder
         )
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)

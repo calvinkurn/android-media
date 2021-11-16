@@ -118,6 +118,7 @@ object TopChatWebSocketParam {
         productProfile.addProperty("is_variant", productPreview.isSupportVariant)
         productProfile.add("variant", productPreview.generateVariantRequest())
         productProfile.addProperty("campaign_id", productPreview.campaignId)
+        productProfile.addProperty("is_preorder", productPreview.isPreorder)
 
         val freeShipping = JsonObject()
         freeShipping.addProperty("is_active", productPreview.productFsIsActive)

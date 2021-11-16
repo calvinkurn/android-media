@@ -10,6 +10,7 @@ query ace_search_product($params: String!) {
                     price
                     stock
                     priceInt
+                    isPreorder
                     shop {
                       id
                       name
