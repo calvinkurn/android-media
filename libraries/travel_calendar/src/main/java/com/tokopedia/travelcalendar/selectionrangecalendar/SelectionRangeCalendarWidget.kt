@@ -212,15 +212,23 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
                         date_out.requestFocus()
                         minDate?.let { dateIn -> onDateInClicked(dateIn) }
                     } else if (minDate != null && maxDate == null && ((!canSelectSameDay && date.after(minDate)) || (canSelectSameDay && !date.before(minDate)))) {
-                        date_out.setText(dateFormat.format(date))
-                        maxDate = date
-                        date_out.requestFocus()
-                        if (listener != null) listener?.onDateClick(minDate ?: Date(), maxDate
-                                ?: date)
-
-                        GlobalScope.launch {
-                            delay(300)
-                            dismissAllowingStateLoss()
+                        if((calendar.selectedDates.size > 1 && !canSelectSameDay) || canSelectSameDay){
+                            date_out.setText(dateFormat.format(date))
+                            maxDate = date
+                            date_out.requestFocus()
+                            if (listener != null) {
+                                listener?.onDateClick(
+                                    minDate ?: Date(), maxDate
+                                        ?: date
+                                )
+                                GlobalScope.launch {
+                                    delay(300)
+                                    dismissAllowingStateLoss()
+                                }
+                            }
+                        }else{
+                            minDate = date
+                            maxDate = null
                         }
                     }
                 }
