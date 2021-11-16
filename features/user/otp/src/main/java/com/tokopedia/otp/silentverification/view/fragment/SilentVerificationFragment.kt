@@ -10,6 +10,8 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieComposition
@@ -32,6 +34,7 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
+import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -57,6 +60,8 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var networkClientHelper: NetworkClientHelper
+
+    private var isFirstTry = true
 
     private lateinit var viewModel: SilentVerificationViewModel
     private val binding by viewBinding(FragmentSilentVerificationBinding::bind)
@@ -101,17 +106,35 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         requestOtp()
     }
 
+    private fun onSilentVerificationNotPossible() {
+        Toaster.build(requireView(), "Tidak ada koneksi internet", Toaster.LENGTH_LONG).show()
+        binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_fail)
+        binding?.fragmentSilentVerifSubtitle?.text = getString(R.string.fragment_silent_verif_subtitle_fail_change_method)
+
+        binding?.fragmentSilentVerifTryAgainBtn?.show()
+        binding?.fragmentSilentVerifTryAgainBtn?.text = getString(R.string.fragment_silent_verif_label_button_change_method)
+        binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
+            activity?.setResult(RESULT_DELETE_METHOD)
+            activity?.finish()
+        }
+        binding?.fragmentSilentVerifTryChangeMethodBtn?.hide()
+    }
+
     private fun requestOtp() {
-        showLoadingState()
-        if(context != null) {
-            otpData?.run {
-                viewModel.requestSilentVerification(
-                    otpType = otpType.toString(),
-                    mode = modeListData?.modeText ?: "",
-                    msisdn = msisdn,
-                    signature = generateAuthenticitySignature()
-                )
+        if(ConnectivityUtils.isSilentVerificationPossible(activity)) {
+            showLoadingState()
+            if(context != null) {
+                otpData?.run {
+                    viewModel.requestSilentVerification(
+                            otpType = otpType.toString(),
+                            mode = modeListData?.modeText ?: "",
+                            msisdn = msisdn,
+                            signature = generateAuthenticitySignature()
+                    )
+                }
             }
+        } else {
+            onSilentVerificationNotPossible()
         }
     }
 
@@ -123,7 +146,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         viewModel.requestSilentVerificationResponse.observe(viewLifecycleOwner, {
             when(it) {
                 is Success -> onRequestSuccess(it.data)
-                is Fail -> {}
+                is Fail -> onRequestFailed(it.throwable)
             }
         })
 
@@ -137,9 +160,20 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         viewModel.validationResponse.observe(viewLifecycleOwner, {
             when(it) {
                 is Success -> onValidateSuccess(it.data)
-                is Fail -> onValidateFailed()
+                is Fail -> onValidateFailed(it.throwable)
             }
         })
+    }
+
+    private fun onRequestFailed(throwable: Throwable) {
+        if(isFirstTry) {
+            analytics.trackSilentVerificationRequestFailed(throwable.message ?: "OTP Request Failed", otpData?.otpType
+                    ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
+        } else {
+            analytics.trackSilentVerifTryAgainFailed(throwable.message ?: "OTP Request Failed", otpData?.otpType
+                    ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
+        }
+        showErrorState()
     }
 
     private fun showLoadingState() {
@@ -159,10 +193,13 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         binding?.fragmentSilentVerifTryAgainBtn?.hide()
         binding?.fragmentSilentVerifTryChangeMethodBtn?.hide()
         binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
+            analytics.trackSilentVerifTryAgainClick(otpData?.otpType ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
             requestOtp()
             showLoadingState()
+            isFirstTry = false
         }
         binding?.fragmentSilentVerifTryChangeMethodBtn?.setOnClickListener {
+            analytics.trackChooseOtherMethod(otpData?.otpType ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
             activity?.finish()
         }
     }
@@ -202,6 +239,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                         binding?.fragmentSilentVerifSuccessAnim?.show()
                         binding?.fragmentSilentVerifSuccessAnim?.setComposition(result)
                         binding?.fragmentSilentVerifSuccessAnim?.visibility = View.VISIBLE
+                        binding?.fragmentSilentVerifSuccessAnim?.repeatCount = 3
                         binding?.fragmentSilentVerifSuccessAnim?.playAnimation()
 
                         binding?.fragmentSilentVerifSuccessAnim?.addAnimatorListener(object:
@@ -237,6 +275,10 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private fun renderFinalSuccess() {
         context?.run {
             binding?.fragmentSilentVerifTitle?.show()
+            binding?.fragmentSilentVerifTitle?.startAnimation(AlphaAnimation(0F, 1F).apply {
+                duration = 1000
+                fillAfter = true
+            })
             binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_success)
             binding?.fragmentSilentVerifSubtitle?.hide()
         }
@@ -258,14 +300,21 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             analytics.trackSilentVerificationResult(TrackingOtpConstant.Label.LABEL_SUCCESS)
             renderSuccessPage(data)
         } else {
-            onValidateFailed()
-            analytics.trackSilentVerificationResult("${TrackingOtpConstant.Label.LABEL_FAILED}isSuccess:${data.success} - ${data.errorMessage}")
+            onValidateFailed(Throwable(message = "success = false"))
+            analytics.trackSilentVerificationResult("${TrackingOtpConstant.Label.LABEL_FAILED}- success:${data.success} - ${data.errorMessage}")
         }
     }
 
     private fun onRequestSuccess(data: RequestSilentVerificationResult) {
         activity?.let {
             if (data.evUrl.isNotEmpty() && data.tokenId.isNotEmpty() && data.errorCode.isEmpty()) {
+                if(isFirstTry) {
+                    analytics.trackSilentVerificationRequestSuccess(otpData?.otpType
+                            ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
+                } else {
+                    analytics.trackSilentVerifTryAgainSuccess(otpData?.otpType
+                            ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
+                }
                 tokenId = data.tokenId
                 verify(data.evUrl)
             } else if(data.errorCode.isNotEmpty()) {
@@ -284,7 +333,9 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun onValidateFailed() {
+    private fun onValidateFailed(throwable: Throwable) {
+        analytics.trackSilentVerificationResult("${TrackingOtpConstant.Label.LABEL_FAILED}- ${throwable.message}")
+
         binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_fail_limit)
         binding?.fragmentSilentVerifSubtitle?.text = getString(R.string.fragment_silent_verif_subtitle_fail_change_method)
 
@@ -429,6 +480,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         const val SILENT_VERIFICATION_SCREEN = "silentVerification"
 
         const val RESULT_DELETE_METHOD = 100
+        const val OTP_TYPE_SILENT_VERIF = 112
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = SilentVerificationFragment()
