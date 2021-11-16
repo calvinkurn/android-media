@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 class ReviewData(
     @SerializedName("review_id")
     @Expose
-    var reviewId: Int = 0,
+    var reviewId: Long = 0,
 
     @SerializedName("reputation_id")
     @Expose
-    var reputationId: Int = 0,
+    var reputationId: Long = 0,
 
     @SerializedName("review_title")
     @Expose
