@@ -367,13 +367,13 @@ public class FragmentCardIDUpload extends BaseDaggerFragment implements
     }
 
     private void makeCardIDUploadRequest(){
-        if(setNumberWrapperError()) return;
-        if(setNameWrapperError()) return;
+        if (setNumberWrapperError()) return;
+        if (setNameWrapperError()) return;
 
-        if(activityListener != null && activityListener.getDataContatainer() != null) {
+        if (activityListener != null && activityListener.getDataContatainer() != null) {
             kycReqId = activityListener.getDataContatainer().getKycReqId();
         }
-        if(loaderUiListener != null) {
+        if (loaderUiListener != null) {
             loaderUiListener.showProgressDialog();
         }
         documentUploadPresenter.makeDocumentUploadRequest(imagePath, docType, kycReqId);

@@ -2,7 +2,7 @@ package com.tokopedia.checkout.bundle.view.subscriber
 
 import com.tokopedia.checkout.bundle.view.ShipmentContract
 import com.tokopedia.checkout.bundle.view.ShipmentPresenter
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import rx.Subscriber
 import java.util.*

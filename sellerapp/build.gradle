@@ -330,7 +330,6 @@ dependencies {
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
-    implementation projectOrAar(rootProject.ext.features.moengageWrapper)
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core

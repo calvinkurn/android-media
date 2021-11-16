@@ -14,7 +14,7 @@ import java.lang.reflect.Type
 object Teleporter {
     var teleporterPatternList: List<TeleporterPattern>? = null
     var lastFetch: Long = 0L
-    const val DURATION_FETCH = 300000
+    const val DURATION_FETCH = 100000
     const val MAINAPP_TELEPORTER_REMOTE_CONFIG = "android_mainapp_teleporter_v3"
     const val SELLERAPP_TELEPORTER_REMOTE_CONFIG = "android_sellerapp_teleporter_v3"
     val gson = Gson()

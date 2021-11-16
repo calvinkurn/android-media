@@ -206,12 +206,6 @@ interface TopChatContract {
 
         fun hasEmptyAttachmentPreview(): Boolean
 
-        fun addProductToCart(
-            requestParams: RequestParams,
-            onSuccessAddToCart: (data: DataModel) -> Unit,
-            onError: (msg: String) -> Unit
-        )
-
         fun addOngoingUpdateProductStock(
             productId: String,
             product: ProductAttachmentUiModel, adapterPosition: Int,
