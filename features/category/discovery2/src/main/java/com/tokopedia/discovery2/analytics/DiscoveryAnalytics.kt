@@ -1313,7 +1313,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         list.add(mapOf(
             KEY_ID to "${components.parentComponentId}_$shopId",
             KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName",
-            KEY_CREATIVE to (dataItem?.title?: EMPTY_STRING),
+            KEY_CREATIVE to "${dataItem?.title ?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
             KEY_POSITION to horizontalPosition
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -1411,7 +1411,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         list.add(mapOf(
             KEY_ID to "${components.parentComponentId}_$shopId",
             KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $componentName",
-            KEY_CREATIVE to "$VOUCHER_DETAIL - ${dataItem?.title?: EMPTY_STRING}",
+            KEY_CREATIVE to "$VOUCHER_DETAIL - ${dataItem?.title?: EMPTY_STRING} - ${components.creativeName ?: EMPTY_STRING}",
             KEY_POSITION to horizontalPosition
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -1433,7 +1433,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         position: Int,
         productIndex: Int
     ) {
-//        Todo:: Do we need to send key position as product index or position of Card in Carousel/list ??
         val horizontalPosition:Int
         val componentName:String
         val action:String
@@ -1450,7 +1449,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             }
         }
 
-//        TODO:: Need to handle price and variant changes if we get the key.
         if (!components.data.isNullOrEmpty()) {
             val shopId  = components.data?.firstOrNull()?.shopInfo?.id ?: ""
             var productId = ""
