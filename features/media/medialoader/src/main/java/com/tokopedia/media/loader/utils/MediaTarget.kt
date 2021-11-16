@@ -28,15 +28,18 @@ class MediaTarget<T : View>(
 
 }
 
-class MediaBitmapEmptyTarget(
+class MediaBitmapEmptyTarget<T>(
     private val onCleared: (placeholder: Drawable?) -> Unit = {},
     private val onReady: (resource: Bitmap) -> Unit = {}
-) : CustomTarget<Bitmap>() {
+) : CustomTarget<T>() {
+
     override fun onLoadCleared(placeholder: Drawable?) {
         onCleared(placeholder)
     }
 
-    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-        onReady(resource)
+    override fun onResourceReady(resource: T, transition: Transition<in T>?) {
+        if (resource is Bitmap) {
+            onReady(resource)
+        }
     }
 }

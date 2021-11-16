@@ -154,7 +154,7 @@ fun loadImageWithEmptyTarget(
     context: Context,
     url: String,
     properties: Properties.() -> Unit,
-    mediaTarget: MediaBitmapEmptyTarget
+    mediaTarget: MediaBitmapEmptyTarget<Bitmap>
 ) {
     loadImageWithTarget(
         context,
