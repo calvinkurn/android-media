@@ -1,12 +1,16 @@
 package com.tokopedia.quest_widget.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.quest_widget.constants.QuestWidgetLocations
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
 import com.tokopedia.quest_widget.data.WidgetData
 import com.tokopedia.quest_widget.domain.QuestWidgetUseCase
 import com.tokopedia.quest_widget.util.LiveDataResult
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -17,6 +21,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 
 class QuestWidgetViewTest{
@@ -28,8 +33,8 @@ class QuestWidgetViewTest{
 
     lateinit var questViewModel: QuestWidgetViewModel
     val channel = 0
-    private val channelSlug = ""
-    private val page = "myreward"
+    val channelSlug = ""
+    val page = "myreward"
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -39,14 +44,21 @@ class QuestWidgetViewTest{
     fun setup(){
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
-        questViewModel = (QuestWidgetViewModel(workerDispatcher, questWidgetUseCase))
+        questViewModel = spyk(QuestWidgetViewModel(workerDispatcher, questWidgetUseCase))
     }
 
-    @ExperimentalCoroutinesApi
     @After
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    @Test
+    fun `not logged in`(){
+        coEvery { userSession.isLoggedIn } returns false
+        questViewModel.getWidgetList(channel, channelSlug, page, userSession)
+        assertEquals(questViewModel.questWidgetListLiveData.value?.status, LiveDataResult.STATUS.NON_LOGIN)
+    }
+
 
     @ExperimentalCoroutinesApi
     @Test
@@ -102,7 +114,8 @@ class QuestWidgetViewTest{
         coVerify(exactly = 0) { questViewModel.getQuestWidgetData(channel, channelSlug, page) }
         assertEquals(
             questViewModel.questWidgetListLiveData.value?.status,
-            LiveDataResult.STATUS.ERROR
+            null
         )
     }
+
 }

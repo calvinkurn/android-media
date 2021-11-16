@@ -51,6 +51,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
 }
 
