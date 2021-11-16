@@ -20,7 +20,7 @@ private val getAnyPattern =
     Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_\\s]+)((?=\\()|(?=\\{)).*(?=\\{)")
 val getMutationPattern: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")
 
-val map = ConcurrentHashMap<Int, String>()
+val map = ConcurrentHashMap<String, String>()
 
 fun initAkamaiBotManager(app: Application?) {
     app?.let { CYFMonitor.initialize(it) }
@@ -152,9 +152,13 @@ fun <E> setExpire(
     }
 }
 
+fun getHashKey(input: String): String {
+    return input.hashCode().toString() + "-" + input.length
+}
+
 fun getQueryListFromQueryString(input: String): MutableList<String> {
-    val hash = input.hashCode()
-    map[hash]?.let {
+    val hashStr = getHashKey(input)
+    map[hashStr]?.let {
         return mutableListOf(it)
     }
 
@@ -164,7 +168,7 @@ fun getQueryListFromQueryString(input: String): MutableList<String> {
     while (m.find()) {
         m.group(1)?.let {
             any.add(it)
-            map.putIfAbsent(hash, it)
+            map.putIfAbsent(hashStr, it)
         }
     }
     return any
