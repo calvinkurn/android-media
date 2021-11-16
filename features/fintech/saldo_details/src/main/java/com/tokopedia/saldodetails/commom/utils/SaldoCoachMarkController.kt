@@ -19,7 +19,7 @@ class SaldoCoachMarkController(val context: Context) {
         context.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller),
     )
 
-    fun startCoachMark() {
+    fun startCoachMark(expandAppBar: () -> Unit) {
         val allCoachMarkList = buildSaldoCoachMarkListByKey(anchorViewList)
         val showCoachMarkList =
             allCoachMarkList.filterNot { isSaldoCoachMarkShown(it.coachMarkKey) }
@@ -32,14 +32,18 @@ class SaldoCoachMarkController(val context: Context) {
         updateCoachMarkShown(firstKey)
         coachMark.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                val key = allCoachMarkList.getOrNull(currentIndex)?.coachMarkKey
-                //updateCoachMarkOnScroll()
+                val key = allCoachMarkList.getOrNull(currentIndex)?.coachMarkKey ?: ""
+
+                if (shouldExpandAppBar(key)) {
+                    expandAppBar.invoke()
+                }
                 if (isSaldoCoachMarkShown(key).not()) {
                     updateCoachMarkShown(key)
                 }
             }
         })
     }
+
 
     private fun buildSaldoCoachMarkListByKey(anchorViewList: ArrayList<View?>?): ArrayList<SaldoCoachMark> {
         val list = arrayListOf<SaldoCoachMark>()
@@ -82,13 +86,13 @@ class SaldoCoachMarkController(val context: Context) {
         return list
     }
 
-    fun updateCoachMarkOnScroll() {
+    fun updateCoachMarkOnScroll(expandLayout: Boolean) {
         val xOffset = (X_OFFSET).toPx()
         val yOffset = 8.toPx()
         if (checkIfCoachMarkTypeIsBalance()) {
-            updateBalanceCoachMarkItem(xOffset, yOffset)
-        } else if (coachMark.currentIndex >=0) {
-           updateSalesCoachMarkItem(xOffset, yOffset)
+            updateBalanceCoachMarkItem(xOffset, expandLayout)
+        } else if (coachMark.currentIndex >= 0) {
+            updateSalesCoachMarkItem(xOffset, yOffset)
         }
     }
 
@@ -99,14 +103,14 @@ class SaldoCoachMarkController(val context: Context) {
         }
     }
 
-    private fun updateBalanceCoachMarkItem(xOffset: Int, yOffset: Int) {
+    private fun updateBalanceCoachMarkItem(xOffset: Int, expandLayout: Boolean) {
         val view = anchorViewList?.getOrNull(coachMark.currentIndex)
         val coordinates = intArrayOf(0, 0)
         view?.getLocationOnScreen(coordinates)
-        if ((coordinates.getOrNull(1) ?: 0) >= toolBarHeight) {
+        if (expandLayout && (coordinates.getOrNull(1) ?: 0) >= toolBarHeight) {
             handleCoachMarkVisibility(true)
             view?.post {
-                coachMark.update(view, xOffset, yOffset, -1, -1)
+                coachMark.update(view, xOffset, 0, -1, -1)
             }
         } else handleCoachMarkVisibility(false)
     }
@@ -118,9 +122,8 @@ class SaldoCoachMarkController(val context: Context) {
     }
 
     private fun updateCoachMarkShown(coachMarkKey: String?) {
-        var temp = false
         coachMarkKey?.let {
-            CoachMarkPreference.setShown(context, coachMarkKey, temp)
+            CoachMarkPreference.setShown(context, coachMarkKey, true)
         }
     }
 
@@ -136,13 +139,18 @@ class SaldoCoachMarkController(val context: Context) {
     private fun checkIfCoachMarkTypeIsBalance() =
         balanceTitleList.contains(coachMark.coachMarkItem[coachMark.currentIndex].title)
 
+    // return true when balik pressed on sales tab coach-mark
+    private fun shouldExpandAppBar(key: String) =
+        KEY_CAN_SHOW_PENJUALAN_COACHMARK != key && isSaldoCoachMarkShown(
+            KEY_CAN_SHOW_PENJUALAN_COACHMARK
+        )
+
     companion object {
         const val KEY_CAN_SHOW_REFUND_COACHMARK = "com.tokopedia.saldodetails.refund_coach_mark"
         const val KEY_CAN_SHOW_INCOME_COACHMARK = "com.tokopedia.saldodetails.income_coach_mark"
         const val KEY_CAN_SHOW_PENJUALAN_COACHMARK = "penjualan_coach_mark"
         const val X_OFFSET = -70
         private const val PENJUALAN_TAB_INDEX = 2
-
     }
 }
 

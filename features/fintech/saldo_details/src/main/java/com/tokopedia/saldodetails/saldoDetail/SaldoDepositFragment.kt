@@ -219,9 +219,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
             else arrayListOf(anchorView)
 
             saldoCoachMarkController.anchorViewList = anchorViewList
-            saldoCoachMarkController.startCoachMark()
+            saldoCoachMarkController.startCoachMark {
+                sp_app_bar_layout.setExpanded(true)
+            }
             sp_app_bar_layout.addOnOffsetChangedListener(AppBarLayout
-                .OnOffsetChangedListener { _, _ -> saldoCoachMarkController.updateCoachMarkOnScroll() })
+                .OnOffsetChangedListener { _, _ -> saldoCoachMarkController.updateCoachMarkOnScroll(expandLayout) })
         }
     }
 
