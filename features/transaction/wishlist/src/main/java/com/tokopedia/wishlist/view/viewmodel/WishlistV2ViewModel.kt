@@ -26,6 +26,8 @@ import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.ext.*
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
@@ -102,7 +104,11 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
             } else {
                 listData.add(WishlistV2TypeLayoutData(wishlistV2Response.query, WishlistV2Consts.TYPE_EMPTY_NOT_FOUND))
             }
-            listData.add(WishlistV2TypeLayoutData(getRecommendationWishlistV2(0, listOf(), EMPTY_WISHLIST_PAGE_NAME, false)))
+            val recommItems = getRecommendationWishlistV2(0, listOf(), EMPTY_WISHLIST_PAGE_NAME)
+            listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
+            recommItems.recommendationData.forEach { item ->
+                listData.add(WishlistV2TypeLayoutData(item, TYPE_RECOMMENDATION_LIST))
+            }
 
         } else {
             if (params.page == 1) {
@@ -110,7 +116,7 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
                     // if user has 0-3 products, recom widget is at the bottom of the page (vertical/infinite scroll)
                     wishlistV2Response.totalData < topAdsPositionInPage -> {
                         listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
-                        listData.add(WishlistV2TypeLayoutData(getRecommendationWishlistV2(0, listOf(), WISHLIST_PAGE_NAME, true), TYPE_RECOMMENDATION_CAROUSEL))
+                        listData.add(WishlistV2TypeLayoutData(getRecommendationWishlistV2(0, listOf(), WISHLIST_PAGE_NAME), TYPE_RECOMMENDATION_CAROUSEL))
 
                         // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
                     }
@@ -129,7 +135,7 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
                 // next page
                 if (wishlistV2Response.totalData >= topAdsPositionInPage && params.page % 2 == 0) {
                     listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
-                    listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(getRecommendationWishlistV2(params.page, listOf(), WISHLIST_PAGE_NAME, true), TYPE_RECOMMENDATION_CAROUSEL))
+                    listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(getRecommendationWishlistV2(params.page, listOf(), WISHLIST_PAGE_NAME), TYPE_RECOMMENDATION_CAROUSEL))
 
                 } else {
                     listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
@@ -348,12 +354,12 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
         }
     }
 
-    private suspend fun getRecommendationWishlistV2(page: Int, productIds: List<String>, pageName: String, isCarousel: Boolean): WishlistV2RecommendationDataModel {
+    private suspend fun getRecommendationWishlistV2(page: Int, productIds: List<String>, pageName: String): WishlistV2RecommendationDataModel {
         val recommendation = singleRecommendationUseCase.getData(GetRecommendationRequestParam(
                         pageNumber = page,
                         productIds = productIds,
                         pageName = pageName))
-        return WishlistV2RecommendationDataModel(recommendation.recommendationItemList, isCarousel, recommendation.title)
+        return WishlistV2RecommendationDataModel(recommendation.recommendationItemList, recommendation.title)
     }
 
     private suspend fun getRecommendationData(
@@ -367,9 +373,7 @@ class WishlistV2ViewModel @Inject constructor(private val dispatcher: CoroutineD
                         pageName = pageName
                 )
         )
-        return@withContext WishlistV2RecommendationDataModel(
-            widget.recommendationItemList, isCarousel, widget.title
-        )
+        return@withContext WishlistV2RecommendationDataModel(widget.recommendationItemList, widget.title)
     }
 
     private suspend fun getTopAdsData(pageToken: String = ""): TopAdsImageViewModel  {

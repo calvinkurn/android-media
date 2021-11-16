@@ -211,8 +211,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     hideLoader()
 
                     if (!onLoadMore) {
-
-                        // sampe sini
                         wishlistV2Adapter.addList(result.data)
                         scrollRecommendationListener.resetState()
                     } else {
@@ -404,7 +402,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 }
                 is WishlistV2RecommendationDataModel -> {
                     adapterData.add(WishlistV2TypeLayoutData(it.title, TYPE_RECOMMENDATION_TITLE))
-                    if (it.isCarousel) {
+                    /*if (it.isCarousel) {
                         adapterData.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_CAROUSEL))
                     } else {
                         currRecommendationListPage += 1
@@ -416,7 +414,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                                 )
                             )
                         }
-                    }
+                    }*/
                 }
                 is WishlistV2DataModel -> {
                     adapterData.add(

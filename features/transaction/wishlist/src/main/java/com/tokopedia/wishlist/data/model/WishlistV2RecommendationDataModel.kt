@@ -4,6 +4,5 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 
 data class WishlistV2RecommendationDataModel(
     val recommendationData: List<RecommendationItem>,
-    val isCarousel: Boolean = false,
     val title: String = ""
 ) : WishlistV2Data
