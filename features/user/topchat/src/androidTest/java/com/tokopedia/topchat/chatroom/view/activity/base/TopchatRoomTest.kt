@@ -121,13 +121,7 @@ abstract class TopchatRoomTest {
     protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
 
     @Inject
-    protected lateinit var orderProgressUseCase: OrderProgressUseCaseStub
-
-    @Inject
     protected lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseStub
-
-    @Inject
-    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseStub
 
     @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
@@ -137,6 +131,14 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var toggleFavouriteShopUseCaseStub: ToggleFavouriteShopUseCaseStub
+
+    //Seamless
+
+    @Inject
+    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseNewStub
+
+    @Inject
+    protected lateinit var orderProgressUseCase: OrderProgressUseCaseNewStub
 
     @Inject
     protected lateinit var cacheManager: TopchatCacheManager
@@ -153,6 +155,7 @@ abstract class TopchatRoomTest {
     protected var chatSrwResponse = ChatSmartReplyQuestionResponse()
     protected var uploadImageReplyResponse = ChatReplyPojo()
     protected var orderProgressResponse = OrderProgressResponse()
+    protected var orderProgressResponseNotEmpty = OrderProgressResponse()
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
     protected var existingMessageIdResponse = GetExistingMessageIdPojo()
@@ -211,6 +214,14 @@ abstract class TopchatRoomTest {
         uploadImageReplyResponse = AndroidFileUtil.parse(
             "success_upload_image_reply.json",
             ChatReplyPojo::class.java
+        )
+        chatRoomSettingResponse = AndroidFileUtil.parse(
+            "success_get_chat_setting_fraud_alert.json",
+            RoomSettingResponse::class.java
+        )
+        orderProgressResponseNotEmpty = AndroidFileUtil.parse(
+            "success_get_order_progress.json",
+            OrderProgressResponse::class.java
         )
     }
 

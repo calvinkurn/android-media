@@ -7,7 +7,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import javax.inject.Inject
 
-class OrderProgressUseCaseNew @Inject constructor(
+open class OrderProgressUseCaseNew @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ): CoroutineUseCase<String, OrderProgressResponse>(dispatcher.io) {

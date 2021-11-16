@@ -7,7 +7,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class TopchatRoomGeneralTest : TopchatRoomTest() {
@@ -69,6 +72,48 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
 
         // Then
         assertToolbarTitle(shopName)
+    }
+
+    @Test
+    fun should_show_fraud_alert() {
+        getChatUseCase.response = firstPageChatAsBuyer
+        getChatUseCase.response.chatReplies.list = arrayListOf()
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatRoomSettingUseCase.response = chatRoomSettingResponse
+        launchChatRoomActivity()
+
+        onView(withId(R.id.recycler_view_chatroom)).check(
+            atPositionIsInstanceOf(1, RoomSettingFraudAlertUiModel::class.java)
+        )
+        onView(withId(R.id.tvText)).check(
+            matches(withSubstring("Hati-hati penipuan!"))
+        )
+    }
+
+    @Test
+    fun should_show_order_progress() {
+        getChatUseCase.response = firstPageChatAsBuyer
+        getChatUseCase.response.chatReplies.list = arrayListOf()
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        orderProgressUseCase.response = orderProgressResponseNotEmpty
+        launchChatRoomActivity()
+
+        onView(withId(R.id.tp_order_name)).check(
+            matches(withText(orderProgressResponseNotEmpty.chatOrderProgress.name))
+        )
+    }
+
+    @Test
+    fun should_not_show_order_progress() {
+        getChatUseCase.response = firstPageChatAsBuyer
+        getChatUseCase.response.chatReplies.list = arrayListOf()
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        orderProgressUseCase.response = orderProgressResponse
+        launchChatRoomActivity()
+
+        onView(withId(R.id.tp_order_name)).check(
+            matches(not(isDisplayed()))
+        )
     }
 
 }

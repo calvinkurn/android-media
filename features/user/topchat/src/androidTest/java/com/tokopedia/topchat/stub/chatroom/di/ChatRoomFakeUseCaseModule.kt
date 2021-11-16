@@ -15,14 +15,12 @@ import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
-import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
@@ -179,22 +177,6 @@ class ChatRoomFakeUseCaseModule {
 
     @Provides
     @ChatScope
-    fun provideOrderProgressUseCase(
-            stub: OrderProgressUseCaseStub
-    ): OrderProgressUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideOrderProgressUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<OrderProgressResponse>
-    ): OrderProgressUseCaseStub {
-        return OrderProgressUseCaseStub(gqlUseCase)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
     fun provideChatBackgroundUseCase(
             stub: ChatBackgroundUseCaseStub
     ): ChatBackgroundUseCase = stub
@@ -207,22 +189,6 @@ class ChatRoomFakeUseCaseModule {
             dispatchers: CoroutineDispatchers
     ): ChatBackgroundUseCaseStub {
         return ChatBackgroundUseCaseStub(gqlUseCase, cacheManager, dispatchers)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
-    fun provideChatRoomSettingUseCaseUseCase(
-            stub: GetChatRoomSettingUseCaseStub
-    ): GetChatRoomSettingUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideChatRoomSettingUseCaseaseStub(
-            gqlUseCase: GraphqlUseCaseStub<RoomSettingResponse>
-    ): GetChatRoomSettingUseCaseStub {
-        return GetChatRoomSettingUseCaseStub(gqlUseCase)
     }
 
     // -- separator -- //
@@ -289,5 +255,39 @@ class ChatRoomFakeUseCaseModule {
         @ApplicationContext context: Context
     ): ToggleFavouriteShopUseCaseStub {
         return ToggleFavouriteShopUseCaseStub(GraphqlUseCase(), context.resources)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideOrderProgressUseCase(
+        stub: OrderProgressUseCaseNewStub
+    ): OrderProgressUseCaseNew = stub
+
+    @Provides
+    @ChatScope
+    fun provideOrderProgressUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): OrderProgressUseCaseNewStub {
+        return OrderProgressUseCaseNewStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatRoomSettingUseCaseUseCase(
+        stub: GetChatRoomSettingUseCaseNewStub
+    ): GetChatRoomSettingUseCaseNew = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatRoomSettingUseCaseaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetChatRoomSettingUseCaseNewStub {
+        return GetChatRoomSettingUseCaseNewStub(repository, dispatchers)
     }
 }
