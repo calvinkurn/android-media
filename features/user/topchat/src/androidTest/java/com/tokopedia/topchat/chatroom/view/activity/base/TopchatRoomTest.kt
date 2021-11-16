@@ -36,6 +36,7 @@ import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
+import com.tokopedia.topchat.action.RecyclerViewAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
@@ -808,6 +809,12 @@ abstract class TopchatRoomTest {
     protected fun scrollChatToPosition(position: Int) {
         onView(withId(R.id.recycler_view_chatroom)).perform(
             RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
+        )
+    }
+
+    protected fun smoothScrollChatToPosition(position: Int) {
+        onView(withId(R.id.recycler_view_chatroom)).perform(
+            RecyclerViewAction.smoothScrollTo(position)
         )
     }
 

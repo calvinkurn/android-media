@@ -76,6 +76,7 @@ class PromptToActivateSmartReplyTest : TopchatRoomTest() {
         scrollChatToPosition(lastIndex)
         val newlastIndex = lastIndex + getChatUseCase.getLastIndexOf(getChatUseCase.response)
         scrollChatToPosition(newlastIndex)
+        smoothScrollChatToPosition(newlastIndex)
 
         // Then
         val expectedTickerPosition = lastIndex + 2
