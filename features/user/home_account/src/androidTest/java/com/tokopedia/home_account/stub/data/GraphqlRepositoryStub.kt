@@ -1,6 +1,5 @@
 package com.tokopedia.home_account.stub.data
 
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -9,11 +8,10 @@ import com.tokopedia.home_account.common.AndroidFileUtil
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.test.R
-import javax.inject.Inject
 
 class GraphqlRepositoryStub : GraphqlRepository {
 
-    var testState = TestState.WALLET_ELIGIBLE
+    var mapParam = mutableMapOf(TestStateParam.WALLET to TestStateValue.WALLET_ELIGIBLE, TestStateParam.LINK_STATUS to TestStateValue.NOT_LINKED)
 
     override suspend fun response(
             requests: List<GraphqlRequest>,
@@ -26,7 +24,12 @@ class GraphqlRepositoryStub : GraphqlRepository {
                         mapOf(),
                         false
                 )
-                it.contains("link_status") -> GraphqlResponse(
+                it.contains("link_status") && mapParam[TestStateParam.LINK_STATUS] == TestStateValue.NOT_LINKED -> GraphqlResponse(
+                        mapOf(LinkStatusResponse::class.java to provideNotLinkedStatus()),
+                        mapOf(),
+                        false
+                )
+                it.contains("link_status") && mapParam[TestStateParam.LINK_STATUS] == TestStateValue.LINKED -> GraphqlResponse(
                         mapOf(LinkStatusResponse::class.java to provideLinkStatus()),
                         mapOf(),
                         false
@@ -58,12 +61,12 @@ class GraphqlRepositoryStub : GraphqlRepository {
                         mapOf(),
                         false
                 )
-                it.contains("get_wallet_eligible") && testState == TestState.WALLET_ELIGIBLE -> GraphqlResponse(
+                it.contains("get_wallet_eligible") && mapParam[TestStateParam.WALLET] == TestStateValue.WALLET_ELIGIBLE -> GraphqlResponse(
                         mapOf(WalletEligibleDataModel::class.java to provideWalletEligibileSuccess()),
                         mapOf(),
                         false
                 )
-                it.contains("get_wallet_eligible") && testState == TestState.WALLET_NOT_ELIGIBLE ->  {
+                it.contains("get_wallet_eligible") && mapParam[TestStateParam.WALLET] == TestStateValue.WALLET_NOT_ELIGIBLE ->  {
                     GraphqlResponse(
                         mapOf(WalletEligibleDataModel::class.java to provideWalletNotEligibileSuccess()),
                         mapOf(),
@@ -84,6 +87,9 @@ class GraphqlRepositoryStub : GraphqlRepository {
 
     private fun provideLinkStatus(): LinkStatusResponse =
             AndroidFileUtil.parse(R.raw.success_get_link_status, LinkStatusResponse::class.java)
+
+    private fun provideNotLinkedStatus(): LinkStatusResponse =
+            AndroidFileUtil.parse(R.raw.success_get_link_status_not_linked, LinkStatusResponse::class.java)
 
     private fun provideCentralizedUserAssetDataModelSuccess(): CentralizedUserAssetDataModel =
             AndroidFileUtil.parse(

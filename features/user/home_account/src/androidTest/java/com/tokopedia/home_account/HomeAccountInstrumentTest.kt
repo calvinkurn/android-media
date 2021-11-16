@@ -3,6 +3,7 @@ package com.tokopedia.home_account
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.home_account.base.HomeAccountTest
 import com.tokopedia.home_account.utils.ViewUtils
@@ -10,7 +11,10 @@ import com.tokopedia.test.application.espresso_component.CommonAssertion
 import org.junit.Test
 
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import com.tokopedia.home_account.stub.data.TestState
+import com.tokopedia.home_account.stub.data.TestStateParam
+import com.tokopedia.home_account.stub.data.TestStateValue
+import com.tokopedia.home_account.view.adapter.viewholder.SettingViewHolder
+import org.hamcrest.CoreMatchers.allOf
 
 import org.hamcrest.Matcher
 
@@ -28,6 +32,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
             //Check Phone
             onView(withId(R.id.account_user_item_profile_phone)).check(matches(withText(userSession.phoneNumber)))
 
+            //Check Email
             onView(withId(R.id.account_user_item_profile_email)).check(matches(withText(userSession.email)))
 
         }
@@ -46,18 +51,8 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     }
 
     @Test
-    fun check_gopay_wallet_is_not_displayed_when_not_eligible() {
-        repo.testState = TestState.WALLET_NOT_ELIGIBLE
-
-        runTest {
-            onView(withId(R.id.home_account_balance_and_point_rv)).check(matches(isDisplayed()))
-            onView(withId(R.id.home_account_balance_and_point_rv)).check(CommonAssertion.RecyclerViewItemCountAssertion(2))
-        }
-    }
-
-    @Test
     fun check_tokopoints_is_displayed_when_gopay_not_exists() {
-        repo.testState = TestState.WALLET_NOT_ELIGIBLE
+        repo.mapParam[TestStateParam.WALLET] = TestStateValue.WALLET_NOT_ELIGIBLE
 
         runTest {
             onView(withId(R.id.home_account_balance_and_point_rv)).check(matches(isDisplayed()))
@@ -131,6 +126,28 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
             onView(withId(R.id.home_account_member_layout_rv)).check(CommonAssertion.RecyclerViewItemCountAssertion(3))
             val matcher = ViewUtils.withTitleMemberItemViewHolder("Kupon Saya")
             onView(withId(R.id.home_account_member_layout_rv)).perform(scrollToHolder(matcher))
+        }
+    }
+
+    @Test
+    fun check_user_setting_is_displayed() {
+        runTest {
+            ViewUtils.checkSettingViewIsDisplayed("Pengaturan Akun", 5)
+
+        }
+    }
+
+    @Test
+    fun check_application_setting_is_displayed() {
+        runTest {
+            ViewUtils.checkSettingViewIsDisplayed("Pengaturan Aplikasi", 5)
+        }
+    }
+
+    @Test
+    fun check_about_setting_is_displayed() {
+        runTest {
+            ViewUtils.checkSettingViewIsDisplayed("Seputar Tokopedia", 5)
         }
     }
 }

@@ -3,7 +3,7 @@
     "link_status":[
       {
         "linking_type":"account_linking",
-        "status":"linked",
+        "status":"not_linked",
         "partner_user_id":"",
         "linked_time":""
       }
