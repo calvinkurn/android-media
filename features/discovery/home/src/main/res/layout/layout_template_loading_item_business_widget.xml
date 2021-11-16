@@ -21,8 +21,7 @@
             android:background="@drawable/bg_card_home_widget"
             android:orientation="vertical">
 
-            <TextView
-
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -30,6 +29,7 @@
                 android:layout_marginTop="8dp"
                 android:gravity="right"
                 android:textSize="@dimen/sp_10"
+                app:typographyType="small"
                 android:textColor="@color/Unify_N700_68"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -119,7 +119,7 @@
             android:background="@drawable/bg_card_home_widget"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -127,6 +127,7 @@
                 android:layout_marginTop="8dp"
                 android:gravity="right"
                 android:textSize="@dimen/sp_10"
+                app:typographyType="small"
                 android:textColor="@color/Unify_N700_68"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -216,7 +217,7 @@
             android:background="@drawable/bg_card_home_widget"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -224,6 +225,7 @@
                 android:layout_marginTop="8dp"
                 android:gravity="right"
                 android:textSize="@dimen/sp_10"
+                app:typographyType="small"
                 android:textColor="@color/Unify_N700_68"
                 android:maxLines="1"
                 android:ellipsize="end"
