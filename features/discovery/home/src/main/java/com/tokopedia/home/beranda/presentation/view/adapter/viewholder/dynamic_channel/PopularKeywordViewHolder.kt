@@ -30,6 +30,7 @@ import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -63,7 +64,7 @@ class PopularKeywordViewHolder (val view: View,
     private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
     private val homeComponentDividerHeader = view.findViewById<DividerUnify>(R.id.home_component_divider_header)
     private val homeComponentDividerFooter = view.findViewById<DividerUnify>(R.id.home_component_divider_footer)
-    private val loaderPopularKeywordTitle = view.findViewById<ViewStub>(R.id.loader_popular_keyword_title)
+    private val loaderPopularKeywordTitle = view.findViewById<LoaderUnify>(R.id.loader_popular_keyword_title)
     private val containerPopularKeyword = view.findViewById<ConstraintLayout>(R.id.container_popular_keyword)
 
     init{
