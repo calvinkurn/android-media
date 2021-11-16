@@ -2,7 +2,7 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 ext {
-    lintVersion = "27.2.0"
+    lintVersion = "30.0.3"
 }
 
 
