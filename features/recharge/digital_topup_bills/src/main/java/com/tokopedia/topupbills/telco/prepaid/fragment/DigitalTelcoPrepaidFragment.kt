@@ -668,12 +668,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCategoryType.CATEGORY_ROAMING -> itemId = 2
         }
 
-        viewPager.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
+        viewPager.post {
+            if (viewPager != null) {
                 viewPager.setCurrentItem(itemId, true)
-                viewPager.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
-        })
+        }
+//        viewPager.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+//            override fun onGlobalLayout() {
+//                viewPager.setCurrentItem(itemId, true)
+//                viewPager.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//            }
+//        })
 
         if (autoSelectTabProduct) {
             tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
