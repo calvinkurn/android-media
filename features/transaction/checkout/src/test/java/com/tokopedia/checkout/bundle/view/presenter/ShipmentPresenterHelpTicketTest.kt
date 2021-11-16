@@ -121,6 +121,7 @@ class ShipmentPresenterHelpTicketTest {
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(data)
         presenter.shipmentCartItemModelList = emptyList()
         presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
+        presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
         presenter.processCheckout(false, false, false, "", "", "")
