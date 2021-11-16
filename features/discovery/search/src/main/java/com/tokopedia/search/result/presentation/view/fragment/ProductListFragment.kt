@@ -48,12 +48,17 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
+import com.tokopedia.filter.common.helper.getFilterParams
+import com.tokopedia.filter.common.helper.getSortFilterCount
+import com.tokopedia.filter.common.helper.getSortFilterParamsString
+import com.tokopedia.filter.common.helper.isSortHasDefaultValue
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.combinePriceFilterIfExists
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.generateOptionFromUniqueId
+import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -81,6 +86,7 @@ import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
@@ -96,6 +102,7 @@ import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
@@ -111,13 +118,6 @@ import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.decodeQueryParameter
-import com.tokopedia.filter.common.helper.getFilterParams
-import com.tokopedia.filter.common.helper.getSortFilterCount
-import com.tokopedia.filter.common.helper.getSortFilterParamsString
-import com.tokopedia.filter.common.helper.isSortHasDefaultValue
-import com.tokopedia.iris.Iris
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
-import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.utils.removeQuickFilterElevation
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -869,27 +869,28 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int) {
         item ?: return
-        val intent = getProductIntent(item.productID, item.warehouseID) ?: return
+        val intent = getProductIntent(item.productID, item.warehouseID, item.applink) ?: return
 
         intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL)
     }
 
-    private fun getProductIntent(productId: String, warehouseId: String): Intent? {
+    private fun getProductIntent(productId: String, warehouseId: String, applink: String = ""): Intent? {
         return context?.let {
-            if (warehouseId.isNotEmpty())
-                RouteManager.getIntent(
-                        it,
-                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID,
-                        productId,
-                        warehouseId
+            when {
+                applink.isNotEmpty() && RouteManager.isSupportApplink(it, applink) -> RouteManager.getIntent(it, applink)
+                warehouseId.isNotEmpty() -> RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID,
+                    productId,
+                    warehouseId
                 )
-            else
-                RouteManager.getIntent(
-                        it,
-                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                        productId
+                else -> RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    productId
                 )
+            }
         }
     }
 
