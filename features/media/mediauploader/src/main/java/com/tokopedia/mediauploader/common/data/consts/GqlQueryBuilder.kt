@@ -53,6 +53,8 @@ object GqlQueryBuilder {
                 simple_upload_size_threshold_mb
                 big_upload_chunk_size_mb
                 big_upload_max_concurrent
+                timeout_transcode
+                retry_interval
               }
             }
           }
