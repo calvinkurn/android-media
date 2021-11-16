@@ -90,7 +90,9 @@ class DimenResourceValueDetector : Detector(), XmlScanner {
     private fun findValueResources(files: Array<File>?) {
         files?.forEach { file ->
             val ids = file.readLines().filter {
-                it.contains(SdkConstants.ATTR_NAME) && !it.contains(SdkConstants.TAG_ITEM)
+                val nameAttr = "${SdkConstants.ATTR_NAME}="
+                val itemTag = "<${SdkConstants.TAG_ITEM}"
+                it.contains(nameAttr) && !it.contains(itemTag)
             }.map {
                 it.substringAfter("=\"").substringBefore("\"")
             }.filter { it.isNotEmpty() }

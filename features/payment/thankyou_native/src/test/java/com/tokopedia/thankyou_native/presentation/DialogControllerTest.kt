@@ -1,9 +1,7 @@
 package com.tokopedia.thankyou_native.presentation
 
-import android.content.DialogInterface
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
-import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter.GratifPopupCallback
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyOrder
@@ -22,7 +20,7 @@ class DialogControllerTest {
     @Test
     fun testShowGratificationDialog() {
         val dialogController = DialogController(gratifPoresenter)
-        val paymentId = 0L
+        val paymentId = "0"
         val callback = object : GratificationPresenter.AbstractGratifPopupCallback() {
 
         }
@@ -30,7 +28,7 @@ class DialogControllerTest {
         dialogController.showGratifDialog(mockk(), paymentId, gratifPopupCallback = callback, screenName = screenName)
         verifyOrder {
             gratifPoresenter.showGratificationInApp(any(),
-                    paymentID = paymentId,
+                    paymentID = paymentId.toLong(),
                     gratifPopupCallback = callback,
                     screenName = screenName,
                     notificationEntryType = NotificationEntryType.ORGANIC,

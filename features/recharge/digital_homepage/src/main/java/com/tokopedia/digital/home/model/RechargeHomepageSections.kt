@@ -328,3 +328,20 @@ data class RechargeHomepageCarousellModel(val section: RechargeHomepageSections.
     }
 
 }
+
+data class RechargeHomepageSwipeBannerModel(val section: RechargeHomepageSections.Section) : RechargeHomepageSectionModel {
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+    override fun visitableId(): String {
+        return section.id
+    }
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageSwipeBannerModel) {
+            section == b.section
+        } else false
+    }
+
+}
