@@ -6,6 +6,8 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.coachmark.CoachMarkPreference
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.toPx
 
 class SaldoCoachMarkController(val context: Context) {
@@ -128,11 +130,12 @@ class SaldoCoachMarkController(val context: Context) {
     }
 
     fun handleCoachMarkVisibility(isShow: Boolean) {
-        if (isShow) coachMark.animateShow()
+        if (isShow) coachMark.contentView.visible()
         else {
             // prevent sales tab coach-mark from being hidden
-            if (checkIfCoachMarkTypeIsBalance())
-                coachMark.animateHide()
+            if (checkIfCoachMarkTypeIsBalance()) {
+                coachMark.contentView.gone()
+            }
         }
     }
 
