@@ -408,12 +408,31 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
 
             }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            try {
+                spannableString.setSpan(
+                    cs,
+                    0,
+                    authorName.length - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            } catch (e: Exception) {
+            }
+            shopName.text = spannableString
+
+        } else {
+            try {
+                spannableString.setSpan(
+                    cs,
+                    0,
+                    authorName.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            } catch (e: Exception) {
+            }
+            shopName.text = spannableString
+
         }
-        try {
-            spannableString.setSpan(cs, 0, authorName.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } catch (e: Exception) {
-        }
-        shopName.text = spannableString
+
         shopName.movementMethod = LinkMovementMethod.getInstance()
         followers.transitionFollow = false
 

@@ -375,6 +375,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun updateCursor(lastcursor: String?) {
+        presenter.updateCursor(lastcursor)
     }
 
     override fun onSuccessDeleteComment(adapterPosition: Int) {
