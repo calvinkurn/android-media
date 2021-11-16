@@ -313,11 +313,13 @@ class PlayUpcomingFragment @Inject constructor(
 
     fun setResultBeforeFinish() {
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
             putExtra(EXTRA_IS_REMINDER, playUpcomingViewModel.isReminderSet)
         })
     }
 
     companion object {
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
     }
 }
