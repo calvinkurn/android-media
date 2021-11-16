@@ -310,4 +310,14 @@ class PlayUpcomingFragment @Inject constructor(
         )
         super.onActivityResult(requestCode, resultCode, data)
     }
+
+    fun setResultBeforeFinish() {
+        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra(EXTRA_IS_REMINDER, playUpcomingViewModel.isReminderSet)
+        })
+    }
+
+    companion object {
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+    }
 }

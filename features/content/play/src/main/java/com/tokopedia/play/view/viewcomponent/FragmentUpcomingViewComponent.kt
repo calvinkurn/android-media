@@ -43,6 +43,8 @@ class FragmentUpcomingViewComponent(
         }
     }
 
+    fun getActiveFragment(): PlayUpcomingFragment? = fragmentManager.findFragmentByTag(UPCOMING_FRAGMENT_TAG) as? PlayUpcomingFragment
+
     private fun getPlayUpcomingFragment(channelId: String): Fragment {
         val fragmentFactory = fragmentManager.fragmentFactory
         return fragmentFactory.instantiate(container.context.classLoader, PlayUpcomingFragment::class.java.name).apply {

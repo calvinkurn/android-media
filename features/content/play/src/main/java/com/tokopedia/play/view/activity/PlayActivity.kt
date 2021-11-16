@@ -292,16 +292,27 @@ class PlayActivity : BaseActivity(),
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
                     if (isTaskRoot) {
-                        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-                        startActivity(intent)
-                        finish()
+                        gotoHome()
                     } else {
                         fragment.setResultBeforeFinish()
                         supportFinishAfterTransition()
                     }
                 }
             }
-        } else super.onBackPressed()
+        } else {
+            if (isTaskRoot) {
+                gotoHome()
+            } else {
+                fragmentUpcomingView.getActiveFragment()?.setResultBeforeFinish()
+                supportFinishAfterTransition()
+            }
+        }
+    }
+
+    private fun gotoHome() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        startActivity(intent)
+        finish()
     }
 
     override fun requestEnableNavigation() {

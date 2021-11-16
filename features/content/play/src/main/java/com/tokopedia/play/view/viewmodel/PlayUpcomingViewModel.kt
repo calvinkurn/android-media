@@ -58,6 +58,9 @@ class PlayUpcomingViewModel @Inject constructor(
     val channelType: PlayChannelType
         get() = _channelDetail.value.channelInfo.channelType
 
+    val isReminderSet: Boolean
+        get() = _upcomingInfo.value.isReminderSet
+
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
     private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
@@ -229,6 +232,7 @@ class PlayUpcomingViewModel @Inject constructor(
                     }
 
                     _upcomingState.emit(PlayUpcomingState.Reminded)
+                    _upcomingInfo.setValue { copy(isReminderSet = status) }
 
                     _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
 
