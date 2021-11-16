@@ -1,73 +1,89 @@
 package com.tokopedia.attachinvoice.view.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.attachinvoice.InstantTaskExecutorRuleSpek
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.attachinvoice.data.GetInvoiceResponse
 import com.tokopedia.attachinvoice.data.Invoice
-import com.tokopedia.attachinvoice.usecase.GetInvoiceUseCase
+import com.tokopedia.attachinvoice.usecase.AttachInvoiceUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
-import org.spekframework.spek2.Spek
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.mockito.MockitoAnnotations
 
-object AttachInvoiceViewModelTest : Spek({
+class AttachInvoiceViewModelTest {
 
-    InstantTaskExecutorRuleSpek(this)
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
-    group("Load Invoice") {
+    @RelaxedMockK
+    lateinit var useCase: AttachInvoiceUseCase
 
-        val exMsgId = "6696"
-        val exInvoiceResponse = GetInvoiceResponse()
-        val exErrorInvoiceResponse = Throwable("Dummy throwable")
-        val useCase by memoized { mockk<GetInvoiceUseCase>() }
-        val viewmodel by memoized { AttachInvoiceViewModel(useCase) }
+    @RelaxedMockK
+    lateinit var observer: Observer<Result<List<Invoice>>>
 
-        group("No message id") {
-            test("Do nothing when messgeId is empty") {
-                viewmodel.loadInvoices(1, "")
-                verify(exactly = 0) { useCase.getInvoices(any(), any(), any(), any()) }
-            }
-        }
+    lateinit var vm: AttachInvoiceViewModel
 
-        group("With message id") {
+    private val exMsgId = "6696"
+    private val exInvoiceResponse = GetInvoiceResponse()
+    private val exErrorInvoiceResponse = Throwable("Dummy throwable")
 
-            test("Call the exact same page provided in argument") {
-                every { useCase.getInvoices(any(), any(), any(), any()) } just Runs
-                viewmodel.loadInvoices(1, exMsgId)
+    @Before
+    fun before() {
+        MockKAnnotations.init(this)
+        vm = AttachInvoiceViewModel(useCase, CoroutineTestDispatchersProvider)
+        vm.invoices.observeForever(observer)
+    }
 
-                verify(exactly = 1) { useCase.getInvoices(any(), any(), eq(exMsgId.toInt()), eq(1)) }
-            }
+    @Test
+    fun `do nothing when messageId is empty` () {
+        //GIVEN
+        val emptyMessageId = ""
 
-            test("Observer data changed on success") {
-                // In mockk, mocking observer need to use relaxed = true
-                // because we don't want to specify the onChanged(T) behaviour
-                val observer = mockk<Observer<Result<List<Invoice>>>>(relaxed = true)
-                every { useCase.getInvoices(captureLambda(), any(), any(), any()) } answers {
-                    val onSuccess = lambda<(GetInvoiceResponse) -> Unit>()
-                    onSuccess.invoke(exInvoiceResponse)
-                }
+        //WHEN
+        vm.loadInvoices(1, emptyMessageId)
 
-                viewmodel.invoices.observeForever(observer)
+        //THEN
+        coVerify(exactly = 0) { useCase(any()) }
+    }
 
-                viewmodel.loadInvoices(1, exMsgId)
+    @Test
+    fun `success load invoices`() {
+        //GIVEN
+        val expectedValue = exInvoiceResponse.invoices
+        coEvery { useCase(any()) } returns exInvoiceResponse
 
-                verify { observer.onChanged(Success(exInvoiceResponse.invoices)) }
-            }
+        //WHEN
+        vm.loadInvoices(1, exMsgId)
 
-            test("Observer data changed on error") {
-                val observer = mockk<Observer<Result<List<Invoice>>>>(relaxed = true)
-                every { useCase.getInvoices(any(), captureLambda(), any(), any()) } answers {
-                    val onError = lambda<(Throwable) -> Unit>()
-                    onError.invoke(exErrorInvoiceResponse)
-                }
-
-                viewmodel.invoices.observeForever(observer)
-
-                viewmodel.loadInvoices(1, exMsgId)
-
-                verify { observer.onChanged(Fail(exErrorInvoiceResponse)) }
-            }
+        //THEN
+        coVerify(exactly = 1) { useCase(any()) }
+        verify {
+            observer.onChanged(Success(expectedValue))
         }
     }
-})
+
+    @Test
+    fun `fail load invoices` () {
+        //GIVEN
+        coEvery { useCase(any()) } throws exErrorInvoiceResponse
+
+        //WHEN
+        vm.loadInvoices(1, exMsgId)
+
+        //THEN
+        coVerify(exactly = 1) { useCase(any()) }
+        verify {
+            observer.onChanged(Fail(exErrorInvoiceResponse))
+        }
+    }
+}

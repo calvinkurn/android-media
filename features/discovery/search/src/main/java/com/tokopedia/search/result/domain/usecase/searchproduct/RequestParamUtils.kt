@@ -17,3 +17,6 @@ internal fun RequestParams.isSkipInspirationCarousel()
 
 internal fun RequestParams.isSkipInspirationWidget()
         = getBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, false)
+
+internal fun RequestParams.isSkipGetLastFilterWidget()
+    = getBoolean(SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET, false)

@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_24"
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="24dp"
     android:scrollbars="none">
 
     <LinearLayout
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700"
             app:typographyType="body_2"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             tools:text="Jangan khawatir, semua order yang masuk akan kami proses. Buka setiap hari jam 10 pagi ya gays. Okkee" />
 
         <com.tokopedia.unifycomponents.UnifyButton

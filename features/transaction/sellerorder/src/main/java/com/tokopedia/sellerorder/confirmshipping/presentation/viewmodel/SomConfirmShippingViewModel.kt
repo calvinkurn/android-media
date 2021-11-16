@@ -13,6 +13,7 @@ import com.tokopedia.sellerorder.confirmshipping.domain.SomGetConfirmShippingRes
 import com.tokopedia.sellerorder.confirmshipping.domain.SomGetCourierListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -37,7 +38,7 @@ class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispa
 
     fun confirmShipping(queryString: String) {
         launchCatchError(block = {
-            _confirmShippingResult.postValue(somGetConfirmShippingResultUseCase.execute(queryString))
+            _confirmShippingResult.postValue(Success(somGetConfirmShippingResultUseCase.execute(queryString)))
         }, onError = {
             _confirmShippingResult.postValue(Fail(it))
         })
@@ -45,7 +46,7 @@ class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispa
 
     fun getCourierList(rawQuery: String) {
         launchCatchError(block = {
-            _courierListResult.postValue(somGetCourierListUseCase.execute(rawQuery))
+            _courierListResult.postValue(Success(somGetCourierListUseCase.execute(rawQuery)))
         }, onError = {
             _courierListResult.postValue(Fail(it))
         })
@@ -53,7 +54,7 @@ class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispa
 
     fun changeCourier(queryString: String) {
         launchCatchError(block = {
-            _changeCourierResult.postValue(somChangeCourierUseCase.execute(queryString))
+            _changeCourierResult.postValue(Success(somChangeCourierUseCase.execute(queryString)))
         }, onError = {
             _changeCourierResult.postValue(Fail(it))
         })

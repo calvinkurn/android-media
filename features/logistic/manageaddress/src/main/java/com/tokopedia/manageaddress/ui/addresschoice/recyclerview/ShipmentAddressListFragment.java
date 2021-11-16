@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -42,6 +41,7 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -79,7 +79,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private LinearLayout llNetworkErrorView;
     private LinearLayout llNoResult;
     private RelativeLayout rlContent;
-    private Button btChangeSearch;
+    private UnifyButton btChangeSearch;
     private InputMethodManager mInputMethodManager;
     private ICartAddressChoiceActivityListener mActivityListener;
     private int maxItemPosition;
@@ -460,10 +460,10 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         mSvAddressSearchBox.setSearchHint(getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address));
     }
 
-    private int getChosenAddrId() {
-        int addrId = 0;
+    private long getChosenAddrId() {
+        long addrId = 0;
         if (!localChosenAddr.getAddress_id().isEmpty()) {
-            addrId = Integer.parseInt(localChosenAddr.getAddress_id());
+            addrId = Long.parseLong(localChosenAddr.getAddress_id());
         }
         return addrId;
     }

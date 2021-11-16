@@ -12,8 +12,8 @@
         android:id="@+id/product_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="21dp"
         android:text="@string/product_count"
         app:layout_constraintBottom_toTopOf="@+id/product_list"
@@ -24,9 +24,9 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/add_image"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_5"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginRight="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/add_product"
         app:layout_constraintEnd_toStartOf="@+id/add_product"
         app:layout_constraintTop_toTopOf="@+id/add_product" />
@@ -35,8 +35,8 @@
         android:id="@+id/add_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:text="@string/add_product"
         android:textColor="@color/medium_green"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/product_list"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_19"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    app:cardCornerRadius="@dimen/layout_lvl1">
+    app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/shcMlgSuccessState"
@@ -16,12 +16,12 @@
             android:id="@+id/tvShcMultiLineGraphTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl3"
-            android:layout_marginRight="@dimen/layout_lvl2"
-            android:drawablePadding="@dimen/layout_lvl1"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="16dp"
+            android:drawablePadding="8dp"
             android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,17 +36,17 @@
             android:id="@+id/notifTagMultiLineGraph"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl2"
-            app:layout_constraintTop_toTopOf="@id/tvShcMultiLineGraphTitle"
+            android:layout_marginStart="4dp"
             app:layout_constraintBottom_toBottomOf="@id/tvShcMultiLineGraphTitle"
-            app:layout_constraintStart_toEndOf="@id/tvShcMultiLineGraphTitle"/>
+            app:layout_constraintStart_toEndOf="@id/tvShcMultiLineGraphTitle"
+            app:layout_constraintTop_toTopOf="@id/tvShcMultiLineGraphTitle" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvShcGraphMetrics"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/shc_dimen_12dp"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="@dimen/shc_dimen_12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,8 +59,8 @@
             android:id="@+id/lvShcCurrentPeriod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:visibility="invisible"
             app:layout_constraintEnd_toStartOf="@+id/lvShcLastPeriod"
             app:layout_constraintTop_toBottomOf="@+id/rvShcGraphMetrics" />
@@ -69,8 +69,8 @@
             android:id="@+id/lvShcLastPeriod"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvShcGraphMetrics" />
@@ -78,11 +78,11 @@
         <com.tokopedia.charts.view.LineChartView
             android:id="@+id/chartViewShcMultiLine"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
+            android:layout_height="0dp"
             android:layout_marginStart="@dimen/shc_dimen_12dp"
-            android:layout_marginTop="@dimen/layout_lvl3"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="@dimen/shc_dimen_12dp"
-            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/tvShcMultiLineCta"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -91,16 +91,15 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShcMultiLineCta"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:gravity="end"
-            android:paddingStart="@dimen/layout_lvl0"
-            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingStart="0dp"
+            android:paddingEnd="4dp"
             android:textColor="@color/Unify_G500"
-            android:textSize="@dimen/fontSize_lvl3"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imgShcMultiLineCta"
@@ -112,42 +111,45 @@
 
         <ImageView
             android:id="@+id/imgShcMultiLineCta"
-            android:layout_width="@dimen/layout_lvl2"
+            android:layout_width="16dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl1"
-            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/tvShcMultiLineCta"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvShcMultiLineCta"
             app:srcCompat="@drawable/ic_arrow_right_default"
-            tools:visibility="visible"
-            android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya" />
+            tools:visibility="visible" />
 
         <include
+            android:id="@+id/shcMultiLineGraphErrorView"
             layout="@layout/shc_partial_common_widget_state_error"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl9"
-            android:layout_marginBottom="@dimen/layout_lvl9"
+            android:layout_marginTop="128dp"
+            android:layout_marginBottom="128dp"
             app:layout_constraintBottom_toTopOf="@+id/tvShcMultiLineCta"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvShcGraphMetrics" />
 
         <include
+            android:id="@+id/shcMultiLineGraphEmptyStateView"
             layout="@layout/shc_partial_line_graph_state_empty"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_lvl4"
-            android:visibility="gone"
+            android:layout_margin="16dp"
             app:layout_constraintBottom_toBottomOf="@id/chartViewShcMultiLine"
-            app:layout_constraintEnd_toEndOf="@id/chartViewShcMultiLine"
-            app:layout_constraintStart_toStartOf="@id/chartViewShcMultiLine"
-            app:layout_constraintTop_toTopOf="@id/chartViewShcMultiLine"
-            tools:visibility="visible" />
+            app:layout_constraintEnd_toEndOf="@+id/chartViewShcMultiLine"
+            app:layout_constraintStart_toStartOf="@+id/chartViewShcMultiLine"
+            app:layout_constraintTop_toTopOf="@id/chartViewShcMultiLine" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/shc_partial_multi_line_graph_loading_state" />
+    <include
+        android:id="@+id/shcMultiLineGraphLoadingView"
+        layout="@layout/shc_partial_multi_line_graph_loading_state" />
 
 </com.tokopedia.unifycomponents.CardUnify>

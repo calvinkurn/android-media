@@ -44,39 +44,33 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
+    private static final String FOLDER_NAME = "extras";
+    private static final String FILE_EXTENSIONS = ".jpg";
+    private static final int IMAGE_QUALITY = 95;
     public CameraView cameraView;
-    private boolean mCapturingPicture;
     public View reverseCamera;
-
     public CameraListener cameraListener;
     public boolean isCameraOpen;
     public TextView retakePhoto;
     public TextView continueUpload;
     public View captureImage;
-    private int flashIndex;
-    private List<Flash> supportedFlashList;
     public FrameLayout cameraLayout;
     public IconUnify flashControl;
     public IconUnify buttonCancel;
-
-    private Size mCaptureNativeSize;
     public ImageView imageCaptured;
-    RelativeLayout cameraActionsRL;
     public LinearLayout pictureActionLL;
-
-    private ProgressDialog progressDialog;
     public String finalCameraResultFilePath;
     protected ImageView cameraOverlayImage;
     protected TextView headerText;
-
-    private static int IMAGE_QUALITY = 95;
-
-    private static final String FOLDER_NAME = "extras";
-    private static final String FILE_EXTENSIONS = ".jpg";
+    RelativeLayout cameraActionsRL;
+    private boolean mCapturingPicture;
+    private int flashIndex;
+    private List<Flash> supportedFlashList;
+    private Size mCaptureNativeSize;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void initInjector() {
@@ -185,9 +179,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         retakePhoto.setOnClickListener(v -> {
             initCameraProp();
         });
-
-        buttonCancel.setOnClickListener(v -> Objects.requireNonNull(getActivity()).finish());
-
+        buttonCancel.setOnClickListener(v -> requireActivity().finish());
         cameraView.addCameraListener(cameraListener);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setCancelable(false);
@@ -359,7 +351,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if(isCameraOpen){
+        if (isCameraOpen) {
             cameraView.close();
         }
     }

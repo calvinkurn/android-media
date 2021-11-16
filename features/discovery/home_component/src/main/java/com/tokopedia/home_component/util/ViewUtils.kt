@@ -26,11 +26,11 @@ object ChannelWidgetUtil {
         when(channelModel?.channelConfig?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
-                dividerBottom?.invisible()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
-                dividerBottom?.invisible()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_BOTTOM -> {
                 dividerTop?.invisible()
@@ -63,8 +63,8 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
 }
 
 //function check is gradient all white, if empty default color is white
-fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>) : Boolean {
-    val colorWhite = "#FFFFFF"
+fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>, context: Context) : Boolean {
+    val colorWhite = getHexColorFromIdColor(context, R.color.Unify_Static_White)
     if (colorArray.isNotEmpty()) {
         if (colorArray.size > 1) {
             val colorArrayNotWhite = colorArray.filter { it != colorWhite }

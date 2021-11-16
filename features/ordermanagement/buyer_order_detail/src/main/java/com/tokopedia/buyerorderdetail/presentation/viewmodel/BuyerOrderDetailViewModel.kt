@@ -19,6 +19,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -160,6 +161,22 @@ class BuyerOrderDetailViewModel @Inject constructor(
         return if (buyerOrderDetailResult is Success) {
             buyerOrderDetailResult.data.productListUiModel.productListHeaderUiModel.shopType
         } else 0
+    }
+
+    fun getCategoryId(): List<Int> {
+        val categoryIdMap = HashSet<Int>()
+        val buyerOrderDetailResult = _buyerOrderDetailResult.value
+        return if (buyerOrderDetailResult is Success) {
+            buyerOrderDetailResult.data.productListUiModel.productList.map {
+                categoryIdMap.add(it.categoryId.toIntOrZero())
+            }
+            buyerOrderDetailResult.data.productListUiModel.productBundlingList.forEach { bundle ->
+                bundle.bundleItemList.forEach {
+                    categoryIdMap.add(it.categoryId.toIntOrZero())
+                }
+            }
+            categoryIdMap.toList()
+        } else emptyList()
     }
 
     fun getUserId(): String {

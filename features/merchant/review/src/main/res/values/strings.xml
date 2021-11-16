@@ -394,11 +394,15 @@
     <string name="review_reading_product_satisfaction_rate">%s&#37; pembeli puas belanja barang ini</string>
     <string name="review_reading_rating_format">%.1f</string>
     <string name="review_reading_highlighted_topic_review_count">%d ulasan</string>
+    <string name="review_reading_reviewer_stats">• %s</string>
 
     <!-- Gallery    -->
     <string name="review_gallery_image_count">%d/%d</string>
     <string name="review_gallery_header_see_all">Lihat Semua</string>
     <string name="review_gallery_variant">Varian: %s</string>
     <string name="review_gallery_title">Foto Pembeli</string>
+
+    <!-- Credibility   -->
+    <string name="review_credibility_learn_more">Pelajari Selengkapnya</string>
 
 </resources>

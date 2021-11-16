@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
+import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.datamock.DummyProvider
@@ -10,6 +11,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -51,6 +53,32 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(shipmentDetailData, 0,
                 shopShipments, -1, false, false, "",
                 products, "1479278-30-740525-99367774", false, address, false, 0, "")
+
+        // Then
+        verify {
+            view.showData(any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `When load courier recommendation using rates api return success data Then view shows positive data`() {
+
+        val shippingData = DummyProvider.getShippingRecommendationDataWithState()
+        val addressData = address.apply {
+            locationDataModel = LocationDataModel()
+        }
+        presenter.attachView(view)
+
+        // Given
+        every { ratesApiUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every {
+            responseConverter.fillState(any(), shopShipments, any(), 0)
+        } returns shippingData
+
+        // When
+        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", true, addressData, false, 0, "")
 
         // Then
         verify {
@@ -147,6 +175,33 @@ class ShippingDurationPresenterTest {
         verify {
             responseConverter.fillState(any(), shopShipments, 0, 0)
         }
+    }
+
+    @Test
+    fun `When load courier recommendation and promo courier is disabled Then isPromo flag is zero and promocode in every product is empty`() {
+        val shippingData = DummyProvider.getShippingRecommendationDataWithState()
+        val shippingDurationUIModels = shippingData.shippingDurationUiModels
+        val productsShipping = shippingDurationUIModels.map { it.serviceData.products }
+        presenter.attachView(view)
+
+        // Given
+        every { ratesApiUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every {
+            responseConverter.fillState(any(), shopShipments, 0, 0)
+        } returns shippingData
+        every {view.isDisableCourierPromo()} returns true
+
+        val shipmentDetailData = DummyProvider.getShipmentDetailData()
+        shipmentDetailData.selectedCourier = null
+
+        // When
+        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", true, address, false, 0, "")
+
+        // Then
+        assertEquals(shippingDurationUIModels.filter { it.serviceData.isPromo == 0 }.size, shippingDurationUIModels.size)
+        assertEquals(productsShipping.filter { product -> product.any { item -> item.promoCode.isEmpty() } }.size, productsShipping.size)
     }
 
     @Test

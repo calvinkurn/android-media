@@ -245,9 +245,6 @@ public class RemoteConfigKey {
 
     public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
 
-    public static final String ENABLE_NEW_SHOP_SCORE = "android_enable_new_shop_score";
-    public static final String ENABLE_NEW_PENALTY = "android_enable_new_penalty";
-
     public static final String PM_SWITCH_TO_WEB_VIEW = "android_pm_switch_to_web_view";
 
     public static final String SETTING_SHOW_DARK_MODE_TOGGLE = "android_show_dark_mode_toggle";
@@ -256,6 +253,10 @@ public class RemoteConfigKey {
     public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
 
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
-  
+
     public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
+
+    public static final String ENABLE_CART_CHECKOUT_BUNDLING = "android_enable_cart_checkout_bundling";
+    public static final String ENABLE_NEW_CONTENT_CREATION_FLOW = "app_android_feed_cc_feature_flag";
+
 }

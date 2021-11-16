@@ -62,7 +62,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener,
                          private val bannerComponentListener: BannerComponentListener?,
                          private val dynamicIconComponentListener: DynamicIconComponentListener,
-                         private val legoSixAutoListener: Lego6AutoBannerListener
+                         private val legoSixAutoListener: Lego6AutoBannerListener,
+                         private val campaignWidgetComponentListener: CampaignWidgetComponentListener
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -272,6 +273,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return 0
     }
 
+    override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int {
+        return CampaignWidgetViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -279,8 +284,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
          */
         if (productLayout.contains(layout)) {
             return ProductOrganicChannelViewHolder.LAYOUT
-        }
-        else if(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.contains(layout)){
+        } else if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.contains(layout)) {
             /**
              * Layout registered as sprint sale
              * refer to dynamic channel sprint layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item
@@ -417,18 +421,24 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 }
             }
             RechargeBUWidgetMixLeftViewHolder.LAYOUT -> viewHolder =
-                    RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener)
+                RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener)
             RechargeBUWidgetMixTopViewHolder.LAYOUT -> viewHolder =
-                    RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
+                RechargeBUWidgetMixTopViewHolder(view, rechargeBUWidgetListener)
             BannerComponentViewHolder.LAYOUT -> viewHolder =
-                    BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
-            DynamicIconViewHolder.LAYOUT -> viewHolder = DynamicIconViewHolder(view, dynamicIconComponentListener)
+                BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
+            DynamicIconViewHolder.LAYOUT -> viewHolder =
+                DynamicIconViewHolder(view, dynamicIconComponentListener)
             ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
-            ErrorStateChannelOneViewHolder.LAYOUT -> viewHolder = ErrorStateChannelOneViewHolder(view, listener)
-            ErrorStateChannelTwoViewHolder.LAYOUT -> viewHolder = ErrorStateChannelTwoViewHolder(view, listener)
-            ErrorStateChannelThreeViewHolder.LAYOUT -> viewHolder = ErrorStateChannelThreeViewHolder(view, listener)
-            HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
-            ShimmeringChannelViewHolder.LAYOUT -> viewHolder = ShimmeringChannelViewHolder(view, listener)
+            ErrorStateChannelOneViewHolder.LAYOUT -> viewHolder =
+                ErrorStateChannelOneViewHolder(view, listener)
+            ErrorStateChannelTwoViewHolder.LAYOUT -> viewHolder =
+                ErrorStateChannelTwoViewHolder(view, listener)
+            ErrorStateChannelThreeViewHolder.LAYOUT -> viewHolder =
+                ErrorStateChannelThreeViewHolder(view, listener)
+            HomeInitialShimmerViewHolder.LAYOUT -> viewHolder =
+                HomeInitialShimmerViewHolder(view, listener)
+            ShimmeringChannelViewHolder.LAYOUT -> viewHolder =
+                ShimmeringChannelViewHolder(view, listener)
             ShimmeringIconViewHolder.LAYOUT -> viewHolder = ShimmeringIconViewHolder(view, listener)
             HomeAtfErrorViewHolder.LAYOUT -> viewHolder = HomeAtfErrorViewHolder(view, listener)
             DynamicLegoBannerSixAutoViewHolder.LAYOUT -> viewHolder =
@@ -439,6 +449,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             parentRecycledViewPool)
             QuestWidgetViewHolder.LAYOUT -> viewHolder =
                 QuestWidgetViewHolder(view)
+            CampaignWidgetViewHolder.LAYOUT -> viewHolder = CampaignWidgetViewHolder(
+                view,
+                homeComponentListener,
+                campaignWidgetComponentListener,
+                parentRecycledViewPool
+            )
             else -> viewHolder = super.createViewHolder(view, type)
 
         }

@@ -88,6 +88,7 @@ import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListe
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
+import com.tokopedia.shop.databinding.FragmentShopPageHomeBinding
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
@@ -115,6 +116,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -275,6 +277,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
+    private val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (isShopHomeTabSelected())
@@ -363,7 +366,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     }
 
     private fun initView() {
-        globalErrorShopPage = view?.findViewById(R.id.globalError_shopPage)
+        globalErrorShopPage = viewBinding?.globalErrorShopPage
     }
 
     private fun observeShopChangeProductGridSharedViewModel() {
@@ -397,6 +400,15 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         shopHomeAdapter.resumeSliderBannerAutoScroll()
+        checkShowScrollToTopButton()
+    }
+
+    private fun checkShowScrollToTopButton() {
+        if (isShowScrollToTopButton()) {
+            showScrollToTopButton()
+        } else {
+            hideScrollToTopButton()
+        }
     }
 
     private fun loadInitialDataAfterOnViewCreated() {
@@ -456,6 +468,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
         startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
         viewModel?.getShopPageHomeData(
                 shopId,
+                ShopUtil.getProductPerPage(context),
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
                 initialProductListData,
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
@@ -933,7 +946,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
                     (parentFragment as? NewShopPageFragment)?.expandHeader()
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex)
-                    (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+                    hideScrollToTopButton()
                 latestCompletelyVisibleItemIndex = firstCompletelyVisibleItemPosition
             }
 
@@ -942,7 +955,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
                 if(state ==  SCROLL_STATE_IDLE){
                     val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
                     if (firstCompletelyVisibleItemPosition > 0) {
-                        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+                        showScrollToTopButton()
                     }
                 }
             }
@@ -959,6 +972,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
             viewModel?.getNewProductList(
                     shopId,
                     page,
+                    ShopUtil.getProductPerPage(context),
                     shopProductFilterParameter ?: ShopProductFilterParameter(),
                     ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
             )
@@ -1799,32 +1813,34 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
 
     private fun showToastSuccess(message: String) {
         activity?.run {
-            Toaster.build(findViewById(android.R.id.content), message).show()
+            view?.let { Toaster.build(it, message).show() }
         }
     }
 
     private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
         activity?.run {
-            ctaAction?.let { ctaClickListener ->
-                Toaster.build(findViewById(android.R.id.content),
+            view?.let {
+                ctaAction?.let { ctaClickListener ->
+                    Toaster.build(it,
+                            message,
+                            Snackbar.LENGTH_LONG,
+                            Toaster.TYPE_NORMAL,
+                            ctaText,
+                            ctaClickListener
+                    ).show()
+                } ?: Toaster.build(it,
                         message,
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_NORMAL,
-                        ctaText,
-                        ctaClickListener
+                        ctaText
                 ).show()
-            } ?: Toaster.build(findViewById(android.R.id.content),
-                    message,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    ctaText
-            ).show()
+            }
         }
     }
 
     private fun showErrorToast(message: String) {
         activity?.run {
-            Toaster.build(findViewById(android.R.id.content), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
         }
     }
 
@@ -2113,6 +2129,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
         shopHomeAdapter.removeShopHomeCampaignNplWidget(model)
         viewModel?.getShopPageHomeData(
                 shopId,
+                ShopUtil.getProductPerPage(context),
                 shopProductFilterParameter ?: ShopProductFilterParameter(),
                 initialProductListData,
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
@@ -2177,6 +2194,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
         tempShopProductFilterParameter.setMapData(mapParameter)
         viewModel?.getFilterResultCount(
                 shopId,
+                ShopUtil.getProductPerPage(context),
                 tempShopProductFilterParameter,
                 ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
         )
@@ -2207,6 +2225,14 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
 
     override fun isShowScrollToTopButton(): Boolean {
         return latestCompletelyVisibleItemIndex > 0
+    }
+
+    private fun hideScrollToTopButton(){
+        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+    }
+
+    private fun showScrollToTopButton(){
+        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
     }
 
     //region play widget
@@ -2400,39 +2426,45 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
 
     private fun showWidgetDeletedToaster() {
         activity?.run {
-            Toaster.build(
-                    findViewById(android.R.id.content),
-                    getString(R.string.shop_page_play_widget_sgc_video_deleted),
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_NORMAL
-            ).show()
+            view?.let {
+                Toaster.build(
+                        it,
+                        getString(R.string.shop_page_play_widget_sgc_video_deleted),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_NORMAL
+                ).show()
+            }
         }
     }
 
     private fun showWidgetDeleteFailedToaster(channelId: String, reason: Throwable) {
         shopPlayWidgetAnalytic.onImpressErrorDeleteChannel(channelId, reason.localizedMessage.orEmpty())
         activity?.run {
-            Toaster.build(
-                    view = findViewById(android.R.id.content),
-                    text = getString(R.string.shop_page_play_widget_sgc_video_saved_fail),
-                    duration = Toaster.LENGTH_LONG,
-                    type = Toaster.TYPE_ERROR,
-                    actionText = getString(R.string.shop_page_play_widget_sgc_try_again),
-                    clickListener = View.OnClickListener {
-                        deleteChannel(channelId)
-                    }
-            ).show()
+            view?.let {
+                Toaster.build(
+                        view = it,
+                        text = getString(R.string.shop_page_play_widget_sgc_video_saved_fail),
+                        duration = Toaster.LENGTH_LONG,
+                        type = Toaster.TYPE_ERROR,
+                        actionText = getString(R.string.shop_page_play_widget_sgc_try_again),
+                        clickListener = View.OnClickListener {
+                            deleteChannel(channelId)
+                        }
+                ).show()
+            }
         }
     }
 
     private fun showWidgetTranscodeSuccessToaster() {
         activity?.run {
-            Toaster.build(
-                    view = findViewById(android.R.id.content),
-                    text = getString(R.string.shop_page_play_widget_sgc_video_saved_success),
-                    duration = Toaster.LENGTH_LONG,
-                    type = Toaster.TYPE_NORMAL
-            ).show()
+            view?.let {
+                Toaster.build(
+                        view = it,
+                        text = getString(R.string.shop_page_play_widget_sgc_video_saved_success),
+                        duration = Toaster.LENGTH_LONG,
+                        type = Toaster.TYPE_NORMAL
+                ).show()
+            }
         }
     }
 
@@ -2443,12 +2475,14 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
 
     private fun showLinkCopiedToaster() {
         activity?.run {
-            Toaster.build(
-                    view = findViewById(android.R.id.content),
-                    text = getString(R.string.shop_page_play_widget_sgc_link_copied),
-                    duration = Toaster.LENGTH_LONG,
-                    type = Toaster.TYPE_NORMAL
-            ).show()
+            view?.let {
+                Toaster.build(
+                        view = it,
+                        text = getString(R.string.shop_page_play_widget_sgc_link_copied),
+                        duration = Toaster.LENGTH_LONG,
+                        type = Toaster.TYPE_NORMAL
+                ).show()
+            }
         }
     }
 

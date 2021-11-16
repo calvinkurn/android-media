@@ -10,7 +10,7 @@ data class PageResult<T>(
 
     companion object {
 
-        fun<T> Loading(currentValue: T) = PageResult(currentValue, PageResultState.Loading)
+        fun<T> loading(currentValue: T) = PageResult(currentValue, PageResultState.Loading)
     }
 }
 

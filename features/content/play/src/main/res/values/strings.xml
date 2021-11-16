@@ -7,13 +7,7 @@
     <string name="play_follow">Follow</string>
     <string name="play_following">Following</string>
     <string name="play_watch_mode">Watch Mode</string>
-    <string name="play_message_socket_reconnect">Menghubungkan socket&#8230;</string>
     <string name="play_watch_again">Tonton Ulang</string>
-
-    <plurals name="play_likes">
-        <item quantity="one">%s Like</item>
-        <item quantity="other">%s Likes</item>
-    </plurals>
 
     <string name="play_title_variant">Detail Produk</string>
     <string name="play_product_buy">Beli</string>
@@ -28,21 +22,15 @@
     <string name="play_product_updated">Produk telah diupdate</string>
     <string name="play_link_copied">Link berhasil disalin</string>
 
-    <string name="play_live_ended_subtitle">Swipe ke kiri buat nonton video lainnya!</string>
-
     <!--Floating Window / PiP-->
-    <string name="play_pip_permission_rationale_title">Aktifkan akses Draw over other apps</string>
-    <string name="play_pip_permission_rationale_desc">Akses ini dibutuhkan untuk dapat membuka Tokopedia Play dalam mode Picture-in-Picture</string>
+    <string name="play_pip_permission_rationale_title">Mau perkecil layar Live?</string>
+    <string name="play_pip_permission_rationale_desc">Dengan aktifkan akses mode ini, kamu tetap bisa nonton sambil jelajahi aplikasi Tokopedia, lho.</string>
     <string name="play_pip_activate">Aktifkan</string>
-    <string name="play_pip_cancel">Abaikan</string>
+    <string name="play_pip_cancel">Batal</string>
 
     <!--mock-->
-    <string name="play_mock_cart">99+</string>
-    <string name="play_mock_view">2k</string>
-    <string name="play_mock_like">0 Likes</string>
     <string name="play_mock_pinned_message">Yoenik Apparel Visit my collections here!</string>
     <string name="play_mock_shop_name">Yoenik Apparel</string>
-    <string name="play_mock_shop_name_long">Yoenik Apparel yang suka jual baju2 keren nan indah wow</string>
     <string name="play_transition_video">video_play</string>
 
     <string name="play_general_err_message">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
@@ -59,7 +47,6 @@
     <string name="play_out_of_stock">Stok habis</string>
 
     <!--Engagement Tools-->
-    <string name="play_interactive_prestart_tag">Game Hadiah</string>
     <string name="play_interactive_prestart_timer_text">Dimulai dalam:</string>
     <string name="play_interactive_prestart_follow_button">Follow Buat Ikutan</string>
 
@@ -86,4 +73,8 @@
     <string name="play_will_start_on">Akan mulai dalam</string>
     <string name="play_failed_remind_me">Oops, gagal tersambung</string>
     <string name="play_try_again">Coba Lagi</string>
+
+    <string name="play_connecting_chromecast">Connecting to Chromecast</string>
+    <string name="play_casting_chromecast">Casting to Chromecast</string>
+    <string name="play_disconnect_chromecast">Disconnected from Chromecast</string>
 </resources>

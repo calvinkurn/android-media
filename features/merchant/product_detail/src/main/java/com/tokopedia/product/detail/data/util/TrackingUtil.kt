@@ -117,7 +117,7 @@ object TrackingUtil {
         mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
 
         if (componentTrackDataModel != null)
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${elementName};cpos:${componentTrackDataModel.adapterPosition};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${elementName};cpos:${componentTrackDataModel.adapterPosition};"
         else
             mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = ""
 

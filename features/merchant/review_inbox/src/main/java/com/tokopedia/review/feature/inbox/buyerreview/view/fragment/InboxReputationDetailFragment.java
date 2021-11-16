@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -20,8 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -35,6 +34,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.header.HeaderUnify;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
+import com.tokopedia.review.common.util.ClipboardHandler;
 import com.tokopedia.review.common.util.ReviewErrorHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
@@ -45,7 +45,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.InboxReputati
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ReputationAdapter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl;
-import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShareReviewDialog;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail;
 import com.tokopedia.review.feature.inbox.buyerreview.view.presenter.InboxReputationDetailPresenter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
@@ -53,7 +52,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ShareModel;
 import com.tokopedia.review.inbox.R;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -78,8 +76,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     private RecyclerView listProduct;
     private SwipeToRefresh swipeToRefresh;
     private InboxReputationDetailAdapter adapter;
-    private ShareReviewDialog shareReviewDialog;
-    private CallbackManager callbackManager;
     private View mainView;
 
     private ProgressDialog progressDialog;
@@ -150,8 +146,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                 // Ignore cache expired exception
             }
         }
-
-        callbackManager = CallbackManager.Factory.create();
         InboxReputationDetailTypeFactory typeFactory = new InboxReputationDetailTypeFactoryImpl
                 (this);
         adapter = new InboxReputationDetailAdapter(typeFactory);
@@ -424,21 +418,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onShareReview(InboxReputationDetailItemUiModel element, int adapterPosition) {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
-        if (shareReviewDialog == null && callbackManager != null) {
-            shareReviewDialog = new ShareReviewDialog(getActivity(), callbackManager,
-                    this);
-        }
-
-        if (shareReviewDialog != null) {
-            shareReviewDialog.setModel(new ShareModel(
-                    element.getProductName(),
-                    element.getReview(),
-                    element.getProductUrl(),
-                    element.getProductAvatar()
-            ));
-            shareReviewDialog.show();
-        }
-
+        ClipboardHandler.CopyToClipboard(getActivity(), element.getProductUrl());
+        Toast.makeText(getActivity(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
         reputationTracking.onClickShareMenuReviewTracker(
                 element.getOrderId(),
                 element.getProductId(),
@@ -548,9 +529,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (callbackManager != null) {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
-        }
 
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage();
@@ -572,6 +550,5 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         super.onDestroyView();
         if (presenter != null)
             presenter.detachView();
-        callbackManager = null;
     }
 }

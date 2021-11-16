@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
@@ -27,6 +28,9 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 object DynamicProductDetailTracking {
@@ -318,7 +322,8 @@ object DynamicProductDetailTracking {
 
         fun eventEcommerceBuy(actionButton: Int, buttonText: String, userId: String,
                               cartId: String, trackerAttribution: String, multiOrigin: Boolean, variantString: String,
-                              productInfo: DynamicProductInfoP1?, boType: Int) {
+                              productInfo: DynamicProductInfoP1?, boType: Int, ratesEstimateData: P2RatesEstimateData?,
+                              buyerDistrictId: String, sellerDistrictId: String) {
             val productId = productInfo?.basic?.productID ?: ""
             val shopId = productInfo?.basic?.shopID ?: ""
             val productName = productInfo?.data?.name ?: ""
@@ -342,6 +347,12 @@ object DynamicProductDetailTracking {
                 it.id
             }?.joinToString("/") ?: ""
 
+            val dimension10 = productInfo?.data?.isCod ?: false
+            val dimension12 = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
+            val dimension14 = ratesEstimateData?.title ?: ""
+            val dimension16 = ratesEstimateData?.etaText ?: ""
+            val dimension120 = "$buyerDistrictId - $sellerDistrictId"
+
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
@@ -349,11 +360,13 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_LABEL, if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
-                    ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
+                    ProductTrackingConstant.Tracking.KEY_HIT_USER_ID, userId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER, shopId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_TYPE, shopType,
                     ProductTrackingConstant.Tracking.KEY_ISLOGGIN, (userId.isNotEmpty()).toString(),
-
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
+                    ProductTrackingConstant.Tracking.KEY_COMPONENT, "",
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
                     ProductTrackingConstant.Tracking.KEY_ADD, DataLayer.mapOf(
@@ -366,15 +379,24 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.CATEGORY, categoryName,
                             ProductTrackingConstant.Tracking.VARIANT, variantString,
                             ProductTrackingConstant.Tracking.QUANTITY, quantity,
+                            ProductTrackingConstant.Tracking.KEY_PRODUCT_CATEGORY_ID, categoryId,
+                            ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_ID, shopId,
+                            ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_NAME, shopName,
+                            ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_TYPE, shopType,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_10, dimension10.toString(),
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_12, dimension12,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_14, dimension14,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_16, dimension16,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_38, trackerAttribution,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_40, "null",
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_45, cartId,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_54, TrackingUtil.getMultiOriginAttribution(multiOrigin),
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_79, shopId,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_80, shopName,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_81, shopType,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_45, cartId,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_82, categoryId,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_40, "null",
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_54, TrackingUtil.getMultiOriginAttribution(multiOrigin),
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_83, boTypeString,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_38, trackerAttribution
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_120, dimension120
                     ))))))
         }
 
@@ -589,7 +611,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.SWIPE_IMAGE_BUSINESS_UNIT
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
             mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE};cpos:${componentTrackDataModel.adapterPosition};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE};cpos:${componentTrackDataModel.adapterPosition};"
             trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
         }
 
@@ -729,9 +751,9 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                             ProductTrackingConstant.Tracking.KEY_ACTION, topAdsAction,
                             ProductTrackingConstant.Tracking.KEY_LABEL, "$pageTitle-$chipValue",
-                            ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.productId.toString(),
+                            ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.productID ?: "",
                             ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
-                            ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};",
+                            ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};",
                             ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                             ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
                             ProductTrackingConstant.Action.CLICK, DataLayer.mapOf(
@@ -762,27 +784,9 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_LABEL, "",
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.parentProductId,
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
-                    ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};"
+                    ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};"
             )
             TrackApp.getInstance().gtm.sendGeneralEvent(editProductData)
-        }
-
-        fun eventClickAffiliate(userId: String, shopID: Int, isRegularPdp: Boolean = false, productInfo: DynamicProductInfoP1?) {
-            val productId = productInfo?.basic?.productID ?: ""
-            val mapEvent: MutableMap<String, Any> = if (isRegularPdp) {
-                mutableMapOf(ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                        ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
-                        ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Action.CLICK_BY_ME,
-                        ProductTrackingConstant.Tracking.KEY_LABEL to "$shopID - $productId")
-            } else {
-                mutableMapOf(ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.Affiliate.CLICK_AFFILIATE,
-                        ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Affiliate.CATEGORY,
-                        ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Affiliate.ACTION,
-                        ProductTrackingConstant.Tracking.KEY_LABEL to productId)
-            }
-            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_BY_ME)
         }
 
         fun eventPDPAddToWishlist(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
@@ -956,20 +960,6 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEND_QUESTION)
         }
 
-        fun eventClickByMe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
-            val shopId = productInfo?.basic?.shopID ?: ""
-            val productId = productInfo?.basic?.productID ?: ""
-            val eventLabel = "{$shopId} - {$productId}"
-
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.CLICK_BY_ME,
-                    eventLabel)
-
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, "")
-        }
-
         fun eventTopAdsImageViewClicked(trackingQueue: TrackingQueue, userId: String, bannerId: String, position: Int, bannerName: String) {
             val mapEvent = hashMapOf<String, Any>(
                     ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.Tracking.PROMO_CLICK,
@@ -1077,19 +1067,6 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
             mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
             mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
-            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
-        }
-
-        fun eventClickWishlistOnAffiliate(userId: String, productId: String) {
-
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.Affiliate.CLICK_AFFILIATE,
-                    ProductTrackingConstant.Affiliate.CATEGORY,
-                    ProductTrackingConstant.Affiliate.ACTION_CLICK_WISHLIST,
-                    productId
-            )
-            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
-
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }
 
@@ -1442,7 +1419,7 @@ object DynamicProductDetailTracking {
                     DataLayer.mapOf(
                             "id", "",
                             "name", "product detail page - $productId",
-                            "creative", "layout:${productInfo?.layoutName};comp:${componentTrackDataModel.componentType};temp:${elementName};",
+                            "creative", "layout:${productInfo?.layoutName};comp:${elementName};temp:${componentTrackDataModel.componentType};",
                             "creative_url", "",
                             "position", componentTrackDataModel.adapterPosition,
                             "category", categoryString,
@@ -1453,7 +1430,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productInfo?.basic?.productID
                     ?: ""
             mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
 
             trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
         }
@@ -1463,13 +1440,23 @@ object DynamicProductDetailTracking {
                                         trackerAttribution: String?,
                                         isTradeIn: Boolean, isDiagnosed: Boolean,
                                         multiOrigin: Boolean, deeplinkUrl: String,
-                                        isStockAvailable: String, boType: Int, affiliateUniqueId: String ->
+                                        isStockAvailable: String, boType: Int,
+                                        affiliateUniqueId: String, uuid: String,
+                                        ratesEstimateData: P2RatesEstimateData?,
+                                        buyerDistrictId: String, sellerDistrictId: String ->
 
+            val dimension10 = productInfo?.data?.isCod ?: false
+            val dimension12 = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
+            val dimension14 = ratesEstimateData?.title ?: ""
+            val dimension16 = ratesEstimateData?.etaText ?: ""
+            val dimension53 = productInfo?.data?.campaign?.discountedPrice?.toLong()?.toString() ?: ""
             val dimension55 = TrackingUtil.getTradeInString(isTradeIn, isDiagnosed)
             val dimension83 = TrackingUtil.getBoTypeString(boType)
             val dimension54 = TrackingUtil.getMultiOriginAttribution(multiOrigin)
             val dimension38 = trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE
             val dimension98 = if (isStockAvailable == "0") "not available" else "available"
+            val dimension113 = if (affiliateUniqueId.isNotBlank()) "$affiliateUniqueId - $uuid" else ""
+            val dimension120 = "$buyerDistrictId - $sellerDistrictId"
 
             val categoryFormatted = TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail)
 
@@ -1481,22 +1468,34 @@ object DynamicProductDetailTracking {
                     variant = ProductTrackingConstant.Tracking.DEFAULT_VALUE,
                     category = categoryFormatted,
                     currency = null,
+                    dimension10 = dimension10.toString(),
+                    dimension12 = dimension12,
+                    dimension14 = dimension14,
+                    dimension16 = dimension16,
                     dimension38 = dimension38,
+                    dimension53 = dimension53,
                     dimension55 = dimension55,
                     dimension54 = dimension54,
                     dimension83 = dimension83,
                     dimension81 = productInfo?.shopTypeString ?: "",
                     dimension98 = dimension98,
                     dimension90 = if (affiliateUniqueId.isNotBlank()) "affiliate" else null,
-                    dimension113 = affiliateUniqueId,
+                    dimension113 = dimension113,
+                    dimension120 = dimension120,
                     index = 1
             ))
         }
 
-        private val generateProductViewBundle = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
+        private val generateProductViewBundle = { irisSessionId: String, trackerListName: String?,
+                                                  productInfo: DynamicProductInfoP1?,
                                                   shopInfo: ShopInfo?, trackerAttribution: String?,
                                                   isTradeIn: Boolean, isDiagnosed: Boolean,
-                                                  multiOrigin: Boolean, deeplinkUrl: String, isStockAvailable: String, boType: Int, affiliateUniqueId: String ->
+                                                  multiOrigin: Boolean, deeplinkUrl: String,
+                                                  isStockAvailable: String, boType: Int,
+                                                  affiliateUniqueId: String, uuid: String,
+                                                  ratesEstimateData: P2RatesEstimateData?,
+                                                  buyerDistrictId: String,
+                                                  sellerDistrictId: String ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1515,7 +1514,9 @@ object DynamicProductDetailTracking {
             val label = TrackingUtil.getProductViewLabel(productInfo)
 
             val products = generateProduct(irisSessionId, trackerListName, productInfo,
-                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable, boType, affiliateUniqueId)
+                trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
+                isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData, buyerDistrictId,
+                sellerDistrictId)
 
             ProductDetailViewsBundler
                     .getBundle(
@@ -1550,17 +1551,18 @@ object DynamicProductDetailTracking {
                             categoryIdLevel3,
                             categoryNameLevel1,
                             irisSessionId,
-                            null,
+                            ProductTrackingConstant.Tracking.CURRENT_SITE,
                             ProductDetailViewsBundler.KEY,
                             "product page",
                             "view product page",
                             label,
-                            null,
+                            ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
                             null,
                             productInfo?.isProductVariant().toString(),
                             productInfo?.data?.campaign?.campaignID,
                             "product status:${productInfo?.basic?.status?.toLowerCase()};" + "shop status:${shopInfo?.statusInfo?.shopStatus};",
-                            productInfo?.getFinalStock()
+                            productInfo?.getFinalStock(),
+                            trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE
                     )
         }
 
@@ -1575,13 +1577,18 @@ object DynamicProductDetailTracking {
                              deeplinkUrl: String,
                              isStockAvailable: String,
                              boType: Int,
-                             affiliateUniqueId: String) {
+                             affiliateUniqueId: String,
+                             uuid: String,
+                             ratesEstimateData: P2RatesEstimateData?,
+                             buyerDistrictId: String,
+                             sellerDistrictId: String) {
             productInfo?.let {
                 if (shopInfo?.isShopInfoNotEmpty() == true) {
                     val sentBundle = generateProductViewBundle(
                             irisSessionId, trackerListName, it, shopInfo,
                             trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
-                            isStockAvailable, boType, affiliateUniqueId
+                            isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData,
+                            buyerDistrictId, sellerDistrictId
                     )
                     sendTrackingBundle(
                             ProductDetailViewsBundler.KEY,
@@ -1607,9 +1614,9 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Tracking.KEY_ACTION, topAdsAction,
                     ProductTrackingConstant.Tracking.KEY_LABEL, "$pageTitle-$chipValue",
-                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.productId.toString(),
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productInfo?.basic?.productID ?: "",
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
-                    ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};",
+                    ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};",
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
                     ProductTrackingConstant.Tracking.IMPRESSIONS, DataLayer.listOf(
@@ -1677,6 +1684,46 @@ object DynamicProductDetailTracking {
                     String.format(ProductTrackingConstant.Label.TICKER_OOS, TrackingUtil.getTickerTypeInfoString(tickerType), tickerTitle, tickerMessage)
             )
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+        }
+
+
+        /**
+         * 26-10-2021
+         * Only triggered when using
+         * oneliner - stock assurance
+         */
+        fun eventOneLinerImpression(
+            trackingQueue: TrackingQueue?,
+            componentTrackDataModel: ComponentTrackDataModel,
+            productInfo: DynamicProductInfoP1?,
+            userId: String
+        ) {
+            val productId = productInfo?.basic?.productID ?: ""
+
+            val mapEvent = DataLayer.mapOf(
+                ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",
+                ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Tracking.KEY_ACTION, "view - pdp oneliner component",
+                ProductTrackingConstant.Tracking.KEY_LABEL, "",
+                ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.CURRENT_SITE,
+                ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT, userId,
+                ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
+                    "promoView", DataLayer.mapOf(
+                        "promotions", DataLayer.listOf(
+                            DataLayer.mapOf(
+                                "id", "",
+                                "name", "product detail page - $productId",
+                                "creative", "layout:${productInfo?.layoutName};comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};",
+                                "position", componentTrackDataModel.adapterPosition
+                            )
+                        ))))
+            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+                ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
+
+            trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
         }
     }
 
@@ -2017,5 +2064,103 @@ object DynamicProductDetailTracking {
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, eventAction)
         }
+    }
+
+    object ProductBundling {
+
+        fun eventImpressionProductBundling(
+            userId: String,
+            bundleId: String,
+            bundleType: String,
+            productInfo: DynamicProductInfoP1?,
+            componentTrackDataModel: ComponentTrackDataModel,
+            trackingQueue: TrackingQueue
+        ) {
+            val action = ProductTrackingConstant.Action.IMPRESSION_PRODUCT_BUNDLING
+            val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.Tracking.PROMO_VIEW,
+                ProductTrackingConstant.Category.PDP,
+                action,
+                String.format(
+                    ProductTrackingConstant.Label.VIEW_LABEL_PRODUCT_BUNDLING,
+                    bundleId,
+                    bundleType.toLowerCase(Locale.ROOT)
+                )
+            )
+
+            val productId = productInfo?.basic?.productID ?: ""
+            val layout = productInfo?.layoutName
+            val temp = componentTrackDataModel.componentType
+            val comp = componentTrackDataModel.componentName
+            val cpos = componentTrackDataModel.adapterPosition
+
+            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:$layout;catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:$comp;temp:$temp;elem:${action};cpos:$cpos;"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID] = userId
+
+            val ecommerce = DataLayer.mapOf(
+                ProductTrackingConstant.Tracking.PROMO_VIEW, DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_PROMOTIONS, DataLayer.listOf(
+                        DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.CREATIVE, "layout:$layout;comp:$comp;temp:$temp;",
+                            ProductTrackingConstant.Tracking.ID, "",
+                            ProductTrackingConstant.Tracking.NAME, "product detail page - $productId",
+                            ProductTrackingConstant.Tracking.POSITION, "$cpos"
+                        )
+                    )
+                )
+            )
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ECOMMERCE] = ecommerce
+
+            trackingQueue.putEETracking(HashMap(mapEvent))
+        }
+
+        fun eventClickMultiBundleProduct(
+            bundleId: String,
+            bundleProductId: String,
+            productInfo: DynamicProductInfoP1?,
+            componentTrackDataModel: ComponentTrackDataModel
+        ) {
+            val action = ProductTrackingConstant.Action.CLICK_PRODUCT_BUNDLING
+            val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                action,
+                String.format(
+                    ProductTrackingConstant.Label.EVENT_LABEL_CLICK_PRODUCT_BUNDLING_MULTIPLE,
+                    bundleProductId,
+                    bundleId
+                )
+            )
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, action)
+        }
+
+        fun eventClickCheckBundlePage(
+            bundleId: String,
+            bundleType: String,
+            productInfo: DynamicProductInfoP1?,
+            componentTrackDataModel: ComponentTrackDataModel
+        ) {
+            val action = ProductTrackingConstant.Action.CLICK_CHECK_PRODUCT_BUNDLING
+            val mapEvent = TrackAppUtils.gtmData(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                action,
+                String.format(
+                    ProductTrackingConstant.Label.EVENT_LABEL_CLICK_CHECK_PRODUCT_BUNDLING,
+                    bundleId,
+                    bundleType.toLowerCase(Locale.ROOT)
+                )
+            )
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, action)
+        }
+
     }
 }

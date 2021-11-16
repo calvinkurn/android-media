@@ -21,6 +21,14 @@ public interface ConstantTransactionAnalytics {
         String POSITION = "position";
         String PROMO_ID_ = "promo_id";
         String PROMO_CODE = "promo_code";
+        String BRAND = "brand";
+        String CATEGORY = "category";
+        String PRICE = "price";
+        String QUANTITY = "quantity";
+        String SHOP_ID = "shop_id";
+        String SHOP_NAME = "shop_name";
+        String SHOP_TYPE = "shop_type";
+        String VARIANT = "variant";
     }
 
 
@@ -91,6 +99,16 @@ public interface ConstantTransactionAnalytics {
         String PURCHASE_SETTING = "purchase setting";
         String PURCHASE_PROTECTION_OCC = "fin - order summary occ";
         String ORDER_SUMMARY = "order summary";
+
+        //cross_sell
+        String BU_RECHARGE = "recharge";
+        String POSITION = "position";
+        String DIGITAL_PRODUCT_NAME = "digital_product_name";
+        String CREATIVE = "creative";
+        String ACTION_FIELD = "actionField";
+        String OPTION = "option";
+        String STEP = "step";
+        String PRODUCTS = "products";
     }
 
     interface EventAction {
@@ -219,6 +237,11 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PRODUCT_LAST_SEEN_ON_CART_LIST = "click product last seen on cart list";
         String CLICK_DONATION = "click donation";
         String VIEW_AUTO_CHECK_ON_DONATION = "view autocheck on donation";
+        String IMPRESSION_CROSS_SELL_ICON = "impression cross sell icon";
+        String CHECK_CROSS_SELL_ICON = "check cross sell icon";
+        String UNCHECK_CROSS_SELL_ICON = "uncheck cross sell icon";
+        String CLICK_PILIH_METODE_PEMBAYARAN_CROSS_SELL = "click pilih metode pembayaran - cross sell";
+        String CLICK_PAYMENT_OPTION_BUTTON = "click payment option button";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -496,6 +519,10 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ON_PRODUCT_IMAGE_ON_COLLAPSE_VIEW = "click on product image on collapse view";
         String CLICK_LIHAT_SELENGKAPNYA_FOR_NOW_PRODUCT = "click lihat selengkapnya for now product";
         String CLICK_LIHAT_ON_PLUS_LAINNYA_ON_NOW_PRODUCT = "click lihat on + lainnya on now product";
+
+        // Cart Bundling
+        String CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE = "click lihat barang serupa for Unavailable Bundle Package";
+        String CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD = "click ubah in product bundling package product card";
     }
 
     interface EventLabel {

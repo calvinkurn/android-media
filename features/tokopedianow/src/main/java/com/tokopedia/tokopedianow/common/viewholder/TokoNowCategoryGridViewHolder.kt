@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
-import android.view.ViewStub
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,8 +16,11 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.adapter.differ.TokoNowCategoryGridDiffer
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryGridAdapterTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeCategoryGridBinding
+import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowCategoryGridViewHolder(
     itemView: View,
@@ -32,7 +34,9 @@ class TokoNowCategoryGridViewHolder(
         private const val GRID_SPAN_COUNT = 2
     }
 
-    private var vsTitle: ViewStub? = null
+    private var binding: ItemTokopedianowHomeCategoryGridBinding? by viewBinding()
+    private var stubBinding: PartialTokopedianowViewStubDcTitleBinding? by viewBinding()
+
     private var tvTitle: Typography? = null
     private var tvSeeAll: Typography? = null
     private var llCategory: LocalLoad? = null
@@ -58,14 +62,15 @@ class TokoNowCategoryGridViewHolder(
     }
 
     private fun initView() {
-        itemView.apply {
-            vsTitle = findViewById(R.id.vs_title)
-            tvTitle = vsTitle?.inflate()?.findViewById(R.id.channel_title)
-            tvSeeAll = findViewById(R.id.tv_see_all)
-            llCategory = findViewById(R.id.ll_category)
-            rvCategory = findViewById(R.id.rv_category)
-            categoryShimmering = findViewById(R.id.category_shimmering)
+        binding?.vsTitle?.setOnInflateListener { _, inflated ->
+            stubBinding = PartialTokopedianowViewStubDcTitleBinding.bind(inflated)
         }
+        binding?.vsTitle?.inflate()
+        tvTitle = stubBinding?.channelTitle
+        tvSeeAll = binding?.tvSeeAll
+        llCategory = binding?.llCategory
+        rvCategory = binding?.rvCategory
+        categoryShimmering = binding?.categoryShimmering?.categoryShimmeringLayout
     }
 
     private fun showLoadingState(data: TokoNowCategoryGridUiModel) {
