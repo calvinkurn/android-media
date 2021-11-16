@@ -27,7 +27,7 @@ class DigitalHomePageSearchViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
-    private lateinit var job: Job
+    lateinit var job: Job
 
     private val mutableSearchCategoryList = MutableLiveData<Result<DigitalHomePageSearchNewModel>>()
     val searchCategoryList: LiveData<Result<DigitalHomePageSearchNewModel>>
@@ -69,13 +69,11 @@ class DigitalHomePageSearchViewModel @Inject constructor(
     }
 
     fun cancelAutoComplete(){
-        launchCatchError(block = {
+        launch{
             if (::job.isInitialized && job.isActive){
                 job.cancelAndJoin()
             }
             mutableSearchCategoryList.postValue(Success(DigitalHomePageSearchNewModel(false, Tracking(), emptyList())))
-        }) {
-            mutableSearchCategoryList.postValue(Fail(it))
         }
     }
 
