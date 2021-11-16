@@ -106,9 +106,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check account old then should return tokopedia internal account`() {
+    fun `check account old then should return new account`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/old-home-account/abc/def/123"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://global/new-home-account/abc/def/123"
         every {
             DeeplinkMapperAccount.usingOldAccount(any())
         } returns true
