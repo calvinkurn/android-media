@@ -7,8 +7,7 @@ import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.Product
-import com.tokopedia.checkout.bundle.view.uimodel.EgoldAttributeModel
-import com.tokopedia.checkout.bundle.view.uimodel.EgoldTieringModel
+import com.tokopedia.checkout.bundle.view.uimodel.*
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
@@ -37,6 +36,7 @@ class ShipmentMapper @Inject constructor() {
             var isDisableEgold = false
             var isDisablePPP = false
             var isDisableDonation = false
+            var isDisableCrossSell = false
             for (disabledFeature in shipmentAddressFormDataResponse.disabledFeatures) {
                 when (disabledFeature) {
                     DISABLED_DROPSHIPPER -> isDropshipperDisable = true
@@ -44,6 +44,7 @@ class ShipmentMapper @Inject constructor() {
                     DISABLED_EGOLD -> isDisableEgold = true
                     DISABLED_PURCHASE_PROTECTION -> isDisablePPP = true
                     DISABLED_DONATION -> isDisableDonation = true
+                    DISABLED_CROSS_SELL -> isDisableCrossSell = true
                 }
             }
 
@@ -76,6 +77,9 @@ class ShipmentMapper @Inject constructor() {
             }
             if (!isDisableDonation) {
                 donation = mapDonation(shipmentAddressFormDataResponse)
+            }
+            if (!isDisableCrossSell) {
+                crossSell = mapCrossSell(shipmentAddressFormDataResponse)
             }
         }
     }
@@ -635,6 +639,49 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
+    private fun mapCrossSell(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse): ArrayList<CrossSellModel> {
+        val arrayListCrossSell: ArrayList<CrossSellModel> = arrayListOf()
+        shipmentAddressFormDataResponse.crossSell.forEach { crossSell ->
+            arrayListCrossSell.add(
+                    CrossSellModel().apply {
+                        id = crossSell.id
+                        checkboxDisabled = crossSell.checkboxDisabled
+                        isChecked = crossSell.isChecked
+                        additionalVerticalId = crossSell.additionalVerticalId
+                        transactionType = crossSell.transactionType
+                        price = crossSell.price
+                        bottomSheet = mapCrossSellBottomSheet(crossSell.bottomSheet)
+                        info = mapCrossSellInfo(crossSell.info)
+                        orderSummary = mapCrossSellOrderSummary(crossSell.orderSummary)
+                    }
+            )
+        }
+        return arrayListCrossSell
+    }
+
+    private fun mapCrossSellBottomSheet(bottomSheet: CrossSellBottomSheet): CrossSellBottomSheetModel {
+        return CrossSellBottomSheetModel().apply {
+            subtitle = bottomSheet.subtitle
+            title = bottomSheet.title
+        }
+    }
+
+    private fun mapCrossSellInfo(info: CrossSellInfoData): CrossSellInfoModel {
+        return CrossSellInfoModel().apply {
+            iconUrl = info.iconUrl
+            subtitle = info.subtitle
+            title = info.title
+            tooltipText = info.tooltipText
+        }
+    }
+
+    private fun mapCrossSellOrderSummary(crossSellOrderSummary: CrossSellOrderSummary): CrossSellOrderSummaryModel {
+        return CrossSellOrderSummaryModel().apply {
+            priceWording = crossSellOrderSummary.priceWording
+            title = crossSellOrderSummary.title
+        }
+    }
+
     private fun mapEgold(shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse): EgoldAttributeModel {
         return EgoldAttributeModel().apply {
             isEligible = shipmentAddressFormDataResponse.egoldAttributes.isEligible
@@ -801,6 +848,7 @@ class ShipmentMapper @Inject constructor() {
         const val DISABLED_EGOLD = "egold"
         const val DISABLED_PURCHASE_PROTECTION = "ppp"
         const val DISABLED_DONATION = "donation"
+        const val DISABLED_CROSS_SELL = "cross_sell"
 
         const val BUNDLING_ITEM_DEFAULT = 0
         const val BUNDLING_ITEM_HEADER = 1
