@@ -126,6 +126,46 @@ class SettingFingerprintViewModelTest {
     }
 
     @Test
+    fun `on Error Register Fingerprint - errorMessage not empty`() {
+        /* When */
+        val errMsg = "error"
+        val data = RegisterFingerprintResult(success = true, errorMessage = errMsg)
+        val response = RegisterFingerprintPojo(data)
+
+        every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
+        every { cryptographyUtils.getPublicKey() } returns "abc123"
+
+        coEvery { registerFingerprintUseCase.invoke(any()) } returns response
+
+        viewModel.registerFingerprint()
+
+        /* Then */
+        verify {
+            registerFingerprintObserver.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `on Error Register Fingerprint - other errors`() {
+        /* When */
+        val data = RegisterFingerprintResult(success = false, errorMessage = "")
+        val response = RegisterFingerprintPojo(data)
+
+        every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
+        every { cryptographyUtils.getPublicKey() } returns "abc123"
+
+        coEvery { registerFingerprintUseCase.invoke(any()) } returns response
+
+        viewModel.registerFingerprint()
+
+        /* Then */
+        verify {
+            registerFingerprintObserver.onChanged(any<Fail>())
+        }
+        assert((viewModel.registerFingerprintResult.value as Fail).throwable is com.tokopedia.network.exception.MessageErrorException)
+    }
+
+    @Test
     fun `on Success Remove Fingerprint`() {
         /* When */
         val data = RemoveFingerprintData(isSuccess = true)
