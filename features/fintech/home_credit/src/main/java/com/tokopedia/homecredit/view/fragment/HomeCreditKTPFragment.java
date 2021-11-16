@@ -70,7 +70,7 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
         continueUpload = view.findViewById(R.id.continue_upload);
         captureImage = view.findViewById(R.id.iv_capture_image);
         reverseCamera = view.findViewById(R.id.iv_reverse_camera);
-        if (Utils.INSTANCE.isFrontCameraAvailable()) {
+        if (!Utils.INSTANCE.isFrontCameraAvailable()) {
             reverseCamera.setVisibility(View.GONE);
         }
         cameraLayout = view.findViewById(R.id.hc_camera_layout);
