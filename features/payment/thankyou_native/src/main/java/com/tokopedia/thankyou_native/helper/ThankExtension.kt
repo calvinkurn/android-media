@@ -7,9 +7,3 @@ fun String.getMaskedNumberSubStringPayment(): String {
     val FOUR_CROSS = "XXXX "
     return FOUR_CROSS + this.substring(this.length - LAST_NUMBERS)
 }
-
-fun LinearLayout.addContainer(tag: String) {
-    val ll = LinearLayout(context)
-    ll.tag = tag
-    addView(ll)
-}

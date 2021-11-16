@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
@@ -23,7 +22,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.searchbar.navigation_component.di.module.NavigationModule_ProvideUserSessionFactory
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
@@ -32,7 +30,7 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.addContainer
+import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
@@ -48,14 +46,11 @@ import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlac
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDigitalRecommendationView
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.utils.*
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -85,8 +80,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
 
     private val marketRecommendationPlaceLayout = R.layout.thank_layout_market_place_recom
 
-    private val topadsHeadlineLayoutId = R.layout.thanks_item_top_ads_headlines_view
-    private val topadsHeadlineView by lazy { attachTopAdsView() }
+    private val topadsHeadlineView by lazy { requireContext().getTopAdsHeadlinesView() }
 
     private var iDigitalRecommendationView: IDigitalRecommendationView? = null
 
@@ -140,17 +134,12 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             addRecommendation()
             getTopTickerData()
             thanksPageDataViewModel.resetAddressToDefault()
-            loadTopAdsRecommendationView()
+            topadsHeadlineView.getHeadlineAds(
+                ThanksPageHelper.getHeadlineAdsParam(0, userSession.userId, TOP_ADS_SRC),
+                this::showTopAdsHeadlineView,
+                this::hideTopAdsHeadlineView
+            )
         }
-    }
-
-    private fun loadTopAdsRecommendationView() {
-
-        fetchTopadsHeadlineAds(0)
-    }
-
-    private fun attachTopAdsView(): TopAdsHeadlineView {
-        return LayoutInflater.from(context).inflate(topadsHeadlineLayoutId, null, false) as TopAdsHeadlineView
     }
 
     private fun getFeatureRecommendationData() {
@@ -213,7 +202,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
         if (::thanksPageData.isInitialized)
             iDigitalRecommendationView?.loadRecommendation(thanksPageData,
-                    this, digitalRecomTrackingQueue, pgCategoryIds, pageType)
+                this, digitalRecomTrackingQueue, pgCategoryIds, pageType)
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {
@@ -225,7 +214,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         arguments?.let {
             if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
                 thanksPageDataViewModel.getThanksPageData(it.getLong(ARG_PAYMENT_ID),
-                        it.getString(ARG_MERCHANT, ""))
+                    it.getString(ARG_MERCHANT, ""))
             }
         }
     }
@@ -329,7 +318,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             if (!gyroRecommendation.gyroVisitable.isNullOrEmpty()) {
                 getFeatureListingContainer()?.visible()
                 getFeatureListingContainer()?.addData(gyroRecommendation, thanksPageData,
-                        gyroRecommendationAnalytics.get())
+                    gyroRecommendationAnalytics.get())
             } else {
                 getFeatureListingContainer()?.gone()
             }
@@ -352,14 +341,14 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         thanksPageData.howToPayAPP?.let {
             RouteManager.route(context, thanksPageData.howToPayAPP)
             thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(thanksPageData.profileCode,
-                    thanksPageData.paymentID.toString())
+                thanksPageData.paymentID.toString())
         }
     }
 
     fun showPaymentStatusDialog(isTimerFinished: Boolean,
                                 thanksPageData: ThanksPageData) {
         var paymentStatus = PaymentStatusMapper
-                .getPaymentStatusByInt(thanksPageData.paymentStatus)
+            .getPaymentStatusByInt(thanksPageData.paymentStatus)
 
         if (isTimerFinished && !isPaymentVerified(paymentStatus))
             paymentStatus = PaymentExpired
@@ -403,8 +392,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     fun openInvoiceDetail(thanksPageData: ThanksPageData) {
         InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(thanksPageData.profileCode,
-                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-                thanksPageData.paymentID.toString())
+            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+            thanksPageData.paymentID.toString())
 
         if (activity is ThankYouPageActivity) {
             (activity as ThankYouPageActivity).cancelGratifDialog()
@@ -414,8 +403,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     override fun gotoHomePage() {
         RouteManager.route(context, ApplinkConst.HOME, "")
         thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(thanksPageData.profileCode,
-                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-                thanksPageData.paymentID.toString())
+            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+            thanksPageData.paymentID.toString())
         activity?.finish()
     }
 
@@ -423,7 +412,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         urlStr?.let {
             activity?.apply {
                 RouteManager.route(this,
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlStr))
+                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlStr))
             }
         }
     }
@@ -442,13 +431,13 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         val intent = RouteManager.getIntent(context, applink, "")
         intent?.let {
             TaskStackBuilder.create(context)
-                    .addNextIntent(homeIntent)
-                    .addNextIntent(intent)
-                    .startActivities()
+                .addNextIntent(homeIntent)
+                .addNextIntent(intent)
+                .startActivities()
         }
         thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(thanksPageData.profileCode,
-                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-                thanksPageData.paymentID.toString())
+            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+            thanksPageData.paymentID.toString())
         activity?.finish()
     }
 
@@ -458,9 +447,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         val paymentListIntent = RouteManager.getIntent(context, ApplinkConst.PMS, "")
         paymentListIntent?.let {
             TaskStackBuilder.create(context)
-                    .addNextIntent(homeIntent)
-                    .addNextIntent(paymentListIntent)
-                    .startActivities()
+                .addNextIntent(homeIntent)
+                .addNextIntent(paymentListIntent)
+                .startActivities()
         }
         activity?.finish()
     }
@@ -468,15 +457,15 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     override fun gotoOrderList() {
         try {
             thankYouPageAnalytics.get()
-                    .sendCheckTransactionListEvent(thanksPageData.profileCode,
-                            thanksPageData.paymentID.toString())
+                .sendCheckTransactionListEvent(thanksPageData.profileCode,
+                    thanksPageData.paymentID.toString())
             val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
             val orderListListIntent = getOrderListPageIntent()
             orderListListIntent?.let {
                 TaskStackBuilder.create(context)
-                        .addNextIntent(homeIntent)
-                        .addNextIntent(orderListListIntent)
-                        .startActivities()
+                    .addNextIntent(homeIntent)
+                    .addNextIntent(orderListListIntent)
+                    .startActivities()
             }
             activity?.finish()
         } catch (e: Exception) {
@@ -489,15 +478,15 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 gotoOrderList()
             } else {
                 thankYouPageAnalytics.get()
-                        .sendCheckTransactionListEvent(thanksPageData.profileCode,
-                                thanksPageData.paymentID.toString())
+                    .sendCheckTransactionListEvent(thanksPageData.profileCode,
+                        thanksPageData.paymentID.toString())
                 val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
                 val orderListListIntent = RouteManager.getIntent(context, applink)
                 orderListListIntent?.let {
                     TaskStackBuilder.create(context)
-                            .addNextIntent(homeIntent)
-                            .addNextIntent(orderListListIntent)
-                            .startActivities()
+                        .addNextIntent(homeIntent)
+                        .addNextIntent(orderListListIntent)
+                        .startActivities()
                 }
                 activity?.finish()
             }
@@ -521,8 +510,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         view?.let { view ->
             retry?.let {
                 Toaster.make(view, errorMessage,
-                        Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                        getString(R.string.thank_coba_lagi), View.OnClickListener { retry.invoke() })
+                    Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                    getString(R.string.thank_coba_lagi), View.OnClickListener { retry.invoke() })
             }
         }
     }
@@ -531,49 +520,19 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         view?.let { Toaster.make(it, message, Toaster.LENGTH_SHORT) }
     }
 
-    private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
-        topadsHeadlineView.getHeadlineAds(
-            getHeadlineAdsParam(topadsHeadLinePage,userSession.userId),
-            this::showHeadlineView,
-            this::hideHeadlineView
-        )
-    }
-
-    private fun hideHeadlineView() {
+    private fun hideTopAdsHeadlineView() {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.hide()
     }
 
-    private fun showHeadlineView(cpmModel: CpmModel) {
+    private fun showTopAdsHeadlineView(cpmModel: CpmModel) {
         topadsHeadlineView.show()
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.displayAds(cpmModel)
 
-        attachTopAdsView(cpmModel.data?.get(0)?.cpm?.position == 1)
-    }
-
-    private fun attachTopAdsView(above: Boolean) {
-        if(above) {
-            getRecommendationContainer()?.findViewWithTag<LinearLayout>(TOP_ADS_HEADLINE_ABOVE_RECOM)
-                ?.addView(topadsHeadlineView)
-        } else {
-            getRecommendationContainer()?.findViewWithTag<LinearLayout>(TOP_ADS_HEADLINE_BELOW_RECOM)
-                ?.addView(topadsHeadlineView)
-        }
-    }
-
-    private fun getHeadlineAdsParam(topadsHeadLinePage: Int, userId: String): String {
-        return UrlParamHelper.generateUrlParamString(
-            mutableMapOf(
-                PARAM_DEVICE to VALUE_DEVICE,
-                PARAM_PAGE to topadsHeadLinePage,
-                PARAM_EP to VALUE_EP,
-                PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
-                PARAM_ITEM to VALUE_ITEM,
-                PARAM_SRC to TOP_ADS_SRC,
-                PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-                PARAM_USER_ID to userId,
-            )
+        getRecommendationContainer()?.attachTopAdsHeadlinesView(
+            cpmModel.data?.get(0)?.cpm?.position == 1,
+            topadsHeadlineView
         )
     }
 
@@ -585,7 +544,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
 
         /* Constant for toads headlines widget*/
-        const val TOP_ADS_SRC = "inbox"
+        const val TOP_ADS_SRC = "thank_you_page"
         const val TOP_ADS_HEADLINE_ABOVE_RECOM = "variant1"
         const val TOP_ADS_HEADLINE_BELOW_RECOM = "variant2"
     }
