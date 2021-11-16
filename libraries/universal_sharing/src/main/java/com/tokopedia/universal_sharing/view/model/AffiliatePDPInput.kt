@@ -30,7 +30,7 @@ data class Shop (
     var shopID: String? = null,
 
     @SerializedName("ShopStatus")
-    var shopStatus: Int = 0,
+    var shopStatus: Int? = null,
 
     @SerializedName("IsOS")
     var isOS: Boolean = false,

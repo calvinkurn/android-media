@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -9,6 +10,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
@@ -16,7 +18,12 @@ import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
+import com.tokopedia.product.share.ProductData
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.Product
+import com.tokopedia.universal_sharing.view.model.Shop
 
 object DynamicProductDetailMapper {
 
@@ -51,8 +58,8 @@ object DynamicProductDetailMapper {
                     val contentData = component.componentData.firstOrNull()
                     val content = if (contentData?.content?.isEmpty() == true) listOf(Content()) else contentData?.content
                     listOfComponent.add(ProductGeneralInfoDataModel(component.componentName, component.type, contentData?.applink
-                        ?: "", contentData?.title ?: "",
-                        contentData?.isApplink ?: true, contentData?.icon
+                            ?: "", contentData?.title ?: "",
+                            contentData?.isApplink ?: true, contentData?.icon
                             ?: "", content?.firstOrNull()?.subtitle
                             ?: "", content?.firstOrNull()?.icon ?: "")
                     )
@@ -112,7 +119,7 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.ONE_LINERS -> {
                     listOfComponent.add(
-                        OneLinersDataModel(type = component.type, name = component.componentName)
+                            OneLinersDataModel(type = component.type, name = component.componentName)
                     )
                 }
                 ProductDetailConstant.CATEGORY_CAROUSEL -> {
@@ -121,12 +128,12 @@ object DynamicProductDetailMapper {
 
                     if (carouselData?.categoryCarouselList?.isNotEmpty() == true) {
                         listOfComponent.add(
-                            ProductCategoryCarouselDataModel(type = component.type,
-                                name = component.componentName,
-                                titleCarousel = carouselData.titleCarousel,
-                                linkText = carouselData.linkText,
-                                applink = carouselData.applink,
-                                categoryList = carouselData.categoryCarouselList))
+                                ProductCategoryCarouselDataModel(type = component.type,
+                                        name = component.componentName,
+                                        titleCarousel = carouselData.titleCarousel,
+                                        linkText = carouselData.linkText,
+                                        applink = carouselData.applink,
+                                        categoryList = carouselData.categoryCarouselList))
                     }
                 }
                 ProductDetailConstant.PRODUCT_BUNDLING -> {
@@ -155,35 +162,35 @@ object DynamicProductDetailMapper {
         val stockAssuranceComponent = mapToOneLinersComponent(ProductDetailConstant.STOCK_ASSURANCE, data)
 
         val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
-            ?: ComponentData()
+                ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
-            layoutName = data.generalName,
-            basic = data.basicInfo,
-            data = newDataWithMedia,
-            pdpSession = data.pdpSession,
-            bestSellerContent = bestSellerComponent,
-            stockAssuranceContent = stockAssuranceComponent
+                layoutName = data.generalName,
+                basic = data.basicInfo,
+                data = newDataWithMedia,
+                pdpSession = data.pdpSession,
+                bestSellerContent = bestSellerComponent,
+                stockAssuranceContent = stockAssuranceComponent
         )
     }
 
     private fun mapToOneLinersComponent(
-        componentName: String,
-        data: PdpGetLayout
+            componentName: String,
+            data: PdpGetLayout
     ): Map<String, OneLinersContent>? {
         return data.components.find {
             it.componentName == componentName
         }?.componentData?.map {
             OneLinersContent(
-                productID = it.productId,
-                content = it.oneLinerContent,
-                linkText = it.linkText,
-                color = it.color,
-                applink = it.applink,
-                separator = it.separator,
-                icon = it.icon,
-                isVisible = it.isVisible
+                    productID = it.productId,
+                    content = it.oneLinerContent,
+                    linkText = it.linkText,
+                    color = it.color,
+                    applink = it.applink,
+                    separator = it.separator,
+                    icon = it.icon,
+                    isVisible = it.isVisible
             )
         }?.associateBy { it.productID }
     }
@@ -210,12 +217,12 @@ object DynamicProductDetailMapper {
         }?.componentData?.firstOrNull() ?: return null
 
         return ProductVariant(
-            parentId = networkData.parentId,
-            errorCode = networkData.errorCode,
-            sizeChart = networkData.sizeChart,
-            defaultChild = networkData.defaultChild,
-            variants = networkData.variants,
-            children = networkData.children
+                parentId = networkData.parentId,
+                errorCode = networkData.errorCode,
+                sizeChart = networkData.sizeChart,
+                defaultChild = networkData.defaultChild,
+                variants = networkData.variants,
+                children = networkData.children
         )
     }
 
@@ -244,13 +251,13 @@ object DynamicProductDetailMapper {
         if (componentData == null) return null
 
         return ProductCustomInfoDataModel(
-            name = componentName,
-            type = componentType,
-            title = componentData.title,
-            applink = if (componentData.isApplink) componentData.applink else "",
-            description = componentData.description,
-            icon = componentData.icon,
-            separator = componentData.separator)
+                name = componentName,
+                type = componentType,
+                title = componentData.title,
+                applink = if (componentData.isApplink) componentData.applink else "",
+                description = componentData.description,
+                icon = componentData.icon,
+                separator = componentData.separator)
     }
 
     fun generateProductReportFallback(productUrl: String): String {
@@ -271,8 +278,8 @@ object DynamicProductDetailMapper {
                 review.reviewId == it.reviewID
             } ?: return@forEach
             result.add(ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
-                review.reviewer?.fullName, it.uriThumbnail,
-                it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt, data.detail?.imageCount))
+                    review.reviewer?.fullName, it.uriThumbnail,
+                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt, data.detail?.imageCount))
         }
 
         return ImageReview(result, data.detail?.imageCount ?: "")
@@ -282,9 +289,9 @@ object DynamicProductDetailMapper {
         val data = productInfoP1?.data
         val basic = productInfoP1?.basic
         return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
-            ?: "", data?.name ?: "", data?.getProductImageUrl()
-            ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
-            ?: listOf(), productInfoContent, forceRefresh, productInfoP1?.basic?.isTokoNow == true)
+                ?: "", data?.name ?: "", data?.getProductImageUrl()
+                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
+                ?: listOf(), productInfoContent, forceRefresh, productInfoP1?.basic?.isTokoNow == true)
     }
 
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
@@ -319,5 +326,40 @@ object DynamicProductDetailMapper {
                 }
             }
         }
+    }
+
+    fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String): ProductData {
+        return ProductData(
+                userId,
+                productInfo.finalPrice.getCurrencyFormatted(),
+                "${productInfo.data.isCashback.percentage}%",
+                MethodChecker.fromHtml(productInfo.getProductName).toString(),
+                productInfo.data.price.currency,
+                productInfo.basic.url,
+                shopUrl,
+                productInfo.basic.shopName,
+                productInfo.basic.productID,
+                productInfo.data.getProductImageUrl() ?: ""
+        )
+    }
+
+    fun generateAffiliateShareData(productInfo: DynamicProductInfoP1, shopInfo: ShopInfo?): AffiliatePDPInput {
+        return AffiliatePDPInput(
+                product = Product(
+                        productID = productInfo.basic.productID,
+                        catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "",
+                        catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "",
+                        catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "",
+                        productPrice = productInfo.data.price.value.toString(),
+                        maxProductPrice = null, //to do
+                        productStatus = productInfo.basic.status
+                ),
+                shop = Shop(
+                        shopID = productInfo.basic.shopID,
+                        isOS = productInfo.data.isOS,
+                        isPM = productInfo.data.isPowerMerchant,
+                        shopStatus = shopInfo?.statusInfo?.shopStatus
+                )
+        )
     }
 }

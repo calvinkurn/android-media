@@ -37,7 +37,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -96,7 +95,6 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
@@ -108,6 +106,8 @@ import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.util.*
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateAffiliateShareData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
@@ -169,6 +169,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import rx.subscriptions.CompositeSubscription
@@ -1713,6 +1714,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val boeData = viewModel.getBebasOngkirDataByProductId()
             val ratesData = viewModel.getP2RatesEstimateByProductId()
 
+            shareProductInstance?.updateAffiliate(it.shopInfo.statusInfo.shopStatus)
+
             trackProductView(viewModel.tradeInParams.isEligible == ProductDetailConstant.ELIGIBLE_TRADE_IN, boeData.boType)
             viewModel.getDynamicProductInfoP1?.let { p1 ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1)
@@ -2418,23 +2421,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null) {
         val productInfo = dynamicProductInfoP1 ?: viewModel.getDynamicProductInfoP1
         if (productInfo != null) {
-            val productData = ProductData(
-                    viewModel.userId,
-                    productInfo.finalPrice.getCurrencyFormatted(),
-                    "${productInfo.data.isCashback.percentage}%",
-                    MethodChecker.fromHtml(productInfo.getProductName).toString(),
-                    productInfo.data.price.currency,
-                    productInfo.basic.url,
-                    viewModel.getShopInfo().shopCore.url,
-                    productInfo.basic.shopName,
-                    productInfo.basic.productID,
-                    productInfo.data.getProductImageUrl() ?: ""
-            )
-            checkAndExecuteReferralAction(productData)
+
+            val productData = generateProductShareData(productInfo, viewModel.userId, viewModel.getShopInfo().shopCore.url)
+            val shopInfo = if (viewModel.getShopInfo().isShopInfoNotEmpty()) viewModel.getShopInfo() else null
+            val affiliateData = generateAffiliateShareData(productInfo, shopInfo)
+            checkAndExecuteReferralAction(productData, affiliateData)
         }
     }
 
-    private fun checkAndExecuteReferralAction(productData: ProductData) {
+    private fun checkAndExecuteReferralAction(productData: ProductData, affiliateData: AffiliatePDPInput) {
         val fireBaseRemoteMsgGuest = remoteConfig()?.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
                 ?: ""
         if (!TextUtils.isEmpty(fireBaseRemoteMsgGuest)) productData.productShareDescription = fireBaseRemoteMsgGuest
@@ -2443,14 +2438,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val fireBaseRemoteMsg = remoteConfig()?.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
                     ?: ""
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
-                doReferralShareAction(productData, fireBaseRemoteMsg)
+                doReferralShareAction(productData, fireBaseRemoteMsg, affiliateData)
                 return
             }
         }
-        executeProductShare(productData)
+        executeProductShare(productData, affiliateData)
     }
 
-    private fun doReferralShareAction(productData: ProductData, fireBaseRemoteMsg: String) {
+    private fun doReferralShareAction(productData: ProductData, fireBaseRemoteMsg: String, affiliateData: AffiliatePDPInput) {
         val actionCreator = object : ActionCreator<String, Int> {
             override fun actionSuccess(actionId: Int, dataObj: String) {
                 if (!TextUtils.isEmpty(dataObj) && !TextUtils.isEmpty(fireBaseRemoteMsg)) {
@@ -2458,11 +2453,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             ProductData.PLACEHOLDER_REFERRAL_CODE, dataObj)
                     DynamicProductDetailTracking.Moengage.sendMoEngagePDPReferralCodeShareEvent()
                 }
-                executeProductShare(productData)
+                executeProductShare(productData, affiliateData)
             }
 
             override fun actionError(actionId: Int, dataObj: Int?) {
-                executeProductShare(productData)
+                executeProductShare(productData, affiliateData)
             }
         }
         val referralAction = ReferralAction<Context, String, Int, String, String, String, Context>()
@@ -2478,7 +2473,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     }
 
-    private fun executeProductShare(productData: ProductData) {
+    private fun executeProductShare(productData: ProductData, affiliateData: AffiliatePDPInput) {
         val enablePdpCustomSharing = remoteConfig()?.getBoolean(
                 REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
                 REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
@@ -2487,7 +2482,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val description = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)?.replace("(\r\n|\n)".toRegex(), " ")
                     ?: ""
             productData.productShareDescription = "$description..."
-            executeUniversalShare(productData)
+            executeUniversalShare(productData, affiliateData)
         } else {
             executeNativeShare(productData)
         }
@@ -2503,7 +2498,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }, true)
     }
 
-    private fun executeUniversalShare(productData: ProductData) {
+    private fun executeUniversalShare(productData: ProductData, affiliateData: AffiliatePDPInput) {
         activity?.let {
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
                     ?.filter { it.type == ProductMediaDataModel.IMAGE_TYPE }
@@ -2513,6 +2508,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     fragmentManager = it.supportFragmentManager,
                     fragment = this,
                     data = productData,
+                    affiliateInput = affiliateData,
                     isLog = true,
                     view = view,
                     productImgList = ArrayList(imageUrls),
