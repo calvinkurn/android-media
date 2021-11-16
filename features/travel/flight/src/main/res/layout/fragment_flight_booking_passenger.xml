@@ -110,7 +110,7 @@
                     android:id="@+id/til_identification_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl2"
+                    android:layout_marginTop="@dimen/spacing_lvl5"
                     app:text_field_label="@string/flight_booking_passenger_identification_number_hint"
                     app:text_field_label_static="true"
                     app:text_field_message="@string/flight_booking_passenger_identification_number_message"
