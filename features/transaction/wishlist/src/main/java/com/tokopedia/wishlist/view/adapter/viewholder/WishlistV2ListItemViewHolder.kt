@@ -17,20 +17,21 @@ class WishlistV2ListItemViewHolder(
     private val actionListener: WishlistV2Adapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: WishlistV2TypeLayoutData, position: Int, isShowCheckbox: Boolean) {
-        val isChecked = item.dataObject as Boolean
-        val productCardModel = mapWishlistDataToProductModel(item.wishlistItem)
-        binding.wishlistItem.setProductModel(productCardModel)
+        // val isChecked = item.dataObject as Boolean
+        binding.wishlistItem.setProductModel(item.dataObject as ProductCardModel)
+        /*val productCardModel = mapWishlistDataToProductModel(item.wishlistItem)
+        binding.wishlistItem.setProductModel(productCardModel)*/
 
         if (isShowCheckbox) {
             binding.wishlistCheckbox.visible()
-            binding.wishlistCheckbox.setOnCheckedChangeListener(null)
-            binding.wishlistCheckbox.isChecked = isChecked
-            binding.wishlistCheckbox.setOnCheckedChangeListener(checkboxListener(item.wishlistItem, position))
+            // binding.wishlistCheckbox.setOnCheckedChangeListener(null)
+            // binding.wishlistCheckbox.isChecked = isChecked
+            binding.wishlistCheckbox.setOnCheckedChangeListener(checkboxListener(item.wishlistItem))
         } else {
             binding.wishlistCheckbox.gone()
         }
 
-        if (productCardModel.tambahKeranjangButton) {
+        if (item.dataObject.tambahKeranjangButton) {
             binding.wishlistItem.setTambahKeranjangButtonClickListener { actionListener?.onAtc(item.wishlistItem) }
         } else {
             binding.wishlistItem.setLihatBarangSerupaButtonClickListener {
@@ -47,13 +48,13 @@ class WishlistV2ListItemViewHolder(
         }
     }
 
-    private fun checkboxListener(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int): CompoundButton.OnCheckedChangeListener {
+    private fun checkboxListener(wishlistItem: WishlistV2Response.Data.WishlistV2.Item): CompoundButton.OnCheckedChangeListener {
         return CompoundButton.OnCheckedChangeListener { _, isChecked ->
-            actionListener?.onCheckBulkDeleteOption(wishlistItem.id, position, isChecked)
+            actionListener?.onCheckBulkDeleteOption(wishlistItem.id, isChecked)
         }
     }
 
-    private fun mapWishlistDataToProductModel(wishlistItem: WishlistV2Response.Data.WishlistV2.Item): ProductCardModel {
+    /*private fun mapWishlistDataToProductModel(wishlistItem: WishlistV2Response.Data.WishlistV2.Item): ProductCardModel {
 
         val listGroupLabel = arrayListOf<ProductCardModel.LabelGroup>()
 
@@ -81,5 +82,5 @@ class WishlistV2ListItemViewHolder(
             lihatBarangSerupaButton = !isButtonAtc,
             labelGroupList = listGroupLabel
         )
-    }
+    }*/
 }

@@ -43,7 +43,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onNotFoundButtonClicked(keyword: String)
         fun onProductRecommendationClicked(productId: String)
         fun onThreeDotsMenuClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item)
-        fun onCheckBulkDeleteOption(productId: String, position: Int, isChecked: Boolean)
+        fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean)
         fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item)
         fun onCheckSimilarProduct(url: String)
     }
@@ -76,7 +76,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistV2EmptyStateNotFoundViewHolder(binding, actionListener)
             }
             LAYOUT_RECOMMENDATION_TITLE -> {
-                val binding = WishlistV2TitleItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = WishlistV2RecommendationTitleItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
                 WishlistV2TitleViewHolder(binding)
             }
             LAYOUT_RECOMMENDATION_LIST -> {

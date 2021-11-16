@@ -42,7 +42,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -66,6 +65,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
+import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -97,7 +97,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private var activityWishlistV2 = ""
     private var isBulkDeleteShow = false
     private val listBulkDelete: ArrayList<String> = arrayListOf()
-    private var recommendationList: List<RecommendationWidget> = listOf()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     private val wishlistViewModel by lazy {
@@ -160,14 +159,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     private fun observingData() {
+        observingFilterWishlistV2()
+        observingTotalDataWishlistV2()
+        observingHasNextPage()
         observingWishlistV2()
         observingDeleteWishlistV2()
         observingBulkDeleteWishlistV2()
         observingAtc()
-        observingWishlistData()
+        // observingWishlistData()
     }
 
     private fun observingWishlistData() {
+        // TODO : optimize lagi supaya observe nya 1 pintu aja
         wishlistViewModel.wishlistData.observe(viewLifecycleOwner, Observer {
             if (it.sortFilters.isNotEmpty() && currPage == 1) {
                 renderChipsFilter(it.sortFilters)
@@ -179,6 +182,89 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 isFetchRecommendation = true
             }
         })
+    }
+
+    private fun observingFilterWishlistV2() {
+        wishlistViewModel.wishlistV2Filters.observe(viewLifecycleOwner, { filters ->
+            renderChipsFilter(filters)
+        })
+    }
+
+    private fun observingTotalDataWishlistV2() {
+        wishlistViewModel.wishlistV2TotalData.observe(viewLifecycleOwner, { totalData ->
+            updateTotalLabel(totalData)
+        })
+    }
+
+    private fun observingHasNextPage() {
+        wishlistViewModel.wishlistV2HasNextPage.observe(viewLifecycleOwner, { hasNextPage ->
+            if (hasNextPage) currPage += 1
+        })
+    }
+
+    private fun observingWishlistV2() {
+        showLoader()
+        wishlistViewModel.wishlistV2Data.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    refreshHandler?.finishRefresh()
+                    hideLoader()
+
+                    if (!onLoadMore) {
+
+                        // sampe sini
+                        wishlistV2Adapter.addList(result.data)
+                        scrollRecommendationListener.resetState()
+                    } else {
+                        wishlistV2Adapter.appendList(result.data)
+                        scrollRecommendationListener.updateStateAfterGetData()
+                    }
+                }
+                is Fail -> {
+                    refreshHandler?.finishRefresh()
+                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
+    /*private fun observingWishlistV2() {
+        showLoader()
+        wishlistViewModel.wishlistData.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    refreshHandler?.finishRefresh()
+                    val data = result.data
+                    hideLoader()
+
+                    if (it.sortFilters.isNotEmpty() && currPage == 1) {
+                        renderChipsFilter(it.sortFilters)
+                    }
+                    if (currPage == 1 && it.totalData != 0) {
+                        updateTotalLabel(it.totalData)
+                    }
+                    if(it.items.isEmpty()) {
+                        isFetchRecommendation = true
+                    }
+
+                    if (currPage == 1) {
+                        renderChipsFilter(data)
+
+                    } else {
+                        currPage += 1
+                    }
+                    renderWishlistV2Data(data)
+                }
+                is Fail -> {
+                    refreshHandler?.finishRefresh()
+                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }*/
+
+    private fun renderWishlistV2() {
+
     }
 
     private fun getBaseAppComponent(): BaseAppComponent {
@@ -269,7 +355,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 } else {
                     onLoadMore = true
                     paramWishlistV2.page = currPage
-                    wishlistViewModel.getNextPageWishlistData(paramWishlistV2)
+                    wishlistViewModel.loadWishlistV2(paramWishlistV2, wishlistPref?.getTypeLayout())
+                    // wishlistViewModel.getNextPageWishlistData(paramWishlistV2)
                 }
             }
         }
@@ -285,7 +372,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
     private fun loadRecommendationList() {
         isFetchRecommendation = true
-        wishlistViewModel.getRecommendationOnEmptyWishlist(currRecommendationListPage)
+        wishlistViewModel.getRecommendation(currRecommendationListPage, WISHLIST_PAGE_NAME, listOf())
     }
 
     private fun checkLogin() {
@@ -298,7 +385,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
     private fun loadWishlistV2() {
         paramWishlistV2.page = currPage
-        wishlistViewModel.loadWishlistV2(paramWishlistV2)
+        wishlistViewModel.loadWishlistV2(paramWishlistV2, wishlistPref?.getTypeLayout())
     }
 
     private fun triggerSearch() {
@@ -306,24 +393,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         refreshHandler?.startRefresh()
         scrollRecommendationListener.resetState()
         currRecommendationListPage = 0
-    }
-
-    private fun observingWishlistV2() {
-        showLoader()
-        wishlistViewModel.wishlistV2Result.observe(viewLifecycleOwner, { result ->
-            when (result) {
-                is Success -> {
-                    refreshHandler?.finishRefresh()
-                    val data = result.data
-                    hideLoader()
-                    renderWishlistV2Data(data)
-                }
-                is Fail -> {
-                    refreshHandler?.finishRefresh()
-                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
-                }
-            }
-        })
     }
 
     private fun renderWishlistV2Data(data: List<WishlistV2Data>) {
@@ -334,11 +403,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     adapterData.add(WishlistV2TypeLayoutData(it.topAdsData, TYPE_TOPADS))
                 }
                 is WishlistV2RecommendationDataModel -> {
+                    adapterData.add(WishlistV2TypeLayoutData(it.title, TYPE_RECOMMENDATION_TITLE))
                     if (it.isCarousel) {
                         adapterData.add(WishlistV2TypeLayoutData(it, TYPE_RECOMMENDATION_CAROUSEL))
                     } else {
                         currRecommendationListPage += 1
-                        it.recommendationData.firstOrNull()?.recommendationItemList?.forEach { recommendationItem ->
+                        it.recommendationData.forEach { recommendationItem ->
                             adapterData.add(
                                 WishlistV2TypeLayoutData(
                                     recommendationItem,
@@ -364,20 +434,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     } else {
                         adapterData.add(WishlistV2TypeLayoutData("", TYPE_EMPTY_STATE))
                     }
-                    adapterData.add(
-                        WishlistV2TypeLayoutData(
-                            getString(R.string.recommendation_title),
-                            TYPE_RECOMMENDATION_TITLE
-                        )
-                    )
                 }
             }
         }
 
-        if (data.any { element -> element is WishlistV2DataModel }) {
+        // TODO: harusnya ga dsini currPage nya
+        /*if (data.any { element -> element is WishlistV2DataModel }) {
             currPage += 1
-        }
+        }*/
 
+        // TODO: fix here
         if (isBulkDeleteShow) {
             wishlistV2Adapter.addListOnBulk(adapterData)
             binding?.rvWishlist?.post {
@@ -745,13 +811,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         showBottomSheetThreeDotsMenu(itemWishlist)
     }
 
-    override fun onCheckBulkDeleteOption(productId: String, position: Int, isChecked: Boolean) {
+    override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean) {
         if (isChecked) {
             listBulkDelete.add(productId)
         } else {
             listBulkDelete.remove(productId)
         }
-        wishlistViewModel.onCheckedBulkDeleteWishlist(productId, isChecked)
+        // wishlistViewModel.onCheckedBulkDeleteWishlist(productId, isChecked)
         val showButton = listBulkDelete.isNotEmpty()
         if (showButton) {
             binding?.run {

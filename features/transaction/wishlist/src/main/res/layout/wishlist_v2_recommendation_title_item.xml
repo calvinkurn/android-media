@@ -2,7 +2,6 @@
 <com.tokopedia.unifyprinciples.Typography
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tv_rv_title_wishlist_v2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,6 +9,6 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:typographyType="heading_5"
+    app:typographyType="heading_4"
     android:paddingTop="24dp"
     android:paddingBottom="12dp" />
