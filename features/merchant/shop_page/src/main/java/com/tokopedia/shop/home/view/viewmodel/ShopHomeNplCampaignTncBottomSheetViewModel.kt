@@ -61,8 +61,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
             val shopFollowStatusAsync = asyncCatchError(dispatcherProvider.io, block = {
                 getFollowStatus(shopId).takeIf { !isOwner }
             }, onError = {
-                if(!isOwner)
-                    _campaignTncLiveData.postValue(Fail(it))
+                _campaignTncLiveData.postValue(Fail(it))
                 null
             })
 

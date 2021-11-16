@@ -105,7 +105,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var showIllustrationMap: Boolean = false
 
     private var isFromAddressForm: Boolean = false
-    private var districtId: Int? = null
+    private var districtId: Long? = null
     private var currentKotaKecamatan: String? = ""
     private var currentPostalCode: String? = ""
 
@@ -266,7 +266,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             currentDistrictName = it.getString(EXTRA_DISTRICT_NAME)
             districtId = saveAddressDataModel?.districtId
             if (districtId == null) {
-                districtId = it.getInt(EXTRA_DISTRICT_ID)
+                districtId = it.getLong(EXTRA_DISTRICT_ID)
             }
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON, false)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
@@ -390,7 +390,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onSuccessPlaceGetDistrict(data: GetDistrictDataUiModel) {
-        if ((data.postalCode.isEmpty() && currentPostalCode.isNullOrEmpty()) || data.districtId == 0) {
+        if ((data.postalCode.isEmpty() && currentPostalCode.isNullOrEmpty()) || data.districtId == 0L) {
             currentLat = data.latitude.toDouble()
             currentLong = data.longitude.toDouble()
             moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)

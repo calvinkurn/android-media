@@ -11,7 +11,7 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
@@ -120,7 +120,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
     private fun assertImageContainerAtPosition(position: Int, assertions: ViewAssertion) {
         onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(position, ImageUploadViewModel::class.java)
+            atPositionIsInstanceOf(position, ImageUploadUiModel::class.java)
         )
         onView(withRecyclerView(R.id.recycler_view_chatroom)
             .atPositionOnView(position, R.id.fl_image_container))
@@ -129,7 +129,7 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
 
     private fun assertImageReadStatusAtPosition(position: Int, assertions: ViewAssertion) {
         onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(position, ImageUploadViewModel::class.java)
+            atPositionIsInstanceOf(position, ImageUploadUiModel::class.java)
         )
         onView(withRecyclerView(R.id.recycler_view_chatroom)
             .atPositionOnView(position, R.id.chat_status))

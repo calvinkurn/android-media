@@ -77,9 +77,9 @@ class ScreenRecordService : Service(), CoroutineScope {
     val backgroundCoroutineContext: CoroutineContext
         get() = Dispatchers.IO + masterJob
 
-    private lateinit var mediaRecorder: MediaRecorder
-    private lateinit var mediaProjection: MediaProjection
-    private lateinit var virtualDisplay: VirtualDisplay
+    private var mediaRecorder: MediaRecorder? = null
+    private var mediaProjection: MediaProjection? = null
+    private var virtualDisplay: VirtualDisplay? = null
 
     var notificationManager: NotificationManager? = null
 
@@ -154,10 +154,10 @@ class ScreenRecordService : Service(), CoroutineScope {
             mediaRecorder = MediaRecorder()
 
             if (isRecordMic) {
-                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+                mediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
             }
 
-            mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE)
+            mediaRecorder?.setVideoSource(MediaRecorder.VideoSource.SURFACE)
 
             lateinit var profile: CamcorderProfile
             if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
@@ -169,23 +169,23 @@ class ScreenRecordService : Service(), CoroutineScope {
             profile.videoFrameWidth = VIDEO_WIDTH
             profile.videoFrameHeight = VIDEO_HEIGHT
 
-            mediaRecorder.setOutputFormat(profile.fileFormat)
+            mediaRecorder?.setOutputFormat(profile.fileFormat)
 
             if (isRecordMic) {
-                mediaRecorder.setAudioEncoder(profile.audioCodec)
-                mediaRecorder.setAudioChannels(profile.audioChannels)
-                mediaRecorder.setAudioEncodingBitRate(profile.audioBitRate)
-                mediaRecorder.setAudioSamplingRate(profile.audioSampleRate)
+                mediaRecorder?.setAudioEncoder(profile.audioCodec)
+                mediaRecorder?.setAudioChannels(profile.audioChannels)
+                mediaRecorder?.setAudioEncodingBitRate(profile.audioBitRate)
+                mediaRecorder?.setAudioSamplingRate(profile.audioSampleRate)
             }
 
-            mediaRecorder.setVideoFrameRate(profile.videoFrameRate)
-            mediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight)
-            mediaRecorder.setVideoEncodingBitRate(VIDEO_BITRATE)
-            mediaRecorder.setVideoEncoder(profile.videoCodec)
+            mediaRecorder?.setVideoFrameRate(profile.videoFrameRate)
+            mediaRecorder?.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight)
+            mediaRecorder?.setVideoEncodingBitRate(VIDEO_BITRATE)
+            mediaRecorder?.setVideoEncoder(profile.videoCodec)
 
-            mediaRecorder.setOutputFile(internalStoragePath + FILENAME_RESULT)
+            mediaRecorder?.setOutputFile(internalStoragePath + FILENAME_RESULT)
 
-            mediaRecorder.prepare()
+            mediaRecorder?.prepare()
 
             //short delay to give time after start service and before request media projection
             //to avoid "Media projections require a foreground service of type ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION" issue
@@ -195,11 +195,11 @@ class ScreenRecordService : Service(), CoroutineScope {
             mediaProjection = projectionManager
                     .getMediaProjection(projectionResultCode, projectionResultData) as MediaProjection
 
-            virtualDisplay = mediaProjection.createVirtualDisplay(
+            virtualDisplay = mediaProjection?.createVirtualDisplay(
                     VIRTUAL_DISPLAY_NAME,
                     profile.videoFrameWidth, profile.videoFrameHeight, resources.displayMetrics.densityDpi,
                     DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-                    mediaRecorder.surface, null, null)
+                    mediaRecorder?.surface, null, null)
 
             notificationManager?.notify(NOTIF_ID, recorderReadyNotif)
         } catch (e: Exception) {
@@ -231,7 +231,7 @@ class ScreenRecordService : Service(), CoroutineScope {
     }
 
     private fun startRecord() {
-        mediaRecorder.start()
+        mediaRecorder?.start()
         startDurationCountDown()
     }
 
@@ -287,7 +287,7 @@ class ScreenRecordService : Service(), CoroutineScope {
 
     private fun stopRecord() {
         GlobalScope.launch(Dispatchers.Main) {
-            mediaRecorder.stop()
+            mediaRecorder?.stop()
 
             releaseResources()
 
@@ -309,9 +309,9 @@ class ScreenRecordService : Service(), CoroutineScope {
     }
 
     private fun releaseResources() {
-        mediaProjection.stop()
-        mediaRecorder.release()
-        virtualDisplay.release()
+        mediaProjection?.stop()
+        mediaRecorder?.release()
+        virtualDisplay?.release()
     }
 
     private fun writeResultToMovies(): String {

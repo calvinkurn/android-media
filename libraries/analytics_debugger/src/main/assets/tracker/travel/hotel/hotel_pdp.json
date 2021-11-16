@@ -44,6 +44,27 @@
       ]
     },
     {
+      "event": "view_item",
+      "eventCategory": "digital - native",
+      "eventAction": "view nearby landmark",
+      "eventLabel": "hotel - .+ - .+",
+      "screenName": "/hotel/pdp",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": ".+",
+      "sessionIris": ".+",
+      "userId": ".*",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel",
+      "promotions": [
+        {
+          "creative_name": "Hotel Nearby Landmark",
+          "creative_slot": "",
+          "item_id": ".+",
+          "item_name": ".+"
+        }
+      ]
+    },
+    {
       "event": "clickHotel",
       "eventCategory": "digital - native",
       "eventAction": "click hotel photo",

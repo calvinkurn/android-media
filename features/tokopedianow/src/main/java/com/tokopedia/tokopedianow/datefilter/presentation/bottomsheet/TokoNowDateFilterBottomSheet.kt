@@ -21,7 +21,7 @@ import com.tokopedia.tokopedianow.datefilter.presentation.adapter.DateFilterAdap
 import com.tokopedia.tokopedianow.datefilter.presentation.adapter.differ.DateFilterDiffer
 import com.tokopedia.tokopedianow.datefilter.presentation.uimodel.DateFilterUiModel
 import com.tokopedia.tokopedianow.datefilter.presentation.viewholder.DateFilterViewHolder.*
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.lifecycle.autoClearedNullable

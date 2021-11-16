@@ -2,9 +2,9 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="line">
     <stroke
-        android:width="@dimen/dp_2"
+        android:width="2dp"
         android:color="@color/Unify_N75"
-        android:dashWidth="@dimen/dp_2"
-        android:dashGap="@dimen/dp_4" />
+        android:dashWidth="2dp"
+        android:dashGap="4dp" />
 
 </shape>

@@ -20,7 +20,6 @@ import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -62,13 +61,6 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
             Hansel.handlePushPayload(this, data);
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "HanselPush");
-            messageMap.put("from", remoteMessage.getFrom());
-            messageMap.put("data", data.toString());
-            ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);
-        } else if (MoengageInteractor.INSTANCE.isFromMoEngagePlatform(remoteMessage.getData()) && showPromoNotification()) {
-            appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "MoengageNotification");
             messageMap.put("from", remoteMessage.getFrom());
             messageMap.put("data", data.toString());
             ServerLogger.log(Priority.P1, "MESSAGING_SERVICE", messageMap);

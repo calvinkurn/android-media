@@ -165,15 +165,11 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     override fun onSeeAllButtonClicked() {
         activity?.let {
             it.finish()
-            if (shouldGoToNewGallery()) {
-                RouteManager.route(
-                    context,
-                    ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY,
-                    it.productId
-                )
-            } else {
-                ImageReviewGalleryActivity.moveTo(it, it.productId)
-            }
+            RouteManager.route(
+                context,
+                ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY,
+                it.productId
+            )
         }
     }
 
@@ -188,17 +184,6 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
         return R.id.image_review_gallery_swipe_refresh_layout
-    }
-
-    private fun shouldGoToNewGallery(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING,
-                RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
-            ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
-        } catch (e: Exception) {
-            false
-        }
     }
 
     private fun observeReviewImages() {
