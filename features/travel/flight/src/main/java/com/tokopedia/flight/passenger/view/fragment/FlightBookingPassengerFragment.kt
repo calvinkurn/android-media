@@ -320,6 +320,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             binding?.rvPassengerTitle?.setItem(ArrayList(Arrays.asList(*entries)),
                     initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
         }
+        if(isDomestic && isMandatoryIdentificationNumber && passengerModel.identificationNumber.isNotEmpty()){
+            binding?.tilIdentificationNumber?.textFieldInput?.setText(passengerModel.identificationNumber)
+        }
     }
 
     private fun renderPassengerTitle(passengerTitle: String) {
