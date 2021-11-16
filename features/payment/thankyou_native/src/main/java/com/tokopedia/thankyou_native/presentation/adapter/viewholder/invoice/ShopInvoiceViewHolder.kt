@@ -143,7 +143,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             inflater = LayoutInflater.from(context)
         val shopItemView = inflater.inflate(R.layout.thank_widget_shop_item, null, false)
         val titleView = shopItemView.findViewById<Typography>(R.id.tvInvoiceShopItemName)
-        val totalPriceView = shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameTotalPrice)
+        val totalPriceView = shopItemView.findViewById<Typography>(R.id.tvInvoiceShopItemNameTotalPrice)
         titleView.text = orderedItem.itemName
         totalPriceView.text = getString(R.string.thankyou_rp_without_space, orderedItem.itemTotalPriceStr)
 
