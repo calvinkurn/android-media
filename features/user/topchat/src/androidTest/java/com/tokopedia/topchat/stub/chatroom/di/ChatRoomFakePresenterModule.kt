@@ -3,7 +3,6 @@ package com.tokopedia.topchat.stub.chatroom.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -71,12 +70,9 @@ class ChatRoomFakePresenterModule {
                         getTemplateChatRoomUseCase,
                         replyChatUseCase,
                         compressImageUseCase,
-                        seamlessLoginUsecase,
-                        getChatRoomSettingUseCase,
                         addWishListUseCase,
                         removeWishListUseCase,
                         uploadImageUseCase,
-                        orderProgressUseCase,
                         groupStickerUseCase,
                         chatAttachmentUseCase,
                         chatToggleBlockChat,

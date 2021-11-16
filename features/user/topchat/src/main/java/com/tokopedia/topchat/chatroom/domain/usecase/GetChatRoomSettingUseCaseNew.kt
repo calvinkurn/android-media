@@ -7,7 +7,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import javax.inject.Inject
 
-class GetChatRoomSettingUseCaseNew @Inject constructor(
+open class GetChatRoomSettingUseCaseNew @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ): CoroutineUseCase<String, RoomSettingResponse>(dispatcher.io) {
