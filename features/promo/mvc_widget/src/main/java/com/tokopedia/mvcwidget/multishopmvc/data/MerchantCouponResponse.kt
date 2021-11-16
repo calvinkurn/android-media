@@ -12,22 +12,22 @@ data class MerchantCouponResponse(
 data class CatalogMVCWithProductsListItem(
 
         @SerializedName("shopInfo")
-        var shopInfo: ShopInfo? = null,
+        val shopInfo: ShopInfo? = null,
 
         @SerializedName("subtitle")
-        var subtitle: String? = null,
+        val subtitle: String? = null,
 
         @SerializedName("title")
-        var title: String? = null,
+        val title: String? = null,
 
         @SerializedName("maximumBenefitAmountStr")
-        var maximumBenefitAmountStr: String? = null,
+        val maximumBenefitAmountStr: String? = null,
 
         @SerializedName("adInfo")
-        var AdInfo: AdInfo? = null,
+        val AdInfo: AdInfo? = null,
 
         @SerializedName("products")
-        var products: List<ProductsItem?>? = null
+        val products: List<ProductsItem?>? = null
 ) : BaseItem()
 
 data class ShopInfo(
