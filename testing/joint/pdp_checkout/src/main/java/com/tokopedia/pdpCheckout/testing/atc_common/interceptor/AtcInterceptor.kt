@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.pdpCheckout.testing.R
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
 
 open class AtcInterceptor(private val context: Context): Interceptor {

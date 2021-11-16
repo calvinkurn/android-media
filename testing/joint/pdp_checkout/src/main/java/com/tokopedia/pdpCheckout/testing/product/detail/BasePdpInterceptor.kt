@@ -1,6 +1,8 @@
 package com.tokopedia.pdpCheckout.testing.product.detail
 
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
 
 /**
