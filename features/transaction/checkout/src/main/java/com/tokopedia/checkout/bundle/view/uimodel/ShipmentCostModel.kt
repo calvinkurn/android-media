@@ -17,6 +17,7 @@ data class ShipmentCostModel(
         var additionalFee: Double = 0.0,
         var promoPrice: Double = 0.0,
         var donation: Double = 0.0,
+        var listCrossSell: List<ShipmentCrossSellModel> = emptyList(),
         var promoMessage: String? = null,
         var emasPrice: Double = 0.0,
         var tradeInPrice: Double = 0.0,
