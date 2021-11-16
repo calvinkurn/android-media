@@ -35,7 +35,7 @@ open class AtcInterceptor(private val context: Context): Interceptor {
 
     private fun readRequestString(copyRequest: Request): String {
         val buffer = Buffer()
-        copyRequest.body()?.writeTo(buffer)
+        copyRequest.body?.writeTo(buffer)
         return buffer.readUtf8()
     }
 
@@ -45,8 +45,10 @@ open class AtcInterceptor(private val context: Context): Interceptor {
                 .code(200)
                 .protocol(Protocol.HTTP_2)
                 .message(responseString)
-                .body(ResponseBody.create(MediaType.parse("application/json"),
-                        responseString.toByteArray()))
+                .body(
+                    responseString.toByteArray()
+                        .toResponseBody("application/json".toMediaTypeOrNull())
+                )
                 .addHeader("content-type", "application/json")
                 .build()
     }
