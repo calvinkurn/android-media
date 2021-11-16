@@ -129,7 +129,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, selectionType)
         intent.putExtra(
             DatePickerConstant.EXTRA_PAGE_TITLE,
-            activity.getString(com.tokopedia.review.R.string.set_date)
+            activity.getString(com.tokopedia.review.R.string.reputation_history_set_date)
         )
         activity.startActivityForResult(intent, MOVE_TO_SET_DATE)
     }
@@ -168,7 +168,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, selectionType)
         intent.putExtra(
             DatePickerConstant.EXTRA_PAGE_TITLE,
-            fragment.getString(com.tokopedia.review.R.string.set_date)
+            fragment.getString(com.tokopedia.review.R.string.reputation_history_set_date)
         )
         fragment.startActivityForResult(intent, MOVE_TO_SET_DATE)
     }

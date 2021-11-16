@@ -199,7 +199,7 @@
     <string name="reputation_history_label_change_date">Ubah Tanggal</string>
     <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
     <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
-    <string name="set_date">Atur Tanggal</string>
+    <string name="reputation_history_set_date">Atur Tanggal</string>
 
     <string name="title_tab_waiting_review">Menunggu Diulas</string>
     <string name="title_rating_product">Rating Produk</string>

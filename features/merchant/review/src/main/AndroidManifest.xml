@@ -94,7 +94,7 @@
 
         <activity
             android:name=".feature.reputationhistory.view.activity.SellerReputationDatePickerActivity"
-            android:label="@string/set_date"
+            android:label="@string/reputation_history_set_date"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".feature.reputationhistory.view.activity.SellerReputationInfoActivity"
