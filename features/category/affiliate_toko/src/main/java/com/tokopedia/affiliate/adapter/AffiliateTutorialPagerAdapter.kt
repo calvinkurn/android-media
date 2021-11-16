@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tkpd.remoteresourcerequest.view.ImageDensityType
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifyprinciples.Typography
 
@@ -36,7 +38,8 @@ class AffiliateTutorialPagerAdapter(val list : ArrayList<LoginTutorialData>)
         fun bind(model: LoginTutorialData) {
             itemView.findViewById<Typography>(R.id.affiliate_tutorial_title).text = model.title
             itemView.findViewById<Typography>(R.id.affiliate_tutorial_subtitle).text = model.subTitle
-            //itemView.findViewById<DeferredImageView>(R.id.affiliate_tutorial_iv).loadRemoteImageDrawable(model.imageUrl)
+            itemView.findViewById<DeferredImageView>(R.id.affiliate_tutorial_iv).loadRemoteImageDrawable(model.imageUrl,
+                    ImageDensityType.SUPPORT_SINGLE_DPI)
         }
         companion object{
             val LAYOUT = R.layout.affiliate_login_tutorial_layout

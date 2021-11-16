@@ -55,10 +55,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
+        app:srcCompat="@drawable/affiliate_splash_background"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -92,13 +93,25 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontal_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"
+        />
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/affiliate_splash_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="W,10:9"
+        app:layout_constraintTop_toBottomOf="@id/horizontal_guide"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_splash_image.png"
+        app:imageDpiSupportType="singleDpi"
         android:visibility="gone"
         />
 

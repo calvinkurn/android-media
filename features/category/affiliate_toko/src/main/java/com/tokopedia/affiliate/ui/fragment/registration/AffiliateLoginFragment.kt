@@ -137,6 +137,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     }
 
     private fun checkLoggedIn() {
+        affiliate_login_ticker.hide()
         if (!affiliateLoginViewModel.isUserLoggedIn()) {
             affiliate_login_text.text = getString(com.tokopedia.affiliate_toko.R.string.affiliate_daftar_sekarang_dengan_akun_tokopedia_kamu)
             affiliate_daftar_text.text = getString(R.string.affiliate_belum_punya_akun_tokopedia)
@@ -198,7 +199,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     private fun doLogout() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, true)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
             startActivityForResult(intent, AFFILIATE_REQUEST_CODE_LOGOUT)
         }
     }
@@ -242,6 +243,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     fun showFraudTicker() {
         affiliate_login_ticker.run {
             show()
+            affiliate_login_ticker_cv.show()
             setHtmlDescription(getString(R.string.affiliate_login_ticker_text))
             tickerType = Ticker.TYPE_ERROR
             setDescriptionClickEvent(object: TickerCallback {

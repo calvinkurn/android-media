@@ -106,7 +106,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     private fun initObserver() {
         affiliateTermsAndConditionViewModel.getOnBoardingData().observe(this, { onBoardingData ->
             if(onBoardingData.data?.status == 1){
-                affiliateNavigationInterface.validateUserStatus()
+                affiliateNavigationInterface.onRegistrationSuccessful()
             }else {
 
             }
