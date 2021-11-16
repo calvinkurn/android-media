@@ -24,15 +24,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.popularkeyword.PopularKeywordAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
+import com.tokopedia.home.databinding.HomePopularKeywordBinding
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 import io.embrace.android.embracesdk.Embrace
-import kotlinx.android.synthetic.main.home_popular_keyword.view.*
-import kotlinx.android.synthetic.main.home_popular_keyword.view.home_component_divider_footer
-import kotlinx.android.synthetic.main.home_popular_keyword.view.home_component_divider_header
 
 /**
  * @author by yoasfs on 2020-02-18
@@ -42,6 +41,7 @@ class PopularKeywordViewHolder (val view: View,
                                 val homeCategoryListener: HomeCategoryListener,
                                 private val popularKeywordListener: PopularKeywordListener)
     : AbstractViewHolder<PopularKeywordListDataModel>(view) {
+    private var binding: HomePopularKeywordBinding? by viewBinding()
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_popular_keyword
@@ -84,8 +84,8 @@ class PopularKeywordViewHolder (val view: View,
     private fun setChannelDivider(element: PopularKeywordListDataModel) {
         HomeChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
@@ -138,7 +138,7 @@ class PopularKeywordViewHolder (val view: View,
                             if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor).invertIfDarkMode(itemView.context)
                             else ContextCompat.getColor(view.context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
                     )
-                    itemView.loader_popular_keyword_title.gone()
+                    binding?.loaderPopularKeywordTitle?.gone()
                     anchorReloadButtonTo(R.id.channel_title)
                 }
             }
@@ -192,7 +192,7 @@ class PopularKeywordViewHolder (val view: View,
                 tvReload?.show()
             } else {
                 errorPopularKeyword.show()
-                itemView.loader_popular_keyword_title.hide()
+                binding?.loaderPopularKeywordTitle?.hide()
                 ivReload?.hide()
                 tvReload?.hide()
                 channelTitle?.hide()
@@ -208,10 +208,10 @@ class PopularKeywordViewHolder (val view: View,
 
     private fun anchorReloadButtonTo(anchorRef: Int) {
         val constraintSet = ConstraintSet()
-        constraintSet.clone(itemView.container_popular_keyword)
+        constraintSet.clone(binding?.containerPopularKeyword)
         constraintSet.connect(R.id.iv_reload, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
         constraintSet.connect(R.id.iv_reload, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
-        constraintSet.applyTo(itemView.container_popular_keyword)
+        constraintSet.applyTo(binding?.containerPopularKeyword)
     }
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
@@ -225,7 +225,7 @@ class PopularKeywordViewHolder (val view: View,
             }
 
             if (channelTitle == null || channelTitle?.isVisible == false) {
-                itemView.loader_popular_keyword_title.visible()
+                binding?.loaderPopularKeywordTitle?.visible()
             }
             loadingView?.show()
             errorPopularKeyword.hide()

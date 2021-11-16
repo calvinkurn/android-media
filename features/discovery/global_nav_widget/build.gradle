@@ -4,6 +4,11 @@ apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
@@ -25,6 +30,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

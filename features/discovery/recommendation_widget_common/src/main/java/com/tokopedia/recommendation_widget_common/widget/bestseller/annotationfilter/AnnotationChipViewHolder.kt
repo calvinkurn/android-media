@@ -5,8 +5,9 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.databinding.AnnotationFilterChipViewHolderBinding
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.annotation_filter_chip_view_holder.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Lukas on 05/11/20.
@@ -16,15 +17,16 @@ class AnnotationChipViewHolder(
         private val listener: AnnotationChipListener
 ) : RecyclerView.ViewHolder(view) {
 
+    private var binding: AnnotationFilterChipViewHolderBinding? by viewBinding()
     fun bind(element: RecommendationFilterChipsEntity.RecommendationFilterChip) {
-        view.annotation_chip.chipText = element.title
+        binding?.annotationChip?.chipText = element.title
         view.setOnClickListener {
             listener.onFilterAnnotationClicked(element, adapterPosition)
         }
         if(element.isActivated) {
-            view.annotation_chip.chipType = ChipsUnify.TYPE_SELECTED
+            binding?.annotationChip?.chipType = ChipsUnify.TYPE_SELECTED
         } else{
-            view.annotation_chip.chipType = ChipsUnify.TYPE_NORMAL
+            binding?.annotationChip?.chipType = ChipsUnify.TYPE_NORMAL
         }
     }
 
@@ -32,9 +34,9 @@ class AnnotationChipViewHolder(
         if(payload.isEmpty()) return
         val bundle = payload.first() as Bundle
         if(bundle.containsKey(KEY_UPDATE_FILTER_SELECTED_RECOM)){
-            view.annotation_chip.chipType = if(element.isActivated) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+            binding?.annotationChip?.chipType = if(element.isActivated) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
         } else if(bundle.containsKey(KEY_UPDATE_FILTER_NAME_RECOM)){
-            view.annotation_chip.chipText = element.title
+            binding?.annotationChip?.chipText = element.title
         }
         view.setOnClickListener {
             listener.onFilterAnnotationClicked(element, adapterPosition)

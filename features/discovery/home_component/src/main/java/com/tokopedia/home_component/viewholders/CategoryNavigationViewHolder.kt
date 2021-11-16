@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.databinding.HomeComponentCategoryNavigationBinding
+import com.tokopedia.home_component.databinding.HomeComponentCategoryNavigationItemBinding
 import com.tokopedia.home_component.listener.CategoryNavigationListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.util.ChannelWidgetUtil
@@ -16,24 +18,21 @@ import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
-import kotlinx.android.synthetic.main.home_component_category_navigation.view.*
-import kotlinx.android.synthetic.main.home_component_category_navigation.view.home_component_divider_footer
-import kotlinx.android.synthetic.main.home_component_category_navigation.view.home_component_divider_header
-import kotlinx.android.synthetic.main.home_component_category_navigation_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Lukas on 17/11/20.
  */
 class CategoryNavigationViewHolder (view: View, private val listener: CategoryNavigationListener): AbstractViewHolder<CategoryNavigationDataModel> (view){
     private var categoryNavigationDataModel: CategoryNavigationDataModel? = null
-
+    private var binding: HomeComponentCategoryNavigationBinding? by viewBinding()
     companion object{
         val LAYOUT = R.layout.home_component_category_navigation
     }
 
     init {
-        itemView.category_recyclerview.addItemDecoration(DividerItemDecoration(itemView.context, DividerItemDecoration.HORIZONTAL))
-        GravitySnapHelper(Gravity.START).attachToRecyclerView(itemView.category_recyclerview)
+        binding?.categoryRecyclerview?.addItemDecoration(DividerItemDecoration(itemView.context, DividerItemDecoration.HORIZONTAL))
+        GravitySnapHelper(Gravity.START).attachToRecyclerView(binding?.categoryRecyclerview)
     }
 
     private val adapter = CategoryNavigationAdapter()
@@ -41,7 +40,7 @@ class CategoryNavigationViewHolder (view: View, private val listener: CategoryNa
         categoryNavigationDataModel = element
         element.channelModel?.run {
             adapter.submitList(channelGrids)
-            itemView.category_recyclerview.adapter = adapter
+            binding?.categoryRecyclerview?.adapter = adapter
         }
         setChannelDivider(element)
     }
@@ -49,18 +48,19 @@ class CategoryNavigationViewHolder (view: View, private val listener: CategoryNa
     private fun setChannelDivider(element: CategoryNavigationDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
     inner class CategoryNavigationItemViewHolder (view: View): RecyclerView.ViewHolder(view) {
+        val binding: HomeComponentCategoryNavigationItemBinding? by viewBinding()
         fun bind(grid: ChannelGrid?){
             grid?.run {
-                itemView.category_icon.loadImage(imageUrl) {
+                binding?.categoryIcon?.loadImage(imageUrl) {
                     setPlaceHolder(R.drawable.placeholder_grey)
                 }
-                itemView.category_title.text = name
+                binding?.categoryTitle?.text = name
                 categoryNavigationDataModel?.channelModel?.let { channelModel ->
                     itemView.addOnImpressionListener(grid){
                         listener.onCategoryNavigationImpress(channelModel, this, adapterPosition)

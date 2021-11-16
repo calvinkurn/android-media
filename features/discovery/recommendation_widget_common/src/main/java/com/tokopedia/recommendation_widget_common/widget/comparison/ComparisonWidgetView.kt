@@ -13,11 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.recommendation_widget_common.databinding.ViewComparisonWidgetBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.comparison.compareditem.ComparedItemAdapter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.android.synthetic.main.view_comparison_widget.view.*
 import kotlinx.android.synthetic.main.view_comparison_widget.view.btn_see_more
 import kotlinx.android.synthetic.main.view_comparison_widget.view.comparison_widget_container

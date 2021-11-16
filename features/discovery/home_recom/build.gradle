@@ -4,6 +4,9 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 
 android{
+    buildFeatures {
+        viewBinding true
+    }
     testOptions {
         unitTests {
             includeAndroidResources = true

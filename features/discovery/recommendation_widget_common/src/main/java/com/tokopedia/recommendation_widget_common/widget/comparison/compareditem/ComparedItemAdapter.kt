@@ -3,13 +3,13 @@ package com.tokopedia.recommendation_widget_common.widget.comparison.comparedite
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.item_comparison_widget.view.*
 
 class ComparedItemAdapter(
     var comparisonListModel: ComparisonListModel,
@@ -20,12 +20,13 @@ class ComparedItemAdapter(
 ): RecyclerView.Adapter<ComparisonWidgetComparedItemViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComparisonWidgetComparedItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comparison_compared_widget, parent, false)
-        val productCardView = view.productCardView
+
+        val productCardView = view.findViewById<ProductCardGridView>(R.id.productCardView)
         val layoutParams = productCardView.layoutParams
         layoutParams.height = comparisonListModel.comparisonWidgetConfig.productCardHeight
         productCardView.layoutParams = layoutParams
 
-        view.productCardView.applyCarousel()
+        productCardView.applyCarousel()
 
         return ComparisonWidgetComparedItemViewHolder(view)
     }

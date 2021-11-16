@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.databinding.HomeComponentDynamicIconBinding
 import com.tokopedia.home_component.decoration.CommonSpacingDecoration
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.model.DynamicIconComponent
@@ -19,13 +20,14 @@ import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_component_dynamic_icon.view.*
-import kotlinx.android.synthetic.main.home_component_dynamic_icon_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Lukas on 1/8/21.
  */
 class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconComponentListener): AbstractViewHolder<DynamicIconComponentDataModel>(itemView){
+
+    private var binding: HomeComponentDynamicIconBinding? by viewBinding()
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_dynamic_icon
@@ -79,9 +81,9 @@ class DynamicIconViewHolder (itemView: View, private val listener: DynamicIconCo
 
     private fun setupLayoutManager(isScrollItem: Boolean, spanCount: Int){
         if(isScrollItem){
-            itemView.dynamic_icon_recycler_view.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            binding?.dynamicIconRecyclerView?.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         } else {
-            itemView.dynamic_icon_recycler_view.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
+            binding?.dynamicIconRecyclerView?.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
         }
     }
 

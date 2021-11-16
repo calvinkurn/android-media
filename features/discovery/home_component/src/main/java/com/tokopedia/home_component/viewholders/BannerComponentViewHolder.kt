@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.*
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.databinding.HomeComponentBannerBinding
 import com.tokopedia.home_component.decoration.BannerChannelDecoration
 import com.tokopedia.home_component.decoration.BannerChannelSingleItemDecoration
 import com.tokopedia.home_component.listener.BannerComponentListener
@@ -22,7 +23,7 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import kotlinx.android.synthetic.main.home_component_banner.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -36,6 +37,7 @@ class BannerComponentViewHolder(itemView: View,
 )
     : AbstractViewHolder<BannerDataModel>(itemView),
         BannerItemListener, CoroutineScope {
+    private var binding: HomeComponentBannerBinding? by viewBinding()
     private var isCache = true
     private val rvBanner: RecyclerView = itemView.findViewById(R.id.rv_banner)
     private var layoutManager = LinearLayoutManager(itemView.context)
@@ -117,8 +119,8 @@ class BannerComponentViewHolder(itemView: View,
     private fun setChannelDivider(element: BannerDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
@@ -226,7 +228,7 @@ class BannerComponentViewHolder(itemView: View,
     private fun setHeaderComponent(element: BannerDataModel) {
         if (element.channelModel?.channelHeader?.name?.isNotEmpty() == true) {
             element.channelModel.let {
-                itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+                binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
                     override fun onSeeAllClick(link: String) {
                         bannerListener?.onPromoAllClick(element.channelModel)
                     }
@@ -236,9 +238,9 @@ class BannerComponentViewHolder(itemView: View,
                     }
                 })
             }
-            itemView.home_component_header_view.visible()
+            binding?.homeComponentHeaderView?.visible()
         } else {
-            itemView.home_component_header_view.gone()
+            binding?.homeComponentHeaderView?.gone()
         }
     }
 

@@ -14,6 +14,7 @@ import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.customview.ShimmeringImageView
+import com.tokopedia.home_component.databinding.HomeComponentLegoBannerBinding
 import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.decoration.clearDecorations
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
@@ -26,7 +27,7 @@ import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Devara on 2020-04-28
@@ -36,7 +37,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                                   val homeComponentListener: HomeComponentListener?,
                                   val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null):
         AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
-
+    private var binding: HomeComponentLegoBannerBinding? by viewBinding()
     private var isCacheData = false
     private var isLego24UsingRollenceVariant = false
     companion object {
@@ -64,8 +65,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
     private fun setChannelDivider(element: DynamicLegoBannerDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
@@ -264,7 +265,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
     }
 
     private fun setHeaderComponent(element: DynamicLegoBannerDataModel) {
-        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 when (element.channelModel.channelConfig.layout) {
                     DynamicChannelLayout.LAYOUT_6_IMAGE -> legoListener?.onSeeAllSixImage(element.channelModel, adapterPosition)
