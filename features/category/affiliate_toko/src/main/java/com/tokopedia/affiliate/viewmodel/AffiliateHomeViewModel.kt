@@ -9,10 +9,7 @@ import com.tokopedia.affiliate.model.*
 import com.tokopedia.affiliate.PERFORMA_MAP
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
-import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
-import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
-import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
-import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
+import com.tokopedia.affiliate.usecase.*
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
@@ -22,9 +19,9 @@ import kotlin.collections.ArrayList
 class AffiliateHomeViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
-        private val affiliatePerformanceUseCase: AffiliatePerformanceUseCase,
         private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
-        private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase
+        private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase,
+        private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var dataPlatformShimmerVisibility = MutableLiveData<Boolean>()
@@ -71,7 +68,7 @@ class AffiliateHomeViewModel @Inject constructor(
             else{
                 shimmerVisibility.value = true
             }
-            affiliatePerformanceUseCase.affiliateItemPerformanceList(selectedDateValue).getAffiliatePerformanceList?.data?.data.let {
+            affiliatePerformanceDataUseCase.affiliateItemPerformanceList(selectedDateValue).getAffiliatePerformanceList?.data?.data.let {
                 convertDataToVisitables(it,performanceList,page)?.let { visitables ->
                     affiliateDataList.value = visitables
                 }
