@@ -72,26 +72,27 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
 
     fun initialFlash() {
         supportedFlashList = ArrayList()
-        if (cameraView == null || cameraView!!.cameraOptions == null) {
+        if (cameraView == null || cameraView?.cameraOptions == null) {
             return
         }
-        val flashSet = cameraView!!.cameraOptions!!
-            .supportedFlash
-        for (flash in flashSet) {
-            if (flash != Flash.TORCH) {
-                (supportedFlashList as ArrayList<Flash>).add(flash)
+        val flashSet = cameraView?.cameraOptions?.supportedFlash
+        if (flashSet != null) {
+            for (flash in flashSet) {
+                if (flash != Flash.TORCH) {
+                    (supportedFlashList as ArrayList<Flash>).add(flash)
+                }
             }
         }
         if (supportedFlashList != null && (supportedFlashList as ArrayList<Flash>).size > 0) {
-            flashControl!!.visibility = View.VISIBLE
+            flashControl?.visibility = View.VISIBLE
             setCameraFlash()
         } else {
-            flashControl!!.visibility = View.GONE
+            flashControl?.visibility = View.GONE
         }
     }
 
     private fun setCameraFlash() {
-        if (supportedFlashList == null || flashIndex < 0 || supportedFlashList!!.size <= flashIndex) {
+        if (supportedFlashList == null || flashIndex < 0 || supportedFlashList?.size ?: 0 <= flashIndex) {
             return
         }
         var flash = supportedFlashList!![flashIndex]
@@ -99,7 +100,7 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
             flashIndex = (flashIndex + 1) % supportedFlashList!!.size
             flash = supportedFlashList!![flashIndex]
         }
-        cameraView!!.set(flash)
+        cameraView?.set(flash)
         setUIFlashCamera(flash.ordinal)
     }
 
@@ -107,13 +108,13 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
     private fun setUIFlashCamera(flashEnum: Int) {
         val colorWhite = ContextCompat.getColor(requireContext(), R.color.Unify_Static_White)
         if (flashEnum == Flash.AUTO.ordinal) {
-            flashControl!!.setImageDrawable(
+            flashControl?.setImageDrawable(
                 MethodChecker.getDrawable(
                     activity, com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash
                 )
             )
         } else if (flashEnum == Flash.ON.ordinal) {
-            flashControl!!.setImage(
+            flashControl?.setImage(
                 IconUnify.FLASH_ON,
                 colorWhite,
                 colorWhite,
@@ -121,7 +122,7 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
                 colorWhite
             )
         } else if (flashEnum == Flash.OFF.ordinal) {
-            flashControl!!.setImage(
+            flashControl?.setImage(
                 IconUnify.FLASH_OFF,
                 colorWhite,
                 colorWhite,
@@ -132,11 +133,11 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
     }
 
     fun initCameraProp() {
-        cameraView!!.open()
-        cameraLayout!!.visibility = View.VISIBLE
-        imageCaptured!!.visibility = View.GONE
-        cameraActionsRL!!.visibility = View.VISIBLE
-        pictureActionLL!!.visibility = View.GONE
+        cameraView?.open()
+        cameraLayout?.visibility = View.VISIBLE
+        imageCaptured?.visibility = View.GONE
+        cameraActionsRL?.visibility = View.VISIBLE
+        pictureActionLL?.visibility = View.GONE
     }
 
     fun initListeners() {
@@ -162,44 +163,45 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
                 }
             }
         }
-        captureImage!!.setOnClickListener { v: View? -> capturePicture() }
-        flashControl!!.setOnClickListener { v: View? ->
-            if (supportedFlashList != null && supportedFlashList!!.size > 0) {
-                flashIndex = (flashIndex + 1) % supportedFlashList!!.size
+        captureImage?.setOnClickListener { v: View? -> capturePicture() }
+        flashControl?.setOnClickListener { v: View? ->
+            if (supportedFlashList != null && supportedFlashList?.size ?: 0 > 0) {
+                flashIndex = (flashIndex + 1) % supportedFlashList?.size!!
                 setCameraFlash()
             }
         }
-        reverseCamera!!.setOnClickListener { v: View? -> toggleCamera() }
-        retakePhoto!!.setOnClickListener { v: View? -> initCameraProp() }
-        buttonCancel!!.setOnClickListener { v: View? -> requireActivity().finish() }
-        cameraView!!.addCameraListener(cameraListener as CameraListener)
+        reverseCamera?.setOnClickListener { v: View? -> toggleCamera() }
+        retakePhoto?.setOnClickListener { v: View? -> initCameraProp() }
+        buttonCancel?.setOnClickListener { v: View? -> requireActivity().finish() }
+        cameraView?.addCameraListener(cameraListener as CameraListener)
         progressDialog = ProgressDialog(activity)
-        progressDialog!!.setCancelable(false)
-        progressDialog!!.setMessage(getString(com.tokopedia.homecredit.R.string.title_loading))
+        progressDialog?.setCancelable(false)
+        progressDialog?.setMessage(getString(com.tokopedia.homecredit.R.string.title_loading))
     }
 
     private fun generateImage(imageByte: ByteArray) {
         if (mCaptureNativeSize == null) {
-            mCaptureNativeSize = cameraView!!.pictureSize
+            mCaptureNativeSize = cameraView?.pictureSize
         }
-        homeCreditViewModel!!.computeImageArray(
-            imageByte,
-            mCaptureNativeSize!!,
-            fileLocationFromDirectory
-        )
-        homeCreditViewModel!!.imageDetailLiveData.observe(
+        mCaptureNativeSize?.let { mCaptureNativeSize ->
+            homeCreditViewModel?.computeImageArray(
+                imageByte,
+                mCaptureNativeSize, fileLocationFromDirectory
+            )
+        }
+        homeCreditViewModel?.imageDetailLiveData?.observe(
             this,
             { imageDetail: Result<ImageDetail>? ->
-                captureImage!!.isClickable = true
+                captureImage?.isClickable = true
                 if (imageDetail is Success<*> && (imageDetail as Success<ImageDetail>).data.imagePath != null) loadImageFromBitmap(
-                    context, imageCaptured, imageDetail.data
+                    imageCaptured, imageDetail.data
                 )
                 hideCameraProp()
             })
         reset()
     }
 
-    private fun loadImageFromBitmap(context: Context?, imageView: ImageView?, data: ImageDetail) {
+    private fun loadImageFromBitmap(imageView: ImageView?, data: ImageDetail) {
         val width = data.bitMapWidth
         val height = data.bitmapHeight
         val min: Int
@@ -212,10 +214,12 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
             max = height
         }
         val loadFitCenter = min != 0 && max / min > 2
-        if (loadFitCenter) Glide.with(requireContext()).load(data.imagePath).fitCenter()
-            .into(imageView!!) else Glide.with(
-            requireContext()
-        ).load(data.imagePath).into(imageView!!)
+        if (loadFitCenter)
+            imageView?.let {
+                Glide.with(requireContext()).load(data.imagePath).fitCenter().into(it)
+            }
+        else
+            imageView?.let { Glide.with(requireContext()).load(data.imagePath).into(it) }
     }
 
     private fun reset() {
@@ -230,20 +234,20 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         }
         showLoading()
         mCapturingPicture = true
-        mCaptureNativeSize = cameraView!!.pictureSize
-        cameraView!!.takePicture()
-        captureImage!!.isClickable = false
+        mCaptureNativeSize = cameraView?.pictureSize
+        cameraView?.takePicture()
+        captureImage?.isClickable = false
     }
 
     private fun showLoading() {
         if (isAdded) {
-            progressDialog!!.show()
+            progressDialog?.show()
         }
     }
 
     protected fun hideLoading() {
         if (isAdded) {
-            progressDialog!!.dismiss()
+            progressDialog?.dismiss()
         }
     }
 
@@ -251,15 +255,15 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         if (mCapturingPicture) {
             return
         }
-        cameraView!!.toggleFacing()
+        cameraView?.toggleFacing()
     }
 
     fun hideCameraProp() {
-        cameraView!!.close()
-        cameraLayout!!.visibility = View.GONE
-        imageCaptured!!.visibility = View.VISIBLE
-        cameraActionsRL!!.visibility = View.GONE
-        pictureActionLL!!.visibility = View.VISIBLE
+        cameraView?.close()
+        cameraLayout?.visibility = View.GONE
+        imageCaptured?.visibility = View.VISIBLE
+        cameraActionsRL?.visibility = View.GONE
+        pictureActionLL?.visibility = View.VISIBLE
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -283,9 +287,9 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
 
     private fun startCamera() {
         try {
-            cameraView!!.clearCameraListeners()
-            cameraView!!.addCameraListener(cameraListener!!)
-            cameraView!!.open()
+            cameraView?.clearCameraListeners()
+            cameraListener?.let { cameraView?.addCameraListener(it) }
+            cameraView?.open()
         } catch (e: Throwable) {
             e.printStackTrace()
         }
@@ -312,13 +316,13 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
     override fun onPause() {
         super.onPause()
         if (isCameraOpen) {
-            cameraView!!.close()
+            cameraView?.close()
         }
     }
 
     override fun onDestroy() {
         hideLoading()
-        cameraView!!.close()
+        cameraView?.close()
         super.onDestroy()
     }
 
