@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
 import com.tokopedia.test.application.matcher.hasViewHolderOf
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
@@ -8,6 +9,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ReminderTickerView
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class PromptToActivateSmartReplyTest : TopchatRoomTest() {
 
     @Test
