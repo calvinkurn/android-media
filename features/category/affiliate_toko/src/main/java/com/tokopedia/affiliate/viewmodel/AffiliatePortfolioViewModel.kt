@@ -40,7 +40,7 @@ class AffiliatePortfolioViewModel@Inject constructor(
         affiliatePortfolioData.value?.forEachIndexed {i,item->
             if(item is AffiliatePortfolioUrlModel)
             {
-                if(!item.portfolioItm.text.isNullOrEmpty() && !isValidUrl(item.portfolioItm.text)){
+                if(item.portfolioItm.text.isNullOrEmpty() && !isValidUrl(item.portfolioItm.text)){
                     item.portfolioItm.isError = true
                     updateListItem.value = i
                     return false

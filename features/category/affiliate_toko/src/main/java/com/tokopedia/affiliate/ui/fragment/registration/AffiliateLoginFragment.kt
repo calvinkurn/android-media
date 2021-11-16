@@ -20,6 +20,7 @@ import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
@@ -32,7 +33,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_login_fragment_layout.*
 import javax.inject.Inject
@@ -78,15 +78,15 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
                 add(AffiliateTutorialPagerAdapter.LoginTutorialData(
                         getString(R.string.affiliate_tutorial_title_1),
                         getString(R.string.affiliate_tutorial_subtitle_1),
-                        "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"))
+                        "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_first_image.png"))
                 add(AffiliateTutorialPagerAdapter.LoginTutorialData(
                         getString(R.string.affiliate_tutorial_title_2),
                         getString(R.string.affiliate_tutorial_subtitle_2),
-                        "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_product_not_found.png"))
+                        "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_second_image.png"))
                 add(AffiliateTutorialPagerAdapter.LoginTutorialData(
                         getString(R.string.affiliate_tutorial_title_3),
                         getString(R.string.affiliate_tutorial_subtitle_3),
-                        "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"))
+                        "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_third_image.png"))
             }
         }
         val tutorialAdapter = AffiliateTutorialPagerAdapter(tutorialArray)
@@ -122,8 +122,10 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             setNavigationOnClickListener {
                 affiliateNavigationInterface.handleBackButton()
             }
+            actionTextView?.setOnClickListener {
+                (activity as? AffiliateActivity)?.showAffiliatePortal()
+            }
         }
-
     }
 
     private fun setListeners() {
@@ -135,6 +137,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     }
 
     private fun checkLoggedIn() {
+        affiliate_login_ticker.hide()
         if (!affiliateLoginViewModel.isUserLoggedIn()) {
             affiliate_login_text.text = getString(com.tokopedia.affiliate_toko.R.string.affiliate_daftar_sekarang_dengan_akun_tokopedia_kamu)
             affiliate_daftar_text.text = getString(R.string.affiliate_belum_punya_akun_tokopedia)
@@ -196,7 +199,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     private fun doLogout() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, true)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
             startActivityForResult(intent, AFFILIATE_REQUEST_CODE_LOGOUT)
         }
     }
@@ -240,6 +243,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
     fun showFraudTicker() {
         affiliate_login_ticker.run {
             show()
+            affiliate_login_ticker_cv.show()
             setHtmlDescription(getString(R.string.affiliate_login_ticker_text))
             tickerType = Ticker.TYPE_ERROR
             setDescriptionClickEvent(object: TickerCallback {

@@ -105,18 +105,16 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private fun afterViewCreated() {
         initBottomNavigationView()
         setObservers()
+        showAffiliatePortal()
 //        if(userSessionInterface.isLoggedIn)
 //            affiliateVM.getAffiliateValidateUser()
-//        else
-//            showLoginPortal()
-        showAffiliatePortal()
     }
 
     private fun showLoginPortal() {
         openFragment(AffiliateLoginFragment.getFragmentInstance(this))
     }
 
-    private fun showAffiliatePortal() {
+    fun showAffiliatePortal() {
         clearBackStack()
         affiliate_background_image.show()
         affiliateBottomNavigation?.showBottomNav()
@@ -180,7 +178,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     private fun showFraudTicker() {
         val currentFragment = supportFragmentManager.findFragmentByTag(AffiliateLoginFragment::class.java.simpleName)
-        if(currentFragment != null && currentFragment.isVisible){
+        if(currentFragment != null){
             (currentFragment as? AffiliateLoginFragment)?.showFraudTicker()
         }
     }
@@ -193,7 +191,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         splash_group.show()
         Handler().postDelayed({
             splash_group.hide()
-            showLoginPortal()
+            showAffiliatePortal()
         },3000)
     }
 

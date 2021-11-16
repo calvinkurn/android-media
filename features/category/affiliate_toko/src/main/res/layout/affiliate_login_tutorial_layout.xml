@@ -3,16 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="bottom"
+    android:gravity="bottom"
     android:orientation="vertical">
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/affiliate_tutorial_iv"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_220"
+        android:layout_height="@dimen/dp_250"
         android:background="@color/Unify_N0"
         android:gravity="center"
         android:paddingTop="40dp"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_product.png"
         app:imageDpiSupportType="singleDpi"
         android:layout_marginTop="@dimen/unify_space_12"
         />
