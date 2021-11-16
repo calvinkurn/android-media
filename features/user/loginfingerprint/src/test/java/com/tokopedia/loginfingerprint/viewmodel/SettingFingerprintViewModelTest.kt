@@ -70,6 +70,21 @@ class SettingFingerprintViewModelTest {
     }
 
     @Test
+    fun `on Success Check Fingerprint has errors`() {
+        /* When */
+        val data = CheckFingerprintResult(isSuccess = false, errorMessage = "")
+        val response = CheckFingerprintPojo(data)
+
+        coEvery { checkFingerprintToggleStatusUseCase.invoke(any()) } returns response
+
+        viewModel.getFingerprintStatus()
+
+        /* Then */
+        verify { checkFingerprintObserver.onChanged(any<Fail>()) }
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
+    }
+
+    @Test
     fun `on Error Check Fingerprint`() {
 
         coEvery { checkFingerprintToggleStatusUseCase.invoke(any()) } throws throwable
