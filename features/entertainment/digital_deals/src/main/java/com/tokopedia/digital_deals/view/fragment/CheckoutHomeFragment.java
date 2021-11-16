@@ -215,7 +215,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         tickerApplyPromo.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
             @Override
             public void onClickUsePromo() {
-                dealsAnalytics.sendPromoCodeClickEvent(dealDetails);
+                dealsAnalytics.sendPromoCodeClickEvent(dealDetails, "", promoApplied);
                 mPresenter.clickGoToPromo(getContext());
             }
 

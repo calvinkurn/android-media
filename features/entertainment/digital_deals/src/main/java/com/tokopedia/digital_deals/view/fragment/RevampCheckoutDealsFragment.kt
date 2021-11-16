@@ -255,6 +255,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
             enableView()
             actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
                 override fun onClickUsePromo() {
+                    dealsAnalytics.sendPromoCodeClickEvent(dealsDetail, userSession.userId, promoApplied)
                     goToPromoListDealsActivity()
                 }
 
@@ -352,7 +353,9 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
 
     private fun goToPromoDetailDeals(){
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_DETAIL_DEALS)
-
+        intent.putExtra(EXTRA_META_DATA, viewModel.getMetaDataString(verifyData))
+        intent.putExtra(EXTRA_CATEGORY_NAME, verifyData.metadata.categoryName)
+        intent.putExtra(EXTRA_GRAND_TOTAL, verifyData.metadata.totalPrice)
         intent.putExtra(COUPON_EXTRA_IS_USE, true)
         intent.putExtra(EXTRA_KUPON_CODE, couponCode)
         startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
