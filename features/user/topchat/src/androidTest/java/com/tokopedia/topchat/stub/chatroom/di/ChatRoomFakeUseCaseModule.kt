@@ -15,7 +15,6 @@ import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -262,16 +261,16 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideOrderProgressUseCase(
-        stub: OrderProgressUseCaseNewStub
-    ): OrderProgressUseCaseNew = stub
+        stub: OrderProgressUseCaseStub
+    ): OrderProgressUseCase = stub
 
     @Provides
     @ChatScope
     fun provideOrderProgressUseCaseStub(
         repository: GraphqlRepositoryStub,
         dispatchers: CoroutineDispatchers
-    ): OrderProgressUseCaseNewStub {
-        return OrderProgressUseCaseNewStub(repository, dispatchers)
+    ): OrderProgressUseCaseStub {
+        return OrderProgressUseCaseStub(repository, dispatchers)
     }
 
     // -- separator -- //
@@ -279,15 +278,15 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideChatRoomSettingUseCaseUseCase(
-        stub: GetChatRoomSettingUseCaseNewStub
-    ): GetChatRoomSettingUseCaseNew = stub
+        stub: GetChatRoomSettingUseCaseStub
+    ): GetChatRoomSettingUseCase = stub
 
     @Provides
     @ChatScope
     fun provideChatRoomSettingUseCaseaseStub(
         repository: GraphqlRepositoryStub,
         dispatchers: CoroutineDispatchers
-    ): GetChatRoomSettingUseCaseNewStub {
-        return GetChatRoomSettingUseCaseNewStub(repository, dispatchers)
+    ): GetChatRoomSettingUseCaseStub {
+        return GetChatRoomSettingUseCaseStub(repository, dispatchers)
     }
 }

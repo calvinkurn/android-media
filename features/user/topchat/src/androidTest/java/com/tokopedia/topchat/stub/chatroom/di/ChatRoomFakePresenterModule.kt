@@ -8,7 +8,6 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
@@ -43,12 +42,9 @@ class ChatRoomFakePresenterModule {
             getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
             replyChatUseCase: ReplyChatUseCase,
             compressImageUseCase: CompressImageUseCase,
-            seamlessLoginUsecase: SeamlessLoginUsecase,
-            getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
             addWishListUseCase: AddWishListUseCase,
             removeWishListUseCase: RemoveWishListUseCase,
             uploadImageUseCase: TopchatUploadImageUseCase,
-            orderProgressUseCase: OrderProgressUseCase,
             groupStickerUseCase: ChatListGroupStickerUseCase,
             chatAttachmentUseCase: ChatAttachmentUseCase,
             chatToggleBlockChat: ChatToggleBlockChatUseCase,

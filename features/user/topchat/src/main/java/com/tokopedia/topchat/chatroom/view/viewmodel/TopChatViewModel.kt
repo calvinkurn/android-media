@@ -19,10 +19,10 @@ import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressRes
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
-import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCaseNew
+import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCaseNew
+import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,8 +35,8 @@ class TopChatViewModel @Inject constructor(
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     private var addToCartUseCase: AddToCartUseCase,
     private var seamlessLoginUsecase: SeamlessLoginUsecase,
-    private var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseNew,
-    private var orderProgressUseCase: OrderProgressUseCaseNew,
+    private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
+    private var orderProgressUseCase: OrderProgressUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher.main) {

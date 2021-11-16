@@ -135,10 +135,10 @@ abstract class TopchatRoomTest {
     //Seamless
 
     @Inject
-    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseNewStub
+    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseStub
 
     @Inject
-    protected lateinit var orderProgressUseCase: OrderProgressUseCaseNewStub
+    protected lateinit var orderProgressUseCase: OrderProgressUseCaseStub
 
     @Inject
     protected lateinit var cacheManager: TopchatCacheManager

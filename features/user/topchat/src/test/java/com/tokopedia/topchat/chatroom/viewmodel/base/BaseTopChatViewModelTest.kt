@@ -6,10 +6,10 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCaseNew
+import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCaseNew
+import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -37,10 +37,10 @@ abstract class BaseTopChatViewModelTest {
     lateinit var seamlessLoginUsecase: SeamlessLoginUsecase
 
     @RelaxedMockK
-    lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseNew
+    lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCase
 
     @RelaxedMockK
-    lateinit var orderProgressUseCase: OrderProgressUseCaseNew
+    lateinit var orderProgressUseCase: OrderProgressUseCase
 
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
