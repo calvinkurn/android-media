@@ -151,7 +151,6 @@ import com.tokopedia.stickylogin.common.helper.isRegisteredFromStickyLogin
 import com.tokopedia.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
-import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -1455,27 +1454,27 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun observeUpdateNetworkStatusData() {
         getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status, _, throwable) ->
             resetImpressionListener()
-            val errorString = getErrorString(throwable ?: MessageErrorException(getString(R.string.home_error_connection)))
             when {
                 status === Result.Status.SUCCESS -> {
                     hideLoading()
                 }
                 status === Result.Status.ERROR -> {
                     hideLoading()
-                    showNetworkError(errorString)
+                    showNetworkError(getErrorStringWithDefault(throwable))
                     onPageLoadTimeEnd()
                 }
                 status === Result.Status.ERROR_PAGINATION -> {
                     hideLoading()
-                    showNetworkError(errorString)
+                    showNetworkError(getErrorStringWithDefault(throwable))
                 }
                 status === Result.Status.ERROR_ATF -> {
                     hideLoading()
-                    showNetworkError(errorString)
+                    showNetworkError(getErrorStringWithDefault(throwable))
                     adapter?.resetChannelErrorState()
                     adapter?.resetAtfErrorState()
                 }
                 status == Result.Status.ERROR_GENERAL -> {
+                    val errorString = getErrorStringWithDefault(throwable)
                     showNetworkError(errorString)
                     NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                     onPageLoadTimeEnd()
@@ -3201,6 +3200,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             ErrorHandler.getErrorMessage(it, e)
         }?:""
     }
+
+    private fun getErrorStringWithDefault(e: Throwable?): String =
+        getErrorString(e ?: MessageErrorException(getString(R.string.home_error_connection)))
 
     private fun gotoNewUserZonePage() {
         activity?.let {
