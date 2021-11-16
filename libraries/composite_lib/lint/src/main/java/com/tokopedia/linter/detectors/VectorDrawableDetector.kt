@@ -124,7 +124,7 @@ class VectorDrawableDetector : Detector(), XmlScanner {
         context.report(
             ISSUE,
             attribute,
-            context.getLocation(attribute),
+            context.getValueLocation(attribute),
             message,
             quickFix
         )
