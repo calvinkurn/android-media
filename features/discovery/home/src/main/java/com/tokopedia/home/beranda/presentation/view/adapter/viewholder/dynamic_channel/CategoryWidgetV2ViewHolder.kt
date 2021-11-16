@@ -54,7 +54,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 false)
 
         if (recyclerView.itemDecorationCount == 0) {
-            recyclerView.addItemDecoration(CategoryWidgetV2SpacingItemDecoration(8f.toDpInt(itemView.context)))
+            recyclerView.addItemDecoration(CategoryWidgetV2SpacingItemDecoration(8f.toDpInt()))
         }
         setChannelDivider(channel)
     }

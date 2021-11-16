@@ -53,7 +53,7 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
                 false)
 
         if (recyclerView.itemDecorationCount == 0) {
-            val dimens = 0f.toDpInt(itemView.context)
+            val dimens = 0f.toDpInt()
             recyclerView.addItemDecoration(CategoryWidgetSpacingItemDecoration(
                     CATEGORY_WIDGET_SPAN_COUNT,
                     itemView.context.resources.getDimensionPixelOffset(dimens)

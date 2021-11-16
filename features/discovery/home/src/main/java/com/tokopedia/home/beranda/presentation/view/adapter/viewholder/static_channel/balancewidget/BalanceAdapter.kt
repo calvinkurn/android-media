@@ -513,7 +513,7 @@ class BalanceAdapter(
                 (drawable as GradientDrawable?)?.let {
                     it.setColorFilter(Color.parseColor(tagAttr.backgroundColour), PorterDuff.Mode.SRC_ATOP)
                     textView.background = it
-                    val horizontalPadding = 2f.toDpInt(itemView.context)
+                    val horizontalPadding = 2f.toDpInt()
                     textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 8f.toSp())
                     textView.setTypeface(null, Typeface.NORMAL)
                     textView.setPadding(horizontalPadding, 0, horizontalPadding, 0)

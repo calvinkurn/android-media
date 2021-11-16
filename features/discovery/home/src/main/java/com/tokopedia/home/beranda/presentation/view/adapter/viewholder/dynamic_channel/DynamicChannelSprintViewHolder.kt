@@ -62,7 +62,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         recyclerView.setHasFixedSize(true)
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                        4f.toDpInt(itemView.context),
+                        4f.toDpInt(),
                         false))
         recyclerView.layoutManager = GridLayoutManager(
                 itemView.context,

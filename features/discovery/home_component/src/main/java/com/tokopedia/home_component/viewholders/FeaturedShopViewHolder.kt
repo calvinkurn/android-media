@@ -84,7 +84,7 @@ class FeaturedShopViewHolder(
         if (itemView.dc_banner_rv.itemDecorationCount == 0) {
             itemView.dc_banner_rv.addItemDecoration(
                     CommonMarginStartDecoration(
-                            marginStart = 14f.toDpInt(itemView.context)
+                            marginStart = 14f.toDpInt()
                     )
             )
         }

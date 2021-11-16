@@ -14,7 +14,7 @@ class CategoryWidgetV2SpacingItemDecoration(private val spacing: Int) : Recycler
         val position = parent.getChildAdapterPosition(view) // item position
 
         if (position == 0 || position == 1) {
-            outRect.left = 16f.toDpInt(view.context)
+            outRect.left = 16f.toDpInt()
         } else {
             outRect.left = spacing/2
         }

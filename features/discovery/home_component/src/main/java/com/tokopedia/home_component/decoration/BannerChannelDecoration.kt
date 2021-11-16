@@ -15,6 +15,6 @@ class BannerChannelDecoration : RecyclerView.ItemDecoration() {
             outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
         }
 
-        outRect.right = 8f.toDpInt(view.context)
+        outRect.right = 8f.toDpInt()
     }
 }

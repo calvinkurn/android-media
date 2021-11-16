@@ -16,7 +16,7 @@ class CategoryWidgetSpacingItemDecoration(private val spanCount: Int, private va
         val column = position % spanCount // item column
 
         if (position == 0 || position == 1) {
-            outRect.left = 14f.toDpInt(view.context)
+            outRect.left = 14f.toDpInt()
         } else {
             outRect.left = spacing/2
         }

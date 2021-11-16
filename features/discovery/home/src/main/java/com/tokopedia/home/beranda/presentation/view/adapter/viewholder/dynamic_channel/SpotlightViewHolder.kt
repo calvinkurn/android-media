@@ -42,8 +42,8 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
     init {
         adapter = SpotlightAdapter(listener)
         recyclerView = itemView.findViewById(R.id.list)
-        val edgeMargin = 16f.toDpInt(itemView.context)
-        val spacingBetween = 8f.toDpInt(itemView.context)
+        val edgeMargin = 16f.toDpInt()
+        val spacingBetween = 8f.toDpInt()
         recyclerView.addItemDecoration(LinearHorizontalSpacingDecoration(spacingBetween, edgeMargin))
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(itemView.context,
@@ -97,7 +97,7 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
              * prevent spotlight title increase text size
              * when user font size preference is large
              */
-            title.setTextSize(TypedValue.COMPLEX_UNIT_PX, 16f.toDpFloat(itemView.context))
+            title.setTextSize(TypedValue.COMPLEX_UNIT_PX, 16f.toDpFloat())
             title.text = model.title
 
             /**

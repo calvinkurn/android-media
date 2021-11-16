@@ -431,7 +431,7 @@ class OvoWidgetView: FrameLayout {
                         val shapeDrawable = drawable as GradientDrawable?
                         shapeDrawable!!.setColorFilter(Color.parseColor(sectionContentItem.tagAttributes.backgroundColour), PorterDuff.Mode.SRC_ATOP)
                         tokopointsTextView.background = shapeDrawable
-                        val horizontalPadding = 2f.toDpInt(context)
+                        val horizontalPadding = 2f.toDpInt()
                         tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 8f.toSp())
                         tokopointsTextView.setTypeface(null, Typeface.NORMAL)
                         tokopointsTextView.setPadding(horizontalPadding, 0, horizontalPadding, 0)

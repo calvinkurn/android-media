@@ -169,14 +169,14 @@ class MixTopComponentViewHolder(
         if(bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(bannerItem.gradientColor, itemView.context)) {
             background.gone()
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, 0, 0, 7f.toDpInt(itemView.context))
+            layoutParams.setMargins(0, 0, 0, 7f.toDpInt())
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
         } else {
             background.visible()
             background.setGradientBackground(bannerItem.gradientColor)
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card), 0, 12f.toDpInt(itemView.context))
+            layoutParams.setMargins(0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card), 0, 12f.toDpInt())
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = 0f
         }

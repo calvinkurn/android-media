@@ -11,11 +11,11 @@ class SimpleHorizontalLinearLayoutDecoration : RecyclerView.ItemDecoration() {
                                 parent: RecyclerView,
                                 state: RecyclerView.State) {
         if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.left = 12f.toDpInt(view.context)
+            outRect.left = 12f.toDpInt()
         }
 
         if (parent.getChildAdapterPosition(view) == state.itemCount-1) {
-            outRect.right = 12f.toDpInt(view.context)
+            outRect.right = 12f.toDpInt()
         }
     }
 }

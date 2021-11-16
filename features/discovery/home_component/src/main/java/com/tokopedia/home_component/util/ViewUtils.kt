@@ -11,6 +11,7 @@ import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
 
@@ -85,12 +86,9 @@ fun convertDpToPixel(dp: Float, context: Context): Int {
 
 fun Float.toSp(): Float = Resources.getSystem().displayMetrics.scaledDensity * this
 
-fun Float.toDpInt(context: Context): Int =
-    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics)
-        .toInt()
+fun Float.toDpInt(): Int = this.toPx().toInt()
 
-fun Float.toDpFloat(context: Context): Float =
-    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics)
+fun Float.toDpFloat(): Float = this.toPx()
 
 fun RecyclerView.removeAllItemDecoration() {
     if (this.itemDecorationCount > 0)
