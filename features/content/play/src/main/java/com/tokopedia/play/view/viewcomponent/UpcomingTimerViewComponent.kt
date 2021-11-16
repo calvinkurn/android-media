@@ -27,7 +27,7 @@ class UpcomingTimerViewComponent(
         val targetCalendar = PlayDateTimeFormatter.convertToCalendar(startTime)
         targetCalendar?.let { target ->
             if(target.timeInMillis > Calendar.getInstance().timeInMillis)
-                timerUpcoming.targetDate = Calendar.getInstance()
+                timerUpcoming.targetDate = target
             show()
         } ?: hide()
 

@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -26,7 +25,6 @@ import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
-import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
