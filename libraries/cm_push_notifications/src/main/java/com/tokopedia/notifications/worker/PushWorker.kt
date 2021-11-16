@@ -118,13 +118,13 @@ class PushWorker(private val appContext: Context, params: WorkerParameters) : Co
     }
 
     companion object {
-        fun schedulePeriodicWorker() {
+        fun schedulePeriodicWorker(appContext: Context) {
            try {
                val pushWorker = PeriodicWorkRequest
                        .Builder(PushWorker::class.java, PERIODIC_TIME_INTERVAL_MINUTE, TimeUnit.MINUTES)
                        .setConstraints(Constraints.NONE)
                        .build()
-               WorkManager.getInstance().enqueueUniquePeriodicWork(
+               WorkManager.getInstance(appContext).enqueueUniquePeriodicWork(
                        PUSH_WORKER_UNIQUE_NAME,
                        ExistingPeriodicWorkPolicy.REPLACE,
                        pushWorker)

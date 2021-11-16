@@ -97,7 +97,7 @@ data class EventProductDetail(
 
         @SerializedName("id_promo")
         @Expose
-        val isPromo: String = "",
+        val isPromo: String = "0",
 
         @SerializedName("is_food_available")
         @Expose

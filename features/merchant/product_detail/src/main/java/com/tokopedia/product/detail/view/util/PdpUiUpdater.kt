@@ -96,9 +96,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val miniShopWidgetMap: ProductMiniShopWidgetDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SHOP_WIDGET] as? ProductMiniShopWidgetDataModel
 
-    val productByMeMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailCommonConstant.KEY_BYME] as? ProductGeneralInfoDataModel
-
     val topAdsImageData: TopAdsImageDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
 
@@ -292,15 +289,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.PRODUCT_FULLFILMENT) {
             productFullfilmentMap?.run {
                 subtitle = fullFillmentText
-            }
-        }
-    }
-
-    fun updateByMeData(context: Context?) {
-        updateData(ProductDetailCommonConstant.KEY_BYME) {
-            productByMeMap?.run {
-                subtitle = context?.getString(R.string.product_detail_by_me_subtitle)
-                        ?: ""
             }
         }
     }

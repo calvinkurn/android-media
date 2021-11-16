@@ -26,7 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.inApp.external.IExternalInAppCallback
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.LiveDataResult
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
@@ -78,6 +78,7 @@ class CmGratificationDialog {
     private var screenName = ""
     private var closeCurrentActivity = false
     private var inAppId: Long? = null
+    private var iExternalInAppCallback : IExternalInAppCallback? = null
 
     protected fun getLayout(): Int {
         return R.layout.dialog_gratification
@@ -90,7 +91,8 @@ class CmGratificationDialog {
              onShowListener: DialogInterface.OnShowListener,
              screenName: String,
              closeCurrentActivity: Boolean,
-             inAppId: Long?
+             inAppId: Long?,
+             iExternalInAppCallback: IExternalInAppCallback?
     ): BottomSheetDialog? {
         this.gratifNotification = gratifNotification
         this.couponDetailResponse = couponDetailResponse
@@ -98,6 +100,7 @@ class CmGratificationDialog {
         this.screenName = screenName
         this.closeCurrentActivity = closeCurrentActivity
         this.inAppId = inAppId
+        this.iExternalInAppCallback = iExternalInAppCallback
 
         val pair = prepareBottomSheet(activityContext, onShowListener)
         bottomSheetDialog = pair.second
@@ -422,8 +425,8 @@ class CmGratificationDialog {
     }
 
     private fun isInteracted() {
-        if (inAppId != null) {
-            CMInAppManager.getInstance().dataConsumer.interactedWithView(inAppId!!)
+        inAppId?.let {
+            iExternalInAppCallback?.onUserInteractedWithInAppView(it)
         }
     }
 }

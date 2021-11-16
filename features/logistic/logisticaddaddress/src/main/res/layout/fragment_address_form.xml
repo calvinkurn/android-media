@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
         android:id="@+id/sv_add_address"
@@ -86,6 +87,15 @@
                     android:text="@string/cb_jadikan_alamat_utama"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/user_consent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:typographyType="body_3"
+                android:textColor="@color/Unify_N700_68"
+                android:textAlignment="center"
+                tools:text="Dengan klik Simpan, kamu menyetujui kebijakan privasi dan syarat dan ketentuan." />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_save_address_new"

@@ -10,6 +10,7 @@ data class RepurchaseProductUiModel(
     val parentId: String,
     val shopId: String,
     val categoryId: String,
+    val category: String,
     val isStockEmpty: Boolean,
     val productCard: ProductCardModel
 ) : Visitable<RepurchaseTypeFactory>, ImpressHolder() {
