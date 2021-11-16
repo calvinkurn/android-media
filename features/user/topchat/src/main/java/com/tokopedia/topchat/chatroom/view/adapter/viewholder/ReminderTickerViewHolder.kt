@@ -1,10 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -31,8 +26,7 @@ class ReminderTickerViewHolder(
     override fun bind(element: ReminderTickerUiModel) {
         bindImpression(element)
         bindTitle(element)
-        bindDesc(element)
-        bindCloseListener(element)
+        bindDescAndClose(element)
     }
 
     private fun bindImpression(element: ReminderTickerUiModel) {
@@ -45,36 +39,15 @@ class ReminderTickerViewHolder(
         ticker?.tickerTitle = MethodChecker.fromHtml(element.mainText).toString()
     }
 
-    private fun bindDesc(element: ReminderTickerUiModel) {
-        val sb = SpannableStringBuilder(element.subText)
-        val ctaStartIdx = sb.indexOf(element.urlLabel)
-        val ctaEndIdx = ctaStartIdx + element.urlLabel.length
-        if (ctaStartIdx == -1) return
-        sb.setSpan(
-            StyleSpan(Typeface.BOLD),
-            ctaStartIdx, ctaEndIdx,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        val color = MethodChecker.getColor(
-            itemView.context, com.tokopedia.unifycomponents.R.color.Unify_GN500
-        )
-        sb.setSpan(
-            ForegroundColorSpan(color),
-            ctaStartIdx, ctaEndIdx,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        ticker?.setOnClickListener {
-            commonListener.getAnalytic().eventClickTickerReminderCta(
-                commonListener.getCommonShopId()
-            )
-            RouteManager.route(it.context, element.url)
-        }
-        ticker?.setTextDescription(sb)
-    }
-
-    private fun bindCloseListener(element: ReminderTickerUiModel) {
+    private fun bindDescAndClose(element: ReminderTickerUiModel) {
+        ticker?.setHtmlDescription(element.subText)
         ticker?.setDescriptionClickEvent(object: TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) { }
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                commonListener.getAnalytic().eventClickTickerReminderCta(
+                    commonListener.getCommonShopId()
+                )
+                RouteManager.route(itemView.context, element.url)
+            }
             override fun onDismiss() {
                 commonListener.getAnalytic().eventCloseTickerReminder(
                     commonListener.getCommonShopId()
