@@ -9,6 +9,7 @@ import android.view.animation.RotateAnimation
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -28,6 +29,7 @@ import com.tokopedia.home.databinding.HomePopularKeywordBinding
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.invertIfDarkMode
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -41,7 +43,6 @@ class PopularKeywordViewHolder (val view: View,
                                 val homeCategoryListener: HomeCategoryListener,
                                 private val popularKeywordListener: PopularKeywordListener)
     : AbstractViewHolder<PopularKeywordListDataModel>(view) {
-    private var binding: HomePopularKeywordBinding? by viewBinding()
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_popular_keyword
@@ -60,6 +61,10 @@ class PopularKeywordViewHolder (val view: View,
     private val errorPopularKeyword = view.findViewById<LocalLoad>(R.id.error_popular_keyword)
     private val rotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
     private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
+    private val homeComponentDividerHeader = view.findViewById<DividerUnify>(R.id.home_component_divider_header)
+    private val homeComponentDividerFooter = view.findViewById<DividerUnify>(R.id.home_component_divider_footer)
+    private val loaderPopularKeywordTitle = view.findViewById<ViewStub>(R.id.loader_popular_keyword_title)
+    private val containerPopularKeyword = view.findViewById<ConstraintLayout>(R.id.container_popular_keyword)
 
     init{
         rotateAnimation.duration = 500
@@ -84,8 +89,8 @@ class PopularKeywordViewHolder (val view: View,
     private fun setChannelDivider(element: PopularKeywordListDataModel) {
         HomeChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channel,
-            dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter
+            dividerTop = homeComponentDividerHeader,
+            dividerBottom = homeComponentDividerFooter
         )
     }
 
@@ -138,7 +143,7 @@ class PopularKeywordViewHolder (val view: View,
                             if(element.channel.header.textColor.isNotEmpty()) Color.parseColor(element.channel.header.textColor).invertIfDarkMode(itemView.context)
                             else ContextCompat.getColor(view.context, R.color.Unify_N700).invertIfDarkMode(itemView.context)
                     )
-                    binding?.loaderPopularKeywordTitle?.gone()
+                    loaderPopularKeywordTitle?.gone()
                     anchorReloadButtonTo(R.id.channel_title)
                 }
             }
@@ -192,7 +197,7 @@ class PopularKeywordViewHolder (val view: View,
                 tvReload?.show()
             } else {
                 errorPopularKeyword.show()
-                binding?.loaderPopularKeywordTitle?.hide()
+                loaderPopularKeywordTitle?.hide()
                 ivReload?.hide()
                 tvReload?.hide()
                 channelTitle?.hide()
@@ -208,10 +213,10 @@ class PopularKeywordViewHolder (val view: View,
 
     private fun anchorReloadButtonTo(anchorRef: Int) {
         val constraintSet = ConstraintSet()
-        constraintSet.clone(binding?.containerPopularKeyword)
+        constraintSet.clone(containerPopularKeyword)
         constraintSet.connect(R.id.iv_reload, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
         constraintSet.connect(R.id.iv_reload, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
-        constraintSet.applyTo(binding?.containerPopularKeyword)
+        constraintSet.applyTo(containerPopularKeyword)
     }
 
     private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
@@ -225,7 +230,7 @@ class PopularKeywordViewHolder (val view: View,
             }
 
             if (channelTitle == null || channelTitle?.isVisible == false) {
-                binding?.loaderPopularKeywordTitle?.visible()
+                loaderPopularKeywordTitle?.visible()
             }
             loadingView?.show()
             errorPopularKeyword.hide()
