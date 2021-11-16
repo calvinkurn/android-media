@@ -147,7 +147,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         isForceRefresh: Boolean = false,
         categoryIds: List<String> = listOf(),
         keyword: String = "",
-        parentProductId: String = "",
+        productIds: List<String> = listOf(),
         isTokonow: Boolean = false
     ) {
         try {
@@ -167,7 +167,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 isTokonow = isTokonow,
                 keyword = keyword,
                 categoryIds = categoryIds,
-                parentProductId = parentProductId
+                productIds = productIds
             )
         } catch (e: Exception) {
             this.basicListener?.onWidgetFail(pageName, e)
@@ -416,7 +416,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun bindWidgetWithPageName(
         pageName: String,
         isForceRefresh: Boolean,
-        parentProductId: String = "",
+        productIds: List<String> = listOf(),
         categoryIds: List<String> = listOf(),
         keyword: String = "",
         isTokonow: Boolean = false
@@ -427,7 +427,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             itemView.loadingRecom.visible()
             viewModel?.loadRecommendationCarousel(
                 pageName = pageName,
-                productIds = listOf(parentProductId),
+                productIds = productIds,
                 categoryIds = categoryIds,
                 keywords = listOf(keyword),
                 isTokonow = isTokonow

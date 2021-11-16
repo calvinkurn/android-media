@@ -47,6 +47,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
@@ -81,6 +82,7 @@ import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRepurchaseBind
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.REQUEST_CODE_DATE_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
@@ -159,15 +161,6 @@ class TokoNowRepurchaseFragment:
 
     private var localCacheModel: LocalCacheModel? = null
     private val loadMoreListener by lazy { createLoadMoreListener() }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        TokoNowCommonAnalytics.onOpenScreen(
-            isLoggedInStatus = userSession.isLoggedIn,
-            screenName = RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW,
-            userId = userSession.userId
-        )
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -471,7 +464,10 @@ class TokoNowRepurchaseFragment:
     private fun setupTopNavigation() {
         navToolbar?.let { toolbar ->
             activity?.let {
-                toolbar.setupToolbarWithStatusBar(it)
+                toolbar.setupToolbarWithStatusBar(
+                    activity = it,
+                    applyPadding = false
+                )
             }
         }
     }
@@ -518,7 +514,7 @@ class TokoNowRepurchaseFragment:
         context?.let {
             val marginZero = context?.resources?.getDimensionPixelSize(
                 com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
-            val toolbarHeight = NavToolbarExt.getFullToolbarHeight(it)
+            val toolbarHeight = NavToolbarExt.getToolbarHeight(it)
             swipeRefreshLayout?.setMargin(marginZero, toolbarHeight, marginZero, marginZero)
             swipeRefreshLayout?.setOnRefreshListener {
                 refreshLayout()
@@ -571,7 +567,7 @@ class TokoNowRepurchaseFragment:
                     setupChooseAddress(it.data)
                 }
                 is Fail -> {
-                    showEmptyState(EMPTY_STATE_OOC)
+                    showEmptyStateOoc()
                     logChooseAddressError(it.throwable)
                 }
             }
@@ -635,6 +631,13 @@ class TokoNowRepurchaseFragment:
                     )
                 }
             }
+        }
+
+        observe(viewModel.openScreenTracker) { screenName ->
+            TokoNowCommonAnalytics.onOpenScreen(
+                isLoggedInStatus = userSession.isLoggedIn,
+                screenName = screenName
+            )
         }
     }
 
@@ -782,8 +785,13 @@ class TokoNowRepurchaseFragment:
         context?.let {
             when {
                 shopId == 0L -> viewModel.getChooseAddress(SOURCE)
-                warehouseId == 0L -> showEmptyState(EMPTY_STATE_OOC)
-                else -> showLayout()
+                warehouseId == 0L -> {
+                    showEmptyStateOoc()
+                }
+                else -> {
+                    showLayout()
+                    viewModel.trackOpeningScreen(REPURCHASE_TOKONOW)
+                }
             }
         }
     }
@@ -805,7 +813,7 @@ class TokoNowRepurchaseFragment:
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
         miniCartWidget?.post {
             val paddingBottom = if (isShowMiniCartWidget) {
-                miniCartWidget?.height.orZero()
+                miniCartWidget?.height.orZero() - resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_font_16).toInt()
             } else {
                 activity?.resources?.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
@@ -820,10 +828,11 @@ class TokoNowRepurchaseFragment:
         viewModel.getMiniCart(shopId, warehouseId)
     }
 
-    private fun showEmptyState(id: String) {
-        viewModel.showEmptyState(id)
+    private fun showEmptyStateOoc() {
+        viewModel.showEmptyState(EMPTY_STATE_OOC)
         miniCartWidget?.hide()
         setupPadding(false)
+        viewModel.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + REPURCHASE_TOKONOW)
     }
 
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
@@ -900,7 +909,7 @@ class TokoNowRepurchaseFragment:
     private fun createTokoNowEmptyStateOocListener(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
         return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
             override fun onRefreshLayoutPage() {
-                onRefreshLayoutPage()
+                refreshLayout()
             }
 
             override fun onGetFragmentManager(): FragmentManager = parentFragmentManager

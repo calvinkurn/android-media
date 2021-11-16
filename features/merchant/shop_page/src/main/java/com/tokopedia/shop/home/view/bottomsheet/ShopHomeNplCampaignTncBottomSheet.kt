@@ -31,6 +31,7 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Com
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase.Companion.ACTION_UNFOLLOW
 import com.tokopedia.shop.common.util.loadLeftDrawable
 import com.tokopedia.shop.common.util.removeDrawable
+import com.tokopedia.shop.databinding.FragmentShopCampaignTncBottomSheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -38,6 +39,8 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
@@ -96,26 +99,27 @@ class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
     private var layoutButtonFollowContainer: View? = null
     private var recyclerView: RecyclerView? = null
     private var loaderUnify: LoaderUnify? = null
+    private var viewBinding by autoClearedNullable<FragmentShopCampaignTncBottomSheetBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         clearContentPadding = true
         initInjector()
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_shop_campaign_tnc_bottom_sheet, null)
-        initView(view)
-        setChild(view)
+        viewBinding = FragmentShopCampaignTncBottomSheetBinding.inflate(LayoutInflater.from(context))
+        initView()
+        setChild(viewBinding?.root)
         getArgumentsData()
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopHomeNplCampaignTncBottomSheetViewModel::class.java)
         shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
 
     }
 
-    private fun initView(view: View) {
-        tfFollow = view.findViewById(R.id.tf_follow)
-        btnFollow = view.findViewById(R.id.btn_follow)
-        layoutButtonFollowContainer = view.findViewById(R.id.layout_button_follow_container)
-        recyclerView = view.findViewById(R.id.recycler_view)
-        loaderUnify = view.findViewById(R.id.loader_unify)
+    private fun initView() {
+        tfFollow = viewBinding?.tfFollow
+        btnFollow = viewBinding?.btnFollow
+        layoutButtonFollowContainer = viewBinding?.layoutButtonFollowContainer
+        recyclerView = viewBinding?.recyclerView
+        loaderUnify = viewBinding?.loaderUnify
     }
 
     private fun initInjector() {

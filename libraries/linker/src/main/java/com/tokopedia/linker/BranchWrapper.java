@@ -386,7 +386,7 @@ public class BranchWrapper implements WrapperInterface {
                                 if (data.isThrowOnError()) {
                                     shareCallback.onError(LinkerUtils.createLinkerError(LinkerConstants.ERROR_SOMETHING_WENT_WRONG, null));
                                 } else {
-                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), getFallbackUrl(data), getFallbackUrl(data)));
                                 }
                             }
                         }
@@ -396,6 +396,15 @@ public class BranchWrapper implements WrapperInterface {
         } else {
             shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
         }
+    }
+
+    private String getFallbackUrl(LinkerData data){
+        String fallbackUrl = data.renderShareUri();
+        if(TextUtils.isEmpty(fallbackUrl)
+                && !TextUtils.isEmpty(data.getDesktopUrl())){
+            fallbackUrl = data.getDesktopUrl();
+        }
+        return fallbackUrl;
     }
 
     private LinkProperties createLinkProperties(LinkerData data, String channel, Context context, UserData userData) {

@@ -149,7 +149,6 @@ ext {
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
             install_referral                : ":features:im:install_referral",
-            moengageWrapper                 : ":features:im:moengage_wrapper",
 
             tokopediaNow                    : ":features:tokopedianow",
 
