@@ -9,7 +9,7 @@ import com.tokopedia.search.result.domain.model.ProductTopAdsModel
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
-import java.util.*
+import java.util.HashMap
 
 internal fun graphqlRequests(request: MutableList<GraphqlRequest>.() -> Unit) =
         mutableListOf<GraphqlRequest>().apply {
