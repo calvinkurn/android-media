@@ -249,7 +249,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                         binding?.fragmentSilentVerifSuccessAnim?.show()
                         binding?.fragmentSilentVerifSuccessAnim?.setComposition(result)
                         binding?.fragmentSilentVerifSuccessAnim?.visibility = View.VISIBLE
-                        binding?.fragmentSilentVerifSuccessAnim?.repeatCount = 3
+                        binding?.fragmentSilentVerifSuccessAnim?.repeatCount = 2
                         binding?.fragmentSilentVerifSuccessAnim?.playAnimation()
 
                         var count = 0
@@ -257,8 +257,11 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                             Animator.AnimatorListener {
                             override fun onAnimationRepeat(animation: Animator?) {
                                 count++
-                                println("repeatz: $count")
+                                if (count == 1){
+                                    showSuccessText()
+                                }
                             }
+
                             override fun onAnimationEnd(animation: Animator?) {
                                 onFinish()
                             }
@@ -279,14 +282,13 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         binding?.fragmentSilentVerifTitle?.hide()
         binding?.fragmentSilentVerifSubtitle?.hide()
         playLottieAnim(LOTTIE_SUCCESS_ANIMATION) {
-            renderFinalSuccess()
             Handler().postDelayed({
                 onFinishSilentVerif(data)
             }, 1500)
         }
     }
 
-    private fun renderFinalSuccess() {
+    private fun showSuccessText() {
         context?.run {
             binding?.fragmentSilentVerifTitle?.show()
             binding?.fragmentSilentVerifTitle?.startAnimation(AlphaAnimation(0F, 1F).apply {
