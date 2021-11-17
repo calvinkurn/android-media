@@ -41,7 +41,7 @@
             android:name=".chatlist.activity.ChatListActivity"
             android:label="@string/title_inbox_chat"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.ChatSetting">
+            android:theme="@style/Theme.TopchatActivity">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
