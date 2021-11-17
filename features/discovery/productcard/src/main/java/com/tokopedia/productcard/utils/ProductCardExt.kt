@@ -38,7 +38,7 @@ internal val View?.isNullOrNotVisible
     get() = this == null || !this.isVisible
 
 internal fun View.doIfVisible(action: (View) -> Unit) {
-    if(this.isVisible) {
+    if (this.isVisible) {
         action(this)
     }
 }
@@ -67,7 +67,7 @@ internal fun TextView?.setTextWithBlankSpaceConfig(textValue: String, blankSpace
     }
 }
 
-internal fun <T: View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boolean, blankSpaceConfigValue: Boolean, action: (T) -> Unit) {
+internal fun <T : View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boolean, blankSpaceConfigValue: Boolean, action: (T) -> Unit) {
     if (this == null) return
 
     visibility = if (isVisible) {
@@ -81,13 +81,12 @@ internal fun <T: View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boo
 internal fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {
     return if (blankSpaceConfigValue) {
         View.INVISIBLE
-    }
-    else {
+    } else {
         View.GONE
     }
 }
 
-internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
+internal fun <T : View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) -> Unit) {
     if (this == null) return
 
     if (shouldShow) {
@@ -106,6 +105,7 @@ internal fun ImageView.loadImage(url: String?) {
         }
     }
 }
+
 internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
@@ -118,6 +118,7 @@ internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
         }
     }
 }
+
 internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolean) -> Unit)) {
     if (url != null && url.isNotEmpty()) {
         this.loadImage(url) {
@@ -197,7 +198,7 @@ private fun Label.trySetCustomLabelType(labelGroupType: String) {
 
 @ColorRes
 private fun String?.toUnifyLabelColor(): Int {
-    return when(this) {
+    return when (this) {
         TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
         else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
     }
@@ -216,8 +217,8 @@ private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
 }
 
 private fun String?.toUnifyTextColor(context: Context): Int {
-    return try{
-        when(this) {
+    return try {
+        when (this) {
             TEXT_DARK_ORANGE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
             TEXT_DARK_RED -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
             TEXT_DARK_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
@@ -225,7 +226,7 @@ private fun String?.toUnifyTextColor(context: Context): Int {
             TEXT_GREEN -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             else -> Color.parseColor(this)
         }
-    } catch (throwable: Throwable){
+    } catch (throwable: Throwable) {
         throwable.printStackTrace()
         ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
     }
@@ -234,8 +235,7 @@ private fun String?.toUnifyTextColor(context: Context): Int {
 internal fun safeParseColor(color: String, defaultColor: Int): Int {
     return try {
         Color.parseColor(color)
-    }
-    catch (throwable: Throwable) {
+    } catch (throwable: Throwable) {
         throwable.printStackTrace()
         defaultColor
     }
@@ -271,17 +271,16 @@ internal fun renderLabelCampaign(
 
         textViewLabelCampaign?.show()
         textViewLabelCampaign?.text = MethodChecker.fromHtml(labelCampaign.title)
-    }
-    else {
+    } else {
         labelCampaignBackground?.hide()
         textViewLabelCampaign?.hide()
     }
 }
 
 internal fun renderLabelBestSeller(
-    isShow: Boolean,
-    labelBestSeller: Typography?,
-    productCardModel: ProductCardModel
+        isShow: Boolean,
+        labelBestSeller: Typography?,
+        productCardModel: ProductCardModel
 ) {
     labelBestSeller ?: return
 
@@ -306,9 +305,9 @@ private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardMode
 }
 
 internal fun renderLabelBestSellerCategorySide(
-    isShow: Boolean,
-    textCategorySide: Typography?,
-    productCardModel: ProductCardModel
+        isShow: Boolean,
+        textCategorySide: Typography?,
+        productCardModel: ProductCardModel
 ) {
     textCategorySide ?: return
 
@@ -331,9 +330,9 @@ private fun Typography.showLabelCategorySide(categorySideModel: ProductCardModel
 }
 
 internal fun renderLabelBestSellerCategoryBottom(
-    isShow: Boolean,
-    textCategoryBottom: Typography?,
-    productCardModel: ProductCardModel
+        isShow: Boolean,
+        textCategoryBottom: Typography?,
+        productCardModel: ProductCardModel
 ) {
     textCategoryBottom ?: return
 
@@ -364,9 +363,9 @@ internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
 }
 
 internal fun renderStockBar(
-    progressBarStock: ProgressBarUnify?,
-    textViewStock: Typography?,
-    productCardModel: ProductCardModel
+        progressBarStock: ProgressBarUnify?,
+        textViewStock: Typography?,
+        productCardModel: ProductCardModel
 ) {
     renderStockPercentage(progressBarStock, productCardModel)
     renderStockLabel(textViewStock, productCardModel)
@@ -377,9 +376,9 @@ private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCa
         it.setProgressIcon(icon = null)
         if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
             it.setProgressIcon(
-                icon = ContextCompat.getDrawable(it.context, R.drawable.product_card_ic_fire_filled),
-                width = it.context.resources.getDimension(FIRE_WIDTH).toInt(),
-                height = it.context.resources.getDimension(FIRE_HEIGHT).toInt())
+                    icon = ContextCompat.getDrawable(it.context, com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card),
+                    width = it.context.resources.getDimension(FIRE_WIDTH).toInt(),
+                    height = it.context.resources.getDimension(FIRE_HEIGHT).toInt())
         }
         it.progressBarColorType = ProgressBarUnify.COLOR_RED
         it.setValue(productCardModel.stockBarPercentage, false)
@@ -396,12 +395,12 @@ private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: 
 }
 
 private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typography) =
-    when {
-        productCardModel.stockBarLabelColor.isNotEmpty() ->
-            safeParseColor(
-                productCardModel.stockBarLabelColor,
-                ContextCompat.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-            )
-        else ->
-            MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-    }
+        when {
+            productCardModel.stockBarLabelColor.isNotEmpty() ->
+                safeParseColor(
+                        productCardModel.stockBarLabelColor,
+                        ContextCompat.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                )
+            else ->
+                MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+        }
