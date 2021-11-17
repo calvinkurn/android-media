@@ -316,6 +316,13 @@
     <string name="topads_dashboard_no_product_sheet_body">Tambah produk terlebih dahulu untuk mulai beriklan</string>
     <string name="topads_dashboard_no_product_sheet_button">Tambah produk</string>
     <string name="topads_dashboard_updated_daily_budget">Anggaran harian diperbaharui</string>
+    
+    <string name="topads_insight_select_ads_type">Pilih tipe iklan</string>
+    <string name="topads_insight_recomm_keyword_cost">Rekomendasi biaya kata kunci (%d)</string>
+    <string name="topads_insight_new_recomm_keyword">Rekomendasi kata kunci baru (%d)</string>
+    <string name="topads_insight_negative_recomm_keyword">Rekomendasi kata kunci negatif (%d)</string>
+    <string name="topads_insight_recomm_keyword_title">Tambah biaya kata kunci untuk (%d) iklanmu supaya bisa</string>
+    <string name="topads_insight_recomm_keyword_subtitle">tampil lebih banyak hingga +(%s) kali!</string>
 
     <!--RECOMMENDATION DAILY BUDGET & PRODUCT -->
     <string name="topads_dash_recom_daily_budget_title">Rekomendasi anggaran harian iklan</string>

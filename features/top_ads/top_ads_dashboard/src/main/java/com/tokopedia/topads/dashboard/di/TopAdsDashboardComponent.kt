@@ -27,6 +27,7 @@ import dagger.Component
         dependencies = [BaseAppComponent::class])
 interface TopAdsDashboardComponent {
 
+    fun inject(topAdsInsightKeywordsFragment: TopAdsInsightKeywordsFragment)
     fun inject(topAdsProductIklanFragment: TopAdsProductIklanFragment)
     fun inject(topAdsCreditHistoryFragment: TopAdsCreditHistoryFragment)
     fun inject(topAdsEditAutoTopUpFragment: TopAdsEditAutoTopUpFragment)

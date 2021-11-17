@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.data.model.InsightDailyBudgetModel
-import com.tokopedia.topads.common.data.model.InsightProductRecommendationModel
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
@@ -25,7 +23,9 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMa
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
+import com.tokopedia.topads.dashboard.view.adapter.insight.InsightAdsTypeItem
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
+import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightSelectAdsTypeBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
@@ -44,6 +44,9 @@ const val CLICK_IKLANKAN = "click - iklankan"
 
 class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
+    private val adTypeList by lazy { getAdsTypeList() }
+    private val adsTypeBottomSheet
+            by lazy { TopAdsInsightSelectAdsTypeBottomSheet.getInstance(adTypeList,this::onAdTypeSelected) }
     private var productRecommendData: ProductRecommendationData? = null
     private var keywordRecommendData: InsightKeyData? = null
     private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
@@ -91,9 +94,35 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupSelectAdsTypeView()
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
         topAdsDashboardPresenter.getProductRecommendation(::onSuccessProductRecommendation)
         topAdsDashboardPresenter.getDailyBudgetRecommendation(::onSuccessBudgetRecommendation)
+    }
+
+    private fun onAdTypeSelected(item: InsightAdsTypeItem) {
+        txtSelectedAdType.text = item.adName
+        adsTypeBottomSheet.dismiss()
+    }
+
+    private fun setupSelectAdsTypeView() {
+        txtSelectedAdType.text = adTypeList[0].adName
+        changeAdType.setOnClickListener {
+            adsTypeBottomSheet.show(childFragmentManager)
+        }
+    }
+
+    private fun getAdsTypeList(): List<InsightAdsTypeItem> {
+        return listOf(
+            InsightAdsTypeItem(
+                resources.getString(R.string.topads_dashboard_ad_product_type_selection_title),
+                true
+            ),
+            InsightAdsTypeItem(
+                resources.getString(R.string.topads_dashboard_ad_headline_type_selection_title),
+                false
+            )
+        )
     }
 
     private fun onSuccessBudgetRecommendation(dailyBudgetRecommendationModel: DailyBudgetRecommendationModel) {
@@ -251,7 +280,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             list.add(FragmentTabItem("", TopAdsInsightBaseBidFragment.createInstance(bundle)))
         }
         if (countKey != 0)
-            list.add(FragmentTabItem("", TopadsInsightBaseKeywordFragment.createInstance()))
+            list.add(FragmentTabItem("", TopAdsInsightKeywordsFragment.createInstance()))
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
 
         pagerAdapter.setList(list)
