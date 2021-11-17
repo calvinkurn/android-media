@@ -919,23 +919,23 @@ class ShopScoreMapper @Inject constructor(
                 )
             }
 
-            if (isNewSeller) {
-                add(
-                    ItemFaqUiModel(
-                        title = context?.getString(R.string.title_time_adjustment_what_relief_for_new_seller)
-                            .orEmpty(),
-                        desc_first = context?.getString(R.string.desc_time_adjustment_what_relief_for_new_seller)
-                            .orEmpty(),
-                    )
-                )
-            }
-
             if (isOfficialStore) {
                 add(
                     ItemFaqUiModel(
                         title = context?.getString(R.string.title_shop_score_affect_os)
                             .orEmpty(),
                         desc_first = context?.getString(R.string.desc_shop_score_affect_os)
+                            .orEmpty(),
+                    )
+                )
+            }
+
+            if (isNewSeller) {
+                add(
+                    ItemFaqUiModel(
+                        title = context?.getString(R.string.title_time_adjustment_what_relief_for_new_seller)
+                            .orEmpty(),
+                        desc_first = context?.getString(R.string.desc_time_adjustment_what_relief_for_new_seller)
                             .orEmpty(),
                     )
                 )
