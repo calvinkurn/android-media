@@ -670,7 +670,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         viewPager.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                viewPager.setCurrentItem(itemId, true)
+                viewPager.setCurrentItem(itemId, false)
                 if (autoSelectTabProduct) {
                     tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
                         it.select()
