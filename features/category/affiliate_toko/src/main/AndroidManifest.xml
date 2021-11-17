@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.affiliate.ui.activity.AffiliatePromotionHistoryActivity"
+            android:name="com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity"
             android:exported="true" />
         <activity
             android:name="com.tokopedia.affiliate.ui.activity.AffiliateActivity"

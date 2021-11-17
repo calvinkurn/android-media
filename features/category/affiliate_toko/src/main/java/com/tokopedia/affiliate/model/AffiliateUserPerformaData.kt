@@ -8,5 +8,6 @@ import java.util.ArrayList
 
 class AffiliateUserPerformaData(
       var data : ArrayList<Visitable<AffiliateAdapterTypeFactory>>? = null,
-      var itemCount : String? = "0"
+      var itemCount : String? = "0",
+      var showProductCount:Boolean = true
 )

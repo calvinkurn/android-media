@@ -17,68 +17,75 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class AffiliateHomeViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
-        private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
-        private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase,
-        private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase
+    private val userSessionInterface: UserSessionInterface,
+    private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
+    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
+    private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase,
+    private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var dataPlatformShimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
-    private var affiliateAnnouncement=MutableLiveData<AffiliateAnnouncementData>()
+    private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementData>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
-    private var rangeItemCount :String? = "0"
+    private var rangeItemCount: String? = "0"
     private var errorMessage = MutableLiveData<Throwable>()
     private var affiliateErrorMessage = MutableLiveData<Throwable>()
     private var rangeChanged = MutableLiveData<Boolean>()
+    private var showProductCount = true
     private val pageLimit = 6
+    private var lastID = "0"
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
             progressBar.value = true
-            validateUserdata.value = affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
+            validateUserdata.value =
+                affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
         }, onError = {
             progressBar.value = false
             it.printStackTrace()
             errorMessage.value = it
         })
     }
+
     fun getAnnouncementInformation() {
         launchCatchError(block = {
             progressBar.value = true
-            affiliateAnnouncement.value = affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
-        },onError = {
+            affiliateAnnouncement.value =
+                affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
+        }, onError = {
             progressBar.value = false
             it.printStackTrace()
             affiliateErrorMessage.value = it
         })
     }
-    fun getAffiliatePerformance(page : Int) {
+
+    fun getAffiliatePerformance(page: Int) {
         launchCatchError(block = {
-            var performanceList :AffiliateUserPerformaListItemData? = null
-            if(page == PAGE_ZERO) {
+            var performanceList: AffiliateUserPerformaListItemData? = null
+            if (page == PAGE_ZERO) {
                 dataPlatformShimmerVisibility.value = true
                 performanceList =
-                    affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateRange)
+                    affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateValue)
                 dataPlatformShimmerVisibility.value = false
-            }
-            else{
+            } else {
                 shimmerVisibility.value = true
             }
-            affiliatePerformanceDataUseCase.affiliateItemPerformanceList(selectedDateValue).getAffiliatePerformanceList?.data?.data.let {
-                convertDataToVisitables(it,performanceList,page)?.let { visitables ->
+            affiliatePerformanceDataUseCase.affiliateItemPerformanceList(
+                selectedDateValue,
+                lastID
+            ).getAffiliatePerformanceList?.data?.data.let {
+                convertDataToVisitables(it, performanceList, page)?.let { visitables ->
                     affiliateDataList.value = visitables
                 }
 
             }
         }, onError = {
-            if(page == PAGE_ZERO){
+            if (page == PAGE_ZERO) {
                 dataPlatformShimmerVisibility.value = false
-            }
-            else{
+            } else {
                 shimmerVisibility.value = false
             }
             it.printStackTrace()
@@ -102,25 +109,30 @@ class AffiliateHomeViewModel @Inject constructor(
         data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data?,
         performanceList: AffiliateUserPerformaListItemData?,
         page: Int
-    ) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
-        val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        if(page == PAGE_ZERO) {
+    ): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
+        val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+        if (page == PAGE_ZERO) {
             tempList.add(AffiliateDateFilterModel(AffiliateDateFilterData(selectedDateRange)))
             tempList.add(
                 AffiliateUserPerformanceModel(
                     AffiliateUserPerformaData(
                         getListFromData(
                             performanceList
-                        ), rangeItemCount
+                        ), rangeItemCount,showProductCount
                     )
                 )
             )
         }
         data?.items?.let { items ->
-            for (product in items) {
-                product?.let {
-                    tempList.add(AffiliatePerformaSharedProductCardsModel(product))
+            if (items.isNotEmpty()) {
+                for (product in items) {
+                    product?.let {
+                        product.metrics = product.metrics?.sortedBy { metric -> metric?.order }
+                        tempList.add(AffiliatePerformaSharedProductCardsModel(product))
+                    }
                 }
+            } else {
+                tempList.add(AffiliateNoPromoItemFoundModel())
             }
             return tempList
         }
@@ -128,38 +140,47 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     private fun getListFromData(affiliatePerfomanceResponse: AffiliateUserPerformaListItemData?): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
-        val performaTempList:ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        affiliatePerfomanceResponse?.getAffiliatePerformance?.data?.userData?.metrics?.forEach {
-            if(it?.metricType != "totalItems") {
-                it?.description = PERFORMA_MAP[it?.metricTitle]
-                performaTempList.add(AffiliateUserPerformanceListModel(it))
+        val performaTempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+        affiliatePerfomanceResponse?.getAffiliatePerformance?.data?.userData?.let { userData ->
+            userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
+            userData.metrics.forEach { metrics ->
+                if (metrics?.order == 0) {
+                    rangeItemCount = metrics.metricValue
+                    showProductCount = metrics.metricValue != "0"
+                } else {
+                    metrics?.description = PERFORMA_MAP[metrics?.metricTitle]
+                    performaTempList.add(AffiliateUserPerformanceListModel(metrics))
+                }
             }
-            else if(it.metricType == "totalItems")
-                rangeItemCount = it.metricValue
         }
         return performaTempList
     }
+
     private var selectedDateRange = AffiliateBottomDatePicker.TODAY
     private var selectedDateValue = "0"
     fun getSelectedDate(): String {
         return selectedDateRange
     }
+
     fun onRangeChanged(range: AffiliateDatePickerData) {
-        if(selectedDateRange != range.text) {
+        if (selectedDateRange != range.text) {
             selectedDateRange = range.text
             selectedDateValue = range.value
             rangeChanged.value = true
         }
     }
+
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getDataShimmerVisibility(): LiveData<Boolean> = dataPlatformShimmerVisibility
     fun getRangeChanged(): LiveData<Boolean> = rangeChanged
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getAffiliateErrorMessage(): LiveData<Throwable> = affiliateErrorMessage
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
-    fun getAffiliateAnnouncement() : LiveData<AffiliateAnnouncementData> = affiliateAnnouncement
+    fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementData> = affiliateAnnouncement
     fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
-    fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
+    fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> =
+        affiliateDataList
+
     fun progressBar(): LiveData<Boolean> = progressBar
 
 }
