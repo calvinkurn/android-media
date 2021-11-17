@@ -236,7 +236,11 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("shipping_info")
                 val shippingInfo: TickerInfo = TickerInfo(),
                 @SerializedName("shipping_ref_num")
-                val shippingRefNum: String = ""
+                val shippingRefNum: String = "",
+                @SerializedName("eta_is_updated")
+                val etaIsUpdated: Boolean = false,
+                @SerializedName("user_updated_info")
+                val userUpdatedInfo: String = ""
             ) {
                 data class Driver(
                     @SerializedName("license_number")

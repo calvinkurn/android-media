@@ -111,6 +111,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     fun composeReplyData(
         referredMsg: BaseChatUiModel,
+        text: CharSequence,
         enableCloseButton: Boolean = false
     ) {
         val parentReply = ParentReply(
@@ -118,7 +119,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             attachmentType = referredMsg.attachmentType,
             senderId = referredMsg.fromUid ?: "",
             replyTime = referredMsg.replyTime ?: "",
-            mainText = referredMsg.message,
+            mainText = text.toString(),
             subText = "",
             imageUrl = referredMsg.getReferredImageUrl(),
             localId = referredMsg.localId,

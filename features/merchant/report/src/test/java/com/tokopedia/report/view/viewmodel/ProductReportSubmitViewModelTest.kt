@@ -1,6 +1,6 @@
 package com.tokopedia.report.view.viewmodel
 
-import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.common.state.UploadResult
 import io.mockk.*
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*

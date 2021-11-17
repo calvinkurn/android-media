@@ -54,12 +54,6 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
-import com.tokopedia.moengage_wrapper.interfaces.CustomPushDataListener;
-import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
-import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
-import com.tokopedia.moengage_wrapper.util.NotificationBroadcast;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -101,8 +95,7 @@ import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
  * Created by ricoharisin on 11/11/16.
  */
 
-public abstract class ConsumerMainApplication extends ConsumerRouterApplication implements
-        MoengageInAppListener, MoengagePushListener, CustomPushDataListener {
+public abstract class ConsumerMainApplication extends ConsumerRouterApplication {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -171,7 +164,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppPackageNameWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppPackageNameWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this, true);
     }
 
     private boolean checkPackageName() {
@@ -225,7 +218,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return executePreCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(preWeave, RemoteConfigKey.ENABLE_SEQ1_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(preWeave, RemoteConfigKey.ENABLE_SEQ1_ASYNC, context, true);
     }
 
     private void createAndCallPostSeq() {
@@ -237,7 +230,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return executePostCreateSequence();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context, true);
     }
 
     private void createAndCallFontLoad() {
@@ -249,7 +242,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return loadFontsInBg();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(fontWeave, RemoteConfigKey.ENABLE_SEQ5_ASYNC, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(fontWeave, RemoteConfigKey.ENABLE_SEQ5_ASYNC, context, true);
     }
 
     @NotNull
@@ -298,12 +291,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     @NotNull
     private Boolean executePostCreateSequence() {
         StethoUtil.initStetho(ConsumerMainApplication.this);
-        MoengageInteractor.INSTANCE.setPushListener(ConsumerMainApplication.this);
-        MoengageInteractor.INSTANCE.setInAppListener(ConsumerMainApplication.this);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(ConsumerMainApplication.this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         createCustomSoundNotificationChannel();
-        MoengageInteractor.INSTANCE.setMessageListener(this);
 
         initLogManager();
         DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
@@ -505,7 +495,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_AB_TEST, context);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_AB_TEST, context, false);
     }
 
     private void fetchAbTestVariant() {
@@ -532,17 +522,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     public abstract void generateConsumerAppNetworkKeys();
-
-    @Override
-    public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        Timber.d("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
-        return handleClick(screenName, extras, deepLinkUri);
-    }
-
-    @Override
-    public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName, extras, deepLinkUri);
-    }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
         if (deepLinkUri != null) {
@@ -585,22 +564,5 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 }
             }
         }
-    }
-
-    @NotNull
-    @Override
-    public Intent getPersistentNotificationIntent() {
-        return new Intent(ConsumerMainApplication.this, MainParentActivity.class);
-    }
-
-    @NotNull
-    @Override
-    public Intent getNotificationBroadcastIntent() {
-        return new Intent(ConsumerMainApplication.this, NotificationBroadcast.class);
-    }
-
-    @Override
-    public int getIcStatNotifyWhiteDrawable() {
-        return R.drawable.ic_stat_notify_white;
     }
 }

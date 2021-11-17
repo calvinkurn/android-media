@@ -32,8 +32,6 @@ import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import kotlinx.android.synthetic.main.autocomplete_search_bar_view.view.*
 import rx.Observable
 import rx.Subscriber
@@ -71,15 +69,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private var isTyping = false
     private val isABTestNavigationRevamp = isABTestNavigationRevamp()
 
-    private fun isABTestNavigationRevamp(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD) == RollenceKey.NAVIGATION_VARIANT_REVAMP ||
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD) == RollenceKey.NAVIGATION_VARIANT_REVAMP2
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
+    private fun isABTestNavigationRevamp(): Boolean = true
 
     private val mOnClickListener = OnClickListener { v ->
         if (v === actionUpBtn || v === actionCancelButton) {
@@ -96,7 +86,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         when {
             v === autocompleteActionUpButton -> {
                 KeyboardHandler.DropKeyboard(activity, searchTextView)
-                activity?.finish()
+                activity?.onBackPressed()
             }
             v === autocompleteVoiceButton -> {
                 onVoiceClicked()

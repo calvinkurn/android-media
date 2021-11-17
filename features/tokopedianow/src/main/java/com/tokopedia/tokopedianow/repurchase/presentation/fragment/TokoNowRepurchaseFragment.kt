@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -32,6 +33,8 @@ import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -44,8 +47,9 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.constant.ConstantKey
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.ATC_QUANTITY_ERROR
@@ -71,11 +75,16 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRepurchaseBinding
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.REQUEST_CODE_DATE_FILTER_BOTTOMSHEET
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_RECOMMENDATION
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.repurchase.presentation.view.decoration.RepurchaseGridItemDecoration
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseEmptyStateNoHistoryViewHolder.*
@@ -98,7 +107,8 @@ class TokoNowRepurchaseFragment:
     TokoNowRecommendationCarouselListener,
     RepurchaseEmptyStateNoHistoryListener,
     SortFilterListener,
-    ServerErrorListener
+    ServerErrorListener,
+    TokonowRecomBindPageNameListener
 {
 
     companion object {
@@ -116,6 +126,8 @@ class TokoNowRepurchaseFragment:
     lateinit var viewModel: TokoNowRepurchaseViewModel
     @Inject
     lateinit var userSession: UserSessionInterface
+    @Inject
+    lateinit var analytics: RepurchaseAnalytics
 
     private var swipeRefreshLayout: SwipeToRefresh? = null
     private var rvRepurchase: RecyclerView? = null
@@ -126,10 +138,13 @@ class TokoNowRepurchaseFragment:
 
     private var binding by autoClearedNullable<FragmentTokopedianowRepurchaseBinding>()
 
+    private val recomWidgetViewModel: RecomWidgetViewModel? by initRecomWidgetViewModel()
+
     private val adapter by lazy {
         RepurchaseAdapter(
             RepurchaseAdapterTypeFactory(
                 productCardListener = createProductCardListener(),
+                tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
                 tokoNowCategoryGridListener = this,
@@ -137,7 +152,8 @@ class TokoNowRepurchaseFragment:
                 tokoNowRecommendationCarouselListener = this,
                 emptyStateNoHistorylistener = this,
                 sortFilterListener = this,
-                serverErrorListener = this
+                serverErrorListener = this,
+                tokonowRecomBindPageNameListener = this
             ),
             RepurchaseListDiffer()
         )
@@ -197,12 +213,17 @@ class TokoNowRepurchaseFragment:
         }
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
+        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }
 
     override fun onChooseAddressWidgetRemoved() {
         if(rvRepurchase?.isComputingLayout == false) {
             viewModel.removeChooseAddressWidget()
         }
+    }
+
+    override fun onClickChooseAddressWidgetTracker() {
+        analytics.onClickChangeAddress(userSession.userId)
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -233,6 +254,10 @@ class TokoNowRepurchaseFragment:
 
     override fun onClickEmptyStateNoHistoryBtn() {
         RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+    }
+
+    override fun onImpressEmptyStateNoHistory() {
+        analytics.onImpressNoHistoryRepurchase(userSession.userId)
     }
 
     override fun onRemoveFilterClick(option: Option) { /* noting to do */ }
@@ -284,7 +309,7 @@ class TokoNowRepurchaseFragment:
         quantity: Int
     ) {
         if (userSession.isLoggedIn) {
-            viewModel.onClickAddToCart(recomItem.productId.toString(), quantity, recomItem.shopId.toString())
+            viewModel.onClickAddToCart(recomItem.productId.toString(), quantity, PRODUCT_RECOMMENDATION, recomItem.shopId.toString())
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
@@ -305,11 +330,48 @@ class TokoNowRepurchaseFragment:
         RouteManager.route(context, applink)
     }
 
+    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        getMiniCart()
+    }
+
+    override fun onRecomTokonowAtcSuccess(message: String) {
+        showToaster(
+            message = message,
+            type = Toaster.TYPE_NORMAL
+        )
+    }
+
+    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
+        showToaster(
+            message = throwable.message.orEmpty(),
+            type = Toaster.TYPE_ERROR
+        )
+    }
+
+    override fun onRecomTokonowAtcNeedToSendTracker(
+        recommendationItem: RecommendationItem
+    ) {
+    }
+
+    override fun onRecomTokonowDeleteNeedToSendTracker(
+        recommendationItem: RecommendationItem
+    ) {
+    }
+
+    override fun onClickItemNonLoginState() {
+        RouteManager.route(context, ApplinkConst.LOGIN)
+    }
+
+    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+        viewLifecycleOwner.lifecycle.addObserver(observer)
+    }
+
     override fun onClickSortFilter() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTokopediaNow.SORT_FILTER)
         val selectedFilter = viewModel.getSelectedSortFilter()
         intent.putExtra(SORT_VALUE, selectedFilter)
         startActivityForResult(intent, REQUEST_CODE_SORT_FILTER_BOTTOMSHEET)
+        analytics.onClickMostPurchaseFilter(userSession.userId)
     }
 
     override fun onClickDateFilter() {
@@ -317,6 +379,7 @@ class TokoNowRepurchaseFragment:
         val selectedFilter = viewModel.getSelectedDateFilter()
         intent.putExtra(EXTRA_SELECTED_DATE_FILTER, selectedFilter)
         startActivityForResult(intent, REQUEST_CODE_DATE_FILTER_BOTTOMSHEET)
+        analytics.onClickDateFilter(userSession.userId)
     }
 
     override fun onClickCategoryFilter() {
@@ -328,6 +391,7 @@ class TokoNowRepurchaseFragment:
         val selectedFilter = viewModel.getSelectedCategoryFilter()
         intent.putExtra(EXTRA_SELECTED_CATEGORY_FILTER, selectedFilter)
         startActivityForResult(intent, REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET)
+        analytics.onClickCategoryFilter(userSession.userId)
     }
 
     override fun onClearAllFilter() = refreshLayout()
@@ -400,7 +464,10 @@ class TokoNowRepurchaseFragment:
     private fun setupTopNavigation() {
         navToolbar?.let { toolbar ->
             activity?.let {
-                toolbar.setupToolbarWithStatusBar(it)
+                toolbar.setupToolbarWithStatusBar(
+                    activity = it,
+                    applyPadding = false
+                )
             }
         }
     }
@@ -418,21 +485,16 @@ class TokoNowRepurchaseFragment:
         navToolbar?.setIcon(icons)
     }
 
-    private fun onClickCartButton() {}
+    private fun onClickCartButton() {
+        analytics.onClickCartNav(userSession.userId)
+    }
 
     private fun getAbTestPlatform(): AbTestPlatform {
         val remoteConfigInstance = RemoteConfigInstance(activity?.application)
         return remoteConfigInstance.abTestPlatform
     }
 
-    private fun isNavOld(): Boolean {
-        return try {
-            getAbTestPlatform().getString(ConstantKey.AB_TEST_EXP_NAME, ConstantKey.AB_TEST_VARIANT_OLD) == ConstantKey.AB_TEST_VARIANT_OLD
-        } catch (e: Exception) {
-            e.printStackTrace()
-            true
-        }
-    }
+    private fun isNavOld(): Boolean = false
 
     private fun setupRecyclerView() {
         context?.let {
@@ -452,7 +514,7 @@ class TokoNowRepurchaseFragment:
         context?.let {
             val marginZero = context?.resources?.getDimensionPixelSize(
                 com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
-            val toolbarHeight = NavToolbarExt.getFullToolbarHeight(it)
+            val toolbarHeight = NavToolbarExt.getToolbarHeight(it)
             swipeRefreshLayout?.setMargin(marginZero, toolbarHeight, marginZero, marginZero)
             swipeRefreshLayout?.setOnRefreshListener {
                 refreshLayout()
@@ -495,6 +557,7 @@ class TokoNowRepurchaseFragment:
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data.isShowMiniCartWidget)
+                recomWidgetViewModel?.updateMiniCartWithPageData(it.data)
             }
         }
 
@@ -504,7 +567,7 @@ class TokoNowRepurchaseFragment:
                     setupChooseAddress(it.data)
                 }
                 is Fail -> {
-                    showEmptyState(EMPTY_STATE_OOC)
+                    showEmptyStateOoc()
                     logChooseAddressError(it.throwable)
                 }
             }
@@ -558,6 +621,28 @@ class TokoNowRepurchaseFragment:
                 }
             }
         }
+
+        observe(viewModel.repurchaseAddToCartTracker) {
+            when(it.data) {
+                is RepurchaseProductUiModel -> {
+                    trackRepurchaseAddToCart(
+                        quantity = it.quantity,
+                        data = it.data
+                    )
+                }
+            }
+        }
+
+        observe(viewModel.openScreenTracker) { screenName ->
+            TokoNowCommonAnalytics.onOpenScreen(
+                isLoggedInStatus = userSession.isLoggedIn,
+                screenName = screenName
+            )
+        }
+    }
+
+    private fun trackRepurchaseAddToCart(quantity: Int, data: RepurchaseProductUiModel) {
+        analytics.onClickAddToCart(userSession.userId, quantity, data)
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -632,17 +717,19 @@ class TokoNowRepurchaseFragment:
     private fun onCategoryFilterActivityResult(data: Intent?) {
         val selectedFilter = data?.getParcelableExtra<SelectedSortFilter>(EXTRA_SELECTED_CATEGORY_FILTER)
         viewModel.applyCategoryFilter(selectedFilter)
+        analytics.onClickApplyCategoryFilter(userSession.userId)
     }
 
     private fun onSortFilterActivityResult(data: Intent?) {
         val selectedFilter = data?.getIntExtra(SORT_VALUE, FREQUENTLY_BOUGHT).orZero()
         viewModel.applySortFilter(selectedFilter)
+        analytics.onClickApplyMostPurchaseFilter(userSession.userId)
     }
 
     private fun onDateFilterActivityResult(data: Intent?) {
         data?.getParcelableExtra<SelectedDateFilter>(EXTRA_SELECTED_DATE_FILTER)?.let {
             viewModel.applyDateFilter(it)
-        }
+            analytics.onClickApplyDateFilter(userSession.userId) }
     }
 
     private fun onSuccessGetLayout(data: RepurchaseLayoutUiModel) {
@@ -698,8 +785,13 @@ class TokoNowRepurchaseFragment:
         context?.let {
             when {
                 shopId == 0L -> viewModel.getChooseAddress(SOURCE)
-                warehouseId == 0L -> showEmptyState(EMPTY_STATE_OOC)
-                else -> showLayout()
+                warehouseId == 0L -> {
+                    showEmptyStateOoc()
+                }
+                else -> {
+                    showLayout()
+                    viewModel.trackOpeningScreen(REPURCHASE_TOKONOW)
+                }
             }
         }
     }
@@ -721,7 +813,7 @@ class TokoNowRepurchaseFragment:
     private fun setupPadding(isShowMiniCartWidget: Boolean) {
         miniCartWidget?.post {
             val paddingBottom = if (isShowMiniCartWidget) {
-                miniCartWidget?.height.orZero()
+                miniCartWidget?.height.orZero() - resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_font_16).toInt()
             } else {
                 activity?.resources?.getDimensionPixelSize(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
@@ -736,10 +828,11 @@ class TokoNowRepurchaseFragment:
         viewModel.getMiniCart(shopId, warehouseId)
     }
 
-    private fun showEmptyState(id: String) {
-        viewModel.showEmptyState(id)
+    private fun showEmptyStateOoc() {
+        viewModel.showEmptyState(EMPTY_STATE_OOC)
         miniCartWidget?.hide()
         setupPadding(false)
+        viewModel.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + REPURCHASE_TOKONOW)
     }
 
     private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
@@ -808,7 +901,20 @@ class TokoNowRepurchaseFragment:
             requireContext(),
             viewModel,
             userSession,
+            analytics,
             this::startActivityForResult
         )
+    }
+
+    private fun createTokoNowEmptyStateOocListener(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+        return object : TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {
+            override fun onRefreshLayoutPage() {
+                refreshLayout()
+            }
+
+            override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
+
+            override fun onGetEventCategory(): String = ""
+        }
     }
 }

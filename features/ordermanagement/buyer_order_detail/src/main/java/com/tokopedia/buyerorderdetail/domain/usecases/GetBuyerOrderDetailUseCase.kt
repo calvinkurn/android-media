@@ -183,6 +183,8 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   shipping_display_name
                   shipping_ref_num
                   eta
+                  eta_is_updated
+                  user_updated_info
                   receiver {
                     name
                     phone

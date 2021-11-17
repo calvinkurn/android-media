@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.home.adapter.viewholder
 
 import android.content.Context
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -71,7 +72,21 @@ class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : Ab
     override fun bind(element: BannerModel) {
         el = element
         itemView.banner_home_ent?.setPromoList(element.items)
+        if (element.items.size == 1) {
+            itemView.viewTreeObserver.addOnGlobalLayoutListener(
+                    object : ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            itemView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            itemView.banner_home_ent?.apply {
+                                customWidth = itemView.measuredWidth - itemView.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl4)
+                                buildView()
+                            }
+                        }
+                    })
+        }
+
         itemView.banner_home_ent?.buildView()
+
     }
 
     companion object {

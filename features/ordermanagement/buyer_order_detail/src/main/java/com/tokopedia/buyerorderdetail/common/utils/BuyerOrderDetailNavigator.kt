@@ -131,12 +131,12 @@ class BuyerOrderDetailNavigator(
         intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice)
         val productName =
             buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productName ?:
-            buyerOrderDetailData.productListUiModel.productBundlingList?.firstOrNull()?.bundleItemList?.firstOrNull()?.productName
+            buyerOrderDetailData.productListUiModel.productBundlingList.firstOrNull()?.bundleItemList?.firstOrNull()?.productName
         intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName.orEmpty())
         intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.purchaseDate)
         val productThumbnail =
             buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productThumbnailUrl ?:
-            buyerOrderDetailData.productListUiModel.productBundlingList?.firstOrNull()?.bundleItemList?.firstOrNull()?.productThumbnailUrl
+            buyerOrderDetailData.productListUiModel.productBundlingList.firstOrNull()?.bundleItemList?.firstOrNull()?.productThumbnailUrl
         intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, productThumbnail.orEmpty())
         intent.putExtra(ApplinkConst.Chat.INVOICE_URL, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.url)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)

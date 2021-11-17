@@ -64,7 +64,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 if (haveProductBundle) {
                     mapProductBundle(bundleDetail, orderId, orderStatusId)
                 } else {
-                    null
+                    emptyList()
                 }
         return ProductListUiModel(
                 productList = productList,
@@ -276,7 +276,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapProductBundle(bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?, orderId: String, orderStatusId: String): List<ProductListUiModel.ProductBundlingUiModel>? {
+    private fun mapProductBundle(bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?, orderId: String, orderStatusId: String): List<ProductListUiModel.ProductBundlingUiModel> {
         return bundleDetail?.bundleList?.map { bundle ->
             ProductListUiModel.ProductBundlingUiModel(
                     bundleName = bundle.bundleName,
@@ -287,7 +287,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                         mapProduct(bundleDetail, orderId, orderStatusId)
                     }
             )
-        }
+        }.orEmpty()
     }
 
     private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): CopyableKeyValueUiModel {
@@ -304,7 +304,9 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 arrivalEstimation = composeETA(shipment.eta),
                 courierNameAndProductName = shipment.shippingDisplayName,
                 isFreeShipping = meta.isBebasOngkir,
-                boBadgeUrl = meta.boImageUrl
+                boBadgeUrl = meta.boImageUrl,
+                etaChanged = shipment.etaIsUpdated,
+                etaUserInfo = shipment.userUpdatedInfo
         )
     }
 

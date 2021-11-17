@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant.URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE
+import com.tokopedia.shop.databinding.NewShopProductsEmptyStateBinding
 import com.tokopedia.shop.product.view.datamodel.ShopEmptyProductUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopProductsEmptyViewHolder(
         val view: View,
@@ -21,33 +23,34 @@ class ShopProductsEmptyViewHolder(
     }
 
     init {
-        initLayout(view)
+        initLayout()
     }
 
     interface ShopProductsEmptyViewHolderListener {
         fun chooseProductClicked()
     }
 
-    lateinit var imageViewEmptyImage: ImageView
-    lateinit var textTitle: Typography
-    lateinit var textDescription: Typography
-    lateinit var buttonChooseProduct: UnifyButton
+    private val viewBinding : NewShopProductsEmptyStateBinding? by viewBinding()
+    private var imageViewEmptyImage: ImageView? = null
+    private var textTitle: Typography? = null
+    private var textDescription: Typography? = null
+    private var buttonChooseProduct: UnifyButton? = null
 
 
-    private fun initLayout(view: View) {
-        imageViewEmptyImage = view.findViewById(R.id.image_view_empty_image)
-        textTitle = view.findViewById(R.id.text_title)
-        textDescription = view.findViewById(R.id.text_description)
-        buttonChooseProduct = view.findViewById(R.id.button_choose_product)
+    private fun initLayout() {
+        imageViewEmptyImage = viewBinding?.imageViewEmptyImage
+        textTitle = viewBinding?.textTitle
+        textDescription = viewBinding?.textDescription
+        buttonChooseProduct = viewBinding?.buttonChooseProduct
     }
 
 
     override fun bind(element: ShopEmptyProductUiModel) {
-        imageViewEmptyImage.loadImage(URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE) {
+        imageViewEmptyImage?.loadImage(URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE) {
             setPlaceHolder(R.drawable.ic_shop_page_loading_image)
         }
-        textTitle.text = element.title
-        textDescription.text = element.description
+        textTitle?.text = element.title
+        textDescription?.text = element.description
     }
 
 }
