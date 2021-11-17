@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorder.recharge.presentation.model
 
 import android.os.Parcelable
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailTypeFactory
@@ -13,8 +12,8 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class RechargeOrderDetailStaticButtonModel(
+        val buttonType: StaticButtonType,
         val iconUrl: String,
-        @DrawableRes val iconRes: Int,
         val title: String,
         @StringRes val titleRes: Int,
         val subtitle: String,
@@ -23,4 +22,9 @@ data class RechargeOrderDetailStaticButtonModel(
 ) : Parcelable, Visitable<RechargeOrderDetailTypeFactory> {
     override fun type(typeFactory: RechargeOrderDetailTypeFactory?): Int =
             typeFactory?.type(this).orZero()
+}
+
+enum class StaticButtonType {
+    LANGGANAN,
+    SBM
 }

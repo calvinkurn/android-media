@@ -79,8 +79,8 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
 
     private fun MutableList<Visitable<*>>.setupSBMStaticButton() {
         add(RechargeOrderDetailStaticButtonModel(
+                buttonType= StaticButtonType.SBM,
                 iconUrl = "",
-                iconRes = R.drawable.ic_recharge_order_detail_sbm,
                 title = "",
                 titleRes = R.string.recharge_order_detail_sbm_label,
                 subtitle = "",
@@ -92,8 +92,8 @@ class RechargeOrderDetailAdapter(typeFactory: RechargeOrderDetailTypeFactory) :
 
     private fun MutableList<Visitable<*>>.setupLanggananStaticButton() {
         add(RechargeOrderDetailStaticButtonModel(
+                buttonType= StaticButtonType.LANGGANAN,
                 iconUrl = "",
-                iconRes = R.drawable.ic_recharge_order_detail_mybills,
                 title = "",
                 titleRes = R.string.recharge_order_detail_mybills_label,
                 subtitle = "",
