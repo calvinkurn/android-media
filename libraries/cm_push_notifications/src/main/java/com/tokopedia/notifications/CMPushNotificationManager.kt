@@ -78,7 +78,6 @@ class CMPushNotificationManager : CoroutineScope {
     fun init(application: Application) {
         this.applicationContext = application.applicationContext
         CMInAppManager.getInstance().init(application)
-        PushWorker.schedulePeriodicWorker()
 
         PushNotificationApi.bindService(
                 applicationContext,

@@ -1,9 +1,6 @@
 package com.tokopedia.tkpd.app;
 
-import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
-import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,9 +20,6 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
-import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
@@ -55,14 +49,11 @@ import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
-import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenUseCase;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -74,6 +65,7 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
+import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
@@ -125,8 +117,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NetworkRouter,
         OmsModuleRouter,
         TkpdAppsFlyerRouter,
-        LinkerRouter,
-        KYCRouter {
+        LinkerRouter {
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
@@ -140,8 +131,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private Iris mIris;
 
     private FirebaseMessagingManager fcmManager;
-
-    private RefreshTokenUseCase refreshTokenUseCase;
 
     @Override
     public void onCreate() {
@@ -193,7 +182,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this, true);
     }
 
     private boolean initLibraries() {
@@ -215,7 +204,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeHanselInit();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(hanselWeave, RemoteConfigKey.ENABLE_ASYNC_HANSEL_INIT, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(hanselWeave, RemoteConfigKey.ENABLE_ASYNC_HANSEL_INIT, getApplicationContext(), true);
     }
 
     private boolean executeHanselInit() {
@@ -236,7 +225,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeIrisInitialize();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this, true);
     }
 
     private boolean executeIrisInitialize() {
@@ -487,7 +476,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext(), true);
     }
 
     @Override
@@ -508,7 +497,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeAppflyerInit();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_APPSFLYER_INIT, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_APPSFLYER_INIT, getApplicationContext(), true);
     }
 
     private boolean executeAppflyerInit() {
@@ -531,6 +520,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_HANDLER_ACTIVITY);
         CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
+        PushWorker.Companion.schedulePeriodicWorker(this);
     }
 
     @Override
@@ -548,28 +538,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 
-    @SuppressLint("MissingPermission")
-    @Override
-    public BaseDaggerFragment getKYCCameraFragment(ActionCreator<HashMap<String, Object>, Integer> actionCreator,
-                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType) {
-        Bundle bundle = new Bundle();
-        BaseDaggerFragment baseDaggerFragment = null;
-        switch (cameraType) {
-            case KYC_CARDID_CAMERA:
-                baseDaggerFragment = FragmentCardIdCamera.newInstance();
-                bundle.putSerializable(FragmentCardIdCamera.ACTION_CREATOR_ARG, actionCreator);
-                bundle.putSerializable(FragmentCardIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
-                baseDaggerFragment.setArguments(bundle);
-                break;
-            case KYC_SELFIEID_CAMERA:
-                baseDaggerFragment = new FragmentSelfieIdCamera();
-                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_CREATOR_ARG, actionCreator);
-                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
-                baseDaggerFragment.setArguments(bundle);
-                break;
-        }
-        return baseDaggerFragment;
-    }
 
     @Override
     public IAppNotificationReceiver getAppNotificationReceiver() {
