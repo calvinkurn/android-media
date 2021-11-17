@@ -1,6 +1,6 @@
 package com.tokopedia.interceptors.authenticator
 
-import android.content.Context
+import android.app.Application
 import android.util.Log
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
 import com.tokopedia.logger.ServerLogger
@@ -9,6 +9,8 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSession
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -187,6 +189,19 @@ class TkpdAuthenticatorGql(
         private const val BEARER = "Bearer"
         private const val HEADER_PARAM_AUTHORIZATION = "authorization"
         private const val CONFIG_KEY_REFRESH_TOKE_GQL = "android_user_new_gql"
+
+
+        private const val TYPE_RETRY_REFRESH_TOKEN_REST = "retry_refresh_with_rest_api"
+        private const val TYPE_REFRESH_WITH_GQL = "refresh_token_with_gql"
+
+        const val ERROR_GQL_ACCESS_TOKEN_EMPTY = "gql access token is empty"
+        const val ERROR_GQL_ACCESS_TOKEN_NULL = "gql access token is null"
+
+        const val TYPE_FAILED_AUTHENTICATE = "failed_authenticate"
+        const val TYPE_RESPONSE_COUNT = "response_count"
+        const val TYPE_RESPONSE_COUNT_NOT_LOGIN = "response_count_not_logged_in"
+
+        const val ROLLOUT_REFRESH_TOKEN = "refresh_token_gql"
 
         fun formatThrowable(throwable: Throwable): String {
             return try{

@@ -12,6 +12,9 @@ import android.webkit.URLUtil;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenUseCase;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
@@ -118,7 +121,7 @@ public class SellerMainApplication extends SellerRouterApplication {
         initLogManager();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
         GraphqlClient.setContextData(this);
-        GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
+        GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false), getAuthenticator());
         NetworkClient.init(this);
         initializeAbTestVariant();
 
@@ -128,6 +131,10 @@ public class SellerMainApplication extends SellerRouterApplication {
         initSlicePermission();
 
         Loader.init(this);
+    }
+
+    private TkpdAuthenticatorGql getAuthenticator() {
+        return TkpdAuthenticatorGql.Companion.createAuthenticator(this, this, new UserSession(context), new RefreshTokenGql());
     }
 
     private void initCacheManager() {
