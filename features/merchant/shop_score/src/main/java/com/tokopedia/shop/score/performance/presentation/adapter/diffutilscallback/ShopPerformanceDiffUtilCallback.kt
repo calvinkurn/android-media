@@ -29,13 +29,29 @@ class ShopPerformanceDiffUtilCallback(
                 isTheSameSectionPMPotentialPMProUiModel(oldItem, newItem) ||
                 isTheSameSectionRMPotentialPMBenefitUiModel(oldItem, newItem) ||
                 isTheSameSectionRMPotentialPMProUiModel(oldItem, newItem) ||
-                isTheSameSectionShopRecommendationUiModel(oldItem, newItem)
+                isTheSameSectionShopRecommendationUiModel(oldItem, newItem) ||
+                isTheSameTickerReactivatedUiModel(oldItem, newItem) ||
+                isTheSameReactivatedComebackUiModel(oldItem, newItem)
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList.getOrNull(oldItemPosition)
         val newItem = newList.getOrNull(newItemPosition)
         return oldItem == newItem
+    }
+
+    private fun isTheSameTickerReactivatedUiModel(
+        oldItem: Visitable<*>?,
+        newItem: Visitable<*>?
+    ): Boolean {
+        return oldItem is TickerReactivatedUiModel && newItem is TickerReactivatedUiModel
+    }
+
+    private fun isTheSameReactivatedComebackUiModel(
+        oldItem: Visitable<*>?,
+        newItem: Visitable<*>?
+    ): Boolean {
+        return oldItem is ItemReactivatedComebackUiModel && newItem is ItemReactivatedComebackUiModel
     }
 
     private fun isTheSameHeaderShopPerformanceUiModel(
