@@ -140,7 +140,7 @@
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_8"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_N700_96"
                         app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
                         app:layout_constraintTop_toBottomOf="@id/simulasiHeading"
                         app:typographyType="body_3" />
@@ -166,7 +166,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_8"
                         android:text="@string/pay_later_service_fee_selected_partner"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_N700_96"
                         app:layout_constraintLeft_toLeftOf="@id/simulasiHeading"
                         app:layout_constraintRight_toRightOf="@id/simulasiHeading"
                         app:layout_constraintTop_toBottomOf="@id/interestText"
