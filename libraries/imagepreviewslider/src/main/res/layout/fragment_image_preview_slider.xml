@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:alpha="0.7"
-            android:background="@drawable/bg_image_preview_slider_index"
+            android:background="@color/Unify_Static_Black_96"
             android:lineSpacingExtra="@dimen/sp_6"
             android:paddingLeft="16dp"
             android:paddingTop="8dp"
