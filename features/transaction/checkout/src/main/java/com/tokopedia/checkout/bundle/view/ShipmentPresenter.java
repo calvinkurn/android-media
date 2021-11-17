@@ -1074,10 +1074,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.getShopProducts()) {
                         if (shopProductCheckoutRequest != null) {
                             for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.getProductData()) {
+                                Long productCategoryId = 0L;
+                                for (int j = 0; j < shipmentCartItemModelList.size(); j++) {
+                                    for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
+                                        if (cartItemModel.getProductId() == productDataCheckoutRequest.getProductId()) {
+                                            productCategoryId = cartItemModel.getProductCatId();
+                                            break;
+                                        }
+                                    }
+                                }
+
                                 if (productDataCheckoutRequest != null) {
                                     productList.add(DataLayer.mapOf(
                                             ConstantTransactionAnalytics.Key.BRAND, "",
-                                            ConstantTransactionAnalytics.Key.CATEGORY, productDataCheckoutRequest.getProductId(),
+                                            ConstantTransactionAnalytics.Key.CATEGORY, productCategoryId,
                                             ConstantTransactionAnalytics.Key.ID, "",
                                             ConstantTransactionAnalytics.Key.NAME, productDataCheckoutRequest.getProductName(),
                                             ConstantTransactionAnalytics.Key.PRICE, productDataCheckoutRequest.getProductPrice(),
