@@ -19,11 +19,6 @@ class CMHomeWidgetModule {
     fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
 
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
-
-    @Provides
     @CoroutineMainDispatcher
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 

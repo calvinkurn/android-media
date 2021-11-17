@@ -6,6 +6,7 @@
     -->
 
     <string name="host_referral" translatable="false">referral</string>
+     <!--todo delete cm home widget dummy things-->
     <string name="host_dummy_cm_home_widget" translatable="false">dummy-cm-home-widget</string>
 
     <string name="path_referral_welcome" translatable="false">/.*\</string>

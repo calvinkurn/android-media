@@ -1,9 +1,8 @@
 package com.tokopedia.cmhomewidget.constants
 
-const val GQL_GET_HTDW_DATA = """query{
+const val GQL_GET_CM_HOME_WIDGET_DATA = """query{
     notifier_getHtdw(){
         status
-        error
         data {
             user_id
             parent_id
@@ -15,7 +14,6 @@ const val GQL_GET_HTDW_DATA = """query{
                 name
                 image_url
                 current_price
-                actual_price
                 dropped_percent
                 badge_type
                 badge_image_url

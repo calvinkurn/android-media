@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.cmhomewidget.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetDataResponse
-import com.tokopedia.cmhomewidget.domain.usecase.GetHTDWUserDataUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -14,15 +14,15 @@ import javax.inject.Inject
 
 // todo delete cm home widget dummy things
 class DummyTestCMHomeWidgetViewModel @Inject constructor(
-    private val getHTDWUserDataUseCase: GetHTDWUserDataUseCase,
+    private val getCMHomeWidgetDataUseCase: GetCMHomeWidgetDataUseCase,
     @CoroutineMainDispatcher val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     private val _productDetailLiveData = MutableLiveData<Result<CMHomeWidgetDataResponse>>()
     val productDetailLiveData: LiveData<Result<CMHomeWidgetDataResponse>> = _productDetailLiveData
 
-    fun getDataUse() {
-        getHTDWUserDataUseCase.getPayLaterProductDetails(::onSuccessData, ::onFailData)
+    fun getCMHomeWidgetData() {
+        getCMHomeWidgetDataUseCase.getCMHomeWidgetData(::onSuccessData, ::onFailData)
     }
 
     private fun onSuccessData(cmHomeWidgetResponse: CMHomeWidgetDataResponse) {

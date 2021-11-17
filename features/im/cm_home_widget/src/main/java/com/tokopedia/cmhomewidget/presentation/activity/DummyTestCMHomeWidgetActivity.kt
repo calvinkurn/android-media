@@ -16,6 +16,15 @@ import javax.inject.Inject
 class DummyTestCMHomeWidgetActivity : AppCompatActivity(), HasComponent<CMHomeWidgetComponent> {
 
 
+    private val cmHomeWidgetComponent: CMHomeWidgetComponent by lazy { initInjector() }
+
+    private fun initInjector() =
+        DaggerCMHomeWidgetComponent.builder()
+            .baseAppComponent(
+                (applicationContext as BaseMainApplication)
+                    .baseAppComponent
+            ).build()
+
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -26,27 +35,19 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(), HasComponent<CMHomeWi
         viewModelProvider.get(DummyTestCMHomeWidgetViewModel::class.java)
     }
 
-    private val cmHomeWidgetComponent: CMHomeWidgetComponent by lazy { initInjector() }
-
-    private fun initInjector() =
-        DaggerCMHomeWidgetComponent.builder()
-            .baseAppComponent(
-                (applicationContext as BaseMainApplication)
-                    .baseAppComponent
-            ).build()
-
     override fun getComponent() = cmHomeWidgetComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        cmHomeWidgetComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dummy_test_cm_home_widget)
-
-        dummyTestCMHomeWidgetViewModel.getDataUse()
 
         dummyTestCMHomeWidgetViewModel.productDetailLiveData.observe(this, {
             Log.e("kapil", it.toString())
         }
         )
+
+        dummyTestCMHomeWidgetViewModel.getCMHomeWidgetData()
     }
 
 }

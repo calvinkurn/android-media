@@ -10,7 +10,7 @@ import dagger.Component
 
 @CMHomeWidgetScope
 @Component(
-    modules = [ViewModelModule::class,CMHomeWidgetModule::class],
+    modules = [ViewModelModule::class, CMHomeWidgetModule::class],
     dependencies = [BaseAppComponent::class]
 )
 interface CMHomeWidgetComponent {
