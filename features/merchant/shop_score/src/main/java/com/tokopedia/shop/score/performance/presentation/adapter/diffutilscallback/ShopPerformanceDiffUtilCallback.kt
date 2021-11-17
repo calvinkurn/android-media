@@ -50,7 +50,7 @@ class ShopPerformanceDiffUtilCallback(
                 oldItem.headerShopPerformanceUiModel == newItem.headerShopPerformanceUiModel &&
                 oldItem.detailParameterList == newItem.detailParameterList
     }
-    
+
     private fun isTheSameTickerReactivatedUiModel(
         oldItem: Visitable<*>?,
         newItem: Visitable<*>?
