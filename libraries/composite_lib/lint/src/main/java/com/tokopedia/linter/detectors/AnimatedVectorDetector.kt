@@ -49,6 +49,9 @@ class AnimatedVectorDetector: Detector(), SourceCodeScanner, XmlScanner {
 
         private const val TAG_TARGET = "<target"
         private const val METHOD_CREATE = "create"
+        private const val METHOD_GET_DRAWABLE = "getDrawable"
+        private const val CONTEXT_COMPAT_PACKAGE = "androidx.core.content"
+        private const val CONTEXT_COMPAT_CLASS = "$CONTEXT_COMPAT_PACKAGE.ContextCompat"
         private const val ANIMATED_VECTOR_PACKAGE = "androidx.vectordrawable.graphics.drawable"
         private const val ANIMATED_VECTOR_CLASS = "$ANIMATED_VECTOR_PACKAGE.AnimatedVectorDrawableCompat"
         private const val ERROR_MESSAGE = "Unsafe animated vector usage. Animated vector should have target tag."
@@ -75,13 +78,14 @@ class AnimatedVectorDetector: Detector(), SourceCodeScanner, XmlScanner {
     }
 
     override fun getApplicableMethodNames(): List<String>? {
-        return listOf(METHOD_CREATE)
+        return listOf(METHOD_CREATE, METHOD_GET_DRAWABLE)
     }
 
     override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
         val evaluator = context.evaluator
 
-        if(evaluator.isMemberInClass(method, ANIMATED_VECTOR_CLASS)) {
+        if(evaluator.isMemberInClass(method, ANIMATED_VECTOR_CLASS) ||
+            evaluator.isMemberInClass(method, CONTEXT_COMPAT_CLASS)) {
             scanJavaError(context, node)
         }
     }
