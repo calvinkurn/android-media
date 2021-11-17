@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst.AttachProduct
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
 import com.tokopedia.attachproduct.databinding.FragmentAttachProductBinding
@@ -312,9 +313,23 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
     }
 
     private fun sendButtonClicked() {
-        viewModel.completeSelection { resultProduct ->
-            activityContract?.finishActivityWithResult(resultProduct)
-        }
+        val products = viewModel.checkedList.value?.map { product ->
+            ResultProduct(
+                    product.productId,
+                    product.productUrl,
+                    product.productImage,
+                    product.productPrice,
+                    product.productName,
+                    product.originalPrice,
+                    product.discountPercentage,
+                    product.isFreeOngkirActive,
+                    product.imgUrlFreeOngkir,
+                    product.stock
+            )
+        } ?: listOf()
+        val resultProduct = arrayListOf<ResultProduct>()
+        resultProduct.addAll(products)
+        activityContract?.finishActivityWithResult(resultProduct)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
