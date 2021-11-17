@@ -39,7 +39,8 @@ class DeprecatedResourceDetector : Detector(), XmlScanner {
         val ISSUE = Issue.create(
             id = "DeprecatedResource",
             briefDescription = "Do not use resource from tkpddesign.",
-            explanation = "Please use resource from unify or use actual value instead.",
+            explanation = "Do not use resource from tkpddesign. " +
+                "Please use resource from unify or use actual value instead.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.WARNING,
@@ -49,7 +50,8 @@ class DeprecatedResourceDetector : Detector(), XmlScanner {
             )
         )
 
-        private const val MESSAGE = "Please use resource from unify or use actual value instead."
+        private const val MESSAGE = "Do not use resource from tkpddesign. " +
+            "Please use resource from unify or use actual value instead."
 
         private const val MODULE_NAME = "tkpddesign"
         private const val RES_DIR = "/src/main/res"
