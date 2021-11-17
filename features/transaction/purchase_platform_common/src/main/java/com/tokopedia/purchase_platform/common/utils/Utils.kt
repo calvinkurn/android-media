@@ -10,6 +10,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.CompoundButton
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.Toaster
 import rx.Emitter
@@ -62,6 +63,11 @@ object Utils {
             return false
         }
         return true
+    }
+
+    @JvmStatic
+    fun toIntOrZero(string: String): Int {
+        return string.toIntOrZero()
     }
 }
 

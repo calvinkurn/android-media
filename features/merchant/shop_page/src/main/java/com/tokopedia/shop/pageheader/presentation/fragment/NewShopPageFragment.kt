@@ -88,7 +88,6 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtil.isExceptionIgnored
-import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -108,6 +107,7 @@ import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpannable
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_FEATURE_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
+import com.tokopedia.shop.common.constant.ShopPageConstant.HOME_V2_EXTRA
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShopReviewPage
@@ -261,47 +261,34 @@ class NewShopPageFragment :
     private var shopPageFab: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
     private val iconTabHomeInactive: Int
-        get() = R.drawable.ic_shop_tab_home_inactive.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_home_old_inactive
+        get() = R.drawable.ic_shop_tab_home_inactive
+
     private val iconTabHomeActive: Int
-        get() = R.drawable.ic_shop_tab_home_active.takeIf {
-            isUsingNewNavigation()
-        } ?: -1
+        get() = R.drawable.ic_shop_tab_home_active
+
     private val iconTabProductInactive: Int
-        get() = R.drawable.ic_shop_tab_product_inactive.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_products_old_inactive
+        get() = R.drawable.ic_shop_tab_product_inactive
+
     private val iconTabProductActive: Int
-        get() = R.drawable.ic_shop_tab_product_active.takeIf {
-            isUsingNewNavigation()
-        } ?: -1
+        get() = R.drawable.ic_shop_tab_product_active
+
     private val iconTabShowcaseInactive: Int
-        get() = R.drawable.ic_shop_tab_showcase_inactive.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_showcase_inactive_old
+        get() = R.drawable.ic_shop_tab_showcase_inactive
+
     private val iconTabShowcaseActive: Int
         get() = R.drawable.ic_shop_tab_showcase_active
     private val iconTabFeedInactive: Int
-        get() = R.drawable.ic_shop_tab_feed_inactive.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_feed_old_inactive
+        get() = R.drawable.ic_shop_tab_feed_inactive
+
     private val iconTabFeedActive: Int
-        get() = R.drawable.ic_shop_tab_feed_active.takeIf {
-            isUsingNewNavigation()
-        } ?: -1
+        get() = R.drawable.ic_shop_tab_feed_active
+
     private val iconTabReviewInactive: Int
-        get() = R.drawable.ic_shop_tab_review_inactive.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_review_old_inactive
+        get() = R.drawable.ic_shop_tab_review_inactive
+
     private val iconTabReviewActive: Int
-        get() = R.drawable.ic_shop_tab_review_active.takeIf {
-            isUsingNewNavigation()
-        } ?: -1
-    private val iconChatFloatingButton: Int
-        get() = R.drawable.ic_chat_floating_button.takeIf {
-            isUsingNewNavigation()
-        } ?: R.drawable.ic_chat_floating_button_old
+        get() = R.drawable.ic_shop_tab_review_active
+
     private var scrollToTopButton: FloatingButtonUnify? = null
     private val intentData: Intent = Intent()
     private var shouldOverrideTabToHome: Boolean = false
@@ -1048,19 +1035,14 @@ class NewShopPageFragment :
 
     private fun initToolbar() {
         if (isMyShop) {
-            initOldToolbar()
-            updateBackButtonColorOldToolbar()
+            showSellerViewToolbar()
+            updateBackButtonColorForSellerViewToolbar()
         } else {
-            if (isUsingNewNavigation()) {
-                initNewToolbar()
-            } else {
-                initOldToolbar()
-                updateBackButtonColorOldToolbar()
-            }
+            initNewToolbar()
         }
     }
 
-    private fun updateBackButtonColorOldToolbar() {
+    private fun updateBackButtonColorForSellerViewToolbar() {
         context?.let { context ->
             var color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N500)
             if (context.isDarkMode()) {
@@ -1098,7 +1080,7 @@ class NewShopPageFragment :
         return !GlobalConfig.isSellerApp() && (remoteConfig?.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true) == true)
     }
 
-    private fun initOldToolbar() {
+    private fun showSellerViewToolbar() {
         toolbar?.show()
         activity?.run {
             (this as? AppCompatActivity)?.run {
@@ -1108,14 +1090,6 @@ class NewShopPageFragment :
                 setHasOptionsMenu(true)
             }
         }
-        if (isMyShop) {
-            displayToolbarSeller()
-        } else {
-            displayToolbarBuyer()
-        }
-    }
-
-    private fun displayToolbarSeller() {
         textYourShop?.show()
         searchBarLayout?.hide()
     }
@@ -1362,7 +1336,7 @@ class NewShopPageFragment :
             isGoldMerchant = shopPageP1Data.isGoldMerchant
             shopHomeType = shopPageP1Data.shopHomeType.takeIf { !isForceNotShowingTab }
                     ?: ShopHomeType.NONE
-            shopName = shopPageP1Data.shopName
+            shopName = MethodChecker.fromHtml(shopPageP1Data.shopName).toString()
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
@@ -1694,7 +1668,7 @@ class NewShopPageFragment :
     }
 
     private fun isUsingNewShopHomeTab(): Boolean {
-        return ShopUtil.isUsingNewShopHomeTab()
+        return ShopUtil.isUsingNewShopHomeTab(activity?.intent)
     }
 
     private fun onErrorGetShopPageTabData(e: Throwable?) {

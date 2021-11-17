@@ -202,7 +202,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
             refreshThanksPageData()
             thankYouPageAnalytics.get().onCheckPaymentStatusClick(
                 thanksPageData.profileCode,
-                thanksPageData.paymentID.toString()
+                thanksPageData.paymentID
             )
         }
         setUpHomeButton(btnShopAgain)
@@ -233,7 +233,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
         thankYouPageAnalytics.get()
             .sendSalinButtonClickEvent(
                 thanksPageData.profileCode, thanksPageData.gatewayName,
-                thanksPageData.paymentID.toString()
+                thanksPageData.paymentID
             )
     }
 

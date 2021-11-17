@@ -1156,7 +1156,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    fun isEnableEncryptConfig(): Boolean {
+    open fun isEnableEncryptConfig(): Boolean {
         return isEnableEncryptConfig
     }
 
