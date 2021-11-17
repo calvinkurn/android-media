@@ -11,7 +11,6 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScoreTabletConstant
 import com.tokopedia.shop.score.common.TooltipLevelItemDecoration
 import com.tokopedia.shop.score.databinding.ItemFaqShopScoreBinding
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
@@ -146,19 +145,21 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
         }
 
         private fun initAdapterParameterFaq(data: ItemFaqUiModel) {
-            binding?.run {
-                itemParameterFaqAdapter = ItemParameterFaqAdapter()
-                rvShopScoreParameterFaq.run {
-                    layoutManager =
-                        if (DeviceScreenInfo.isTablet(context)) {
-                            GridLayoutManager(context, ShopScoreTabletConstant.MAX_COLUMN_GRID)
-                        } else {
-                            LinearLayoutManager(context)
-                        }
-                    adapter = itemParameterFaqAdapter
-                    isNestedScrollingEnabled = false
+            if (data.parameterFaqList.isNotEmpty()) {
+                binding?.run {
+                    itemParameterFaqAdapter = ItemParameterFaqAdapter()
+                    rvShopScoreParameterFaq.run {
+                        layoutManager =
+                            if (DeviceScreenInfo.isTablet(context)) {
+                                GridLayoutManager(context, data.parameterFaqList.size)
+                            } else {
+                                LinearLayoutManager(context)
+                            }
+                        adapter = itemParameterFaqAdapter
+                        isNestedScrollingEnabled = false
+                    }
+                    itemParameterFaqAdapter?.setParameterFaqList(data.parameterFaqList)
                 }
-                itemParameterFaqAdapter?.setParameterFaqList(data.parameterFaqList)
             }
         }
     }

@@ -3,16 +3,17 @@ package com.tokopedia.shop.score.performance.presentation.model
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceAdapterTypeFactory
 
 data class ProtectedParameterSectionUiModel(
-    val itemProtectedParameterList: List<ItemProtectedParameterUiModel> = emptyList(),
-    val titleParameterRelief: String = "",
-    val descParameterRelief: String = "",
-    val descParameterReliefBottomSheet: String = ""
-) : BaseShopPerformance {
+    override val itemProtectedParameterList: List<ItemProtectedParameterUiModel> = emptyList(),
+    override val titleParameterRelief: String = "",
+    override val descParameterRelief: String = "",
+    override val descParameterReliefBottomSheet: String = ""
+) : BaseProtectedParameterSectionUiModel(
+    itemProtectedParameterList,
+    titleParameterRelief,
+    descParameterRelief,
+    descParameterReliefBottomSheet
+), BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
-
-data class ItemProtectedParameterUiModel(
-    val parameterTitle: String = ""
-)

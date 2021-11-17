@@ -4,14 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl3"
-    android:layout_marginEnd="@dimen/spacing_lvl3">
+    android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/spacing_lvl3">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/containerHeaderShopPerformance"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/layout_lvl0"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:layout_constrainedHeight="true"
@@ -126,12 +125,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShopScoreMaximum"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl1"
         android:layout_marginTop="14dp"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/maximum_score_performance"
         android:textColor="@color/Unify_Static_White"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvShopScoreValue"
         app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
         app:typographyType="heading_3" />
@@ -141,15 +142,15 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/layout_lvl4"
         android:textColor="@color/Unify_Static_White"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/tvDescShopService"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvShopScoreMaximum"
-        app:typographyType="heading_2"
+        app:typographyType="heading_3"
         tools:text="@string/title_shop_score_service"
         tools:visibility="visible" />
 
@@ -158,12 +159,11 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl5"
         android:textColor="@color/Unify_Static_White"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/barrierTickerHasPenalty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvHeaderShopService"
@@ -176,13 +176,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/layout_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl5"
         app:cardBackgroundColor="@color/Unify_N0_20"
         app:cardCornerRadius="@dimen/spacing_lvl3"
         app:cardElevation="@dimen/layout_lvl0"
-        app:layout_constraintBottom_toTopOf="@id/barrierTickerHasPenalty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvShopScoreMaximum">
@@ -202,7 +201,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="body_2"
+                app:typographyType="heading_3"
                 app:typographyWeight="bold"
                 tools:text="@string/title_shop_score_service" />
 

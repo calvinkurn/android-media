@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScoreTabletConstant
 import com.tokopedia.shop.score.databinding.ItemNonEligibleStatusPowerMerchantBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPotentialPMBenefitAdapter
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemRegularMerchantListener
@@ -37,20 +36,18 @@ class CardPotentialPMBenefitViewHolder(
     }
 
     private fun setPotentialPMBenefitAdapter(element: SectionRMPotentialPMBenefitUiModel?) {
-        binding?.run {
-            rvShopPmPotentialBenefit.run {
-                layoutManager = if (DeviceScreenInfo.isTablet(context)) {
-                    GridLayoutManager(context, ShopScoreTabletConstant.MAX_COLUMN_GRID)
-                } else {
-                    LinearLayoutManager(context)
-                }
-                adapter = itemPotentialPMBenefitAdapter
-            }
-        }
         element?.potentialPMBenefitList?.let {
-            itemPotentialPMBenefitAdapter?.setPotentialPowerMerchantBenefit(
-                it
-            )
+            binding?.run {
+                rvShopPmPotentialBenefit.run {
+                    layoutManager = if (DeviceScreenInfo.isTablet(context)) {
+                        GridLayoutManager(context, it.size)
+                    } else {
+                        LinearLayoutManager(context)
+                    }
+                    adapter = itemPotentialPMBenefitAdapter
+                }
+                itemPotentialPMBenefitAdapter?.setPotentialPowerMerchantBenefit(it)
+            }
         }
     }
 }

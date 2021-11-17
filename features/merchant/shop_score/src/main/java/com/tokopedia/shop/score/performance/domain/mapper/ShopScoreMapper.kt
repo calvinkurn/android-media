@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.performance.domain.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.gm.common.utils.GoldMerchantUtil
@@ -47,6 +48,11 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.peopleText
 import com.tokopedia.shop.score.common.ShopScoreConstant.percentText
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.shop.score.performance.presentation.model.*
+import com.tokopedia.shop.score.performance.presentation.model.tablet.BaseParameterDetail
+import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemDetailPerformanceTabletUiModel
+import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemHeaderParameterDetailUiModel
+import com.tokopedia.shop.score.performance.presentation.model.tablet.PeriodDetailTabletUiModel
+import com.tokopedia.shop.score.performance.presentation.model.tablet.ProtectedParameterTabletUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import java.text.ParseException
 import java.util.*
@@ -166,36 +172,41 @@ class ShopScoreMapper @Inject constructor(
                 }
             }
 
-            add(
-                mapToHeaderShopPerformance(
-                    shopScoreWrapperResponse.shopScoreLevelResponse?.result,
-                    powerMerchantData,
-                    shopAge,
-                    shopInfoPeriodUiModel.dateShopCreated
-                )
-            )
-            add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreResult, isNewSeller))
-            if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
-                addAll(
-                    mapToItemDetailPerformanceUiModel(
-                        shopScoreResult.shopScoreDetail,
-                        shopAge,
+            //start
+            if (context != null) {
+                if (DeviceScreenInfo.isTablet(context)) {
+                    addHeaderDetailParameterTabletMode(
+                        shopScoreWrapperResponse,
+                        shopInfoPeriodUiModel,
+                        powerMerchantData,
                         shopScore,
-                        shopInfoPeriodUiModel.dateShopCreated
+                        shopAge,
+                        isNewSeller
                     )
+                } else {
+                    addDetailParameterMobileMode(
+                        shopScoreWrapperResponse,
+                        shopInfoPeriodUiModel,
+                        powerMerchantData,
+                        shopScoreResult,
+                        shopScore,
+                        shopAge,
+                        isNewSeller
+                    )
+                }
+            } else {
+                addDetailParameterMobileMode(
+                    shopScoreWrapperResponse,
+                    shopInfoPeriodUiModel,
+                    powerMerchantData,
+                    shopScoreResult,
+                    shopScore,
+                    shopAge,
+                    isNewSeller
                 )
             }
 
-            if (isShowProtectedParameterNewSeller(
-                    shopAge.toInt(),
-                    shopInfoPeriodUiModel.dateShopCreated
-                ) ||
-                isReactivatedSellerAfterComeback(
-                    shopScore, shopScoreResult?.shopScoreDetail
-                )
-            ) {
-                add(getProtectedParameterSection(shopScoreResult?.shopScoreDetail, shopAge.toInt()))
-            }
+            //end
 
             val recommendationTools =
                 shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools
@@ -286,6 +297,127 @@ class ShopScoreMapper @Inject constructor(
             }
         }
         return shopScoreVisitableList
+    }
+
+    private fun MutableList<BaseShopPerformance>.addHeaderDetailParameterTabletMode(
+        shopScoreWrapperResponse: ShopScoreWrapperResponse,
+        shopInfoPeriodUiModel: ShopInfoPeriodUiModel,
+        powerMerchantData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
+        shopScore: Long,
+        shopAge: Long,
+        isNewSeller: Boolean
+    ) {
+        val detailParameterList = mutableListOf<BaseParameterDetail>()
+        val shopScoreDetail =
+            shopScoreWrapperResponse.shopScoreLevelResponse?.result?.shopScoreDetail
+
+        val periodDetailList = mapToSectionPeriodDetailPerformanceTabletUiModel(
+            shopScoreWrapperResponse.shopScoreLevelResponse?.result,
+            isNewSeller
+        )
+
+        detailParameterList.add(periodDetailList)
+
+        val itemDetailPerformanceUiModel =
+            mapToItemDetailPerformanceTabletUiModel(
+                shopScoreDetail,
+                shopAge,
+                shopScore,
+                shopInfoPeriodUiModel.dateShopCreated
+            )
+
+        if (!itemDetailPerformanceUiModel.isNullOrEmpty()) {
+            detailParameterList.addAll(itemDetailPerformanceUiModel)
+        }
+
+        if (isShowProtectedParameterNewSeller(
+                shopAge.toInt(),
+                shopInfoPeriodUiModel.dateShopCreated
+            ) ||
+            isReactivatedSellerAfterComeback(
+                shopScore, shopScoreDetail
+            )
+        ) {
+            val protectedParameterSectionTablet =
+                mapToItemProtectedParameterTabletUiModel(
+                    shopScoreDetail,
+                    shopAge
+                )
+            detailParameterList.add(protectedParameterSectionTablet)
+        }
+
+        val itemHeaderParameterDetailUiModel = ItemHeaderParameterDetailUiModel(
+            headerShopPerformanceUiModel = mapToHeaderShopPerformance(
+                shopScoreWrapperResponse.shopScoreLevelResponse?.result,
+                powerMerchantData,
+                shopAge,
+                shopInfoPeriodUiModel.dateShopCreated
+            ),
+            detailParameterList = detailParameterList
+        )
+        add(itemHeaderParameterDetailUiModel)
+    }
+
+    private fun MutableList<BaseShopPerformance>.addDetailParameterMobileMode(
+        shopScoreWrapperResponse: ShopScoreWrapperResponse,
+        shopInfoPeriodUiModel: ShopInfoPeriodUiModel,
+        powerMerchantData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
+        shopScoreResult: ShopScoreLevelResponse.ShopScoreLevel.Result?,
+        shopScore: Long,
+        shopAge: Long,
+        isNewSeller: Boolean
+    ) {
+        addHeaderShopPerformance(
+            shopScoreWrapperResponse,
+            shopInfoPeriodUiModel,
+            powerMerchantData,
+            shopAge,
+        )
+
+        add(mapToSectionPeriodDetailPerformanceUiModel(shopScoreResult, isNewSeller))
+
+        if (shopScoreResult?.shopScoreDetail?.isNotEmpty() == true) {
+            val itemDetailPerformanceUiModel =
+                mapToItemDetailPerformanceUiModel(
+                    shopScoreResult.shopScoreDetail,
+                    shopAge,
+                    shopScore,
+                    shopInfoPeriodUiModel.dateShopCreated
+                )
+            addAll(itemDetailPerformanceUiModel)
+        }
+
+        if (isShowProtectedParameterNewSeller(
+                shopAge.toInt(),
+                shopInfoPeriodUiModel.dateShopCreated
+            ) ||
+            isReactivatedSellerAfterComeback(
+                shopScore, shopScoreResult?.shopScoreDetail
+            )
+        ) {
+            val protectedParameterSection =
+                mapToItemProtectedParameterUiModel(
+                    shopScoreResult?.shopScoreDetail,
+                    shopAge
+                )
+            add(protectedParameterSection)
+        }
+    }
+
+    private fun MutableList<BaseShopPerformance>.addHeaderShopPerformance(
+        shopScoreWrapperResponse: ShopScoreWrapperResponse,
+        shopInfoPeriodUiModel: ShopInfoPeriodUiModel,
+        powerMerchantData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
+        shopAge: Long
+    ) {
+        add(
+            mapToHeaderShopPerformance(
+                shopScoreWrapperResponse.shopScoreLevelResponse?.result,
+                powerMerchantData,
+                shopAge,
+                shopInfoPeriodUiModel.dateShopCreated
+            )
+        )
     }
 
     private fun mapToHeaderShopPerformance(
@@ -565,13 +697,95 @@ class ShopScoreMapper @Inject constructor(
         return shopInfoLevelUiModel
     }
 
+    private fun mapToItemProtectedParameterTabletUiModel(
+        shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
+        shopAge: Long
+    ): ProtectedParameterTabletUiModel {
+        val protectedParameterSection = getProtectedParameterSection(
+            shopScoreLevelList, shopAge.toInt()
+        )
+
+        return ProtectedParameterTabletUiModel(
+            itemProtectedParameterList = protectedParameterSection.itemProtectedParameterList,
+            titleParameterRelief = protectedParameterSection.titleParameterRelief,
+            descParameterRelief = protectedParameterSection.descParameterRelief,
+            descParameterReliefBottomSheet = protectedParameterSection.descParameterReliefBottomSheet
+        )
+    }
+
+    private fun mapToItemProtectedParameterUiModel(
+        shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
+        shopAge: Long
+    ): ProtectedParameterSectionUiModel {
+        val protectedParameterSection = getProtectedParameterSection(
+            shopScoreLevelList, shopAge.toInt()
+        )
+
+        return ProtectedParameterSectionUiModel(
+            itemProtectedParameterList = protectedParameterSection.itemProtectedParameterList,
+            titleParameterRelief = protectedParameterSection.titleParameterRelief,
+            descParameterRelief = protectedParameterSection.descParameterRelief,
+            descParameterReliefBottomSheet = protectedParameterSection.descParameterReliefBottomSheet
+        )
+    }
+
+    private fun mapToItemDetailPerformanceTabletUiModel(
+        shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
+        shopAge: Long,
+        shopScore: Long,
+        dateShopCreated: String
+    ): List<ItemDetailPerformanceTabletUiModel> {
+        val basePeriodDetailPerformanceUiModel = mapToBaseDetailPerformanceUiModel(
+            shopScoreLevelList, shopAge, shopScore, dateShopCreated
+        )
+
+        return basePeriodDetailPerformanceUiModel.map {
+            ItemDetailPerformanceTabletUiModel(
+                titleDetailPerformance = it.titleDetailPerformance,
+                valueDetailPerformance = it.valueDetailPerformance,
+                colorValueDetailPerformance = it.colorValueDetailPerformance,
+                targetDetailPerformance = it.targetDetailPerformance,
+                isDividerHide = it.isDividerHide,
+                identifierDetailPerformance = it.identifierDetailPerformance,
+                parameterValueDetailPerformance = it.parameterValueDetailPerformance,
+                shopAge = it.shopAge,
+                shopScore = it.shopScore
+            )
+        }
+    }
+
     private fun mapToItemDetailPerformanceUiModel(
         shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
         shopAge: Long,
         shopScore: Long,
         dateShopCreated: String
     ): List<ItemDetailPerformanceUiModel> {
-        return mutableListOf<ItemDetailPerformanceUiModel>().apply {
+        val basePeriodDetailPerformanceUiModel = mapToBaseDetailPerformanceUiModel(
+            shopScoreLevelList, shopAge, shopScore, dateShopCreated
+        )
+
+        return basePeriodDetailPerformanceUiModel.map {
+            ItemDetailPerformanceUiModel(
+                titleDetailPerformance = it.titleDetailPerformance,
+                valueDetailPerformance = it.valueDetailPerformance,
+                colorValueDetailPerformance = it.colorValueDetailPerformance,
+                targetDetailPerformance = it.targetDetailPerformance,
+                isDividerHide = it.isDividerHide,
+                identifierDetailPerformance = it.identifierDetailPerformance,
+                parameterValueDetailPerformance = it.parameterValueDetailPerformance,
+                shopAge = shopAge,
+                shopScore = shopScore
+            )
+        }
+    }
+
+    private fun mapToBaseDetailPerformanceUiModel(
+        shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
+        shopAge: Long,
+        shopScore: Long,
+        dateShopCreated: String
+    ): List<BaseDetailPerformanceUiModel> {
+        return mutableListOf<BaseDetailPerformanceUiModel>().apply {
 
             val multipleFilterShopScore = listOf(
                 CHAT_DISCUSSION_REPLY_SPEED_KEY,
@@ -687,7 +901,7 @@ class ShopScoreMapper @Inject constructor(
                     }
 
                 add(
-                    ItemDetailPerformanceUiModel(
+                    BaseDetailPerformanceUiModel(
                         titleDetailPerformance = shopScoreDetail.title,
                         valueDetailPerformance = rawValueFormatted,
                         colorValueDetailPerformance = shopScoreDetail.colorText,
@@ -742,11 +956,41 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
+    private fun mapToSectionPeriodDetailPerformanceTabletUiModel(
+        shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
+        isNewSeller: Boolean
+    ): PeriodDetailTabletUiModel {
+        val mapToBasePeriodDetailPerformanceUiModel = mapToBasePeriodDetailPerformanceUiModel(
+            shopScoreLevelResponse,
+            isNewSeller
+        )
+        return PeriodDetailTabletUiModel(
+            period = mapToBasePeriodDetailPerformanceUiModel.period,
+            nextUpdate = mapToBasePeriodDetailPerformanceUiModel.nextUpdate,
+            isNewSeller = mapToBasePeriodDetailPerformanceUiModel.isNewSeller
+        )
+    }
+
     private fun mapToSectionPeriodDetailPerformanceUiModel(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         isNewSeller: Boolean
     ): PeriodDetailPerformanceUiModel {
+        val basePeriodDetailPerformance = mapToBasePeriodDetailPerformanceUiModel(
+            shopScoreLevelResponse,
+            isNewSeller
+        )
         return PeriodDetailPerformanceUiModel(
+            period = basePeriodDetailPerformance.period,
+            nextUpdate = basePeriodDetailPerformance.nextUpdate,
+            isNewSeller = basePeriodDetailPerformance.isNewSeller
+        )
+    }
+
+    private fun mapToBasePeriodDetailPerformanceUiModel(
+        shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
+        isNewSeller: Boolean
+    ): BasePeriodDetailUiModel {
+        return BasePeriodDetailUiModel(
             period = shopScoreLevelResponse?.period
                 ?: "-", nextUpdate = shopScoreLevelResponse?.nextUpdate
                 ?: "-", isNewSeller = isNewSeller
@@ -1005,7 +1249,7 @@ class ShopScoreMapper @Inject constructor(
         shopScoreLevelList:
         List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
         shopAge: Int
-    ): ProtectedParameterSectionUiModel {
+    ): BaseProtectedParameterSectionUiModel {
         val totalBuyer =
             shopScoreLevelList?.find { it.identifier == TOTAL_BUYER_KEY }?.title.orEmpty()
         val openTokopediaSeller =
@@ -1030,7 +1274,8 @@ class ShopScoreMapper @Inject constructor(
                     ).orEmpty(),
                 )
             }
-        return ProtectedParameterSectionUiModel(
+
+        return BaseProtectedParameterSectionUiModel(
             itemProtectedParameterList = listOf(
                 ItemProtectedParameterUiModel(totalBuyer),
                 ItemProtectedParameterUiModel(openTokopediaSeller)

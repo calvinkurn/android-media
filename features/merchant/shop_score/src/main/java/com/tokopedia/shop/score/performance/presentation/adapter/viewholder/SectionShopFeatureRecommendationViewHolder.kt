@@ -1,14 +1,11 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreItemDecoration
-import com.tokopedia.shop.score.common.ShopScoreTabletConstant
 import com.tokopedia.shop.score.databinding.ShopFeatureRecommendationSectionBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemFeatureRecommendationAdapter
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemRecommendationFeatureListener
@@ -38,11 +35,8 @@ class SectionShopFeatureRecommendationViewHolder(
                     addItemDecoration(ShopScoreItemDecoration())
                 }
                 adapter = itemFeatureRecommendationAdapter
-                layoutManager = if (DeviceScreenInfo.isTablet(context)) {
-                    GridLayoutManager(context, ShopScoreTabletConstant.MAX_COLUMN_GRID)
-                } else {
+                layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                }
             }
         }
         element?.recommendationShopList?.let {

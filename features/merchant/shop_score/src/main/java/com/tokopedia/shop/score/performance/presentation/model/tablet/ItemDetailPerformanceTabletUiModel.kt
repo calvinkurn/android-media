@@ -1,8 +1,9 @@
-package com.tokopedia.shop.score.performance.presentation.model
+package com.tokopedia.shop.score.performance.presentation.model.tablet
 
-import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceAdapterTypeFactory
+import com.tokopedia.shop.score.performance.presentation.adapter.tablet.DetailPerformanceAdapterTabletTypeFactory
+import com.tokopedia.shop.score.performance.presentation.model.BaseDetailPerformanceUiModel
 
-data class ItemDetailPerformanceUiModel(
+data class ItemDetailPerformanceTabletUiModel(
     override var titleDetailPerformance: String = "",
     override var valueDetailPerformance: String = "-",
     override var colorValueDetailPerformance: String = "",
@@ -12,7 +13,7 @@ data class ItemDetailPerformanceUiModel(
     override var parameterValueDetailPerformance: String = "",
     override var shopAge: Long = 0,
     override var shopScore: Long = -1
-) : BaseShopPerformance, BaseDetailPerformanceUiModel(
+) : BaseDetailPerformanceUiModel(
     titleDetailPerformance,
     valueDetailPerformance,
     colorValueDetailPerformance,
@@ -22,8 +23,8 @@ data class ItemDetailPerformanceUiModel(
     parameterValueDetailPerformance,
     shopAge,
     shopScore
-) {
-    override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
+), BaseParameterDetail {
+    override fun type(typeFactory: DetailPerformanceAdapterTabletTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

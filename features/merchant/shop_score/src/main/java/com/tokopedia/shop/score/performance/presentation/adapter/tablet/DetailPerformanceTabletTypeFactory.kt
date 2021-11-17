@@ -1,11 +1,11 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.tablet
 
-import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
-import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
-import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
+import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemDetailPerformanceTabletUiModel
+import com.tokopedia.shop.score.performance.presentation.model.tablet.PeriodDetailTabletUiModel
+import com.tokopedia.shop.score.performance.presentation.model.tablet.ProtectedParameterTabletUiModel
 
 interface DetailPerformanceTabletTypeFactory {
-    fun type(periodDetailPerformanceUiModel: PeriodDetailPerformanceUiModel): Int
-    fun type(itemDetailPerformanceUiModel: ItemDetailPerformanceUiModel): Int
-    fun type(protectedParameterSectionUiModel: ProtectedParameterSectionUiModel): Int
+    fun type(periodDetailTabletUiModel: PeriodDetailTabletUiModel): Int
+    fun type(itemDetailPerformanceTabletUiModel: ItemDetailPerformanceTabletUiModel): Int
+    fun type(protectedParameterTabletUiModel: ProtectedParameterTabletUiModel): Int
 }

@@ -5,9 +5,9 @@ import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerforman
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 
 data class ItemHeaderParameterDetailUiModel(
-    val headerShopPerformanceUiModel: HeaderShopPerformanceUiModel,
-    val parameterDetailList: List<BaseParameterDetail> = emptyList()
-): BaseShopPerformance {
+    val headerShopPerformanceUiModel: HeaderShopPerformanceUiModel = HeaderShopPerformanceUiModel(),
+    val detailParameterList: List<BaseParameterDetail> = emptyList()
+) : BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
