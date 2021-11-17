@@ -143,13 +143,13 @@ object WebViewHelper {
      * Output:https://js.tokopedia.com?target=5&title=3&url=http%3A%2F%2Fwww.tokopedia.com%2Fhelp%3Fid%3D4%26target%3D5%26title%3D3
      */
     fun getEncodedUrlCheckSecondUrl(intentUri: Uri, defaultUrl: String): String {
-        val query = getUrlQuery(intentUri)?.decode()
+        val query = getUrlQuery(intentUri)
         return if (query != null && query.contains("$KEY_URL=")) {
             var url = query.substringAfter("$KEY_URL=").decode()
             url = url.normalizeSymbol()
             return getEncodedurl(url)
         } else {
-            query ?: defaultUrl
+            query?.decode() ?: defaultUrl
         }
     }
 
