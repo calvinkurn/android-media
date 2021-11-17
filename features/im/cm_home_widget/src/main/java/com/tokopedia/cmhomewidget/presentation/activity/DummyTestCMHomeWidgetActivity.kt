@@ -1,21 +1,32 @@
 package com.tokopedia.cmhomewidget.presentation.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cmhomewidget.R
 import com.tokopedia.cmhomewidget.di.component.CMHomeWidgetComponent
+import com.tokopedia.cmhomewidget.di.component.DaggerCMHomeWidgetComponent
+import com.tokopedia.cmhomewidget.viewmodel.DummyTestCMHomeWidgetViewModel
+import javax.inject.Inject
 
 // todo delete cm home widget dummy things
 class DummyTestCMHomeWidgetActivity : AppCompatActivity(), HasComponent<CMHomeWidgetComponent> {
 
-    private val kycComponent: CMHomeWidgetComponent by lazy { initInjector() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dummy_test_cm_home_widget)
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val dummyTestCMHomeWidgetViewModel: DummyTestCMHomeWidgetViewModel by lazy(
+        LazyThreadSafetyMode.NONE
+    ) {
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
+        viewModelProvider.get(DummyTestCMHomeWidgetViewModel::class.java)
     }
+
+    private val cmHomeWidgetComponent: CMHomeWidgetComponent by lazy { initInjector() }
 
     private fun initInjector() =
         DaggerCMHomeWidgetComponent.builder()
@@ -24,6 +35,18 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(), HasComponent<CMHomeWi
                     .baseAppComponent
             ).build()
 
-    override fun getComponent() = kycComponent
+    override fun getComponent() = cmHomeWidgetComponent
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_dummy_test_cm_home_widget)
+
+        dummyTestCMHomeWidgetViewModel.getDataUse()
+
+        dummyTestCMHomeWidgetViewModel.productDetailLiveData.observe(this, {
+            Log.e("kapil", it.toString())
+        }
+        )
+    }
 
 }

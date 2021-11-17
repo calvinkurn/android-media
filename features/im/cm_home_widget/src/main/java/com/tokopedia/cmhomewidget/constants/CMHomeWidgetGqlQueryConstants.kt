@@ -5,9 +5,6 @@ const val GQL_GET_HTDW_DATA = """query{
         status
         error
         data {
-            notification_id
-            message_id
-            is_test
             user_id
             parent_id
             campaign_id

@@ -5,18 +5,16 @@ import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetDataResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-
 import javax.inject.Inject
 
 @GqlQuery("GetHTDWData", GQL_GET_HTDW_DATA)
-class CMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+class GetHTDWUserDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<CMHomeWidgetDataResponse>(graphqlRepository) {
 
 
     fun getPayLaterProductDetails(
         onSuccess: (CMHomeWidgetDataResponse) -> Unit,
-        onError: (Throwable) -> Unit,
-        amount: Long
+        onError: (Throwable) -> Unit
     ) {
         try {
             this.setTypeClass(CMHomeWidgetDataResponse::class.java)
