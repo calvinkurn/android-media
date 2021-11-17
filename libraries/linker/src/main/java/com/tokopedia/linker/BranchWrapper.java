@@ -99,7 +99,10 @@ public class BranchWrapper implements WrapperInterface {
     public void createShareUrl(LinkerShareRequest linkerShareRequest, Context context) {
         if (linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
 
-            if (isFDLActivated(context)){
+            if(((LinkerShareData)linkerShareRequest.getDataObj()).getLinkerData().isAffiliate()){
+
+            }
+            else if (isFDLActivated(context)){
                 generateFirebaseLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
                         context, linkerShareRequest.getShareCallbackInterface(),
                         ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
@@ -348,6 +351,10 @@ public class BranchWrapper implements WrapperInterface {
                 .setContentImageUrl(data.getImgUri())
                 .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC);
         return branchUniversalObject;
+    }
+
+    private void generateAffiliateLink(){
+
     }
 
     private void generateFirebaseLink(final LinkerData data, final Context context,

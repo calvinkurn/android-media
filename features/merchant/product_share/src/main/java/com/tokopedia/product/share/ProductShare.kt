@@ -271,6 +271,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                     ogImageUrl = shareModel.ogImgUrl
                 }
+                isAffiliate = shareModel.isAffiliate
             }
 
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
