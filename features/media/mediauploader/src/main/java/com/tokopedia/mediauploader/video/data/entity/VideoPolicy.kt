@@ -27,7 +27,7 @@ data class VideoPolicy(
     }
 
     fun retryIntervalInSec(): Long {
-        return (retryInterval?: 5).toLong()
+        return (retryInterval?: 5) * 1000.toLong()
     }
 
 }
