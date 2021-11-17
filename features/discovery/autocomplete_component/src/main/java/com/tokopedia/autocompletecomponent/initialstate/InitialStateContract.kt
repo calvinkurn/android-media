@@ -15,7 +15,10 @@ interface InitialStateContract {
 
         fun onRecentViewImpressed(recentViewDataView: RecentViewDataView, list: List<Any>)
 
-        fun onRecentSearchImpressed(list: List<Any>)
+        fun onRecentSearchImpressed(
+            recentSearchList: List<BaseItemInitialStateSearch>,
+            list: List<Any>
+        )
 
         fun onPopularSearchImpressed(model: DynamicInitialStateItemTrackingModel)
 

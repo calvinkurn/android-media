@@ -143,9 +143,12 @@ class InitialStatePresenter @Inject constructor(
         view?.onSeeMoreRecentSearchImpressed(getUserId())
     }
 
-    private fun onRecentSearchImpressed(list: List<Any>) {
+    private fun onRecentSearchImpressed(
+        recentSearchList: List<BaseItemInitialStateSearch>,
+        list: List<Any>,
+    ) {
         list.withNotEmpty{
-            view?.onRecentSearchImpressed(this)
+            view?.onRecentSearchImpressed(recentSearchList, this)
         }
     }
 
@@ -307,13 +310,14 @@ class InitialStatePresenter @Inject constructor(
         listInitialStateItem: List<InitialStateItem>,
         trackingOption: Int,
     ) {
-        onRecentSearchImpressed(getDataLayerForPromo(listInitialStateItem))
-
         val recentSearchItems = listInitialStateItem.convertToRecentSearchDataView(
             getDimension90(),
             trackingOption,
             getQueryKey(),
         )
+
+        onRecentSearchImpressed(recentSearchItems, getDataLayerForPromo(listInitialStateItem))
+
         listVisitable.add(RecentSearchDataView(recentSearchItems, trackingOption))
         recentSearchPosition = listVisitable.lastIndex
     }
@@ -661,10 +665,6 @@ class InitialStatePresenter @Inject constructor(
 
         val recentSearchList = recentSearchList ?: return
 
-        val recentSearchToImpress = getDataLayerForPromo(recentSearchList)
-        val remainingRecentSearchCount = recentSearchList.size - RECENT_SEARCH_SEE_MORE_LIMIT
-        onRecentSearchImpressed(recentSearchToImpress.takeLast(remainingRecentSearchCount))
-
         val recentSearchDataVisitable =
             listVisitable.find { it is RecentSearchDataView } as RecentSearchDataView
 
@@ -672,6 +672,13 @@ class InitialStatePresenter @Inject constructor(
             getDimension90(),
             recentSearchDataVisitable.trackingOption,
             getQueryKey(),
+        )
+
+        val recentSearchToImpress = getDataLayerForPromo(recentSearchList)
+        val remainingRecentSearchCount = recentSearchList.size - RECENT_SEARCH_SEE_MORE_LIMIT
+        onRecentSearchImpressed(
+            recentSearchItems.takeLast(remainingRecentSearchCount),
+            recentSearchToImpress.takeLast(remainingRecentSearchCount)
         )
 
         recentSearchDataVisitable.list = recentSearchItems

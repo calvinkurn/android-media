@@ -220,9 +220,12 @@ class InitialStateFragment:
         initialStateTracking?.impressedRecentView(recentViewDataView.list, list)
     }
 
-    override fun onRecentSearchImpressed(list: List<Any>) {
+    override fun onRecentSearchImpressed(
+        recentSearchList: List<BaseItemInitialStateSearch>,
+        list: List<Any>
+    ) {
         val keyword = presenter?.getQueryKey() ?: ""
-        initialStateTracking?.impressedRecentSearch(list, keyword)
+        initialStateTracking?.impressedRecentSearch(recentSearchList, list, keyword)
     }
 
     override fun onPopularSearchImpressed(model: DynamicInitialStateItemTrackingModel) {
