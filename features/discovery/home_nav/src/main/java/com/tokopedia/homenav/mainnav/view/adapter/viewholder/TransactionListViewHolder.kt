@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.databinding.HolderTransactionListBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.OrderListTypeFactoryImpl
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.NavOrderSpacingDecoration
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist.OrderListAdapter
@@ -15,11 +16,12 @@ import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderPaymentModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductModel
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import kotlinx.android.synthetic.main.holder_transaction_list.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TransactionListViewHolder(itemView: View,
                                 val mainNavListener: MainNavListener
 ): AbstractViewHolder<TransactionListItemDataModel>(itemView) {
+    private var binding: HolderTransactionListBinding? by viewBinding()
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_transaction_list
@@ -32,12 +34,12 @@ class TransactionListViewHolder(itemView: View,
         val edgeMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
         val spacingBetween = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
 
-        itemView.transaction_rv.adapter = adapter
-        itemView.transaction_rv.layoutManager = LinearLayoutManager(
+        binding?.transactionRv?.adapter = adapter
+        binding?.transactionRv?.layoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.HORIZONTAL, false
         )
-        if (itemView.transaction_rv.itemDecorationCount == 0) {
-            itemView.transaction_rv.addItemDecoration(
+        if (binding?.transactionRv?.itemDecorationCount == 0) {
+            binding?.transactionRv?.addItemDecoration(
                     NavOrderSpacingDecoration(spacingBetween, edgeMargin)
             )
         }

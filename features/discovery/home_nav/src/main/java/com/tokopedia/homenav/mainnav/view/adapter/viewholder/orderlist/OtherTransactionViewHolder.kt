@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.databinding.HolderOtherTransactionProductBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
-import kotlinx.android.synthetic.main.holder_other_transaction_product.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OtherTransactionModel>(itemView) {
+    private var binding: HolderOtherTransactionProductBinding? by viewBinding()
     val otherTrackingLabel = "other"
     companion object {
         @LayoutRes
@@ -21,9 +23,9 @@ class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavLis
     override fun bind(otherTransactionModel: OtherTransactionModel) {
         val context = itemView.context
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            itemView.holder_view.setBackgroundResource(R.drawable.bg_transaction_other)
+            binding?.holderView?.setBackgroundResource(R.drawable.bg_transaction_other)
         }
-        itemView.transaction_others_count.text = context.getString(R.string.transaction_others_count)
+        binding?.transactionOthersCount?.text = context.getString(R.string.transaction_others_count)
 
         itemView.setOnClickListener {
             TrackingTransactionSection.clickOnOrderStatus(

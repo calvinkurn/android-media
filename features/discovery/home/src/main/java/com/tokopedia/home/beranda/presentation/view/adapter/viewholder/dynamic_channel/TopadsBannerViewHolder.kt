@@ -10,18 +10,17 @@ import com.tokopedia.home.beranda.data.mapper.factory.DynamicChannelComponentMap
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeTopAdsBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
+import com.tokopedia.home.databinding.HomeDcTopadsBannerBinding
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import kotlinx.android.synthetic.main.home_dc_topads_banner.view.*
-import kotlinx.android.synthetic.main.home_dc_topads_banner.view.home_component_divider_footer
-import kotlinx.android.synthetic.main.home_dc_topads_banner.view.home_component_divider_header
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryListener) :
         AbstractViewHolder<HomeTopAdsBannerDataModel>(view) {
-
+    private var binding: HomeDcTopadsBannerBinding? by viewBinding()
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_dc_topads_banner
@@ -29,7 +28,7 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
     }
 
     override fun bind(element: HomeTopAdsBannerDataModel) {
-        view.dynamic_channel_header.setChannel(
+        binding?.dynamicChannelHeader?.setChannel(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(element.channel, adapterPosition),
                 object: HeaderListener {
                     override fun onSeeAllClick(link: String) {
@@ -43,14 +42,14 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
         )
 
         if (element.topAdsImageViewModel == null) {
-            view.home_topads_shimmering_loading.visibility = View.VISIBLE
-            view.home_topads_image_view.visibility = View.GONE
+            binding?.homeTopadsShimmeringLoading?.visibility = View.VISIBLE
+            binding?.homeTopadsImageView?.visibility = View.GONE
         } else {
-            view.home_topads_shimmering_loading.visibility = View.GONE
-            view.home_topads_image_view.visibility = View.VISIBLE
+            binding?.homeTopadsShimmeringLoading?.visibility = View.GONE
+            binding?.homeTopadsImageView?.visibility = View.VISIBLE
             element.topAdsImageViewModel?.let {
                 try {
-                    view.home_topads_image_view.loadImage(it) {
+                    binding?.homeTopadsImageView?.loadImage(it) {
                         categoryListener.removeViewHolderAtPosition(adapterPosition)
                     }
                 } catch (glideException: GlideException) {
@@ -59,7 +58,7 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
             }
         }
 
-        view.home_topads_image_view.setTopAdsImageViewImpression(object: TopAdsImageViewImpressionListener {
+        binding?.homeTopadsImageView?.setTopAdsImageViewImpression(object: TopAdsImageViewImpressionListener {
             override fun onTopAdsImageViewImpression(viewUrl: String) {
                 BannerAdsTracking.sendBannerAdsImpressionTracking(
                         categoryListener.getTrackingQueueObj(),
@@ -88,7 +87,7 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
             }
         })
 
-        view.home_topads_image_view.setTopAdsImageViewClick(object: TopAdsImageViewClickListener {
+        binding?.homeTopadsImageView?.setTopAdsImageViewClick(object: TopAdsImageViewClickListener {
             override fun onTopAdsImageViewClicked(applink: String?) {
                 BannerAdsTracking.sendBannerAdsClickTracking(
                         element.channel,
@@ -112,8 +111,8 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
     private fun setChannelDivider(element: HomeTopAdsBannerDataModel) {
         HomeChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 }

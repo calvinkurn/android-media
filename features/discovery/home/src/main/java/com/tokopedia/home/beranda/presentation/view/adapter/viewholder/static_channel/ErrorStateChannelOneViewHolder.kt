@@ -5,12 +5,14 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.EmptyBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ErrorStateChannelOneModel
-import kotlinx.android.synthetic.main.home_error_state_channel_1.view.*
+import com.tokopedia.home.databinding.HomeErrorStateChannel1Binding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ErrorStateChannelOneViewHolder(itemView: View, private val listener: HomeCategoryListener?)
 : AbstractViewHolder<ErrorStateChannelOneModel>(itemView) {
+
+    private var binding: HomeErrorStateChannel1Binding? by viewBinding()
 
     companion object {
         @LayoutRes
@@ -18,11 +20,11 @@ class ErrorStateChannelOneViewHolder(itemView: View, private val listener: HomeC
     }
 
     override fun bind(element: ErrorStateChannelOneModel) {
-        itemView.localload_error_state_channel.progressState = false
+        binding?.localloadErrorStateChannel?.progressState = false
 
-        itemView.localload_error_state_channel.refreshBtn?.setOnClickListener {
+        binding?.localloadErrorStateChannel?.refreshBtn?.setOnClickListener {
             listener?.refreshHomeData(forceRefresh = true)
-            itemView.localload_error_state_channel.progressState = true
+            binding?.localloadErrorStateChannel?.progressState = true
         }
     }
 }
