@@ -1,4 +1,4 @@
-package com.tokopedia.attachproduct.viewmodel
+package com.tokopedia.attachproduct.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
@@ -8,7 +8,6 @@ import com.tokopedia.attachproduct.data.model.mapper.mapToListProduct
 import com.tokopedia.attachproduct.domain.model.mapper.toDomainModelMapper
 import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
-import com.tokopedia.attachproduct.view.viewmodel.AttachProductViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
