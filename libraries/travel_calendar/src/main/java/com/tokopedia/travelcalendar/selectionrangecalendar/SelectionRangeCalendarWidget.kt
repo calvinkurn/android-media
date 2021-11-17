@@ -2,7 +2,9 @@ package com.tokopedia.travelcalendar.selectionrangecalendar
 
 import android.app.Application
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -58,22 +60,20 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         showCloseIcon = true
         setCloseClickListener { this.dismissAllowingStateLoss() }
 
-        val childView = View.inflate(context, R.layout.dialog_calendar_multi_pick, null)
-        setChild(childView)
-
         initInjector()
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            selectionRangeCalendarViewModel = viewModelProvider.get(SelectionRangeCalendarViewModel::class.java)
+            selectionRangeCalendarViewModel =
+                viewModelProvider.get(SelectionRangeCalendarViewModel::class.java)
         }
 
         arguments?.let {
             if (it.getString(ARG_MIN_DATE) != null)
-                minDate = (it.getString(ARG_MIN_DATE)?:"").stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+                minDate = (it.getString(ARG_MIN_DATE) ?: "").stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
             if (it.getString(ARG_MAX_DATE) != null)
-                maxDate = (it.getString(ARG_MAX_DATE)?:"").stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+                maxDate = (it.getString(ARG_MAX_DATE) ?: "").stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
             rangeYear = it.getInt(ARG_RANGE_YEAR)
 
@@ -93,8 +93,23 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
     private fun initInjector() {
         val component = TravelCalendarComponentInstance
-                .getComponent(activity?.application as Application)
+            .getComponent(activity?.application as Application)
         component.inject(this)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initChildLayout() {
+        val childView = View.inflate(context, R.layout.dialog_calendar_multi_pick, null)
+        calendar = calendar_unify.calendarPickerView as CalendarPickerView
+        setChild(childView)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -140,8 +155,6 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
 
     open fun renderCalendar(legends: ArrayList<Legend>) {
-        calendar = calendar_unify.calendarPickerView as CalendarPickerView
-
         val nextYear = Calendar.getInstance()
         nextYear.add(Calendar.YEAR, rangeYear)
 
@@ -152,15 +165,20 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         yesterday.set(Calendar.SECOND, 0)
         yesterday.set(Calendar.MILLISECOND, 0)
 
-        minDate?.let { if (it.before(yesterday.time) || it.after(nextYear.time)) minDate = yesterday.time }
-        maxDate?.let { if (minDate != null && (it.before(yesterday.time) || it.after(nextYear.time))) maxDate = yesterday.time }
+        minDate?.let {
+            if (it.before(yesterday.time) || it.after(nextYear.time)) minDate = yesterday.time
+        }
+        maxDate?.let {
+            if (minDate != null && (it.before(yesterday.time) || it.after(nextYear.time))) maxDate =
+                yesterday.time
+        }
 
         minDate?.let { minDate ->
             maxDate?.let { maxDate ->
                 calendar.init(yesterday.time, nextYear.time, legends)
-                        .inMode(CalendarPickerView.SelectionMode.RANGE)
-                        .maxRange(rangeDateSelected)
-                        .withSelectedDates(listOf(minDate, maxDate))
+                    .inMode(CalendarPickerView.SelectionMode.RANGE)
+                    .maxRange(rangeDateSelected)
+                    .withSelectedDates(listOf(minDate, maxDate))
                 date_in.requestFocus()
             }
         }
@@ -169,9 +187,9 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
             minDate?.let {
                 calendar.let { calendar ->
                     calendar.init(yesterday.time, nextYear.time, legends)
-                            .inMode(CalendarPickerView.SelectionMode.RANGE)
-                            .maxRange(rangeDateSelected)
-                            .withSelectedDate(it)
+                        .inMode(CalendarPickerView.SelectionMode.RANGE)
+                        .maxRange(rangeDateSelected)
+                        .withSelectedDate(it)
                     date_out.requestFocus()
                 }
             }
@@ -204,15 +222,21 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
                 override fun onDateSelected(date: Date) {
 
-                    if ((minDate != null && maxDate != null) || (maxDate == null && date.before(minDate))) {
+                    if ((minDate != null && maxDate != null) || (maxDate == null && date.before(
+                            minDate
+                        ))
+                    ) {
                         date_in.setText(dateFormat.format(date))
                         date_out.setText("")
                         minDate = date
                         maxDate = null
                         date_out.requestFocus()
                         minDate?.let { dateIn -> onDateInClicked(dateIn) }
-                    } else if (minDate != null && maxDate == null && ((!canSelectSameDay && date.after(minDate)) || (canSelectSameDay && !date.before(minDate)))) {
-                        if((calendar.selectedDates.size > 1 && !canSelectSameDay) || canSelectSameDay){
+                    } else if (minDate != null && maxDate == null && ((!canSelectSameDay && date.after(
+                            minDate
+                        )) || (canSelectSameDay && !date.before(minDate)))
+                    ) {
+                        if ((calendar.selectedDates.size > 1 && !canSelectSameDay) || canSelectSameDay) {
                             date_out.setText(dateFormat.format(date))
                             maxDate = date
                             date_out.requestFocus()
@@ -226,7 +250,7 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
                                     dismissAllowingStateLoss()
                                 }
                             }
-                        }else{
+                        } else {
                             minDate = date
                             maxDate = null
                         }
@@ -240,13 +264,17 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         }
     }
 
-    open fun onDateInClicked(dateIn: Date) { }
+    open fun onDateInClicked(dateIn: Date) {}
 
     private fun mappingHolidayData(holidayData: TravelCalendarHoliday.HolidayData): ArrayList<Legend> {
         val legendList = arrayListOf<Legend>()
         for (holiday in holidayData.data) {
-            legendList.add(Legend(holiday.attribute.date.stringToDate(TRAVEL_CAL_YYYY_MM_DD),
-                    holiday.attribute.label))
+            legendList.add(
+                Legend(
+                    holiday.attribute.date.stringToDate(TRAVEL_CAL_YYYY_MM_DD),
+                    holiday.attribute.label
+                )
+            )
         }
         return legendList
     }
@@ -278,21 +306,23 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
         const val CALENDAR_TITLE = "Pilih Tanggal"
 
-        fun getInstance(minDate: String?, maxDate: String?, rangeYear: Int,
-                        rangeDateSelected: Long, minDateLabel: String,
-                        maxDateLabel: String, minSelectableDateFromToday: Int = 0,
-                        canSelectSameDay: Boolean = false): SelectionRangeCalendarWidget =
-                SelectionRangeCalendarWidget().also {
-                    it.arguments = Bundle().apply {
-                        putString(ARG_MIN_DATE, minDate)
-                        putString(ARG_MAX_DATE, maxDate)
-                        putInt(ARG_RANGE_YEAR, rangeYear)
-                        putLong(ARG_RANGE_DATE_SELECTED, rangeDateSelected)
-                        putString(ARG_MIN_DATE_LABEL, minDateLabel)
-                        putString(ARG_MAX_DATE_LABEL, maxDateLabel)
-                        putInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY, minSelectableDateFromToday)
-                        putBoolean(ARG_CAN_SELECT_SAME_DAY, canSelectSameDay)
-                    }
+        fun getInstance(
+            minDate: String?, maxDate: String?, rangeYear: Int,
+            rangeDateSelected: Long, minDateLabel: String,
+            maxDateLabel: String, minSelectableDateFromToday: Int = 0,
+            canSelectSameDay: Boolean = false
+        ): SelectionRangeCalendarWidget =
+            SelectionRangeCalendarWidget().also {
+                it.arguments = Bundle().apply {
+                    putString(ARG_MIN_DATE, minDate)
+                    putString(ARG_MAX_DATE, maxDate)
+                    putInt(ARG_RANGE_YEAR, rangeYear)
+                    putLong(ARG_RANGE_DATE_SELECTED, rangeDateSelected)
+                    putString(ARG_MIN_DATE_LABEL, minDateLabel)
+                    putString(ARG_MAX_DATE_LABEL, maxDateLabel)
+                    putInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY, minSelectableDateFromToday)
+                    putBoolean(ARG_CAN_SELECT_SAME_DAY, canSelectSameDay)
                 }
+            }
     }
 }
