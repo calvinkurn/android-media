@@ -92,7 +92,6 @@ class SomOrderExtensionViewModel @Inject constructor(
     }
 
     fun getSomRequestExtensionInfo(orderId: String) {
-        onLoadSomRequestExtensionInfo()
         launchCatchError(block = {
             val result = somGetOrderExtensionRequestInfoUseCase.execute(orderId, userSession.shopId)
             val mappedResult = somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(result)

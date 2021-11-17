@@ -69,6 +69,7 @@ class BottomSheetManager(private val view: ViewGroup) {
     ) {
         bottomSheetChangeAwb?.run {
             setListener(listener)
+            init(view)
         }
     }
 
