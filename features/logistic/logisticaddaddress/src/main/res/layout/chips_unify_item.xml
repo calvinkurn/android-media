@@ -5,7 +5,7 @@
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/chips_item"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

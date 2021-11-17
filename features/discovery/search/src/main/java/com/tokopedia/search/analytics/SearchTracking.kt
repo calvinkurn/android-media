@@ -5,11 +5,11 @@ import android.text.TextUtils
 import com.tokopedia.analytic_constant.Event.Companion.ADDTOCART
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CLICK
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CURRENCY_CODE
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IDR
@@ -19,7 +19,6 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -265,46 +264,6 @@ object SearchTracking {
         ))
     }
 
-    private fun generateFilterEventLabel(selectedFilter: Map<String, String>?): String {
-        if (selectedFilter == null) {
-            return ""
-        }
-        val filterList: MutableList<String?> = ArrayList()
-        for ((key, value) in selectedFilter) {
-            filterList.add("$key=$value")
-        }
-        return TextUtils.join("&", filterList)
-    }
-
-    fun eventSearchNoResult(context: Context?,
-                            keyword: String?, screenName: String?,
-                            selectedFilter: Map<String, String>?) {
-        eventSearchNoResult(keyword, screenName, selectedFilter, "", "", "")
-    }
-
-    @JvmStatic
-    fun eventSearchNoResult(keyword: String?, screenName: String?,
-                            selectedFilter: Map<String, String>?,
-                            alternativeKeyword: String?,
-                            resultCode: String?,
-                            keywordProcess: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.EVENT_VIEW_SEARCH_RESULT,
-                SearchEventTracking.Category.EVENT_TOP_NAV,
-                String.format(
-                        SearchEventTracking.Action.NO_SEARCH_RESULT_WITH_TAB,
-                        screenName
-                ),
-                String.format("keyword: %s - type: %s - alternative: %s - param: %s - treatment: %s",
-                        keyword,
-                        if (!TextUtils.isEmpty(resultCode)) resultCode else "none/other",
-                        if (!TextUtils.isEmpty(alternativeKeyword)) alternativeKeyword else "none/other",
-                        generateFilterEventLabel(selectedFilter),
-                        if (!TextUtils.isEmpty(keywordProcess)) keywordProcess else "none / other"
-                )
-        )
-    }
-
     fun eventUserClickNewSearchOnEmptySearch(context: Context?, screenName: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
@@ -435,21 +394,6 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun trackEventClickSearchBar(keyword: String?, pageSource: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_SEARCH_BOX,
-                        SearchTrackingConstant.EVENT_LABEL, keyword,
-                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                        SearchTrackingConstant.PAGE_SOURCE, pageSource,
-                )
-        )
-    }
-
-    @JvmStatic
     fun trackEventImpressionBannedProductsEmptySearch(keyword: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
@@ -514,18 +458,19 @@ object SearchTracking {
     @JvmStatic
     fun trackGTMEventSearchAttempt(generalSearchTrackingModel: GeneralSearchTrackingModel) {
         val value = DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
-                SearchTrackingConstant.EVENT_CATEGORY, generalSearchTrackingModel.eventCategory,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
-                SearchTrackingConstant.EVENT_LABEL, generalSearchTrackingModel.eventLabel,
-                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                SearchTrackingConstant.USER_ID, generalSearchTrackingModel.userId,
-                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                SearchTrackingConstant.IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound,
-                SearchTrackingConstant.CATEGORY_ID_MAPPING, generalSearchTrackingModel.categoryIdMapping,
-                SearchTrackingConstant.CATEGORY_NAME_MAPPING, generalSearchTrackingModel.categoryNameMapping,
-                SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingModel.relatedKeyword,
-                SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingModel.pageSource
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
+            SearchTrackingConstant.EVENT_CATEGORY, generalSearchTrackingModel.eventCategory,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
+            SearchTrackingConstant.EVENT_LABEL, generalSearchTrackingModel.eventLabel,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.USER_ID, generalSearchTrackingModel.userId,
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            SearchTrackingConstant.IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound,
+            SearchTrackingConstant.CATEGORY_ID_MAPPING, generalSearchTrackingModel.categoryIdMapping,
+            SearchTrackingConstant.CATEGORY_NAME_MAPPING, generalSearchTrackingModel.categoryNameMapping,
+            SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingModel.relatedKeyword,
+            SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingModel.pageSource,
+            SearchTrackingConstant.SEARCHFILTER, generalSearchTrackingModel.searchFilter,
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(value)
     }
@@ -968,16 +913,78 @@ object SearchTracking {
     @JvmStatic
     fun trackEventGeneralSearchShop(generalSearchTrackingShop: GeneralSearchTrackingShop) {
         val generalSearchShopDataLayer = DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH_SHOP,
-                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
-                SearchTrackingConstant.EVENT_LABEL, generalSearchTrackingShop.eventLabel,
-                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingShop.pageSource,
-                SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingShop.relatedKeyword,
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_TOP_NAV,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH_SHOP,
+            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
+            SearchTrackingConstant.EVENT_LABEL, generalSearchTrackingShop.eventLabel,
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingShop.pageSource,
+            SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingShop.relatedKeyword,
+            SearchTrackingConstant.SEARCHFILTER, generalSearchTrackingShop.searchFilter,
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(generalSearchShopDataLayer)
+    }
+
+    @JvmStatic
+    fun trackEventLastFilterImpression(
+        iris: Iris,
+        keyword: String,
+        filter: String,
+        pageSource: String,
+    ) {
+        val impressionDataLayer = DataLayer.mapOf(
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_SAVE_LAST_FILTER,
+            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.PAGE_SOURCE, pageSource,
+        )
+
+        iris.saveEvent(impressionDataLayer)
+    }
+
+    private fun getLastFilterEventLabel(keyword: String, filter: String): String =
+        SearchEventTracking.Label.KEYWORD_FILTER.format(keyword, filter)
+
+    @JvmStatic
+    fun trackEventLastFilterClickApply(
+        keyword: String,
+        filter: String,
+        pageSource: String,
+    ) {
+        val clickDataLayer = DataLayer.mapOf(
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_SAVE_LAST_FILTER,
+            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.PAGE_SOURCE, pageSource,
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(clickDataLayer)
+    }
+
+    @JvmStatic
+    fun trackEventLastFilterClickClose(
+        keyword: String,
+        filter: String,
+        pageSource: String,
+    ) {
+        val clickDataLayer = DataLayer.mapOf(
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLOSE_SAVE_LAST_FILTER,
+            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_LABEL, getLastFilterEventLabel(keyword, filter),
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.PAGE_SOURCE, pageSource,
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(clickDataLayer)
     }
 }

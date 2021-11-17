@@ -213,8 +213,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         getLoadingView()?.visible()
         arguments?.let {
             if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
-                thanksPageDataViewModel.getThanksPageData(it.getLong(ARG_PAYMENT_ID),
-                    it.getString(ARG_MERCHANT, ""))
+                thanksPageDataViewModel.getThanksPageData(it.getString(ARG_PAYMENT_ID, ""),
+                        it.getString(ARG_MERCHANT, ""))
             }
         }
     }
@@ -341,7 +341,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         thanksPageData.howToPayAPP?.let {
             RouteManager.route(context, thanksPageData.howToPayAPP)
             thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(thanksPageData.profileCode,
-                thanksPageData.paymentID.toString())
+                thanksPageData.paymentID
+            )
         }
     }
 
@@ -392,9 +393,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     fun openInvoiceDetail(thanksPageData: ThanksPageData) {
         InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(thanksPageData.profileCode,
-            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-            thanksPageData.paymentID.toString())
-
+                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+                thanksPageData.paymentID)
+        
         if (activity is ThankYouPageActivity) {
             (activity as ThankYouPageActivity).cancelGratifDialog()
         }
@@ -403,8 +404,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     override fun gotoHomePage() {
         RouteManager.route(context, ApplinkConst.HOME, "")
         thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(thanksPageData.profileCode,
-            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-            thanksPageData.paymentID.toString())
+                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+                thanksPageData.paymentID)
         activity?.finish()
     }
 
@@ -436,8 +437,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 .startActivities()
         }
         thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(thanksPageData.profileCode,
-            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-            thanksPageData.paymentID.toString())
+                PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+                thanksPageData.paymentID)
         activity?.finish()
     }
 
@@ -457,8 +458,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     override fun gotoOrderList() {
         try {
             thankYouPageAnalytics.get()
-                .sendCheckTransactionListEvent(thanksPageData.profileCode,
-                    thanksPageData.paymentID.toString())
+                    .sendCheckTransactionListEvent(thanksPageData.profileCode,
+                            thanksPageData.paymentID)
             val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
             val orderListListIntent = getOrderListPageIntent()
             orderListListIntent?.let {
@@ -478,8 +479,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 gotoOrderList()
             } else {
                 thankYouPageAnalytics.get()
-                    .sendCheckTransactionListEvent(thanksPageData.profileCode,
-                        thanksPageData.paymentID.toString())
+                        .sendCheckTransactionListEvent(thanksPageData.profileCode,
+                                thanksPageData.paymentID)
                 val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
                 val orderListListIntent = RouteManager.getIntent(context, applink)
                 orderListListIntent?.let {

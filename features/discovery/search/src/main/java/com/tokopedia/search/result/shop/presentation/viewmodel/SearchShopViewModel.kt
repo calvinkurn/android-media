@@ -18,6 +18,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.helper.getFilterParams
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
@@ -29,6 +30,7 @@ import com.tokopedia.search.result.shop.presentation.model.ShopDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopEmptySearchDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopRecommendationTitleDataView
 import com.tokopedia.search.result.shop.presentation.model.ShopSuggestionDataView
+import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.convertValuesToString
 import com.tokopedia.search.utils.createSearchShopDefaultQuickFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -74,7 +76,6 @@ internal class SearchShopViewModel(
     private val openFilterPageEventLiveData = MutableLiveData<Event<Boolean>>()
     private val shopItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val productPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
-    private val emptySearchTrackingEventLiveData = MutableLiveData<Event<Boolean>>()
     private val searchShopFirstPagePerformanceMonitoringEventLiveData = MutableLiveData<Event<Boolean>>()
     private val shopRecommendationItemImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
     private val shopRecommendationProductPreviewImpressionTrackingEventLiveData = MutableLiveData<Event<List<Any>>>()
@@ -393,7 +394,6 @@ internal class SearchShopViewModel(
 
     private fun postLiveDataEventsAfterSearchShop(searchShopModel: SearchShopModel, visitableList: List<Visitable<*>>) {
         postImpressionTrackingEvent(searchShopModel, visitableList)
-        postEmptySearchTrackingEvent()
         postGeneralSearchTrackingEvent(searchShopModel)
         postRecommendationImpressionTrackingEvent(searchShopModel, visitableList)
     }
@@ -425,22 +425,22 @@ internal class SearchShopViewModel(
         return dataLayerShopItemProductList
     }
 
-    private fun postEmptySearchTrackingEvent() {
-        if (isEmptySearchShop) {
-            emptySearchTrackingEventLiveData.postValue(Event(true))
-        }
-    }
-
     private fun postGeneralSearchTrackingEvent(searchShopModel: SearchShopModel) {
         val eventLabel = createGeneralSearchTrackingEventLabel(searchShopModel)
         val relatedKeyword = createGeneralSearchTrackingRelatedKeyword()
 
         val generalSearchTracking = GeneralSearchTrackingShop(
-                eventLabel = eventLabel,
-                pageSource = Dimension90Utils.getDimension90(getSearchParameter()),
-                relatedKeyword = relatedKeyword,
+            eventLabel = eventLabel,
+            pageSource = Dimension90Utils.getDimension90(getSearchParameter()),
+            relatedKeyword = relatedKeyword,
+            searchFilter = getSearchParamAsString(),
         )
         generalSearchTrackingMutableLiveData.postValue(generalSearchTracking)
+    }
+
+    private fun getSearchParamAsString(): String {
+        val filterParameter = getFilterParams(searchParameter as Map<String?, String>)
+        return UrlParamUtils.generateUrlParamString(filterParameter)
     }
 
     private fun createGeneralSearchTrackingEventLabel(searchShopModel: SearchShopModel): String {
@@ -868,10 +868,6 @@ internal class SearchShopViewModel(
 
     fun getProductPreviewImpressionTrackingEventLiveData(): LiveData<Event<List<Any>>> =
             productPreviewImpressionTrackingEventLiveData
-
-    fun getActiveFilterMapForEmptySearchTracking() = filterController.getActiveFilterMap()
-
-    fun getEmptySearchTrackingEventLiveData(): LiveData<Event<Boolean>> = emptySearchTrackingEventLiveData
 
     fun getSearchShopFirstPagePerformanceMonitoringEventLiveData(): LiveData<Event<Boolean>> =
             searchShopFirstPagePerformanceMonitoringEventLiveData

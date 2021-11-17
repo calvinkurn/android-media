@@ -9,7 +9,7 @@
         android:id="@+id/image_upload"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
-        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginRight="5dp"
         android:padding="2dp"
         android:scaleType="centerInside"
         android:background="@drawable/reputation_shape_dash_rectangle_shop_page"

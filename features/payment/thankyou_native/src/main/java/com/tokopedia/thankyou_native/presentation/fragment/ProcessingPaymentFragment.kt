@@ -71,7 +71,8 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
     private fun initCheckPaymentWidgetData() {
         btnCheckPaymentStatus.setOnClickListener {
             thankYouPageAnalytics.get().onCheckPaymentStatusClick(thanksPageData.profileCode,
-                    thanksPageData.paymentID.toString())
+                thanksPageData.paymentID
+            )
             refreshThanksPageData()
         }
         setUpHomeButton(btnShopAgain)

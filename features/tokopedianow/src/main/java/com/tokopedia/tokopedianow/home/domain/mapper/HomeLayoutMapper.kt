@@ -44,6 +44,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
 
@@ -72,7 +73,7 @@ object HomeLayoutMapper {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
         when (id) {
-            EMPTY_STATE_NO_ADDRESS -> add(HomeLayoutItemUiModel(TokoNowEmptyStateOocUiModel(id = id, eventCategory = EVENT_CATEGORY_HOME_PAGE), HomeLayoutItemState.LOADED))
+            EMPTY_STATE_NO_ADDRESS -> add(HomeLayoutItemUiModel(TokoNowEmptyStateOocUiModel(id = id, hostSource = SOURCE), HomeLayoutItemState.LOADED))
             EMPTY_STATE_FAILED_TO_FETCH_DATA -> add(HomeLayoutItemUiModel(TokoNowServerErrorUiModel, HomeLayoutItemState.LOADED))
             else -> add(HomeLayoutItemUiModel(HomeEmptyStateUiModel(id = id), HomeLayoutItemState.LOADED))
         }
@@ -129,7 +130,7 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.setStateToLoading(item: HomeLayoutItemUiModel) {
-        item.layout.let { layout ->
+        item.layout?.let { layout ->
             updateItemById(layout.getVisitableId()) {
                 HomeLayoutItemUiModel(layout, HomeLayoutItemState.LOADING)
             }
@@ -140,7 +141,7 @@ object HomeLayoutMapper {
         item: TokoNowCategoryGridUiModel,
         response: List<CategoryResponse>?
     ) {
-        updateItemById(item.visitableId) {
+        updateItemById(item.id) {
             if (!response.isNullOrEmpty()) {
                 val categoryList = mapToCategoryList(response)
                 val layout = item.copy(categoryList = categoryList, state = TokoNowLayoutState.SHOW)
@@ -175,7 +176,7 @@ object HomeLayoutMapper {
         response: RepurchaseData,
         miniCartData: MiniCartSimplifiedData? = null
     ) {
-        updateItemById(item.visitableId) {
+        updateItemById(item.id) {
             val uiModel = mapToRepurchaseUiModel(item, response, miniCartData)
             HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
         }
@@ -347,20 +348,39 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.setQuantityToZero(
-        productId: String,
-        @TokoNowLayoutType type: String
-    ) = updateProductQuantity(productId, DEFAULT_QUANTITY, type)
-
     fun MutableList<HomeLayoutItemUiModel>.removeItem(id: String) {
         getItemIndex(id)?.let { removeAt(it) }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.updateProductRecom(
+        productId: String,
+        quantity: Int
+    ): HomeProductRecomUiModel? {
+        return filter { it.layout is HomeProductRecomUiModel }.firstOrNull { uiModel ->
+            val productRecom = uiModel.layout as HomeProductRecomUiModel
+            val recomWidget = productRecom.recomWidget
+            val recommendationItemList = recomWidget.recommendationItemList
+            recommendationItemList.firstOrNull { it.productId.toString() == productId } != null
+        }?.let { uiModel ->
+            val productRecom = uiModel.layout as HomeProductRecomUiModel
+            val recomWidget = productRecom.recomWidget
+            val recomItemList = recomWidget.recommendationItemList.toMutableList()
+
+            val product = recomItemList.first { it.productId.toString() == productId }
+            val position = recomItemList.indexOf(product)
+            recomItemList[position] = product.copy(quantity = quantity)
+
+            val updatedRecomWidget = recomWidget.copy(recommendationItemList = recomItemList)
+            return productRecom.copy(recomWidget = updatedRecomWidget)
+        }
     }
 
     private fun Visitable<*>.getVisitableId(): String? {
         return when (this) {
             is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
-            is TokoNowLayoutUiModel -> visitableId
+            is TokoNowRepurchaseUiModel -> id
+            is TokoNowCategoryGridUiModel -> id
             else -> null
         }
     }

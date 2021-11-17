@@ -2,11 +2,14 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.filters.FlakyTest
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
+@UiTest
 class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
 
     // TODO: verify label background color
@@ -62,6 +65,7 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
     }
 
     @Test
+    @FlakyTest
     fun should_show_ended_state_when_ongoing_campaign_finished_countdown() {
         // Given
         val bannerAttachmentId = getChatUseCase.getBannerAttachmentId(
@@ -78,7 +82,7 @@ class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
 
         // When
         // Wait for countdown to finish
-        val waitTime = TimeUnit.SECONDS.toMillis(3)
+        val waitTime = TimeUnit.SECONDS.toMillis(4)
         waitForIt(waitTime)
 
         // Then

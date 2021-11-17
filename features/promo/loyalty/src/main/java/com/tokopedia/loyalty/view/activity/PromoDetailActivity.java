@@ -51,9 +51,11 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
         trackCampaign(getIntent().getData());
     }
 
-    private void trackCampaign(Uri uri){
+    private void trackCampaign(Uri uri) {
         //track campaign in case there is utm/gclid in url
-        TrackApp.getInstance().getGTM().sendCampaign(this, uri.toString(), getScreenName(), false);
+        if (uri != null) {
+            TrackApp.getInstance().getGTM().sendCampaign(this, uri.toString(), getScreenName(), false);
+        }
     }
 
     @Override

@@ -9,20 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.databinding.FragmentShopNotesAddEditBinding
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
-import com.tokopedia.shop.settings.notes.view.listener.ShopSettingsNotesAddEditView
-import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingsNoteAddEditPresenter
+import com.tokopedia.shop.settings.notes.view.viewmodel.ShopSettingsNoteAddEditViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesAddEditView {
+class ShopSettingsNotesAddEditFragment: BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentShopNotesAddEditBinding>()
 
@@ -32,7 +34,8 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
     private var isReturnablePolicy = false
     private var shopNote = ShopNoteUiModel()
 
-    @Inject lateinit var presenter: ShopSettingsNoteAddEditPresenter
+    @Inject
+    lateinit var viewModel: ShopSettingsNoteAddEditViewModel
 
     companion object {
         private const val MAX_TITLE_CHARACTER = 128
@@ -55,7 +58,6 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
 
     override fun initInjector() {
         getComponent(ShopSettingsComponent::class.java).inject(this)
-        presenter.attachView(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -89,11 +91,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
                 tfDesc?.textFieldInput?.setSelection(it)
             }
         }
-    }
-
-    override fun onDestroyView() {
-        presenter.detachView()
-        super.onDestroyView()
+        observeData()
     }
 
     fun saveAddEditNote() {
@@ -101,7 +99,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
             shopNote.title = tfTitle?.textFieldInput?.text?.toString()?.trim()
             shopNote.content = tfDesc?.textFieldInput?.text?.toString()?.trim()?.replace("\n", "<br />");
             shopNote.terms = isReturnablePolicy
-            presenter.saveNote(shopNote, isEdit)
+            viewModel.saveNote(shopNote, isEdit)
         }
     }
 
@@ -146,7 +144,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
         return isValid
     }
 
-    override fun onSuccesAddEdit(string: String?) {
+    private fun savingDataSuccess(string: String) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().putExtras(Bundle().apply {
                 putBoolean(PARAM_IS_SUCCESS, !TextUtils.isEmpty(string))
@@ -156,12 +154,12 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
         }
     }
 
-    override fun onErrorAddEdit(throwable: Throwable?) {
+    private fun savingDataError(throwable: Throwable) {
         if (view != null && activity != null)
             view?.let {
                 Toaster.make(it, ErrorHandler.getErrorMessage(activity, throwable),
                         Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_retry), View.OnClickListener {
-                    presenter.saveNote(shopNote, isEdit)
+                    viewModel.saveNote(shopNote, isEdit)
                 })
             }
     }
@@ -171,6 +169,15 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
             tfTitle = binding?.textInputTitle
             tfDesc = binding?.textInputDesc
             tfDesc?.textFieldInput?.isSingleLine = false
+        }
+    }
+
+    private fun observeData() {
+        observe(viewModel.saveNote) {
+            when(it) {
+                is Success -> savingDataSuccess(it.data)
+                is Fail -> savingDataError(it.throwable)
+            }
         }
     }
 

@@ -7,9 +7,25 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_LOAD_MORE
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_INSPIRATION_CAROUSEL_KEYWORD
+import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
+import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.INPUT_PARAMS
+import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.SAVE_LAST_FILTER_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_HEADLINE_ADS
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
@@ -18,25 +34,22 @@ import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
+import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
@@ -101,22 +114,24 @@ import javax.inject.Named
 import kotlin.math.max
 
 class ProductListPresenter @Inject constructor(
-        @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
+        @param:Named(SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
         private val searchProductFirstPageUseCase: UseCase<SearchProductModel>,
-        @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
+        @param:Named(SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
         private val searchProductLoadMoreUseCase: UseCase<SearchProductModel>,
         private val recommendationUseCase: GetRecommendationUseCase,
         private val userSession: UserSessionInterface,
-        @param:Named(SearchConstant.OnBoarding.LOCAL_CACHE_NAME)
+        @param:Named(LOCAL_CACHE_NAME)
         private val searchCoachMarkLocalCache: CoachMarkLocalCache,
-        @param:Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
+        @param:Named(GET_DYNAMIC_FILTER_USE_CASE)
         private val getDynamicFilterUseCase: Lazy<UseCase<DynamicFilterModel>>,
-        @param:Named(SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE)
+        @param:Named(GET_PRODUCT_COUNT_USE_CASE)
         private val getProductCountUseCase: Lazy<UseCase<String>>,
-        @param:Named(SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
+        @param:Named(GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
         private val getLocalSearchRecommendationUseCase: Lazy<UseCase<SearchProductModel>>,
-        @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
+        @param:Named(SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
         private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
+        @param:Named(SAVE_LAST_FILTER_USE_CASE)
+        private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
         private val topAdsUrlHitter: TopAdsUrlHitter,
         private val schedulersProvider: SchedulersProvider,
         remoteConfig: Lazy<RemoteConfig>,
@@ -124,7 +139,6 @@ class ProductListPresenter @Inject constructor(
         ProductListSectionContract.Presenter {
 
     companion object {
-        private val searchNoResultCodeList = listOf(1, 2, 3, 4, 5, 6, 8)
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
         private val showSuggestionResponseCodeList = listOf("3", "6", "7")
@@ -159,7 +173,6 @@ class ProductListPresenter @Inject constructor(
 
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
-    private var isFirstTimeLoad = false
     override var isTickerHasDismissed = false
         private set
     override var startFrom = 0
@@ -186,7 +199,8 @@ class ProductListPresenter @Inject constructor(
     private var suggestionDataView: SuggestionDataView? = null
     private var relatedDataView: RelatedDataView? = null
     override val quickFilterOptionList = mutableListOf<Option>()
-    private var dynamicFilterModel: DynamicFilterModel? = null
+    override var dynamicFilterModel: DynamicFilterModel? = null
+        private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
     private var hasFullThreeDotsOptions = false
@@ -194,6 +208,7 @@ class ProductListPresenter @Inject constructor(
     private var isEnableChooseAddress = false
     private var chooseAddressData: LocalCacheModel? = null
     private var bannerDataView: BannerDataView? = null
+    private var categoryIdL2 = ""
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -206,22 +221,11 @@ class ProductListPresenter @Inject constructor(
 
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
-            checkNavigationRollenceValue(
-                NAVIGATION_EXP_TOP_NAV,
-                NAVIGATION_VARIANT_REVAMP
-            )
-            || checkNavigationRollenceValue(
-                NAVIGATION_EXP_TOP_NAV2,
-                NAVIGATION_VARIANT_REVAMP2
-            )
+            true
         } catch (e: Exception) {
             e.printStackTrace()
             false
         }
-    }
-
-    private fun checkNavigationRollenceValue(rollenceKey: String, expectedValue: String): Boolean {
-        return view.abTestRemoteConfig?.getString(rollenceKey, NAVIGATION_VARIANT_OLD) == expectedValue
     }
 
     private fun getHasFullThreeDotsOptions(): Boolean {
@@ -259,14 +263,12 @@ class ProductListPresenter @Inject constructor(
     override fun onViewCreated() {
         val isFirstActiveTab = view.isFirstActiveTab
 
-        if (isFirstActiveTab && !hasLoadData) {
-            hasLoadData = true
+        if (isFirstActiveTab && !hasLoadData)
             onViewFirstTimeLaunch()
-        }
     }
 
     private fun onViewFirstTimeLaunch() {
-        isFirstTimeLoad = true
+        hasLoadData = true
         view.reloadData()
     }
 
@@ -275,10 +277,8 @@ class ProductListPresenter @Inject constructor(
             view.setupSearchNavigation()
             view.trackScreenAuthenticated()
 
-            if (isViewAdded && !hasLoadData) {
-                hasLoadData = true
+            if (isViewAdded && !hasLoadData)
                 onViewFirstTimeLaunch()
-            }
         }
     }
 
@@ -396,15 +396,20 @@ class ProductListPresenter @Inject constructor(
 
     private fun createSearchProductRequestParams(requestParams: RequestParams): RequestParams {
         val isLocalSearch: Boolean = isLocalSearch()
-        val isSkipGlobalNavWidget = isLocalSearch || view.isAnyFilterActive || view.isAnySortActive
+        val hasFilter = view.isAnyFilterActive
+        val hasSort = view.isAnySortActive
+        val isSkipGlobalNavWidget = isLocalSearch || hasFilter || hasSort
+        val isSkipGetLastFilterWidget = hasFilter || hasSort
 
         return RequestParams.create().apply {
-            putObject(SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS, requestParams.parameters)
-            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS, isLocalSearch)
-            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_HEADLINE_ADS, isLocalSearch)
-            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, isLocalSearch)
-            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch)
-            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget)
+            putObject(SEARCH_PRODUCT_PARAMS, requestParams.parameters)
+
+            putBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, isLocalSearch)
+            putBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, isLocalSearch)
+            putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, isLocalSearch)
+            putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch)
+            putBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget)
+            putBoolean(SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET, isSkipGetLastFilterWidget)
         }
     }
 
@@ -650,9 +655,13 @@ class ProductListPresenter @Inject constructor(
         view.stopPreparePagePerformanceMonitoring()
         view.startNetworkRequestPerformanceMonitoring()
 
-        // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
+        // Unsubscribe first in case user has slow connection,
+        // and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe()
-        searchProductFirstPageUseCase.execute(useCaseRequestParams, getLoadDataSubscriber(requestParams.parameters))
+        searchProductFirstPageUseCase.execute(
+            useCaseRequestParams,
+            getLoadDataSubscriber(requestParams.parameters)
+        )
     }
 
     private fun getLoadDataSubscriber(searchParameter: Map<String, Any>): Subscriber<SearchProductModel> {
@@ -724,7 +733,10 @@ class ProductListPresenter @Inject constructor(
         view.redirectSearchToAnotherPage(applink)
     }
 
-    private fun getViewToProcessSearchResult(searchParameter: Map<String, Any>, searchProductModel: SearchProductModel) {
+    private fun getViewToProcessSearchResult(
+        searchParameter: Map<String, Any>,
+        searchProductModel: SearchProductModel,
+    ) {
         updateValueEnableGlobalNavWidget()
 
         val productDataView = createFirstProductDataView(searchProductModel)
@@ -735,8 +747,7 @@ class ProductListPresenter @Inject constructor(
         bannerDataView = productDataView.bannerDataView
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
         totalData = productDataView.totalData
-
-        doInBackground<ProductDataView>(productDataView, this::sendTrackingNoSearchResult)
+        categoryIdL2 = productDataView.categoryIdL2
 
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
@@ -751,28 +762,13 @@ class ProductListPresenter @Inject constructor(
 
         view.updateScrollListener()
 
-        if (isFirstTimeLoad)
-            getViewToSendTrackingSearchAttempt(productDataView)
+        getViewToSendTrackingSearchAttempt(productDataView)
     }
 
     private fun updateValueEnableGlobalNavWidget() {
         if (isViewNotAttached) return
 
         enableGlobalNavWidget = !view.isLandingPage
-    }
-
-    private fun sendTrackingNoSearchResult(productDataView: ProductDataView) {
-        try {
-            val alternativeKeyword = productDataView.relatedDataView?.relatedKeyword ?: ""
-            val responseCode = productDataView.responseCode
-            val responseCodeInt = responseCode.toIntOrZero()
-            val keywordProcess = productDataView.keywordProcess
-
-            if (searchNoResultCodeList.contains(responseCodeInt))
-                view.sendTrackingForNoResult(responseCode, alternativeKeyword, keywordProcess)
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        }
     }
 
     private fun createFirstProductDataView(searchProductModel: SearchProductModel): ProductDataView {
@@ -791,7 +787,7 @@ class ProductListPresenter @Inject constructor(
             getViewToShowBroadMatchToReplaceEmptySearch()
         } else {
             if (!productDataView.errorMessage.isNullOrEmpty()) {
-                getViewToHandleEmptySearchWithErrorMessage(searchProduct)
+                getViewToHandleEmptySearchWithErrorMessage(searchProduct, productDataView)
             } else {
                 getViewToShowEmptySearch(productDataView)
 
@@ -835,15 +831,29 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun getViewToHandleEmptySearchWithErrorMessage(searchProduct: SearchProductModel.SearchProduct) {
+    private fun getViewToHandleEmptySearchWithErrorMessage(
+        searchProduct: SearchProductModel.SearchProduct,
+        productDataView: ProductDataView,
+    ) {
+        val bannedProductsVisitableList =
+            createBannedProductsVisitableList(searchProduct, productDataView)
+
         view.removeLoading()
-        view.setBannedProductsErrorMessage(createBannedProductsErrorMessageAsList(searchProduct))
+        view.setBannedProductsErrorMessage(bannedProductsVisitableList)
         view.trackEventImpressionBannedProducts(true)
     }
 
-    private fun createBannedProductsErrorMessageAsList(searchProduct: SearchProductModel.SearchProduct): List<Visitable<*>> {
-        return listOf(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
-    }
+    private fun createBannedProductsVisitableList(
+        searchProduct: SearchProductModel.SearchProduct,
+        productDataView: ProductDataView,
+    ): List<Visitable<*>> =
+        mutableListOf<Visitable<*>>().apply {
+            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
+                add(globalNavDataView)
+            }
+
+            add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
+        }
 
     private fun getViewToShowEmptySearch(productDataView: ProductDataView) {
         val globalNavDataView = getGlobalNavViewModel(productDataView)
@@ -1013,6 +1023,8 @@ class ProductListPresenter @Inject constructor(
             }
         }
 
+        addLastFilterDataView(list, productDataView)
+
         if (isEnableChooseAddress)
             list.add(ChooseAddressDataView())
 
@@ -1063,6 +1075,17 @@ class ProductListPresenter @Inject constructor(
         if (productDataView.totalData > getSearchRows().toIntOrZero())
             view.addLoading()
         view.stopTracePerformanceMonitoring()
+    }
+
+    private fun addLastFilterDataView(
+        visitableList: MutableList<Visitable<*>>,
+        productDataView: ProductDataView,
+    ) {
+        val lastFilterDataView = productDataView.lastFilterDataView
+
+        if (lastFilterDataView.shouldShow()) {
+            visitableList.add(lastFilterDataView)
+        }
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
@@ -1513,7 +1536,7 @@ class ProductListPresenter @Inject constructor(
         quickFilterData.filter.forEach { filter ->
             val options = filter.options
             quickFilterOptionList.addAll(options)
-            sortFilterItems.addAll(convertToSortFilterItem(filter.title, options))
+            sortFilterItems.addAll(convertToSortFilterItem(filter, options))
         }
 
         if (sortFilterItems.isNotEmpty()) {
@@ -1522,14 +1545,14 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun convertToSortFilterItem(title: String, options: List<Option>) =
+    private fun convertToSortFilterItem(filter: Filter, options: List<Option>) =
             options.map { option ->
-                createSortFilterItem(title, option)
+                createSortFilterItem(filter, option)
             }
 
-    private fun createSortFilterItem(title: String, option: Option): SortFilterItem {
-        val item = SortFilterItem(title) {
-            view.onQuickFilterSelected(option)
+    private fun createSortFilterItem(filter: Filter, option: Option): SortFilterItem {
+        val item = SortFilterItem(filter.title) {
+            view.onQuickFilterSelected(filter, option)
         }
 
         setSortFilterItemState(item, option)
@@ -1546,8 +1569,6 @@ class ProductListPresenter @Inject constructor(
 
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {
         if (isViewNotAttached) return
-
-        isFirstTimeLoad = false
 
         doInBackground(productDataView, this::sendGeneralSearchTracking)
     }
@@ -1596,16 +1617,17 @@ class ProductListPresenter @Inject constructor(
         view.sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray, allProdIdArray)
         view.sendTrackingEventMoEngageSearchAttempt(query, productDataView.productList.isNotEmpty(), moengageTrackingCategory)
         view.sendTrackingGTMEventSearchAttempt(
-                GeneralSearchTrackingModel(
-                        createGeneralSearchTrackingEventCategory(),
-                        createGeneralSearchTrackingEventLabel(productDataView, query),
-                        userId,
-                        productDataView.productList.isNotEmpty().toString(),
-                        StringUtils.join(categoryIdMapping, ","),
-                        StringUtils.join(categoryNameMapping, ","),
-                        createGeneralSearchTrackingRelatedKeyword(productDataView),
-                        dimension90,
-                )
+            GeneralSearchTrackingModel(
+                createGeneralSearchTrackingEventCategory(),
+                createGeneralSearchTrackingEventLabel(productDataView, query),
+                userId,
+                productDataView.productList.isNotEmpty().toString(),
+                StringUtils.join(categoryIdMapping, ","),
+                StringUtils.join(categoryNameMapping, ","),
+                createGeneralSearchTrackingRelatedKeyword(productDataView),
+                dimension90,
+                view.filterParamString,
+            )
         )
     }
 
@@ -2352,6 +2374,35 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
+    override fun updateLastFilter(
+        searchParameter: Map<String, Any>,
+        savedOptionList: List<SavedOption>,
+    ) {
+        val saveLastFilterInput = SaveLastFilterInput(
+            lastFilter = savedOptionList,
+            mapParameter = createInitializeSearchParam(searchParameter).parameters,
+            categoryIdL2 = categoryIdL2,
+        )
+
+        val requestParams = RequestParams.create()
+        requestParams.putObject(INPUT_PARAMS, saveLastFilterInput)
+
+        saveLastFilterUseCase.get().unsubscribe()
+        saveLastFilterUseCase.get().execute(requestParams, emptySubscriber())
+    }
+
+    private fun <T> emptySubscriber() = object : Subscriber<T>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable?) {}
+
+        override fun onNext(t: T?) {}
+    }
+
+    override fun closeLastFilter(searchParameter: Map<String, Any>) {
+        updateLastFilter(searchParameter, listOf())
+    }
+
     override fun detachView() {
         super.detachView()
 
@@ -2362,6 +2413,7 @@ class ProductListPresenter @Inject constructor(
         getProductCountUseCase.get()?.unsubscribe()
         getLocalSearchRecommendationUseCase.get()?.unsubscribe()
         getInspirationCarouselChipsUseCase.get()?.unsubscribe()
+        saveLastFilterUseCase.get()?.unsubscribe()
         if (compositeSubscription?.isUnsubscribed == true) unsubscribeCompositeSubscription()
     }
 

@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseProductMapper.mapToProductListUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.factory.RepurchaseSortFilterFactory
+import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLoadingUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
@@ -97,15 +98,27 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addEmptyStateOoc() {
-        add(TokoNowEmptyStateOocUiModel())
+        add(TokoNowEmptyStateOocUiModel(hostSource = SOURCE))
+    }
+
+    fun MutableList<Visitable<*>>.addRecomWidget(pageName: String) {
+        add(
+            TokoNowRecommendationCarouselUiModel(
+                pageName = pageName,
+                isFirstLoad = true,
+                isBindWithPageName = true
+            )
+        )
     }
 
     fun MutableList<Visitable<*>>.addEmptyStateNoResult() {
-        add(TokoNowEmptyStateNoResultUiModel(
-            defaultTitleResId = R.string.tokopedianow_repurchase_no_result_title,
-            defaultDescriptionResId = R.string.tokopedianow_repurchase_no_result_description,
-            globalSearchBtnTextResId = R.string.tokopedianow_back_to_tokopedia
-        ))
+        add(
+            TokoNowEmptyStateNoResultUiModel(
+                defaultTitleResId = R.string.tokopedianow_repurchase_no_result_title,
+                defaultDescriptionResId = R.string.tokopedianow_repurchase_no_result_description,
+                globalSearchBtnTextResId = R.string.tokopedianow_back_to_tokopedia
+            )
+        )
     }
 
     fun MutableList<Visitable<*>>.addServerErrorState() {
@@ -234,7 +247,6 @@ object RepurchaseLayoutMapper {
                 miniCartItem.quantity
             }
             updateProductQuantity(productId, quantity)
-            updateProductRecomQuantity(productId, quantity)
         }
     }
 

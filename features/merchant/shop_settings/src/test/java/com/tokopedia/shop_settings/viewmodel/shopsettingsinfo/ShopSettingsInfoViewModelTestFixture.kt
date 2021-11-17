@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
-import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
@@ -57,14 +56,5 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
                 getShopBasicDataUseCase,
                 CoroutineTestDispatchersProvider
         )
-    }
-
-    protected fun onCheckOsMerchantType_thenReturn() {
-        coEvery { checkOsMerchantUseCase.executeOnBackground() } returns GetIsShopOfficialStore()
-    }
-
-    protected fun verifySuccessCheckOsMerchantTypeCalled(shopId: Int) {
-        verify { GqlGetIsShopOsUseCase.createParams(shopId) }
-        coVerify { checkOsMerchantUseCase.executeOnBackground() }
     }
 }
