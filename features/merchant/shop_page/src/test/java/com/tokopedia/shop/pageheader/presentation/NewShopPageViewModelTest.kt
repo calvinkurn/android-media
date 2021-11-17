@@ -305,6 +305,7 @@ class NewShopPageViewModelTest {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()
 
+        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
         every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
@@ -324,6 +325,7 @@ class NewShopPageViewModelTest {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()
 
+        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
         every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
@@ -342,6 +344,7 @@ class NewShopPageViewModelTest {
     fun `check whether shopImagePath value is null when onLoadCleared is called on saveShopImageToPhoneStorage`() {
         val mockDrawable = mockk<Drawable>()
 
+        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
         every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
             (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onLoadCleared(mockDrawable)
         }
@@ -353,6 +356,7 @@ class NewShopPageViewModelTest {
 
     @Test
     fun `check whether shopImagePath value is null when ImageHandler loadImageWithTarget throws exception`() {
+        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
         every { loadImageWithEmptyTarget(any(), any(), any(), any()) } throws Exception()
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value == null)
