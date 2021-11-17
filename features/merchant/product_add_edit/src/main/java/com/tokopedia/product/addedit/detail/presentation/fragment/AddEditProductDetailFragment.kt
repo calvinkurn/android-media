@@ -321,7 +321,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             imeOptions = EditorInfo.IME_ACTION_DONE
             setRawInputType(InputType.TYPE_CLASS_TEXT)
         }
-        viewModel.usingNewProductTitleRequest = true
         setupProductNameValidationBottomsheet()
 
         // add edit product category views
