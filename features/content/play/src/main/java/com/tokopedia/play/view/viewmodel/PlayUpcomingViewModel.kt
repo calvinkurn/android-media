@@ -292,9 +292,9 @@ class PlayUpcomingViewModel @Inject constructor(
             when (partnerInfo.type) {
                 PartnerType.Shop -> {
                     playAnalytic.clickShop(mChannelId, channelType, partnerInfo.id.toString())
-                    _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString()), pipMode = true))
+                    _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString())))
                 }
-                PartnerType.Buyer -> _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString()), pipMode = true))
+                PartnerType.Buyer -> _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString())))
                 else -> {}
             }
         }
