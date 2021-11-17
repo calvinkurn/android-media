@@ -2,6 +2,7 @@ package com.tokopedia.autocompletecomponent.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.CLICK_CARI
+import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.CLICK_SEARCH_BAR
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.CLICK_SEARCH_SEARCH_BAR
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Action.VOICE_SEARCH
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTracking.Category.LONG_PRESS
@@ -19,8 +20,10 @@ import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstan
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.Event.CLICK_SEARCH
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.Event.CLICK_TOKO_NOW
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.Event.LONG_CLICK
+import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.PAGE_SOURCE
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.USER_ID
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Category.SEARCH_COMPONENT
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -38,10 +41,25 @@ open class AutoCompleteTracking(
         const val CLICK_SEARCH_SEARCH_BAR = "click - search - search bar"
         const val CLICK_SEARCH = "click - search"
         const val VOICE_SEARCH = "Voice Search"
+        const val CLICK_SEARCH_BAR = "click search bar"
     }
 
     object Label {
         const val PRODUCT_SEARCH = "Product Search"
+    }
+
+    open fun eventInitiateSearchSession(dimension90: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT, CLICK_SEARCH,
+                EVENT_ACTION, CLICK_SEARCH_BAR,
+                EVENT_CATEGORY, SEARCH_COMPONENT,
+                EVENT_LABEL, "",
+                BUSINESS_UNIT, AutoCompleteTrackingConstant.SEARCH,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                PAGE_SOURCE, dimension90,
+            )
+        )
     }
 
     open fun eventSearchShortcut() {

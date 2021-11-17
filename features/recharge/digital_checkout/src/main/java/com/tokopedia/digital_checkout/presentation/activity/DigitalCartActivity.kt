@@ -31,7 +31,7 @@ import com.tokopedia.user.session.UserSession
  * @author by jessica on 07/01/21
  */
 
-class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutComponent> {
+open class DigitalCartActivity : BaseSimpleActivity(), HasComponent<DigitalCheckoutComponent> {
     override fun getNewFragment(): Fragment {
         val uriData = intent.data
         var cartPassData: DigitalCheckoutPassData? = null

@@ -17,6 +17,7 @@ import com.tokopedia.productcard.utils.renderLabelBestSeller
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
+import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -83,6 +84,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
         renderProductCardContent(productCardModel, isWideContent = true)
+
+        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
         renderProductCardFooter(productCardModel, isProductCardList = true)
 

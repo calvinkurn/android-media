@@ -4,7 +4,9 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName.CLICK_COURIER
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey.*
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey.USER_ID
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
