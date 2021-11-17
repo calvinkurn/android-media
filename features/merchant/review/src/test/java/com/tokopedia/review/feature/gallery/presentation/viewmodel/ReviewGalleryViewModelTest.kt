@@ -9,6 +9,7 @@ import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert
@@ -69,10 +70,12 @@ class ReviewGalleryViewModelTest : ReviewGalleryViewModelTestFixture() {
     @Test
     fun `when setPage should call getProductReviews and return expected results`() {
         val page = ArgumentMatchers.anyInt()
+        val productId = ArgumentMatchers.anyString()
         val expectedResponse = ProductrevGetReviewImageResponse()
 
         onGetReviewImagesSuccess_thenReturn(expectedResponse)
 
+        viewModel.setProductId(productId)
         viewModel.setPage(page)
 
         Assert.assertEquals("", viewModel.getShopId())
@@ -83,15 +86,26 @@ class ReviewGalleryViewModelTest : ReviewGalleryViewModelTestFixture() {
     @Test
     fun `when setPage should call getReviewImages and return expected error`() {
         val page = ArgumentMatchers.anyInt()
+        val productId = ArgumentMatchers.anyString()
         val expectedResponse = Throwable()
 
         onGetReviewsImagesFail_thenReturn(expectedResponse)
 
+        viewModel.setProductId(productId)
         viewModel.setPage(page)
 
         Assert.assertEquals("", viewModel.getShopId())
         verifyGetReviewImagesUseCaseExecuted()
         verifyReviewImagesErrorEquals(Fail(expectedResponse))
+    }
+
+    @Test
+    fun `when productId is null & call setPage should not call getReviewImages`() {
+        val page = ArgumentMatchers.anyInt()
+
+        viewModel.setPage(page)
+
+        verifyGetReviewImagesUseCaseWasNotExecuted()
     }
 
     private fun onGetProductRatingSuccess_thenReturn(expectedResponse: ProductReviewRatingResponse) {
@@ -116,6 +130,10 @@ class ReviewGalleryViewModelTest : ReviewGalleryViewModelTestFixture() {
 
     private fun verifyGetReviewImagesUseCaseExecuted() {
         coVerify { getReviewImagesUseCase.executeOnBackground() }
+    }
+
+    private fun verifyGetReviewImagesUseCaseWasNotExecuted() {
+        coVerify { getReviewImagesUseCase.executeOnBackground() wasNot Called }
     }
 
     private fun verifyRatingSuccessEquals(expectedSuccessValue: Success<ProductRating>) {
