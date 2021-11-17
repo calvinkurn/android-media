@@ -158,7 +158,6 @@ class TopupBillsSavedNumberActivityTest {
         onView(withId(R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(NON_EXISTING_FAVORITE_NUMBER))
-        Thread.sleep(2000)
         onView(withId(R.id.common_topupbills_saved_num_empty_state_image)).check(matches(isDisplayed()))
     }
 
