@@ -52,6 +52,7 @@
             app:typographyType="body_1"
             app:layout_constraintBottom_toTopOf="@+id/image_list_container"
             app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/Unify_Static_Black"
             app:textViewTheme="darkPrimary"
             tools:text="1/6" />
 
