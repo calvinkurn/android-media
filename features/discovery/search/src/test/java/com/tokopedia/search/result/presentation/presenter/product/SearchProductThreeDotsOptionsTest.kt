@@ -27,7 +27,6 @@ internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtu
 
     @Test
     fun `Click three dots option for organic product`() {
-        setUp()
         `Given view getQueryKey will return keyword`()
         `Given search product API will success`()
         `Given view already load data`()
@@ -108,7 +107,6 @@ internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtu
 
     @Test
     fun `Click three dots option for ads product`() {
-        setUp()
         `Given view getQueryKey will return keyword`()
         `Given search product API will success`()
         `Given view already load data`()
