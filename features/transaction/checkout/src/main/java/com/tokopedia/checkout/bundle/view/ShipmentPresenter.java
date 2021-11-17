@@ -1060,68 +1060,38 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     private void triggerCrossSellClickPilihPembayaran() {
         List<ShipmentCrossSellModel> shipmentCrossSellModelList = getListShipmentCrossSellModel();
-        for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
-            CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
-            String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
-            String digitalProductId = crossSellModel.getId();
-            String eventLabel = digitalCategoryName + " - " + digitalProductId;
-            String digitalProductName = crossSellModel.getInfo().getTitle();
+        String eventLabel = "";
+        String digitalProductName = "";
 
-            List<Object> productList = new ArrayList<>();
-            for (int j = 0; j < shipmentCartItemModelList.size(); j++) {
-                for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
-                    AnalyticsProductCheckoutData dataAnalytics = cartItemModel.getAnalyticsProductCheckoutData();
-                    productList.add(DataLayer.mapOf(
-                            ConstantTransactionAnalytics.Key.BRAND, "",
-                            ConstantTransactionAnalytics.Key.CATEGORY, dataAnalytics.getProductCategoryId(),
-                            ConstantTransactionAnalytics.Key.ID, "",
-                            ConstantTransactionAnalytics.Key.NAME, dataAnalytics.getProductName(),
-                            ConstantTransactionAnalytics.Key.PRICE, dataAnalytics.getProductPrice(),
-                            ConstantTransactionAnalytics.Key.QUANTITY, dataAnalytics.getProductQuantity(),
-                            ConstantTransactionAnalytics.Key.SHOP_ID, dataAnalytics.getProductShopId(),
-                            ConstantTransactionAnalytics.Key.SHOP_NAME, dataAnalytics.getProductShopName(),
-                            ConstantTransactionAnalytics.Key.SHOP_TYPE, dataAnalytics.getProductShopType(),
-                            ConstantTransactionAnalytics.Key.VARIANT, digitalProductName
-                    ));
-                }
+        if (!shipmentCrossSellModelList.isEmpty()) {
+            for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
+                CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
+                String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
+                String digitalProductId = crossSellModel.getId();
+                eventLabel = digitalCategoryName + " - " + digitalProductId;
+                digitalProductName = crossSellModel.getInfo().getTitle();
             }
-
-            /*for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.getData()) {
-                if (dataCheckoutRequest != null) {
-                    for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.getShopProducts()) {
-                        if (shopProductCheckoutRequest != null) {
-                            for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.getProductData()) {
-                                long productCategoryId = 0L;
-                                for (int j = 0; j < shipmentCartItemModelList.size(); j++) {
-                                    for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
-                                        if (cartItemModel.getProductId() == productDataCheckoutRequest.getProductId()) {
-                                            productCategoryId = cartItemModel.getProductCatId();
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (productDataCheckoutRequest != null) {
-                                    productList.add(DataLayer.mapOf(
-                                            ConstantTransactionAnalytics.Key.BRAND, "",
-                                            ConstantTransactionAnalytics.Key.CATEGORY, productCategoryId,
-                                            ConstantTransactionAnalytics.Key.ID, "",
-                                            ConstantTransactionAnalytics.Key.NAME, productDataCheckoutRequest.getProductName(),
-                                            ConstantTransactionAnalytics.Key.PRICE, productDataCheckoutRequest.getProductPrice(),
-                                            ConstantTransactionAnalytics.Key.QUANTITY, productDataCheckoutRequest.getProductQuantity(),
-                                            ConstantTransactionAnalytics.Key.SHOP_ID, productDataCheckoutRequest.getProductShopId(),
-                                            ConstantTransactionAnalytics.Key.SHOP_NAME, productDataCheckoutRequest.getProductShopName(),
-                                            ConstantTransactionAnalytics.Key.SHOP_TYPE, productDataCheckoutRequest.getProductShopType(),
-                                            ConstantTransactionAnalytics.Key.VARIANT, digitalProductName
-                                    ));
-                                }
-                            }
-                        }
-                    }
-                }
-            }*/
-            analyticsActionListener.sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(eventLabel, userSessionInterface.getUserId(), productList);
         }
+
+        List<Object> productList = new ArrayList<>();
+        for (int j=0; j<shipmentCartItemModelList.size(); j++) {
+            for (CartItemModel cartItemModel : shipmentCartItemModelList.get(j).getCartItemModels()) {
+                AnalyticsProductCheckoutData dataAnalytics = cartItemModel.getAnalyticsProductCheckoutData();
+                productList.add(DataLayer.mapOf(
+                        ConstantTransactionAnalytics.Key.BRAND, "",
+                        ConstantTransactionAnalytics.Key.CATEGORY, dataAnalytics.getProductCategoryId(),
+                        ConstantTransactionAnalytics.Key.ID, "",
+                        ConstantTransactionAnalytics.Key.NAME, dataAnalytics.getProductName(),
+                        ConstantTransactionAnalytics.Key.PRICE, dataAnalytics.getProductPrice(),
+                        ConstantTransactionAnalytics.Key.QUANTITY, dataAnalytics.getProductQuantity(),
+                        ConstantTransactionAnalytics.Key.SHOP_ID, dataAnalytics.getProductShopId(),
+                        ConstantTransactionAnalytics.Key.SHOP_NAME, dataAnalytics.getProductShopName(),
+                        ConstantTransactionAnalytics.Key.SHOP_TYPE, dataAnalytics.getProductShopType(),
+                        ConstantTransactionAnalytics.Key.VARIANT, digitalProductName
+                ));
+            }
+        }
+        analyticsActionListener.sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(eventLabel, userSessionInterface.getUserId(), productList);
     }
 
     public Map<String, Object> generateCheckoutAnalyticsDataLayer(CheckoutRequest checkoutRequest, String step, String pageSource) {
