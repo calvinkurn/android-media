@@ -2,10 +2,6 @@ package com.tokopedia.linker.model
 
 import com.google.gson.annotations.SerializedName
 
-
-class AffiliateLinkResponse {
-}
-
 data class URL (
     @SerializedName("ShortURL")
     var shortURL: String? = "",
@@ -39,5 +35,5 @@ data class Data (
 
 data class GenerateAffiliateLink (
     @SerializedName("Data")
-    var data: List<Data>? = null
+    var data: ArrayList<Data>? = null
 )
