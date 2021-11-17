@@ -94,15 +94,17 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showFullLoading()
-        playLottieAnim(LOTTIE_BG_ANIMATION)
-        initObserver()
+//        showFullLoading()
+//        playLottieAnim(LOTTIE_BG_ANIMATION)
+//        initObserver()
+//
+//        if(otpData != null && modeListData != null) {
+//            analytics.trackClickMethodOtpButton(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
+//        }
+//
+//        requestOtp()
 
-        if(otpData != null && modeListData != null) {
-            analytics.trackClickMethodOtpButton(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
-        }
-
-        requestOtp()
+        renderSuccessPage(OtpValidateData(success = true))
     }
 
     private fun onSilentVerificationNotPossible() {
@@ -113,6 +115,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         binding?.fragmentSilentVerifTryAgainBtn?.show()
         binding?.fragmentSilentVerifTryAgainBtn?.text = getString(R.string.fragment_silent_verif_label_button_change_method)
         binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
+            analytics.trackChooseOtherMethod(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
             activity?.setResult(RESULT_DELETE_METHOD)
             activity?.finish()
         }
@@ -158,8 +161,18 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
         viewModel.validationResponse.observe(viewLifecycleOwner, {
             when(it) {
-                is Success -> onValidateSuccess(it.data)
-                is Fail -> onValidateFailed(it.throwable)
+                is Success ->  {
+                    if(otpData != null && modeListData != null) {
+                        analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, true)
+                    }
+                    onValidateSuccess(it.data)
+                }
+                is Fail ->  {
+                    if(otpData != null && modeListData != null) {
+                        analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, false)
+                    }
+                    onValidateFailed(it.throwable)
+                }
             }
         })
     }
@@ -241,9 +254,13 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                         binding?.fragmentSilentVerifSuccessAnim?.repeatCount = 3
                         binding?.fragmentSilentVerifSuccessAnim?.playAnimation()
 
+                        var count = 0
                         binding?.fragmentSilentVerifSuccessAnim?.addAnimatorListener(object:
                             Animator.AnimatorListener {
-                            override fun onAnimationRepeat(animation: Animator?) {}
+                            override fun onAnimationRepeat(animation: Animator?) {
+                                count++
+                                println("repeatz: $count")
+                            }
                             override fun onAnimationEnd(animation: Animator?) {
                                 onFinish()
                             }
@@ -343,6 +360,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         binding?.fragmentSilentVerifSubtitle?.text = getString(R.string.fragment_silent_verif_subtitle_fail_change_method)
         binding?.fragmentSilentVerifTryAgainBtn?.text = getString(R.string.fragment_silent_verif_label_button_change_method)
         binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
+            analytics.trackChooseOtherMethod(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
             activity?.setResult(RESULT_DELETE_METHOD)
             activity?.finish()
         }
@@ -356,6 +374,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         binding?.fragmentSilentVerifTryAgainBtn?.show()
         binding?.fragmentSilentVerifTryAgainBtn?.text = getString(R.string.fragment_silent_verif_label_button_change_method)
         binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
+            analytics.trackChooseOtherMethod(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
             activity?.finish()
         }
         binding?.fragmentSilentVerifTryChangeMethodBtn?.hide()
@@ -454,12 +473,12 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                     println("verify:onResponse:${e.message}")
                     e.printStackTrace()
                     activity?.runOnUiThread {
-                        onVerificationError(e)
+                        onValidateFailed(e)
                     }
                 }
             })
         } catch (ex: Exception) {
-            onVerificationError(ex)
+            onValidateFailed(ex)
             ex.printStackTrace()
         }
     }

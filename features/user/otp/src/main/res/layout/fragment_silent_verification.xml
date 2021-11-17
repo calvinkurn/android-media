@@ -86,7 +86,7 @@
             android:layout_marginLeft="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_24"
             android:layout_marginRight="@dimen/unify_space_8"
-            android:text="Coba Lagi"
+            android:text="@string/fragment_silent_verif_try_again_btn"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/fragment_silent_verif_subtitle"
             app:layout_constraintStart_toStartOf="@+id/fragment_silent_verif_subtitle"

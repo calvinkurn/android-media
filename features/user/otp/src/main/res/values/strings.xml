@@ -86,5 +86,6 @@
     <string name="fragment_silent_verif_subtitle_fail_limit">Kamu udah coba metode ini tiga kali, ubah metode biar bisa lanjut verifikasi.</string>
     <string name="fragment_silent_verif_label_button_change_method">Ubah Metode Verifikasi</string>
     <string name="fragment_silent_verif_subtitle_fail_change_method">Nomor HP kamu belum berhasil diverifikasi.\nCoba metode lain, yuk!</string>
+    <string name="fragment_silent_verif_try_again_btn">Coba Lagi</string>
 
 </resources>
