@@ -33,7 +33,7 @@ class AffiliateHomeUserListDataVH(
 
     private fun initClickListener(element: AffiliateUserPerformanceListModel?) {
         itemView.setOnClickListener {
-            onPerformaGridClick?.onInfoClick(element?.data?.metricTitle,element?.data?.description)
+            onPerformaGridClick?.onInfoClick(element?.data?.metricTitle,element?.data?.tooltip?.description)
         }
     }
 

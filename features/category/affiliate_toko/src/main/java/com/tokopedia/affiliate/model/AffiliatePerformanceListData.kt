@@ -32,6 +32,8 @@ data class AffiliatePerformanceListData(
                 var itemTotalCount: Int?,
                 @SerializedName("ItemTotalCountFmt")
                 var itemTotalCountFmt: String?,
+                @SerializedName("LastID")
+                var lastID: String?,
                 @SerializedName("Items")
                 var items: List<Item?>?,
                 @SerializedName("StartTime")

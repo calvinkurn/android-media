@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.*
-import com.tokopedia.affiliate.PERFORMA_MAP
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 import com.tokopedia.affiliate.usecase.*
@@ -30,12 +29,10 @@ class AffiliateHomeViewModel @Inject constructor(
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementData>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
-    private var rangeItemCount: String? = "0"
     private var errorMessage = MutableLiveData<Throwable>()
     private var affiliateErrorMessage = MutableLiveData<Throwable>()
     private var rangeChanged = MutableLiveData<Boolean>()
     private var showProductCount = true
-    private val pageLimit = 6
     private var lastID = "0"
 
     fun getAffiliateValidateUser() {
@@ -67,6 +64,7 @@ class AffiliateHomeViewModel @Inject constructor(
             var performanceList: AffiliateUserPerformaListItemData? = null
             if (page == PAGE_ZERO) {
                 dataPlatformShimmerVisibility.value = true
+                lastID = "0"
                 performanceList =
                     affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateValue)
                 dataPlatformShimmerVisibility.value = false
@@ -77,6 +75,7 @@ class AffiliateHomeViewModel @Inject constructor(
                 selectedDateValue,
                 lastID
             ).getAffiliatePerformanceList?.data?.data.let {
+                lastID = it?.lastID ?: "0"
                 convertDataToVisitables(it, performanceList, page)?.let { visitables ->
                     affiliateDataList.value = visitables
                 }
@@ -118,7 +117,7 @@ class AffiliateHomeViewModel @Inject constructor(
                     AffiliateUserPerformaData(
                         getListFromData(
                             performanceList
-                        ), rangeItemCount,showProductCount
+                        ), totalItemsCount.value,showProductCount
                     )
                 )
             )
@@ -145,10 +144,9 @@ class AffiliateHomeViewModel @Inject constructor(
             userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
             userData.metrics.forEach { metrics ->
                 if (metrics?.order == 0) {
-                    rangeItemCount = metrics.metricValue
+                    totalItemsCount.value = metrics.metricValue?.toInt()
                     showProductCount = metrics.metricValue != "0"
                 } else {
-                    metrics?.description = PERFORMA_MAP[metrics?.metricTitle]
                     performaTempList.add(AffiliateUserPerformanceListModel(metrics))
                 }
             }

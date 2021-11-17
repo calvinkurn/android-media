@@ -67,9 +67,14 @@ data class AffiliateUserPerformaListItemData(
                               var metricDifferenceValueFmt: String?,
                               @SerializedName("Order")
                               var order: Int?,
-
-                              var description :String? = ""
-                        )
+                              @SerializedName("Tooltip")
+                              var tooltip :Tooltip?
+                        ){
+                              data class Tooltip(
+                                    @SerializedName("Description")
+                                    var description: String?,
+                              )
+                        }
                   }
             }
       }

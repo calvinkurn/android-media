@@ -11,7 +11,7 @@ class AffiliatePerformanceDataUseCase @Inject constructor(
     private fun createRequestParamsList(dateRangeRequest: String, lastID: String): HashMap<String, Any> {
         val request = HashMap<String, Any>()
         request[PARAM_DATE_RANGE] = dateRangeRequest
-//        request[PARAM_LAST_ID] = lastID
+        request[PARAM_LAST_ID] = lastID
         return request
     }
 

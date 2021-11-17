@@ -1,9 +1,7 @@
 package com.tokopedia.affiliate.usecase
 
 import com.tokopedia.affiliate.model.AffiliatePerformanceData
-import com.tokopedia.affiliate.model.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Performance
-import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Performance_List
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject
 

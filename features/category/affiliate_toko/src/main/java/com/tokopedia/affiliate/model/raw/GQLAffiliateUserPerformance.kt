@@ -28,6 +28,9 @@ val GQL_Affiliate_USER_PERFORMANCE: String = """query getAffiliatePerformance(${
           MetricDifferenceValue
           MetricDifferenceValueFmt
           Order
+          Tooltip{
+            Description
+          }
         }
       }
     }

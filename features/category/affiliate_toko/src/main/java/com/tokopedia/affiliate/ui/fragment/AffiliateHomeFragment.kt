@@ -250,7 +250,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
 
         affiliateHomeViewModel.getAffiliateItemCount().observe(this, { itemCount ->
-            affiliate_products_count.text = getString(R.string.affiliate_product_count, itemCount.toString())
             totalDataItemsCount = itemCount
         })
 
