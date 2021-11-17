@@ -86,7 +86,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     }
 
     fun loadRecommendation(page: Int) {
-        var listData = arrayListOf<WishlistV2TypeLayoutData>()
+        val listData = arrayListOf<WishlistV2TypeLayoutData>()
         launch {
             try {
                 val recommItems = getRecommendationWishlistV2(page, listOf(), EMPTY_WISHLIST_PAGE_NAME)
@@ -159,6 +159,10 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     wishlistV2Response.totalData > topAdsPositionInPage -> {
                         listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
                         listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(getTopAdsData(""), TYPE_TOPADS))
+
+                        val recommItems = getRecommendationWishlistV2(0, listOf(), WISHLIST_PAGE_NAME)
+                        listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
+                        listData.add(WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
                     }
                 }
             } else {
