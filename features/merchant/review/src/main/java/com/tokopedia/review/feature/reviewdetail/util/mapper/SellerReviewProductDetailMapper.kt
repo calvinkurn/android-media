@@ -8,7 +8,15 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.review.feature.reviewdetail.data.ProductFeedbackFilterData
 import com.tokopedia.review.feature.reviewdetail.data.ProductReviewDetailOverallResponse
-import com.tokopedia.review.feature.reviewdetail.view.model.*
+import com.tokopedia.review.feature.reviewdetail.view.model.BadRatingReasonTickerUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.OverallRatingDetailUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.ProductReviewFilterUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.RatingBarUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.SortFilterItemWrapper
+import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
+import com.tokopedia.review.feature.reviewdetail.view.model.TopicUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -118,8 +126,17 @@ object SellerReviewProductDetailMapper {
             ratingAvg = productFeedbackDetailResponse.ratingAverage
             reviewCount = productFeedbackDetailResponse.ratingCount
             chipFilter = chipFilterString
-            tickerText = productFeedbackDetailResponse.ratingDisclaimer
+
         }
+    }
+
+    fun mapToTickerUiModel(
+        productFeedbackDetailResponse:
+        ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct,
+    ) : BadRatingReasonTickerUiModel {
+        return BadRatingReasonTickerUiModel(
+            tickerText = productFeedbackDetailResponse.ratingDisclaimer
+        )
     }
 
     fun mapToItemUnifyMenuOption(context: Context): ArrayList<ListItemUnify> {

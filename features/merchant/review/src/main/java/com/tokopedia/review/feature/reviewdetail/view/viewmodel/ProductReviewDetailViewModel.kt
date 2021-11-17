@@ -187,6 +187,7 @@ class ProductReviewDetailViewModel @Inject constructor(
                     ?: ProductFeedbackFilterData()
             val uiData: MutableList<BaseSellerReviewDetail> = mutableListOf()
 
+            uiData.add(SellerReviewProductDetailMapper.mapToTickerUiModel(productRatingDetailData.productReviewDetailOverallResponse?.productGetReviewAggregateByProduct))
             uiData.add(SellerReviewProductDetailMapper.mapToRatingDetailOverallUiModel(productRatingDetailData.productReviewDetailOverallResponse?.productGetReviewAggregateByProduct
                     ?: ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct(), chipsFilterText))
             uiData.add(SellerReviewProductDetailMapper.mapToRatingBarUiModel(productFilterData, filterRatingData))
