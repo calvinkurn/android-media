@@ -69,6 +69,7 @@ import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -1032,9 +1033,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     for(ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
                         if (shipmentCrossSellModel.isChecked()) isCrossSellChecked = true;
                     }
-                    if (isCrossSellChecked) {
-                        triggerCrossSellClickPilihPembayaran(checkoutRequest);
-                    }
+                    if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran();
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else if (checkoutData.getErrorReporter().getEligible()) {
                     getView().hideLoading();
@@ -1059,7 +1058,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         };
     }
 
-    private void triggerCrossSellClickPilihPembayaran(CheckoutRequest checkoutRequest) {
+    private void triggerCrossSellClickPilihPembayaran() {
         List<ShipmentCrossSellModel> shipmentCrossSellModelList = getListShipmentCrossSellModel();
         for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
             CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
@@ -1069,12 +1068,30 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             String digitalProductName = crossSellModel.getInfo().getTitle();
 
             List<Object> productList = new ArrayList<>();
-            for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.getData()) {
+            for (int j = 0; j < shipmentCartItemModelList.size(); j++) {
+                for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
+                    AnalyticsProductCheckoutData dataAnalytics = cartItemModel.getAnalyticsProductCheckoutData();
+                    productList.add(DataLayer.mapOf(
+                            ConstantTransactionAnalytics.Key.BRAND, "",
+                            ConstantTransactionAnalytics.Key.CATEGORY, dataAnalytics.getProductCategoryId(),
+                            ConstantTransactionAnalytics.Key.ID, "",
+                            ConstantTransactionAnalytics.Key.NAME, dataAnalytics.getProductName(),
+                            ConstantTransactionAnalytics.Key.PRICE, dataAnalytics.getProductPrice(),
+                            ConstantTransactionAnalytics.Key.QUANTITY, dataAnalytics.getProductQuantity(),
+                            ConstantTransactionAnalytics.Key.SHOP_ID, dataAnalytics.getProductShopId(),
+                            ConstantTransactionAnalytics.Key.SHOP_NAME, dataAnalytics.getProductShopName(),
+                            ConstantTransactionAnalytics.Key.SHOP_TYPE, dataAnalytics.getProductShopType(),
+                            ConstantTransactionAnalytics.Key.VARIANT, digitalProductName
+                    ));
+                }
+            }
+
+            /*for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.getData()) {
                 if (dataCheckoutRequest != null) {
                     for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.getShopProducts()) {
                         if (shopProductCheckoutRequest != null) {
                             for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.getProductData()) {
-                                Long productCategoryId = 0L;
+                                long productCategoryId = 0L;
                                 for (int j = 0; j < shipmentCartItemModelList.size(); j++) {
                                     for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
                                         if (cartItemModel.getProductId() == productDataCheckoutRequest.getProductId()) {
@@ -1102,7 +1119,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         }
                     }
                 }
-            }
+            }*/
             analyticsActionListener.sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(eventLabel, userSessionInterface.getUserId(), productList);
         }
     }
