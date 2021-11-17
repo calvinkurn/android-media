@@ -38,7 +38,6 @@ class AttachProductViewModel @Inject constructor
     override fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String) {
         launchCatchError(block = {
             val result = useCase(generateParam(query, shopId, page, warehouseId))
-
             val resultModel = result.mapToListProduct().toDomainModelMapper()
             _products.value = Success(resultModel)
 
