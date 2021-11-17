@@ -61,10 +61,6 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(@NotNull context: Conte
         }
     }
 
-    fun setBuyButtonState(state: Boolean) {
-        btn_recharge_checkout_next.isEnabled = state
-    }
-
     fun setBuyButtonLabel(label: String) {
         btn_recharge_checkout_next.text = label
     }

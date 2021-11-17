@@ -37,7 +37,8 @@
     <string name="cart_module_label_summary_transaction">Ringkasan Belanja</string>
     <string name="content_desc_go_to_courier_page_button">button beli</string>
     <string name="label_fulfilment_wording">Dilayani Tokopedia</string>
-    <string name="label_remark_title">Catatan untuk barang ini</string>
+    <string name="cart_label_text_field_notes">Tulis Catatan untuk Barang Ini</string>
+    <string name="cart_label_notes">Tulis Catatan</string>
     <string name="label_wholesale_product">Harga Grosir</string>
     <string name="message_product_already_deleted">%d barang telah dihapus</string>
     <string name="message_product_already_moved_to_wishlist">%d barang berhasil dipindahkan ke Wishlist!</string>

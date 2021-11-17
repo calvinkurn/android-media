@@ -179,8 +179,8 @@ class SellerHomeNavigator(
         addPage(homeFragment, context.getString(R.string.sah_home))
         addPage(productManageFragment, context.getString(R.string.sah_product_list))
         addPage(chatFragment, context.getString(R.string.sah_chat))
-        addPage(somListFragment, context.getString(R.string.sah_sale))
-        addPage(otherSettingsFragment, context.getString(R.string.sah_sale))
+        addPage(somListFragment, context.getString(R.string.sah_som_list))
+        addPage(otherSettingsFragment, context.getString(R.string.sah_others))
     }
 
     private fun clearFragments() {
