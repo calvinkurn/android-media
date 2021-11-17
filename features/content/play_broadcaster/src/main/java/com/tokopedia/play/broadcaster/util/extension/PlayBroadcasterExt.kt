@@ -1,8 +1,6 @@
 package com.tokopedia.play.broadcaster.util.extension
 
 import android.content.Context
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.wmspanel.libstream.Streamer
 
@@ -37,16 +35,6 @@ internal fun DialogUnify.setLoading(isLoading: Boolean) {
     setCanceledOnTouchOutside(!isLoading)
     dialogOverlay.setOnClickListener {
         if (!isLoading) dismiss()
-    }
-}
-
-internal fun sendCrashlyticsLog(throwable: Throwable) {
-    if (GlobalConfig.DEBUG) {
-        throwable.printStackTrace()
-    }
-    try {
-        FirebaseCrashlytics.getInstance().recordException(throwable)
-    } catch (e: Exception) {
     }
 }
 
