@@ -20,7 +20,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.PAG
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.PAGESOURCE
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.TOKOPEDIAMARKETPLACE
-import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.iris.Iris
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
@@ -40,7 +40,7 @@ import org.junit.Test
 class SearchComponentTrackingTest {
 
     private val analytics = mockk<Analytics>(relaxed = true)
-    private val remoteConfig = mockk<RemoteConfig>()
+    private val iris = mockk<Iris>(relaxed = true)
 
     private val keyword = "samsung"
     private val campaignCode = "dummy_campaign_code"
@@ -49,7 +49,6 @@ class SearchComponentTrackingTest {
     private val pageSource = "dummy_page_title.dummy_navsource.dummy_value.dummy_srp_page_id"
     private val valueId = "dummy_item_id"
     private val valueName = "dummy_item_value"
-    private val dummyExperimentName = "keyword_track_init"
 
     private fun searchComponentTracking(
         trackingOption: Int = IMPRESSION_AND_CLICK,
@@ -71,11 +70,12 @@ class SearchComponentTrackingTest {
     @Before
     fun setUp() {
         every { analytics.sendGeneralEvent(capture(dataLayerSlot)) } just runs
+        every { iris.saveEvent(capture(dataLayerSlot)) } just runs
     }
 
     @Test
     fun `track component impression will send impression data layer`() {
-        searchComponentTracking().impress(analytics)
+        searchComponentTracking().impress(iris)
 
         assertThat(dataLayer, `is`(expectedImpressionDataLayer()))
     }
@@ -128,16 +128,16 @@ class SearchComponentTrackingTest {
 
     @Test
     fun `track component impression will not send if tracking option not enable impression`() {
-        searchComponentTracking(trackingOption = NO_TRACKING).impress(analytics)
-        searchComponentTracking(trackingOption = CLICK_ONLY).impress(analytics)
+        searchComponentTracking(trackingOption = NO_TRACKING).impress(iris)
+        searchComponentTracking(trackingOption = CLICK_ONLY).impress(iris)
         val unrecognizedTrackingOption = -1221
-        searchComponentTracking(trackingOption = unrecognizedTrackingOption).impress(analytics)
+        searchComponentTracking(trackingOption = unrecognizedTrackingOption).impress(iris)
 
-        verifyNotSendAnalytics()
+        verifyNotSendIris()
     }
 
-    private fun verifyNotSendAnalytics() {
-        verify(exactly = 0) { analytics.sendGeneralEvent(any()) }
+    private fun verifyNotSendIris() {
+        verify(exactly = 0) { iris.saveEvent(any() as Map<String, Any>) }
     }
 
     @Test
@@ -155,104 +155,7 @@ class SearchComponentTrackingTest {
         clickOtherAction(analytics)
     }
 
-    @Test
-    fun `use tracking component impression with experiment enabled`() {
-        enableSearchComponentTrackingExperiment()
-
-        SearchComponentTrackingRollence.impress(
-            remoteConfig,
-            analytics,
-            searchComponentTracking(),
-            dummyExperimentName
-        )
-
-        assertThat(dataLayer, `is`(expectedImpressionDataLayer()))
-    }
-
-    private fun enableSearchComponentTrackingExperiment() {
-        every { remoteConfig.getString(dummyExperimentName) } returns dummyExperimentName
-    }
-
-    @Test
-    fun `use tracking component impression with experiment disabled`() {
-        disableSearchComponentTrackingExperiment()
-        val fallback = mockk<() -> Unit>(relaxed = true)
-
-        SearchComponentTrackingRollence.impress(
-            remoteConfig,
-            analytics,
-            searchComponentTracking(),
-            dummyExperimentName,
-            fallback,
-        )
-
-        verifyNotSendAnalytics()
-        verify { fallback.invoke() }
-    }
-
-    private fun disableSearchComponentTrackingExperiment() {
-        every { remoteConfig.getString(dummyExperimentName) } returns ""
-    }
-
-    @Test
-    fun `use tracking component click with experiment enabled`() {
-        enableSearchComponentTrackingExperiment()
-
-        SearchComponentTrackingRollence.click(
-            remoteConfig,
-            analytics,
-            searchComponentTracking(),
-            dummyExperimentName
-        )
-
-        assertThat(dataLayer, `is`(expectedClickDataLayer()))
-    }
-
-    @Test
-    fun `use tracking component click with experiment disabled`() {
-        disableSearchComponentTrackingExperiment()
-        val fallback = mockk<() -> Unit>(relaxed = true)
-
-        SearchComponentTrackingRollence.click(
-            remoteConfig,
-            analytics,
-            searchComponentTracking(),
-            dummyExperimentName,
-            fallback,
-        )
-
-        verifyNotSendAnalytics()
-        verify { fallback.invoke() }
-    }
-
-    @Test
-    fun `use tracking component click other action with experiment enabled`() {
-        enableSearchComponentTrackingExperiment()
-
-        SearchComponentTrackingRollence.clickOtherAction(
-            remoteConfig,
-            analytics,
-            searchComponentTracking(),
-            dummyExperimentName
-        )
-
-        assertThat(dataLayer, `is`(expectedClickOtherActionDataLayer()))
-    }
-
-    @Test
-    fun `use tracking component click other action with experiment disabled`() {
-        disableSearchComponentTrackingExperiment()
-        val fallback = mockk<() -> Unit>(relaxed = true)
-
-        SearchComponentTrackingRollence.clickOtherAction(
-            remoteConfig,
-            analytics,
-            searchComponentTracking(),
-            dummyExperimentName,
-            fallback,
-        )
-
-        verifyNotSendAnalytics()
-        verify { fallback.invoke() }
+    private fun verifyNotSendAnalytics() {
+        verify(exactly = 0) { analytics.sendGeneralEvent(any())}
     }
 }

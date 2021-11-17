@@ -272,9 +272,7 @@ open class InitialStateTracking(
         type: String,
         campaignCode: String
     ) {
-        SearchComponentTrackingRollence.impress(searchComponentTracking,
-            ROLLENCE_KEY
-        ) {
+        SearchComponentTrackingRollence.impress(iris, listOf(searchComponentTracking), ROLLENCE_KEY) {
             val map = DataLayer.mapOf(
                 EVENT, VIEW_TOP_NAV_IRIS,
                 EVENT_CATEGORY, "$TOP_NAV_INITIAL_STATE - /",

@@ -19,6 +19,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.PAG
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.PAGESOURCE
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.TOKOPEDIAMARKETPLACE
+import com.tokopedia.iris.Iris
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
@@ -36,36 +37,32 @@ internal class SearchComponentTrackingImpl(
     private val dimension90: String,
 ): SearchComponentTracking {
 
-    private fun sendComponentTracking(
-        analytics: Analytics,
+    private fun dataLayer(
         eventName: String,
         eventAction: String,
         eventLabel: String,
-    ) {
-        analytics.sendGeneralEvent(
-            mapOf(
-                EVENT to eventName,
-                EVENT_ACTION to eventAction,
-                EVENT_CATEGORY to SEARCH_COMPONENT,
-                EVENT_LABEL to eventLabel,
-                BUSINESSUNIT to SEARCH,
-                CURRENTSITE to TOKOPEDIAMARKETPLACE,
-                CAMPAIGNCODE to campaignCode,
-                COMPONENT to componentId,
-                PAGEDESTINATION to applink,
-                PAGESOURCE to dimension90,
-            )
-        )
-    }
+    ) = mapOf(
+        EVENT to eventName,
+        EVENT_ACTION to eventAction,
+        EVENT_CATEGORY to SEARCH_COMPONENT,
+        EVENT_LABEL to eventLabel,
+        BUSINESSUNIT to SEARCH,
+        CURRENTSITE to TOKOPEDIAMARKETPLACE,
+        CAMPAIGNCODE to campaignCode,
+        COMPONENT to componentId,
+        PAGEDESTINATION to applink,
+        PAGESOURCE to dimension90,
+    )
 
-    override fun impress(analytics: Analytics) {
+    override fun impress(iris: Iris) {
         if (!impressionEnabled()) return
 
-        sendComponentTracking(
-            analytics,
-            VIEWSEARCHIRIS,
-            IMPRESSION,
-            String.format(KEYWORD_ID_NAME, keyword, valueId, valueName)
+        iris.saveEvent(
+            dataLayer(
+                VIEWSEARCHIRIS,
+                IMPRESSION,
+                String.format(KEYWORD_ID_NAME, keyword, valueId, valueName)
+            )
         )
     }
 
@@ -76,11 +73,12 @@ internal class SearchComponentTrackingImpl(
     override fun click(analytics: Analytics) {
         if (!clickEnabled()) return
 
-        sendComponentTracking(
-            analytics,
-            CLICKSEARCH,
-            CLICK,
-            String.format(KEYWORD_ID_NAME, keyword, valueId, valueName)
+        analytics.sendGeneralEvent(
+            dataLayer(
+                CLICKSEARCH,
+                CLICK,
+                String.format(KEYWORD_ID_NAME, keyword, valueId, valueName)
+            )
         )
     }
 
@@ -91,11 +89,12 @@ internal class SearchComponentTrackingImpl(
     override fun clickOtherAction(analytics: Analytics) {
         if (!clickEnabled()) return
 
-        sendComponentTracking(
-            analytics,
-            CLICKSEARCH,
-            CLICK_OTHER_ACTION,
-            String.format(KEYWORD, keyword)
+        analytics.sendGeneralEvent(
+            dataLayer(
+                CLICKSEARCH,
+                CLICK_OTHER_ACTION,
+                String.format(KEYWORD, keyword)
+            )
         )
     }
 }
