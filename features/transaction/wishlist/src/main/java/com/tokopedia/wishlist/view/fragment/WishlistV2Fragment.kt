@@ -78,10 +78,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private var paramWishlistV2 = WishlistV2Params()
     private var refreshHandler: RefreshHandler? = null
     private var onLoadMore = false
-    private var onLoadMoreRecommendation = false
+    // private var onLoadMoreRecommendation = false
     private var isFetchRecommendation = false
     private var currPage = 1
-    private var currRecommendationListPage = 0
+    private var currRecommendationListPage = 1
     private var searchQuery = ""
     private var activityWishlistV2 = ""
     private var isBulkDeleteShow = false
@@ -165,7 +165,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     private fun observingWishlistV2() {
-        if (!checkpoint1) {
+        // if (!checkpoint1) {
             checkpoint1 = true
             showLoader()
             wishlistViewModel.wishlistV2.observe(viewLifecycleOwner, { result ->
@@ -173,6 +173,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     is Success -> {
                         result.data.let { wishlistV2 ->
                             hideLoader()
+                            refreshHandler?.finishRefresh()
+                            scrollRecommendationListener.setHasNextPage(wishlistV2.hasNextPage)
                             updateTotalLabel(wishlistV2.totalData)
                             if (wishlistV2.totalData == 0) isFetchRecommendation = true
                             if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
@@ -190,7 +192,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     }
                 }
             })
-        }
+        // }
     }
 
     private fun observingWishlistData() {
@@ -202,7 +204,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                         result.data.let { listData ->
                             if (!onLoadMore) {
                                 wishlistV2Adapter.addList(listData)
-                                scrollRecommendationListener.resetState()
+                                scrollRecommendationListener.updateStateAfterGetData()
                             } else {
                                 wishlistV2Adapter.appendList(listData)
                                 scrollRecommendationListener.updateStateAfterGetData()
@@ -211,7 +213,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
                     }
                     is Fail -> {
-                        refreshHandler?.finishRefresh()
                         showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
                     }
                 }
@@ -303,10 +304,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 currentPage += 1
                 onLoadMore = true
                 if (isFetchRecommendation) {
-                    onLoadMoreRecommendation = true
+                    // onLoadMoreRecommendation = true
                     loadRecommendationList()
                 } else {
-                    onLoadMore = true
                     paramWishlistV2.page = currPage
                     loadWishlistV2()
                 }
@@ -346,7 +346,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         paramWishlistV2.query = searchQuery
         refreshHandler?.startRefresh()
         scrollRecommendationListener.resetState()
-        currRecommendationListPage = 0
+        currRecommendationListPage = 1
     }
 
     private fun observingDeleteWishlistV2() {
@@ -788,9 +788,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     override fun onRefresh(view: View?) {
             onLoadMore = false
             isFetchRecommendation = false
-            onLoadMoreRecommendation = false
+            // onLoadMoreRecommendation = false
             currPage = 1
-            currRecommendationListPage = 0
+            currRecommendationListPage = 1
             paramWishlistV2.page = 1
             loadWishlistV2()
     }

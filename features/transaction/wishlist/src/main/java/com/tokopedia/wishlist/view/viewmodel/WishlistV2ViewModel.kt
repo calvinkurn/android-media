@@ -134,7 +134,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             } else {
                 listData.add(WishlistV2TypeLayoutData(wishlistV2Response.query, WishlistV2Consts.TYPE_EMPTY_NOT_FOUND))
             }
-            val recommItems = getRecommendationWishlistV2(0, listOf(), EMPTY_WISHLIST_PAGE_NAME)
+            val recommItems = getRecommendationWishlistV2(1, listOf(), EMPTY_WISHLIST_PAGE_NAME)
             listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
             recommItems.recommendationData.forEach { item ->
                 listData.add(WishlistV2TypeLayoutData(item, TYPE_RECOMMENDATION_LIST))
@@ -158,7 +158,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
                     wishlistV2Response.totalData > topAdsPositionInPage -> {
                         listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
-                        listData.add(topAdsPositionInPage +1, WishlistV2TypeLayoutData(getTopAdsData(""), TYPE_TOPADS))
+                        listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(getTopAdsData(""), TYPE_TOPADS))
                     }
                 }
             } else {
