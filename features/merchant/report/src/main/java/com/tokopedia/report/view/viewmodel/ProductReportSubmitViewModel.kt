@@ -1,19 +1,23 @@
 package com.tokopedia.report.view.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.UploaderUseCase
-import com.tokopedia.report.domain.interactor.SubmitReportUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import kotlinx.coroutines.cancel
-import rx.Subscriber
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.report.data.model.SubmitReportParams
+import com.tokopedia.report.data.model.SubmitReportResult
+import com.tokopedia.report.usecase.SubmitReportUseCase
 import java.io.File
 import javax.inject.Inject
 
-class ProductReportSubmitViewModel @Inject constructor(private val useCase: SubmitReportUseCase,
-                                                       private val uploaderUseCase: UploaderUseCase,
-                                                       dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.io){
+class ProductReportSubmitViewModel @Inject constructor(
+    private val submitReportUseCase: SubmitReportUseCase,
+    private val uploaderUseCase: UploaderUseCase,
+    dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     companion object {
         private const val SOURCE_ID = "OfQTGl"
@@ -21,59 +25,42 @@ class ProductReportSubmitViewModel @Inject constructor(private val useCase: Subm
         private const val KEY_UPLOAD_IDS = "upload_ids"
     }
 
-    fun submitReport(productId: Long, categoryId: Int, input: Map<String, Any>,
-                     onSuccess: (Boolean) -> Unit, onFail: (Throwable?) -> Unit){
-        val uploadIdList: ArrayList<String> = ArrayList()
+    private val submitResult = MutableLiveData<SubmitReportResult>()
+    fun getSubmitResult(): LiveData<SubmitReportResult> = submitResult
+
+    fun submitReport(productId: Long, categoryId: Int, input: Map<String, Any>) {
+        val mutableInput = input.toMutableMap()
+
         launchCatchError(block = {
-            val photos = input[KEY_PHOTO] as? List<String> ?: listOf()
-            repeat(photos.size) {
-                val imageId = uploadImageAndGetId(photos[it])
-                if (imageId.isEmpty()) {
-                    onFail.invoke(Throwable())
-                    this@launchCatchError.cancel()
+            val uploadIdList = (mutableInput[KEY_PHOTO] as? List<*>)?.map { photo ->
+                uploadImageAndGetId(photo as String).also {
+                    if (it.isBlank()) throw Throwable()
                 }
-                uploadIdList.add(imageId)
-            }
-            (input as MutableMap<String, Any>).apply {
-                put(KEY_UPLOAD_IDS, uploadIdList)
-                remove(KEY_PHOTO)
-                useCase.execute(SubmitReportUseCase.createRequestParam(categoryId, productId, this), object : Subscriber<Boolean>() {
-                    override fun onNext(t: Boolean) {
-                        onSuccess.invoke(t)
-                    }
+            } ?: emptyList()
+            mutableInput[KEY_UPLOAD_IDS] = uploadIdList
+            mutableInput.remove(KEY_PHOTO)
 
-                    override fun onCompleted() {}
+            val params = SubmitReportParams(productId, categoryId, mutableInput)
+            submitReportUseCase.setParams(params)
 
-                    override fun onError(e: Throwable?) {
-                        onFail.invoke(e)
-                        e?.printStackTrace()
-                    }
+            val result = submitReportUseCase.executeOnBackground()
+            result.submitReport.isSuccess
+            submitResult.postValue(SubmitReportResult.Success(result.submitReport.isSuccess))
+        }, onError = {
+            submitResult.postValue(SubmitReportResult.Fail(it))
+        })
 
-                })
-            }
-        }) {
-            onFail.invoke(it)
-        }
     }
 
     private suspend fun uploadImageAndGetId(imagePath: String): String {
         val filePath = File(imagePath)
         val params = uploaderUseCase.createParams(
-                sourceId = SOURCE_ID,
-                filePath = filePath
+            sourceId = SOURCE_ID,
+            filePath = filePath
         )
         return when (val result = uploaderUseCase(params)) {
-            is UploadResult.Success -> {
-                result.uploadId
-            }
-            is UploadResult.Error -> {
-                ""
-            }
+            is UploadResult.Success -> result.uploadId
+            is UploadResult.Error -> ""
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        useCase.unsubscribe()
     }
 }
