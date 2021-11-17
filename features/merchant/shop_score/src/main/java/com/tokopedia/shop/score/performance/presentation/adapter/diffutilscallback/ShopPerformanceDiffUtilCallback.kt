@@ -3,6 +3,7 @@ package com.tokopedia.shop.score.performance.presentation.adapter.diffutilscallb
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shop.score.performance.presentation.model.*
+import com.tokopedia.shop.score.performance.presentation.model.tablet.ItemHeaderParameterDetailUiModel
 
 class ShopPerformanceDiffUtilCallback(
     private val oldList: List<Visitable<*>>,
@@ -31,7 +32,8 @@ class ShopPerformanceDiffUtilCallback(
                 isTheSameSectionRMPotentialPMProUiModel(oldItem, newItem) ||
                 isTheSameSectionShopRecommendationUiModel(oldItem, newItem) ||
                 isTheSameTickerReactivatedUiModel(oldItem, newItem) ||
-                isTheSameReactivatedComebackUiModel(oldItem, newItem)
+                isTheSameReactivatedComebackUiModel(oldItem, newItem) ||
+                isTheSameItemHeaderParameterDetailUiModel(oldItem, newItem)
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -40,6 +42,15 @@ class ShopPerformanceDiffUtilCallback(
         return oldItem == newItem
     }
 
+    private fun isTheSameItemHeaderParameterDetailUiModel(
+        oldItem: Visitable<*>?,
+        newItem: Visitable<*>?
+    ): Boolean {
+        return oldItem is ItemHeaderParameterDetailUiModel && newItem is ItemHeaderParameterDetailUiModel &&
+                oldItem.headerShopPerformanceUiModel == newItem.headerShopPerformanceUiModel &&
+                oldItem.detailParameterList == newItem.detailParameterList
+    }
+    
     private fun isTheSameTickerReactivatedUiModel(
         oldItem: Visitable<*>?,
         newItem: Visitable<*>?
