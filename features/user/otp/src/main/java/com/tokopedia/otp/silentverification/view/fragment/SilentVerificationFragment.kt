@@ -11,14 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieTask
-import com.tkpd.util.Base64
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.*
@@ -153,7 +151,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         viewModel.bokuVerificationResponse.observe(viewLifecycleOwner, {
             when(it) {
                 is Success -> handleBokuResult(it.data)
-                is Fail -> onVerificationError(it.throwable)
+                is Fail -> onValidateFailed(it.throwable)
             }
         })
 
@@ -336,10 +334,12 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private fun onValidateFailed(throwable: Throwable) {
         analytics.trackSilentVerificationResult("${TrackingOtpConstant.Label.LABEL_FAILED}- ${throwable.message}")
 
+        binding?.fragmentSilentVerifTitle?.show()
+        binding?.fragmentSilentVerifSubtitle?.show()
+        binding?.fragmentSilentVerifTryAgainBtn?.show()
+
         binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_fail_limit)
         binding?.fragmentSilentVerifSubtitle?.text = getString(R.string.fragment_silent_verif_subtitle_fail_change_method)
-
-        binding?.fragmentSilentVerifTryAgainBtn?.show()
         binding?.fragmentSilentVerifTryAgainBtn?.text = getString(R.string.fragment_silent_verif_label_button_change_method)
         binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
             activity?.setResult(RESULT_DELETE_METHOD)
@@ -385,11 +385,10 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             ) {
                 onSuccessBokuVerification()
             } else {
-                onVerificationError(Throwable("Verification Failed"))
+                onValidateFailed(Throwable(resultCode))
             }
         }catch (e: Exception) {
-            Toaster.build(requireView(), e.message ?: "error handle boku result", Toaster.LENGTH_LONG).show()
-            onVerificationError(Throwable("Verification Failed"))
+            onValidateFailed(e)
         }
     }
 
