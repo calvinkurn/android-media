@@ -67,5 +67,11 @@ abstract class AffiliateVMModule {
     @ViewModelKey(AffiliateTermsAndConditionViewModel::class)
     internal abstract fun affiliateTermsAndConditionViewModel(viewModel: AffiliateTermsAndConditionViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliatePromotionHistoryViewModel::class)
+    internal abstract fun affiliatePromotionHistoryViewModel(viewModel: AffiliatePromotionHistoryViewModel): ViewModel
+
 
 }

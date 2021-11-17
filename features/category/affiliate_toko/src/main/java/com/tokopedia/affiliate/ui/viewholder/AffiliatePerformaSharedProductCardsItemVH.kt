@@ -10,6 +10,7 @@ import com.tokopedia.affiliate.model.AffiliatePerformanceListData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import kotlinx.android.synthetic.main.affiliate_performa_vertical_product_card_item_layout.view.*
 
 class AffiliatePerformaSharedProductCardsItemVH(
@@ -88,6 +89,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                     }
                 }
                 else -> {
+                    view?.hide()
                 }
             }
         }

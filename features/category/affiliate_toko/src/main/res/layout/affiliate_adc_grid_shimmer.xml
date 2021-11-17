@@ -6,15 +6,15 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/date_picker_loader"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_30"
         app:corners="16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_24"/>
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="wrap_content"/>
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_24"
         android:id="@+id/title_adp"
         android:layout_width="@dimen/dp_140"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
                 android:layout_margin="@dimen/dp_8"
-                android:layout_width="@dimen/dp_112"
+                android:layout_width="@dimen/dp_60"
                 android:layout_height="@dimen/dp_12"/>
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
@@ -50,7 +50,7 @@
                 android:layout_marginBottom="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_width="@dimen/dp_140"
+                android:layout_width="@dimen/dp_112"
                 android:layout_height="@dimen/dp_12"/>
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
@@ -71,7 +71,7 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
                 android:layout_margin="@dimen/dp_8"
-                android:layout_width="@dimen/dp_112"
+                android:layout_width="@dimen/dp_60"
                 android:layout_height="@dimen/dp_12"/>
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
@@ -83,7 +83,7 @@
                 android:layout_marginBottom="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_width="@dimen/dp_140"
+                android:layout_width="@dimen/dp_112"
                 android:layout_height="@dimen/dp_12"/>
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
@@ -102,7 +102,7 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
                 android:layout_margin="@dimen/dp_8"
-                android:layout_width="@dimen/dp_112"
+                android:layout_width="@dimen/dp_60"
                 android:layout_height="@dimen/dp_12"/>
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
@@ -114,7 +114,7 @@
                 android:layout_marginBottom="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_width="@dimen/dp_140"
+                android:layout_width="@dimen/dp_112"
                 android:layout_height="@dimen/dp_12"/>
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>
@@ -134,7 +134,7 @@
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
                 android:layout_margin="@dimen/dp_8"
-                android:layout_width="@dimen/dp_112"
+                android:layout_width="@dimen/dp_60"
                 android:layout_height="@dimen/dp_12"/>
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 app:corners="16"
@@ -146,7 +146,7 @@
                 android:layout_marginBottom="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_width="@dimen/dp_140"
+                android:layout_width="@dimen/dp_112"
                 android:layout_height="@dimen/dp_12"/>
         </LinearLayout>
     </com.tokopedia.unifycomponents.CardUnify>

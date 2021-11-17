@@ -24,6 +24,7 @@ import com.tokopedia.affiliate.interfaces.ProductClickInterface
 import com.tokopedia.affiliate.model.AffiliateAnnouncementData
 import com.tokopedia.affiliate.model.AffiliateDatePickerData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliatePromotionHistoryActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet.Companion.STATE_PERFORMA_INFO
@@ -120,7 +121,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_BILL){
-
+                                startActivity(Intent(context,AffiliatePromotionHistoryActivity::class.java))
                             }
                             .addIcon(IconList.ID_INFORMATION) {
                                 AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_BETA_INFO).show(childFragmentManager, "")
