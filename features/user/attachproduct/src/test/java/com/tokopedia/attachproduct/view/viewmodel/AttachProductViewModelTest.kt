@@ -14,8 +14,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert.assertThat
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -65,7 +65,7 @@ class AttachProductViewModelTest {
         verifyOrder {
             productsObserver.onChanged(Success(expectedValue))
         }
-        assertThat(expectedValue, equalTo(vm.cacheList))
+        assertEquals(expectedValue, vm.cacheList)
     }
 
     @Test
@@ -85,7 +85,8 @@ class AttachProductViewModelTest {
         coVerify(exactly = 1) { useCase(any()) }
         verifyOrder {
             productsObserver.onChanged(Success(expectedValue))
-            assertThat(expectedValue.size, equalTo(0))
+            assertTrue(expectedValue.isEmpty())
+//            assertThat(expectedValue.size, equalTo(0))
         }
     }
 
@@ -158,7 +159,7 @@ class AttachProductViewModelTest {
         coVerify(exactly = 1) { useCase(any()) }
         verifyOrder {
             productsObserver.onChanged(Success(expectedValue))
-            assertThat(vm.cacheList.size, equalTo(0))
+            assertTrue(vm.cacheList.isEmpty())
         }
     }
 
@@ -177,6 +178,6 @@ class AttachProductViewModelTest {
         vm.completeSelection(mockLambda)
 
         //THEN
-        assertThat(expectedValue.size, equalTo(resultProduct.size))
+        assertTrue(expectedValue.size == resultProduct.size)
     }
 }
