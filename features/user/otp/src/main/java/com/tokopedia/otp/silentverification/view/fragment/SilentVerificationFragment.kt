@@ -160,9 +160,6 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         viewModel.validationResponse.observe(viewLifecycleOwner, {
             when(it) {
                 is Success ->  {
-                    if(otpData != null && modeListData != null) {
-                        analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, true)
-                    }
                     onValidateSuccess(it.data)
                 }
                 is Fail ->  {
@@ -313,11 +310,15 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private fun onValidateSuccess(data: OtpValidateData) {
         tokenId = ""
         if(data.success) {
-            analytics.trackSilentVerificationResult(TrackingOtpConstant.Label.LABEL_SUCCESS)
+            if(otpData != null && modeListData != null) {
+                analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, true)
+            }
             renderSuccessPage(data)
         } else {
+            if(otpData != null && modeListData != null) {
+                analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, false)
+            }
             onValidateFailed(Throwable(message = "success = false"))
-            analytics.trackSilentVerificationResult("${TrackingOtpConstant.Label.LABEL_FAILED}- success:${data.success} - ${data.errorMessage}")
         }
     }
 
