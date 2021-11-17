@@ -39,7 +39,6 @@ import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
 import com.tokopedia.product.util.getOrAwaitValue
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -915,7 +914,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 ?: "", productParams.shopDomain ?: "", productParams.productName
                 ?: "", productParams.warehouseId ?: "", "", userLocation, "")
 
-        viewModel.getProductP1(productParams, true, false, "", userLocationLocal = getUserLocationCache())
+        viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "") == productId)
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "").isEmpty())
@@ -938,7 +937,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
                 ?: "", productParams.shopDomain ?: "", productParams.productName
                 ?: "", productParams.warehouseId ?: "", "", userLocation, "")
 
-        viewModel.getProductP1(productParams, true, false, " ", userLocationLocal = getUserLocationCache())
+        viewModel.getProductP1(productParams, true, " ", userLocationLocal = getUserLocationCache())
 
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_ID, "").isEmpty())
         Assert.assertTrue(getPdpLayoutUseCase.requestParams.getString(PARAM_PRODUCT_KEY, "") == productKey)
@@ -991,7 +990,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         `co every p1 success`(dataP1, true)
 
-        viewModel.getProductP1(productParams, true, false, "", false, userLocationLocal = getUserLocationCache())
+        viewModel.getProductP1(productParams, true, "", false, userLocationLocal = getUserLocationCache())
 
         `co verify p1 success`()
 
@@ -1009,7 +1008,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
     }
@@ -1155,7 +1153,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, refreshPage = true, isAffiliate = true, isUseOldNav = true, userLocationLocal = getUserLocationCache())
+        viewModel.getProductP1(productParams, refreshPage = true, isUseOldNav = true, userLocationLocal = getUserLocationCache())
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 0)
@@ -1163,7 +1161,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VALUE_PROP } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VARIANT_OPTIONS } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
     }
@@ -1305,41 +1302,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         verify {
             updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
         }
-    }
-
-    /**
-     * HitSubmitTicket
-     */
-    @Test
-    fun onSuccessHitSubmitTicket() {
-        val data = SubmitTicketResult()
-        val request = AddToCartDataModel()
-        val requestParams = RequestParams()
-        val onError = mockk<((Throwable?) -> Unit)>()
-
-        every {
-            submitHelpTicketUseCase.createObservable(requestParams)
-        } returns Observable.just(data)
-
-        viewModel.hitSubmitTicket(request, onError, {
-            Assert.assertEquals(it, data)
-        })
-    }
-
-    @Test
-    fun onErrorHitSubmitTicket() {
-        val data = SubmitTicketResult()
-        val request = AddToCartDataModel(errorReporter = ErrorReporterModel(texts = ErrorReporterTextModel(submitDescription = "error")), errorMessage = arrayListOf("error ganteng"))
-        val requestParams = RequestParams()
-        val onSuccess = mockk<((SubmitTicketResult) -> Unit)>()
-
-        every {
-            submitHelpTicketUseCase.createObservable(requestParams)
-        } returns Observable.just(data)
-
-        viewModel.hitSubmitTicket(request, {
-            Assert.assertTrue(it is Throwable)
-        }, onSuccess)
     }
 
     /**
