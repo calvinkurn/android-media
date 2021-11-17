@@ -19,6 +19,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.dialog_calendar_multi_pick.*
+import kotlinx.android.synthetic.main.dialog_calendar_multi_pick.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -108,7 +109,7 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
     private fun initChildLayout() {
         val childView = View.inflate(context, R.layout.dialog_calendar_multi_pick, null)
-        calendar = calendar_unify.calendarPickerView as CalendarPickerView
+        calendar = childView.calendar_unify.calendarPickerView as CalendarPickerView
         setChild(childView)
     }
 
