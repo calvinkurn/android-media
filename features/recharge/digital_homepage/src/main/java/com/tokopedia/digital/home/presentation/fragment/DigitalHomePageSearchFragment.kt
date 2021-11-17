@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
@@ -123,6 +124,7 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
                 }
             }
         })
+
         context?.run {
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.showSoftInput(binding.digitalHomepageSearchViewSearchBar.searchBarTextField, InputMethod.SHOW_FORCED)
@@ -131,6 +133,14 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
         val recyclerView = getRecyclerView(view) as? VerticalRecyclerView
         recyclerView?.clearItemDecoration()
         recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                when (newState) {
+                    RecyclerView.SCROLL_STATE_DRAGGING -> KeyboardHandler.hideSoftKeyboard(activity)
+                }
+            }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
