@@ -1,14 +1,12 @@
 package com.tokopedia.autocompletecomponent.initialstate.popularsearch
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
-import java.util.ArrayList
 
-fun InitialStateData.convertPopularSearchToVisitableList(
+fun InitialStateData.convertToPopularSearchDataView(
     dimension90: String,
     keyword: String,
-): MutableList<Visitable<*>> {
+): PopularSearchDataView {
     val childList = ArrayList<BaseItemInitialStateSearch>()
     var position = 1
     for (item in this.items) {
@@ -37,5 +35,5 @@ fun InitialStateData.convertPopularSearchToVisitableList(
         childList.add(model)
         position++
     }
-    return arrayListOf(PopularSearchDataView(this.featureId, childList))
+    return PopularSearchDataView(this.featureId, childList)
 }

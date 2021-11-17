@@ -33,8 +33,8 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
                 capture(slotRecentSearchBaseItemList),
                 capture(slotRecentSearchItemList)
             )
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
-            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(any(), capture(slotDynamicSectionTrackingModel))
         }
     }
 
@@ -115,8 +115,8 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
                 capture(slotRecentSearchItemList)
             )
             initialStateView.onSeeMoreRecentSearchImpressed(any())
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
-            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(any(), capture(slotDynamicSectionTrackingModel))
         }
     }
 

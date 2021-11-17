@@ -1,14 +1,12 @@
 package com.tokopedia.autocompletecomponent.initialstate.dynamic
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
-import java.util.ArrayList
 
-fun InitialStateData.convertDynamicInitialStateSearchToVisitableList(
+fun InitialStateData.convertToDynamicInitialStateSearchDataView(
     dimension90: String,
     keyword: String,
-): MutableList<Visitable<*>> {
+): DynamicInitialStateSearchDataView {
     val childList = ArrayList<BaseItemInitialStateSearch>()
     var position = 1
     for (item in this.items) {
@@ -38,5 +36,5 @@ fun InitialStateData.convertDynamicInitialStateSearchToVisitableList(
         childList.add(model)
         position++
     }
-    return arrayListOf(DynamicInitialStateSearchDataView(this.featureId, childList))
+    return DynamicInitialStateSearchDataView(this.featureId, childList)
 }

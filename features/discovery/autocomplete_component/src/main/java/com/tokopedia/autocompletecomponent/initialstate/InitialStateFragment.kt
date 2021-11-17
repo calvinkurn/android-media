@@ -20,6 +20,8 @@ import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedC
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateComponent
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateListener
+import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchListener
 import com.tokopedia.autocompletecomponent.initialstate.productline.ProductLineListener
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
@@ -228,8 +230,14 @@ class InitialStateFragment:
         initialStateTracking?.impressedRecentSearch(recentSearchList, list, keyword)
     }
 
-    override fun onPopularSearchImpressed(model: DynamicInitialStateItemTrackingModel) {
-        initialStateTracking?.impressedDynamicSection(model)
+    override fun onPopularSearchImpressed(
+        popularSearchDataView: PopularSearchDataView,
+        model: DynamicInitialStateItemTrackingModel
+    ) {
+        initialStateTracking?.impressedDynamicSection(
+            popularSearchDataView.list,
+            model
+        )
     }
 
     override fun onSeeMoreRecentSearchImpressed(userId: String) {
@@ -270,8 +278,14 @@ class InitialStateFragment:
         initialStateAdapter.refreshPopularSection(position)
     }
 
-    override fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel) {
-        initialStateTracking?.impressedDynamicSection(model)
+    override fun onDynamicSectionImpressed(
+        dynamicInitialStateSearchDataView: DynamicInitialStateSearchDataView,
+        model: DynamicInitialStateItemTrackingModel
+    ) {
+        initialStateTracking?.impressedDynamicSection(
+            dynamicInitialStateSearchDataView.list,
+            model
+        )
     }
 
     override fun dropKeyBoard() {

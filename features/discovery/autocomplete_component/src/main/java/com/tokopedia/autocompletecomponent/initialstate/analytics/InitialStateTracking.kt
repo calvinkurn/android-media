@@ -138,23 +138,28 @@ open class InitialStateTracking(
         }
     }
 
-    open fun impressedDynamicSection(model: DynamicInitialStateItemTrackingModel) {
-        val map = DataLayer.mapOf(
-            EVENT, PROMO_VIEW_IRIS,
-            EVENT_CATEGORY, "$TOP_NAV - /",
-            EVENT_ACTION, IMPRESSION_POPULAR_SEARCH + " - " + model.type,
-            EVENT_LABEL, "title: " + model.title,
-            BUSINESS_UNIT, SEARCH,
-            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-            USER_ID, model.userId,
-            ECOMMERCE, DataLayer.mapOf(
-                PROMOVIEW, DataLayer.mapOf(
-                    PROMOTIONS, DataLayer.listOf(*model.list.toTypedArray())
+    open fun impressedDynamicSection(
+        searchComponentTrackingList: List<SearchComponentTracking>,
+        model: DynamicInitialStateItemTrackingModel
+    ) {
+        SearchComponentTrackingRollence.impress(iris, searchComponentTrackingList, ROLLENCE_KEY) {
+            val map = DataLayer.mapOf(
+                EVENT, PROMO_VIEW_IRIS,
+                EVENT_CATEGORY, "$TOP_NAV - /",
+                EVENT_ACTION, IMPRESSION_POPULAR_SEARCH + " - " + model.type,
+                EVENT_LABEL, "title: " + model.title,
+                BUSINESS_UNIT, SEARCH,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                USER_ID, model.userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMOVIEW, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(*model.list.toTypedArray())
+                    )
                 )
             )
-        )
 
-        iris.saveEvent(map)
+            iris.saveEvent(map)
+        }
     }
 
     open fun impressedSeeMoreRecentSearch(userId: String) {
@@ -258,9 +263,7 @@ open class InitialStateTracking(
         type: String,
         campaignCode: String
     ) {
-        SearchComponentTrackingRollence.click(searchComponentTracking,
-            ROLLENCE_KEY
-        ) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
             TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                     EVENT, CLICK_TOP_NAV,

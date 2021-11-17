@@ -3,7 +3,7 @@ package com.tokopedia.autocompletecomponent.initialstate.recentview
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
 
-fun InitialStateData.convertRecentViewSearchToVisitableList(
+fun InitialStateData.convertToRecentViewDataView(
     dimension90: String,
     keyword: String,
 ): RecentViewDataView {

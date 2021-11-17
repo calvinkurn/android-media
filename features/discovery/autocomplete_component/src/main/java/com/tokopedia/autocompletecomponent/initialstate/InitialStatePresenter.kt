@@ -14,16 +14,16 @@ import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateItem
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleDataView
-import com.tokopedia.autocompletecomponent.initialstate.dynamic.convertDynamicInitialStateSearchToVisitableList
+import com.tokopedia.autocompletecomponent.initialstate.dynamic.convertToDynamicInitialStateSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
-import com.tokopedia.autocompletecomponent.initialstate.popularsearch.convertPopularSearchToVisitableList
+import com.tokopedia.autocompletecomponent.initialstate.popularsearch.convertToPopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.productline.InitialStateProductLineTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.productline.convertToListInitialStateProductListDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.*
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
-import com.tokopedia.autocompletecomponent.initialstate.recentview.convertRecentViewSearchToVisitableList
+import com.tokopedia.autocompletecomponent.initialstate.recentview.convertToRecentViewDataView
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
@@ -162,7 +162,10 @@ class InitialStatePresenter @Inject constructor(
         return dataLayerList
     }
 
-    private fun onPopularSearchImpressed(data: InitialStateData) {
+    private fun onPopularSearchImpressed(
+        popularSearchDataView: PopularSearchDataView,
+        data: InitialStateData
+    ) {
         data.items.withNotEmpty{
             val dynamicInitialStateItemTrackingModel = DynamicInitialStateItemTrackingModel(
                 userId = getUserId(),
@@ -170,11 +173,17 @@ class InitialStatePresenter @Inject constructor(
                 type = data.featureId,
                 list = getDataLayerForPromo(this)
             )
-            view?.onPopularSearchImpressed(dynamicInitialStateItemTrackingModel)
+            view?.onPopularSearchImpressed(
+                popularSearchDataView,
+                dynamicInitialStateItemTrackingModel
+            )
         }
     }
 
-    private fun onDynamicSectionImpressed(data: InitialStateData) {
+    private fun onDynamicSectionImpressed(
+        dynamicInitialStateSearchDataView: DynamicInitialStateSearchDataView,
+        data: InitialStateData,
+    ) {
         data.items.withNotEmpty{
             val dynamicInitialStateItemTrackingModel = DynamicInitialStateItemTrackingModel(
                 userId = getUserId(),
@@ -182,7 +191,11 @@ class InitialStatePresenter @Inject constructor(
                 type = data.featureId,
                 list = getDataLayerForPromo(this),
             )
-            view?.onDynamicSectionImpressed(dynamicInitialStateItemTrackingModel)
+
+            view?.onDynamicSectionImpressed(
+                dynamicInitialStateSearchDataView,
+                dynamicInitialStateItemTrackingModel
+            )
         }
     }
 
@@ -206,23 +219,28 @@ class InitialStatePresenter @Inject constructor(
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
                     val title = RecentViewTitleDataView(initialStateData.header)
                     val recentViewDataView = initialStateData
-                        .convertRecentViewSearchToVisitableList(getDimension90(), keyword)
+                        .convertToRecentViewDataView(getDimension90(), keyword)
 
                     data.addAll(listOf(title, recentViewDataView))
 
                     onRecentViewImpressed(recentViewDataView, initialStateData.items)
                 }
                 InitialStateData.INITIAL_STATE_POPULAR_SEARCH -> {
-                    onPopularSearchImpressed(initialStateData)
-                    data.addAll(
-                        initialStateData
-                            .convertPopularSearchToVisitableList(getDimension90(), keyword)
-                            .insertTitleWithRefresh(
-                                initialStateData.featureId,
-                                initialStateData.header,
-                                initialStateData.labelAction
-                            )
-                    )
+                    if (initialStateData.header.isNotEmpty()) {
+                        val titlePopularSearch = PopularSearchTitleDataView(
+                            initialStateData.featureId,
+                            initialStateData.header,
+                            initialStateData.labelAction
+                        )
+                        data.add(titlePopularSearch)
+                    }
+
+                    val popularSearchDataView = initialStateData
+                        .convertToPopularSearchDataView(getDimension90(), keyword)
+
+                    data.add(popularSearchDataView)
+
+                    onPopularSearchImpressed(popularSearchDataView, initialStateData)
                 }
                 InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
                     data.addAll(
@@ -245,19 +263,25 @@ class InitialStatePresenter @Inject constructor(
                     )
                 }
                 else -> {
-                    onDynamicSectionImpressed(initialStateData)
-                    data.addAll(
-                        initialStateData
-                            .convertDynamicInitialStateSearchToVisitableList(
-                                getDimension90(),
-                                keyword,
-                            )
-                            .insertDynamicTitle(
+                    if (initialStateData.header.isNotEmpty()) {
+                        val titleDynamicInitialState =
+                            DynamicInitialStateTitleDataView(
                                 initialStateData.featureId,
                                 initialStateData.header,
                                 initialStateData.labelAction
                             )
-                    )
+                        data.add(titleDynamicInitialState)
+                    }
+
+                    val dynamicInitialStateSearchDataView = initialStateData
+                        .convertToDynamicInitialStateSearchDataView(
+                            getDimension90(),
+                            keyword,
+                        )
+
+                    data.add(dynamicInitialStateSearchDataView)
+
+                    onDynamicSectionImpressed(dynamicInitialStateSearchDataView, initialStateData)
                 }
             }
         }
@@ -340,30 +364,6 @@ class InitialStatePresenter @Inject constructor(
     //dimension90 = pageSource
     private fun getDimension90(): String {
         return Dimension90Utils.getDimension90(searchParameter)
-    }
-
-    private fun MutableList<Visitable<*>>.insertTitleWithRefresh(
-        featureId: String,
-        title: String,
-        labelAction: String
-    ): List<Visitable<*>> {
-        if (title.isEmpty()) return this
-
-        val titleSearch = PopularSearchTitleDataView(featureId, title, labelAction)
-        this.add(0, titleSearch)
-        return this
-    }
-
-    private fun MutableList<Visitable<*>>.insertDynamicTitle(
-        featureId: String,
-        title: String,
-        labelAction: String
-    ): List<Visitable<*>> {
-        if (title.isEmpty()) return this
-
-        val titleSearch = DynamicInitialStateTitleDataView(featureId, title, labelAction)
-        this.add(0, titleSearch)
-        return this
     }
 
     private fun MutableList<Visitable<*>>.insertProductListTitle(title: String): List<Visitable<*>> {

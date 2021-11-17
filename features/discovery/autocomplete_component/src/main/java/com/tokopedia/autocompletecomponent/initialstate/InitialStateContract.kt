@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
+import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -20,7 +22,10 @@ interface InitialStateContract {
             list: List<Any>
         )
 
-        fun onPopularSearchImpressed(model: DynamicInitialStateItemTrackingModel)
+        fun onPopularSearchImpressed(
+            popularSearchDataView: PopularSearchDataView,
+            model: DynamicInitialStateItemTrackingModel
+        )
 
         fun onSeeMoreRecentSearchImpressed(userId: String)
 
@@ -38,7 +43,10 @@ interface InitialStateContract {
 
         fun dropKeyBoard()
 
-        fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel)
+        fun onDynamicSectionImpressed(
+            dynamicInitialStateSearchDataView: DynamicInitialStateSearchDataView,
+            model: DynamicInitialStateItemTrackingModel,
+        )
 
         fun trackEventClickDynamicSectionItem(
             userId: String,
