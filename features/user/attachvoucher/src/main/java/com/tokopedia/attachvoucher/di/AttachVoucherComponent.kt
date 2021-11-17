@@ -10,6 +10,5 @@ import dagger.Component
         dependencies = [BaseAppComponent::class]
 )
 interface AttachVoucherComponent {
-
     fun inject(fragment: AttachVoucherFragment)
 }
