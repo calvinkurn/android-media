@@ -207,6 +207,10 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
                     showData(false)
                     items.forEach {
                         it?.let {
+                            val isBlackListedUser = (activity as? AffiliateActivity)?.getBlackListedStatus() ?: false
+                            if(isBlackListedUser){
+                                it.status?.isLinkGenerationAllowed = !isBlackListedUser
+                            }
                             adapter.addElement(AffiliatePromotionCardModel(it))
                         }
                     }
