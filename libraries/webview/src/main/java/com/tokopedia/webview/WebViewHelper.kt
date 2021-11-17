@@ -165,7 +165,7 @@ object WebViewHelper {
      * Input3: tokopedia://webview?url=https://abc.com/#/a?a=b&titlebar=false
      * Expected url query = https://abc.com/#/a?a=b&titlebar=false
      */
-    private fun getUrlQuery(uri: Uri): String? {
+     fun getUrlQuery(uri: Uri): String? {
         val uriStringAfterMark = uri.toString().substringAfter("?").substringAfter("$KEY_URL=")
         return if (uriStringAfterMark.contains("#")) {
             if (uriStringAfterMark.contains("?")) {
