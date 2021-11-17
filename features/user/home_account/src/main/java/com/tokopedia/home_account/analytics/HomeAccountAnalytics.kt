@@ -276,7 +276,6 @@ class HomeAccountAnalytics(val userSession: UserSessionInterface) {
         map[EVENT_BUSINESS_UNIT] = USER_PLATFORM_UNIT
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
         map[EVENT_USER_ID] = userSession.userId
-        println("cek map event $map")
         analytics.sendGeneralEvent(map)
 
     }
