@@ -13,12 +13,9 @@ import com.tokopedia.sellerorder.orderextension.presentation.mapper.OrderExtensi
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUpdater
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestResultUiModel
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -30,9 +27,9 @@ class SomOrderExtensionViewModel @Inject constructor(
     private val somSendOrderRequestExtensionUseCase: SendOrderExtensionRequestUseCase,
     private val somGetOrderExtensionRequestInfoMapper: GetOrderExtensionRequestInfoResponseMapper,
     private val somOrderExtensionRequestResultMapper: OrderExtensionRequestResultResponseMapper,
-) : BaseViewModel(dispatcher.io) {
-    private val _requestExtensionInfo = MutableLiveData<Result<OrderExtensionRequestInfoUiModel>>()
-    val requestExtensionInfo: LiveData<Result<OrderExtensionRequestInfoUiModel>>
+) : BaseViewModel(dispatcher.main) {
+    private val _requestExtensionInfo = MutableLiveData<OrderExtensionRequestInfoUiModel>()
+    val requestExtensionInfo: LiveData<OrderExtensionRequestInfoUiModel>
         get() = _requestExtensionInfo
 
     private val _requestExtensionResult = MutableLiveData<Result<OrderExtensionRequestResultUiModel>>()
@@ -45,7 +42,6 @@ class SomOrderExtensionViewModel @Inject constructor(
         launch {
             orderExtensionRequestInfoUpdates
                 .asFlow()
-                .flowOn(dispatcher.computation)
                 .collect { updateInfo ->
                     onNeedToUpdateOrderExtensionRequestInfo(updateInfo)
                 }
@@ -54,49 +50,56 @@ class SomOrderExtensionViewModel @Inject constructor(
 
     private suspend fun onNeedToUpdateOrderExtensionRequestInfo(updateInfo: OrderExtensionRequestInfoUpdater) {
         _requestExtensionInfo.value?.let { oldRequestExtensionInfo ->
-            if (oldRequestExtensionInfo is Success) {
-                updateInfo.execute(oldRequestExtensionInfo.data)
-                    .also { newRequestExtensionInfo ->
-                        withContext(dispatcher.main) {
-                            _requestExtensionInfo.value =
-                                Success(newRequestExtensionInfo)
-                        }
-                    }
+            withContext(dispatcher.computation) {
+                updateInfo.execute(oldRequestExtensionInfo)
+            }.also { newRequestExtensionInfo ->
+                _requestExtensionInfo.value = newRequestExtensionInfo
             }
         }
     }
 
+    private fun onLoadSomRequestExtensionInfo() {
+        _requestExtensionInfo.value = somGetOrderExtensionRequestInfoMapper.createLoadingData()
+    }
+
+    private fun onSuccessGetSomRequestExtensionInfo(mappedResult: OrderExtensionRequestInfoUiModel) {
+        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+            .OnSuccessGetOrderExtensionRequest(mappedResult)
+    }
+
+    private fun onFailedGetOrderExtensionRequest(errorMessage: String) {
+        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+            .OnFailedGetOrderExtensionRequest(errorMessage)
+    }
+
     private fun startSendingOrderExtensionRequest(action: (OrderExtensionRequestInfoUiModel) -> Unit) {
-        orderExtensionRequestInfoUpdates.value =
-            OrderExtensionRequestInfoUpdater.OnStartSendingOrderExtensionRequest(action)
+        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+            .OnStartSendingOrderExtensionRequest(action)
     }
 
-    private suspend fun onFailedSendingOrderExtensionRequest() {
-        withContext(dispatcher.main) {
-            orderExtensionRequestInfoUpdates.value =
-                OrderExtensionRequestInfoUpdater.OnFailedSendingOrderExtensionRequest()
-        }
+    private fun onFailedSendingOrderExtensionRequest(errorMessage: String) {
+        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+            .OnFailedSendingOrderExtensionRequest(errorMessage)
     }
 
-    private suspend fun onOrderExtensionRequestCompleted() {
-        withContext(dispatcher.main) {
-            orderExtensionRequestInfoUpdates.value =
-                OrderExtensionRequestInfoUpdater.OnSuccessSendingOrderExtensionRequest()
-        }
+    private fun onOrderExtensionRequestCompleted() {
+        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+            .OnSuccessSendingOrderExtensionRequest()
+    }
+
+    fun getSomRequestExtensionInfoLoadingState() {
+        onLoadSomRequestExtensionInfo()
     }
 
     fun getSomRequestExtensionInfo(orderId: String) {
+        onLoadSomRequestExtensionInfo()
         launchCatchError(block = {
             val result = somGetOrderExtensionRequestInfoUseCase.execute(orderId, userSession.shopId)
-            _requestExtensionInfo.postValue(
-                Success(
-                    somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(
-                        result
-                    )
-                )
-            )
+            val mappedResult = somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(result)
+            onSuccessGetSomRequestExtensionInfo(mappedResult)
         }, onError = {
-            _requestExtensionInfo.postValue(Fail(it))
+            val mappedError = somGetOrderExtensionRequestInfoMapper.mapError(it)
+            onFailedGetOrderExtensionRequest(mappedError)
         })
     }
 
@@ -111,20 +114,18 @@ class SomOrderExtensionViewModel @Inject constructor(
                         selectedOptionCode,
                         requestExtensionInfo.getComment(selectedOptionCode)
                     )
-                    val mappedResult =
-                        somOrderExtensionRequestResultMapper.mapResponseToUiModel(result)
-                    _requestExtensionResult.postValue(Success(mappedResult))
+                    val mappedResult = somOrderExtensionRequestResultMapper.mapResponseToUiModel(result)
                     if (!mappedResult.success) {
-                        onFailedSendingOrderExtensionRequest()
+                        onFailedSendingOrderExtensionRequest(mappedResult.message)
                     } else {
                         onOrderExtensionRequestCompleted()
                     }
                 } else {
-                    onFailedSendingOrderExtensionRequest()
+                    onFailedSendingOrderExtensionRequest("")
                 }
             }, onError = {
-                _requestExtensionResult.postValue(Fail(it))
-                onFailedSendingOrderExtensionRequest()
+                val mappedError = somOrderExtensionRequestResultMapper.mapError(it)
+                onFailedSendingOrderExtensionRequest(mappedError)
             })
         }
     }
@@ -144,6 +145,7 @@ class SomOrderExtensionViewModel @Inject constructor(
     }
 
     fun requestDismissOrderExtensionRequestInfoBottomSheet() {
-        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater.OnRequestDismissBottomSheet()
+        orderExtensionRequestInfoUpdates.value =
+            OrderExtensionRequestInfoUpdater.OnRequestDismissBottomSheet()
     }
 }

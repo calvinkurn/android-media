@@ -18,7 +18,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickup
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SetDelivered
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
-import com.tokopedia.sellerorder.orderextension.di.SomOrderExtensionModule
+import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestResultUiModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
@@ -50,7 +50,6 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         activity?.let { activity ->
             DaggerSomDetailComponent.builder()
                 .somComponent(SomComponentInstance.getSomComponent(activity.application))
-                .somOrderExtensionModule(SomOrderExtensionModule(activity))
                 .build()
                 .inject(this)
         }
@@ -173,9 +172,9 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
-    override fun onFailedGetRequestExtensionInfo(message: String) {
-        shouldRefreshOrderList = true
-        super.onFailedGetRequestExtensionInfo(message)
+    override fun onFailedGetRequestExtensionInfo(result: OrderExtensionRequestInfoUiModel) {
+        if (!result.success) shouldRefreshOrderList = true
+        super.onFailedGetRequestExtensionInfo(result)
     }
 
     override fun onFailedSendOrderExtensionRequest(errorMessage: String) {

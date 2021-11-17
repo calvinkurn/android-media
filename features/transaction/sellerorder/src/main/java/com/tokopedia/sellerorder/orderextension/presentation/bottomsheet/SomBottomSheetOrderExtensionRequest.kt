@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.sellerorder.databinding.BottomsheetOrderExtensionRequestInfoBinding
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.OrderExtensionRequestInfoAdapter
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.itemdecoration.RequestExtensionInfoItemDecoration
@@ -58,6 +59,10 @@ class SomBottomSheetOrderExtensionRequest(
         setupRequestExtensionInfo()
         setupRequestExtensionButton()
         setupDismissKeyboardHandler()
+    }
+
+    override fun onBottomSheetExpanded() {
+        viewModel.getSomRequestExtensionInfo(orderId)
     }
 
     override fun onBottomSheetHidden() {
@@ -126,7 +131,8 @@ class SomBottomSheetOrderExtensionRequest(
                 text = context.getString(R.string.bottomsheet_order_extension_request_button_text)
             }
             setOnClickListener {
-                if (!dismissing) {
+                binding?.root?.hideKeyboard()
+                if (!dismissing && !data.isLoadingRequestExtensionInfo()) {
                     binding?.rvRequestExtensionInfo?.focusedChild?.clearFocus()
                     viewModel.sendOrderExtensionRequest(orderId)
                 }

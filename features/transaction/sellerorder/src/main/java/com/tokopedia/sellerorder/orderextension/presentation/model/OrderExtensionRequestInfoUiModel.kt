@@ -50,6 +50,12 @@ data class OrderExtensionRequestInfoUiModel(
         }.orFalse()
     }
 
+    fun isLoadingRequestExtensionInfo(): Boolean {
+        return items.any {
+            it is DescriptionShimmerUiModel || it is OptionShimmerUiModel
+        }
+    }
+
     data class DescriptionUiModel(
         val alignment: DescriptionAlignment = DescriptionAlignment.TEXT_ALIGNMENT_INHERIT,
         @ColorRes val fontColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_68,
@@ -159,6 +165,26 @@ data class OrderExtensionRequestInfoUiModel(
             fun isError(value: String): Boolean {
                 return Regex(regex).containsMatchIn(value)
             }
+        }
+    }
+
+    class DescriptionShimmerUiModel(val width: Int) : BaseOrderExtensionRequestInfoItem {
+        override var show: Boolean = true
+        override var hideKeyboardOnClick: Boolean = true
+        override var requestFocus: Boolean = false
+
+        override fun type(typeFactory: OrderExtensionRequestInfoAdapterTypeFactory?): Int {
+            return typeFactory?.type(this).orZero()
+        }
+    }
+
+    class OptionShimmerUiModel: BaseOrderExtensionRequestInfoItem {
+        override var show: Boolean = true
+        override var hideKeyboardOnClick: Boolean = true
+        override var requestFocus: Boolean = false
+
+        override fun type(typeFactory: OrderExtensionRequestInfoAdapterTypeFactory?): Int {
+            return typeFactory?.type(this).orZero()
         }
     }
 

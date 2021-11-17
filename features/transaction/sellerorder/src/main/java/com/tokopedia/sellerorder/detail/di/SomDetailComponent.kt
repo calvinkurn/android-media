@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.detail.di
 import com.tokopedia.sellerorder.common.di.SomComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
-import com.tokopedia.sellerorder.orderextension.di.SomOrderExtensionModule
 import com.tokopedia.sellerorder.orderextension.di.SomOrderExtensionViewModelModule
 import dagger.Component
 
@@ -13,7 +12,7 @@ import dagger.Component
 
 @SomDetailScope
 @Component(
-    modules = [SomDetailViewModelModule::class, SomOrderExtensionViewModelModule::class, SomOrderExtensionModule::class],
+    modules = [SomDetailViewModelModule::class, SomOrderExtensionViewModelModule::class],
     dependencies = [SomComponent::class]
 )
 interface SomDetailComponent {

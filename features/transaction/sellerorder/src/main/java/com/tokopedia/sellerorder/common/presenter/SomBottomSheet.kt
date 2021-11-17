@@ -2,20 +2,14 @@ package com.tokopedia.sellerorder.common.presenter
 
 import android.animation.Animator
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.GestureDetectorCompat
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -180,14 +174,15 @@ abstract class SomBottomSheet <T: ViewBinding> (
                 // noop
             }
 
+
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> onBottomSheetHidden()
-                    else -> {
-                        dismissing = false
-                        overlayLayout?.animateFadeIn()
-                    }
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) onBottomSheetExpanded()
+                else if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    onBottomSheetHidden()
+                    return
                 }
+                dismissing = false
+                overlayLayout?.animateFadeIn()
             }
         }
     }
@@ -213,6 +208,8 @@ abstract class SomBottomSheet <T: ViewBinding> (
         }
         this.bottomSheetLayout = bottomSheetLayout
     }
+
+    protected open fun onBottomSheetExpanded() {}
 
     protected open fun onBottomSheetHidden() {
         overlayLayout?.animateFadeOut()

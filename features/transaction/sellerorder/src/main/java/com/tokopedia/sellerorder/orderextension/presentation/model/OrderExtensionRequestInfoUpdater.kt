@@ -7,7 +7,7 @@ interface OrderExtensionRequestInfoUpdater {
         private val changedComment: OrderExtensionRequestInfoUiModel.CommentUiModel
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy().apply { updateItems(this) }
+            return oldData.copy(processing = false, errorMessage = "", success = true).apply { updateItems(this) }
         }
 
         private fun updateItems(newData: OrderExtensionRequestInfoUiModel) {
@@ -32,8 +32,11 @@ interface OrderExtensionRequestInfoUpdater {
         private val selectedOption: OrderExtensionRequestInfoUiModel.OptionUiModel
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return if (selectedOption.selected) oldData else oldData.copy()
-                .apply { updateItems(this) }
+            return if (selectedOption.selected) oldData else oldData.copy(
+                processing = false,
+                errorMessage = "",
+                success = true
+            ).apply { updateItems(this) }
         }
 
         private fun updateItems(newData: OrderExtensionRequestInfoUiModel) {
@@ -72,31 +75,53 @@ interface OrderExtensionRequestInfoUpdater {
         }
     }
 
+    class OnSuccessGetOrderExtensionRequest(
+        private val newData: OrderExtensionRequestInfoUiModel
+    ) : OrderExtensionRequestInfoUpdater {
+        override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
+            return newData
+        }
+    }
+
+    class OnFailedGetOrderExtensionRequest(
+        private val errorMessage: String
+    ) : OrderExtensionRequestInfoUpdater {
+        override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
+            return oldData.copy(processing = false, errorMessage = errorMessage, success = false, completed = true)
+        }
+    }
+
     class OnStartSendingOrderExtensionRequest(
         private val action: (OrderExtensionRequestInfoUiModel) -> Unit
     ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = true).also {
-                action(it)
+            return if (oldData.processing || oldData.completed) {
+                oldData
+            } else {
+                oldData.copy(processing = true, errorMessage = "", success = true).also {
+                    action(it)
+                }
             }
         }
     }
 
-    class OnFailedSendingOrderExtensionRequest : OrderExtensionRequestInfoUpdater {
+    class OnFailedSendingOrderExtensionRequest(
+        private val errorMessage: String
+    ) : OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = false)
+            return oldData.copy(processing = false, errorMessage = errorMessage, success = false)
         }
     }
 
     class OnSuccessSendingOrderExtensionRequest: OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = false, completed = true)
+            return oldData.copy(processing = false, errorMessage = "", success = true, completed = true)
         }
     }
 
     class OnRequestDismissBottomSheet: OrderExtensionRequestInfoUpdater {
         override fun execute(oldData: OrderExtensionRequestInfoUiModel): OrderExtensionRequestInfoUiModel {
-            return oldData.copy(processing = false, completed =  true)
+            return oldData.copy(processing = false, errorMessage = "", success = true, completed =  true)
         }
     }
 }

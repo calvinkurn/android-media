@@ -410,7 +410,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_ACCEPTING_ORDER)
                     SomAnalytics.eventClickAcceptOrderPopup(false)
-                    it.throwable.showErrorToaster()
+                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
                 }
             }
         })
@@ -422,7 +422,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessRejectReason(it.data)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
-                    it.throwable.showErrorToaster()
+                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
                 }
             }
         })
@@ -439,7 +439,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessSetDelivered(it.data.setDelivered)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
-                    it.throwable.showErrorToaster()
+                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
                     bottomSheetManager?.getSomBottomSheetSetDelivered()?.onFailedSetDelivered()
                 }
             }
@@ -462,7 +462,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, PAGE_NAME))
-                    result.throwable.showErrorToaster()
+                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
                     result.throwable.showGlobalError()
                 }
             }
@@ -480,7 +480,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, SomConsts.ERROR_REJECT_CANCEL_ORDER)
-                    result.throwable.showErrorToaster()
+                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
                 }
             }
         })
@@ -914,7 +914,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionRequestExtension() {
-        orderExtensionViewModel.getSomRequestExtensionInfo(orderId)
+        orderExtensionViewModel.getSomRequestExtensionInfoLoadingState()
     }
 
     private fun setActionChangeCourier() {
@@ -960,7 +960,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     if (failEditAwbResponse.message.isNotEmpty()) {
                         showToaster(failEditAwbResponse.message, view, TYPE_ERROR)
                     } else {
-                        it.throwable.showErrorToaster()
+                        it.throwable.showErrorToaster(binding?.containerBtnDetail)
                     }
                 }
             }
@@ -1058,7 +1058,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Success -> onSuccessRejectOrder(it.data.rejectOrder)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
-                    it.throwable.showErrorToaster()
+                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
                 }
             }
         })
@@ -1133,11 +1133,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showErrorState(type)
     }
 
-    private fun Throwable.showErrorToaster() {
+    private fun Throwable.showErrorToaster(anchorView: View?) {
         if (this is UnknownHostException || this is SocketTimeoutException) {
-            showNoInternetConnectionToaster()
+            showNoInternetConnectionToaster(anchorView)
         } else {
-            showServerErrorToaster()
+            showServerErrorToaster(anchorView)
         }
     }
 
@@ -1155,38 +1155,34 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showErrorToaster(message: String) {
+    private fun showErrorToaster(anchorView: View?, message: String) {
         view?.run {
-            if (this@SomDetailFragment.somToaster?.isShown == true)
-                this@SomDetailFragment.somToaster?.dismiss()
-
             this@SomDetailFragment.somToaster = Toaster.build(
-                    this,
-                    message,
-                    LENGTH_SHORT,
-                    TYPE_ERROR)
+                this,
+                message,
+                LENGTH_SHORT,
+                TYPE_ERROR
+            ).setAnchorView(anchorView)
             this@SomDetailFragment.somToaster?.show()
         }
     }
 
-    private fun showNoInternetConnectionToaster() {
-        showErrorToaster(getString(R.string.som_error_message_no_internet_connection))
+    private fun showNoInternetConnectionToaster(anchorView: View?) {
+        showErrorToaster(anchorView, getString(R.string.som_error_message_no_internet_connection))
     }
 
-    private fun showServerErrorToaster() {
-        showErrorToaster(getString(R.string.som_error_message_server_fault))
+    private fun showServerErrorToaster(anchorView: View?) {
+        showErrorToaster(anchorView, getString(R.string.som_error_message_server_fault))
     }
 
     protected fun showCommonToaster(message: String) {
         view?.run {
-            if (this@SomDetailFragment.somToaster?.isShown == true)
-                this@SomDetailFragment.somToaster?.dismiss()
-
             this@SomDetailFragment.somToaster = Toaster.build(
-                    this,
-                    message,
-                    LENGTH_SHORT,
-                    TYPE_NORMAL)
+                this,
+                message,
+                LENGTH_SHORT,
+                TYPE_NORMAL
+            ).setAnchorView(binding?.containerBtnDetail)
             this@SomDetailFragment.somToaster?.show()
         }
     }
@@ -1287,16 +1283,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     private fun observeGetRequestExtensionInfo() {
         orderExtensionViewModel.requestExtensionInfo.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Success -> {
-                    if (result.data.success) {
-                        onSuccessGetRequestExtensionInfo(result.data)
-                    } else {
-                        onFailedGetRequestExtensionInfo(result.data.errorMessage)
-                    }
-                }
-                is Fail -> result.throwable.showErrorToaster()
+            if (!result.success) {
+                onFailedGetRequestExtensionInfo(result)
             }
+            onRequestExtensionInfoChanged(result)
         }
     }
 
@@ -1312,13 +1302,13 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, true)
-                    result.throwable.showErrorToaster()
+                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
                 }
             }
         }
     }
 
-    private fun onSuccessGetRequestExtensionInfo(data: OrderExtensionRequestInfoUiModel) {
+    private fun onRequestExtensionInfoChanged(data: OrderExtensionRequestInfoUiModel) {
         bottomSheetManager?.showSomBottomSheetOrderExtensionRequest(
             data,
             orderId,
@@ -1399,15 +1389,15 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    protected open fun onFailedGetRequestExtensionInfo(message: String) {
-        loadDetail()
-        showErrorToaster(message)
+    protected open fun onFailedGetRequestExtensionInfo(result: OrderExtensionRequestInfoUiModel) {
+        if (!result.success) loadDetail()
+        if (result.errorMessage.isNotBlank()) showErrorToaster(null, result.errorMessage)
     }
 
     protected open fun onFailedSendOrderExtensionRequest(errorMessage: String) {
         SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, false)
         loadDetail()
-        showErrorToaster(errorMessage)
+        showErrorToaster(binding?.containerBtnDetail, errorMessage)
     }
 
     protected open fun onSuccessSendOrderExtensionRequest(data: OrderExtensionRequestResultUiModel) {

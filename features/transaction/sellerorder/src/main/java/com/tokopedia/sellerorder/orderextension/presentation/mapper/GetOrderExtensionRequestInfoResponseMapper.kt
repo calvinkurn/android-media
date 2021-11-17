@@ -7,17 +7,36 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.orderextension.domain.models.GetOrderExtensionRequestInfoResponse
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
 class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
+    @ApplicationContext
     private val context: Context
 ) {
+
+    fun createLoadingData(): OrderExtensionRequestInfoUiModel = OrderExtensionRequestInfoUiModel(
+        items = mutableListOf<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>().apply {
+            addOrderExtensionHeader()
+            addOrderExtensionDescriptionShimmer(304.toPx())
+            addOrderExtensionDescriptionShimmer(304.toPx())
+            addOrderExtensionDescriptionShimmer(249.toPx())
+            addOrderExtensionOptionsTitle()
+            addOrderExtensionOptionsShimmer()
+            addOrderExtensionOptionsShimmer()
+            addOrderExtensionOptionsShimmer()
+            addOrderExtensionFooter()
+        }
+    )
+
     fun mapSuccessResponseToUiModel(
         response: GetOrderExtensionRequestInfoResponse.Data.OrderExtensionRequestInfo.OrderExtensionRequestInfoData
     ): OrderExtensionRequestInfoUiModel = OrderExtensionRequestInfoUiModel(
@@ -31,8 +50,13 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
             }
         } else emptyList(),
         success = response.messageCode == 1,
+        completed = response.messageCode != 1,
         errorMessage = response.message.orEmpty()
     )
+
+    fun mapError(throwable: Throwable): String {
+        return ErrorHandler.getErrorMessage(context, throwable)
+    }
 
     private fun mapOrderExtensionDescription(text: String?, newDeadline: String?): CharSequence {
         return SpannableStringBuilder().append(text.orEmpty())
@@ -159,5 +183,15 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
                 show = true
             )
         )
+    }
+
+    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionDescriptionShimmer(
+        width: Int
+    ) {
+        add(OrderExtensionRequestInfoUiModel.DescriptionShimmerUiModel(width))
+    }
+
+    private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionOptionsShimmer() {
+        add(OrderExtensionRequestInfoUiModel.OptionShimmerUiModel())
     }
 }

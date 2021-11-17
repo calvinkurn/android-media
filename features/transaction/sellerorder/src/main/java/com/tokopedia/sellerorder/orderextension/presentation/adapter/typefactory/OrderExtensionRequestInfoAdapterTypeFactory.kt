@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoDescriptionViewHolder
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoOptionViewHolder
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoCommentViewHolder
+import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoDescriptionShimmerViewHolder
+import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoOptionShimmerViewHolder
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 
 class OrderExtensionRequestInfoAdapterTypeFactory(
@@ -26,11 +28,21 @@ class OrderExtensionRequestInfoAdapterTypeFactory(
         return OrderExtensionRequestInfoCommentViewHolder.LAYOUT
     }
 
+    fun type(descriptionShimmerUiModel: OrderExtensionRequestInfoUiModel.DescriptionShimmerUiModel): Int {
+        return OrderExtensionRequestInfoDescriptionShimmerViewHolder.LAYOUT
+    }
+
+    fun type(optionShimmerUiModel: OrderExtensionRequestInfoUiModel.OptionShimmerUiModel): Int {
+        return OrderExtensionRequestInfoOptionShimmerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             OrderExtensionRequestInfoDescriptionViewHolder.LAYOUT -> OrderExtensionRequestInfoDescriptionViewHolder(parent)
             OrderExtensionRequestInfoOptionViewHolder.LAYOUT -> OrderExtensionRequestInfoOptionViewHolder(parent, optionListener)
             OrderExtensionRequestInfoCommentViewHolder.LAYOUT -> OrderExtensionRequestInfoCommentViewHolder(parent, textAreaListener)
+            OrderExtensionRequestInfoDescriptionShimmerViewHolder.LAYOUT -> OrderExtensionRequestInfoDescriptionShimmerViewHolder(parent)
+            OrderExtensionRequestInfoOptionShimmerViewHolder.LAYOUT -> OrderExtensionRequestInfoOptionShimmerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
