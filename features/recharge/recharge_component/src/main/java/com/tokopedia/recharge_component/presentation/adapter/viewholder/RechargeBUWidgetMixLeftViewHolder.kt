@@ -101,7 +101,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        if(!isCacheData){
+        if (!isCacheData) {
             // Decrement position to account for empty product card
             listener.onRechargeBUWidgetProductCardImpression(dataModel, position - 1)
         }
@@ -122,9 +122,9 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
 
     private fun setChannelDivider(element: RechargeBUWidgetDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
-            channelModel = element.channel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+                channelModel = element.channel,
+                dividerTop = itemView.home_component_divider_header,
+                dividerBottom = itemView.home_component_divider_footer
         )
     }
 
@@ -143,7 +143,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                 if (!isCacheData)
                     listener.onRechargeBUWidgetBannerImpression(dataModel)
             }
-            image.layout(RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE,RESET_IMAGE_LAYOUT_VALUE)
+            image.layout(RESET_IMAGE_LAYOUT_VALUE, RESET_IMAGE_LAYOUT_VALUE, RESET_IMAGE_LAYOUT_VALUE, RESET_IMAGE_LAYOUT_VALUE)
             image.loadImageFitCenter(imageUrl)
             if (gradientColor.isNotEmpty()) {
                 parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
@@ -213,7 +213,11 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                     element.label1,
                     element.label3,
                     element.applink,
-                    this
+                    this,
+                    element.soldPercentageValue,
+                    element.soldPercentageLabel,
+                    element.soldPercentageLabelColor,
+                    element.showSoldPercentage
             ))
         }
         return list
@@ -242,7 +246,12 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     private fun setHeaderComponent(element: RechargeBUWidgetDataModel) {
         val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_widget_header_view)
         val channel = element.channel.copy(
-                channelHeader = ChannelHeader(name = element.data.title, applink = element.data.applink)
+                channelHeader = ChannelHeader(
+                        name = element.data.title,
+                        applink = element.data.applink,
+                        url = element.data.textlink,
+                        subtitle = element.data.subtitle
+                )
         )
         headerView.setChannel(channel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {

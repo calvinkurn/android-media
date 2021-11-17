@@ -28,21 +28,21 @@
             tools:visibility="visible">
 
             <ImageView
-                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:id="@+id/imageProductBackgroundOverlay"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_product_card" />
 
         </FrameLayout>
 
         <ImageView
-            android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,11 +61,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:id="@+id/imageProductIcon"
                 android:layout_width="@dimen/layout_lvl5"
                 android:layout_height="@dimen/layout_lvl5"
                 android:layout_gravity="center"
+                android:contentDescription="@string/content_desc_recharge_bu_parallax_image"
                 android:scaleType="centerCrop" />
 
         </androidx.cardview.widget.CardView>
@@ -123,7 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.83"/>
+            app:layout_constraintGuide_percent="0.83" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelDiscount"
@@ -163,7 +163,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.904"/>
+            app:layout_constraintGuide_percent="0.904" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewPrice"
@@ -177,7 +177,6 @@
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline"
@@ -185,6 +184,30 @@
             app:typographyWeight="bold"
             tools:text="Rp7.999.000"
             tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.ProgressBarUnify
+            android:id="@+id/rechargeBuProgressStock"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_flashsale_progressbar_height"
+            android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintBottom_toTopOf="@id/rechargeBuProgressStockLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/textViewPrice"
+            app:layout_constraintTop_toBottomOf="@id/textViewPrice"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/rechargeBuProgressStockLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_R600"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/rechargeBuProgressStock"
+            app:layout_constraintTop_toBottomOf="@id/rechargeBuProgressStock"
+            app:typographyType="body_2"
+            tools:text="Segera Habis" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

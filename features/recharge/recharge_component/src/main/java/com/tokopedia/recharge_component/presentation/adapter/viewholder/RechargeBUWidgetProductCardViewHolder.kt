@@ -5,8 +5,6 @@ import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -17,14 +15,13 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import kotlinx.android.synthetic.main.home_recharge_bu_widget_product_card.view.*
 
 class RechargeBUWidgetProductCardViewHolder(
         itemView: View,
         private val channels: ChannelModel
-): AbstractViewHolder<RechargeBUWidgetProductCardModel>(itemView) {
+) : AbstractViewHolder<RechargeBUWidgetProductCardModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -32,10 +29,11 @@ class RechargeBUWidgetProductCardViewHolder(
 
         const val IMAGE_TYPE_FULL = "full"
         const val IMAGE_TYPE_FRAME = "frame"
+
     }
 
     override fun bind(element: RechargeBUWidgetProductCardModel) {
-        with (itemView) {
+        with(itemView) {
             addOnImpressionListener(element) {
                 element.listener.onProductCardImpressed(channels, ChannelGrid(), adapterPosition)
             }
@@ -125,6 +123,41 @@ class RechargeBUWidgetProductCardViewHolder(
                     hide()
                 }
             }
+
+            // stock progress bar
+            with(rechargeBuProgressStock) {
+                if (element.showSoldPercentage) {
+                    setProgressIcon(
+                            icon = ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card),
+                            width = context.resources.getDimension(R.dimen.bu_widget_progress_fire_icon_width).toInt(),
+                            height = context.resources.getDimension(R.dimen.bu_widget_progress_fire_icon_height).toInt()
+                    )
+                    progressBarColorType = ProgressBarUnify.COLOR_RED
+                    setValue(element.soldPercentage, false)
+                    show()
+                } else {
+                    hide()
+                }
+            }
+
+            with(rechargeBuProgressStockLabel) {
+                if (element.showSoldPercentage) {
+                    text = element.soldPercentageLabel
+
+                    val color = try {
+                        Color.parseColor(element.soldPercentageLabelColor)
+                    } catch (throwable: Throwable) {
+                        throwable.printStackTrace()
+                        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
+                    }
+                    setTextColor(color)
+
+                    show()
+                } else {
+                    hide()
+                }
+            }
+
         }
     }
 
@@ -172,4 +205,5 @@ class RechargeBUWidgetProductCardViewHolder(
 //    }
 
 //    override fun getThreeDotsButton(): View? = null
+
 }
