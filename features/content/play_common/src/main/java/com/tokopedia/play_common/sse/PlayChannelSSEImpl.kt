@@ -1,6 +1,8 @@
 package com.tokopedia.play_common.sse
 
+import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analyticsdebugger.debugger.SSELogger
 import com.tokopedia.analyticsdebugger.sse.util.SSELogTools
 import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
@@ -22,15 +24,15 @@ import javax.inject.Inject
 class PlayChannelSSEImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
-    private val sseLogTools: SSELogTools,
+    private val context: Context,
 ): PlayChannelSSE {
 
     private var sse: ServerSentEvent? = null
     private var sseFlow = MutableSharedFlow<SSEAction>(extraBufferCapacity = 100)
 
     override fun connect(channelId: String, pageSource: String, gcToken: String) {
-        sseLogTools.initLog(channelId, pageSource, gcToken)
-        sseLogTools.sendLog("SSE Connecting...")
+        SSELogger.getInstance(context).init(buildGeneralInfo(channelId, gcToken, pageSource).toString())
+        SSELogger.getInstance(context).send("SSE Connecting...")
 
         var url = "${TokopediaUrl.getInstance().SSE}${PLAY_SSE}?page=$pageSource&channel_id=$channelId"
         if(gcToken.isNotEmpty()) url += "&token=${gcToken}"
@@ -44,7 +46,7 @@ class PlayChannelSSEImpl @Inject constructor(
 
         sse = OkSse().newServerSentEvent(request, object: ServerSentEvent.Listener {
             override fun onOpen(sse: ServerSentEvent, response: Response) {
-                sseLogTools.sendLog("SSE Open")
+                SSELogger.getInstance(context).send("SSE Open")
             }
 
             override fun onMessage(
@@ -54,7 +56,7 @@ class PlayChannelSSEImpl @Inject constructor(
                 message: String
             ) {
                 sseFlow.tryEmit(SSEAction.Message(SSEResponse(event = event, message = message)))
-                sseLogTools.sendLog(event, message)
+                SSELogger.getInstance(context).send(event, message)
             }
 
             override fun onComment(sse: ServerSentEvent, comment: String) { }
@@ -72,7 +74,7 @@ class PlayChannelSSEImpl @Inject constructor(
             }
 
             override fun onClosed(sse: ServerSentEvent) {
-                sseLogTools.sendLog("SSE Closed")
+                SSELogger.getInstance(context).send("SSE Closed")
                 sseFlow.tryEmit(SSEAction.Close(SSECloseReason.INTENDED))
             }
 
@@ -88,6 +90,14 @@ class PlayChannelSSEImpl @Inject constructor(
 
     override fun listen(): Flow<SSEAction> {
         return sseFlow.filterNotNull().buffer().flowOn(dispatchers.io)
+    }
+
+    private fun buildGeneralInfo(channelId: String, gcToken: String, pageSource: String): Map<String, String> {
+        return mapOf(
+            "channelId" to channelId,
+            "gcToken" to gcToken,
+            "pageSource" to pageSource,
+        )
     }
 
     private companion object {

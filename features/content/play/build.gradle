@@ -40,7 +40,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.floatingWindow)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.keys)
-    implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    
+    if(rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    }
+    else {
+        implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
+
 
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
