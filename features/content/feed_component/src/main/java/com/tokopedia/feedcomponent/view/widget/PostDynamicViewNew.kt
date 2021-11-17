@@ -106,6 +106,8 @@ private val handlerFeed = Handler(Looper.getMainLooper())
 private var secondCountDownTimer: CountDownTimer? = null
 private var addViewTimer: Timer? = null
 private var isPaused = false
+private const val FOLLOW_MARGIN = 6
+private const val MARGIN_ZERO = 0
 
 
 /**
@@ -317,10 +319,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (isTopads){
             followCount.text = context.getString(R.string.feeds_ads_text)
         }
+
         followCount.showWithCondition(!isFollowed || followers.transitionFollow)
         shopImage.setImageUrl(author.logoURL)
         shopBadge.setImageUrl(author.badgeURL)
         shopBadge.showWithCondition(author.badgeURL.isNotEmpty())
+        if (shopBadge.visibility == GONE) {
+            val layoutParams = (followCount?.layoutParams as? MarginLayoutParams)
+            layoutParams?.setMargins(FOLLOW_MARGIN, MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO)
+            followCount?.layoutParams = layoutParams
+        }
         val activityName = ""
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
         val followCta =
@@ -1890,7 +1898,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             handlerHide?.postDelayed({
                 if (!shouldContinueToShowLihatProduct(layout) && tagProducts.isNotEmpty()) {
-
                     hideViewWithoutAnimation(layoutLihatProdukParent, context)
                 }
                 },TIME_FOUR_SEC)

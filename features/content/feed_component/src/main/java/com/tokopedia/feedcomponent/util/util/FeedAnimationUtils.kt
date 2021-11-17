@@ -206,7 +206,7 @@ fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
 fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
     val expandedWidthDp = 100F
     val shrinkedWidthDp = 24F
-    if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH) {
+    if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH.toDp()) {
         val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
         anim.cancel()
         anim.addUpdateListener { valueAnimator ->
