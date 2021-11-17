@@ -15,7 +15,7 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
 class AttachProductViewModel @Inject constructor
-    (private val useCase: AttachProductUseCase, private val dispatcher: CoroutineDispatchers)
+    (private val useCase: AttachProductUseCase, dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main), AttachProductContract.Presenter {
 
     private val _products = MutableLiveData<Result<List<AttachProductItemUiModel>>>()

@@ -93,6 +93,7 @@ class AttachProductViewModelTest {
     @Test
     fun `fail load data` () {
         //GIVEN
+
         val expectedError = Throwable("")
         coEvery {
             useCase(any())
