@@ -70,19 +70,17 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         }
 
         arguments?.let {
-            minDate = it.getString(ARG_MIN_DATE)?.orEmpty()?.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+            minDate = it.getString(ARG_MIN_DATE)?.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
-            maxDate = it.getString(ARG_MAX_DATE)?.orEmpty()?.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+            maxDate = it.getString(ARG_MAX_DATE)?.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
             rangeYear = it.getInt(ARG_RANGE_YEAR)
 
             rangeDateSelected = it.getLong(ARG_RANGE_DATE_SELECTED)
 
-            if (it.getString(ARG_MIN_DATE_LABEL) != null)
-                minDateLabel = it.getString(ARG_MIN_DATE_LABEL) ?: ""
+            minDateLabel = it.getString(ARG_MIN_DATE_LABEL).orEmpty()
 
-            if (it.getString(ARG_MAX_DATE_LABEL) != null)
-                maxDateLabel = it.getString(ARG_MAX_DATE_LABEL) ?: ""
+            maxDateLabel = it.getString(ARG_MAX_DATE_LABEL).orEmpty()
 
             minSelectableDateFromToday = it.getInt(ARG_MIN_SELECTABLE_DATE_FROM_TODAY)
 
