@@ -44,7 +44,6 @@ class ProductReportSubmitViewModel @Inject constructor(
             submitReportUseCase.setParams(params)
 
             val result = submitReportUseCase.executeOnBackground()
-            result.submitReport.isSuccess
             submitResult.postValue(SubmitReportResult.Success(result.submitReport.isSuccess))
         }, onError = {
             submitResult.postValue(SubmitReportResult.Fail(it))
