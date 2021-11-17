@@ -29,12 +29,35 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <com.tokopedia.unifycomponents.TabsUnify
+            android:id="@+id/tabs_promo"
+            tools:background="@color/Unify_GN500"
+            android:layout_width="match_parent"
+            android:layout_height="44dp">
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kupon Saya" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kupon Toko" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Belum Bisa Dipakai" />
+
+        </com.tokopedia.unifycomponents.TabsUnify>
+
         <FrameLayout
             android:id="@+id/layout_main_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/container_action_bottom"
-            android:layout_below="@+id/app_bar_layout">
+            android:layout_below="@+id/tabs_promo">
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh_layout"
@@ -48,77 +71,12 @@
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            <LinearLayout
-                android:id="@+id/header_promo_section"
+            <View
+                android:id="@+id/v_shadow_bottom"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/Unify_N0"
-                    android:orientation="horizontal"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:paddingBottom="12dp">
-
-                    <ImageView
-                        android:id="@+id/section_image_promo_list_header"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:contentDescription="@string/content_description_image_coupon_sub_section"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_badge_shop_official" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/section_label_promo_list_header_title"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:ellipsize="end"
-                        app:layout_constraintStart_toEndOf="@+id/section_image_promo_list_header"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:typographyType="body_2"
-                        app:typographyWeight="bold"
-                        tools:text="Kupon saya 111" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/section_label_promo_list_header_sub_title"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        app:layout_constraintStart_toEndOf="@+id/section_image_promo_list_header"
-                        app:layout_constraintTop_toBottomOf="@+id/section_label_promo_list_header_title"
-                        app:typographyType="body_3"
-                        tools:text="Hanya bisa pilih satu aja" />
-
-                    <ImageView
-                        android:id="@+id/section_image_chevron"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/content_description_image_arrow_coupon_sub_section"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <View
-                    android:id="@+id/v_shadow_bottom"
-                    android:layout_width="match_parent"
-                    android:layout_height="4dp"
-                    android:layout_gravity="top"
-                    android:background="@drawable/promo_checkout_marketplace_module_shadow_bottom" />
-
-            </LinearLayout>
+                android:layout_height="4dp"
+                android:layout_gravity="top"
+                android:background="@drawable/promo_checkout_marketplace_module_shadow_bottom" />
 
             <View
                 android:id="@+id/v_shadow_top"
@@ -201,6 +159,9 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/promo_checkout_marketplace_module_bottom_sheet_layout" />
+    <include
+        android:id="@+id/promo_last_seen_bottom_sheet"
+        layout="@layout/promo_checkout_marketplace_module_bottom_sheet_layout"
+        tools:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
