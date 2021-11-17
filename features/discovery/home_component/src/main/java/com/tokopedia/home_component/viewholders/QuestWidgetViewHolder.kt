@@ -23,6 +23,7 @@ class QuestWidgetViewHolder(
     }
 
     override fun bind(element: QuestWidgetModel) {
-        questWidget?.getQuestList(page = HOMEPAGE_PARAM)
+        questWidget?.setQuestData(element.questData)
+     //   questWidget?.getQuestList(page = HOMEPAGE_PARAM)
     }
 }

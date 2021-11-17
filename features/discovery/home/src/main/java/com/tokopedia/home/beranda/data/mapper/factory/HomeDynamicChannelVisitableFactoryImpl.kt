@@ -122,9 +122,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
                     createMixLeftComponent(channel, position, isCache)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
+              /*  DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createProductHighlightComponent(channel, position, isCache)
-                }
+                }*/
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {
                     createPopularKeywordChannel(channel = channel)
                 }
@@ -186,7 +186,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_QUESTWIDGET -> {
+                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createQuestChannel(channel, position , isCache)
                 }
             }

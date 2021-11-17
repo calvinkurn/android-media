@@ -11,7 +11,7 @@ data class QuestWidgetResponse(
 data class WidgetData(
 
     @SerializedName("questWidgetList")
-    val questWidgetList: QuestWidgetList,
+    val questWidgetList: QuestWidgetList? = null,
 
     )
 

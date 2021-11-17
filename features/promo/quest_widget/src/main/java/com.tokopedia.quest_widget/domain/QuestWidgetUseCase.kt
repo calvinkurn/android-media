@@ -5,7 +5,7 @@ import com.tokopedia.quest_widget.data.QuestWidgetResponse
 import com.tokopedia.quest_widget.data.WidgetData
 import javax.inject.Inject
 
-class QuestWidgetUseCase @Inject constructor(var gqlWrapper: QuestGqlWrapper) {
+open class QuestWidgetUseCase @Inject constructor(var gqlWrapper: QuestGqlWrapper) {
 
     suspend fun getResponse(map: HashMap<String, Any>): WidgetData? {
         return gqlWrapper.getResponse(getResponseClass(), getQuery(), map)

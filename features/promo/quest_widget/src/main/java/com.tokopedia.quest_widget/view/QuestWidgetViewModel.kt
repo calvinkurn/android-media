@@ -61,7 +61,7 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
             if (response != null) {
                 response.questWidgetList.let { widgetData ->
                     val configList = ArrayList<Config>()
-                    widgetData.questWidgetList.forEach { questWidgetListItem ->
+                    widgetData?.questWidgetList?.forEach { questWidgetListItem ->
                         configList.add(convertStringToConfig(questWidgetListItem.config))
                     }
                     val questData = QuestData(configList, response)

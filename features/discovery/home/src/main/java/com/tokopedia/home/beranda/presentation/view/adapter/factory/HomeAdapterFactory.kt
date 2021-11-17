@@ -270,7 +270,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     }
 
     override fun type(questWidgetModel: QuestWidgetModel): Int {
-        return 0
+        return QuestWidgetViewHolder.LAYOUT
     }
 
     override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int {

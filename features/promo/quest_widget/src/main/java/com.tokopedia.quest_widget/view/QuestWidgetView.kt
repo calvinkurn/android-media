@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.quest_widget.data.QuestData
+import com.tokopedia.quest_widget.data.WidgetData
 import com.tokopedia.quest_widget.di.DaggerQuestComponent
 import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.unifycomponents.ImageUnify
@@ -135,6 +136,10 @@ class QuestWidgetView @JvmOverloads constructor(
         this.page = page
         val userSession = UserSession(context)
         viewModel.getWidgetList(channel, channelSlug, page, userSession)
+    }
+
+    fun setQuestData(widgetData: WidgetData){
+
     }
 
     override fun retry() {

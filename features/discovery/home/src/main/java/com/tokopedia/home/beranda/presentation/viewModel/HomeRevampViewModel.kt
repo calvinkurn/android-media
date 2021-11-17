@@ -58,6 +58,7 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -69,6 +70,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.quest_widget.domain.QuestWidgetUseCase
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recharge_component.model.WidgetSource
@@ -122,7 +124,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeDispatcher: Lazy<CoroutineDispatchers>,
     private val playWidgetTools: Lazy<PlayWidgetTools>,
     private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
-    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>
+    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
+    private val getQuestWidgetUsecase : Lazy<QuestWidgetUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -290,6 +293,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun getRecommendationWidget(){
+        findWidget<QuestWidgetModel> { t, i ->  }
         findWidget<BestSellerDataModel> { bestSellerDataModel, index ->
             launchCatchError(coroutineContext, block = {
                 val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
@@ -1639,6 +1643,7 @@ open class HomeRevampViewModel @Inject constructor(
         getTopAdsBannerData()
         getRechargeRecommendation()
         getSalamWidget()
+        getQuestWidgetData()
     }
 
     private fun getTopAdsBannerData() {
@@ -1663,6 +1668,30 @@ open class HomeRevampViewModel @Inject constructor(
             }){
                 it.printStackTrace()
                 deleteWidget(topAdsModel, index)
+            }
+        }
+    }
+
+    private fun getQuestWidgetData() {
+        if(getTopAdsBannerDataJob?.isActive == true) return
+        findWidget<QuestWidgetModel> { questModel, index ->
+            getTopAdsBannerDataJob = launchCatchError(coroutineContext, {
+                val results = getQuestWidgetUsecase.get().getResponse(
+                    getQuestWidgetUsecase.get().getQueryParams(
+                        0,
+                        "",
+                        ""
+                )
+                )
+                if (results?.questWidgetList?.questWidgetList?.isNotEmpty() == true) {
+                    val newQuestModel = questModel.copy(questData = results)
+                    updateWidget(newQuestModel, index)
+                } else {
+                    deleteWidget(questModel, index)
+                }
+            }){
+                it.printStackTrace()
+                deleteWidget(questModel, index)
             }
         }
     }

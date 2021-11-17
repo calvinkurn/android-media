@@ -3,9 +3,13 @@ package com.tokopedia.home_component.visitable
 import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.quest_widget.data.QuestWidgetDataModel
+import com.tokopedia.quest_widget.data.WidgetData
 
 data class QuestWidgetModel(
     val channelModel: ChannelModel,
+    val pageName: String="",
+    val questData : WidgetData = WidgetData(),
     val isCache: Boolean = false
 ): HomeComponentVisitable {
     override fun visitableId(): String? {

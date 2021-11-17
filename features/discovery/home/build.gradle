@@ -74,6 +74,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.playWidget)
     implementation projectOrAar(rootProject.ext.features.rechargeComponent)
+    implementation projectOrAar(rootProject.ext.features.questWidget)
 
     // Library
     implementation projectOrAar(rootProject.ext.libraries.analytics)
