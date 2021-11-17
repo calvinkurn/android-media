@@ -160,6 +160,8 @@ public interface ApplinkConst {
     String CHAT_BOT = "tokopedia://chatbot";
     String CHAT_TEMPLATE = "tokopedia://chat/settings/templatechat";
     String REFERRAL = "tokopedia://referral";
+    // todo delete cm home widget dummy things
+    String DUMMY_CM_HOME_WIDGET = "tokopedia://dummy-cm-home-widget";
     String BROWSER_HOST = "browser";
     String BROWSER = "tokopedia://browser";
     String FAVORITE = "tokopedia://home/favorite";
