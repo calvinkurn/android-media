@@ -10,11 +10,9 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
-import com.tokopedia.imagepreviewslider.presentation.view.ImagePreviewViewer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import kotlinx.android.synthetic.main.layout_hotel_image_slider.view.*
 import kotlin.math.min
 
 /**
@@ -22,8 +20,6 @@ import kotlin.math.min
  */
 
 class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: OnClickBookListener) : AbstractViewHolder<HotelRoom>(binding.root) {
-
-    private var imagePreviewViewer: ImagePreviewViewer? = null
 
     override fun bind(hotelRoom: HotelRoom) {
         with(binding) {
@@ -102,8 +98,7 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
             else roomImageViewPager.setImages(imageUrls)
             roomImageViewPager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
                 override fun onImageClicked(position: Int) {
-                    listener.onPhotoClickListener(room)
-                    imagePreviewViewer?.startImagePreviewViewer(room.roomInfo.name, itemView.image_banner, imageUrls, itemView.context, position)
+                    listener.onPhotoClickListener(room, imageUrls, position)
                 }
             }
             roomImageViewPager.buildView()
@@ -144,21 +139,9 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
         return roomListModel
     }
 
-    init {
-        itemView.addOnAttachStateChangeListener(object: View.OnAttachStateChangeListener {
-            override fun onViewDetachedFromWindow(p0: View?){
-                imagePreviewViewer = null
-            }
-
-            override fun onViewAttachedToWindow(p0: View?) {
-                if (imagePreviewViewer == null) imagePreviewViewer = ImagePreviewViewer()
-            }
-        })
-    }
-
     interface OnClickBookListener {
         fun onClickBookListener(room: HotelRoom)
-        fun onPhotoClickListener(room: HotelRoom)
+        fun onPhotoClickListener(room: HotelRoom, imageUrls: List<String>, position: Int)
     }
 
 }
