@@ -149,7 +149,7 @@
 
     <string name="recharge_order_detail_copied_message" formatted="false">%s berhasil tersalin</string>
 
-    <string name="static_assets_ic_my_bills_link">https://assets.tokopedia.net/asts/android/recharge_order_details/my_bills.svg</string>
-    <string name="static_assets_ic_langganan_link">https://assets.tokopedia.net/asts/android/recharge_order_details/langganan.svg</string>
+    <string name="static_assets_ic_my_bills_link">https://images.tokopedia.net/img/android/recharge_order_details/sbm.png</string>
+    <string name="static_assets_ic_langganan_link">https://images.tokopedia.net/img/android/recharge_order_details/langganan.png</string>
 
 </resources>
