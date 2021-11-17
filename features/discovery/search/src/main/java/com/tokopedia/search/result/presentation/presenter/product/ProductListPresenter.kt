@@ -203,7 +203,7 @@ class ProductListPresenter @Inject constructor(
         private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
-    private var hasFullThreeDotsOptions = false
+    private val hasFullThreeDotsOptions = false
     private var isABTestNavigationRevamp = false
     private var isEnableChooseAddress = false
     private var chooseAddressData: LocalCacheModel? = null
@@ -213,7 +213,6 @@ class ProductListPresenter @Inject constructor(
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
 
-        hasFullThreeDotsOptions = getHasFullThreeDotsOptions()
         isABTestNavigationRevamp = isABTestNavigationRevamp()
         isEnableChooseAddress = view.isChooseAddressWidgetEnabled
         if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
@@ -222,16 +221,6 @@ class ProductListPresenter @Inject constructor(
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
             true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
-    private fun getHasFullThreeDotsOptions(): Boolean {
-        return try {
-            (view.abTestRemoteConfig?.getString(SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH)
-                    == SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS)
         } catch (e: Exception) {
             e.printStackTrace()
             false
