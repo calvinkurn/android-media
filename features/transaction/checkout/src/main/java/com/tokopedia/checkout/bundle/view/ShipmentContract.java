@@ -29,7 +29,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
@@ -80,11 +79,7 @@ public interface ShipmentContract {
 
         void renderCheckoutCartError(String message);
 
-        void renderCheckoutCartErrorReporter(CheckoutData checkoutData);
-
         void renderCheckoutPriceUpdated(PriceValidationData priceValidationData);
-
-        void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult);
 
         void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast);
 
@@ -343,8 +338,6 @@ public interface ShipmentContract {
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(List<ShipmentCartItemModel> shipmentCartItemModels);
 
         boolean isIneligiblePromoDialogEnabled();
-
-        void processSubmitHelpTicket(CheckoutData checkoutData);
 
         CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
                                                 int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
