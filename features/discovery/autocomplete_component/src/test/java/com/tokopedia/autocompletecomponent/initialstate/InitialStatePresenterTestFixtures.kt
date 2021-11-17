@@ -92,7 +92,7 @@ internal open class InitialStatePresenterTestFixtures {
     protected fun `Then verify initial state view behavior is correct`() {
         verifyOrder {
             initialStateView.chooseAddressData
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
             initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
@@ -104,7 +104,7 @@ internal open class InitialStatePresenterTestFixtures {
     protected fun `Then verify initial state view behavior for failed refresh`() {
         verifyOrder {
             initialStateView.chooseAddressData
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
             initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
@@ -118,7 +118,7 @@ internal open class InitialStatePresenterTestFixtures {
     protected fun `Then verify initial state view behavior for failed refresh dynamic`() {
         verifyOrder {
             initialStateView.chooseAddressData
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
             initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
@@ -148,7 +148,7 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected fun `Then verify refreshPopularSearch view behavior`(refreshedPosition: Int) {
         verifyOrder {
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
 

@@ -96,19 +96,24 @@ open class InitialStateTracking(
         }
     }
 
-    open fun impressedRecentView(list: List<Any>) {
-        val map = DataLayer.mapOf(
-            EVENT, PRODUCT_VIEW_IRIS,
-            EVENT_CATEGORY, "$TOP_NAV - $INITIAL_STATE",
-            EVENT_ACTION, IMPRESSION_RECENT_VIEW,
-            EVENT_LABEL, "",
-            ECOMMERCE, DataLayer.mapOf(
-                CURRENCYCODE, IDR,
-                IMPRESSIONS, DataLayer.listOf(*list.toTypedArray())
+    open fun impressedRecentView(
+        searchComponentTrackingList: List<SearchComponentTracking>,
+        list: List<Any>
+    ) {
+        SearchComponentTrackingRollence.impress(iris, searchComponentTrackingList, ROLLENCE_KEY) {
+            val map = DataLayer.mapOf(
+                EVENT, PRODUCT_VIEW_IRIS,
+                EVENT_CATEGORY, "$TOP_NAV - $INITIAL_STATE",
+                EVENT_ACTION, IMPRESSION_RECENT_VIEW,
+                EVENT_LABEL, "",
+                ECOMMERCE, DataLayer.mapOf(
+                    CURRENCYCODE, IDR,
+                    IMPRESSIONS, DataLayer.listOf(*list.toTypedArray())
+                )
             )
-        )
 
-        iris.saveEvent(map)
+            iris.saveEvent(map)
+        }
     }
 
     open fun impressedRecentSearch(list: List<Any>, keyword: String) {

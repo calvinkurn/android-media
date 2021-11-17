@@ -6,13 +6,14 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 interface InitialStateContract {
     interface View : CustomerView {
         fun showInitialStateResult(initialStateVisitableList: List<Visitable<*>>)
 
-        fun onRecentViewImpressed(list: List<Any>)
+        fun onRecentViewImpressed(recentViewDataView: RecentViewDataView, list: List<Any>)
 
         fun onRecentSearchImpressed(list: List<Any>)
 

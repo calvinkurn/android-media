@@ -24,6 +24,7 @@ import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSea
 import com.tokopedia.autocompletecomponent.initialstate.productline.ProductLineListener
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchListener
+import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewListener
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
@@ -215,8 +216,8 @@ class InitialStateFragment:
         presenter?.refreshDynamicSection(featureId)
     }
 
-    override fun onRecentViewImpressed(list: List<Any>) {
-        initialStateTracking?.impressedRecentView(list)
+    override fun onRecentViewImpressed(recentViewDataView: RecentViewDataView, list: List<Any>) {
+        initialStateTracking?.impressedRecentView(recentViewDataView.list, list)
     }
 
     override fun onRecentSearchImpressed(list: List<Any>) {

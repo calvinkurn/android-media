@@ -22,6 +22,7 @@ import com.tokopedia.autocompletecomponent.initialstate.productline.InitialState
 import com.tokopedia.autocompletecomponent.initialstate.productline.convertToListInitialStateProductListDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.*
+import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -119,9 +120,12 @@ class InitialStatePresenter @Inject constructor(
         if (this.isNotEmpty()) with (this) { func() }
     }
 
-    private fun onRecentViewImpressed(list: List<InitialStateItem>) {
+    private fun onRecentViewImpressed(
+        recentViewDataView: RecentViewDataView,
+        list: List<InitialStateItem>,
+    ) {
         list.withNotEmpty{
-            view?.onRecentViewImpressed(getDataLayerForRecentView(this))
+            view?.onRecentViewImpressed(recentViewDataView, getDataLayerForRecentView(this))
         }
     }
 
@@ -197,12 +201,13 @@ class InitialStatePresenter @Inject constructor(
                     addRecentSearchData(data, initialStateData.items, initialStateData.trackingOption)
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
-                    onRecentViewImpressed(initialStateData.items)
-                    data.addAll(
-                        initialStateData
-                            .convertRecentViewSearchToVisitableList(getDimension90(), keyword)
-                            .insertTitle(initialStateData.header)
-                    )
+                    val title = RecentViewTitleDataView(initialStateData.header)
+                    val recentViewDataView = initialStateData
+                        .convertRecentViewSearchToVisitableList(getDimension90(), keyword)
+
+                    data.addAll(listOf(title, recentViewDataView))
+
+                    onRecentViewImpressed(recentViewDataView, initialStateData.items)
                 }
                 InitialStateData.INITIAL_STATE_POPULAR_SEARCH -> {
                     onPopularSearchImpressed(initialStateData)
@@ -331,12 +336,6 @@ class InitialStatePresenter @Inject constructor(
     //dimension90 = pageSource
     private fun getDimension90(): String {
         return Dimension90Utils.getDimension90(searchParameter)
-    }
-
-    private fun MutableList<Visitable<*>>.insertTitle(title: String): List<Visitable<*>> {
-        val titleSearch = RecentViewTitleDataView(title)
-        this.add(0, titleSearch)
-        return this
     }
 
     private fun MutableList<Visitable<*>>.insertTitleWithRefresh(

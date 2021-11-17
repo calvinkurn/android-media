@@ -25,7 +25,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
 
     private fun `Then verify initial state impression is called without see more recent search`() {
         verifyOrder {
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
             initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
@@ -102,7 +102,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
                 capture(slotCuratedCampaignType),
                 capture(slotCuratedCampaignCode)
             )
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onSeeMoreRecentSearchImpressed(any())
             initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
