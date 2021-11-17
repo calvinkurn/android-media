@@ -127,9 +127,9 @@ class PlayUpcomingFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playUpcomingViewModel.uiEvent.collect { event ->
                 when(event) {
-                    is OpenPageEvent -> openApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode)
-                    is CopyToClipboardEvent -> copyToClipboard(event.content)
-                    is RemindMeEvent -> {
+                    is PlayUpcomingUiEvent.OpenPageEvent -> openApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode)
+                    is PlayUpcomingUiEvent.CopyToClipboardEvent -> copyToClipboard(event.content)
+                    is PlayUpcomingUiEvent.RemindMeEvent -> {
                         if(event.isSuccess) {
                             doShowToaster(message = getTextFromUiString(event.message))
                         }
@@ -141,38 +141,20 @@ class PlayUpcomingFragment @Inject constructor(
                             ) { actionButton.onButtonClick() }
                         }
                     }
-                    is ShowInfoEvent -> {
+                    is PlayUpcomingUiEvent.ShowInfoEvent -> {
                         doShowToaster(
                             toasterType = Toaster.TYPE_NORMAL,
                             message = getTextFromUiString(event.message)
                         )
                     }
-                    is ShowErrorEvent -> {
-                        val errMessage = if (event.errMessage == null) {
-                            ErrorHandler.getErrorMessage(
-                                context, event.error, ErrorHandler.Builder()
-                                    .className(PlayViewModel::class.java.simpleName)
-                                    .build()
-                            )
-                        } else {
-                            val (_, errCode) = ErrorHandler.getErrorMessagePair(
-                                context, event.error, ErrorHandler.Builder()
-                                    .className(PlayViewModel::class.java.simpleName)
-                                    .build()
-                            )
-                            getString(
-                                commonR.string.play_custom_error_handler_msg,
-                                getTextFromUiString(event.errMessage),
-                                errCode
-                            )
-                        }
+                    is PlayUpcomingUiEvent.ShowInfoWithActionEvent -> {
                         doShowToaster(
-                            toasterType = Toaster.TYPE_ERROR,
-                            message = errMessage
-                        )
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getTextFromUiString(event.message),
+                            actionText = getString(R.string.play_action_ok)
+                        ) { event.action() }
                     }
-                    RefreshChannel -> playParentViewModel.refreshChannel()
-                    else -> { }
+                    PlayUpcomingUiEvent.RefreshChannelEvent -> playParentViewModel.refreshChannel()
                 }
             }
         }

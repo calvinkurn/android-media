@@ -61,7 +61,7 @@ class PlayUpcomingViewModel @Inject constructor(
     val isReminderSet: Boolean
         get() = _upcomingInfo.value.isReminderSet
 
-    private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
+    private val _uiEvent = MutableSharedFlow<PlayUpcomingUiEvent>(extraBufferCapacity = 50)
 
     private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
@@ -103,7 +103,7 @@ class PlayUpcomingViewModel @Inject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    val uiEvent: Flow<PlayViewerNewUiEvent>
+    val uiEvent: Flow<PlayUpcomingUiEvent>
         get() = _uiEvent
 
     private var sseJob: Job? = null
@@ -151,12 +151,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
                     _upcomingState.emit(PlayUpcomingState.Unknown)
 
-                    //TODO: emit event that has action button on the toaster
-                    _uiEvent.emit(
-                        ShowInfoEvent(
-                            UiString.Resource(R.string.play_upcoming_channel_not_started)
-                        )
-                    )
+                    _uiEvent.emit(PlayUpcomingUiEvent.ShowInfoWithActionEvent(UiString.Resource(R.string.play_upcoming_channel_not_started)){})
                 }
             }
 
@@ -166,8 +161,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
             _upcomingInfo.setValue { copy(refreshWaitingDuration = PlayUpcomingUiModel.REFRESH_WAITING_DURATION) }
 
-            //TODO: ask PO when failed getting status
-            _uiEvent.emit(ShowErrorEvent(it))
+            _uiEvent.emit(PlayUpcomingUiEvent.ShowInfoWithActionEvent(UiString.Resource(R.string.play_upcoming_channel_not_started)){})
         })
     }
 
@@ -234,15 +228,15 @@ class PlayUpcomingViewModel @Inject constructor(
                     _upcomingState.emit(PlayUpcomingState.Reminded)
                     _upcomingInfo.setValue { copy(isReminderSet = status) }
 
-                    _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
+                    _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
 
                 } ?: run {
                     _upcomingState.emit(PlayUpcomingState.RemindMe)
-                    _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+                    _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
                 }
             }) {
                 _upcomingState.emit(PlayUpcomingState.RemindMe)
-                _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+                _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
             }
         }
     }
@@ -252,7 +246,7 @@ class PlayUpcomingViewModel @Inject constructor(
         stopSSE()
 
         viewModelScope.launch {
-            _uiEvent.emit(RefreshChannel)
+            _uiEvent.emit(PlayUpcomingUiEvent.RefreshChannelEvent)
         }
     }
 
@@ -264,7 +258,7 @@ class PlayUpcomingViewModel @Inject constructor(
         viewModelScope.launch {
             _upcomingState.emit(PlayUpcomingState.Unknown)
             _uiEvent.emit(
-                ShowInfoEvent(
+                PlayUpcomingUiEvent.ShowInfoEvent(
                     UiString.Resource(R.string.play_upcoming_channel_not_started)
                 )
             )
@@ -298,9 +292,9 @@ class PlayUpcomingViewModel @Inject constructor(
             when (partnerInfo.type) {
                 PartnerType.Shop -> {
                     playAnalytic.clickShop(mChannelId, channelType, partnerInfo.id.toString())
-                    _uiEvent.emit(OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString()), pipMode = true))
+                    _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString()), pipMode = true))
                 }
-                PartnerType.Buyer -> _uiEvent.emit(OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString()), pipMode = true))
+                PartnerType.Buyer -> _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString()), pipMode = true))
                 else -> {}
             }
         }
@@ -311,11 +305,11 @@ class PlayUpcomingViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiEvent.emit(
-                CopyToClipboardEvent(shareInfo.content)
+                PlayUpcomingUiEvent.CopyToClipboardEvent(shareInfo.content)
             )
 
             _uiEvent.emit(
-                ShowInfoEvent(
+                PlayUpcomingUiEvent.ShowInfoEvent(
                     UiString.Resource(R.string.play_link_copied)
                 )
             )
@@ -406,7 +400,7 @@ class PlayUpcomingViewModel @Inject constructor(
         else {
             viewModelScope.launch {
                 _uiEvent.emit(
-                    OpenPageEvent(
+                    PlayUpcomingUiEvent.OpenPageEvent(
                         applink = ApplinkConst.LOGIN,
                         requestCode = requestCode
                     )
