@@ -1,10 +1,7 @@
 package com.tokopedia.checkout.bundle.view.uimodel
 
 import android.os.Parcelable
-import com.tokopedia.checkout.bundle.data.model.response.shipmentaddressform.CrossSellBottomSheet
-import com.tokopedia.checkout.bundle.data.model.response.shipmentaddressform.CrossSellInfoData
-import com.tokopedia.checkout.bundle.data.model.response.shipmentaddressform.CrossSellOrderSummary
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CrossSellModel(
