@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
+import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.travelcalendar.R
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY_MM_DD
 import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
@@ -19,7 +20,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.dialog_calendar_multi_pick.*
-import kotlinx.android.synthetic.main.dialog_calendar_multi_pick.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,10 +71,10 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
         arguments?.let {
             if (it.getString(ARG_MIN_DATE) != null)
-                minDate = (it.getString(ARG_MIN_DATE) ?: "").stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+                minDate = it.getString(ARG_MIN_DATE)?.orEmpty()?.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
             if (it.getString(ARG_MAX_DATE) != null)
-                maxDate = (it.getString(ARG_MAX_DATE) ?: "").stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+                maxDate = it.getString(ARG_MAX_DATE)?.orEmpty()?.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
             rangeYear = it.getInt(ARG_RANGE_YEAR)
 
@@ -109,7 +109,8 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
     private fun initChildLayout() {
         val childView = View.inflate(context, R.layout.dialog_calendar_multi_pick, null)
-        calendar = childView.calendar_unify.calendarPickerView as CalendarPickerView
+        val rootCalendar = childView.findViewById<UnifyCalendar>(R.id.calendar_unify)
+        calendar = rootCalendar.calendarPickerView as CalendarPickerView
         setChild(childView)
     }
 
