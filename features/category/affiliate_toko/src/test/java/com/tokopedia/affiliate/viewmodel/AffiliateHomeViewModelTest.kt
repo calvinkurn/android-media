@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliate.model.AffiliatePerformanceData
 import com.tokopedia.affiliate.model.AffiliateValidateUserData
+import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,7 +25,8 @@ class AffiliateHomeViewModelTest{
     private val userSessionInterface: UserSessionInterface = mockk()
     private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
     private val affiliatePerformanceUseCase: AffiliatePerformanceUseCase = mockk()
-    var affiliateHomeViewModel = spyk(AffiliateHomeViewModel(userSessionInterface, affiliateValidateUserStatus, affiliatePerformanceUseCase))
+    private val affiliateAffiliateAnnouncementUseCase : AffiliateAnnouncementUseCase = mockk()
+    var affiliateHomeViewModel = spyk(AffiliateHomeViewModel(userSessionInterface, affiliateValidateUserStatus, affiliatePerformanceUseCase,affiliateAffiliateAnnouncementUseCase))
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
