@@ -97,7 +97,6 @@ class TopupBillsSavedNumberActivityTest {
         mActivityRule.launchActivity(intent)
         validate_tab_switching()
         validate_search_filter_interaction()
-        validate_favorite_number_empty_state()
     }
 
     private fun validate_tab_switching() {
@@ -124,6 +123,7 @@ class TopupBillsSavedNumberActivityTest {
             mActivityRule.activity.findViewById<EditText>(R.id.searchbar_textfield).clearFocus()
         }
         Thread.sleep(1000)
+        validate_saved_number_empty_state()
 
         onView(withId(R.id.searchbar_textfield)).perform(clearText())
         Thread.sleep(1000)
@@ -148,16 +148,18 @@ class TopupBillsSavedNumberActivityTest {
         onView(withId(R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(SEARCH_INPUT_NAME_CHARACTER))
+
+        validate_saved_number_empty_state()
         Espresso.closeSoftKeyboard()
     }
 
 
-    private fun validate_favorite_number_empty_state() {
+    private fun validate_saved_number_empty_state() {
         onView(withId(R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(NON_EXISTING_FAVORITE_NUMBER))
-        onView(withId(R.id.common_topupbills_contact_permission_image)).check(matches(isDisplayed()))
-        onView(withId(R.id.common_topupbills_contact_permission_button)).perform(click())
+        Thread.sleep(2000)
+        onView(withId(R.id.common_topupbills_saved_num_empty_state_image)).check(matches(isDisplayed()))
     }
 
     private fun getRecyclerViewItemCount(resId: Int): Int {
