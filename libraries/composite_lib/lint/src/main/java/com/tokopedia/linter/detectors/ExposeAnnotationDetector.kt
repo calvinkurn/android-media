@@ -18,7 +18,7 @@ class ExposeAnnotationDetector : Detector(), SourceCodeScanner {
     companion object {
         val ISSUE = Issue.create(
             id = "ExposeAnnotation",
-            briefDescription = "Response variable without @Expose annotation can cause data parsing error.",
+            briefDescription = "Response field without @Expose annotation can cause data parsing error.",
             explanation = "Add @Expose annotation to avoid data parsing error.",
             category = Category.CORRECTNESS,
             priority = 5,
@@ -31,7 +31,7 @@ class ExposeAnnotationDetector : Detector(), SourceCodeScanner {
 
         private const val SERIALIZED_NAME_ANNOTATION = "com.google.gson.annotations.SerializedName"
         private const val EXPOSE_ANNOTATION = "com.google.gson.annotations.Expose"
-        private const val MESSAGE = "Response variable without @Expose annotation can cause data parsing error. " +
+        private const val MESSAGE = "Response field without @Expose annotation can cause data parsing error. " +
             "Add @Expose annotation to avoid error."
     }
 
