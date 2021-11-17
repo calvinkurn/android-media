@@ -996,7 +996,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         if (tagProducts.isNotEmpty()) {
                                             if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_CONTRACTED_WIDTH_INDP && !productTagBubbleShowing  ) {
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
-                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH_INDP) {
+                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_CONTRACTED_WIDTH_INDP) {
                                                 hideViewWithoutAnimation(layoutLihatProdukParent, context)
                                             } else if (productTagBubbleShowing){
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
