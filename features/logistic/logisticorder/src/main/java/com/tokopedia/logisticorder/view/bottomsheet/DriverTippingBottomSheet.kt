@@ -1,16 +1,23 @@
 package com.tokopedia.logisticorder.view.bottomsheet
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
+import com.tokopedia.common.payment.PaymentConstant.PAYMENT_SUCCESS
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.BottomsheetTippingGojekBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
@@ -28,7 +35,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
-class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageComponent> {
+class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageComponent>, TippingValueAdapter.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -130,7 +137,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     .build()
 
                 ViewCompat.setLayoutDirection(binding.rvChipsTip, ViewCompat.LAYOUT_DIRECTION_LTR)
-                tippingValueAdapter = TippingValueAdapter()
+                tippingValueAdapter = TippingValueAdapter(this)
                 tippingValueAdapter.tippingValueList = logisticDriverModel.prepayment.presetAmount.toMutableList()
 
                 binding.rvChipsTip.apply {
@@ -141,6 +148,20 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
                 binding.tickerTippingGojek.apply {
                     setHtmlDescription(String.format(getString(R.string.driver_tipping_ticker_new), logisticDriverModel.prepayment.info.first(), logisticDriverModel.prepayment.info.last()))
+                }
+
+                binding.etNominalTip.textFieldInput.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textFieldWrapper))
+
+                binding.btnTipping.setOnClickListener {
+                    val paymentLink = logisticDriverModel.prepayment.paymentLink.replace("{{amount}}", binding.etNominalTip.textFieldInput.text.toString())
+
+                    val checkoutResultData = PaymentPassData()
+                    checkoutResultData.redirectUrl = paymentLink
+
+                    val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+                    val intent = RouteManager.getIntent(context, paymentCheckoutString)
+                    intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
+                    startActivityForResult(intent, PAYMENT_SUCCESS)
                 }
             }
             150 -> {
@@ -169,6 +190,42 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         }
     }
 
+    private fun setWrapperWatcherTipping(wrapper: TextInputLayout): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                val text = binding.etNominalTip.textFieldInput.text.toString()
+                if (s.isNotEmpty() && text.toInt() < 1000) {
+                    setWrapperError(wrapper, "Min. Rp1.000")
+                    binding.btnTipping.isEnabled = false
+                } else if (s.isNotEmpty() && text.toInt() > 20000) {
+                    setWrapperError(wrapper, "Maks. Rp20.000")
+                    binding.btnTipping.isEnabled = false
+                } else {
+                    setWrapperError(wrapper, null)
+                    binding.btnTipping.isEnabled = true
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+
+            }
+        }
+    }
+
+    private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
+        if (s.isNullOrBlank()) {
+            wrapper.error = s
+            wrapper.setErrorEnabled(false)
+        } else {
+            wrapper.setErrorEnabled(true)
+            wrapper.error = s
+        }
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(orderId: String?, data: TrackingDataModel): DriverTippingBottomSheet {
@@ -179,5 +236,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 }
             }
         }
+    }
+
+    override fun onTippingValueClicked(tippingValue: Int) {
+        binding.etNominalTip.textFieldInput.setText(tippingValue.toString())
     }
 }
