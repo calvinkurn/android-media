@@ -1065,7 +1065,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
             String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
             String digitalProductId = crossSellModel.getId();
-            String eventLabel = digitalCategoryName + " " + digitalProductId;
+            String eventLabel = digitalCategoryName + " - " + digitalProductId;
             String digitalProductName = crossSellModel.getInfo().getTitle();
 
             List<Object> productList = new ArrayList<>();
