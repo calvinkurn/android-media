@@ -321,10 +321,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             imeOptions = EditorInfo.IME_ACTION_DONE
             setRawInputType(InputType.TYPE_CLASS_TEXT)
         }
-        if (RollenceUtil.getProductTitleRollence()) {
-            viewModel.usingNewProductTitleRequest = true
-            setupProductNameValidationBottomsheet()
-        }
+        viewModel.usingNewProductTitleRequest = true
+        setupProductNameValidationBottomsheet()
 
         // add edit product category views
         productCategoryLayout = view.findViewById(R.id.add_edit_product_category_layout)
