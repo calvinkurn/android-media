@@ -70,11 +70,9 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         }
 
         arguments?.let {
-            if (it.getString(ARG_MIN_DATE) != null)
-                minDate = it.getString(ARG_MIN_DATE)?.orEmpty()?.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+            minDate = it.getString(ARG_MIN_DATE)?.orEmpty()?.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
-            if (it.getString(ARG_MAX_DATE) != null)
-                maxDate = it.getString(ARG_MAX_DATE)?.orEmpty()?.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
+            maxDate = it.getString(ARG_MAX_DATE)?.orEmpty()?.stringToDate(TRAVEL_CAL_YYYY_MM_DD)
 
             rangeYear = it.getInt(ARG_RANGE_YEAR)
 
