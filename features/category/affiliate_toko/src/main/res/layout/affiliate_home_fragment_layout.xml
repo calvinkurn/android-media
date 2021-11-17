@@ -58,36 +58,37 @@
         tools:text="Ana Putri" />
 
     <androidx.cardview.widget.CardView
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_marginTop="@dimen/dp_16"
         android:id="@+id/affiliate_announcement_ticker_cv"
-        app:cardCornerRadius="@dimen/dp_8"
-        app:cardElevation="0dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/user_name"
+        android:layout_marginTop="@dimen/dp_16"
+        android:visibility="gone"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/user_name"
+        tools:visibility="visible">
+
         <com.tokopedia.unifycomponents.ticker.Ticker
-            app:tickerType="announcement"
-            app:descriptionText="Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!"
-            app:titleText="Saat ini lagi ada pemeliharaan sistem"
-            app:closeButtonVisibility="gone"
             android:id="@+id/affiliate_announcement_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:closeButtonVisibility="gone"
+            app:descriptionText="Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:tickerType="announcement"
+            app:titleText="Saat ini lagi ada pemeliharaan sistem" />
     </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.Group
-        android:visibility="gone"
         android:id="@+id/product_list_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="swipe_refresh_layout"/>
+        android:visibility="gone"
+        app:constraint_referenced_ids="swipe_refresh_layout" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/affiliate_promoted_products"
@@ -96,9 +97,9 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_28"
-        android:visibility="gone"
         android:layout_marginEnd="@dimen/dp_16"
         android:text="@string/affiliate_promoted_products"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker_cv"
         app:typographyType="heading_4"
@@ -113,8 +114,8 @@
         android:layout_marginTop="@dimen/dp_28"
         android:layout_marginEnd="@dimen/dp_16"
         android:gravity="end"
-        android:visibility="gone"
         android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
         app:layout_constraintLeft_toRightOf="@id/affiliate_promoted_products"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker_cv"
@@ -123,11 +124,11 @@
         tools:text="6 Produk" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_marginBottom="@dimen/unify_space_48"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/unify_space_48"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
