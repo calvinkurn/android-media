@@ -17,7 +17,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -25,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -75,6 +75,7 @@ import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.android.synthetic.main.promo_checkout_marketplace_module_fragment.*
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -294,6 +295,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 } else {
                     setToolbarShadowVisibility(false)
                 }
+                renderStickyPromoHeader(recyclerView)
             }
         })
     }
@@ -374,6 +376,54 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         } else {
             button.isLoading = false
             button.isClickable = true
+        }
+    }
+
+    private fun renderStickyPromoHeader(recyclerView: RecyclerView) {
+        if (adapter.data.isNotEmpty()) {
+            var lastHeaderUiModel: PromoListHeaderUiModel? = null
+            val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+            if (topItemPosition == RecyclerView.NO_POSITION) return
+            val lastData = adapter.data[topItemPosition]
+            if (lastData == lastHeaderUiModel) return
+
+            val isShow: Boolean
+            if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
+                lastHeaderUiModel = lastData
+                isShow = true
+            } else if (lastHeaderUiModel != null && lastData is PromoListItemUiModel &&
+                    lastData.uiData.parentIdentifierId == lastHeaderUiModel.uiData.identifierId &&
+                    lastData.uiState.isParentEnabled) {
+                isShow = true
+            } else if (lastData is PromoListItemUiModel && lastData.uiState.isParentEnabled) {
+                if (lastHeaderUiModel != null && lastData.uiData.parentIdentifierId == lastHeaderUiModel.uiData.identifierId) {
+                    isShow = true
+                } else {
+                    var foundHeader = false
+                    adapter.data.forEach {
+                        if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId) {
+                            lastHeaderUiModel = it
+                            foundHeader = true
+                            return@forEach
+                        }
+                    }
+                    isShow = foundHeader
+                }
+            } else {
+                isShow = false
+            }
+
+            // View logic here should be same as view logic on #PromoTabViewHolder
+            if (lastHeaderUiModel != null) {
+
+            }
+
+            if (isShow) {
+                viewBinding?.tabsPromo?.show()
+                setToolbarShadowVisibility(false)
+            } else {
+                viewBinding?.tabsPromo?.gone()
+            }
         }
     }
 
@@ -634,23 +684,26 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
 
         if (!fragmentUiModel.uiState.hasFailedToLoad) {
-            renderLoadPromoFailed(fragmentUiModel)
-        } else {
             renderLoadPromoSuccess(fragmentUiModel)
+        } else {
+            renderLoadPromoFailed(fragmentUiModel)
+        }
+    }
+
+    private fun renderLoadPromoSuccess(fragmentUiModel: FragmentUiModel) {
+        viewBinding?.let {
+            it.tabsPromo.customTabMode = TabLayout.MODE_SCROLLABLE
+            if (fragmentUiModel.uiState.hasAnyPromoSelected) {
+                renderHasAnyPromoSelected(fragmentUiModel)
+            } else {
+                renderHasNoPromoSelected(fragmentUiModel)
+            }
+            it.layoutGlobalError.gone()
+            it.layoutMainContainer.show()
         }
     }
 
     private fun renderLoadPromoFailed(fragmentUiModel: FragmentUiModel) {
-        if (fragmentUiModel.uiState.hasAnyPromoSelected) {
-            renderHasAnyPromoSelected(fragmentUiModel)
-        } else {
-            renderHasNoPromoSelected(fragmentUiModel)
-        }
-        viewBinding?.layoutGlobalError?.gone()
-        viewBinding?.layoutMainContainer?.show()
-    }
-
-    private fun renderLoadPromoSuccess(fragmentUiModel: FragmentUiModel) {
         viewBinding?.let {
             toolbar?.disableResetButton()
             toolbar?.hideResetButton()
