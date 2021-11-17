@@ -23,7 +23,7 @@ class BadRatingReasonTickerViewHolder(val view: View,
 
     override fun bind(element: BadRatingReasonTickerUiModel) {
         ticker.apply {
-            shouldShowWithAction(!element.tickerText.isNotBlank() && listener.shouldShowTickerForRatingDisclaimer()) {
+            shouldShowWithAction(element.tickerText.isNotBlank() && listener.shouldShowTickerForRatingDisclaimer()) {
                 setHtmlDescription(element.tickerText)
                 setDescriptionClickEvent (object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
