@@ -6,6 +6,8 @@ import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.toggle
@@ -57,7 +59,7 @@ class OverallRatingDetailViewHolder(val view: View,
                 setHtmlDescription(element?.tickerText ?: "")
                 setDescriptionClickEvent (object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        // No Op
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
