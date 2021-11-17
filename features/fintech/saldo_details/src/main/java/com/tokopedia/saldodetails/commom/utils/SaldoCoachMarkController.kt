@@ -89,12 +89,14 @@ class SaldoCoachMarkController(val context: Context) {
     }
 
     fun updateCoachMarkOnScroll(expandLayout: Boolean) {
-        val xOffset = (X_OFFSET).toPx()
-        val yOffset = 8.toPx()
-        if (checkIfCoachMarkTypeIsBalance()) {
-            updateBalanceCoachMarkItem(xOffset, expandLayout)
-        } else if (coachMark.currentIndex >= 0) {
-            updateSalesCoachMarkItem(xOffset, yOffset)
+        if (coachMark.isDismissed.not()) {
+            val xOffset = (X_OFFSET).toPx()
+            val yOffset = 8.toPx()
+            if (checkIfCoachMarkTypeIsBalance()) {
+                updateBalanceCoachMarkItem(xOffset, expandLayout)
+            } else if (coachMark.currentIndex >= 0) {
+                updateSalesCoachMarkItem(xOffset, yOffset)
+            }
         }
     }
 
@@ -139,9 +141,10 @@ class SaldoCoachMarkController(val context: Context) {
         }
     }
 
-    private fun checkIfCoachMarkTypeIsBalance() =
-        balanceTitleList.contains(coachMark.coachMarkItem[coachMark.currentIndex].title)
-
+    private fun checkIfCoachMarkTypeIsBalance(): Boolean {
+        val title = coachMark.coachMarkItem.getOrNull(coachMark.currentIndex)?.title ?: ""
+        return balanceTitleList.contains(title)
+    }
     // return true when balik pressed on sales tab coach-mark
     private fun shouldExpandAppBar(key: String) =
         KEY_CAN_SHOW_PENJUALAN_COACHMARK != key && isSaldoCoachMarkShown(
