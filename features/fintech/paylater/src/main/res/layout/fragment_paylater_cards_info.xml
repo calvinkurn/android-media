@@ -205,7 +205,7 @@
                         android:paddingLeft="@dimen/unify_space_12"
                         android:paddingTop="@dimen/unify_space_12"
                         android:paddingBottom="@dimen/unify_space_12"
-                        android:text="@string/pay_later_one_month"
+                        tools:text="@string/pay_later_one_month"
                         android:textColor="@color/Unify_N700_96"
                         android:textSize="@dimen/sp_13"
                         app:layout_constraintLeft_toLeftOf="parent"
