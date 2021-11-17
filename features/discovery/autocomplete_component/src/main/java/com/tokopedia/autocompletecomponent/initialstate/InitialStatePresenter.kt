@@ -181,6 +181,8 @@ class InitialStatePresenter @Inject constructor(
 
     private fun getInitialStateResult(list: MutableList<InitialStateData>): MutableList<Visitable<*>> {
         val data = mutableListOf<Visitable<*>>()
+        val keyword = getQueryKey()
+
         for (initialStateData in list) {
             when (initialStateData.id) {
                 InitialStateData.INITIAL_STATE_CURATED_CAMPAIGN -> {
@@ -192,13 +194,13 @@ class InitialStatePresenter @Inject constructor(
                         initialStateData.labelAction
                     )
                     data.add(title)
-                    addRecentSearchData(data, initialStateData.items)
+                    addRecentSearchData(data, initialStateData.items, initialStateData.trackingOption)
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
                     onRecentViewImpressed(initialStateData.items)
                     data.addAll(
                         initialStateData
-                            .convertRecentViewSearchToVisitableList(getDimension90())
+                            .convertRecentViewSearchToVisitableList(getDimension90(), keyword)
                             .insertTitle(initialStateData.header)
                     )
                 }
@@ -206,7 +208,7 @@ class InitialStatePresenter @Inject constructor(
                     onPopularSearchImpressed(initialStateData)
                     data.addAll(
                         initialStateData
-                            .convertPopularSearchToVisitableList(getDimension90())
+                            .convertPopularSearchToVisitableList(getDimension90(), keyword)
                             .insertTitleWithRefresh(
                                 initialStateData.featureId,
                                 initialStateData.header,
@@ -217,14 +219,20 @@ class InitialStatePresenter @Inject constructor(
                 InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
                     data.addAll(
                         initialStateData
-                            .convertToListInitialStateProductListDataView(getDimension90())
+                            .convertToListInitialStateProductListDataView(
+                                getDimension90(),
+                                keyword,
+                            )
                             .insertProductListTitle(initialStateData.header)
                     )
                 }
                 InitialStateData.INITIAL_STATE_LIST_CHIPS -> {
                     data.addAll(
                         initialStateData
-                            .convertToInitialStateChipWidgetDataView(getDimension90())
+                            .convertToInitialStateChipWidgetDataView(
+                                getDimension90(),
+                                keyword,
+                            )
                             .insertChipWidgetTitle(initialStateData.header)
                     )
                 }
@@ -232,7 +240,10 @@ class InitialStatePresenter @Inject constructor(
                     onDynamicSectionImpressed(initialStateData)
                     data.addAll(
                         initialStateData
-                            .convertDynamicInitialStateSearchToVisitableList(getDimension90())
+                            .convertDynamicInitialStateSearchToVisitableList(
+                                getDimension90(),
+                                keyword,
+                            )
                             .insertDynamicTitle(
                                 initialStateData.featureId,
                                 initialStateData.header,
@@ -251,7 +262,11 @@ class InitialStatePresenter @Inject constructor(
     ) {
         val item = initialStateData.items.getOrNull(0) ?: return
 
-        val curatedCampaignDataView = item.convertToCuratedCampaignDataView(initialStateData.featureId)
+        val curatedCampaignDataView = item.convertToCuratedCampaignDataView(
+            initialStateData.featureId,
+            getDimension90(),
+            getQueryKey(),
+        )
         listVisitable.add(curatedCampaignDataView)
         onImpressCuratedCampaignCard(curatedCampaignDataView)
     }
@@ -261,47 +276,52 @@ class InitialStatePresenter @Inject constructor(
         view?.onCuratedCampaignCardImpressed(
             getUserId(),
             label,
-            curatedCampaignDataView.type,
-            curatedCampaignDataView.campaignCode
+            curatedCampaignDataView.baseItemInitialState,
+            curatedCampaignDataView.baseItemInitialState.type,
+            curatedCampaignDataView.baseItemInitialState.campaignCode
         )
     }
 
     private fun getCuratedCampaignEventLabel(curatedCampaignDataView: CuratedCampaignDataView) =
-        "${curatedCampaignDataView.title} - ${curatedCampaignDataView.applink}"
+        "${curatedCampaignDataView.baseItemInitialState.title} - " +
+            curatedCampaignDataView.baseItemInitialState.applink
 
     private fun addRecentSearchData(
         listVisitable: MutableList<Visitable<*>>,
-        listInitialStateItem: List<InitialStateItem>
+        listInitialStateItem: List<InitialStateItem>,
+        trackingOption: Int,
     ) {
-        if (listInitialStateItem.size <= RECENT_SEARCH_SEE_MORE_LIMIT) {
-            addRecentSearchDataWithoutSeeMoreButton(listVisitable, listInitialStateItem)
-        }
-        else {
-            addRecentSearchDataWithSeeMoreButton(listVisitable, listInitialStateItem)
-        }
+        if (listInitialStateItem.size <= RECENT_SEARCH_SEE_MORE_LIMIT)
+            addRecentSearchDataWithoutSeeMoreButton(listVisitable, listInitialStateItem, trackingOption)
+        else
+            addRecentSearchDataWithSeeMoreButton(listVisitable, listInitialStateItem, trackingOption)
     }
 
     private fun addRecentSearchDataWithoutSeeMoreButton(
         listVisitable: MutableList<Visitable<*>>,
-        listInitialStateItem: List<InitialStateItem>
+        listInitialStateItem: List<InitialStateItem>,
+        trackingOption: Int,
     ) {
         onRecentSearchImpressed(getDataLayerForPromo(listInitialStateItem))
 
-        listVisitable.add(listInitialStateItem.convertToRecentSearchDataView(getDimension90()))
+        val recentSearchItems = listInitialStateItem.convertToRecentSearchDataView(
+            getDimension90(),
+            trackingOption,
+            getQueryKey(),
+        )
+        listVisitable.add(RecentSearchDataView(recentSearchItems, trackingOption))
         recentSearchPosition = listVisitable.lastIndex
     }
 
     private fun addRecentSearchDataWithSeeMoreButton(
         listVisitable: MutableList<Visitable<*>>,
         listInitialStateItem: List<InitialStateItem>,
+        trackingOption: Int,
     ) {
         recentSearchList = listInitialStateItem as MutableList<InitialStateItem>
 
         val recentSearchToBeShown = listInitialStateItem.take(RECENT_SEARCH_SEE_MORE_LIMIT)
-        onRecentSearchImpressed(getDataLayerForPromo(recentSearchToBeShown))
-
-        listVisitable.add(recentSearchToBeShown.convertToRecentSearchDataView(getDimension90()))
-        recentSearchPosition = listVisitable.lastIndex
+        addRecentSearchDataWithoutSeeMoreButton(listVisitable, recentSearchToBeShown, trackingOption)
 
         listVisitable.add(createRecentSearchSeeMoreButton())
         seeMoreButtonPosition = listVisitable.lastIndex
@@ -520,14 +540,18 @@ class InitialStatePresenter @Inject constructor(
         val deleted = recentSearchList.find { item -> item.title == keyword }
         recentSearchList.remove(deleted)
 
-        val recentSearchDataView = recentSearchList.convertToRecentSearchDataView(getDimension90())
-        if (recentSearchDataView.list.size <= RECENT_SEARCH_SEE_MORE_LIMIT) {
-            recentSearchDataVisitable.list = recentSearchDataView.list
+        val recentSearchItems = recentSearchList.convertToRecentSearchDataView(
+            getDimension90(),
+            recentSearchDataVisitable.trackingOption,
+            getQueryKey(),
+        )
+        if (recentSearchItems.size <= RECENT_SEARCH_SEE_MORE_LIMIT) {
+            recentSearchDataVisitable.list = recentSearchItems
             removeSeeMoreRecentSearch()
         }
         else {
             recentSearchDataVisitable.list =
-                recentSearchDataView.list.take(RECENT_SEARCH_SEE_MORE_LIMIT)
+                recentSearchItems.take(RECENT_SEARCH_SEE_MORE_LIMIT)
                     as MutableList<BaseItemInitialStateSearch>
         }
     }
@@ -602,14 +626,14 @@ class InitialStatePresenter @Inject constructor(
         when(item.type) {
             TYPE_SHOP ->
                 view?.trackEventClickRecentShop(
+                    item,
                     getRecentShopLabelForTracking(item),
                     getUserId(),
-                    item.dimension90,
                 )
             else ->
                 view?.trackEventClickRecentSearch(
+                    item,
                     getItemEventLabelForTracking(item),
-                    item.dimension90,
                 )
         }
     }
@@ -642,12 +666,16 @@ class InitialStatePresenter @Inject constructor(
         val remainingRecentSearchCount = recentSearchList.size - RECENT_SEARCH_SEE_MORE_LIMIT
         onRecentSearchImpressed(recentSearchToImpress.takeLast(remainingRecentSearchCount))
 
-        val recentSearchDataView = recentSearchList.convertToRecentSearchDataView(getDimension90())
-
         val recentSearchDataVisitable =
             listVisitable.find { it is RecentSearchDataView } as RecentSearchDataView
 
-        recentSearchDataVisitable.list = recentSearchDataView.list
+        val recentSearchItems = recentSearchList.convertToRecentSearchDataView(
+            getDimension90(),
+            recentSearchDataVisitable.trackingOption,
+            getQueryKey(),
+        )
+
+        recentSearchDataVisitable.list = recentSearchItems
 
         this.recentSearchList = null
 
@@ -666,24 +694,33 @@ class InitialStatePresenter @Inject constructor(
 
     private fun trackEventClickTokoNowDynamicSectionItem(item: BaseItemInitialStateSearch) {
         val label = "value: ${item.title} - po: ${item.position} - page: ${item.applink}"
-        view?.trackEventClickTokoNowDynamicSectionItem(label)
+        view?.trackEventClickTokoNowDynamicSectionItem(label, item)
     }
 
     private fun trackEventClickDynamicSectionItem(item: BaseItemInitialStateSearch) {
         val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
-        view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId, item.dimension90)
+        view?.trackEventClickDynamicSectionItem(
+            getUserId(),
+            label,
+            item,
+            item.featureId,
+            item.dimension90,
+        )
     }
 
     override fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView) {
         val label = getCuratedCampaignEventLabel(curatedCampaignDataView)
+        val baseItemInitialState = curatedCampaignDataView.baseItemInitialState
+
         view?.trackEventClickCuratedCampaignCard(
             getUserId(),
             label,
-            curatedCampaignDataView.type,
-            curatedCampaignDataView.campaignCode
+            baseItemInitialState,
+            baseItemInitialState.type,
+            baseItemInitialState.campaignCode
         )
 
-        view?.route(curatedCampaignDataView.applink, searchParameter)
+        view?.route(baseItemInitialState.applink, searchParameter)
         view?.finish()
     }
 
@@ -705,7 +742,7 @@ class InitialStatePresenter @Inject constructor(
 
     override fun onChipClicked(item: BaseItemInitialStateSearch) {
         val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
-        view?.trackEventClickChip(getUserId(), label, item.featureId, item.dimension90)
+        view?.trackEventClickChip(getUserId(), label, item, item.featureId, item.dimension90)
 
         view?.route(item.applink, searchParameter)
         view?.finish()

@@ -23,6 +23,7 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
     private val searchProductPageTitle = "Waktu Indonesia Belanja"
     private val searchParameter = mapOf(
+            SearchApiConst.Q to keyword,
             SearchApiConst.NAVSOURCE to "clp",
             SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
             SearchApiConst.SRP_PAGE_ID to "1234"
@@ -74,7 +75,9 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
     private fun `Test Initial State Data`(
         initialStateUniverse: InitialStateUniverse,
-        searchParameter: Map<String, String> = mapOf(),
+        searchParameter: Map<String, String> = mapOf(
+            SearchApiConst.Q to keyword
+        ),
     ) {
         `Given initial state use case will be successful`(initialStateUniverse)
         `When presenter get initial state data`(searchParameter)
@@ -82,7 +85,9 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
     }
 
     private fun `When presenter get initial state data`(
-        searchParameter: Map<String, String> = mapOf(),
+        searchParameter: Map<String, String> = mapOf(
+            SearchApiConst.Q to keyword
+        ),
     ) {
         initialStatePresenter.showInitialState(searchParameter)
     }
@@ -109,12 +114,22 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         val expectedData = initialStateUniverse.data
         val visitableList = slotVisitableList.captured
 
-        `Then verify RecentViewDataView`(visitableList, expectedData, expectedDefaultDimension90)
-        `Then verify RecentSearchDataView`(visitableList, expectedData, expectedDefaultDimension90)
-        `Then verify PopularSearchDataView`(visitableList, expectedData, expectedDefaultDimension90)
-        `Then verify DynamicInitialStateSearchDataView`(visitableList, expectedData, expectedDefaultDimension90)
+        `Then verify RecentViewDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify RecentSearchDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify PopularSearchDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify DynamicInitialStateSearchDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
 
-        `Then verify RecentSearchDataView only have n items`(3, visitableList[3] as RecentSearchDataView)
+        `Then verify RecentSearchDataView only have n items`(
+            3, visitableList[3] as RecentSearchDataView
+        )
     }
 
     private fun `Then verify RecentSearchDataView only have n items`(expectedRecentSearchSize: Int, dataView: RecentSearchDataView) {
@@ -138,13 +153,27 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         val expectedData = initialStateUniverse.data
         val visitableList = slotVisitableList.captured
 
-        `Then verify CuratedCampaignDataView`(visitableList, expectedData)
-        `Then verify RecentViewDataView`(visitableList, expectedData, expectedDefaultDimension90)
-        `Then verify RecentSearchDataView`(visitableList, expectedData, expectedDefaultDimension90)
-        `Then verify PopularSearchDataView`(visitableList, expectedData, expectedDefaultDimension90)
-        `Then verify DynamicInitialStateSearchDataView`(visitableList, expectedData, expectedDefaultDimension90)
-        `Then verify InitialStateProductListDataView`(visitableList, expectedData, expectedDefaultDimension90)
-        `Then verify InitialStateChipWidgetDataView`(visitableList, expectedData, expectedDefaultDimension90)
+        `Then verify CuratedCampaignDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify RecentViewDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify RecentSearchDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify PopularSearchDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify DynamicInitialStateSearchDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify InitialStateProductListDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+        `Then verify InitialStateChipWidgetDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
 
 
         `Then verify RecentSearchDataView only have n items`(3, visitableList[4] as RecentSearchDataView)
@@ -165,12 +194,22 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         val expectedData = initialStateUniverse.data
         val visitableList = slotVisitableList.captured
 
-        `Then verify RecentViewDataView`(visitableList, expectedData, expectedDimension90)
-        `Then verify RecentSearchDataView`(visitableList, expectedData, expectedDimension90)
-        `Then verify PopularSearchDataView`(visitableList, expectedData, expectedDimension90)
-        `Then verify DynamicInitialStateSearchDataView`(visitableList, expectedData, expectedDimension90)
+        `Then verify RecentViewDataView`(
+            visitableList, expectedData, expectedDimension90, keyword
+        )
+        `Then verify RecentSearchDataView`(
+            visitableList, expectedData, expectedDimension90, keyword
+        )
+        `Then verify PopularSearchDataView`(
+            visitableList, expectedData, expectedDimension90, keyword
+        )
+        `Then verify DynamicInitialStateSearchDataView`(
+            visitableList, expectedData, expectedDimension90, keyword
+        )
 
-        `Then verify RecentSearchDataView only have n items`(3, visitableList[3] as RecentSearchDataView)
+        `Then verify RecentSearchDataView only have n items`(
+            3, visitableList[3] as RecentSearchDataView
+        )
     }
 
     @Test

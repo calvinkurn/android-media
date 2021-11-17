@@ -14,10 +14,17 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.initialstate.analytics.InitialStateTracking
+import com.tokopedia.autocompletecomponent.initialstate.chips.InitialStateChipListener
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignDataView
+import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignListener
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateComponent
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
+import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateListener
+import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchListener
+import com.tokopedia.autocompletecomponent.initialstate.productline.ProductLineListener
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchListener
+import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewListener
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
@@ -29,7 +36,13 @@ import javax.inject.Inject
 class InitialStateFragment:
     TkpdBaseV4Fragment(),
     InitialStateContract.View,
-    InitialStateItemClickListener {
+    RecentViewListener,
+    RecentSearchListener,
+    ProductLineListener,
+    PopularSearchListener,
+    DynamicInitialStateListener,
+    CuratedCampaignListener,
+    InitialStateChipListener {
 
     companion object {
         const val INITIAL_STATE_FRAGMENT_TAG = "INITIAL_STATE_FRAGMENT"
@@ -54,7 +67,15 @@ class InitialStateFragment:
         @Inject set
 
     private var performanceMonitoring: PerformanceMonitoring? = null
-    private val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(this)
+    private val initialStateAdapterTypeFactory = InitialStateAdapterTypeFactory(
+        recentViewListener = this,
+        recentSearchListener = this,
+        productLineListener = this,
+        popularSearchListener = this,
+        dynamicInitialStateListener = this,
+        curatedCampaignListener = this,
+        chipListener = this,
+    )
     private val initialStateAdapter = InitialStateAdapter(initialStateAdapterTypeFactory)
 
     private val recyclerViewInitialState by lazy {
@@ -211,12 +232,16 @@ class InitialStateFragment:
         initialStateTracking?.impressedSeeMoreRecentSearch(userId)
     }
 
-    override fun trackEventClickRecentSearch(label: String, pageSource: String) {
-        initialStateTracking?.eventClickRecentSearch(label, pageSource)
+    override fun trackEventClickRecentSearch(item: BaseItemInitialStateSearch, label: String) {
+        initialStateTracking?.eventClickRecentSearch(item, label, item.dimension90)
     }
 
-    override fun trackEventClickRecentShop(label: String, userId: String, pageSource: String) {
-        initialStateTracking?.eventClickRecentShop(label, userId, pageSource)
+    override fun trackEventClickRecentShop(
+        item: BaseItemInitialStateSearch,
+        label: String,
+        userId: String
+    ) {
+        initialStateTracking?.eventClickRecentShop(item, label, userId, item.dimension90)
     }
 
     override fun trackEventClickSeeMoreRecentSearch(userId: String) {
@@ -227,8 +252,14 @@ class InitialStateFragment:
         presenter?.onDynamicSectionItemClicked(item)
     }
 
-    override fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String, pageSource: String) {
-        initialStateTracking?.eventClickDynamicSection(userId, label, type, pageSource)
+    override fun trackEventClickDynamicSectionItem(
+        userId: String,
+        label: String,
+        item: BaseItemInitialStateSearch,
+        type: String,
+        pageSource: String
+    ) {
+        initialStateTracking?.eventClickDynamicSection(item, userId, label, type, pageSource)
     }
 
     override fun refreshViewWithPosition(position: Int) {
@@ -249,12 +280,30 @@ class InitialStateFragment:
         presenter?.onCuratedCampaignCardClicked(curatedCampaignDataView)
     }
 
-    override fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String, campaignCode: String) {
-        initialStateTracking?.eventClickCuratedCampaignCard(userId, label, type, campaignCode)
+    override fun trackEventClickCuratedCampaignCard(
+        userId: String,
+        label: String,
+        item: BaseItemInitialStateSearch,
+        type: String,
+        campaignCode: String,
+    ) {
+        initialStateTracking?.eventClickCuratedCampaignCard(
+            item,
+            userId,
+            label,
+            type,
+            campaignCode,
+        )
     }
 
-    override fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String, campaignCode: String) {
-        initialStateTracking?.impressedCuratedCampaign(userId, label, type, campaignCode)
+    override fun onCuratedCampaignCardImpressed(
+        userId: String,
+        label: String,
+        item: BaseItemInitialStateSearch,
+        type: String,
+        campaignCode: String
+    ) {
+        initialStateTracking?.impressedCuratedCampaign(item, userId, label, type, campaignCode)
     }
 
     override fun onRecentViewClicked(item: BaseItemInitialStateSearch) {
@@ -297,16 +346,25 @@ class InitialStateFragment:
         initialStateTracking?.eventClickRefreshTokoNowPopularSearch()
     }
 
-    override fun trackEventClickTokoNowDynamicSectionItem(label: String) {
-        initialStateTracking?.eventClickTokoNowPopularSearch(label)
-    }
-
-    override fun trackEventClickChip(userId: String, label: String, type: String, pageSource: String) {
-        initialStateTracking?.eventClickDynamicSection(userId, label, type, pageSource)
+    override fun trackEventClickTokoNowDynamicSectionItem(
+        label: String,
+        item: BaseItemInitialStateSearch,
+    ) {
+        initialStateTracking?.eventClickTokoNowPopularSearch(item, label)
     }
 
     override fun onChipClicked(item: BaseItemInitialStateSearch) {
         presenter?.onChipClicked(item)
+    }
+
+    override fun trackEventClickChip(
+        userId: String,
+        label: String,
+        item: BaseItemInitialStateSearch,
+        type: String,
+        pageSource: String
+    ) {
+        initialStateTracking?.eventClickDynamicSection(item, userId, label, type, pageSource)
     }
 
     interface InitialStateViewUpdateListener {

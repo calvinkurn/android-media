@@ -98,6 +98,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
             initialStateView.onCuratedCampaignCardImpressed(
                 "0",
                 capture(slotCuratedCampaignLabel),
+                any(),
                 capture(slotCuratedCampaignType),
                 capture(slotCuratedCampaignCode)
             )

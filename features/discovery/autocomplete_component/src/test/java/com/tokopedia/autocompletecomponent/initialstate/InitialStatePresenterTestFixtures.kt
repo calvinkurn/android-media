@@ -41,6 +41,7 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected val ID_POPULAR_SEARCH = "popular_search"
     protected val ID_NEW_SECTION = "new_section"
+    protected val keyword = "samsung"
 
     @Before
     fun setUp() {

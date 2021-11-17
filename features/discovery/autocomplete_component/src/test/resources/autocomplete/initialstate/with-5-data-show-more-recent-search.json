@@ -19,7 +19,8 @@
           "label": "",
           "label_type": "",
           "shortcut_image": "",
-          "type": ""
+          "type": "",
+          "campaign_code": "campaign_code"
         }
       ]
     },

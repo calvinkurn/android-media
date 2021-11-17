@@ -24,9 +24,9 @@ interface InitialStateContract {
 
         fun finish()
 
-        fun trackEventClickRecentSearch(label: String, pageSource: String)
+        fun trackEventClickRecentSearch(item: BaseItemInitialStateSearch, label: String)
 
-        fun trackEventClickRecentShop(label: String, userId: String, pageSource: String)
+        fun trackEventClickRecentShop(item: BaseItemInitialStateSearch, label: String, userId: String)
 
         fun trackEventClickSeeMoreRecentSearch(userId: String)
 
@@ -36,13 +36,31 @@ interface InitialStateContract {
 
         fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel)
 
-        fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String, pageSource: String)
+        fun trackEventClickDynamicSectionItem(
+            userId: String,
+            label: String,
+            item: BaseItemInitialStateSearch,
+            type: String,
+            pageSource: String
+        )
 
         fun refreshViewWithPosition(position: Int)
 
-        fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String, campaignCode: String)
+        fun trackEventClickCuratedCampaignCard(
+            userId: String,
+            label: String,
+            item: BaseItemInitialStateSearch,
+            type: String,
+            campaignCode: String
+        )
 
-        fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String, campaignCode: String)
+        fun onCuratedCampaignCardImpressed(
+            userId: String,
+            label: String,
+            item: BaseItemInitialStateSearch,
+            type: String,
+            campaignCode: String
+        )
 
         fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String)
 
@@ -54,9 +72,15 @@ interface InitialStateContract {
 
         fun onRefreshTokoNowPopularSearch()
 
-        fun trackEventClickTokoNowDynamicSectionItem(label: String)
+        fun trackEventClickTokoNowDynamicSectionItem(label: String, item: BaseItemInitialStateSearch)
 
-        fun trackEventClickChip(userId: String, label: String, type: String, pageSource: String)
+        fun trackEventClickChip(
+            userId: String,
+            label: String,
+            item: BaseItemInitialStateSearch,
+            type: String,
+            pageSource: String
+        )
     }
 
     interface Presenter : CustomerPresenter<View> {
