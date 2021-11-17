@@ -97,7 +97,8 @@
                 app:icon_name="VIEW_LIST"
                 android:layout_marginEnd="8dp"
                 android:layout_alignTop="@id/wishlist_manage_label"
-                android:layout_alignBottom="@id/wishlist_manage_label"/>
+                android:layout_alignBottom="@id/wishlist_manage_label"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 

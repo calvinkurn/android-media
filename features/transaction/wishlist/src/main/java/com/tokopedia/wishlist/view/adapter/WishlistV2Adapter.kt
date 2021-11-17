@@ -3,8 +3,7 @@ package com.tokopedia.wishlist.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.wishlist.data.model.WishlistV2DataModel
-import com.tokopedia.wishlist.data.model.WishlistV2Response
+import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.*
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
@@ -149,11 +148,6 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         listTypeData.clear()
         listTypeData.addAll(list)
         notifyDataSetChanged()
-    }
-
-    fun addListOnBulk(list: List<WishlistV2TypeLayoutData>) {
-        listTypeData.clear()
-        listTypeData.addAll(list)
     }
 
     fun appendList(list: List<WishlistV2TypeLayoutData>) {

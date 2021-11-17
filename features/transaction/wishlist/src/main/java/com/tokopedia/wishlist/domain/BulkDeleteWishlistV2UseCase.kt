@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.data.model.BulkDeleteWishlistV2Response
+import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import javax.inject.Inject
 

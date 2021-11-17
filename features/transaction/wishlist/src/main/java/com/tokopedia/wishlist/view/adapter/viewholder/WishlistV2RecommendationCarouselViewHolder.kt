@@ -1,6 +1,5 @@
 package com.tokopedia.wishlist.view.adapter.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.productcard.ProductCardModel

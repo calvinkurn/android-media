@@ -1,14 +1,10 @@
 package com.tokopedia.wishlist.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.data.model.WishlistV2Params
-import com.tokopedia.wishlist.data.model.WishlistV2Response
+import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.util.WishlistV2Consts.PARAMS
 import javax.inject.Inject
 

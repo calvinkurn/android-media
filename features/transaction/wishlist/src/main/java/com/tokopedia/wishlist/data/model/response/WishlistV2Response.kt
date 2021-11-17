@@ -1,4 +1,4 @@
-package com.tokopedia.wishlist.data.model
+package com.tokopedia.wishlist.data.model.response
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
