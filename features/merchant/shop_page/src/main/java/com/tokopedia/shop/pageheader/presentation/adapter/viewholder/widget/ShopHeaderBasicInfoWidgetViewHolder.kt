@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.LayoutShopHeaderBasicInfoWidgetBinding
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopHeaderComponentUiModel.ComponentName.SHOP_LOGO
@@ -25,6 +26,7 @@ class ShopHeaderBasicInfoWidgetViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_shop_header_basic_info_widget
+        val lastOnlineColor = "#31353B"
     }
 
     interface Listener {
@@ -100,7 +102,15 @@ class ShopHeaderBasicInfoWidgetViewHolder(
                 )
             }
         }
-        shopBasicInfoAdditionalInfoTextView?.text = MethodChecker.fromHtml(shopAdditionalInfo)
+
+        // Handle dark mode - last online status
+        val lastOnlineUnifyColor = ShopUtil.getHexColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700
+        )
+        val unifiedShopAdditionalInfo = shopAdditionalInfo.replace(lastOnlineColor, lastOnlineUnifyColor)
+        shopBasicInfoAdditionalInfoTextView?.text = MethodChecker.fromHtml(unifiedShopAdditionalInfo)
+
         shopChevronImageView?.apply {
             if (shopChevronImageUrl.isNotEmpty()) {
                 show()

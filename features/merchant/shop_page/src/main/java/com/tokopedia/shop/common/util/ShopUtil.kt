@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
@@ -138,6 +139,16 @@ object ShopUtil {
     fun <E> MutableList<E>.setElement(index: Int, element: E){
         if(index in 0 until size){
             set(index, element)
+        }
+    }
+
+    fun getHexColor(context: Context, resColor: Int): String {
+        val hexColor = Integer.toHexString(context.getResColor(resColor))
+        val startIndex = 2
+        return if (hexColor.length > startIndex) {
+            "#" + hexColor.substring(startIndex)
+        } else {
+            "#$hexColor"
         }
     }
 }
