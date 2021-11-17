@@ -222,7 +222,6 @@ class NewShopPageFragment :
         private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
-        private const val test = "shop"
 
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
