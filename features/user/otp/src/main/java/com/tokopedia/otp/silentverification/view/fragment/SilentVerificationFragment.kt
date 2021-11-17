@@ -94,17 +94,15 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        showFullLoading()
-//        playLottieAnim(LOTTIE_BG_ANIMATION)
-//        initObserver()
-//
-//        if(otpData != null && modeListData != null) {
-//            analytics.trackClickMethodOtpButton(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
-//        }
-//
-//        requestOtp()
+        showFullLoading()
+        playLottieAnim(LOTTIE_BG_ANIMATION)
+        initObserver()
 
-        renderSuccessPage(OtpValidateData(success = true))
+        if(otpData != null && modeListData != null) {
+            analytics.trackClickMethodOtpButton(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
+        }
+
+        requestOtp()
     }
 
     private fun onSilentVerificationNotPossible() {
