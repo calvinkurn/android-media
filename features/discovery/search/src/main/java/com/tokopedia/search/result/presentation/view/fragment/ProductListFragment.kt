@@ -693,10 +693,6 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.handleWishlistAction(productCardOptionsModel)
     }
 
-    private fun handleAddToCartAction(productCardOptionsModel: ProductCardOptionsModel) {
-        presenter?.handleAddToCartAction(productCardOptionsModel)
-    }
-
     override fun trackSuccessAddToCartEvent(isAds: Boolean, addToCartDataLayer: Any) {
         SearchTracking.trackEventAddToCart(queryKey, isAds, addToCartDataLayer)
     }
@@ -711,10 +707,6 @@ class ProductListFragment: BaseDaggerFragment(),
         view?.let {
             Toaster.make(it, errorMessage, LENGTH_SHORT, TYPE_ERROR)
         }
-    }
-
-    private fun handleVisitShopAction() {
-        presenter?.handleVisitShopAction()
     }
 
     override fun routeToShopPage(shopId: String?) {

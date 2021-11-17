@@ -28,7 +28,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
-import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.Dimension90Utils
@@ -2115,80 +2114,6 @@ class ProductListPresenter @Inject constructor(
         productCardOptionsModel.shop = shop
 
         return productCardOptionsModel
-    }
-
-    override fun handleAddToCartAction(productCardOptionModel: ProductCardOptionsModel) {
-        if (isViewNotAttached) return
-
-        val addToCartResult = productCardOptionModel.addToCartResult
-        if (!addToCartResult.isUserLoggedIn)
-            view.launchLoginActivity("")
-        else
-            handleAddToCartForLoginUser(productCardOptionModel.addToCartResult)
-
-        threeDotsProductItem = null
-    }
-
-    private fun handleAddToCartForLoginUser(addToCartResult: AddToCartResult) {
-        if (addToCartResult.isSuccess)
-            handleAddToCartSuccess(addToCartResult)
-        else
-            handleAddToCartError(addToCartResult)
-    }
-
-    private fun handleAddToCartSuccess(addToCartResult: AddToCartResult) {
-        if (threeDotsProductItem == null || isViewNotAttached) return
-        val threeDotsProductItem = threeDotsProductItem ?: return
-
-        val cartId = addToCartResult.cartId
-        val addToCartDataLayer = threeDotsProductItem.getProductAsATCObjectDataLayer(cartId)
-
-        if (threeDotsProductItem.isAds)
-            sendTrackingATCProductAds(threeDotsProductItem)
-
-        view.trackSuccessAddToCartEvent(threeDotsProductItem.isAds, addToCartDataLayer)
-        view.showAddToCartSuccessMessage()
-    }
-
-    private fun sendTrackingATCProductAds(threeDotsProductItem: ProductItemDataView) {
-        topAdsUrlHitter.hitClickUrl(
-                view.className,
-                threeDotsProductItem.topadsClickUrl,
-                threeDotsProductItem.productID,
-                threeDotsProductItem.productName,
-                threeDotsProductItem.imageUrl,
-                SearchConstant.TopAdsComponent.TOP_ADS
-        )
-    }
-
-    private fun handleAddToCartError(addToCartResult: AddToCartResult) {
-        if (isViewNotAttached) return
-
-        view.showAddToCartFailedMessage(addToCartResult.errorMessage)
-    }
-
-    override fun handleVisitShopAction() {
-        if (isViewNotAttached) return
-        val threeDotsProductItem = threeDotsProductItem ?: return
-
-        if (threeDotsProductItem.isTopAds)
-            sendTrackingVisitShopProductAds(threeDotsProductItem)
-
-        view.routeToShopPage(threeDotsProductItem.shopID)
-        view.trackEventGoToShopPage(threeDotsProductItem.getProductAsShopPageObjectDataLayer())
-
-        this.threeDotsProductItem = null
-    }
-
-    private fun sendTrackingVisitShopProductAds(threeDotsProductItem: ProductItemDataView) {
-        topAdsUrlHitter.hitClickUrl(
-                view.className,
-                threeDotsProductItem.topadsClickShopUrl,
-                threeDotsProductItem.productID,
-                threeDotsProductItem.productName,
-                threeDotsProductItem.imageUrl,
-                SearchConstant.TopAdsComponent.TOP_ADS
-        )
     }
 
     override fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType) {
