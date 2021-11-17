@@ -1,9 +1,10 @@
 package com.tokopedia.autocompletecomponent.suggestion.singleline
 
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.TextAppearanceSpan
+import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -46,11 +47,18 @@ class SuggestionSingleLineViewHolder(
             itemView.singleLineTitle?.text = item.title
         } else {
             val highlightedTitle = SpannableString(item.title)
-            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
-                    0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            highlightedTitle.safeSetSpan(TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
-                    startIndex + item.searchTerm.length,
-                    item.title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            highlightedTitle.safeSetSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                startIndex,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            highlightedTitle.safeSetSpan(
+                StyleSpan(Typeface.BOLD),
+                startIndex + item.searchTerm.length,
+                item.title.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
             itemView.singleLineTitle?.text = highlightedTitle
         }
     }

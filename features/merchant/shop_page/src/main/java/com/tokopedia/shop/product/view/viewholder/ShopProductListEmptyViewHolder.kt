@@ -7,8 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ShopProductListEmptyStateBinding
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopProductListEmptyViewHolder(
         val view: View,
@@ -20,10 +22,11 @@ class ShopProductListEmptyViewHolder(
         val LAYOUT = R.layout.shop_product_list_empty_state
     }
 
-    private val noResultImage: ImageView? = itemView.findViewById(R.id.no_result_image)
-    private val textViewEmptyTitleText: Typography? = itemView.findViewById(R.id.text_view_empty_title_text)
-    private val textViewEmptyContentText: Typography? = itemView.findViewById(R.id.text_view_empty_content_text)
-    private val btnResultEmpty: UnifyButton? = itemView.findViewById(R.id.btn_result_empty)
+    private val viewBinding : ShopProductListEmptyStateBinding? by viewBinding()
+    private val noResultImage: ImageView? = viewBinding?.noResultImage
+    private val textViewEmptyTitleText: Typography? = viewBinding?.textViewEmptyTitleText
+    private val textViewEmptyContentText: Typography? = viewBinding?.textViewEmptyContentText
+    private val btnResultEmpty: UnifyButton? = viewBinding?.btnResultEmpty
 
     override fun bind(element: EmptyModel) {
         noResultImage?.loadImage(element.urlRes) {

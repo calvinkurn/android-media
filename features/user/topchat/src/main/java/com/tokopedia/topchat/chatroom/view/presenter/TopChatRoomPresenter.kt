@@ -9,8 +9,6 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.BaseChatUiModel.Builder.Companion.generateCurrentReplyTime
@@ -82,7 +80,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
@@ -103,7 +100,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
-    private var addToCartUseCase: AddToCartUseCase,
     private var compressImageUseCase: CompressImageUseCase,
     private var seamlessLoginUsecase: SeamlessLoginUsecase,
     private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
@@ -754,7 +750,6 @@ open class TopChatRoomPresenter @Inject constructor(
         getChatUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
-        addToCartUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()
         groupStickerUseCase.safeCancel()
         chatAttachmentUseCase.safeCancel()
@@ -927,35 +922,6 @@ open class TopChatRoomPresenter @Inject constructor(
         chatBackgroundUseCase.getBackground(
             ::onLoadBackgroundFromCache, ::onSuccessLoadBackground
         ) {}
-    }
-
-    override fun addProductToCart(
-        requestParams: RequestParams,
-        onSuccessAddToCart: (data: DataModel) -> Unit,
-        onError: (msg: String) -> Unit
-    ) {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val atcResponse = addToCartUseCase.createObservable(requestParams)
-                    .toBlocking()
-                    .single().data
-                withContext(dispatchers.main) {
-                    if (atcResponse.success == 1) {
-                        onSuccessAddToCart(atcResponse)
-                    } else {
-                        onError(atcResponse.message.getOrNull(0) ?: "")
-                    }
-                }
-            },
-            onError = {
-                withContext(dispatchers.main) {
-                    it.message?.let { errorMsg ->
-                        onError(errorMsg)
-                    }
-                }
-            }
-        )
     }
 
     override fun addOngoingUpdateProductStock(

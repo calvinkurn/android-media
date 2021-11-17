@@ -141,7 +141,6 @@ includeIfEnabled("features:ordermanagement:snapshot")
 includeIfEnabled("features:ordermanagement:orderhistory")
 
 includeIfEnabled("features:communication:push-notification-common")
-includeIfEnabled("features:im:moengage_wrapper")
 
 includeIfEnabled("features:user:attachproduct")
 includeIfEnabled("features:user:attachcommon")
