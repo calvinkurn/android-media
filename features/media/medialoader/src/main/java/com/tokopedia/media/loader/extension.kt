@@ -36,32 +36,36 @@ fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 inline fun ImageView.loadImage(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties))
+) = call(url, Properties()
+    .apply(properties))
 
 inline fun ImageView.loadImageFitCenter(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties).fitCenter())
+) = call(url, Properties()
+    .apply(properties)
+    .fitCenter())
 
 inline fun ImageView.loadImageWithoutPlaceholder(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
 ) = call(url, Properties()
-        .apply(properties)
-        .setPlaceHolder(-1))
+    .apply(properties)
+    .setPlaceHolder(-1))
 
 inline fun ImageView.loadImageCircle(
     url: String?,
     crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply(properties)
-        .isCircular(true)
+) = call(url, Properties()
+    .apply(properties)
+    .isCircular(true)
 
-        /*
-         * loadImageCircle() extension must be haven't placeholder,
-         * the loader effect should be handled by team by
-         * using own shimmering.
-         * */
-        .setPlaceHolder(-1)
+    /*
+     * loadImageCircle() extension must be haven't placeholder,
+     * the loader effect should be handled by team by
+     * using own shimmering.
+     * */
+    .setPlaceHolder(-1)
 )
 
 fun ImageView.loadImageRounded(
@@ -145,7 +149,9 @@ fun <T: View> loadImageWithTarget(
 ) {
     loadImageWithTarget(
         context,
-        Properties().apply(properties).setSource(url),
+        Properties()
+            .apply(properties)
+            .setSource(url),
         mediaTarget
     )
 }
@@ -158,7 +164,9 @@ fun loadImageWithEmptyTarget(
 ) {
     loadImageWithTarget(
         context,
-        Properties().apply(properties).setSource(url),
+        Properties()
+            .apply(properties)
+            .setSource(url),
         mediaTarget
     )
 }

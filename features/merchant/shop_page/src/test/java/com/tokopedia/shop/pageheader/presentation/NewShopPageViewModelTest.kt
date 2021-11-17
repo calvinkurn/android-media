@@ -306,7 +306,7 @@ class NewShopPageViewModelTest {
         val mockTransition = mockk<Transition<in Bitmap>>()
 
         every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
-            (lastArg() as MediaBitmapEmptyTarget).onResourceReady(mockBitmap, mockTransition)
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
         mockkStatic(ImageProcessingUtil::class)
@@ -325,7 +325,7 @@ class NewShopPageViewModelTest {
         val mockTransition = mockk<Transition<in Bitmap>>()
 
         every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
-            (lastArg() as MediaBitmapEmptyTarget).onResourceReady(mockBitmap, mockTransition)
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
         mockkStatic(ImageProcessingUtil::class)
@@ -343,7 +343,7 @@ class NewShopPageViewModelTest {
         val mockDrawable = mockk<Drawable>()
 
         every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
-            (lastArg() as MediaBitmapEmptyTarget).onLoadCleared(mockDrawable)
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onLoadCleared(mockDrawable)
         }
 
         mockkStatic(ImageProcessingUtil::class)
