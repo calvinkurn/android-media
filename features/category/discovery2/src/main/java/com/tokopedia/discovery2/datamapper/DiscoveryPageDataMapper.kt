@@ -142,7 +142,8 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                                 component.data ?: arrayListOf(),
                                 ComponentNames.CalendarWidgetItem.componentName,
                                 component.properties,
-                                component.creativeName
+                                component.creativeName,
+                                parentComponentPosition = component.position
                             )
                         )
                     }

@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -135,6 +136,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         val calendarDesc: Typography = itemView.findViewById(R.id.calendar_desc)
         val calendarImage: ImageUnify = itemView.findViewById(R.id.calendar_image)
         val calendarButton: UnifyButton = itemView.findViewById(R.id.calendar_button)
+        val calendarButtonParent: CardView = itemView.findViewById(R.id.calendar_button_parent)
         dataItem.apply {
             calendarImage.loadImage(imageUrl)
             if (!titleLogoUrl.isNullOrEmpty()) {
@@ -146,6 +148,18 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarTitle.text = title
                 calendarTitleImage.hide()
             }
+            calendarCardUnify.setOnClickListener {
+                if (!cta.isNullOrEmpty()) {
+                    if (!Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
+                        RouteManager.route(itemView.context, cta)
+                        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                            .trackEventClickCalendarWidget(
+                                calendarWidgetItemViewModel.components,
+                                calendarWidgetItemViewModel.getUserId()
+                            )
+                    }
+                }
+            }
             if (Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
                 calendarButton.show()
                 calendarExpiredAlpha.show()
@@ -154,12 +168,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     itemView.context.getString(R.string.discovery_button_event_expired)
                 calendarButton.buttonType = UnifyButton.Type.ALTERNATE
             } else {
-                calendarCardUnify.setOnClickListener {
-                    RouteManager.route(itemView.context, cta)
-                    (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                        .trackEventClickCalendarWidget(calendarWidgetItemViewModel.components,
-                            calendarWidgetItemViewModel.getUserId())
-                }
                 calendarButton.show()
                 calendarExpiredAlpha.hide()
                 calendarButton.isEnabled = true
@@ -178,10 +186,14 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                         itemView.context.getString(R.string.discovery_button_event_ongoing)
                     calendarButton.buttonType = UnifyButton.Type.MAIN
                     calendarButton.setOnClickListener {
-                        RouteManager.route(itemView.context, buttonApplink)
-                        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                            .trackEventClickCalendarCTA(calendarWidgetItemViewModel.components,
-                                calendarWidgetItemViewModel.getUserId())
+                        if (!Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT)) {
+                            RouteManager.route(itemView.context, buttonApplink)
+                            (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                                .trackEventClickCalendarCTA(
+                                    calendarWidgetItemViewModel.components,
+                                    calendarWidgetItemViewModel.getUserId()
+                                )
+                        }
                     }
 //                } else {
 //                    calendarButton.text = itemView.context.getString(R.string.discovery_button_event_reminder)
@@ -189,6 +201,11 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
 //                    calendarWidgetItemViewModel.checkUserPushStatus(notifyCampaignId)
 //                    mNotifyCampaignId = notifyCampaignId
 //                }
+            }
+            if(buttonApplink.isNullOrEmpty()){
+                calendarButtonParent.hide()
+            } else {
+                calendarButtonParent.show()
             }
             calendarDate.text = textDate
             calendarDesc.text = if(description.isNullOrEmpty()) itemView.context.getString(R.string.discovery_calendar_line) else description
