@@ -314,18 +314,7 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
 
     private fun sendButtonClicked() {
         val products = viewModel.checkedList.value?.map { product ->
-            ResultProduct(
-                    product.productId,
-                    product.productUrl,
-                    product.productImage,
-                    product.productPrice,
-                    product.productName,
-                    product.originalPrice,
-                    product.discountPercentage,
-                    product.isFreeOngkirActive,
-                    product.imgUrlFreeOngkir,
-                    product.stock
-            )
+            product.toResultProduct()
         } ?: listOf()
         val resultProduct = arrayListOf<ResultProduct>()
         resultProduct.addAll(products)
