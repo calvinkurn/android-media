@@ -5,17 +5,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,8 +34,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
+import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
@@ -722,40 +714,8 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressBar = view.findViewById(R.id.logistic_spinner);
-        setUserConsent();
+        new LogisticUserConsentHelper().displayUserConsent(requireContext(), tvUserConsent, getString(R.string.title_save));
 
-    }
-
-    private void setUserConsent() {
-        ClickableSpan onTermsAndConditionClicked = new ClickableSpan() {
-            @Override
-            public void onClick(View textView) {
-                RouteManager.route(getContext(), ApplinkConst.WEBVIEW+"?url=https://www.tokopedia.com/privacy#data-pengguna");
-            }
-
-            @Override
-            public void updateDrawState(TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setUnderlineText(false);
-                ds.setColor(MethodChecker.getColor(
-                        getContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
-                ));
-            }
-        };
-        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-
-        String tncDescription = getContext().getString(R.string.tnc_description, getContext().getString(R.string.title_save));
-        int firstIndex = tncDescription.indexOf("Syarat");
-        int lastIndex = firstIndex + "Syarat & Ketentuan".length();
-
-        SpannableString consentText = new SpannableString(tncDescription);
-        consentText.setSpan(onTermsAndConditionClicked, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        consentText.setSpan(boldSpan, firstIndex, lastIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        tvUserConsent.setMovementMethod(LinkMovementMethod.getInstance());
-        tvUserConsent.setClickable(true);
-        tvUserConsent.setText(consentText, TextView.BufferType.SPANNABLE);
     }
 
     protected void initialVar() {
