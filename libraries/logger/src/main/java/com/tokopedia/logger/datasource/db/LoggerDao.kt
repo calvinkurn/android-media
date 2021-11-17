@@ -32,4 +32,7 @@ interface LoggerDao {
     @Query("DELETE FROM LOG_TABLE WHERE timestamp <= :ts and post_priority == 2")
     suspend fun deleteExpiredLowPrio(ts: Long)
 
+    @Query("DELETE FROM LOG_TABLE WHERE timestamp <= :ts and post_priority == 3")
+    suspend fun deleteExpiredSFPrio(ts: Long)
+
 }

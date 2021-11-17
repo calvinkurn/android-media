@@ -151,8 +151,6 @@ ext {
             install_referral                : ":features:im:install_referral",
 
             tokopediaNow                    : ":features:tokopedianow",
-
-            reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             reviewInbox                     : ":features:merchant:review_inbox",
