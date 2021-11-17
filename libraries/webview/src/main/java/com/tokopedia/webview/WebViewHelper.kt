@@ -143,13 +143,38 @@ object WebViewHelper {
      * Output:https://js.tokopedia.com?target=5&title=3&url=http%3A%2F%2Fwww.tokopedia.com%2Fhelp%3Fid%3D4%26target%3D5%26title%3D3
      */
     fun getEncodedUrlCheckSecondUrl(intentUri: Uri, defaultUrl: String): String {
-        val query = intentUri.query
+        val query = getUrlQuery(intentUri)?.decode()
         return if (query != null && query.contains("$KEY_URL=")) {
             var url = query.substringAfter("$KEY_URL=").decode()
             url = url.normalizeSymbol()
             return getEncodedurl(url)
         } else {
-            defaultUrl
+            query ?: defaultUrl
+        }
+    }
+
+    /**
+     * Improvement from uri.query
+     * Example url:
+     * tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification/#/tokopedia/
+     * Expected url query = https://registeruat.dbank.co.id/web-verification/#/tokopedia/
+     *
+     * Input2: tokopedia://webview?url=https://abc.com/#/a&titlebar=false
+     * Expected url query = https://abc.com/#/a
+     *
+     * Input3: tokopedia://webview?url=https://abc.com/#/a?a=b&titlebar=false
+     * Expected url query = https://abc.com/#/a?a=b&titlebar=false
+     */
+    private fun getUrlQuery(uri: Uri): String? {
+        val uriStringAfterMark = uri.toString().substringAfter("?").substringAfter("$KEY_URL=")
+        return if (uriStringAfterMark.contains("#")) {
+            if (uriStringAfterMark.contains("?")) {
+                uriStringAfterMark
+            } else {
+                uriStringAfterMark.substringBefore("&")
+            }
+        } else {
+            uri.getQueryParameter(KEY_URL)
         }
     }
 

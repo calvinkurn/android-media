@@ -65,7 +65,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         intent.data?.let { uri ->
             url = WebViewHelper.getEncodedUrlCheckSecondUrl(
                 uri,
-                getUrlQuery(uri)?.decode() ?: url
+                url
             )
 
             showTitleBar = uri.getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: showTitleBar
@@ -77,31 +77,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             trackCampaign(uri)
         }
         logWebViewApplink()
-    }
-
-    /**
-     * Improvement from uri.query
-     * Example url:
-     * tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification/#/tokopedia/
-     * Expected url query = https://registeruat.dbank.co.id/web-verification/#/tokopedia/
-     *
-     * Input2: tokopedia://webview?url=https://abc.com/#/a&titlebar=false
-     * Expected url query = https://abc.com/#/a
-     *
-     * Input3: tokopedia://webview?url=https://abc.com/#/a?a=b&titlebar=false
-     * Expected url query = https://abc.com/#/a?a=b&titlebar=false
-     */
-    private fun getUrlQuery(uri: Uri): String? {
-        val uriStringAfterMark = uri.toString().substringAfter("?").substringAfter("$KEY_URL=")
-        return if (uriStringAfterMark.contains("#")) {
-            if (uriStringAfterMark.contains("?")) {
-                uriStringAfterMark
-            } else {
-                uriStringAfterMark.substringBefore("&")
-            }
-        } else {
-            uri.getQueryParameter(KEY_URL)
-        }
     }
 
     //track campaign in case there is utm/gclid in url
