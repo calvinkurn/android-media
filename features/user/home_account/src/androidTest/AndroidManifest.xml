@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.home_account"
     android:versionCode="1"
-    android:versionName="1.0.0"
-    package="com.tokopedia.home_account">
+    android:versionName="1.0.0">
 
     <application
+        android:debuggable="false"
         android:label="New Home Account Test"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        tools:replace="android:debuggable,android:label"
-        android:debuggable="false">
+        tools:replace="android:debuggable,android:label">
 
-        <activity android:name=".stub.view.activity.HomeAccountUserActivityStub"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".stub.view.activity.HomeAccountUserActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
 
     </application>
 </manifest>

@@ -11,8 +11,10 @@ import com.tokopedia.test.application.espresso_component.CommonAssertion
 import org.junit.Test
 
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home_account.stub.data.TestStateParam
 import com.tokopedia.home_account.stub.data.TestStateValue
+import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.viewholder.SettingViewHolder
 import org.hamcrest.CoreMatchers.allOf
 
@@ -35,7 +37,13 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
             //Check Email
             onView(withId(R.id.account_user_item_profile_email)).check(matches(withText(userSession.email)))
 
+            activityTestRule.runOnUiThread {
+                fragment.onProfileClicked()
+
+            }
         }
+
+//        assertThat(cassavaTestRule.validate("147"), hasAllSuccess())
     }
 
     @Test

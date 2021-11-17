@@ -14,6 +14,8 @@ import com.tokopedia.home_account.stub.di.DaggerFakeBaseAppComponent
 import com.tokopedia.home_account.stub.di.FakeAppModule
 import com.tokopedia.home_account.stub.view.activity.HomeAccountUserActivityStub
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
+import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
 import org.junit.Before
@@ -27,7 +29,7 @@ abstract class HomeAccountTest {
     )
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule()
+    var cassavaTestRule = CassavaTestRule(isFromNetwork = true)
 
     lateinit var repo: GraphqlRepositoryStub
 
@@ -35,6 +37,8 @@ abstract class HomeAccountTest {
 
     protected open lateinit var activity: HomeAccountUserActivity
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
+
+    lateinit var fragment: HomeAccountUserFragment
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private val applicationContext: Context
@@ -53,6 +57,7 @@ abstract class HomeAccountTest {
             .build()
         userSession = homeAccountUserComponents.userSession()
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(appComponent)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
     }
 
     @After
@@ -85,6 +90,7 @@ abstract class HomeAccountTest {
         activityTestRule.activity
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
+        fragment = activity.fragment
     }
 
     companion object {
