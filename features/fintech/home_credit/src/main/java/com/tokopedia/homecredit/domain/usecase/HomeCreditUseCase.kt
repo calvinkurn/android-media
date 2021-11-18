@@ -36,14 +36,20 @@ class HomeCreditUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ImageDetail {
         val imgByteArray = (useCaseRequestParams.getObject(IMAGE_BYTE_ARRAY)) as ByteArray
-        val compressedBitmap = CameraUtils.decodeBitmap(imgByteArray, MAX_IMAGE_DIMEN, MAX_IMAGE_DIMEN)
-        val compressedByteArray = bitmapToByteArray(compressedBitmap)
-        val cameraResultFile = saveToCacheDirectory(compressedByteArray)
-        return ImageDetail(
+        val compressedBitmap =
+            CameraUtils.decodeBitmap(imgByteArray, MAX_IMAGE_DIMEN, MAX_IMAGE_DIMEN)
+        try {
+
+            val compressedByteArray = bitmapToByteArray(compressedBitmap)
+            val cameraResultFile = saveToCacheDirectory(compressedByteArray)
+            return ImageDetail(
                 compressedBitmap?.width ?: 0,
                 compressedBitmap?.height ?: 0,
                 cameraResultFile?.absolutePath
-        )
+            )
+        } finally {
+            compressedBitmap?.recycle()
+        }
     }
 
     private fun getFileLocationFromDirectory(): File {
@@ -90,7 +96,7 @@ class HomeCreditUseCase @Inject constructor(
     }
 
     companion object {
-        const val IMAGE_QUALITY = 95
+        const val IMAGE_QUALITY = 100
         const val MAX_IMAGE_DIMEN = 1280
         const val FOLDER_NAME = "extras"
         const val FILE_EXTENSIONS = ".jpg"
