@@ -70,6 +70,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.quest_widget.constants.QuestWidgetLocations
 import com.tokopedia.quest_widget.domain.QuestWidgetUseCase
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargePerso
@@ -263,6 +264,7 @@ open class HomeRevampViewModel @Inject constructor(
     private var getRechargeBUWidgetJob: Job? = null
     private var injectCouponTimeBasedJob: Job? = null
     private var getTopAdsBannerDataJob: Job? = null
+    private var getQuestWidgetDataJob: Job? = null
     private var getTabRecommendationJob: Job? = null
     private var getHeaderDataJob: Job? = null
 
@@ -1673,17 +1675,17 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getQuestWidgetData() {
-        if(getTopAdsBannerDataJob?.isActive == true) return
+        if(getQuestWidgetDataJob?.isActive == true) return
         findWidget<QuestWidgetModel> { questModel, index ->
-            getTopAdsBannerDataJob = launchCatchError(coroutineContext, {
-                val results = getQuestWidgetUsecase.get().getResponse(
+            getQuestWidgetDataJob = launchCatchError(coroutineContext, {
+                val results = getQuestWidgetUsecase.get().getQuestData(
                     getQuestWidgetUsecase.get().getQueryParams(
                         0,
                         "",
-                        ""
+                        QuestWidgetLocations.MY_REWARD
                 )
                 )
-                if (results?.questWidgetList?.questWidgetList?.isNotEmpty() == true) {
+                if (results.widgetData?.questWidgetList?.questWidgetList?.isNotEmpty() == true) {
                     val newQuestModel = questModel.copy(questData = results)
                     updateWidget(newQuestModel, index)
                 } else {

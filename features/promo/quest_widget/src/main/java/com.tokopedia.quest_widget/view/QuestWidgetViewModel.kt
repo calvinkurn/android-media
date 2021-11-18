@@ -9,6 +9,7 @@ import com.tokopedia.quest_widget.constants.QuestWidgetLocations
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.quest_widget.domain.QuestWidgetUseCase
+import com.tokopedia.quest_widget.domain.RetrieveQuestData
 import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -59,14 +60,7 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
                 )
             )
             if (response != null) {
-                response.questWidgetList.let { widgetData ->
-                    val configList = ArrayList<Config>()
-                    widgetData?.questWidgetList?.forEach { questWidgetListItem ->
-                        configList.add(convertStringToConfig(questWidgetListItem.config))
-                    }
-                    val questData = QuestData(configList, response)
-                    questWidgetListLiveData.postValue(LiveDataResult.success(questData))
-                }
+                questWidgetListLiveData.postValue(LiveDataResult.success(RetrieveQuestData.getQuestData(response)))
             }
             else {
                 questWidgetListLiveData.postValue(
@@ -81,10 +75,4 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
             questWidgetListLiveData.postValue(LiveDataResult.error(it))
         })
     }
-
-    private fun convertStringToConfig(configString: String?) : Config {
-        val dataClassType = object : TypeToken<Config>() {}.type
-        return Gson().fromJson(configString, dataClassType)
-    }
-
 }

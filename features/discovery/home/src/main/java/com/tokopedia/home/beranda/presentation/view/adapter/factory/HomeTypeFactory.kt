@@ -8,6 +8,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home_component.visitable.QuestWidgetModel
+import com.tokopedia.quest_widget.data.QuestWidgetDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 /**
@@ -76,4 +78,6 @@ interface HomeTypeFactory {
     fun type(shimmeringIconDataModel: ShimmeringIconDataModel): Int
 
     fun type(errorStateAtfModel: ErrorStateAtfModel): Int
+
+//    fun type(questWidgetModel: QuestWidgetModel): Int
 }

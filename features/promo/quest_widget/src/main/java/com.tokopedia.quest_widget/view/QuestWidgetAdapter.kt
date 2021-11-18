@@ -8,7 +8,7 @@ import com.example.quest_widget.R
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
 
-class QuestWidgetAdapter(val data: List<QuestWidgetListItem>, val configList: ArrayList<Config>) : RecyclerView.Adapter<QuestWidgetViewHolder>() {
+class QuestWidgetAdapter(val data: List<QuestWidgetListItem>, val configList: ArrayList<Config>?) : RecyclerView.Adapter<QuestWidgetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuestWidgetViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.quest_widget_card, parent, false)
@@ -16,7 +16,7 @@ class QuestWidgetAdapter(val data: List<QuestWidgetListItem>, val configList: Ar
     }
 
     override fun onBindViewHolder(holder: QuestWidgetViewHolder, position: Int) {
-        holder.questWidgetItemView.setData(data[position], configList[position])
+        configList?.get(position)?.let { holder.questWidgetItemView.setData(data[position], it) }
     }
 
     override fun getItemCount(): Int {

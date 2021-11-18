@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -117,7 +118,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     if (!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                 }
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
-                    createRecommendationListCarouselComponent(channel, position, isCache)
+//                    createRecommendationListCarouselComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
                     createMixLeftComponent(channel, position, isCache)
@@ -180,14 +181,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_ICON -> {
                     createCategoryIconComponent(channel, position, isCache)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
-                    createBestSellingWidget(channel)
-                }
+//                DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
+////                    createBestSellingWidget(channel)
+//                }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
-                    createQuestChannel(channel, position , isCache)
+                DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
+                    createQuestChannel(channel, position , isCache, questData = QuestData())
                 }
             }
         }
@@ -483,10 +484,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun mappingQuestWidgetComponent(channel: DynamicHomeChannel.Channels,
                                                  isCache: Boolean,
-                                                 verticalPosition: Int): Visitable<*> {
+                                                 verticalPosition: Int, questData: QuestData): Visitable<*> {
         return QuestWidgetModel(
             channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
-            isCache = isCache)
+            isCache = isCache, questData = questData)
     }
 
     private fun mappingMixLeftComponent(channel: DynamicHomeChannel.Channels,
@@ -585,12 +586,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createQuestChannel(
         channel: DynamicHomeChannel.Channels,
         position: Int,
-        isCache: Boolean
+        isCache: Boolean,
+        questData: QuestData
     ) {
         visitableList.add(mappingQuestWidgetComponent(
             channel,
             isCache,
-            position
+            position,
+            questData
             ))
     }
 

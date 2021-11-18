@@ -138,8 +138,8 @@ class QuestWidgetView @JvmOverloads constructor(
         viewModel.getWidgetList(channel, channelSlug, page, userSession)
     }
 
-    fun setQuestData(widgetData: WidgetData){
-
+    fun setQuestData(questData: QuestData){
+        setData(questData)
     }
 
     override fun retry() {

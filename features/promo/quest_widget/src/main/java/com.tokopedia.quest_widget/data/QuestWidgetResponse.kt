@@ -229,6 +229,6 @@ data class Config(
 )
 
 data class QuestData(
-    val config: ArrayList<Config>,
-    val widgetData: WidgetData
+    val config: ArrayList<Config>? = null,
+    val widgetData: WidgetData? = null
 )
