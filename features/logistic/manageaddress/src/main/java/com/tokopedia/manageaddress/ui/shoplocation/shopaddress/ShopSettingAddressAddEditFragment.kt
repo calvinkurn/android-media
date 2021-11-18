@@ -102,13 +102,13 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             edit_text_district.setText(district)
             postal_code.setText(it.postalCode.toString())
             if (!TextUtils.isEmpty(it.phone)){
-                edit_text_phone.setText(it.phone)
+                edit_text_phone.textFieldInput.setText(it.phone)
             }
             if (!TextUtils.isEmpty(it.email)){
-                edit_text_email.setText(it.email)
+                edit_text_email.textFieldInput.setText(it.email)
             }
             if (!TextUtils.isEmpty(it.fax)){
-                edit_text_fax.setText(it.fax)
+                edit_text_fax.textFieldInput.setText(it.fax)
             }
         }
 
@@ -140,9 +140,10 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             valid = false
             text_input_layout_postal_code.error = getString(R.string.shop_postal_code_required)
         }
-        if (!TextUtils.isEmpty(edit_text_email.text.toString()) && !Patterns.EMAIL_ADDRESS.matcher(edit_text_email.text.toString()).matches()){
+        if (!TextUtils.isEmpty(edit_text_email.textFieldInput.text.toString()) && !Patterns.EMAIL_ADDRESS.matcher(edit_text_email.textFieldInput.text.toString()).matches()){
             valid = false
-            text_input_layout_email.error = getString(R.string.shop_email_invalid)
+            edit_text_email.setError(true)
+            edit_text_email.setMessage(getString(R.string.shop_email_invalid))
         }
 
         return valid
@@ -202,9 +203,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             cityId = selectedCityId
             stateId = selectedProvinceId
             postalCode = postal_code.text.toString().toInt()
-            phone = edit_text_phone.text.toString()
-            email = edit_text_email.text.toString()
-            fax = edit_text_fax.text.toString()
+            phone = edit_text_phone.textFieldInput.text.toString()
+            email = edit_text_email.textFieldInput.text.toString()
+            fax = edit_text_fax.textFieldInput.text.toString()
 
         }
     }
