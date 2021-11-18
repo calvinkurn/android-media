@@ -128,8 +128,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
         productIndex:Int
     ) {
     }
-
-
-
     open fun trackMerchantVoucherLihatSemuaClick(dataItem: DataItem?){}
+    open fun setOldTabPageIdentifier(pageIdentifier: String) {}
 }
