@@ -15,9 +15,9 @@ class AffiliateWrapper {
                                         shareCallback: ShareCallback, userData: UserData){
         CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                val affiliateUseCase = AffiliateUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+                val affiliateUseCase = AffiliateLinkGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
                 val affiliateShortUrl = affiliateUseCase.apply {
-                    params = AffiliateUseCase.createParam(createAffiliateRequestData(data))
+                    params = AffiliateLinkGeneratorUseCase.createParam(createAffiliateRequestData(data))
                 }.executeOnBackground()
                 shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(affiliateShortUrl), affiliateShortUrl, affiliateShortUrl))
             }

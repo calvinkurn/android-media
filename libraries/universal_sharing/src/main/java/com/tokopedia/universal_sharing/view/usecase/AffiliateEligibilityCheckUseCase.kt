@@ -1,0 +1,62 @@
+package com.tokopedia.universal_sharing.view.usecase
+
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.EligibleCommission
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+
+class AffiliateEligibilityCheckUseCase constructor(
+    private val graphqlRepository: GraphqlRepository
+): GraphqlUseCase<EligibleCommission>(graphqlRepository) {
+
+    var params: HashMap<String, Any> = HashMap()
+
+    override suspend fun executeOnBackground(): EligibleCommission {
+        val gqlRequest = GraphqlRequest(QUERY, GenerateAffiliateLinkEligibility::class.java, params)
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
+            .Builder(CacheType.CACHE_FIRST).build())
+
+        val response = gqlResponse.getData<GenerateAffiliateLinkEligibility>(GenerateAffiliateLinkEligibility::class.java)
+        if (response.affiliateEligibility?.isEligible == true) {
+            return response.eligibleCommission!!
+        } else {
+            throw MessageErrorException("Error in affiliate eligibility check")
+        }
+    }
+
+    companion object {
+
+        private const val ELIGIBILITY_REQUEST = "generateAffiliateLinkEligibilityRequest"
+
+        const val QUERY = """query generateAffiliateLinkEligibility(${'$'}generateAffiliateLinkEligibilityRequest: generateAffiliateLinkEligibilityRequest!) {
+                generateAffiliateLinkEligibility(generateAffiliateLinkEligibilityRequest: ${'$'}generateAffiliateLinkEligibilityRequest) {
+                        Status
+                        ShowTicker
+                        TickerType
+                        Message
+                        AffiliateEligibility {
+                            IsRegistered
+                            IsEligible
+                        }
+                        EligibleCommission {
+                            IsEligible
+                            AmountFormatted
+                            Amount
+                            Message
+                        }
+                    }
+                }
+                """
+
+        fun createParam(affiliatePDPInput: AffiliatePDPInput): HashMap<String, Any> {
+            return hashMapOf(
+                ELIGIBILITY_REQUEST to affiliatePDPInput
+            )
+        }
+    }
+}
