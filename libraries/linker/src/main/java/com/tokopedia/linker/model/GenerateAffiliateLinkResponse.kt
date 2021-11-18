@@ -36,4 +36,9 @@ data class Data (
 data class GenerateAffiliateLink (
     @SerializedName("Data")
     var data: ArrayList<Data>? = null
-)
+){
+    data class Response(
+        @SerializedName("generateAffiliateLink")
+        val generateAffiliateLink: GenerateAffiliateLink
+    )
+}

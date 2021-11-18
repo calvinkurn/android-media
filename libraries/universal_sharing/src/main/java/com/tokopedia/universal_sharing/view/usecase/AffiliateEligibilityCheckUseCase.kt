@@ -17,13 +17,13 @@ class AffiliateEligibilityCheckUseCase constructor(
     var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): EligibleCommission {
-        val gqlRequest = GraphqlRequest(QUERY, GenerateAffiliateLinkEligibility::class.java, params)
+        val gqlRequest = GraphqlRequest(QUERY, GenerateAffiliateLinkEligibility.Response::class.java, params)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
             .Builder(CacheType.CACHE_FIRST).build())
 
-        val response = gqlResponse.getData<GenerateAffiliateLinkEligibility>(GenerateAffiliateLinkEligibility::class.java)
-        if (response.affiliateEligibility?.isEligible == true) {
-            return response.eligibleCommission!!
+        val response = gqlResponse.getData<GenerateAffiliateLinkEligibility.Response>(GenerateAffiliateLinkEligibility.Response::class.java)
+        if (response.generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true) {
+            return response.generateAffiliateLinkEligibility.eligibleCommission!!
         } else {
             throw MessageErrorException("Error in affiliate eligibility check")
         }

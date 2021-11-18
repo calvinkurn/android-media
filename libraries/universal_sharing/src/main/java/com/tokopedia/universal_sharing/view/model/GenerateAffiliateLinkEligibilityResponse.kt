@@ -3,44 +3,49 @@ package com.tokopedia.universal_sharing.view.model
 import com.google.gson.annotations.SerializedName
 
 
-class AffiliateEligibility {
+data class AffiliateEligibility (
     @SerializedName("IsRegistered")
-    var isRegistered = false
+    var isRegistered: Boolean = false,
 
     @SerializedName("IsEligible")
-    var isEligible = false
-}
+    var isEligible: Boolean = false
+)
 
-class EligibleCommission {
+data class EligibleCommission (
     @SerializedName("IsEligible")
-    var isEligible = false
+    var isEligible: Boolean = false,
 
     @SerializedName("AmountFormatted")
-    var amountFormatted: String? = ""
+    var amountFormatted: String? = "",
 
     @SerializedName("Amount")
-    var amount: String? = ""
+    var amount: String? = "",
 
     @SerializedName("Message")
     var message: String? = ""
-}
+)
 
-class GenerateAffiliateLinkEligibility {
+data class GenerateAffiliateLinkEligibility(
     @SerializedName("Status")
-    var status = 0
+    var status: Int = 0,
 
     @SerializedName("ShowTicker")
-    var showTicker = false
+    var showTicker:Boolean = false,
 
     @SerializedName("TickerType")
-    var tickerType = 0
+    var tickerType:Int = 0,
 
     @SerializedName("Message")
-    var message: String? = ""
+    var message: String? = "",
 
     @SerializedName("AffiliateEligibility")
-    var affiliateEligibility: AffiliateEligibility? = null
+    var affiliateEligibility: AffiliateEligibility? = null,
 
     @SerializedName("EligibleCommission")
     var eligibleCommission: EligibleCommission? = null
+){
+    data class Response(
+        @SerializedName("generateAffiliateLinkEligibility")
+        val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility
+    )
 }

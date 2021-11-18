@@ -17,13 +17,13 @@ class AffiliateLinkGeneratorUseCase constructor(
     var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): String {
-        val gqlRequest = GraphqlRequest(QUERY, GenerateAffiliateLink::class.java, params)
+        val gqlRequest = GraphqlRequest(QUERY, GenerateAffiliateLink.Response::class.java, params)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
             .Builder(CacheType.CACHE_FIRST).build())
 
-        val response = gqlResponse.getData<GenerateAffiliateLink>(GenerateAffiliateLink::class.java)
-        if (!TextUtils.isEmpty(response.data?.get(0)?.uRL?.shortURL)) {
-            return response.data?.get(0)?.uRL?.shortURL.toString()
+        val response = gqlResponse.getData<GenerateAffiliateLink.Response>(GenerateAffiliateLink.Response::class.java)
+        if (!TextUtils.isEmpty(response.generateAffiliateLink.data?.get(0)?.uRL?.shortURL)) {
+            return response.generateAffiliateLink.data?.get(0)?.uRL?.shortURL.toString()
         } else {
             throw MessageErrorException("Error in affiliate link generation")
         }
