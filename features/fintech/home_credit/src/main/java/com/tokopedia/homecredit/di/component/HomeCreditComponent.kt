@@ -14,6 +14,6 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface HomeCreditComponent {
-    fun inject(homeCreditRegisterActivity: HomeCreditRegisterActivity?)
-    fun inject(homeCreditBaseCameraFragment: HomeCreditBaseCameraFragment?)
+
+    fun inject(homeCreditBaseCameraFragment: HomeCreditBaseCameraFragment)
 }
