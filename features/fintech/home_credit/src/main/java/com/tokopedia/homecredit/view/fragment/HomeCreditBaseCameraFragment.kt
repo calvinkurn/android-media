@@ -132,7 +132,7 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         }
     }
 
-    fun initCameraProp() {
+    private fun initCameraProp() {
         cameraView?.open()
         cameraLayout?.visibility = View.VISIBLE
         imageCaptured?.visibility = View.GONE
@@ -193,9 +193,10 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
             this,
             { imageDetail: Result<ImageDetail>? ->
                 captureImage?.isClickable = true
-                if (imageDetail is Success<*> && (imageDetail as Success<ImageDetail>).data.imagePath != null) loadImageFromBitmap(
-                    imageCaptured, imageDetail.data
-                )
+                if (imageDetail is Success<*> && (imageDetail as Success<ImageDetail>).data.imagePath != null) {
+                    finalCameraResultFilePath = imageDetail.data.imagePath
+                    loadImageFromBitmap(imageCaptured, imageDetail.data)
+                }
                 hideCameraProp()
             })
         reset()
@@ -245,7 +246,7 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         }
     }
 
-    protected fun hideLoading() {
+    private fun hideLoading() {
         if (isAdded) {
             progressDialog?.dismiss()
         }
@@ -258,7 +259,7 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         cameraView?.toggleFacing()
     }
 
-    fun hideCameraProp() {
+    private fun hideCameraProp() {
         cameraView?.close()
         cameraLayout?.visibility = View.GONE
         imageCaptured?.visibility = View.VISIBLE
