@@ -2049,8 +2049,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             pdpUiUpdater?.updateDataP1(context, productInfo, enableVideo(), true)
             actionButtonView.setButtonP1(productInfo.data.preOrder)
 
-            if (productInfo.basic.category.isAdult && productInfo.basic.category.isKyc) {
-                AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productInfo.basic.productID)
+            if ((productInfo.basic.category.isAdult && !viewModel.isUserSessionActive) ||
+                    (productInfo.basic.category.isAdult && !productInfo.basic.category.isKyc)) {
+                AdultManager.showAdultPopUp(this,
+                        AdultManager.ORIGIN_PDP,
+                        productInfo.basic.productID)
             }
 
             if (affiliateString.hasValue()) {
