@@ -31,6 +31,8 @@ class ShopHomeFlashSaleProductCardBigGridViewHolder(
 
     fun bindData(uiModel: ShopHomeProductUiModel) {
         this.uiModel = uiModel
+        productCardBigGrid?.applyCarousel()
+        productCardBigGrid?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
         productCardBigGrid?.setProductModel(
             ShopPageHomeMapper.mapToProductCardCampaignModel(
                 isHasAddToCartButton = false,
