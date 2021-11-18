@@ -181,12 +181,11 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         if (mCaptureNativeSize == null) {
             mCaptureNativeSize = cameraView?.pictureSize
         }
-        mCaptureNativeSize?.let { mCaptureNativeSize ->
-            homeCreditViewModel?.computeImageArray(
-                imageByte,
-                mCaptureNativeSize
-            )
-        }
+
+        homeCreditViewModel?.computeImageArray(
+            imageByte
+        )
+
         observeViewModel()
         reset()
     }

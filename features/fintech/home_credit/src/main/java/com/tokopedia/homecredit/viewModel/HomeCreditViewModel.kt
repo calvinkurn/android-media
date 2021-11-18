@@ -2,7 +2,6 @@ package com.tokopedia.homecredit.viewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.homecredit.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.homecredit.domain.model.ImageDetail
@@ -23,14 +22,13 @@ class HomeCreditViewModel @Inject constructor(
 
 
     fun computeImageArray(
-        imageByte: ByteArray,
-        mCaptureNativeSize: Size,
+        imageByte: ByteArray
 
     ) {
         homeCreditUseCase.saveDetail(
             ::onSuccessSave,
             ::onFailSave,
-            imageByte, mCaptureNativeSize
+            imageByte
 
         )
     }

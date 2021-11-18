@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import com.otaliastudios.cameraview.CameraUtils
-import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.homecredit.domain.model.ImageDetail
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -19,20 +19,14 @@ class HomeCreditUseCase @Inject constructor(
     @ApplicationContext val context: Context
 ) : UseCase<ImageDetail>() {
 
-    private lateinit var imgByteArray: ByteArray
-    var captureSize: Size? = null
-
 
     fun saveDetail(
         success: (ImageDetail) -> Unit,
         onFail: (Throwable) -> Unit,
         imageByte: ByteArray,
-        mCaptureNativeSize: Size,
+    ) {
 
-        ) {
-        this.captureSize = mCaptureNativeSize
-        this.imgByteArray = imageByte
-
+        useCaseRequestParams = RequestParams().apply { putObject(IMAGE_BYTE_ARRAY, imageByte) }
 
         execute({
             success(it)
@@ -43,6 +37,7 @@ class HomeCreditUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ImageDetail {
         var bitmap: Bitmap? = null
+        val imgByteArray = useCaseRequestParams.getObject(IMAGE_BYTE_ARRAY) as ByteArray
         return try {
             bitmap = CameraUtils.decodeBitmap(
                 imgByteArray,
@@ -122,6 +117,7 @@ class HomeCreditUseCase @Inject constructor(
         const val MAX_IMAGE_DIMEN = 1280
         const val FOLDER_NAME = "extras"
         const val FILE_EXTENSIONS = ".jpg"
+        const val IMAGE_BYTE_ARRAY = "ClickedImageByteArray"
     }
 
 
