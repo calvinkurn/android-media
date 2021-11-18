@@ -148,11 +148,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         if (centralizedUserAssetConfig.assetConfigVertical.isNotEmpty()) {
             centralizedUserAssetConfig.assetConfigVertical.forEach {
                 adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletShimmeringUiModel(it))
-                if (it.id != AccountConstants.WALLET.GOPAY &&
-                    it.id != AccountConstants.WALLET.GOPAYLATER
-                ) {
-                    viewModel.getBalanceAndPoint(it.id)
-                }
+                viewModel.getBalanceAndPoint(it.id)
             }
         }
 
@@ -163,7 +159,10 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             }
         }
 
-        viewModel.getGopayWalletEligible()
+        if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAY).orFalse() ||
+                adapter?.isWalletExistById(AccountConstants.WALLET.GOPAYLATER).orFalse()) {
+            adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
+        }
     }
 
     private fun onFailedGetCentralizedAssetConfig() {

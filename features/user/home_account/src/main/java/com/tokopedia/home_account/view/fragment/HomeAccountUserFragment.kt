@@ -620,11 +620,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfig.forEach {
-            if (it.id != AccountConstants.WALLET.GOPAY
-            ) {
-                viewModel.getBalanceAndPoint(it.id)
-            } else {
-                viewModel.getGopayWalletEligible()
+            viewModel.getBalanceAndPoint(it.id)
+
+            if(it.id == AccountConstants.WALLET.GOPAY) {
+                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
             }
         }
     }
