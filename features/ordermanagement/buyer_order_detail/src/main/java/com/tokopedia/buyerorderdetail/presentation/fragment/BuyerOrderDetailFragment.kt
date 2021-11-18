@@ -223,7 +223,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun hideDigitalRecommendation() {
-        adapter.removeDigitalRecommendation()
+        rvBuyerOrderDetail?.post {
+            adapter.removeDigitalRecommendation()
+        }
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
