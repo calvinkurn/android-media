@@ -6,7 +6,6 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name="com.tokopedia.moneyin.viewcontrollers.activity.MoneyInHomeActivity"
-            android:exported="false"
             android:label="@string/tukar_tambah">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

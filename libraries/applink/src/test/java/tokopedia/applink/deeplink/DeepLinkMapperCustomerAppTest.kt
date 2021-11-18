@@ -282,28 +282,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check shop old review appLink then should return tokopedia internal shop old review in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-page/1479278/review"
-        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278")
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.AB_TEST_SHOP_REVIEW, RollenceKey.OLD_REVIEW_SHOP
-            )
-        } returns RollenceKey.OLD_REVIEW_SHOP
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check shop new review appLink then should return tokopedia internal shop review in customerapp`() {
+    fun `check shop review appLink then should return tokopedia internal shop review in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/1479278/review"
         val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278")
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.AB_TEST_SHOP_REVIEW, RollenceKey.OLD_REVIEW_SHOP
-            )
-        } returns RollenceKey.NEW_REVIEW_SHOP
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
@@ -517,7 +499,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check product review appLink then should return tokopedia internal product review in customerapp`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product/890495024/review-old"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/product/890495024/review"
         val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_REPUTATION, "890495024")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
@@ -1483,12 +1465,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check saldo intro appLink then should return tokopedia internal saldo intro in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/saldo-intro"
         assertEqualsDeepLinkMapper(ApplinkConst.SALDO_INTRO, expectedDeepLink)
-    }
-
-    @Test
-    fun `check change password appLink then should return tokopedia internal change password in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/change-password"
-        assertEqualsDeepLinkMapper(ApplinkConst.CHANGE_PASSWORD, expectedDeepLink)
     }
 
     @Test
