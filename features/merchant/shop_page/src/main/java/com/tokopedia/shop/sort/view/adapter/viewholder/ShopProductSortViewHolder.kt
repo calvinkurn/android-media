@@ -6,20 +6,24 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopProductSortBinding
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by normansyahputa on 2/24/18.
  */
 class ShopProductSortViewHolder(itemView: View) : AbstractViewHolder<ShopProductSortModel?>(itemView) {
-    private val etalasePickerItemName: TextView
-    private val checkedImageView: ImageView
+
+    private val viewBinding : ItemShopProductSortBinding? by viewBinding()
+    private var etalasePickerItemName: TextView? = null
+    private var checkedImageView: ImageView? = null
     override fun bind(shopProductFilterModel: ShopProductSortModel?) {
-        etalasePickerItemName.text = shopProductFilterModel?.name
+        etalasePickerItemName?.text = shopProductFilterModel?.name
         if (shopProductFilterModel?.isSelected == true) {
-            checkedImageView.visibility = View.VISIBLE
+            checkedImageView?.visibility = View.VISIBLE
         } else {
-            checkedImageView.visibility = View.GONE
+            checkedImageView?.visibility = View.GONE
         }
     }
 
@@ -29,7 +33,7 @@ class ShopProductSortViewHolder(itemView: View) : AbstractViewHolder<ShopProduct
     }
 
     init {
-        etalasePickerItemName = itemView.findViewById(R.id.text_view_name)
-        checkedImageView = itemView.findViewById(R.id.image_view_selection)
+        etalasePickerItemName = viewBinding?.textViewName
+        checkedImageView = viewBinding?.imageViewSelection
     }
 }

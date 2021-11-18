@@ -1,5 +1,6 @@
 <resources>
     <string name="title_som_list">Penjualan</string>
+    <string name="title_som_list_sa">Daftar Pesanan</string>
     <string name="title_som_detail">Detail Pesanan</string>
     <string name="title_som_confirm_req_pickup">Konfirmasi Request Pick-Up</string>
     <string name="title_som_confirm_shipping">Konfirmasi Pengiriman</string>
@@ -88,7 +89,7 @@
     <string name="buyer_no_resp_label">Jelaskan kendala yang kamu alami</string>
     <string name="buyer_no_resp_placeholder">Contoh: Pembeli tidak jawab</string>
     <string name="other_reason_resp_label">Alasan penolakan lainnya</string>
-    <string name="other_reason_resp_placeholder">Contoh: Saya tidak bisa menerima...</string>
+    <string name="other_reason_resp_placeholder">Contoh: Saya tidak bisa menerima…</string>
 
     <string name="tv_driver_name_example">Idwan Wangsa</string>
     <string name="tv_driver_phone_example">081234567890</string>
@@ -229,19 +230,6 @@
     <string name="som_list_bulk_accept_order_product_amount">%1$s Barang</string>
     <string name="som_list_failed_accept_order">Gagal terima pesanan.</string>
     <string name="som_list_order_cannot_be_selected">Oops, pesanan tidak dapat dipilih</string>
-    <string name="som_list_bulk_accept_dialog_title_on_progress">%1$d pesanan sedang diterima</string>
-    <string name="som_list_bulk_accept_dialog_description_on_progress">Nggak pakai lama, Toped langsung terima pesanan kamu sekaligus.</string>
-    <string name="som_list_bulk_accept_dialog_title_success">Berhasil terima %1$d pesanan baru</string>
-    <string name="som_list_bulk_accept_dialog_description_success">Hore! semua pesanan kamu siap dikemas dan dikirim.</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_success">Mantap</string>
-    <string name="som_list_bulk_accept_dialog_description_partial_success_can_retry">Ada %1$d pesanan yang gagal diterima. Coba lagi, yuk!</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_partial_success_can_retry">Coba Lagi</string>
-    <string name="som_list_bulk_accept_dialog_secondary_button_partial_success_can_retry">Kembali</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_partial_success_cant_retry">Oke Deh</string>
-    <string name="som_list_bulk_accept_dialog_title_failed">Gagal terima %1$d pesanan baru</string>
-    <string name="som_list_bulk_accept_dialog_description_failed">Hiks, semua pesanan kamu gagal diterima. Coba lagi, yuk!</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_failed">Coba Lagi</string>
-    <string name="som_list_bulk_accept_dialog_secondary_button_failed">Kembali</string>
     <string name="som_list_coachmark_new_order_card_title">Cepat cek dan terima pesanan</string>
     <string name="som_list_coachmark_new_order_card_description">Sekarang kamu bisa cek info kurir dan kota tujuan. Klik tombol untuk langsung terima pesanan.</string>
     <string name="som_list_coachmark_sort_filter_title">Gampang cari pesanan dengan filter</string>
@@ -251,7 +239,7 @@
     <string name="som_list_coachmark_multi_select_title">Bisa atur pesanan sekaligus banyak</string>
     <string name="som_list_coachmark_multi_select_description">Klik tombol Pilih Sekaligus untuk terima pesanan, cetak label, atau request pick-up beberapa order.</string>
     <string name="som_list_empty_state_not_found_title">Oops, pesanan yang kamu cari nggak ditemukan.</string>
-    <string name="som_list_button_ok">Ok</string>
+    <string name="som_list_button_ok">OK</string>
     <string name="som_list_pre_order_flag">(PO)</string>
     <string name="som_list_bulk_print_dialog_title">Cetak %1$d label pengiriman</string>
     <string name="som_list_bulk_print_dialog_description">Pastikan HP kamu sudah terkoneksi ke printer dengan benar, ya.</string>
@@ -261,6 +249,7 @@
     <string name="som_list_bulk_print_button">Cetak Label Sekaligus</string>
     <string name="som_list_bulk_request_pickup_button">Request Pick-up Sekaligus</string>
     <string name="som_print_awb_error_message">Terjadi kesalahan, silahkan coba lagi.</string>
+    <string name="som_print_awb_error_message_unsupported_operation">Oops, perangkatmu tidak mendukung fitur cetak label.</string>
 
     <string name="som_detail_som_print_not_available">Fitur ini hanya tersedia di aplikasi Tokopedia Seller</string>
     <string name="som_detail_other_bottomsheet_title">Lainnya</string>
@@ -292,7 +281,7 @@
     <string name="som_list_bulk_request_pickup_desc_fail_error">Sedang ada gangguan. Coba lagi atau cek ulang pesananmu, ya.</string>
     <string name="som_list_bulk_request_pickup_desc_fail_all_validation">Tidak ada pesanan yang siap di pickup.</string>
     <string name="som_list_bulk_request_pickup_desc_fail_partial">Ada pesanan yang tidak bisa dipick-up.</string>
-    
+
     <string name="som_list_bulk_request_pickup_desc_partial_success_not_eligible">Ada %s pesanan yang tidak bisa dipick-up, nih.</string>
 
     <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_retry_pickup_order">Pick-up %s Pesanan</string>
@@ -301,4 +290,43 @@
     <string name="som_list_bulk_request_pickup_dialog_secondary_button_partial_success_can_retry">Kembali</string>
 
     <string name="som_list_bulk_request_pickup_dialog_primary_button_partial_success_cant_retry">Oke Deh</string>
+    <string name="som_total_price">Total Harga Paket</string>
+
+    <!--  Bulk Accept Order On Progress  -->
+    <string name="som_list_bulk_accept_dialog_title_on_progress">%1$d pesanan sedang diterima</string>
+    <string name="som_list_bulk_accept_dialog_description_on_progress">Nggak pakai lama, Toped langsung terima pesanan kamu sekaligus.</string>
+    <!--  Bulk Accept Order Success Accept All Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_success">Berhasil terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_success_accept_all_orders">Hore! semua pesanan kamu siap dikemas dan dikirim.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_success_accept_all_orders">Mantap</string>
+    <!--  Bulk Accept Order Failed Accept All Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_failed">Gagal terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_failed">Hiks, semua pesanan kamu gagal diterima. Coba lagi, yuk!</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_failed">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_failed">Kembali</string>
+    <!--  Bulk Accept Order Partial Success Accept Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_partial_success">Berhasil terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_partial_success">Ada %1$d pesanan yang belum terproses, nih.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_partial_success">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_partial_success">Kembali</string>
+    <!--  Bulk Accept Order Partial Mixed Accept Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_partial_mixed">Berhasil terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_partial_mixed">Ada %1$d pesanan yang gagal diterima dan %2$d yang belum terproses, nih.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_partial_mixed">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_partial_mixed">Kembali</string>
+    <!--  Bulk Accept Order Complete Mixed Status Accept Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_success_mixed">Berhasil terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_success_mixed">Ada %1$d pesanan yang gagal diterima, nih.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_success_mixed">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_success_mixed">Kembali</string>
+    <!--  Bulk Accept Order Partial Failed Accept Orders  -->
+    <string name="som_list_bulk_accept_dialog_title_partial_failed">Yaah, Gagal terima %1$d pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_partial_failed">Ada %1$d pesanan yang gagal diterima dan %2$d yang belum terproses, nih.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_partial_failed">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_partial_failed">Kembali</string>
+    <!--  Bulk Accept Order Unprocessed  -->
+    <string name="som_list_bulk_accept_dialog_title_unprocessed">Yaah, Gagal terima pesanan baru</string>
+    <string name="som_list_bulk_accept_dialog_description_unprocessed">Ada %1$d pesanan yang belum terproses, nih.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_unprocessed">Coba Lagi</string>
+    <string name="som_list_bulk_accept_dialog_secondary_button_unprocessed">Kembali</string>
 </resources>

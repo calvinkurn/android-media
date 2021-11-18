@@ -8,10 +8,16 @@
     </queries>
 
     <application>
+        <meta-data
+            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="com.tokopedia.play.cast.PlayCastOptionsProvider" />
+
+        <receiver android:name=".cast.PlayCastMediaIntentReceiver" />
+
         <activity
             android:name=".view.activity.PlayActivity"
             android:theme="@style/Play.FullScreen"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden">

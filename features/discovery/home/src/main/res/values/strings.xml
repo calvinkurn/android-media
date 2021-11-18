@@ -120,14 +120,20 @@
     <string name="onboarding_coachmark_wallet_title">Kenalan sama TokoPoints, yuk! </string>
     <string name="onboarding_coachmark_wallet_description">Points ini bisa ditukar buat belanja. Transaksi pakai kupon cashback buat nambah points-mu, ya!</string>
 
-    <string name="home_pmpro_coachmark_title">Yuk, kenalan sama Power Merchant PRO!</string>
-    <string name="home_pmpro_coachmark_description">Belanja dengan layanan memuaskan dari penjual terbaik di Tokopedia.</string>
-
     <string name="home_gopay_coachmark_title">Kamu bisa cek saldo GoPay, lho!</string>
     <string name="home_gopay_coachmark_description">Sambungkan GoPay biar transaksimu makin gampang, nanti saldonya muncul di sini.</string>
 
     <string name="home_gopay2_coachmark_title">Info lainnya ada di halaman Akun Saya</string>
     <string name="home_gopay2_coachmark_description">Mau cek Saldo Tokopedia, OVO Cash, atau info lainnya? Buka halaman Akun Saya aja!</string>
+
+    <string name="home_gopay_new_active_cta_coachmark_title">TokoPoints kini jadi GoPay Coins ✨</string>
+    <string name="home_gopay_new_active_cta_coachmark_description">Points-mu aman, kok. Sambungin akun Gojek &amp; Tokopedia buat pakai GoPay &amp; GoPay Coins!</string>
+
+    <string name="home_gopay_new_coachmark_title">Kamu bisa pakai GoPay  GoPay Coins</string>
+    <string name="home_gopay_new_coachmark_description">Cek saldomu di sini! Kalau kamu punya TokoPoints, semuanya udah diubah ke GoPay Coins.</string>
+
+    <string name="home_tokonow_coachmark_title">Belanja kebutuhan harian, 2 jam tiba dan gratis ongkir 🚀</string>
+    <string name="home_tokonow_coachmark_description">Cek yang fresh &amp; berkualitas di Tokopedia NOW!</string>
 
     <string name="text_dialog_success_reset_password">Masuk lagi ke Tokopedia dengan kata sandimu yang baru, ya!</string>
     <string name="cta_dialog_success_reset_password">Masuk</string>

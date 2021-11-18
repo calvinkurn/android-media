@@ -14,7 +14,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.usecase.*
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
+import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
@@ -163,7 +164,9 @@ class OtherMenuViewModel @Inject constructor(
             val successCount = map?.count { it.value }.orZero()
             if (successCount == map?.count().orZero()) {
                 launch(coroutineContext) {
-                    swipeSecondaryInfoGentlyWithDelay()
+                    withContext(dispatcher.main) {
+                        swipeSecondaryInfoGentlyWithDelay()
+                    }
                 }
             } else {
                 value = false
@@ -198,7 +201,6 @@ class OtherMenuViewModel @Inject constructor(
         getBalanceInfoData()
         getKreditTopAdsData()
         getIsTopAdsAutoTopup()
-        getShopShareInfoData()
     }
 
     fun onShownMultipleError(isShown: Boolean = false) {
@@ -282,7 +284,7 @@ class OtherMenuViewModel @Inject constructor(
     }
 
     fun startToggleTopadsCredit() {
-        if (topadsTopupToggleJob == null || topadsTopupToggleJob?.isCompleted == true) {
+        if (topadsTopupToggleJob?.isCompleted != false) {
             topadsTopupToggleJob =
                 launchCatchError(block = {
                     toggleTopadsTopupWithDelay()
@@ -290,157 +292,7 @@ class OtherMenuViewModel @Inject constructor(
         }
     }
 
-    private fun getFreeShippingStatusData() {
-        val freeShippingDisabled =
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-        val inTransitionPeriod =
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
-        launchCatchError(block = {
-            val freeShippingPair = withContext(dispatcher.io) {
-                if (freeShippingDisabled || inTransitionPeriod) {
-                    false to ""
-                } else {
-                    val userId = userSession.userId.toIntOrZero()
-                    val shopId = userSession.shopId.toIntOrZero()
-                    val params =
-                        GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
-                    getShopFreeShippingInfoUseCase.execute(params).first().let {
-                        it.freeShipping.isActive to it.freeShipping.imgUrl
-                    }
-                }
-            }
-            _freeShippingLiveData.value = SettingResponseState.SettingSuccess(freeShippingPair)
-        }, onError = {
-            _freeShippingLiveData.value = SettingResponseState.SettingError(it)
-        })
-    }
-
-    private fun getShopBadgeData() {
-        launchCatchError(
-            block = {
-                val badgeUrl = withContext(dispatcher.io) {
-                    getShopBadgeUseCase.params =
-                        GetShopBadgeUseCase.createRequestParams(userSession.shopId.toIntOrZero())
-                    getShopBadgeUseCase.executeOnBackground()
-                }
-                _shopBadgeLiveData.value = SettingResponseState.SettingSuccess(badgeUrl)
-            },
-            onError = {
-                _shopBadgeLiveData.value = SettingResponseState.SettingError(it)
-            }
-        )
-    }
-
-    private fun getShopTotalFollowersData() {
-        launchCatchError(
-            block = {
-                val totalFollowers = withContext(dispatcher.io) {
-                    getShopTotalFollowersUseCase.params =
-                        GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toIntOrZero())
-                    getShopTotalFollowersUseCase.executeOnBackground().let { shopFollowers ->
-                        if (shopFollowers == Constant.INVALID_NUMBER_OF_FOLLOWERS) {
-                            throw MessageErrorException(INVALID_FOLLOWERS_ERROR_MESSAGE)
-                        } else {
-                            shopFollowers
-                        }
-                    }
-                }
-                _shopTotalFollowersLiveData.value = SettingResponseState.SettingSuccess(
-                    totalFollowers.thousandFormatted()
-                )
-            },
-            onError = {
-                _shopTotalFollowersLiveData.value = SettingResponseState.SettingError(it)
-            }
-        )
-    }
-
-    private fun getUserShopInfoData() {
-        launchCatchError(
-            block = {
-                val userShopInfoWrapper = withContext(dispatcher.io) {
-                    getUserShopInfoUseCase.params =
-                        GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
-                    getUserShopInfoUseCase.executeOnBackground()
-                }
-                _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(
-                    ShopStatusUiModel(
-                        userShopInfoWrapper,
-                        userSession
-                    )
-                )
-            },
-            onError = {
-                _userShopInfoLiveData.value = SettingResponseState.SettingError(it)
-            }
-        )
-    }
-
-    private fun getShopOperationalData() {
-        launchCatchError(
-            block = {
-                val shopOperational = withContext(dispatcher.io) {
-                    getShopOperationalUseCase.executeOnBackground()
-                }
-                _shopOperationalLiveData.value =
-                    SettingResponseState.SettingSuccess(shopOperational)
-            },
-            onError = {
-                _shopOperationalLiveData.value = SettingResponseState.SettingError(it)
-            }
-        )
-    }
-
-    private fun getBalanceInfoData() {
-        launchCatchError(
-            block = {
-                val balanceInfo = withContext(dispatcher.io) {
-                    balanceInfoUseCase.executeOnBackground().totalBalance.orEmpty()
-                }
-                _balanceInfoLiveData.value = SettingResponseState.SettingSuccess(balanceInfo)
-            },
-            onError = {
-                _balanceInfoLiveData.value = SettingResponseState.SettingError(it)
-            }
-        )
-    }
-
-    private fun getKreditTopAdsData() {
-        launchCatchError(
-            block = {
-                val topAdsBalanceFormatted = withContext(dispatcher.io) {
-                    topAdsDashboardDepositUseCase.params =
-                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toIntOrZero())
-                    val topAdsBalance = topAdsDashboardDepositUseCase.executeOnBackground()
-                    _kreditTopAdsLiveData.postValue(topAdsBalance)
-                    topAdsBalance.getCurrencyFormatted()
-                }
-                _kreditTopAdsFormattedLiveData.value =
-                    SettingResponseState.SettingSuccess(topAdsBalanceFormatted)
-            },
-            onError = {
-                _kreditTopAdsFormattedLiveData.value = SettingResponseState.SettingError(it)
-            }
-        )
-    }
-
-    private fun getIsTopAdsAutoTopup() {
-        launchCatchError(
-            block = {
-                val isTopAdsAutoTopup = withContext(dispatcher.io) {
-                    topAdsAutoTopupUseCase.params =
-                        TopAdsAutoTopupUseCase.createRequestParams(userSession.shopId)
-                    topAdsAutoTopupUseCase.executeOnBackground()
-                }
-                _isTopAdsAutoTopupLiveData.value = Success(isTopAdsAutoTopup)
-            },
-            onError = {
-                _isTopAdsAutoTopupLiveData.value = Fail(it)
-            }
-        )
-    }
-
-    private fun getShopShareInfoData() {
+    fun getShopShareInfoData() {
         launchCatchError(
             block = {
                 val shopShareInfo = withContext(dispatcher.io) {
@@ -480,12 +332,190 @@ class OtherMenuViewModel @Inject constructor(
         }
     }
 
-    private suspend fun swipeSecondaryInfoGentlyWithDelay() {
-        withContext(dispatcher.main) {
-            delay(GENTLY_SWIPE_DELAY)
-            if (_shouldSwipeSecondaryInfoGently.value == false) {
-                _shouldSwipeSecondaryInfoGently.postValue(true)
+    private fun getFreeShippingStatusData() {
+        val freeShippingDisabled =
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        val inTransitionPeriod =
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+        launchCatchError(block = {
+            val freeShippingPair = withContext(dispatcher.io) {
+                if (freeShippingDisabled || inTransitionPeriod) {
+                    false to ""
+                } else {
+                    val userId = userSession.userId.toLongOrZero()
+                    val shopId = userSession.shopId.toLongOrZero()
+                    val params =
+                        GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
+                    getShopFreeShippingInfoUseCase.execute(params).first().let {
+                        it.freeShipping.isActive to it.freeShipping.imgUrl
+                    }
+                }
             }
+            _freeShippingLiveData.value = SettingResponseState.SettingSuccess(freeShippingPair)
+        }, onError = {
+            _freeShippingLiveData.value = SettingResponseState.SettingError(it)
+        })
+    }
+
+    private fun getShopBadgeData() {
+        launchCatchError(
+            block = {
+                val badgeUrl = withContext(dispatcher.io) {
+                    getShopBadgeUseCase.params =
+                        GetShopBadgeUseCase.createRequestParams(userSession.shopId.toLongOrZero())
+                    getShopBadgeUseCase.executeOnBackground()
+                }
+                _shopBadgeLiveData.value = SettingResponseState.SettingSuccess(badgeUrl)
+            },
+            onError = {
+                _shopBadgeLiveData.value = SettingResponseState.SettingError(it)
+            }
+        )
+    }
+
+    private fun getShopTotalFollowersData() {
+        launchCatchError(
+            block = {
+                val totalFollowers = withContext(dispatcher.io) {
+                    getShopTotalFollowersUseCase.params =
+                        GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toLongOrZero())
+                    getShopTotalFollowersUseCase.executeOnBackground().let { shopFollowers ->
+                        if (shopFollowers == Constant.INVALID_NUMBER_OF_FOLLOWERS) {
+                            throw MessageErrorException(INVALID_FOLLOWERS_ERROR_MESSAGE)
+                        } else {
+                            shopFollowers
+                        }
+                    }
+                }
+                _shopTotalFollowersLiveData.value = SettingResponseState.SettingSuccess(
+                    totalFollowers.thousandFormatted()
+                )
+            },
+            onError = {
+                _shopTotalFollowersLiveData.value = SettingResponseState.SettingError(it)
+            }
+        )
+    }
+
+    private fun getUserShopInfoData() {
+        launchCatchError(
+            block = {
+                val userShopInfoWrapper = withContext(dispatcher.io) {
+                    getUserShopInfoUseCase.params =
+                        GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toLongOrZero())
+                    getUserShopInfoUseCase.executeOnBackground()
+                }
+                _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(
+                    ShopStatusUiModel(
+                        userShopInfoWrapper,
+                        userSession
+                    )
+                )
+                userShopInfoWrapper.shopType?.let {
+                    updateShopInfoUserSession(it)
+                }
+            },
+            onError = {
+                _userShopInfoLiveData.value = SettingResponseState.SettingError(it)
+            }
+        )
+    }
+
+    private fun updateShopInfoUserSession(shopType: ShopType) {
+        when (shopType) {
+            is ShopType.OfficialStore -> {
+                userSession.setIsGoldMerchant(true)
+                userSession.setIsPowerMerchantIdle(false)
+                userSession.setIsShopOfficialStore(true)
+            }
+            // This means that the power merchant status is IDLE
+            is PowerMerchantStatus.NotActive, is PowerMerchantProStatus.InActive -> {
+                userSession.setIsGoldMerchant(false)
+                userSession.setIsPowerMerchantIdle(true)
+                userSession.setIsShopOfficialStore(false)
+            }
+            is PowerMerchantStatus, is PowerMerchantProStatus -> {
+                userSession.setIsGoldMerchant(true)
+                userSession.setIsPowerMerchantIdle(false)
+                userSession.setIsShopOfficialStore(false)
+            }
+            // This means that the status is Regular Merchant
+            else -> {
+                userSession.setIsGoldMerchant(false)
+                userSession.setIsPowerMerchantIdle(false)
+                userSession.setIsShopOfficialStore(false)
+            }
+        }
+    }
+
+    private fun getShopOperationalData() {
+        launchCatchError(
+            block = {
+                val shopOperational = withContext(dispatcher.io) {
+                    getShopOperationalUseCase.executeOnBackground()
+                }
+                _shopOperationalLiveData.value =
+                    SettingResponseState.SettingSuccess(shopOperational)
+            },
+            onError = {
+                _shopOperationalLiveData.value = SettingResponseState.SettingError(it)
+            }
+        )
+    }
+
+    private fun getBalanceInfoData() {
+        launchCatchError(
+            block = {
+                val balanceInfo = withContext(dispatcher.io) {
+                    balanceInfoUseCase.executeOnBackground().totalBalance.orEmpty()
+                }
+                _balanceInfoLiveData.value = SettingResponseState.SettingSuccess(balanceInfo)
+            },
+            onError = {
+                _balanceInfoLiveData.value = SettingResponseState.SettingError(it)
+            }
+        )
+    }
+
+    private fun getKreditTopAdsData() {
+        launchCatchError(
+            block = {
+                val topAdsBalanceFormatted = withContext(dispatcher.io) {
+                    topAdsDashboardDepositUseCase.params =
+                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toLongOrZero())
+                    val topAdsBalance = topAdsDashboardDepositUseCase.executeOnBackground()
+                    _kreditTopAdsLiveData.postValue(topAdsBalance)
+                    topAdsBalance.getCurrencyFormatted()
+                }
+                _kreditTopAdsFormattedLiveData.value =
+                    SettingResponseState.SettingSuccess(topAdsBalanceFormatted)
+            },
+            onError = {
+                _kreditTopAdsFormattedLiveData.value = SettingResponseState.SettingError(it)
+            }
+        )
+    }
+
+    private fun getIsTopAdsAutoTopup() {
+        launchCatchError(
+            block = {
+                val isTopAdsAutoTopup = withContext(dispatcher.io) {
+                    topAdsAutoTopupUseCase.params =
+                        TopAdsAutoTopupUseCase.createRequestParams(userSession.shopId)
+                    topAdsAutoTopupUseCase.executeOnBackground()
+                }
+                _isTopAdsAutoTopupLiveData.value = Success(isTopAdsAutoTopup)
+            },
+            onError = {
+                _isTopAdsAutoTopupLiveData.value = Fail(it)
+            }
+        )
+    }
+
+    private suspend fun swipeSecondaryInfoGentlyWithDelay() {
+        delay(GENTLY_SWIPE_DELAY)
+        if (_shouldSwipeSecondaryInfoGently.value == false) {
+            _shouldSwipeSecondaryInfoGently.postValue(true)
         }
     }
 

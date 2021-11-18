@@ -5,7 +5,6 @@ import static com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PAR
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -20,9 +19,9 @@ import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.order.DeeplinkMapperOrder;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -53,12 +52,11 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
-import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.fcm.di.DaggerGcmUpdateComponent;
 import com.tokopedia.sellerapp.fcm.di.GcmUpdateComponent;
@@ -69,7 +67,6 @@ import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
-import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -142,7 +139,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this, true);
     }
 
     private boolean initLibraries(){
@@ -175,6 +172,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         excludeScreenList.add(Constants.DEEPLINK_HANDLER_ACTIVITY);
         CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
+        PushWorker.Companion.schedulePeriodicWorker(this);
     }
 
     @Override
@@ -302,23 +300,12 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @Override
     public void goToApplinkActivity(Context context, String applink) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
-        if (context instanceof Activity) {
-            deepLinkDelegate.dispatchFrom((Activity) context, intent);
-        } else {
-            context.startActivity(intent);
-        }
+        RouteManager.route(context, applink);
     }
 
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
-        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
-        return intent;
+        return RouteManager.getIntent(context, applink);
     }
 
     @Override
@@ -365,29 +352,19 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext(), true);
     }
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
-        if (activity != null) {
-            DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-            Intent intent = activity.getIntent();
-            intent.setData(Uri.parse(applink));
-            intent.putExtras(bundle);
-            deepLinkDelegate.dispatchFrom(activity, intent);
-        }
+        Intent intent = RouteManager.getIntent(activity, applink);
+        intent.putExtras(bundle);
+        activity.startActivity(intent);
     }
 
     @Override
     public boolean isSupportApplink(String appLink) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(appLink);
-    }
-
-    @Override
-    public ApplinkDelegate applinkDelegate() {
-        return null;
+        return false;
     }
 
     @Override
@@ -432,7 +409,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(@Nullable String tabPage, @NotNull String orderType, @NotNull String searchKeyword, @NotNull String orderId) {
+    public Fragment getSomListFragment(@NotNull Context context, @Nullable String tabPage, @NotNull String orderType, @NotNull String searchKeyword, @NotNull String orderId) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);

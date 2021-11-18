@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName
 class CancellationEntity(
         @SerializedName("cancel_id")
         @Expose
-        val refundId: Int = 0,
+        val refundId: String = "",
         @SerializedName("details")
         @Expose
         val details: List<CancellationDetailsAttribute>,

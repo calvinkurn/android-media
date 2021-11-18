@@ -3,14 +3,13 @@ package com.tokopedia.chooseaccount.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.AccountsDataModel
 import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant.PARAM_LOGIN_TYPE
 import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant.PARAM_PHONE
 import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant.PARAM_VALIDATE_TOKEN
-import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant.QUERY_GET_ACCOUNT_LIST
-import com.tokopedia.chooseaccount.domain.subscriber.LoginFacebookSubscriber
+import com.tokopedia.chooseaccount.domain.usecase.GetAccountListUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -30,10 +29,9 @@ import javax.inject.Named
  */
 
 open class ChooseAccountViewModel @Inject constructor(
-        private val getAccountsListPojoUseCase: GraphqlUseCase<AccountsDataModel>,
+        private val getAccountsListUseCase: GetAccountListUseCase,
         @param:Named(SessionModule.SESSION_MODULE) private val userSessionInterface: UserSessionInterface,
         private val loginTokenUseCase: LoginTokenUseCase,
-        private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatchers
 ) : BaseChooseAccountViewModel(dispatcher) {
 
@@ -66,61 +64,19 @@ open class ChooseAccountViewModel @Inject constructor(
         )
     }
 
-    fun loginTokenFacebook(key: String, email: String, phone: String) {
-        loginTokenUseCase.executeLoginSocialMediaPhone(LoginTokenUseCase.generateParamSocialMediaPhone(
-            key,
-            email,
-            LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK
-        ),
-            LoginFacebookSubscriber(
-                userSessionInterface,
-                onSuccessLoginToken(),
-                onFailedLoginToken(),
-                { onSecurityCheck(phone) }
-            )
-        )
-    }
-
     fun getAccountListPhoneNumber(validateToken: String, phone: String) {
-        rawQueries[QUERY_GET_ACCOUNT_LIST]?.let { query ->
+        launchCatchError(block = {
             val params = mapOf(
                 PARAM_VALIDATE_TOKEN to validateToken,
                 PARAM_PHONE to phone,
                 PARAM_LOGIN_TYPE to ""
             )
-
-            getAccountsListPojoUseCase.apply {
-                setTypeClass(AccountsDataModel::class.java)
-                setRequestParams(params)
-                setGraphqlQuery(query)
-                execute(
-                    onSuccessGetAccountListPhoneNumber(),
-                    onFailedGetAccountListPhoneNumber()
-                )
-            }
-        }
+            val result = getAccountsListUseCase(params)
+            onSuccessGetAccountList(result, "")
+        }, onError = {
+            handleGetAccountListError(it, "")
+        })
     }
-
-    fun getAccountListFacebook(validateToken: String) {
-        rawQueries[QUERY_GET_ACCOUNT_LIST]?.let { query ->
-            val params = mapOf(
-                PARAM_VALIDATE_TOKEN to validateToken,
-                PARAM_PHONE to "",
-                PARAM_LOGIN_TYPE to LOGIN_TYPE_FACEBOOK
-            )
-
-            getAccountsListPojoUseCase.apply {
-                setTypeClass(AccountsDataModel::class.java)
-                setRequestParams(params)
-                setGraphqlQuery(query)
-                execute(
-                    onSuccessGetAccountListFacebook(),
-                    onFailedGetAccountListFacebook()
-                )
-            }
-        }
-    }
-
 
     private fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {
         return {
@@ -147,52 +103,42 @@ open class ChooseAccountViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetAccountListPhoneNumber(): (AccountsDataModel) -> Unit {
-        return {
-            if (it.accountListDataModel.errorResponseDataModels.isEmpty()) {
-                mutableGetAccountListPhoneResponse.value = Success(it.accountListDataModel)
-            } else if (it.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty()) {
-                mutableGetAccountListPhoneResponse.value =
-                    Fail(MessageErrorException(it.accountListDataModel.errorResponseDataModels[0].message))
-            } else {
-                mutableGetAccountListPhoneResponse.value = Fail(RuntimeException())
-            }
+    private fun onSuccessGetAccountList(data: AccountsDataModel, type: String) {
+        if (data.accountListDataModel.errorResponseDataModels.isEmpty()) {
+            handleGetAccountListSuccess(data.accountListDataModel, type)
+        } else if (data.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty()) {
+            val error = MessageErrorException(data.accountListDataModel.errorResponseDataModels[0].message)
+            handleGetAccountListError(error, type)
+        } else {
+            handleGetAccountListError(RuntimeException(), type)
         }
     }
 
-    private fun onFailedGetAccountListPhoneNumber(): (Throwable) -> Unit {
-        return {
-            mutableGetAccountListPhoneResponse.value = Fail(it)
-        }
+    private fun handleGetAccountListSuccess(data: AccountListDataModel, type: String) {
+        mutableGetAccountListPhoneResponse.value = Success(data)
     }
 
-    private fun onSuccessGetAccountListFacebook(): (AccountsDataModel) -> Unit {
-        return {
-            if (it.accountListDataModel.errorResponseDataModels.isEmpty()) {
-                mutableGetAccountListFBResponse.value = Success(it.accountListDataModel)
-            } else if (it.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty()) {
-                mutableGetAccountListFBResponse.value =
-                    Fail(MessageErrorException(it.accountListDataModel.errorResponseDataModels[0].message))
-            } else {
-                mutableGetAccountListFBResponse.value = Fail(RuntimeException())
-            }
-        }
+    private fun handleGetAccountListError(throwable: Throwable, type: String) {
+        mutableGetAccountListPhoneResponse.value = Fail(throwable)
     }
 
-    private fun onFailedGetAccountListFacebook(): (Throwable) -> Unit {
-        return {
-            mutableGetAccountListFBResponse.value = Fail(it)
+    private fun onSuccessGetAccountListPhoneNumber(data: AccountsDataModel) {
+        if (data.accountListDataModel.errorResponseDataModels.isEmpty()) {
+            mutableGetAccountListPhoneResponse.value = Success(data.accountListDataModel)
+        } else if (data.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty()) {
+            mutableGetAccountListPhoneResponse.value =
+                Fail(MessageErrorException(data.accountListDataModel.errorResponseDataModels[0].message))
+        } else {
+            mutableGetAccountListPhoneResponse.value = Fail(RuntimeException())
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        getAccountsListPojoUseCase.cancelJobs()
         loginTokenUseCase.unsubscribe()
     }
 
     companion object {
-        const val LOGIN_TYPE_FACEBOOK = "fb"
         const val LOGIN_TYPE_BIOMETRIC = "biometric"
     }
 }

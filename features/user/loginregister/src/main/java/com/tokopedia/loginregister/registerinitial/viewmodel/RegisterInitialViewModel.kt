@@ -1,9 +1,7 @@
 package com.tokopedia.loginregister.registerinitial.viewmodel
 
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
@@ -11,7 +9,6 @@ import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
-import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToFacebookCredentialListener
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
@@ -19,14 +16,10 @@ import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataMode
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
-import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -37,7 +30,6 @@ import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
-import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
@@ -47,7 +39,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -62,7 +54,6 @@ class RegisterInitialViewModel @Inject constructor(
         private val registerRequestUseCaseV2: GraphqlUseCase<RegisterRequestV2>,
         private val activateUserUseCase: ActivateUserUseCase,
         private val discoverUseCase: DiscoverUseCase,
-        private val getFacebookCredentialUseCase: GetFacebookCredentialUseCase,
         private val loginTokenUseCase: LoginTokenUseCase,
         private val getProfileUseCase: GetProfileUseCase,
         private val tickerInfoUseCase: TickerInfoUseCase,
@@ -72,23 +63,11 @@ class RegisterInitialViewModel @Inject constructor(
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
-        dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
+        private val dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
 
-    private val mutableGetProviderResponse = MutableLiveData<Result<ArrayList<DiscoverItemDataModel>>>()
-    val getProviderResponse: LiveData<Result<ArrayList<DiscoverItemDataModel>>>
+    private val mutableGetProviderResponse = MutableLiveData<Result<DiscoverData>>()
+    val getProviderResponse: LiveData<Result<DiscoverData>>
         get() = mutableGetProviderResponse
-
-    private val mutableGetFacebookCredentialResponse = MutableLiveData<Result<FacebookCredentialData>>()
-    val getFacebookCredentialResponse: LiveData<Result<FacebookCredentialData>>
-        get() = mutableGetFacebookCredentialResponse
-
-    private val mutableLoginTokenFacebookResponse = MutableLiveData<Result<LoginTokenPojo>>()
-    val loginTokenFacebookResponse: LiveData<Result<LoginTokenPojo>>
-        get() = mutableLoginTokenFacebookResponse
-
-    private val mutableLoginTokenFacebookPhoneResponse = MutableLiveData<Result<LoginTokenPojo>>()
-    val loginTokenFacebookPhoneResponse: LiveData<Result<LoginTokenPojo>>
-        get() = mutableLoginTokenFacebookPhoneResponse
 
     private val mutableLoginTokenGoogleResponse = MutableLiveData<Result<LoginTokenPojo>>()
     val loginTokenGoogleResponse: LiveData<Result<LoginTokenPojo>>
@@ -157,66 +136,15 @@ class RegisterInitialViewModel @Inject constructor(
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
 
     fun getProvider() {
-        discoverUseCase.execute(
-                DiscoverUseCase.getParamRegister(),
-                resultUsecaseCoroutineToSubscriber(
-                        onSuccessGetProvider(),
-                        onFailedGetProvider()
-                )
-        )
-    }
+        launchCatchError(block = {
+            val result = discoverUseCase(PARAM_DISCOVER_REGISTER)
 
-    fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-        idlingResourceProvider?.increment()
-        getFacebookCredentialUseCase.execute(
-                GetFacebookCredentialUseCase.getParam(
-                        fragment,
-                        callbackManager),
-                GetFacebookCredentialSubscriber(
-                        resultUsecaseCoroutineToFacebookCredentialListener(
-                                onSuccessGetFacebookEmailCredential(),
-                                onSuccessGetFacebookPhoneCredential(),
-                                onFailedGetFacebookCredential()
-                        )
-                )
-        )
-    }
-
-    fun registerFacebook(accessToken: String, email: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-        idlingResourceProvider?.increment()
-        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
-                accessToken, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
-                LoginTokenSubscriber(
-                        userSession,
-                        onSuccessLoginTokenFacebook(),
-                        onFailedLoginTokenFacebook(),
-                        {
-                            showPopup().invoke(it.loginToken.popupError)
-                            idlingResourceProvider?.decrement()
-                        },
-                        onGoToActivationPage(),
-                        onGoToSecurityQuestion(email)
-                )
-        )
-
-    }
-
-    fun registerFacebookPhone(accessToken: String, phone: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-
-        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
-                accessToken, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
-                LoginTokenFacebookSubscriber(
-                        userSession,
-                        onSuccessLoginTokenFacebookPhone(),
-                        onFailedLoginTokenFacebookPhone(),
-                        { showPopup().invoke(it.loginToken.popupError) },
-                        onGoToSecurityQuestion("")
-                )
-        )
-
+            withContext(dispatcherProvider.main) {
+                mutableGetProviderResponse.value = Success(result.data)
+            }
+        }, onError = {
+            mutableGetProviderResponse.value = Fail(it)
+        })
     }
 
     fun registerGoogle(accessToken: String, email: String) {
@@ -396,69 +324,6 @@ class RegisterInitialViewModel @Inject constructor(
         })
     }
 
-    private fun onSuccessGetProvider(): (DiscoverDataModel) -> Unit {
-        return {
-            if (!it.providers.isEmpty()) {
-                mutableGetProviderResponse.value = Success(it.providers)
-            } else {
-                mutableGetProviderResponse.value = Fail(Throwable())
-            }
-        }
-    }
-
-    private fun onFailedGetProvider(): (Throwable) -> Unit {
-        return {
-            mutableGetProviderResponse.value = Fail(it)
-        }
-    }
-
-    private fun onSuccessGetFacebookEmailCredential(): (FacebookCredentialData) -> Unit {
-        return {
-            mutableGetFacebookCredentialResponse.value = Success(it)
-            idlingResourceProvider?.decrement()
-        }
-    }
-
-    private fun onSuccessGetFacebookPhoneCredential(): (FacebookCredentialData) -> Unit {
-        return {
-            mutableGetFacebookCredentialResponse.value = Success(it)
-            idlingResourceProvider?.decrement()
-        }
-    }
-
-    private fun onFailedGetFacebookCredential(): (Throwable) -> Unit {
-        return {
-            mutableGetFacebookCredentialResponse.value = Fail(it)
-            idlingResourceProvider?.decrement()
-        }
-    }
-
-    private fun onSuccessLoginTokenFacebook(): (LoginTokenPojo) -> Unit {
-        return {
-            mutableLoginTokenFacebookResponse.value = Success(it)
-            idlingResourceProvider?.decrement()
-        }
-    }
-
-    private fun onFailedLoginTokenFacebook(): (Throwable) -> Unit {
-        return {
-            mutableLoginTokenFacebookResponse.value = Fail(it)
-            idlingResourceProvider?.decrement()
-        }
-    }
-
-    private fun onSuccessLoginTokenFacebookPhone(): (LoginTokenPojo) -> Unit {
-        return {
-            mutableLoginTokenFacebookPhoneResponse.value = Success(it)
-        }
-    }
-
-    private fun onFailedLoginTokenFacebookPhone(): (Throwable) -> Unit {
-        return {
-            mutableLoginTokenFacebookPhoneResponse.value = Fail(it)
-        }
-    }
-
     private fun onSuccessLoginTokenGoogle(): (LoginTokenPojo) -> Unit {
         return {
             mutableLoginTokenGoogleResponse.value = Success(it)
@@ -528,9 +393,9 @@ class RegisterInitialViewModel @Inject constructor(
         return {
             if (it.data.errors.isEmpty())
                 mutableRegisterCheckResponse.value = Success(it.data)
-            else if (it.data.errors.isNotEmpty()) mutableRegisterCheckResponse.value =
+            else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty()) mutableRegisterCheckResponse.value =
                     Fail(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
-            else mutableRegisterRequestResponse.value = Fail(RuntimeException())
+            else mutableRegisterCheckResponse.value = Fail(RuntimeException())
             idlingResourceProvider?.decrement()
         }
     }
@@ -618,7 +483,6 @@ class RegisterInitialViewModel @Inject constructor(
         registerRequestUseCase.cancelJobs()
         registerCheckUseCase.cancelJobs()
         tickerInfoUseCase.unsubscribe()
-        discoverUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
     }
@@ -631,5 +495,6 @@ class RegisterInitialViewModel @Inject constructor(
     companion object {
         val OS_TYPE_ANDROID = "1"
         val REG_TYPE_EMAIL = "email"
+        private const val PARAM_DISCOVER_REGISTER = "register"
     }
 }

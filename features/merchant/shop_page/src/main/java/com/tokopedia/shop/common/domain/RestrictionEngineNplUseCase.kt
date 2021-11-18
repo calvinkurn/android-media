@@ -26,7 +26,7 @@ class RestrictionEngineNplUseCase @Inject constructor(
     override suspend fun executeOnBackground(): RestrictValidateRestriction {
         val request = GraphqlRequest(QUERY, RestrictionEngineData::class.java, params.parameters)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val gqlResponse = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
         val gqlResponseError = gqlResponse.getError(GqlRestrictionEngineNplResponse::class.java)
         if(gqlResponseError == null || gqlResponseError.isEmpty()) {
             return gqlResponse.getData<RestrictionEngineData>(

@@ -4,8 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.ItemProductManageMoreMenuBinding
 import com.tokopedia.product.manage.feature.list.view.model.ProductMoreMenuModel
-import kotlinx.android.synthetic.main.item_product_manage_more_menu.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductManageMoreMenuViewHolder(itemView: View, private val listener: ProductManageMoreMenuListener) : RecyclerView.ViewHolder(itemView) {
 
@@ -14,8 +15,10 @@ class ProductManageMoreMenuViewHolder(itemView: View, private val listener: Prod
         val LAYOUT = R.layout.item_product_manage_more_menu
     }
 
+    private val binding by viewBinding<ItemProductManageMoreMenuBinding>()
+
     fun bind(menu: ProductMoreMenuModel) {
-        itemView.tv_more_menu_title.text = menu.title
+        binding?.tvMoreMenuTitle?.text = menu.title
         itemView.setOnClickListener {
             listener.onMoreMenuClicked(menu)
         }

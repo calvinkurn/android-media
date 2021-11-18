@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Matchers.anyInt
+import org.mockito.ArgumentMatchers.anyLong
 
 @ExperimentalCoroutinesApi
 class TopAdsDashboardDepositUseCaseTest {
@@ -47,14 +47,14 @@ class TopAdsDashboardDepositUseCaseTest {
         val successTopAdsDashboardDeposit = 0f
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
-        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyInt())
+        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyLong())
         val topAdsDashboardDeposit = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertEquals(topAdsDashboardDeposit, successTopAdsDashboardDeposit)
@@ -66,15 +66,15 @@ class TopAdsDashboardDepositUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<TopAdsDepositDataModel>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyInt())
+        useCase.params = TopAdsDashboardDepositUseCase.createRequestParams(anyLong())
         val topAdsDashboardDeposit = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertNull(topAdsDashboardDeposit)

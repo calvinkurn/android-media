@@ -31,7 +31,7 @@ class GetLayoutUseCase(
 
     override suspend fun executeOnBackground(): List<BaseWidgetUiModel<*>> {
         val gqlRequest = GraphqlRequest(QUERY, GetLayoutResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(
+        val gqlResponse: GraphqlResponse = graphqlRepository.response(
             listOf(gqlRequest), cacheStrategy
         )
 
@@ -74,6 +74,7 @@ class GetLayoutUseCase(
                       description
                     }
                   }
+                  tag
                   showEmpty
                   postFilter {
                     name

@@ -19,7 +19,7 @@ class SnapshotUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
     suspend fun executeSuspend(param: SnapshotParam): Result<GetOrderSnapshot> {
         return try {
             val request = GraphqlRequest(QUERY, Data::class.java, generateParam(param))
-            val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<Data>()
+            val response = gqlRepository.response(listOf(request)).getSuccessData<Data>()
             Success(response.getOrderSnapshot)
         } catch (throwable: Throwable) {
             Fail(throwable)
@@ -97,6 +97,10 @@ class SnapshotUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
             
                     }
                   }
+                  bundle_id
+                  bundle_variant_name
+                  product_bundling_icon
+                  is_have_bundle_product
                 }
             }
         """.trimIndent()

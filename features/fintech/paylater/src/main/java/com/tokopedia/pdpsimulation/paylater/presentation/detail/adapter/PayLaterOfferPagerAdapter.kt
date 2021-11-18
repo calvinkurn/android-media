@@ -7,15 +7,14 @@ import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterApplicationDetail
-import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterItemProductData
-import com.tokopedia.pdpsimulation.paylater.mapper.PayLaterPartnerTypeMapper
+import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterPaymentOptionsFragment
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.PayLaterPaymentOptionsFragment.Companion.PAYLATER_PARTNER_POSITION
 
-class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) : FragmentStatePagerAdapter(fm, behaviour) {
+class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) :
+    FragmentStatePagerAdapter(fm, behaviour) {
     private val paymentOptionsFragmentArray = SparseArrayCompat<Fragment>()
-    private var paymentProductList: ArrayList<PayLaterItemProductData> = ArrayList()
-    private var applicationStatusList: ArrayList<PayLaterApplicationDetail> = ArrayList()
+    private var paymentProductList: List<Detail> = ArrayList()
 
     override fun getItem(position: Int): Fragment {
         val bundle = setBundleData(position)
@@ -24,12 +23,9 @@ class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) : FragmentS
 
     private fun setBundleData(position: Int): Bundle {
         val paymentOption = paymentProductList[position]
-        val applicationStatus: PayLaterApplicationDetail? = PayLaterPartnerTypeMapper.getPayLaterApplicationDataForPartner(paymentOption, applicationStatusList)
         return Bundle().apply {
-            putParcelable(PayLaterPaymentOptionsFragment.PAY_LATER_PARTNER_DATA, paymentProductList[position])
-            applicationStatus?.let {
-                putParcelable(PayLaterPaymentOptionsFragment.PAY_LATER_APPLICATION_DATA, applicationStatus)
-            }
+            putParcelable(PayLaterPaymentOptionsFragment.PAY_LATER_PARTNER_DATA, paymentOption)
+            putInt(PAYLATER_PARTNER_POSITION, position)
         }
     }
 
@@ -48,14 +44,26 @@ class PayLaterOfferPagerAdapter(fm: FragmentManager, behaviour: Int) : FragmentS
         return paymentProductList.size
     }
 
-    fun setPaymentData(paymentProductList: ArrayList<PayLaterItemProductData>, applicationStatusList: ArrayList<PayLaterApplicationDetail>) {
+    fun setPaymentData(paymentProductList: List<Detail>) {
         this.paymentProductList = paymentProductList
-        this.applicationStatusList = applicationStatusList
+
         notifyDataSetChanged()
+    }
+
+    fun getPaymentDetailByPosition(position: Int): Detail? {
+        return if (position < count) {
+            paymentProductList[position]
+        } else
+            null
     }
 
     override fun getPageWidth(position: Int): Float {
         return 0.9f
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return POSITION_NONE
+
     }
 
 }

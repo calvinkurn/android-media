@@ -1,15 +1,18 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
-import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
@@ -19,9 +22,11 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
+import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
 import dagger.Module
 import dagger.Provides
@@ -120,23 +125,6 @@ class ChatRoomFakeUseCaseModule {
             mapper: GetTemplateChatRoomMapper
     ): GetTemplateChatRoomUseCaseStub {
         return GetTemplateChatRoomUseCaseStub(api, mapper)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
-    fun provideGetShopFollowingUseCase(
-            stub: GetShopFollowingUseCaseStub
-    ): GetShopFollowingUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideGetShopFollowingUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<ShopFollowingPojo>,
-            dispatchers: CoroutineDispatchers
-    ): GetShopFollowingUseCaseStub {
-        return GetShopFollowingUseCaseStub(gqlUseCase, dispatchers)
     }
 
     // -- separator -- //
@@ -251,5 +239,55 @@ class ChatRoomFakeUseCaseModule {
             gqlUseCase: GraphqlUseCaseStub<ChatTokoNowWarehouseResponse>
     ): ChatTokoNowWarehouseUseCaseStub {
         return ChatTokoNowWarehouseUseCaseStub(gqlUseCase)
+    }
+
+    // -- separator -- view model usecase start here //
+
+    @Provides
+    @ChatScope
+    fun provideGetExistingMessageIdUseCase(
+        stub: GetExistingMessageIdUseCaseStub
+    ): GetExistingMessageIdUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetExistingMessageIdUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetExistingMessageIdUseCaseStub {
+        return GetExistingMessageIdUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideGetShopFollowingUseCase(
+        stub: GetShopFollowingUseCaseStub
+    ): GetShopFollowingUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetShopFollowingUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetShopFollowingUseCaseStub {
+        return GetShopFollowingUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideToggleFavouriteShopUseCase(
+        stub: ToggleFavouriteShopUseCaseStub
+    ): ToggleFavouriteShopUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideToggleFavouriteShopUseCaseStub(
+        @ApplicationContext context: Context
+    ): ToggleFavouriteShopUseCaseStub {
+        return ToggleFavouriteShopUseCaseStub(GraphqlUseCase(), context.resources)
     }
 }

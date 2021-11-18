@@ -45,7 +45,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         topupBillsPromoListAdapter.setListener(object : TopupBillsPromoListAdapter.ActionListener {
-            override fun onClickPromoCode(promoId: Int, voucherCode: String) {
+            override fun onClickPromoCode(promoId: String, voucherCode: String) {
                 listener?.onCopiedPromoCode(promoId, voucherCode)
             }
 
@@ -53,8 +53,6 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
                 listener?.onClickItemPromo(topupBillsPromo, position)
             }
         })
-        this.promoList.addAll(promoList)
-        topupBillsPromoListAdapter.notifyDataSetChanged()
 
         getVisibleRecentItemsToUsersTracking(promoList)
 
@@ -84,7 +82,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         }
     }
 
-    fun notifyPromoItemChanges(promoId: Int) {
+    fun notifyPromoItemChanges(promoId: String) {
         if (::topupBillsPromoListAdapter.isInitialized) {
             topupBillsPromoListAdapter.resetPromoListSelected(promoId)
         }
@@ -97,7 +95,7 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
     fun getRecyclerView(): RecyclerView = recyclerView
 
     interface ActionListener {
-        fun onCopiedPromoCode(promoId: Int, voucherCode: String)
+        fun onCopiedPromoCode(promoId: String, voucherCode: String)
 
         fun onTrackImpressionPromoList(topupBillsTrackPromoList: List<TopupBillsTrackPromo>)
 

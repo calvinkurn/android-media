@@ -42,7 +42,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter
@@ -153,19 +152,7 @@ class SearchActivity: BaseActivity(),
 
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
-            (RemoteConfigInstance
-                .getInstance()
-                .abTestPlatform
-                .getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
-                    == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
-                    (RemoteConfigInstance
-                        .getInstance()
-                        .abTestPlatform
-                        .getString(
-                            RollenceKey.NAVIGATION_EXP_TOP_NAV2,
-                            RollenceKey.NAVIGATION_VARIANT_OLD
-                        )
-                            == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
+            true
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -173,12 +160,7 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun getIsEnableChooseAddress(): Boolean {
-        return try {
-            ChooseAddressUtils.isRollOutUser(this)
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            false
-        }
+        return true
     }
 
     private fun setStatusBarColor() {
@@ -307,8 +289,6 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun onSearchBarClicked() {
-        val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
-        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery(), pageSource)
         moveToAutoCompleteActivity()
     }
 
@@ -682,5 +662,17 @@ class SearchActivity: BaseActivity(),
 
     override fun stopPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
+    }
+
+    override fun updateSearchParameter(searchParameter: SearchParameter?) {
+        if (searchParameter == null) return
+
+        this.searchParameter = searchParameter
+
+        updateKeyword()
+    }
+
+    private fun updateKeyword() {
+        setToolbarTitle(searchParameter.getSearchQuery())
     }
 }

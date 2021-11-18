@@ -19,6 +19,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -36,7 +37,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
         private val finishOrderUseCase: dagger.Lazy<FinishOrderUseCase>,
         private val atcUseCase: dagger.Lazy<AddToCartMultiUseCase>,
         private val resourceProvider: dagger.Lazy<ResourceProvider>
-) : BaseViewModel(coroutineDispatchers.io) {
+) : BaseViewModel(coroutineDispatchers.main) {
     private val _buyerOrderDetailResult: MutableLiveData<Result<BuyerOrderDetailUiModel>> = MutableLiveData()
     val buyerOrderDetailResult: LiveData<Result<BuyerOrderDetailUiModel>>
         get() = _buyerOrderDetailResult
@@ -73,9 +74,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
     fun getBuyerOrderDetail(orderId: String, paymentId: String, cart: String) {
         launchCatchError(block = {
             val param = GetBuyerOrderDetailParams(cart, orderId, paymentId)
-            _buyerOrderDetailResult.postValue(Success(getBuyerOrderDetailUseCase.get().execute(param)))
+            _buyerOrderDetailResult.value = (Success(getBuyerOrderDetailUseCase.get().execute(param)))
         }, onError = {
-            _buyerOrderDetailResult.postValue(Fail(it))
+            _buyerOrderDetailResult.value = (Fail(it))
         })
     }
 
@@ -86,17 +87,17 @@ class BuyerOrderDetailViewModel @Inject constructor(
                     userId = userSession.get().userId,
                     action = getFinishOrderActionStatus()
             )
-            _finishOrderResult.postValue(Success(finishOrderUseCase.get().execute(param)))
+            _finishOrderResult.value = (Success(finishOrderUseCase.get().execute(param)))
         }, onError = {
-            _finishOrderResult.postValue(Fail(it))
+            _finishOrderResult.value = (Fail(it))
         })
     }
 
     fun addSingleToCart(product: ProductListUiModel.ProductUiModel) {
         launchCatchError(block = {
-            _singleAtcResult.postValue(product to atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), arrayListOf(product.mapToAddToCartParam())))
+            _singleAtcResult.value = (product to atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), arrayListOf(product.mapToAddToCartParam())))
         }, onError = {
-            _singleAtcResult.postValue(product to Fail(it))
+            _singleAtcResult.value = (product to Fail(it))
         })
     }
 
@@ -107,12 +108,12 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 val params = ArrayList(buyerOrderDetailResult.data.productListUiModel.productList.map {
                     it.mapToAddToCartParam()
                 })
-                _multiAtcResult.postValue(atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params))
+                _multiAtcResult.value = (atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params))
             } else {
-                _multiAtcResult.postValue(Fail(MessageErrorException(resourceProvider.get().getErrorMessageNoProduct())))
+                _multiAtcResult.value = (Fail(MessageErrorException(resourceProvider.get().getErrorMessageNoProduct())))
             }
         }, onError = {
-            _multiAtcResult.postValue(Fail(it))
+            _multiAtcResult.value = (Fail(it))
         })
     }
 
@@ -160,6 +161,22 @@ class BuyerOrderDetailViewModel @Inject constructor(
         return if (buyerOrderDetailResult is Success) {
             buyerOrderDetailResult.data.productListUiModel.productListHeaderUiModel.shopType
         } else 0
+    }
+
+    fun getCategoryId(): List<Int> {
+        val categoryIdMap = HashSet<Int>()
+        val buyerOrderDetailResult = _buyerOrderDetailResult.value
+        return if (buyerOrderDetailResult is Success) {
+            buyerOrderDetailResult.data.productListUiModel.productList.map {
+                categoryIdMap.add(it.categoryId.toIntOrZero())
+            }
+            buyerOrderDetailResult.data.productListUiModel.productBundlingList.forEach { bundle ->
+                bundle.bundleItemList.forEach {
+                    categoryIdMap.add(it.categoryId.toIntOrZero())
+                }
+            }
+            categoryIdMap.toList()
+        } else emptyList()
     }
 
     fun getUserId(): String {

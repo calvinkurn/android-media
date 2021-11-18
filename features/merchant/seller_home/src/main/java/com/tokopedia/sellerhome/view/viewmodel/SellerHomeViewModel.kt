@@ -510,7 +510,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getMilestoneWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val result: List<MilestoneDataUiModel> = withContext(dispatcher.io) {
-                getRecommendationUseCase.get().params = GetMilestoneDataUseCase.createParams(
+                getMilestoneDataUseCase.get().params = GetMilestoneDataUseCase.createParams(
                     dataKeys
                 )
                 return@withContext getMilestoneDataUseCase.get().executeOnBackground()

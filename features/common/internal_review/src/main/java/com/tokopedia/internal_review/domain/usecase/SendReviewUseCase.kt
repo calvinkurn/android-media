@@ -26,7 +26,7 @@ class SendReviewUseCase constructor(
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(QUERY, ReviewResponseModel::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(ReviewResponseModel::class.java)
         if (errors.isNullOrEmpty()) {

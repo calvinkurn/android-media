@@ -69,7 +69,7 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
         cplItem.forEach { courier ->
             courier.shipperProduct.forEach { product ->
                 if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId)
+                    activatedListIds.add(product.shipperProductId.toInt())
                 }
             }
         }
@@ -81,7 +81,7 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
         cplItem.forEach { courier ->
             courier.shipperProduct.forEach { product ->
                 if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId)
+                    activatedListIds.add(product.shipperProductId.toInt())
                 }
             }
         }
@@ -92,8 +92,8 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
         val listShipperShown = mutableListOf<Int>()
         cplItem.forEach { courier ->
             courier.shipperProduct.forEach { product ->
-                if (product.uiHidden) {
-                    listShipperShown.add(product.shipperProductId)
+                if (!product.uiHidden) {
+                    listShipperShown.add(product.shipperProductId.toInt())
                 }
             }
         }

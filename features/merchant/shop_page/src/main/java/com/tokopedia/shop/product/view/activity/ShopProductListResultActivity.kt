@@ -18,14 +18,17 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
+import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.databinding.ActivityNewShopProductListResultBinding
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.Companion.createInstance
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by nathan on 2/15/18.
@@ -46,6 +49,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     private var shopPageTracking: OldShopPageTrackingBuyer? = null
     private var editTextSearch: EditText? = null
     private var actionUpBtn: AppCompatImageView? = null
+    private val viewBinding: ActivityNewShopProductListResultBinding? by viewBinding()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         shopId = intent.getStringExtra(ShopParamConstant.EXTRA_SHOP_ID)
@@ -53,7 +58,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         etalaseId = intent.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
         sort = if (intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null) "" else intent.getStringExtra(ShopParamConstant.EXTRA_SORT_ID)
         attribution = intent.getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION)
-        isNeedToReloadData = intent.getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
+        isNeedToReloadData = intent.getBooleanExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
         sourceRedirection = intent.getStringExtra(ShopParamConstant.EXTRA_SOURCE_REDIRECTION).orEmpty()
         keyword = getSearchKeywordData(savedInstanceState)
         var data = intent.data
@@ -72,14 +77,14 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         shopPageTracking = OldShopPageTrackingBuyer(TrackingQueue(this))
         super.onCreate(savedInstanceState)
         initSearchInputView()
-        findViewById<View>(R.id.mainLayout).requestFocus()
+        viewBinding?.mainLayout?.requestFocus()
     }
 
     private fun getSearchKeywordData(savedInstanceState: Bundle?): String {
         return if (savedInstanceState == null) {
             when{
                 intent.hasExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD) -> intent.getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD).orEmpty()
-                intent.hasExtra(KEY_QUERY_PARAM_EXTRA) -> intent.getBundleExtra(KEY_QUERY_PARAM_EXTRA)?.getString(QUERY_SEARCH, "").orEmpty()
+                intent.hasExtra(KEY_QUERY_PARAM_EXTRA) -> getSearchKeywordDataFromQueryParam(intent.getBundleExtra(KEY_QUERY_PARAM_EXTRA))
                 intent.data?.getQueryParameter(QUERY_SEARCH) != null -> intent.data?.getQueryParameter(QUERY_SEARCH).orEmpty()
                 intent.data?.getQueryParameter(SearchApiConst.Q) != null -> intent.data?.getQueryParameter(SearchApiConst.Q).orEmpty()
                 else -> ""
@@ -87,6 +92,16 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         } else {
             savedInstanceState.getString(SAVED_KEYWORD, "")
         }
+    }
+
+    private fun getSearchKeywordDataFromQueryParam(bundleExtra: Bundle?): String {
+        return bundleExtra?.let {
+            when {
+                it.containsKey(QUERY_SEARCH) -> it.getString(QUERY_SEARCH, "")
+                it.containsKey(SearchApiConst.Q) -> it.getString(SearchApiConst.Q, "")
+                else -> ""
+            }
+        }.orEmpty()
     }
 
     private fun getShopIdFromUri(data: Uri?, pathSegments: List<String>) {
@@ -111,8 +126,8 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
     }
 
     private fun initSearchInputView() {
-        editTextSearch = findViewById(R.id.editTextSearchProduct)
-        actionUpBtn = findViewById(R.id.actionUpBtn)
+        editTextSearch = viewBinding?.editTextSearchProduct
+        actionUpBtn = viewBinding?.actionUpBtn
         editTextSearch?.setText(keyword)
         editTextSearch?.setKeyListener(null)
         editTextSearch?.setMovementMethod(null)

@@ -2,10 +2,14 @@ package com.tokopedia.product.detail.data.util
 
 import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted

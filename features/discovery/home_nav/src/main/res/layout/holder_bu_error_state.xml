@@ -3,8 +3,8 @@
     android:layout_height="wrap_content"
     android:id="@+id/localload_bu"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
     app:unify_local_load_title="@string/error_state_bu_title"
     app:unify_local_load_description="@string/error_state_bu_description"
     xmlns:android="http://schemas.android.com/apk/res/android" />

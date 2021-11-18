@@ -2,8 +2,8 @@ package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingEmptySpace
 import com.tokopedia.talk.R
+import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingEmptySpace
 
 class TalkReadingEmptySpaceViewHolder(view: View) : AbstractViewHolder<TalkReadingEmptySpace>(view) {
 

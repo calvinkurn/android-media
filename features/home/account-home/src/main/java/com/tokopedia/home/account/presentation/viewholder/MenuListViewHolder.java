@@ -1,16 +1,15 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
 import androidx.annotation.LayoutRes;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.view.ItemListView;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
+import com.tokopedia.unifycomponents.Label;
 
 /**
  * @author okasurya on 7/23/18.
@@ -24,16 +23,17 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
     private static final long CLICK_TIME_INTERVAL = 1000;
 
     private View layout;
-    private LabelView labelView;
+    private ItemListView labelView;
     private AccountItemListener listener;
     private View separator;
+    private Label betaView;
 
     public MenuListViewHolder(View itemView, AccountItemListener listener) {
         super(itemView);
         layout = itemView.findViewById(R.id.container);
         labelView = itemView.findViewById(R.id.labelview);
         separator = itemView.findViewById(R.id.separator);
-
+        betaView = itemView.findViewById(R.id.beta_label_view);
         this.listener = listener;
     }
 
@@ -53,7 +53,7 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
         labelView.setTitle(element.getMenu());
         labelView.setBadgeCounter(element.getCount());
         labelView.setSubTitle(element.getMenuDescription());
-        labelView.showRightArrow(false);
+        labelView.setBetaLabel(element.isBeta());
 
         if (element.isUseSeparator()) {
             separator.setVisibility(View.VISIBLE);

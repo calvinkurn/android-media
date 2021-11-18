@@ -1,9 +1,8 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
@@ -12,6 +11,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
@@ -26,26 +28,24 @@ import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
-import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
+import com.tokopedia.tokopedianow.searchcategory.utils.*
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
-import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CATEGORY
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -64,9 +64,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         getFilterUseCase: UseCase<DynamicFilterModel>,
         getProductCountUseCase: UseCase<String>,
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        addToCartUseCase: AddToCartUseCase,
-        updateCartUseCase: UpdateCartUseCase,
-        deleteCartUseCase: DeleteCartUseCase,
+        cartService: CartService,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         getRecommendationUseCase: GetRecommendationUseCase,
         private val getCategoryListUseCase: GetCategoryListUseCase,
@@ -79,15 +77,16 @@ class TokoNowCategoryViewModel @Inject constructor (
         getFilterUseCase,
         getProductCountUseCase,
         getMiniCartListSimplifiedUseCase,
-        addToCartUseCase,
-        updateCartUseCase,
-        deleteCartUseCase,
+        cartService,
         getWarehouseUseCase,
         getRecommendationUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
         userSession,
 ) {
+
+    protected val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<String>()
+    val openScreenTrackingUrlLiveData: LiveData<String> = openScreenTrackingUrlMutableLiveData
 
     val categoryIdTracking: String
 
@@ -149,28 +148,36 @@ class TokoNowCategoryViewModel @Inject constructor (
 
         val contentDataView = ContentDataView(
                 aceSearchProductData = searchProduct.data,
+                repurchaseWidget = categoryModel.tokonowRepurchaseWidget,
         )
 
         onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)
+
+        sendOpenScreenTrackingUrl(categoryModel)
     }
 
     override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
         return TitleDataView(
-                titleType = CategoryTitle(headerDataView.title),
-                hasSeeAllCategoryButton = true,
+            titleType = CategoryTitle(headerDataView.title),
+            hasSeeAllCategoryButton = true,
         )
     }
 
-    override fun createFooterVisitableList() = listOf(
+    override fun createFooterVisitableList(): List<Visitable<*>> {
+        val recomData =
+            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP, isBindWithPageName = true)
+        recomData.categoryId = getRecomCategoryId(recomData)
+        return listOf(
             createAisleDataView(),
-            RecommendationCarouselDataView(TOKONOW_CLP),
-    )
+            recomData
+        )
+    }
 
     private fun createAisleDataView() = CategoryAisleDataView(
-            listOf(
-                    createAisleItem(navigation?.prev),
-                    createAisleItem(navigation?.next),
-            )
+        listOf(
+            createAisleItem(navigation?.prev),
+            createAisleItem(navigation?.next),
+        )
     )
 
     private fun createAisleItem(navigationItem: NavigationItem?): CategoryAisleItemDataView {
@@ -266,6 +273,10 @@ class TokoNowCategoryViewModel @Inject constructor (
     override fun getPageSourceForGeneralSearchTracking() =
         "$TOKOPEDIA_NOW.$TOKONOW_CATEGORY.$LOCAL_SEARCH.$warehouseId"
 
+    private fun sendOpenScreenTrackingUrl(categoryModel: CategoryModel) {
+        openScreenTrackingUrlMutableLiveData.value = categoryModel.categoryDetail.data.url
+    }
+
     override fun executeLoadMore() {
         getCategoryLoadMorePageUseCase.execute(
                 this::onGetCategoryLoadMorePageSuccess,
@@ -285,7 +296,7 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     override fun getRecomCategoryId(
-            recommendationCarouselDataView: RecommendationCarouselDataView
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel
     ): List<String> {
         if (recommendationCarouselDataView.pageName == TOKONOW_NO_RESULT) return listOf()
 

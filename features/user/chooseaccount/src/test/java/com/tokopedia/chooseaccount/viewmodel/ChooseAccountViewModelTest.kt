@@ -3,12 +3,10 @@ package com.tokopedia.chooseaccount.viewmodel
 import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.AccountsDataModel
 import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant
-import com.tokopedia.chooseaccount.domain.subscriber.LoginFacebookSubscriber
-import com.tokopedia.chooseaccount.viewmodel.ChooseAccountViewModel
+import com.tokopedia.chooseaccount.domain.usecase.GetAccountListUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -37,7 +35,7 @@ class ChooseAccountViewModelTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var getAccountsListUseCase: GraphqlUseCase<AccountsDataModel>
+    lateinit var getAccountsListUseCase: GetAccountListUseCase
     @RelaxedMockK
     lateinit var loginTokenUseCase: LoginTokenUseCase
     @RelaxedMockK
@@ -66,8 +64,7 @@ class ChooseAccountViewModelTest {
                 getAccountsListUseCase,
                 userSession,
                 loginTokenUseCase,
-                rawQueries,
-                CoroutineTestDispatchersProvider
+                CoroutineTestDispatchersProvider,
         )
     }
 
@@ -142,65 +139,10 @@ class ChooseAccountViewModelTest {
     }
 
     @Test
-    fun `Success login token fb`() {
-        viewmodel.loginPhoneNumberResponse.observeForever(loginPhoneNumberResponseObserver)
-
-        coEvery { loginTokenUseCase.executeLoginSocialMediaPhone(any(), any()) } coAnswers {
-            secondArg<LoginFacebookSubscriber>().onSuccessLoginToken.invoke(successLoginTokenPhoneResponse)
-        }
-
-        viewmodel.loginTokenFacebook("", "", "")
-
-        verify { loginPhoneNumberResponseObserver.onChanged(any<Success<LoginToken>>()) }
-        assert(viewmodel.loginPhoneNumberResponse.value is Success)
-
-        val result = viewmodel.loginPhoneNumberResponse.value as Success<LoginToken>
-        assert(result.data == successLoginTokenPhoneResponse.loginToken)
-    }
-
-    @Test
-    fun `Success login token fb with sq check`() {
-        viewmodel.securityQuestion.observeForever(goToSecurityQuestionObserver)
-
-        coEvery { loginTokenUseCase.executeLoginSocialMediaPhone(any(), any()) } coAnswers {
-            secondArg<LoginFacebookSubscriber>().onGoToSecurityQuestion.invoke()
-        }
-
-        viewmodel.loginTokenFacebook("", "", "123")
-
-        verify { goToSecurityQuestionObserver.onChanged(any()) }
-        assert(viewmodel.securityQuestion.value is Success)
-
-        val result = (viewmodel.securityQuestion.value as Success).data
-        assert(result == "123")
-    }
-
-    @Test
-    fun `Failed login token fb`() {
-        viewmodel.loginPhoneNumberResponse.observeForever(loginPhoneNumberResponseObserver)
-        viewmodel.activationPage.observeForever(goToActivationPageObserver)
-        viewmodel.securityQuestion.observeForever(goToSecurityQuestionObserver)
-
-        coEvery { loginTokenUseCase.executeLoginSocialMediaPhone(any(), any()) } coAnswers {
-            secondArg<LoginFacebookSubscriber>().onErrorLoginToken.invoke(throwable)
-        }
-
-        viewmodel.loginTokenFacebook("", "", "")
-
-        verify { loginPhoneNumberResponseObserver.onChanged(any<Fail>()) }
-        assert(viewmodel.loginPhoneNumberResponse.value is Fail)
-
-        val result = viewmodel.loginPhoneNumberResponse.value as Fail
-        assertEquals(throwable, result.throwable)
-    }
-
-    @Test
     fun `Success get account list phone`() {
         viewmodel.getAccountListDataModelPhoneResponse.observeForever(getAccountListDataModelPhoneResponseObserver)
 
-        coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            firstArg<(AccountsDataModel) -> Unit>().invoke(SUCCESS_GET_ACCOUNTS_LIST_RESPONSE)
-        }
+        coEvery { getAccountsListUseCase.invoke(any()) } returns SUCCESS_GET_ACCOUNTS_LIST_RESPONSE
 
         viewmodel.getAccountListPhoneNumber("", "")
 
@@ -215,9 +157,7 @@ class ChooseAccountViewModelTest {
     fun `Failed get account list phone`() {
         viewmodel.getAccountListDataModelPhoneResponse.observeForever(getAccountListDataModelPhoneResponseObserver)
 
-        coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { getAccountsListUseCase.invoke(any()) } throws throwable
 
         viewmodel.getAccountListPhoneNumber("", "")
 
@@ -225,40 +165,6 @@ class ChooseAccountViewModelTest {
         assert(viewmodel.getAccountListDataModelPhoneResponse.value is Fail)
 
         val result = viewmodel.getAccountListDataModelPhoneResponse.value as Fail
-        assertEquals(throwable, result.throwable)
-    }
-
-    @Test
-    fun `Success get account list fb`() {
-        viewmodel.getAccountListDataModelFBResponse.observeForever(getAccountListDataModelFBResponseObserver)
-
-        coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            firstArg<(AccountsDataModel) -> Unit>().invoke(SUCCESS_GET_ACCOUNTS_LIST_RESPONSE)
-        }
-
-        viewmodel.getAccountListFacebook("")
-
-        verify { getAccountListDataModelFBResponseObserver.onChanged(any<Success<AccountListDataModel>>()) }
-        assert(viewmodel.getAccountListDataModelFBResponse.value is Success)
-
-        val result = viewmodel.getAccountListDataModelFBResponse.value as Success<AccountListDataModel>
-        assert(result.data == SUCCESS_GET_ACCOUNTS_LIST_RESPONSE.accountListDataModel)
-    }
-
-    @Test
-    fun `Failed get account list fb`() {
-        viewmodel.getAccountListDataModelFBResponse.observeForever(getAccountListDataModelFBResponseObserver)
-
-        coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
-
-        viewmodel.getAccountListFacebook("")
-
-        verify { getAccountListDataModelFBResponseObserver.onChanged(any<Fail>()) }
-        assert(viewmodel.getAccountListDataModelFBResponse.value is Fail)
-
-        val result = viewmodel.getAccountListDataModelFBResponse.value as Fail
         assertEquals(throwable, result.throwable)
     }
 

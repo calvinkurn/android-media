@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartSummaryTransactionBinding
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
@@ -34,14 +35,14 @@ class SummaryTransactionBottomSheet @Inject constructor() {
     private fun renderPaymentTotal(viewBinding: LayoutBottomsheetMiniCartSummaryTransactionBinding, data: MiniCartSummaryTransactionUiModel) {
         with(viewBinding) {
             textTotalPayTitle.text = data.paymentTotalWording
-            textTotalPayValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.paymentTotal, false)
+            textTotalPayValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.paymentTotal, false).removeDecimalSuffix()
         }
     }
 
     private fun renderDiscount(viewBinding: LayoutBottomsheetMiniCartSummaryTransactionBinding, data: MiniCartSummaryTransactionUiModel) {
         with(viewBinding) {
             if (data.discountValue > 0) {
-                textDiscountTotalValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.discountValue * -1, false)
+                textDiscountTotalValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.discountValue * -1, false).removeDecimalSuffix()
                 textDiscountTotalValue.show()
                 textDiscountTotalTitle.text = data.discountTotalWording
                 textDiscountTotalTitle.show()
@@ -55,7 +56,7 @@ class SummaryTransactionBottomSheet @Inject constructor() {
     private fun renderPriceTotal(viewBinding: LayoutBottomsheetMiniCartSummaryTransactionBinding, data: MiniCartSummaryTransactionUiModel) {
         with(viewBinding) {
             textPriceTotalTitle.text = data.totalWording.replace("[0-9]+".toRegex(), data.qty.toString())
-            textPriceTotalValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.totalValue, false)
+            textPriceTotalValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.totalValue, false).removeDecimalSuffix()
         }
     }
 
@@ -63,7 +64,7 @@ class SummaryTransactionBottomSheet @Inject constructor() {
         with(viewBinding) {
             if (data.sellerCashbackValue > 0) {
                 textTotalCashbackTitle.text = data.sellerCashbackWording
-                textTotalCashbackValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.sellerCashbackValue, false).replace("Rp", "")
+                textTotalCashbackValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.sellerCashbackValue, false).removeDecimalSuffix().replace("Rp", "")
                 textTotalCashbackTitle.show()
                 textTotalCashbackValue.show()
                 separatorSellerCashback.show()

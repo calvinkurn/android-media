@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.listener
 
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -129,11 +130,19 @@ interface HomeCategoryListener {
 
     fun getRechargeBUWidget(source: WidgetSource)
 
-    fun isNewNavigation(): Boolean
-
     fun onChooseAddressUpdated()
 
     fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean)
 
     fun onChooseAddressServerDown()
+
+    fun needToRotateTokopoints(): Boolean
+
+    fun setRotateTokopointsDone(boolean: Boolean)
+
+    fun isEligibleForNewGopay(): Boolean
+
+    fun onTokonowViewCaptured(view: View?, parentPosition: Int)
+
+    fun dismissTokonowCoachmark(parentPosition: Int)
 }

@@ -40,7 +40,7 @@ class AddToCartOccMultiUseCase @Inject constructor(@ApplicationContext private v
         val sentParams = requestParams?.copy() ?: throw RuntimeException(AtcConstant.ERROR_PARAMETER_NOT_INITIALIZED)
 
         val graphqlRequest = GraphqlRequest(QUERY_ADD_TO_CART_OCC_MULTI, AddToCartOccMultiGqlResponse::class.java, getParams(sentParams))
-        val addToCartOccGqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest)).getSuccessData<AddToCartOccMultiGqlResponse>()
+        val addToCartOccGqlResponse = graphqlRepository.response(listOf(graphqlRequest)).getSuccessData<AddToCartOccMultiGqlResponse>()
 
         val result = addToCartDataMapper.mapAddToCartOccMultiResponse(addToCartOccGqlResponse)
         if (!result.isStatusError()) {

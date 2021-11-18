@@ -100,6 +100,8 @@ import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -834,7 +836,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         id: String,
         authorType: String,
         postType: String,
-        isVideo: Boolean
+        isVideo: Boolean,
+        caption:String,
+        playChannelId: String
     ) {
         context?.let {
             val menus =
@@ -881,7 +885,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         isFollowed: Boolean,
         type: Boolean,
         shopId: String,
-        isVideo: Boolean
+        isVideo: Boolean,
+        playChannelId: String
     ) {
         profileAnalytics.eventClickLike(isOwner, userId.toString())
         if (isLiked) {
@@ -891,15 +896,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onCommentClick(
-        positionInFeed: Int,
-        id: Int,
-        authorType: String,
-        type: String,
-        isFollowed: Boolean,
-        isVideo: Boolean,
-        shopId: String
-    ) {
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, isVideo: Boolean, shopId: String, playChannelId: String, onClickIcon: Boolean) {
         profileAnalytics.eventClickComment(isOwner, userId.toString())
         onGoToKolComment(positionInFeed, id, false, "")
     }
@@ -915,7 +912,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        video: Boolean
+        video: Boolean,
+        isTopads:Boolean,
+        playChannelId: String
     ) {
         activity?.let {
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
@@ -974,10 +973,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
     }
 
+    override fun onFullScreenCLick(feedXCard:FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
+
+    }
+    override fun addVODView(feedXCard: FeedXCard,playChannelId: String, rowNumber: Int, time:Long, hitTrackerApi: Boolean) {
+
+    }
+
     override fun onPostTagBubbleClick(
-        positionInFeed: Int,
-        redirectUrl: String,
-        postTagItem: FeedXProduct,
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+            adClickUrl: String,
     ) {
         TODO("Not yet implemented")
     }
@@ -1037,13 +1044,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun userCarouselImpression(
-        activityId: String,
-        media: FeedXMedia,
-        positionInFeed: Int,
-        postType: String,
-        isFollowed: Boolean,
-        shopId: String,
-        postPosition: Int
+            activityId: String,
+            media: FeedXMedia,
+            positionInFeed: Int,
+            postType: String,
+            isFollowed: Boolean,
+            shopId: String,
+            postPosition: Int,
+            cpmData: CpmData,
+            products: List<Product>
     ) {
     }
 
@@ -1257,14 +1266,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onTagClicked(
-        postId: Int,
-        products: List<FeedXProduct>,
-        listener: DynamicPostViewHolder.DynamicPostListener,
-        id: String,
-        type: String,
-        isFollowed: Boolean,
-        isVideo: Boolean,
-        positionInFeed: Int
+            postId: Int,
+            products: List<FeedXProduct>,
+            listener: DynamicPostViewHolder.DynamicPostListener,
+            id: String,
+            type: String,
+            isFollowed: Boolean,
+            isVideo: Boolean,
+            positionInFeed: Int,
+            playChannelId: String,
+            shopName: String
     ) {
     }
 
@@ -1276,7 +1287,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean) {
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean) {
     }
 
     override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {
@@ -1795,7 +1806,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToDashboard() {
-        RouteManager.route(requireContext(), ApplinkConstInternalContent.AFFILIATE_DASHBOARD)
         profileAnalytics.eventClickStatistic(userId.toString())
     }
 
@@ -2049,5 +2059,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
 
+    }
+
+    override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String) {
+    }
+
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int) {
     }
 }

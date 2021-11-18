@@ -1,11 +1,15 @@
 package com.tokopedia.shop.score.performance.presentation.bottomsheet
 
-
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.databinding.BottomsheetTooltipSkorPerformaBinding
 
-class BottomSheetShopTooltipScore : BaseBottomSheetShopScore() {
+class BottomSheetShopTooltipScore :
+    BaseBottomSheetShopScore<BottomsheetTooltipSkorPerformaBinding>() {
+
+    override fun bind(view: View) = BottomsheetTooltipSkorPerformaBinding.bind(view)
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_tooltip_skor_performa
 

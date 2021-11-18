@@ -275,3 +275,6 @@
 
 # Window
 -keep class androidx.window.** { *; }
+
+# Keep fragment class name
+-keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment

@@ -3,6 +3,8 @@ package com.tokopedia.buyerorderdetail.presentation.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +25,9 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
@@ -38,9 +43,13 @@ import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailS
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
+import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -52,7 +61,12 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener, TickerViewHolder.TickerViewHolderListener {
+open class BuyerOrderDetailFragment : BaseDaggerFragment(),
+        ProductViewHolder.ProductViewListener,
+        ProductBundlingViewHolder.Listener,
+        TickerViewHolder.TickerViewHolderListener,
+        DigitalRecommendationViewHolder.ActionListener,
+    CourierInfoViewHolder.CourierInfoViewHolderListener {
 
     companion object {
         @JvmStatic
@@ -78,7 +92,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private var toolbarBuyerOrderDetail: HeaderUnify? = null
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     private var emptyStateBuyerOrderDetail: EmptyStateUnify? = null
-    private var loaderBuyerOrderDetail: LoaderUnify? = null
+    protected var loaderBuyerOrderDetail: LoaderUnify? = null
 
     private val viewModel: BuyerOrderDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
@@ -94,8 +108,16 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private val cacheManager: SaveInstanceCacheManager by lazy {
         SaveInstanceCacheManager(requireContext(), true)
     }
-    private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, navigator, this)
+    protected open val typeFactory: BuyerOrderDetailTypeFactory by lazy {
+        BuyerOrderDetailTypeFactory(
+            this,
+            this,
+            digitalRecommendationData,
+            this,
+            this,
+            this,
+            navigator
+        )
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -103,14 +125,31 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private val requestCancelResultDialog: RequestCancelResultDialog by lazy {
         RequestCancelResultDialog(navigator)
     }
-    private val navigator: BuyerOrderDetailNavigator by lazy {
+    protected val navigator: BuyerOrderDetailNavigator by lazy {
         BuyerOrderDetailNavigator(requireActivity(), this)
     }
+    protected val digitalRecommendationData: DigitalRecommendationData
+        get() = DigitalRecommendationData(
+                viewModelFactory,
+                viewLifecycleOwner,
+                DigitalRecommendationAdditionalTrackingData(
+                        userType = "",
+                        widgetPosition = "",
+                        pgCategories = viewModel.getCategoryId()
+                ),
+                DigitalRecommendationPage.PHYSICAL_GOODS
+        )
+
     private val bottomSheetManager: BuyerOrderDetailBottomSheetManager by lazy {
         BuyerOrderDetailBottomSheetManager(requireContext(), childFragmentManager)
     }
     private val stickyActionButtonHandler: BuyerOrderDetailStickyActionButtonHandler by lazy {
-        BuyerOrderDetailStickyActionButtonHandler(bottomSheetManager, cacheManager, getCartId(), navigator, viewModel)
+        BuyerOrderDetailStickyActionButtonHandler(
+            bottomSheetManager,
+            cacheManager,
+            navigator,
+            viewModel
+        )
     }
 
     // show this chat icon only if there's no `Tanya Penjual` button on the sticky button
@@ -182,15 +221,21 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         val productCopy = product.copy(isProcessing = true)
         adapter.updateItem(product, productCopy)
         viewModel.addSingleToCart(productCopy)
-        trackBuyAgainProduct(listOf(product))
+        trackBuyAgainProduct()
+    }
+
+    override fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductUiModel) {
+        onBuyAgainButtonClicked(uiModel)
     }
 
     override fun onClickShipmentInfoTnC() {
         BuyerOrderDetailTracker.eventClickSeeShipmentInfoTNC(viewModel.getOrderStatusId(), viewModel.getOrderId())
     }
 
-    private fun getCartId(): String {
-        return activity?.intent?.extras?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "") ?: ""
+    override fun hideDigitalRecommendation() {
+        Handler(Looper.getMainLooper()).post {
+            adapter.removeDigitalRecommendation()
+        }
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
@@ -213,7 +258,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         setupToolbar()
         setupGlobalError()
         setupSwipeRefreshLayout()
-        setupRecyclerView()
         setupStickyActionButtons()
     }
 
@@ -281,6 +325,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun observeBuyerOrderDetail() {
         viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner) { result ->
+            setupRecyclerView()
             buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
             when (result) {
                 is Success -> onSuccessGetBuyerOrderDetail(result.data)
@@ -303,7 +348,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun observeAddSingleToCart() {
         viewModel.singleAtcResult.observe(viewLifecycleOwner) { result ->
             when (val requestResult = result.second) {
-                is Success -> onSuccessAddToCart(requestResult.data)
+                is Success -> {
+                    trackSuccessATC(listOf(result.first), requestResult.data)
+                    onSuccessAddToCart(requestResult.data)
+                }
                 is Fail -> onFailedAddToCart(requestResult.throwable)
             }
             adapter.updateItem(result.first, result.first.copy(isProcessing = false))
@@ -313,7 +361,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun observeAddMultipleToCart() {
         viewModel.multiAtcResult.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Success -> onSuccessAddToCart(result.data)
+                is Success -> {
+                    trackSuccessATC(viewModel.getProducts(), result.data)
+                    onSuccessAddToCart(result.data)
+                }
                 is Fail -> onFailedAddToCart(result.throwable)
             }
             stickyActionButton?.finishPrimaryActionButtonLoading()
@@ -443,7 +494,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun handleRequestCancelResult(resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST) {
             val resultMessage = data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_MSG_INSTANT_CANCEL).orEmpty()
-            val result = data?.getIntExtra(BuyerOrderDetailMiscConstant.RESULT_CODE_INSTANT_CANCEL, 1) ?: 1
+            val result = data?.getIntExtra(BuyerOrderDetailMiscConstant.RESULT_CODE_INSTANT_CANCEL, 1)
+                    ?: 1
             if (result == BuyerOrderDetailMiscConstant.RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_TOASTER) {
                 if (resultMessage.isNotBlank()) {
                     showCommonToaster(resultMessage)
@@ -488,14 +540,33 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
     }
 
-    private fun trackBuyAgainProduct(products: List<ProductListUiModel.ProductUiModel>) {
+    private fun trackBuyAgainProduct() {
         BuyerOrderDetailTracker.eventClickBuyAgain(
-                products,
                 viewModel.getOrderId(),
-                getCartId(),
+                viewModel.getUserId()
+        )
+    }
+
+    private fun trackSuccessATC(products: List<ProductListUiModel.ProductUiModel>, result: AtcMultiData) {
+        BuyerOrderDetailTracker.eventSuccessATC(
+                products,
+                result.atcMulti.buyAgainData.listProducts,
+                viewModel.getOrderId(),
                 viewModel.getShopId(),
                 viewModel.getShopName(),
-                viewModel.getShopType(),
-                viewModel.getUserId())
+                viewModel.getShopType().toString(),
+                viewModel.getUserId()
+        )
+    }
+
+    override fun onEtaChangedClicked(delayedInfo: String) {
+        showEtaBottomSheet(delayedInfo)
+    }
+
+    private fun showEtaBottomSheet(etaChangedDescription: String) {
+        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(etaChangedDescription)
+        parentFragmentManager?.run {
+            delayedEtaBottomSheetFragment.show(this, "")
+        }
     }
 }

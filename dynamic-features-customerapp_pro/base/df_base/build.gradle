@@ -59,6 +59,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.kategori)
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
     implementation projectOrAar(rootProject.ext.features.findNative)
+    implementation projectOrAar(rootProject.ext.features.affiliateToko)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
     //Content
@@ -109,7 +110,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.brandlist)
     implementation projectOrAar(rootProject.ext.features.productDetail)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
-    implementation projectOrAar(rootProject.ext.features.reviewProduct)
     implementation projectOrAar(rootProject.ext.features.shopPage)
     //Operational
 
@@ -117,6 +117,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.paymentSetting)
     implementation projectOrAar(rootProject.ext.features.instantDebitBca)
     implementation projectOrAar(rootProject.ext.features.pms)
+    implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 
     //Promo
@@ -147,10 +148,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.oneclickcheckout)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutMarketplace)
     implementation projectOrAar(rootProject.ext.features.buyerorder)
+    implementation projectOrAar(rootProject.ext.features.unifyorderhistory)
 
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
     implementation projectOrAar(rootProject.ext.features.buyerorderdetail)
-
-    implementation projectOrAar(rootProject.ext.libraries.imagePicker)
 }

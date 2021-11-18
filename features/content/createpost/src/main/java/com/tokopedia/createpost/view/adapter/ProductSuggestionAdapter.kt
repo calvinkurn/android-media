@@ -4,9 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.createpost.SuggestionItemHandler
+import com.tokopedia.createpost.common.SuggestionItemHandler
+import com.tokopedia.createpost.common.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_af_product_suggestion.view.*

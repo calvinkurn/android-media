@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
@@ -38,9 +39,9 @@ import com.tokopedia.sellerhome.settings.view.adapter.ShopSecondaryInfoAdapterTy
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuContentAnimator
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
+import com.tokopedia.sellerhome.settings.view.animator.OtherMenuShareButtonAnimator
 import com.tokopedia.sellerhome.settings.view.animator.SecondaryShopInfoAnimator
 import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
-import com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -51,8 +52,11 @@ class OtherMenuViewHolder(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
-    private var listener: Listener
-) : LifecycleObserver, OtherMenuContentAnimator.Listener {
+    private var listener: Listener) : LifecycleObserver {
+
+    companion object {
+        const val SCROLLVIEW_INITIAL_POSITION = 0
+    }
 
     private val otherMenuAdapter by lazy {
         listener.getFragmentAdapter() as? OtherMenuAdapter
@@ -89,42 +93,24 @@ class OtherMenuViewHolder(
 
     private var motionLayoutAnimator: OtherMenuContentAnimator? = null
     private var scrollHeaderAnimator: OtherMenuHeaderAnimator? = null
+    private var shareButtonAnimator: OtherMenuShareButtonAnimator? = null
     private var secondaryShopInfoAnimator: SecondaryShopInfoAnimator? = null
-
-    private var hasInitialAnimationCompleted = false
-    private var hasShareButtonAnimationCompleted = false
 
     private val saldoImpressHolder = ImpressHolder()
     private val topadsImpressHolder = ImpressHolder()
     private val shopAvatarImpressHolder = ImpressHolder()
 
-    init {
-        initView()
-        setupView()
-        setupClickListener()
-        registerLifecycleOwner()
-    }
-
-    override fun onInitialAnimationCompleted() {
-        hasInitialAnimationCompleted = true
-        if (listener.getIsShopShareReady()) {
-            showShareButtons()
-            motionLayoutAnimator?.animateShareButtonSlideIn()
-        }
-    }
-
-    override fun onShareButtonAnimationCompleted() {
-        balanceTopadsTopupView?.run {
-            setOnAnimationFinishedListener {
-                hasShareButtonAnimationCompleted = true
-            }
-        }
-    }
-
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
         setInitialValues()
         balanceTopadsTopupView?.stopAnimation()
+    }
+
+    fun setInitialLayouts() {
+        initView()
+        setupView()
+        setupClickListener()
+        registerLifecycleOwner()
     }
 
     fun setIsTopadsAutoTopup(isAutoTopup: Boolean) {
@@ -206,10 +192,7 @@ class OtherMenuViewHolder(
     }
 
     fun runShareButtonAnimation() {
-        if (hasInitialAnimationCompleted && !hasShareButtonAnimationCompleted) {
-            showShareButtons()
-            motionLayoutAnimator?.animateShareButtonSlideIn()
-        }
+        animateShareButton()
     }
 
     fun swipeSecondaryInfoGently() {
@@ -228,8 +211,8 @@ class OtherMenuViewHolder(
     fun scrollToTop() {
         scrollView?.post {
             scrollView?.smoothScrollTo(
-                OtherMenuFragment.SCROLLVIEW_INITIAL_POSITION,
-                OtherMenuFragment.SCROLLVIEW_INITIAL_POSITION
+                SCROLLVIEW_INITIAL_POSITION,
+                SCROLLVIEW_INITIAL_POSITION
             )
         }
     }
@@ -266,6 +249,7 @@ class OtherMenuViewHolder(
         setupRecyclerView()
         setupSecondaryInfoAdapter()
         setupScrollHeaderAnimator()
+        setupShareButtonAnimator()
         setupContentAnimator()
     }
 
@@ -298,8 +282,14 @@ class OtherMenuViewHolder(
     }
 
     private fun setupContentAnimator() {
-        motionLayoutAnimator = OtherMenuContentAnimator(contentMotionLayout, this).also {
+        motionLayoutAnimator = OtherMenuContentAnimator(contentMotionLayout).also {
             it.animateInitialSlideIn()
+        }
+    }
+
+    private fun setupShareButtonAnimator() {
+        shareButtonAnimator = OtherMenuShareButtonAnimator(shareButtonImage).also {
+            it.setInitialButtonState()
         }
     }
 
@@ -380,7 +370,7 @@ class OtherMenuViewHolder(
                 NewOtherMenuTracking.sendEventImpressionSaldoBalance()
             }
         }
-        errorLayoutSaldo?.gone()
+        errorLayoutSaldo?.invisible()
         shimmerSaldo?.gone()
     }
 
@@ -393,19 +383,19 @@ class OtherMenuViewHolder(
             }
             listener.onTopadsValueSet()
         }
-        errorLayoutTopads?.gone()
+        errorLayoutTopads?.invisible()
         shimmerTopads?.gone()
     }
 
     private fun setBalanceSaldoLoading() {
         balanceSaldoTextView?.invisible()
-        errorLayoutSaldo?.gone()
+        errorLayoutSaldo?.invisible()
         shimmerSaldo?.show()
     }
 
     private fun setBalanceTopadsLoading() {
         balanceTopadsTopupView?.invisible()
-        errorLayoutTopads?.gone()
+        errorLayoutTopads?.invisible()
         shimmerTopads?.show()
     }
 
@@ -474,6 +464,13 @@ class OtherMenuViewHolder(
         setBalanceTopadsLoading()
     }
 
+    private fun animateShareButton() {
+        if (shareButtonAnimator?.isShareButtonShowing() != true) {
+            shareButtonAnimator?.animateShareButtonSlideIn()
+        }
+        showShareButtons()
+    }
+
     private fun showShareButtons() {
         shareButtonImage?.run {
             show()
@@ -513,7 +510,6 @@ class OtherMenuViewHolder(
         fun onShareButtonClicked()
         fun onShopStatusImpression(shopType: ShopType)
         fun onFreeShippingImpression()
-        fun getIsShopShareReady(): Boolean
     }
 
 }

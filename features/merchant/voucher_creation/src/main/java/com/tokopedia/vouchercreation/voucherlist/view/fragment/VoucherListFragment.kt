@@ -232,6 +232,10 @@ class VoucherListFragment :
         } else {
             menu.removeItem(MENU_VOUCHER_HISTORY_ID)
         }
+
+        // limit create voucher access
+        menu.findItem(R.id.menuMvcAddVoucher)?.isVisible = mViewModel.isEligibleToCreateVoucher
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -269,6 +273,7 @@ class VoucherListFragment :
     }
 
     override fun loadData(page: Int) {
+        mViewModel.currentPage = page
         if (!isToolbarAlreadyLoaded) {
             view?.run {
                 searchBarMvc.isVisible = false
@@ -276,18 +281,8 @@ class VoucherListFragment :
             }
             renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
         }
-        if (isActiveVoucher) {
-            mViewModel.getActiveVoucherList(shopBasicData == null)
-        } else {
-            mViewModel.getVoucherListHistory(
-                voucherType,
-                voucherTarget,
-                voucherSort,
-                page,
-                isInverted
-            )
-        }
         mViewModel.getBroadCastMetaData()
+        mViewModel.getCreateVoucherEligibility()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -1267,6 +1262,30 @@ class VoucherListFragment :
                 showSuccessUpdateToaster()
             }
         })
+        mViewModel.createVoucherEligibility.observe(viewLifecycleOwner, { result ->
+            when(result) {
+                is Success -> {
+                    mViewModel.isEligibleToCreateVoucher = result.data.isCreateVoucherEligible
+                    this.activity?.invalidateOptionsMenu()
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    view?.showErrorToaster(errorMessage)
+                }
+            }
+            // get voucher list data
+            if (isActiveVoucher) {
+                mViewModel.getActiveVoucherList(shopBasicData == null)
+            } else {
+                mViewModel.getVoucherListHistory(
+                    voucherType,
+                    voucherTarget,
+                    voucherSort,
+                    mViewModel.currentPage,
+                    isInverted
+                )
+            }
+        })
     }
 
     private fun showBroadCastVoucherBottomSheet(uiModel: VoucherUiModel) {
@@ -1324,7 +1343,7 @@ class VoucherListFragment :
     }
 
     private fun getEmptyStateUiModel() =
-        EmptyStateUiModel(isActiveVoucher, ::onSeeHistoryClicked, ::onCreateVoucherClicked)
+        EmptyStateUiModel(mViewModel.isEligibleToCreateVoucher, isActiveVoucher, ::onSeeHistoryClicked, ::onCreateVoucherClicked)
 
     private fun showCancellationSuccessToaster(
         isCancel: Boolean,

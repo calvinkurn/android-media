@@ -7,14 +7,13 @@ import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatu
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,9 +31,10 @@ class SettingFingerprintViewModelTest {
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val cryptographyUtils = mockk<Cryptography>(relaxed = true)
 
-    private var checkFingerprintObserver = mockk<Observer<Result<CheckFingerprintPojo>>>(relaxed = true)
+    private var checkFingerprintObserver = mockk<Observer<Result<CheckFingerprintResult>>>(relaxed = true)
     private var registerFingerprintObserver = mockk<Observer<Result<RegisterFingerprintResult>>>(relaxed = true)
     private var removeFingerprintObserver = mockk<Observer<Result<RemoveFingerprintData>>>(relaxed = true)
+    val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
     private val throwable = mockk<Throwable>(relaxed = true)
 
@@ -46,7 +46,8 @@ class SettingFingerprintViewModelTest {
             registerFingerprintUseCase,
             removeFingerprintUseCase,
             cryptographyUtils,
-            checkFingerprintToggleStatusUseCase
+            checkFingerprintToggleStatusUseCase,
+            fingerprintPreferenceManager
         )
 
         viewModel.checkFingerprintStatus.observeForever(checkFingerprintObserver)
@@ -60,22 +61,33 @@ class SettingFingerprintViewModelTest {
         val data = CheckFingerprintResult(isSuccess = true, errorMessage = "")
         val response = CheckFingerprintPojo(data)
 
-        every { checkFingerprintToggleStatusUseCase.checkFingerprint(any(), any(), any()) } answers {
-            secondArg<(CheckFingerprintPojo) -> Unit>().invoke(response)
-        }
+        coEvery { checkFingerprintToggleStatusUseCase.invoke(any()) } returns response
 
         viewModel.getFingerprintStatus()
 
         /* Then */
-        verify { checkFingerprintObserver.onChanged(Success(response)) }
+        verify { checkFingerprintObserver.onChanged(Success(response.data)) }
+    }
+
+    @Test
+    fun `on Success Check Fingerprint has errors`() {
+        /* When */
+        val data = CheckFingerprintResult(isSuccess = false, errorMessage = "")
+        val response = CheckFingerprintPojo(data)
+
+        coEvery { checkFingerprintToggleStatusUseCase.invoke(any()) } returns response
+
+        viewModel.getFingerprintStatus()
+
+        /* Then */
+        verify { checkFingerprintObserver.onChanged(any<Fail>()) }
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
     }
 
     @Test
     fun `on Error Check Fingerprint`() {
 
-        every { checkFingerprintToggleStatusUseCase.checkFingerprint(any(), any(), any()) } answers {
-            thirdArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { checkFingerprintToggleStatusUseCase.invoke(any()) } throws throwable
 
         viewModel.getFingerprintStatus()
 
@@ -92,9 +104,7 @@ class SettingFingerprintViewModelTest {
         every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
         every { cryptographyUtils.getPublicKey() } returns "abc123"
 
-        every { registerFingerprintUseCase.registerFingerprint(any(), any(), any(), any()) } answers {
-            thirdArg<(RegisterFingerprintPojo) -> Unit>().invoke(response)
-        }
+        coEvery { registerFingerprintUseCase.invoke(any()) } returns response
 
         viewModel.registerFingerprint()
 
@@ -111,9 +121,7 @@ class SettingFingerprintViewModelTest {
         every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
         every { cryptographyUtils.getPublicKey() } returns "abc123"
 
-        every { registerFingerprintUseCase.registerFingerprint(any(), any(), any(), any()) } answers {
-            arg<(Throwable) -> Unit>(3).invoke(throwable)
-        }
+        coEvery { registerFingerprintUseCase.invoke(any()) } throws throwable
 
         viewModel.registerFingerprint()
 
@@ -133,19 +141,60 @@ class SettingFingerprintViewModelTest {
     }
 
     @Test
+    fun `on Error Register Fingerprint - errorMessage not empty`() {
+        /* When */
+        val errMsg = "error"
+        val data = RegisterFingerprintResult(success = true, errorMessage = errMsg)
+        val response = RegisterFingerprintPojo(data)
+
+        every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
+        every { cryptographyUtils.getPublicKey() } returns "abc123"
+
+        coEvery { registerFingerprintUseCase.invoke(any()) } returns response
+
+        viewModel.registerFingerprint()
+
+        /* Then */
+        verify {
+            registerFingerprintObserver.onChanged(any<Fail>())
+        }
+    }
+
+    @Test
+    fun `on Error Register Fingerprint - other errors`() {
+        /* When */
+        val data = RegisterFingerprintResult(success = false, errorMessage = "")
+        val response = RegisterFingerprintPojo(data)
+
+        every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
+        every { cryptographyUtils.getPublicKey() } returns "abc123"
+
+        coEvery { registerFingerprintUseCase.invoke(any()) } returns response
+
+        viewModel.registerFingerprint()
+
+        /* Then */
+        verify {
+            registerFingerprintObserver.onChanged(any<Fail>())
+        }
+        assert((viewModel.registerFingerprintResult.value as Fail).throwable is com.tokopedia.network.exception.MessageErrorException)
+    }
+
+    @Test
     fun `on Success Remove Fingerprint`() {
         /* When */
         val data = RemoveFingerprintData(isSuccess = true)
         val response = RemoveFingerprintPojo(data)
 
-        every { removeFingerprintUseCase.removeFingerprint(any(), any()) } answers {
-            firstArg<(RemoveFingerprintPojo) -> Unit>().invoke(response)
-        }
+        coEvery { removeFingerprintUseCase.invoke(Unit) } returns response
 
         viewModel.removeFingerprint()
 
         /* Then */
-        verify { removeFingerprintObserver.onChanged(Success(response.data)) }
+        coVerify {
+            fingerprintPreferenceManager.removeUniqueId()
+            removeFingerprintObserver.onChanged(Success(response.data))
+        }
     }
 
     @Test
@@ -154,9 +203,7 @@ class SettingFingerprintViewModelTest {
         val data = RemoveFingerprintData(isSuccess = false, error = "error")
         val response = RemoveFingerprintPojo(data)
 
-        every { removeFingerprintUseCase.removeFingerprint(any(), any()) } answers {
-            firstArg<(RemoveFingerprintPojo) -> Unit>().invoke(response)
-        }
+        coEvery { removeFingerprintUseCase.invoke(Unit) } returns response
 
         viewModel.removeFingerprint()
 
@@ -166,9 +213,7 @@ class SettingFingerprintViewModelTest {
 
     @Test
     fun `on Error thrown Remove Fingerprint`() {
-        every { removeFingerprintUseCase.removeFingerprint(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { removeFingerprintUseCase.invoke(Unit) } throws throwable
 
         viewModel.removeFingerprint()
 

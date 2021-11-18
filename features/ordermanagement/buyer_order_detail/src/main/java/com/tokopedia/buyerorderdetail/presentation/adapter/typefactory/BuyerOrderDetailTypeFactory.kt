@@ -7,11 +7,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.*
 import com.tokopedia.buyerorderdetail.presentation.model.*
+import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 
-class BuyerOrderDetailTypeFactory(
-        private val productViewListener: ProductViewHolder.ProductViewListener,
-        private val navigator: BuyerOrderDetailNavigator,
-        private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener
+@Suppress("UNUSED_PARAMETER")
+open class BuyerOrderDetailTypeFactory(
+    private val productBundlingViewListener: ProductBundlingViewHolder.Listener,
+    private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener,
+    private val digitalRecommendationData: DigitalRecommendationData,
+    private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
+    private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
+    protected val productViewListener: ProductViewHolder.ProductViewListener,
+    protected val navigator: BuyerOrderDetailNavigator
 ) : BaseAdapterTypeFactory() {
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
@@ -54,6 +60,10 @@ class BuyerOrderDetailTypeFactory(
         return ProductViewHolder.LAYOUT
     }
 
+    fun type(productBundlingUiModel: ProductListUiModel.ProductBundlingUiModel): Int {
+        return ProductBundlingViewHolder.LAYOUT
+    }
+
     fun type(thickDividerUiModel: ThickDividerUiModel): Int {
         return ThickDividerViewHolder.LAYOUT
     }
@@ -74,12 +84,15 @@ class BuyerOrderDetailTypeFactory(
         return CopyableKeyValueViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    fun type(digitalRecommendationUiModel: DigitalRecommendationUiModel): Int =
+            DigitalRecommendationViewHolder.LAYOUT
+
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
             CopyableKeyValueViewHolder.LAYOUT -> CopyableKeyValueViewHolder(parent)
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent, navigator)
-            CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(parent)
+            CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(parent, courierInfoViewHolderListener)
             OrderStatusHeaderViewHolder.LAYOUT -> OrderStatusHeaderViewHolder(parent, navigator)
             OrderStatusInfoViewHolder.LAYOUT -> OrderStatusInfoViewHolder(parent, navigator)
             PaymentGrandTotalViewHolder.LAYOUT -> PaymentGrandTotalViewHolder(parent)
@@ -87,10 +100,12 @@ class BuyerOrderDetailTypeFactory(
             PlainHeaderViewHolder.LAYOUT -> PlainHeaderViewHolder(parent)
             ProductListHeaderViewHolder.LAYOUT -> ProductListHeaderViewHolder(parent, navigator)
             ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, navigator)
+            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(parent, productBundlingViewListener, navigator)
             ThickDividerViewHolder.LAYOUT -> ThickDividerViewHolder(parent)
             ThinDashedDividerViewHolder.LAYOUT -> ThinDashedDividerViewHolder(parent)
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
+            DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
             else -> super.createViewHolder(parent, type)
         }
     }

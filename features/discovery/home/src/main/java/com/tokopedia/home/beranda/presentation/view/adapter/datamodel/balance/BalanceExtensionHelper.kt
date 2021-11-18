@@ -4,15 +4,20 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.TagAttributes
 import com.tokopedia.home.beranda.data.model.TextAttributes
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
-import com.tokopedia.home.beranda.domain.model.walletapp.Balance
-import com.tokopedia.home.beranda.domain.model.walletapp.Balances
-import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balance
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.TYPE_WALLET_WITH_TOPUP
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.util.HomeServerLogger
 import com.tokopedia.network.exception.MessageErrorException
 
 const val selectedWallet = "PEMUDA"
+const val WALLET_CODE_GOPAY = "PEMUDA"
+const val WALLET_CODE_GOPAY_POINTS = "PEMUDAPOINTS"
+const val defaultActivationCta = "Sambungkan"
+private const val ERROR_GOPAY_EMPTY = "Wallet app is linked but gopay balance return empty"
+private const val ERROR_GOPAY_POINTS_EMPTY = "Wallet app is linked but gopay points return empty"
 
 fun HomeHeaderWalletAction.mapToHomeBalanceItemModel(itemType: Int, state: Int): BalanceDrawerItemModel {
     val iconRes = if (walletType == HomeBalanceModel.OVO_WALLET_TYPE) R.drawable.wallet_ic_ovo_home else R.drawable.ic_tokocash
@@ -154,60 +159,75 @@ fun TokopointsDrawer.mapToHomeBalanceItemModel(drawerItemType: Int, defaultIconR
     )
 }
 
-fun WalletAppData.mapToHomeBalanceItemModel(state: Int): List<BalanceDrawerItemModel> {
+fun WalletAppData.mapToHomeBalanceItemModel(state: Int, isGopayEligible: Boolean): BalanceDrawerItemModel? {
     val selectedBalance = walletappGetBalance.balances.getOrNull(0)
     selectedBalance?.let { balances ->
-        val balanceTitleTextAttribute = BalanceTextAttribute(text = balances.walletName)
-        if (balances.isLinked && balances.balance.isNotEmpty()) {
-            return balances.balance.filter { it.walletCode == selectedWallet }.map {
-                val balanceSubTitleTextAttribute =
-                    buildSubtitleBasedOnLinkedCondition(balances, it)
-                buildWalletAppBalanceDrawerModel(
-                    selectedBalance = balances,
-                    balanceTitleTextAttribute = balanceTitleTextAttribute,
-                    balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
-                    state = state,
-                    walletCode = it.walletCode
+        var balanceTitle = BalanceTextAttribute()
+        var balanceSubtitle = BalanceTextAttribute()
+        if (selectedBalance.isLinked) {
+            val gopayBalance = balances.balance.find { it.walletCode == WALLET_CODE_GOPAY }
+            val gopayPointsBalance = balances.balance.find { it.walletCode == WALLET_CODE_GOPAY_POINTS }
+
+            if (gopayBalance?.amountFmt?.isEmpty() == true) {
+                HomeServerLogger.logWarning(
+                    type = HomeServerLogger.TYPE_WALLET_BALANCE_EMPTY,
+                    throwable = MessageErrorException(ERROR_GOPAY_EMPTY),
+                    reason = ERROR_GOPAY_EMPTY,
+                    data = selectedBalance.walletName
+                )
+                return null
+            } else if (gopayPointsBalance?.amountFmt?.isEmpty() == true) {
+                HomeServerLogger.logWarning(
+                    type = HomeServerLogger.TYPE_WALLET_POINTS_EMPTY,
+                    throwable = MessageErrorException(ERROR_GOPAY_POINTS_EMPTY),
+                    reason = ERROR_GOPAY_POINTS_EMPTY,
+                    data = selectedBalance.walletName
+                )
+                return null
+            }
+            if (isGopayEligible) {
+                balanceTitle = BalanceTextAttribute(
+                    text = gopayBalance?.amountFmt?:"",
+                    isBold = true,
+                    colourRef = R.color.Unify_N700_96
+                )
+                balanceSubtitle = BalanceTextAttribute(
+                    text = gopayPointsBalance?.amountFmt?:"",
+                    colourRef = R.color.Unify_N700_68
+                )
+            } else {
+                balanceTitle = BalanceTextAttribute(
+                    text = balances.walletName?:"",
+                    isBold = true,
+                    colourRef = R.color.Unify_N700_96
+                )
+                balanceSubtitle = BalanceTextAttribute(
+                    text = gopayBalance?.amountFmt?:"",
+                    isBold = false,
+                    colourRef = R.color.Unify_N700_96
                 )
             }
         } else {
-            val balanceSubTitleTextAttribute =
-                buildSubtitleBasedOnLinkedCondition(balances)
-            return listOf(
-                buildWalletAppBalanceDrawerModel(
-                    selectedBalance = balances,
-                    balanceTitleTextAttribute = balanceTitleTextAttribute,
-                    balanceSubTitleTextAttribute = balanceSubTitleTextAttribute,
-                    state = state
-                )
+            balanceTitle = BalanceTextAttribute(
+                text = balances.walletName,
+                isBold = true,
+                colourRef = R.color.Unify_N700_96
+            )
+            balanceSubtitle = BalanceTextAttribute(
+                text = if (selectedBalance.activationCta.isNotEmpty()) selectedBalance.activationCta else defaultActivationCta,
+                colourRef = R.color.Unify_G500,
+                isBold = true
             )
         }
+
+        return buildWalletAppBalanceDrawerModel(
+            selectedBalance = balances,
+            balanceTitleTextAttribute = balanceTitle,
+            balanceSubTitleTextAttribute = balanceSubtitle,
+            state = state
+        )
     }
-
-    return listOf()
-}
-
-private fun WalletAppData.buildSubtitleBasedOnLinkedCondition(
-    selectedBalance: Balances,
-    it: Balance? = null
-): BalanceTextAttribute {
-    val defaultActivationCta = "Sambungkan"
-    return if (selectedBalance.isLinked) {
-        if (it == null) {
-            HomeServerLogger.logWarning(
-                type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
-                throwable = MessageErrorException("Wallet app is linked but balances return empty list"),
-                reason = "Wallet app is linked but balances return empty list",
-                data = selectedBalance.walletName
-            )
-            throw IllegalStateException("Selected balance must not be null")
-        }
-        BalanceTextAttribute(text = it.amountFmt?:"")
-    } else BalanceTextAttribute(
-        text = if (selectedBalance.activationCta.isNotEmpty()) selectedBalance.activationCta else defaultActivationCta,
-        colourRef = R.color.Unify_G500,
-        isBold = true
-    )
+    return null
 }
 
 private fun WalletAppData.buildWalletAppBalanceDrawerModel(

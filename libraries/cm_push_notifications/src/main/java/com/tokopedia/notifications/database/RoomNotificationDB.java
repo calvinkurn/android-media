@@ -9,6 +9,7 @@ import com.tokopedia.notifications.data.converters.NotificationModeConverter;
 import com.tokopedia.notifications.data.converters.NotificationStatusConverter;
 import com.tokopedia.notifications.data.converters.ProductInfoConverter;
 import com.tokopedia.notifications.data.converters.PushActionButtonConverter;
+import com.tokopedia.notifications.data.converters.PushPersistentButtonConvertor;
 import com.tokopedia.notifications.database.pushRuleEngine.BaseNotificationDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.ButtonListConverter;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao;
@@ -29,7 +30,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         CMInApp.class,
         ElapsedTime.class,
         BaseNotificationModel.class
-}, version = 6)
+}, version = 8)
 
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
@@ -38,7 +39,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         PushActionButtonConverter.class,
         CarouselConverter.class,
         GridConverter.class,
-        ProductInfoConverter.class
+        ProductInfoConverter.class,
+        PushPersistentButtonConvertor.class
 })
 public abstract class RoomNotificationDB extends RoomDatabase {
 
@@ -50,14 +52,14 @@ public abstract class RoomNotificationDB extends RoomDatabase {
 
     private static volatile RoomNotificationDB INSTANCE;
 
-    private static Migration MIGRATION_1_2 = new Migration(1, 2) {
+    private static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `notificationProductType` TEXT");
         }
     };
 
-    private static Migration MIGRATION_2_3 = new Migration(2, 3) {
+    private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `is_amplification` INTEGER NOT NULL DEFAULT 0");
@@ -88,6 +90,20 @@ public abstract class RoomNotificationDB extends RoomDatabase {
         }
     };
 
+    private static final Migration MIGRATION_6_7 = new Migration(6, 7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `persistButton` TEXT");
+        }
+    };
+
+    private static final Migration MIGRATION_7_8 = new Migration(7, 8) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `shopId` TEXT");
+        }
+    };
+
     public static RoomNotificationDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomNotificationDB.class) {
@@ -99,7 +115,9 @@ public abstract class RoomNotificationDB extends RoomDatabase {
                                     MIGRATION_2_3,
                                     MIGRATION_3_4,
                                     MIGRATION_4_5,
-                                    MIGRATION_5_6
+                                    MIGRATION_5_6,
+                                    MIGRATION_6_7,
+                                    MIGRATION_7_8
                             ).build();
                 }
             }

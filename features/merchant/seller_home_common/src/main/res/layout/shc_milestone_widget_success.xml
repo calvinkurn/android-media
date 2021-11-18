@@ -43,6 +43,15 @@
         app:typographyType="heading_5"
         tools:text="Misi berjualan tokopedia" />
 
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/notifTagMilestone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toTopOf="@id/tvTitleMilestoneWidget"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitleMilestoneWidget"
+        app:layout_constraintStart_toEndOf="@id/tvTitleMilestoneWidget"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDescMilestoneWidget"
         android:layout_width="@dimen/layout_lvl0"

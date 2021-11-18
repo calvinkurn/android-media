@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PromoCheckoutVoucherOrdersItemUiModel(
@@ -17,9 +17,9 @@ data class PromoCheckoutVoucherOrdersItemUiModel(
         var duration: String = "",
         var cartId: Int = -1,
         var shopId: Int = -1,
-        var benefitDetailUiModels: List<BenefitDetailsItemUiModel?>? = listOf(),
+        var benefitDetailUiModels: List<BenefitDetailsItemUiModel> = listOf(),
         var success: Boolean = false,
         var invoiceDescription: String = "",
         var orderId: Int = -1,
         var warehouseId: Int = -1
-): Parcelable
+) : Parcelable

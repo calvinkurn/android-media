@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.common.handleResult
 import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
@@ -61,13 +61,13 @@ class OfficialStoreHomeViewModel @Inject constructor(
     var currentSlugDC: String = ""
         private set
 
-    val officialStoreBannersResult: LiveData<Result<OfficialStoreBanners>>
+    //Pair first -> should show error message
+    //Pair second -> official store banner value
+    val officialStoreBannersResult: LiveData<Pair<Boolean, Result<OfficialStoreBanners>>>
         get() = _officialStoreBannersResult
-
 
     val officialStoreBenefitsResult: LiveData<Result<OfficialStoreBenefits>>
         get() = _officialStoreBenefitResult
-
 
     val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>>
         get() = _officialStoreFeaturedShopResult
@@ -79,7 +79,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         get() = _topAdsWishlistResult
 
     private val _officialStoreBannersResult by lazy {
-        MutableLiveData<Result<OfficialStoreBanners>>()
+        MutableLiveData<Pair<Boolean, Result<OfficialStoreBanners>>>()
     }
 
     private val _officialStoreBenefitResult by lazy {
@@ -123,16 +123,16 @@ class OfficialStoreHomeViewModel @Inject constructor(
             currentSlugDC = category?.slug ?: ""
             onBannerCacheStartLoad.invoke()
             onBannerCloudStartLoad.invoke()
-            _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, true)
-            onBannerCacheStopLoad.invoke()
-            _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, false)
-            onBannerCloudStopLoad.invoke()
+            _officialStoreBannersResult.value =
+                Pair(false, getOfficialStoreBanners(currentSlug, true, onBannerCacheStopLoad))
+            _officialStoreBannersResult.value =
+                Pair(true, getOfficialStoreBanners(currentSlug, false, onBannerCloudStopLoad))
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
 
             getOfficialStoreDynamicChannel(currentSlug, location)
         }) {
-            _officialStoreBannersResult.value = Fail(it)
+            _officialStoreBannersResult.value = Pair(true, Fail(it))
             _officialStoreBenefitResult.value = Fail(it)
             _officialStoreFeaturedShopResult.value = Fail(it)
         }
@@ -142,8 +142,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
         launch {
             try {
                 withContext(dispatchers.io) {
-                    val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase
-                            .getOfficialStoreRecomParams(pageNumber, pageName, categoryId)).toBlocking()
+                    val recomData = getRecommendationUseCase.createObservable(
+                        getRecommendationUseCase
+                            .getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+                    ).toBlocking()
                     _productRecommendation.postValue(Success(recomData.first().get(0)))
                 }
             } catch (e: Throwable) {
@@ -152,13 +154,21 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getOfficialStoreBanners(categoryId: String, isCache:Boolean): Result<OfficialStoreBanners> {
+    private suspend fun getOfficialStoreBanners(
+        categoryId: String,
+        isCache: Boolean,
+        onCompleteInvokeData: () -> Unit = {}
+    ): Result<OfficialStoreBanners> {
         return withContext(dispatchers.io) {
             try {
-                getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.createParams(categoryId)
+                getOfficialStoreBannersUseCase.params =
+                    GetOfficialStoreBannerUseCase.createParams(categoryId)
                 val banner = getOfficialStoreBannersUseCase.executeOnBackground(isCache)
+                banner.isCache = isCache
+                onCompleteInvokeData.invoke()
                 Success(banner)
             } catch (t: Throwable) {
+                onCompleteInvokeData.invoke()
                 Fail(t)
             }
         }
@@ -194,11 +204,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
             _officialStoreDynamicChannelResult.postValue(Success(result))
             result.forEach {
                 //call external api
-                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP) {
+                if (it.channel.layout == DynamicChannelLayout.LAYOUT_FEATURED_SHOP) {
                     getDisplayTopAdsHeader(FeaturedShopDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(it.channel, 0)))
                 }
-                if (it.channel.layout == DynamicChannelIdentifiers.LAYOUT_BEST_SELLING){
+                if (it.channel.layout == DynamicChannelLayout.LAYOUT_BEST_SELLING){
                     fetchRecomWidegtData(it.channel.pageName,  it.channel.widgetParam)
                 }
             }
@@ -312,4 +322,5 @@ class OfficialStoreHomeViewModel @Inject constructor(
         removeWishListUseCase.unsubscribe()
         getDisplayHeadlineAds.cancelJobs()
     }
+
 }

@@ -53,7 +53,7 @@ class GetShopPenaltyDetailUseCase @Inject constructor(
             ShopScorePenaltyDetailResponse::class.java,
             params
         )
-        val gqlResponse = gqlRepository.getReseponse(listOf(shopScorePenaltyDetailRequest))
+        val gqlResponse = gqlRepository.response(listOf(shopScorePenaltyDetailRequest))
         try {
             return gqlResponse.getData<ShopScorePenaltyDetailResponse>(
                 ShopScorePenaltyDetailResponse::class.java

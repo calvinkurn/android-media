@@ -247,8 +247,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     //region universal sharing
-    private fun openIntentShareDefaultUniversalSharing(file: File?, data: ProductData) {
-        openIntentShare(file, data.productName, data.getTextDescription(activity.applicationContext, data.renderShareUri), data.renderShareUri)
+    private fun openIntentShareDefaultUniversalSharing(file: File?, shareProductName: String = "",
+                                                       shareDescription: String = "", shareUrl: String = "") {
+        openIntentShare(file, shareProductName, shareDescription, shareUrl)
     }
 
     private fun shareChannelClicked(shareModel: ShareModel) {
@@ -273,13 +274,22 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                 linkerShareData, object : ShareCallback {
-                    override fun urlCreated(linkerShareData: LinkerShareResult) {
+                    override fun urlCreated(linkerShareResult: LinkerShareResult) {
                         val branchEnd = System.currentTimeMillis()
                         branchTime = (branchEnd - branchStart)
                         postBuildImage.invoke()
-                        val shareString = productData.getTextDescription(activity.applicationContext, linkerShareData.url)
-                        shareModel.subjectName = productData.productName ?: ""
-                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, parentView, shareString)
+                        try{
+                            val shareString = productData.getTextDescription(activity.applicationContext, linkerShareResult.url)
+                            shareModel.subjectName = productData.productName ?: ""
+                            SharingUtil.executeShareIntent(shareModel, linkerShareResult, activity, parentView, shareString)
+                        } catch (e: Exception){
+                            err.add(e)
+                            logExceptionToFirebase(e)
+                            openIntentShareDefaultUniversalSharing(null, productData.productName ?: "",
+                                productData.getTextDescription(activity.applicationContext, linkerShareData.linkerData.renderShareUri()),
+                                linkerShareData.linkerData.renderShareUri())
+                        }
+
                         if (isLog) {
                             log(mode, resourceReady, imageProcess, branchTime, err, null)
                         }
@@ -288,7 +298,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
                     override fun onError(linkerError: LinkerError) {
                         postBuildImage.invoke()
-                        productData.let { openIntentShareDefaultUniversalSharing(null, it) }
+                        openIntentShareDefaultUniversalSharing(null, productData.productName ?: "",
+                            productData.getTextDescription(activity.applicationContext, linkerShareData.linkerData.renderShareUri()),
+                            linkerShareData.linkerData.renderShareUri())
                         if (isLog) {
                             log(mode, resourceReady, imageProcess, branchTime, err, linkerError)
                         }
@@ -297,7 +309,9 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 }))
         } else {
             postBuildImage.invoke()
-            productData.let { openIntentShareDefaultUniversalSharing(null, it) }
+            openIntentShareDefaultUniversalSharing(null, productData.productName ?: "",
+                productData.getTextDescription(activity.applicationContext, productData.renderShareUri),
+                productData.renderShareUri)
             if (isLog) {
                 log(mode, resourceReady, imageProcess, branchTime, err, null)
             }

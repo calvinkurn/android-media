@@ -61,58 +61,58 @@ class EmoneyAnalytics {
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 action,
-                "")
+                operator)
         addComponentClickNFC(map,userId, irisSessionId)
     }
 
-    fun clickTopupEmoney(userId: String, irisSessionId: String) {
+    fun clickTopupEmoney(userId: String, irisSessionId: String, operatorName: String) {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CLICK_TOPUP,
-                "")
+                operatorName)
         addComponentClickNFC(map, userId, irisSessionId)
     }
 
-    fun clickTryAgainTapEmoney(category: String, userId: String, irisSessionId: String) {
+    fun clickTryAgainTapEmoney(category: String, userId: String, irisSessionId: String, operatorName: String) {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CLICK_TRY_AGAIN,
-                "")
+                operatorName)
         addComponentClickNFC(map, userId, irisSessionId)
     }
 
-    fun onTapEmoneyCardShowLoading(userId: String, irisSessionId: String) {
+    fun onTapEmoneyCardShowLoading(userId: String, irisSessionId: String, operatorName: String) {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CHECK_STEP_2,
-                "")
+                operatorName)
         addComponentClickNFC(map, userId, irisSessionId)
     }
 
-    fun onShowLastBalance(cardNumber:String?, balance:Int?, userId: String, irisSessionId: String) {
+    fun onShowLastBalance(operatorName: String, cardNumber:String?, balance:Int?, userId: String, irisSessionId: String) {
         val map = TrackAppUtils.gtmData(
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.SUCCESS_CHECK_BALANCE,
-                "$cardNumber - $balance")
+                "$operatorName - $cardNumber - $balance")
         addComponentClickNFC(map, userId, irisSessionId)
     }
 
-    fun onShowErrorTracking(userId: String, irisSessionId: String) {
+    fun onShowErrorTracking(userId: String, irisSessionId: String, operatorName: String) {
         val map = TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
+                Event.VIEW_NFC,
                 Category.DIGITAL_NFC,
                 Action.FAILED_UPDATE_BALANCE,
-                "")
+                operatorName)
         addComponentClickNFC(map, userId, irisSessionId)
     }
 
     fun onShowErrorTrackingNFCNotSupproted(userId: String, irisSessionId: String) {
         val map = TrackAppUtils.gtmData(
-                Event.CLICK_NFC,
+                Event.VIEW_NFC,
                 Category.DIGITAL_NFC,
                 Action.FAILED_UPDATE_BALANCE_NFC_NOT_SUPPORT,
                 "")
@@ -170,12 +170,12 @@ class EmoneyAnalytics {
                 Label.EMONEY))
     }
 
-    fun onEnableNFC() {
+    fun onEnableNFC(operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_NFC,
                 Category.DIGITAL_NFC,
                 Action.CHECK_STEP_1,
-                Label.EMONEY
+                operatorName
         ))
     }
 
@@ -200,6 +200,7 @@ class EmoneyAnalytics {
     interface Event {
         companion object {
             const val CLICK_NFC = "clickNFC"
+            const val VIEW_NFC = "viewNFCIris"
             const val OPEN_SCREEN = "openScreen"
             const val GENERAL_EVENT = "digitalGeneralEvent"
         }

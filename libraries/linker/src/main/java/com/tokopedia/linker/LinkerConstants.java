@@ -66,7 +66,9 @@ public interface LinkerConstants {
     String KEY_SHIPPING_PRICE = "shipping_price";
     String KEY_REVENUE = "revenue";
     String KEY_EVENT = "event";
-    String EVENT_FB_FIRST_TXN = "marketplace_first_txn";
+    String KEY_NEW_CUSTOMER = "new_customer";
+    String EVENT_FIREBASE_FIRST_TXN = "marketplace_first_txn";
+    String EVENT_FIREBASE_NEW_CUSTOMER = "new_customer";
     String KEY_PRODUCTTYPE = "productType";
     String KEY_USERID = "userId";
     String KEY_OG_URL = "$og_url";
@@ -143,4 +145,6 @@ public interface LinkerConstants {
     String BRANCH_LINK_DOMAIN_1="tokopedia.link";
     String BRANCH_LINK_DOMAIN_2="tokopedia-alternate.app.link";
     String BRANCH_LINK_DOMAIN_3="tokopedia.app.link";
+    String FIREBASE_KEY_FDL_ENABLE = "app_firebase_dynamic_link_activated";
+
 }

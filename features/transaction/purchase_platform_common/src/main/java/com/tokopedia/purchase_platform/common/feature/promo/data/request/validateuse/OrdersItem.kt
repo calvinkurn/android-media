@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.common.feature.promo.data.request.valida
 import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class OrdersItem(
@@ -21,5 +21,5 @@ data class OrdersItem(
         @SerializedName("sp_id")
         var spId: Int = 0,
         @SerializedName("product_details")
-        var productDetails: List<ProductDetailsItem?> = listOf()
+        var productDetails: List<ProductDetailsItem> = listOf()
 ) : Parcelable

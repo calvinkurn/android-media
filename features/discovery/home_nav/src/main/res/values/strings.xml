@@ -83,11 +83,16 @@
     <string name="error_state_transaction_title">Gagal memuat transaksi</string>
     <string name="error_state_transaction_description">Klik untuk coba lagi.</string>
 
-    <string name="error_state_shop_info">Gagal memuat toko</string>
+    <string name="error_state_shop_info">Gagal Memuat</string>
 
     <string name="content_desc_image_transaction">image transaction</string>
     <string name="content_desc_image_payment">image payment</string>
     <string name="account_header_store_empty_shop">Mau mulai berbisnis?</string>
     <string name="account_header_store_title">Toko saya:</string>
-    <string name="account_header_store_title_role">Peran saya:</string>
+
+    <string name="mainnav_wallet_app_format">%s • %s</string>
+    <string name="mainnav_tokopoint_format">%s (%s)</string>
+    <string name="mainnav_general_error">Gagal Memuat</string>
+
+    <string name="account_saldo_fmt">Saldo %s</string>
 </resources>

@@ -25,11 +25,16 @@ import com.tokopedia.logger.utils.Priority;
 import java.io.InterruptedIOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLParameters;
 
 import okhttp3.internal.http2.ConnectionShutdownException;
 import retrofit2.Response;
@@ -93,7 +98,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
         if (isAkamai(requests.get(0).getQuery())) {
             header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
         }
-        return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
+        return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
     }
 
     @Override
@@ -104,7 +109,23 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
 
         return getResponse(requests)
                 .doOnError(throwable -> {
-                    if (!(throwable instanceof UnknownHostException) &&
+                    if(throwable instanceof SSLHandshakeException) {
+                        SSLParameters sslParameters;
+                        String tls;
+                        String cipherSuites="";
+                        try {
+                            sslParameters = SSLContext.getDefault().getDefaultSSLParameters();
+                            tls = Arrays.toString(sslParameters.getProtocols());
+                            cipherSuites = Arrays.toString(SSLContext.getDefault().getDefaultSSLParameters().getCipherSuites());
+                        } catch (NoSuchAlgorithmException e) {
+                            tls="Failed to get ssl";
+                        } catch (NullPointerException e){
+                            tls="Got null on ssl";
+                        } catch (Exception e) {
+                            tls= e.getLocalizedMessage();
+                        }
+                        LoggingUtils.logGqlErrorSsl("java", requests.toString(), throwable, tls, cipherSuites);
+                    } else if (!(throwable instanceof UnknownHostException) &&
                             !(throwable instanceof SocketException) &&
                             !(throwable instanceof InterruptedIOException) &&
                             !(throwable instanceof ConnectionShutdownException)) {
@@ -140,7 +161,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         messageMap.put("key", requests.get(0).getMd5());
                         messageMap.put("hash", queryHashValues.toString());
                         ServerLogger.log(Priority.P1, "GQL_HASHING", messageMap);
-                        mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
+                        mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests));
                     }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
                         LoggingUtils.logGqlResponseCode(httpResponse.code(), requests.toString(), httpResponse.body().toString());
