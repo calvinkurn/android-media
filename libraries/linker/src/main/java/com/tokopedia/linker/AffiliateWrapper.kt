@@ -11,8 +11,7 @@ import kotlinx.coroutines.withContext
 
 class AffiliateWrapper {
 
-    fun executeAffiliateUseCase(data: LinkerData, context: Context,
-                                        shareCallback: ShareCallback, userData: UserData){
+    fun executeAffiliateUseCase(data: LinkerData, shareCallback: ShareCallback){
         CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val affiliateUseCase = AffiliateLinkGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
