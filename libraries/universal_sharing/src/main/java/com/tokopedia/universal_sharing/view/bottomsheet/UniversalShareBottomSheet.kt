@@ -280,6 +280,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     fun affiliateRequestDataReceived(validRequest: Boolean) {
         if(validRequest){
             executeAffiliateEligibilityUseCase()
+            loaderUnify?.visibility = View.VISIBLE
         }
         else {
             clearLoader()
