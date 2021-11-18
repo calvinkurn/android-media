@@ -35,7 +35,7 @@
                 android:translationY="-2dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/promo_checkout_marketplace_module_ic_highlighted_promo"
+                app:srcCompat="@drawable/promo_checkout_marketplace_module_ic_highlighted_identifier_enabled"
                 app:unify_image_corner_radius="0"
                 app:unify_image_type="rect" />
 
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:textColor="@color/Unify_Static_White"
+                android:textColor="@color/Unify_NN0"
                 android:translationY="-2dp"
                 app:layout_constraintBottom_toBottomOf="@+id/promo_highlight_identifier"
                 app:layout_constraintEnd_toEndOf="@+id/promo_highlight_identifier"
@@ -297,12 +297,12 @@
         android:translationX="-3dp"
         app:layout_constraintEnd_toEndOf="@+id/card_promo_item"
         app:layout_constraintTop_toTopOf="@+id/card_promo_item"
-        app:srcCompat="@drawable/promo_checkout_marketplace_module_ic_rectangle_green_top"
+        app:srcCompat="@drawable/promo_checkout_marketplace_module_ic_quantity_identifier_top_enabled"
         app:unify_image_corner_radius="0"
         app:unify_image_type="rect" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_promo_remaining"
+        android:id="@+id/text_promo_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_GN500"
@@ -320,7 +320,7 @@
         android:translationX="-3dp"
         app:layout_constraintEnd_toEndOf="@+id/promo_quantity_identifier_top"
         app:layout_constraintTop_toBottomOf="@+id/promo_quantity_identifier_top"
-        app:srcCompat="@drawable/promo_checkout_marketplace_module_ic_rectangle_green_bottom"
+        app:srcCompat="@drawable/promo_checkout_marketplace_module_ic_quantity_identifier_bottom_enabled"
         app:unify_image_corner_radius="0"
         app:unify_image_type="rect" />
 

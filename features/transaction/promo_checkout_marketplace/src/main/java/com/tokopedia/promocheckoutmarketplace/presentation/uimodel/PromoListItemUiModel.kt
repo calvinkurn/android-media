@@ -16,15 +16,16 @@ data class PromoListItemUiModel(
     data class UiData(
             var uniqueId: String = "",
             var shopId: Int = 0,
+            var parentIdentifierId: Int = 0,
             var title: String = "",
+            var currencyDetailStr: String = "",
+
             var subTitle: String = "",
             var errorMessage: String = "",
             var imageResourceUrls: List<String> = emptyList(),
-            var parentIdentifierId: Int = 0,
             var benefitAmount: Int = 0,
             var promoCode: String = "",
             var couponAppLink: String = "",
-            var currencyDetailStr: String = "",
             var coachMark: UiCoachmarkData = UiCoachmarkData(),
             // Store clashing info data from backend.
             // This should not be changed. Initialize once after get data response

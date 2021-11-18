@@ -23,6 +23,108 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
     }
 
     override fun bind(element: PromoListItemUiModel) {
+        renderPromoState(viewBinding, element)
+        viewBinding.cardPromoItem.setOnClickListener {
+            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
+                listener.onClickPromoListItem(element, adapterPosition)
+            }
+        }
+    }
+
+    private fun renderPromoState(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+        if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
+            if (element.uiState.isDisabled) {
+                renderPromoDisabled(viewBinding, element)
+            } else {
+                if (element.uiState.isSelected) {
+                    renderPromoSelected(viewBinding, element)
+                } else {
+                    renderPromoEnabled(viewBinding, element)
+                }
+            }
+        } else {
+            renderPromoDisabled(viewBinding, element)
+        }
+    }
+
+    private fun renderPromoSelected(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+        with(viewBinding) {
+            promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_selected)
+            textPromoHighlightIdentifier.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_enabled)
+            promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_enabled)
+            textPromoQuantity.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            textPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        }
+    }
+
+    private fun renderPromoEnabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+        with(viewBinding) {
+            promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_enabled)
+            textPromoHighlightIdentifier.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_enabled)
+            promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_enabled)
+            textPromoQuantity.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            textPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        }
+    }
+
+    private fun renderPromoDisabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+        with(viewBinding) {
+            promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_disabled)
+            textPromoHighlightIdentifier.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_disabled)
+            promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_disabled)
+            textPromoQuantity.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            textPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+        }
+    }
+
+    private fun renderHighlightIdentifier(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+
+    }
+
+    private fun renderQuantityIdentifier(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+
+    }
+
+    private fun renderBenefit(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+        with(viewBinding) {
+            textPromoItemTitle.text = element.uiData.title
+            textPromoItemTitleInfo.text = element.uiData.currencyDetailStr
+        }
+    }
+
+    private fun renderPromoCodeIdentifier(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+        with(viewBinding) {
+            if (element.uiState.isAttempted) {
+                textPromoCode.text = element.uiData.promoCode
+                textPromoCode.show()
+                textPromoCodeInfo.show()
+            } else {
+                textPromoCode.gone()
+                textPromoCodeInfo.gone()
+            }
+        }
+    }
+
+    private fun renderPaymentRules(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+
+    }
+
+    private fun renderLogisticRules(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+
+    }
+
+    private fun renderTimeValidity(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+
+    }
+
+    private fun renderUserValidity(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+
+    }
+
+    fun bind2(element: PromoListItemUiModel) {
         with(viewBinding) {
             if (element.uiState.isAttempted) {
                 textPromoCode.text = element.uiData.promoCode
