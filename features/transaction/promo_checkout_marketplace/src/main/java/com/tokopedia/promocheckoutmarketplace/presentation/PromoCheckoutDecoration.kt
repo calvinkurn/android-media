@@ -14,10 +14,6 @@ class PromoCheckoutDecoration @Inject constructor() : RecyclerView.ItemDecoratio
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         when (parent.getChildViewHolder(view)) {
-            is PromoRecommendationViewHolder -> {
-                outRect.top = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_0)?.toInt() ?: 0
-                outRect.bottom = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_8)?.toInt() ?: 0
-            }
             is PromoEligibilityHeaderViewHolder -> {
                 outRect.top = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_8)?.toInt() ?: 0
                 outRect.bottom = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_0)?.toInt() ?: 0

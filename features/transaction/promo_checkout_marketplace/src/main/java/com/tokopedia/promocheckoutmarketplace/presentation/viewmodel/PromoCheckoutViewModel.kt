@@ -277,8 +277,6 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
         initGetPromoListResponseAction()
         setGetPromoListResponseActionClearData(tmpPromoCode)
-        initPromoRecommendation(response)
-        initPromoInput()
         initPromoList(response)
 
         sendAnalyticsPromoPageLoaded()
@@ -436,6 +434,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     }
 
     private fun initPromoList(response: CouponListRecommendationResponse) {
+        initPromoInput()
+
         // Get all pre selected promo
         val preSelectedPromoList = getAllPreSelectedPromo(response)
 
@@ -446,6 +446,10 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             // Initialize eligibility header
             val eligibilityHeader = uiModelMapper.mapPromoEligibilityHeaderUiModel(couponSectionItem)
             couponList.add(eligibilityHeader)
+
+            if (eligibilityHeader.uiState.isEnabled) {
+                initPromoRecommendation(response)
+            }
 
             // Initialize promo list header
             val tmpIneligiblePromoList = ArrayList<Visitable<*>>()
@@ -628,7 +632,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                         "promo" to validateUsePromoRequest
                 ),
                 // Add current selected address from local cache
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress ?: chosenAddressRequestHelper.getChosenAddress())
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress
+                        ?: chosenAddressRequestHelper.getChosenAddress())
         )
 
         // Get response data
