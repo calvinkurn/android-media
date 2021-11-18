@@ -94,9 +94,9 @@ class PlayChannelSSEImpl @Inject constructor(
 
     private fun buildGeneralInfo(channelId: String, gcToken: String, pageSource: String): Map<String, String> {
         return mapOf(
-            "channelId" to channelId,
-            "gcToken" to gcToken,
-            "pageSource" to pageSource,
+            "channelId" to if(channelId.isEmpty()) "\"\"" else channelId,
+            "gcToken" to if(gcToken.isEmpty()) "\"\"" else gcToken,
+            "pageSource" to if(pageSource.isEmpty()) "\"\"" else pageSource,
         )
     }
 
