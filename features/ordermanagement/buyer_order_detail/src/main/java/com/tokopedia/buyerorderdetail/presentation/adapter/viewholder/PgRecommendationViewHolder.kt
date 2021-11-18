@@ -63,11 +63,11 @@ class PgRecommendationViewHolder(itemView: View,
     }
 
     override fun onChannelWidgetEmpty() {
-        itemView.hide()
+        buyerOrderDetailBindRecomWidgetListener.hidePgRecommendation()
     }
 
     override fun onWidgetFail(pageName: String, e: Throwable) {
-        itemView.hide()
+        buyerOrderDetailBindRecomWidgetListener.hidePgRecommendation()
     }
 
     interface BuyerOrderDetailBindRecomWidgetListener {
@@ -79,6 +79,8 @@ class PgRecommendationViewHolder(itemView: View,
         fun onSeeAllProductCardClick(appLink: String)
 
         fun setViewToLifecycleOwner(observer: LifecycleObserver)
+
+        fun hidePgRecommendation()
     }
 
 }

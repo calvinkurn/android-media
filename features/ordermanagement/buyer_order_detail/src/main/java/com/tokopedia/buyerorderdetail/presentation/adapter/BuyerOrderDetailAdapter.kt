@@ -235,4 +235,13 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             notifyItemRemoved(index)
         }
     }
+
+    fun removePgRecommendation() {
+        val index = visitables.indexOfLast { it is PGRecommendationWidgetUiModel }
+
+        if (index != -1) {
+            visitables.removeAt(index)
+            notifyItemRemoved(index)
+        }
+    }
 }

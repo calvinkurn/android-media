@@ -587,4 +587,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
         viewLifecycleOwner.lifecycle.addObserver(observer)
     }
+
+    override fun hidePgRecommendation() {
+        adapter.removePgRecommendation()
+    }
 }
