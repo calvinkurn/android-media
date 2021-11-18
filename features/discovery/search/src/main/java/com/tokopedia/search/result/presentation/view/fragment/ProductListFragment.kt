@@ -719,10 +719,6 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventGoToShopPage(queryKey, dataLayer)
     }
 
-    private fun handleShareProductAction(productCardOptionsModel: ProductCardOptionsModel) {
-        SearchTracking.trackEventShareProduct(queryKey, productCardOptionsModel.productId)
-    }
-
     override fun onPause() {
         super.onPause()
 
