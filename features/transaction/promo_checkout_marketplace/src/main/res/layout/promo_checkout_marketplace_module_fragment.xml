@@ -48,29 +48,10 @@
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            <com.tokopedia.unifycomponents.TabsUnify
-                android:id="@+id/tabs_promo"
-                tools:background="@color/Unify_GN500"
-                tools:layout_height="56dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Kupon Saya" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Kupon Toko" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Belum Bisa Dipakai" />
-
-            </com.tokopedia.unifycomponents.TabsUnify>
+            <include
+                android:id="@+id/tabs_promo_header"
+                layout="@layout/promo_checkout_marketplace_module_item_promo_tab"
+                tools:visibility="visible" />
 
             <View
                 android:id="@+id/v_shadow_top"

@@ -201,7 +201,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         return mapOf(
                 "params" to CouponListRecommendationRequest(promoRequest = promoRequest),
                 // Add current selected address from local cache
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress ?: chosenAddressRequestHelper.getChosenAddress())
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress
+                        ?: chosenAddressRequestHelper.getChosenAddress())
         )
     }
 

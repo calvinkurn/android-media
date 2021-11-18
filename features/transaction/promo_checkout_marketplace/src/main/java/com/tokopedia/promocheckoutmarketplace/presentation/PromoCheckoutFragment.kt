@@ -419,10 +419,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
 
             if (isShow) {
-                viewBinding?.tabsPromo?.show()
+                viewBinding?.tabsPromoHeader?.tabsPromo?.show()
                 setToolbarShadowVisibility(false)
             } else {
-                viewBinding?.tabsPromo?.gone()
+                viewBinding?.tabsPromoHeader?.tabsPromo?.gone()
             }
         }
     }
@@ -692,7 +692,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun renderLoadPromoSuccess(fragmentUiModel: FragmentUiModel) {
         viewBinding?.let {
-            it.tabsPromo.customTabMode = TabLayout.MODE_SCROLLABLE
+            it.tabsPromoHeader.tabsPromo.customTabMode = TabLayout.MODE_SCROLLABLE
             if (fragmentUiModel.uiState.hasAnyPromoSelected) {
                 renderHasAnyPromoSelected(fragmentUiModel)
             } else {
