@@ -34,6 +34,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
@@ -1290,6 +1291,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productNameField?.isInputError = it
             productNameField?.setMessage(viewModel.productNameMessage)
             typoCorrection?.hide()
+            productNameRecAdapter?.setProductNameRecommendations(emptyList())
+            productNameRecView?.isVisible = !it
 
             // if product name input has no issue
             if (!it) {
@@ -1316,16 +1319,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     }
                 }
             } else {
-                // show empty recommendations for input with error
-                productNameRecAdapter?.setProductNameRecommendations(emptyList())
-                hideProductNameLoadingIndicator()
-
                 // keep the category
                 if (viewModel.isAdding && !viewModel.hasVariants) {
                     productCategoryRecListView?.setData(ArrayList(emptyList()))
                 }
 
                 // update icon product name field error
+                hideProductNameLoadingIndicator()
                 showProductNameIconError()
             }
 
@@ -1847,7 +1847,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         observe(viewModel.productNameRecommendations) {
             when (it) {
                 is Success -> {
-                    productNameRecView?.visible()
+                    val inputError = viewModel.isProductNameInputError.value.orFalse()
+                    productNameRecView?.isVisible = !inputError
                     productNameRecAdapter?.setProductNameRecommendations(it.data)
                 }
                 is Fail -> {
