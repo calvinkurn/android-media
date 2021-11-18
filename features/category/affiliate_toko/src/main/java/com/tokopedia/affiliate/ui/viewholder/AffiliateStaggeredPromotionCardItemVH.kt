@@ -35,7 +35,7 @@ class AffiliateStaggeredPromotionCardItemVH(itemView: View, private val promotio
                 promotionClickInterface?.onPromotionClick( element?.product?.productID ?: "",
                         element?.product?.title ?: "",
                         element?.product?.image?.androidURL ?:"",
-                        element?.product?.cardUrl?.androidURL ?: "",
+                        element?.product?.cardUrl?.desktopURL ?: "",
                         "")
             }
             if(element?.product?.isLinkGenerationAllowed == false){
