@@ -96,7 +96,7 @@ class HomeCreditUseCase @Inject constructor(
     }
 
     companion object {
-        const val IMAGE_QUALITY = 100
+        const val IMAGE_QUALITY = 95
         const val MAX_IMAGE_DIMEN = 1280
         const val FOLDER_NAME = "extras"
         const val FILE_EXTENSIONS = ".jpg"
