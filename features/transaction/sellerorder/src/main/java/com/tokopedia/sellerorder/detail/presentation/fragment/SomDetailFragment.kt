@@ -162,7 +162,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private val chatIcon: IconUnify by lazy {
         createChatIcon(requireContext())
     }
-    private val orderExtensionViewModel: SomOrderExtensionViewModel by lazy {
+    protected val orderExtensionViewModel: SomOrderExtensionViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SomOrderExtensionViewModel::class.java)
     }
 
@@ -1154,7 +1154,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showErrorToaster(anchorView: View?, message: String) {
+    protected fun showErrorToaster(anchorView: View?, message: String) {
         view?.run {
             this@SomDetailFragment.somToaster = Toaster.build(
                 this,
@@ -1280,16 +1280,20 @@ open class SomDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun observeGetRequestExtensionInfo() {
+    protected open fun observeGetRequestExtensionInfo() {
         orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
-            if (!result.success) {
-                onFailedGetRequestExtensionInfo(result)
+            if (result.message.isNotBlank()) {
+                if (result.success) showCommonToaster(result.message)
+                else showErrorToaster(null, result.message)
+            }
+            if (result.completed && result.refreshOnDismiss) {
+                loadDetail()
             }
             onRequestExtensionInfoChanged(result)
         }
     }
 
-    private fun onRequestExtensionInfoChanged(data: OrderExtensionRequestInfoUiModel) {
+    protected fun onRequestExtensionInfoChanged(data: OrderExtensionRequestInfoUiModel) {
         bottomSheetManager?.showSomBottomSheetOrderExtensionRequest(
             data,
             orderId,
@@ -1368,11 +1372,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
             showToaster(message, view, TYPE_ERROR, "")
             bottomSheetManager?.getSomBottomSheetSetDelivered()?.onFailedSetDelivered()
         }
-    }
-
-    protected open fun onFailedGetRequestExtensionInfo(result: OrderExtensionRequestInfoUiModel) {
-        if (!result.success) loadDetail()
-        if (result.errorMessage.isNotBlank()) showErrorToaster(null, result.errorMessage)
     }
 
     protected open fun onFailedSendOrderExtensionRequest(errorMessage: String) {

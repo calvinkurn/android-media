@@ -9,10 +9,11 @@ import com.tokopedia.sellerorder.orderextension.presentation.adapter.typefactory
 
 data class OrderExtensionRequestInfoUiModel(
     var items: List<BaseOrderExtensionRequestInfoItem> = emptyList(),
-    var processing: Boolean = false,
-    var success: Boolean = true,
-    var completed: Boolean = false,
-    var errorMessage: String = ""
+    var processing: Boolean,
+    var success: Boolean,
+    var completed: Boolean,
+    var refreshOnDismiss: Boolean,
+    var message: String
 ) {
     private fun getCommentUiModelForOption(optionCode: Int): CommentUiModel? {
         return items.find {

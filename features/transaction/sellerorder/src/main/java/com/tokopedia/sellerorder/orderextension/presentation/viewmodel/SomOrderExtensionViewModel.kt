@@ -76,9 +76,9 @@ class SomOrderExtensionViewModel @Inject constructor(
             .OnFailedSendingOrderExtensionRequest(errorMessage)
     }
 
-    private fun onOrderExtensionRequestCompleted() {
+    private fun onOrderExtensionRequestCompleted(message: String) {
         orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
-            .OnSuccessSendingOrderExtensionRequest()
+            .OnSuccessSendingOrderExtensionRequest(message)
     }
 
     fun getSomOrderExtensionRequestInfoLoadingState() {
@@ -111,7 +111,7 @@ class SomOrderExtensionViewModel @Inject constructor(
                     if (!mappedResult.success) {
                         onFailedSendingOrderExtensionRequest(mappedResult.message)
                     } else {
-                        onOrderExtensionRequestCompleted()
+                        onOrderExtensionRequestCompleted(mappedResult.message)
                     }
                 } else {
                     onFailedSendingOrderExtensionRequest("")

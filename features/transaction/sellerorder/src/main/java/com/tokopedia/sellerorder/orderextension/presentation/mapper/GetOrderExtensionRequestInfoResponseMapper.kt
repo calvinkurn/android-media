@@ -21,7 +21,12 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
             addOrderExtensionOptionsShimmer()
             addOrderExtensionOptionsShimmer()
             addOrderExtensionFooter()
-        }
+        },
+        processing = false,
+        success = true,
+        completed = false,
+        refreshOnDismiss = false,
+        message = ""
     )
 
     fun mapSuccessResponseToUiModel(
@@ -36,9 +41,11 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
                 addOrderExtensionFooter()
             }
         } else emptyList(),
+        processing = false,
         success = response.messageCode == 1,
         completed = response.messageCode != 1,
-        errorMessage = response.message.orEmpty()
+        refreshOnDismiss = false,
+        message = response.message.orEmpty()
     )
 
     fun mapError(throwable: Throwable): String {

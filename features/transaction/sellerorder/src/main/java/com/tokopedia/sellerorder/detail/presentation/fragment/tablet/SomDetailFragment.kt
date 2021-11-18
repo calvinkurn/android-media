@@ -172,11 +172,6 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
-    override fun onFailedGetRequestExtensionInfo(result: OrderExtensionRequestInfoUiModel) {
-        if (!result.success) shouldRefreshOrderList = true
-        super.onFailedGetRequestExtensionInfo(result)
-    }
-
     override fun onFailedSendOrderExtensionRequest(errorMessage: String) {
         shouldRefreshOrderList = true
         super.onFailedSendOrderExtensionRequest(errorMessage)
@@ -185,6 +180,20 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     override fun onSuccessSendOrderExtensionRequest(data: OrderExtensionRequestResultUiModel) {
         shouldRefreshOrderList = true
         super.onSuccessSendOrderExtensionRequest(data)
+    }
+
+    override fun observeGetRequestExtensionInfo() {
+        orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
+            if (result.message.isNotBlank()) {
+                if (result.success) showCommonToaster(result.message)
+                else showErrorToaster(null, result.message)
+            }
+            if (result.completed && result.refreshOnDismiss) {
+                shouldRefreshOrderList = true
+                loadDetail()
+            }
+            onRequestExtensionInfoChanged(result)
+        }
     }
 
     override fun showBackButton(): Boolean = false
