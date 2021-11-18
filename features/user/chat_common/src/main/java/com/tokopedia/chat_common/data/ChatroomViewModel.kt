@@ -27,19 +27,11 @@ class ChatroomViewModel constructor(
     }
     val shopType: String get() {
         var shopType = ""
-        when {
-            headerModel.shopType == 1 -> {
-                shopType = SHOP_TYPE_REGULAR
-            }
-            headerModel.isGold && headerModel.shopType == 2 -> {
-                shopType = SHOP_TYPE_GOLD_MERCHANT
-            }
-            headerModel.isOfficial && headerModel.shopType == 3 -> {
-                shopType = SHOP_TYPE_OFFICIAL_STORE
-            }
-            headerModel.shopType == 4 -> {
-                shopType = SHOP_TYPE_TOKONOW
-            }
+        when (headerModel.shopType) {
+            1 -> shopType = SHOP_TYPE_REGULAR
+            2 -> shopType = SHOP_TYPE_GOLD_MERCHANT
+            3 -> shopType = SHOP_TYPE_OFFICIAL_STORE
+            4 -> shopType = SHOP_TYPE_TOKONOW
         }
         return shopType
     }

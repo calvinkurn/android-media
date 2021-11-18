@@ -87,7 +87,7 @@ object TopChatAnalyticsKt {
     private const val CLICK_OCC = "click - Beli Langsung on chat"
 
     //Event Label
-    private const val OCC_LABEL = "fitur : OCC;"
+    private const val OCC_LABEL = "fitur : OCC"
 
     //Other
     private const val CURRENT_SITE = "topchat"

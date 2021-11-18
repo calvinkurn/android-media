@@ -1492,7 +1492,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         analytics.eventClickBuyProductAttachment(element)
         if (element.isSupportVariant) {
             showAtcVariantHelper(element.productId, element.shopId.toString())
-        } else if (isOCCActive() && element.doesNotHaveVariant()) {
+        } else if (isOCCActive() && element.isEligibleOCC()) {
             doOCC(element)
         } else {
             doBuyAndAtc(element) {

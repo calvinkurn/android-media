@@ -583,11 +583,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 if (product.isPreOrder) {
                     it.setText(R.string.title_topchat_pre_order_camel)
                 } else {
-                    //OCC AB, not a variant & not product campaign
-                    if(listener?.isOCCActive() == true
-                        && product.doesNotHaveVariant()
-                        && !product.isProductCampaign()
-                    ) {
+                    if(listener?.isOCCActive() == true && product.isEligibleOCC()) {
                         it.setText(com.tokopedia.chat_common.R.string.action_occ)
                     } else {
                         it.setText(com.tokopedia.chat_common.R.string.action_buy)

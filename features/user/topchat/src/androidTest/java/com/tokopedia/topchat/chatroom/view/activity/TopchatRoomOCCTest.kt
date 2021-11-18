@@ -8,6 +8,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.topchat.R
@@ -110,9 +111,9 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        withRecyclerView(R.id.rv_product_carousel)
-            .atPosition(0)
-            .matches(withText(context.getString(R.string.action_buy)))
+        onView(withRecyclerView(R.id.rv_product_carousel)
+            .atPositionOnView(0, R.id.tv_buy))
+            .check(matches(withText(context.getString(R.string.action_buy))))
     }
 
     @Test
@@ -131,9 +132,9 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        withRecyclerView(R.id.rv_product_carousel)
-            .atPosition(0)
-            .matches(withText(context.getString(R.string.action_buy)))
+        onView(withRecyclerView(R.id.rv_product_carousel)
+            .atPositionOnView(0, R.id.tv_buy))
+            .check(matches(withText(context.getString(R.string.action_buy))))
     }
 
     @Test
@@ -152,9 +153,9 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        withRecyclerView(R.id.rv_product_carousel)
-            .atPosition(0)
-            .matches(withText(context.getString(R.string.action_buy)))
+        onView(withRecyclerView(R.id.rv_product_carousel)
+            .atPositionOnView(0, R.id.tv_buy))
+            .check(matches(withText(context.getString(R.string.action_buy))))
     }
 
     @Test
@@ -173,9 +174,9 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        withRecyclerView(R.id.rv_product_carousel)
-            .atPosition(0)
-            .matches(withText(context.getString(R.string.action_buy)))
+        onView(withRecyclerView(R.id.rv_product_carousel)
+            .atPositionOnView(0, R.id.tv_buy))
+            .check(matches(withText(context.getString(R.string.action_buy))))
     }
 
     @Test
@@ -185,26 +186,35 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatAttachmentUseCase.response.chatAttachments.list[2].attributes =
-            getModifiedChatAttributes(isPreorder = true)
+            modifiedPreorder(true)
         launchChatRoomActivity()
 
         //When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         scrollChatToPosition(0)
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(1, R.id.tv_buy)
+        ).perform(ViewActions.click())
 
         //Then
-        withRecyclerView(R.id.rv_product_carousel)
-            .atPosition(4)
-            .matches(withText(context.getString(R.string.title_topchat_pre_order_camel)))
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(1, R.id.tv_buy))
+            .check(matches(withText(context.getString(R.string.title_topchat_pre_order_camel))))
+
+        Intents.intended(IntentMatchers.hasData(ApplinkConst.CART))
     }
 
     private fun getModifiedChatAttributes(
         isVariant: Boolean = false,
-        hasDiscount: Boolean = false,
-        isPreorder: Boolean = false
+        hasDiscount: Boolean = false
     ): String {
-        return "{\"product_id\":445955139,\"product_profile\":{\"name\":\"L\u0027Oreal Paris Mascara Waterproof Lash Paradise Black\",\"price\":\"Rp 93.000\",\"price_int\":93000,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"url\":\"https://www.tokopedia.com/lorealparis/l-oreal-paris-mascara-waterproof-lash-paradise-black\",\"playstore_product_data\":{\"playstore_status\":\"NORMAL\"},\"price_before\":\"${getPriceBeforeModified(hasDiscount)}\",\"drop_percentage\":\"${getDropPercentageModified(hasDiscount)}\",\"shop_id\":5665147,\"status\":1,\"min_order\":1,\"category_id\":61,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/attachment/2020/6/10/32520341/32520341_637c6bb1-0422-4c05-84cf-751c50073585.jpg\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/16/29240564/29240564_b6e07130-f8d4-4220-9114-ae7bb75c3f33_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/16/29240564/29240564_cabc9e63-f092-4e70-8a77-4352a0646660_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/27/29240564/29240564_be0e7639-8800-492a-a808-62cbb6093c1f_1080_1080\"],\"variant\":${getVariantModified(isVariant)},\"wishlist\":false,\"free_ongkir\":{\"is_active\":true,\"image_url\":\"https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png\"},\"rating\":{\"rating\":5,\"rating_score\":4.9,\"count\":1944},\"is_preorder\":${isPreorder}\"campaign_id\":-10000}}"
+        return "{\"product_id\":445955139,\"product_profile\":{\"name\":\"L\u0027Oreal Paris Mascara Waterproof Lash Paradise Black\",\"price\":\"Rp 93.000\",\"price_int\":93000,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"url\":\"https://www.tokopedia.com/lorealparis/l-oreal-paris-mascara-waterproof-lash-paradise-black\",\"playstore_product_data\":{\"playstore_status\":\"NORMAL\"},\"price_before\":\"${getPriceBeforeModified(hasDiscount)}\",\"drop_percentage\":\"${getDropPercentageModified(hasDiscount)}\",\"shop_id\":5665147,\"status\":1,\"min_order\":1,\"category_id\":61,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/attachment/2020/6/10/32520341/32520341_637c6bb1-0422-4c05-84cf-751c50073585.jpg\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/16/29240564/29240564_b6e07130-f8d4-4220-9114-ae7bb75c3f33_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/16/29240564/29240564_cabc9e63-f092-4e70-8a77-4352a0646660_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/27/29240564/29240564_be0e7639-8800-492a-a808-62cbb6093c1f_1080_1080\"],\"variant\":${getVariantModified(isVariant)},\"wishlist\":false,\"free_ongkir\":{\"is_active\":true,\"image_url\":\"https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png\"},\"rating\":{\"rating\":5,\"rating_score\":4.9,\"count\":1944},\"campaign_id\":-10000}}"
+    }
+
+    private fun modifiedPreorder(isPreorder: Boolean): String {
+        return "{\"product_id\":1160424090,\"product_profile\":{\"name\":\"Produk Preorder\",\"price\":\"Rp20.000\",\"price_int\":0,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/9/9/5e4f9c00-410c-4bcb-96ca-54b6b431b365.jpg\",\"url\":\"https://www.tokopedia.com/vip-list/piyama-baju-tidur-2\",\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":0,\"status\":1,\"min_order\":0,\"category_id\":0,\"remaining_stock\":100,\"category_breadcrumb\":\"\",\"variant\":null,\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_preorder\":${isPreorder}}}"
     }
 
     private fun getVariantModified(isVariant: Boolean): String {

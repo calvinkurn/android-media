@@ -235,10 +235,6 @@ open class ProductAttachmentUiModel protected constructor(
         return blastId != 0L
     }
 
-    fun isEligibleOcc(): Boolean {
-        return !isPreOrder && !isFlashSaleProduct()
-    }
-
     fun isFlashSaleProduct(): Boolean {
         return campaignId == -10000L
     }
@@ -272,6 +268,11 @@ open class ProductAttachmentUiModel protected constructor(
             "notcampaign"
         }
         return "$role - $productId - $isWarehouse - $isCampaign"
+    }
+
+    //not a variant, not product campaign, not broadcast, & not pre-order
+    fun isEligibleOCC(): Boolean {
+        return doesNotHaveVariant() && !isProductCampaign() && !fromBroadcast() && !isPreOrder
     }
 
     companion object {
