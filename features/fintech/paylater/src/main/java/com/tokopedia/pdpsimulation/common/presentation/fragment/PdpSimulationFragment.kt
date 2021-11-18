@@ -20,6 +20,7 @@ import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.helper.*
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.pdpsimulation.common.presentation.adapter.PayLaterPagerAdapter
+import com.tokopedia.pdpsimulation.common.utils.Utils
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.CreditCardSimulationFragment
 import com.tokopedia.pdpsimulation.creditcard.presentation.tnc.CreditCardTncFragment
 import com.tokopedia.pdpsimulation.creditcard.viewmodel.CreditCardViewModel
@@ -152,7 +153,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     private fun setProductDetailView(data: GetProductV3) {
         data.pictures?.get(0)?.let { pictures ->
             pictures.urlThumbnail?.let { urlThumbnail ->
-                productDetail.productImage.loadImage(
+                productDetail.productImage.setImageUrl(
                     urlThumbnail
                 )
             }
@@ -160,10 +161,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         data.productName.let {
             productDetail.productName.text = it
         }
-        data.price?.let {
-            productDetail.productPrice.text =
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false)
-        }
+
+        productDetail.productPrice.text =
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
 
         showProductVariant(data)
 
@@ -266,7 +266,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     private fun handleRegisterWidgetVisibility(position: Int) {
-        if (position == SIMULATION_TAB_INDEX && !payLaterViewModel.isPayLaterProductActive)
+        if (position == SIMULATION_TAB_INDEX)
             showRegisterWidget()
         else {
             payLaterBorder.gone()
@@ -298,7 +298,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
-        bottomSheetNavigator.showBottomSheet(modelClass, bundle, this, productUrl)
+        bottomSheetNavigator.showBottomSheet(modelClass, bundle, this, productId = productId)
     }
 
     override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {
@@ -323,6 +323,30 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         }
 
     }
+
+    override fun setViewModelData(
+        updateViewModelVariable: Utils.UpdateViewModelVariable,
+        value: Any
+    ) {
+        when (updateViewModelVariable) {
+            Utils.UpdateViewModelVariable.SortPosition -> payLaterViewModel.sortPosition =
+                value as Int
+            Utils.UpdateViewModelVariable.PartnerPosition -> payLaterViewModel.partnerDisplayPosition =
+                value as Int
+            Utils.UpdateViewModelVariable.RefreshType -> payLaterViewModel.refreshData =
+                value as Boolean
+        }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        if (payLaterViewModel.refreshData) {
+            payLaterViewModel.getPayLaterAvailableDetail(productPrice)
+            payLaterViewModel.refreshData = false
+        }
+    }
+
 
     companion object {
         const val SIMULATION_TAB_INDEX = 0

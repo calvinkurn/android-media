@@ -1,7 +1,5 @@
 package com.tokopedia.play.view.activity
 
-import android.app.ActivityManager
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
@@ -247,7 +245,7 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun observeChannelList() {
-        viewModel.observableChannelIdsResult.observe(this, Observer {
+        viewModel.observableChannelIdsResult.observe(this) {
             when (it.state) {
                 PageResultState.Loading -> {
                     fragmentErrorViewOnStateChanged(shouldShow = false)
@@ -265,7 +263,7 @@ class PlayActivity : BaseActivity(),
                 }
             }
             swipeContainerView.setChannelIds(it.currentValue)
-        })
+        }
     }
 
     private fun observeFirstChannelEvent() {
@@ -280,7 +278,7 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    if (isCustomTaskRoot()) {
+                    if (isTaskRoot) {
                         val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
                         startActivity(intent)
                         finish()
@@ -291,18 +289,6 @@ class PlayActivity : BaseActivity(),
                 }
             }
         } else super.onBackPressed()
-    }
-
-    private fun isCustomTaskRoot(): Boolean {
-        val activityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val appTasks = activityManager.appTasks
-        for(task in appTasks) {
-            val baseIntent = task.taskInfo.baseIntent
-            val categories = baseIntent.categories ?: return true
-
-            return !categories.contains(Intent.CATEGORY_LAUNCHER)
-        }
-        return true
     }
 
     override fun requestEnableNavigation() {

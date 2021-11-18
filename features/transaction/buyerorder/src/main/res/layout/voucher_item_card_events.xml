@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainContent"
+    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -10,9 +11,9 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16">
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp">
 
         <RelativeLayout
             android:id="@+id/cl_card"
@@ -67,9 +68,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:layout_below="@+id/ll_valid"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="8dp"
                 android:background="@drawable/dash_line_grey" />
 
 
@@ -78,11 +79,11 @@
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="@dimen/dp_60"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_8"
-                app:cardCornerRadius="@dimen/dp_8"
-                app:cardElevation="@dimen/dp_0">
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp">
 
                 <ImageView
                     android:id="@+id/iv_deal"
@@ -96,9 +97,9 @@
                 android:id="@+id/tv_brand_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="8dp"
                 android:layout_toRightOf="@+id/imageView"
                 android:fontFamily="sans-serif"
                 android:textColor="@color/Unify_N700_68"
@@ -111,15 +112,15 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_brand_name"
                 android:layout_alignTop="@+id/imageView"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="8dp"
                 android:layout_toRightOf="@+id/imageView"
                 android:fontFamily="sans-serif-medium"
                 android:lines="2"
                 android:maxLines="2"
                 android:textColor="@color/Unify_N700_96"
-                android:textSize="@dimen/sp_14"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -127,9 +128,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageView"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
@@ -139,10 +140,10 @@
                     android:background="@drawable/rect_grey"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:paddingLeft="@dimen/dp_12"
-                    android:paddingTop="@dimen/dp_8"
-                    android:paddingRight="@dimen/dp_12"
-                    android:paddingBottom="@dimen/dp_8">
+                    android:paddingLeft="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="12dp"
+                    android:paddingBottom="8dp">
 
                     <TextView
                         android:id="@+id/tv_valid_till"
@@ -153,7 +154,7 @@
                         android:gravity="center_horizontal"
                         android:text="@string/tiket_kategori"
                         android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/dp_12" />
+                        android:textSize="12dp" />
 
                     <TextView
                         android:id="@+id/tv_valid_till_date"
@@ -163,7 +164,7 @@
                         android:gravity="center_horizontal"
                         android:text="xxxxxxxxxx"
                         android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/dp_12"
+                        android:textSize="12dp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
@@ -174,15 +175,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/imageView"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="8dp"
                 android:layout_toRightOf="@+id/imageView"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif"
                 android:maxLines="2"
                 android:textColor="@color/Unify_N700_44"
-                android:textSize="@dimen/dp_12"
+                android:textSize="12dp"
                 android:textStyle="normal"
                 android:visibility="gone" />
 
@@ -197,8 +198,8 @@
 
                 <ProgressBar
                     android:id="@+id/prog_bar"
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:visibility="visible" />
 
@@ -206,8 +207,8 @@
                     android:id="@+id/tapAction_events"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:background="@color/Unify_N0"
                     android:orientation="vertical"
                     android:visibility="visible" />
@@ -216,8 +217,8 @@
                     android:id="@+id/voucerCodeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:background="@color/Unify_N0"
                     android:orientation="vertical"
                     android:visibility="visible" />
@@ -235,8 +236,8 @@
         android:id="@+id/tanggal_events_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/tanggal_events"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_12" />
@@ -245,8 +246,8 @@
         android:id="@+id/tanggal_events"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"
         android:textStyle="bold"
@@ -256,8 +257,8 @@
         android:id="@+id/events_location_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
         android:text="@string/location_events"
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/sp_12" />
@@ -266,8 +267,8 @@
         android:id="@+id/city_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"
         android:textStyle="bold"
@@ -277,8 +278,8 @@
         android:id="@+id/address_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"
         tools:text=" Jl. M.H. Thamrin, No.20, RT.9 RW.4, Gondang (This is street level with Max 2 lines)…" />

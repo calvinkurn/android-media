@@ -40,7 +40,6 @@ import javax.inject.Inject
  */
 class PlayTitleAndTagsSetupFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatchers,
         private val analytic: PlayBroadcastContentTaggingAnalytic,
 ) : PlayBaseSetupFragment(), FragmentWithDetachableView,
         BottomActionNextViewComponent.Listener,
@@ -149,14 +148,14 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     }
 
     private fun observeTags() {
-        viewModel.observableRecommendedTagsModel.observe(viewLifecycleOwner, Observer {
+        viewModel.observableRecommendedTagsModel.observe(viewLifecycleOwner) {
             tagListView.setTags(it.toList())
             tvTagsInstruction.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
-        })
+        }
     }
 
     private fun observeUploadEvent() {
-        viewModel.observableUploadEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.observableUploadEvent.observe(viewLifecycleOwner) {
             when (val content = it.peekContent()) {
                 NetworkResult.Loading -> bottomActionNextView.setLoading(true)
                 is NetworkResult.Fail -> onUploadFailed(content.error)
@@ -164,13 +163,13 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
                     if (!it.hasBeenHandled) onUploadSuccess()
                 }
             }
-        })
+        }
     }
 
     private fun observeTitle() {
-        viewModel.observableTitle.observe(viewLifecycleOwner, Observer {
+        viewModel.observableTitle.observe(viewLifecycleOwner) {
             if (it is PlayTitleUiModel.HasTitle) titleFieldView.setText(it.title)
-        })
+        }
     }
 
     private fun onUploadSuccess() {

@@ -53,19 +53,24 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             Observer<Result<DigitalRecommendationModel>> {
                 when (it) {
                     is Success -> {
-                        hideLoading()
-                        additionalTrackingData?.userType = it.data.userType
+                        if (it.data.items.isNotEmpty()) {
+                            hideLoading()
+                            additionalTrackingData?.userType = it.data.userType
 
-                        if (!::adapter.isInitialized) {
-                            adapter = DigitalRecommendationAdapter(it.data.items, this@DigitalRecommendationWidget)
-                        }
+                            if (!::adapter.isInitialized) {
+                                adapter = DigitalRecommendationAdapter(it.data.items, this@DigitalRecommendationWidget)
+                            }
 
-                        with(binding) {
-                            tgDigitalRecommendationTitle.show()
-                            rvDigitalRecommendation.layoutManager = LinearLayoutManager(context,
-                                    LinearLayoutManager.HORIZONTAL, false)
-                            rvDigitalRecommendation.adapter = adapter
-                            rvDigitalRecommendation.show()
+                            with(binding) {
+                                tgDigitalRecommendationTitle.show()
+                                tgDigitalRecommendationTitle.text = it.data.title
+                                rvDigitalRecommendation.layoutManager = LinearLayoutManager(context,
+                                        LinearLayoutManager.HORIZONTAL, false)
+                                rvDigitalRecommendation.adapter = adapter
+                                rvDigitalRecommendation.show()
+                            }
+                        } else {
+                            listener?.onEmptyResult()
                         }
                     }
                     is Fail -> {
@@ -99,7 +104,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     override fun onItemBinding(element: DigitalRecommendationItemModel, position: Int) {
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
-                    element, it, position, digitalRecommendationViewModel.getUserId()
+                    element, it, position, digitalRecommendationViewModel.getUserId(), page
             )
         }
     }
@@ -107,7 +112,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     override fun onItemClicked(element: DigitalRecommendationItemModel, position: Int) {
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.clickDigitalRecommendationItems(
-                    element, it, position, digitalRecommendationViewModel.getUserId()
+                    element, it, position, digitalRecommendationViewModel.getUserId(), page
             )
         }
     }
@@ -170,6 +175,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     interface Listener {
         fun onFetchFailed(throwable: Throwable)
+        fun onEmptyResult()
     }
 
     companion object {

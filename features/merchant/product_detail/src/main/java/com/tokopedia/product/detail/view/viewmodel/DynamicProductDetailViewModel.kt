@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.viewmodel
 
 import android.text.TextUtils
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -28,23 +27,23 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
-import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
-import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
-import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
-import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
@@ -56,15 +55,19 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRIC
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_K2K
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
-import com.tokopedia.product.detail.usecase.*
+import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
+import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
+import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
+import com.tokopedia.product.detail.usecase.GetProductInfoP2DataUseCase
+import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
+import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
+import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
 import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.purchase_platform.common.feature.helpticket.data.request.SubmitHelpTicketRequest
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -87,9 +90,18 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import rx.Observer
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
@@ -108,7 +120,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
                                                              private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
                                                              private val trackAffiliateUseCase: Lazy<TrackAffiliateUseCase>,
-                                                             private val submitHelpTicketUseCase: Lazy<SubmitHelpTicketUseCase>,
                                                              private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
                                                              private val addToCartUseCase: Lazy<AddToCartUseCase>,
                                                              private val addToCartOcsUseCase: Lazy<AddToCartOcsUseCase>,
@@ -251,7 +262,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private var shopDomain: String? = null
     private var alreadyHitRecom: MutableList<String> = mutableListOf()
 
-    private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
 
     fun hasShopAuthority(): Boolean = isShopOwner() || getShopInfo().allowManage
@@ -352,7 +362,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         trackAffiliateUseCase.get().cancelJobs()
         getRecommendationUseCase.get().unsubscribe()
         removeWishlistUseCase.get().unsubscribe()
-        submitTicketSubscription?.unsubscribe()
         updateCartCounterSubscription?.unsubscribe()
         addToCartUseCase.get().unsubscribe()
         deleteCartUseCase.get().cancelJobs()
@@ -482,8 +491,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return listOf()
     }
 
-    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "",
-                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid: String = "", urlQuery: String = "") {
+    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, layoutId: String = "", isUseOldNav: Boolean = false,
+                     userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid: String = "", urlQuery: String = "", extParam: String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
@@ -491,7 +500,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             userLocationCache = userLocationLocal
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", productParams.warehouseId
-                    ?: "", layoutId).also {
+                    ?: "", layoutId, extParam).also {
 
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
@@ -504,7 +513,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 assignTradeinParams()
 
                 //Remove any unused component based on P1 / PdpLayout
-                removeDynamicComponent(it.listOfLayout, isAffiliate, isUseOldNav)
+                removeDynamicComponent(it.listOfLayout, isUseOldNav)
 
                 //Render initial data
                 _productLayout.postValue(it.listOfLayout.asSuccess())
@@ -633,7 +642,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean, isUseOldNav: Boolean) {
+    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isUseOldNav: Boolean) {
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
@@ -656,8 +665,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
                 it
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
-                it
-            } else if (it.name() == ProductDetailConstant.BY_ME && isAffiliate && !GlobalConfig.isSellerApp()) {
                 it
             } else if (it.name() == ProductDetailConstant.REPORT && (isUseOldNav || isShopOwner())) {
                 it
@@ -756,7 +763,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                 ?: "")
                         val productIdsString = TextUtils.join(",", productIds) ?: ""
                         val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-                        if (pageName == PDP_3) {
+                        if (pageName == PDP_3 || pageName == PDP_K2K) {
                             getRecommendationFilterChips.get().setParams(
                                     userId = if (userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
                                     pageName = pageName,
@@ -901,35 +908,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {
             Timber.d(it)
         }
-    }
-
-    fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel, onErrorSubmitHelpTicket: (Throwable?) -> Unit, onNextSubmitHelpTicket: (SubmitTicketResult) -> Unit) {
-        val requestParams = RequestParams.create()
-        val submitHelpTicketRequest = SubmitHelpTicketRequest()
-        submitHelpTicketRequest.apply {
-            apiJsonResponse = addToCartDataModel.responseJson
-            errorMessage = addToCartDataModel.errorReporter.texts.submitDescription
-            if (addToCartDataModel.errorMessage.isNotEmpty()) {
-                headerMessage = addToCartDataModel.errorMessage[0]
-            }
-            page = SubmitHelpTicketUseCase.PAGE_ATC
-            requestUrl = SubmitHelpTicketUseCase.GQL_REQUEST_URL
-        }
-        requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest)
-        submitTicketSubscription = submitHelpTicketUseCase.get().createObservable(requestParams).subscribe(object : Observer<SubmitTicketResult> {
-            override fun onError(e: Throwable?) {
-                e?.printStackTrace()
-                onErrorSubmitHelpTicket(e)
-            }
-
-            override fun onNext(t: SubmitTicketResult) {
-                onNextSubmitHelpTicket(t)
-            }
-
-            override fun onCompleted() {
-
-            }
-        })
     }
 
     fun updateCartCounerUseCase(onSuccessRequest: (count: Int) -> Unit) {
@@ -1142,8 +1120,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
-        getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId, generateUserLocationRequest(userLocationCache))
+    private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String, extParam: String): ProductDetailDataModel {
+        getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(productId, shopDomain, productKey, whId, layoutId, generateUserLocationRequest(userLocationCache), extParam)
         return getPdpLayoutUseCase.get().executeOnBackground()
     }
 

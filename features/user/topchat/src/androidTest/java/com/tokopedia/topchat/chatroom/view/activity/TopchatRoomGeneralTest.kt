@@ -6,10 +6,12 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import org.junit.Test
 
+@UiTest
 class TopchatRoomGeneralTest : TopchatRoomTest() {
 
     private val exShopId = "1231"

@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.typefactory.CampaignStockTypeFactory
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ReservedEventInfoUiModel(

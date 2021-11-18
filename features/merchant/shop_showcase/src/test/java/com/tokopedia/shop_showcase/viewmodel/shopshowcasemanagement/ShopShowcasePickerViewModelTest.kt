@@ -10,10 +10,13 @@ import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopSh
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcasePickerViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -69,6 +72,24 @@ class ShopShowcasePickerViewModelTest {
         }
     }
 
+
+    @Test
+    fun `Get Showcase list as Seller Fail Scenario`() {
+        runBlocking {
+            coEvery {
+                getShopEtalaseUseCase.executeOnBackground()
+            } throws Exception()
+
+            viewModel.getShopShowcaseListAsSeller()
+
+            coVerify {
+                getShopEtalaseUseCase.executeOnBackground()
+            }
+
+            Assert.assertTrue(viewModel.getListSellerShopShowcaseResponse.value is Fail)
+        }
+    }
+
     @Test
     fun `when get total product should return success`() {
         runBlocking {
@@ -103,6 +124,37 @@ class ShopShowcasePickerViewModelTest {
     }
 
     @Test
+    fun `Get total product Fail Scenario`() {
+        runBlocking {
+            val shopId = "123456"
+            val page = 1
+            val perPage = 15
+            val fkeyword = ""
+            val sort = 0
+            val fmenu = "etalase"
+
+            coEvery {
+                getShopShowcaseTotalProductUseCase.executeOnBackground()
+            } throws Exception()
+
+            viewModel.getTotalProduct(
+                    shopId = shopId,
+                    page = page,
+                    perPage = perPage,
+                    sortId = sort,
+                    etalase = fmenu,
+                    search = fkeyword
+            )
+
+            coVerify {
+                getShopShowcaseTotalProductUseCase.executeOnBackground()
+            }
+
+            assertTrue(viewModel.getShopProductResponse.value is Fail)
+        }
+    }
+
+    @Test
     fun `when create shop showcase should return success`() {
         runBlocking {
             mockkObject(CreateShopShowcaseUseCase)
@@ -119,6 +171,22 @@ class ShopShowcasePickerViewModelTest {
             val actualResponse = viewModel.createShopShowcase.value as Success<AddShopShowcaseResponse>
             TestCase.assertTrue(viewModel.createShopShowcase.value is Success)
             assertEquals(expectedResponse, actualResponse)
+        }
+    }
+
+    @Test
+    fun `Create new showcase Fail Scenario`() {
+        runBlocking {
+            mockkObject(CreateShopShowcaseUseCase)
+            coEvery { createShopShowcaseUseCase.executeOnBackground() } throws Exception()
+
+            viewModel.addShopShowcase(AddShopShowcaseParam())
+            viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+            verify { CreateShopShowcaseUseCase.createRequestParams(AddShopShowcaseParam()) }
+            coVerify { createShopShowcaseUseCase.executeOnBackground() }
+
+            assertTrue(viewModel.createShopShowcase.value is Fail)
         }
     }
 

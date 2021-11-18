@@ -42,7 +42,7 @@ class ThanksPageDataViewModel @Inject constructor(
     private val gyroResponseLiveData = MutableLiveData<FeatureEngineData>()
 
 
-    fun getThanksPageData(paymentId: Long, merchant: String) {
+    fun getThanksPageData(paymentId: String, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
         thanksPageDataUseCase.getThankPageData(
             ::onThanksPageDataSuccess,

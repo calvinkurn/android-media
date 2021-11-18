@@ -13,9 +13,10 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
@@ -28,6 +29,7 @@ import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 
+@UiTest
 class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
     lateinit var productPreview: ProductPreview
@@ -1286,7 +1288,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
     // TODO: identify why not pointing to `Hari Ini`
     private fun today(): Long {
-        val stringDate = SendableViewModel.generateStartTime()
+        val stringDate = SendableUiModel.generateStartTime()
         return RfcDateTimeParser.parseDateString(
             stringDate, arrayOf(RxWebSocketUtilStub.START_TIME_FORMAT)
         ).time

@@ -3,6 +3,8 @@ package com.tokopedia.buyerorderdetail.presentation.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +25,9 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
@@ -45,6 +49,7 @@ import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationD
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -56,8 +61,12 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener,
-        ProductBundlingViewHolder.Listener, TickerViewHolder.TickerViewHolderListener {
+open class BuyerOrderDetailFragment : BaseDaggerFragment(),
+        ProductViewHolder.ProductViewListener,
+        ProductBundlingViewHolder.Listener,
+        TickerViewHolder.TickerViewHolderListener,
+        DigitalRecommendationViewHolder.ActionListener,
+    CourierInfoViewHolder.CourierInfoViewHolderListener {
 
     companion object {
         @JvmStatic
@@ -83,7 +92,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private var toolbarBuyerOrderDetail: HeaderUnify? = null
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     private var emptyStateBuyerOrderDetail: EmptyStateUnify? = null
-    private var loaderBuyerOrderDetail: LoaderUnify? = null
+    protected var loaderBuyerOrderDetail: LoaderUnify? = null
 
     private val viewModel: BuyerOrderDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
@@ -99,8 +108,16 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private val cacheManager: SaveInstanceCacheManager by lazy {
         SaveInstanceCacheManager(requireContext(), true)
     }
-    private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData)
+    protected open val typeFactory: BuyerOrderDetailTypeFactory by lazy {
+        BuyerOrderDetailTypeFactory(
+            this,
+            this,
+            digitalRecommendationData,
+            this,
+            this,
+            this,
+            navigator
+        )
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -108,10 +125,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private val requestCancelResultDialog: RequestCancelResultDialog by lazy {
         RequestCancelResultDialog(navigator)
     }
-    private val navigator: BuyerOrderDetailNavigator by lazy {
+    protected val navigator: BuyerOrderDetailNavigator by lazy {
         BuyerOrderDetailNavigator(requireActivity(), this)
     }
-    private val digitalRecommendationData: DigitalRecommendationData
+    protected val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
                 viewModelFactory,
                 viewLifecycleOwner,
@@ -213,6 +230,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     override fun onClickShipmentInfoTnC() {
         BuyerOrderDetailTracker.eventClickSeeShipmentInfoTNC(viewModel.getOrderStatusId(), viewModel.getOrderId())
+    }
+
+    override fun hideDigitalRecommendation() {
+        Handler(Looper.getMainLooper()).post {
+            adapter.removeDigitalRecommendation()
+        }
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
@@ -534,5 +557,16 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                 viewModel.getShopType().toString(),
                 viewModel.getUserId()
         )
+    }
+
+    override fun onEtaChangedClicked(delayedInfo: String) {
+        showEtaBottomSheet(delayedInfo)
+    }
+
+    private fun showEtaBottomSheet(etaChangedDescription: String) {
+        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(etaChangedDescription)
+        parentFragmentManager?.run {
+            delayedEtaBottomSheetFragment.show(this, "")
+        }
     }
 }

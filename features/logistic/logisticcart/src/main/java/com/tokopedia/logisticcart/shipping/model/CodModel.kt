@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
  * Created by fajarnuha on 26/12/18.
  */
 @Parcelize
-class CodModel : Parcelable {
-    var isCod = false
-    var counterCod = 0
-}
+class CodModel(
+        var isCod: Boolean = false,
+        var counterCod: Int = 0,
+) : Parcelable
