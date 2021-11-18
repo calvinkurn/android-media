@@ -54,7 +54,9 @@ data class ProductData(
         @SerializedName("variant")
         var variant: List<Variant> = listOf(),
         @SerializedName("has_reminder")
-        var hasReminder: Boolean = false
+        var hasReminder: Boolean = false,
+        @SerializedName("is_variant")
+        var isVariant: Boolean = false
 ) {
     var loadingReminderState: Boolean = false
 
@@ -84,8 +86,6 @@ data class ProductData(
     fun hasFreeShipping(): Boolean {
         return shop.freeShippingIcon.isNotEmpty()
     }
-
-    fun hasVariant(): Boolean = variant.isNotEmpty()
 
     companion object {
         const val BUTTON_TYPE_BUY = 0

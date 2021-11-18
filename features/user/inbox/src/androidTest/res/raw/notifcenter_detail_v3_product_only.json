@@ -113,7 +113,8 @@
             },
             "stock": 0,
             "type_button": 3,
-            "is_show": true
+            "is_show": true,
+            "is_variant": true
           },
           {
             "has_reminder": false,
@@ -170,7 +171,8 @@
             },
             "stock": 26,
             "type_button": 0,
-            "is_show": false
+            "is_show": false,
+            "is_variant": true
           },
           {
             "has_reminder": false,
@@ -227,7 +229,8 @@
             },
             "stock": 4,
             "type_button": 1,
-            "is_show": true
+            "is_show": true,
+            "is_variant": true
           }
         ],
         "bottomsheet": {

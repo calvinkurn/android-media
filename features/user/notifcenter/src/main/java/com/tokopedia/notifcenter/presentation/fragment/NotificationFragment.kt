@@ -536,7 +536,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     }
 
     override fun buyProduct(notification: NotificationUiModel, product: ProductData) {
-        if (product.hasVariant()) {
+        if (product.isVariant) {
             showAtcVariantHelper(
                 product.productId,
                 product.shop.id.toString(),
@@ -553,7 +553,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     }
 
     override fun addProductToCart(notification: NotificationUiModel, product: ProductData) {
-        if (product.hasVariant()) {
+        if (product.isVariant) {
             showAtcVariantHelper(
                 product.productId,
                 product.shop.id.toString(),
